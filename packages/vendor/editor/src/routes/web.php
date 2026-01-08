@@ -7,12 +7,13 @@ use Vendor\Editor\Controllers\BlockController;
 
 
 Auth::routes();
+    Route::get('templates/display/{templateId}', [TemplateController::class, 'previewTemplate'])->name('templates.display');
+
 Route::middleware(['auth','web'])->group(function () {
     Route::post('templates/save', [TemplateController::class, 'store'])->name('templates.save');
     Route::get('/editor', [EditorController::class, 'index'])->name('editor');
     Route::get('templates/list', [TemplateController::class, 'list'])->name('templates');
     Route::delete('templates/delete/{id}', [TemplateController::class, 'destroy'])->name('templates.delete');
-    Route::get('templates/display/{templateId}', [TemplateController::class, 'previewTemplate'])->name('templates.display');
     Route::get('/template/edit/{id}', function($id) {
     $template = \App\Models\Template::findOrFail($id);
     
