@@ -25,7 +25,7 @@
                 <a href="{{route('websites.index')}}" class="menu-item">
                     <span class="menu-icon"><i class="fas fa-globe"></i></span>
                     <span class="menu-text">Sites web</span>
-                    <span class="menu-badge">12</span>
+                    <!-- <span class="menu-badge">12</span> -->
                 </a>
             </li>
             <li>
@@ -62,13 +62,13 @@
                 </a>
             </li>
             
-            <li class="menu-title">E-commerce</li>
+            <!-- <li class="menu-title">E-commerce</li>
             <li>
                 <a href="#" class="menu-item">
                     <span class="menu-icon"><i class="fas fa-shopping-cart"></i></span>
                     <span class="menu-text">Boutique</span>
                 </a>
-            </li>
+            </li> -->
             <!-- <li>
                 <a href="#" class="menu-item">
                     <span class="menu-icon"><i class="fas fa-gift"></i></span>
