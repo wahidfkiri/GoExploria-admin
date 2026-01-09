@@ -162,9 +162,7 @@ class TemplateController extends Controller
     public function destroy($id)
     {
         try {
-            $template = Template::where('id', $id)
-                ->where('user_id', auth()->id())
-                ->firstOrFail();
+            $template = Template::findOrFail($id);
 
             $template->delete();
 
