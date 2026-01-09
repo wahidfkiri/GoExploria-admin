@@ -736,7 +736,7 @@
     <main class="dashboard-content">
         <!-- Welcome Section -->
         <div class="welcome-card">
-            <h2 class="welcome-title">Bonjour, Administrateur 👋</h2>
+            <h2 class="welcome-title">Bonjour, {{auth()->user()->name}} 👋</h2>
             <p class="welcome-text">
                 Gérez votre plateforme GO EXPLORIA, créez des sites web modernes, et suivez les performances de vos clients. 
                 Vous avez 3 nouveaux messages et 12 tâches en attente aujourd'hui.

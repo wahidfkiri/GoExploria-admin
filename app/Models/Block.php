@@ -19,6 +19,7 @@ class Block extends Model
         'css_content',
         'js_content',
         'section_id',
+        'categorie_id',
         'category',
         'website_type',
         'tags',
@@ -50,6 +51,11 @@ class Block extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function categorie()
+    {
+        return $this->belongsTo(Category::class, 'categorie_id');
     }
 
     public function scopeFree($query)

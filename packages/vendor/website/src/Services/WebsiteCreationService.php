@@ -113,6 +113,7 @@ class WebsiteCreationService
             $templateData = [
                 'website_id' => $website->id,
                 'user_id' => $website->user_id,
+                'categorie_id' => $website->categorie_id,
                 'name' => 'Template Principal',
                 'slug' => 'template-principal-' . uniqid(),
                 'url' => '/company/website/' . $website->id,

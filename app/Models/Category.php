@@ -20,4 +20,9 @@ class Category extends Model
     {
         return $this->hasMany(Website::class, 'categorie_id');
     }
+
+    public function templates(): HasMany
+    {
+        return $this->hasMany(Template::class, 'categorie_id');
+    }
 }

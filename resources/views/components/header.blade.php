@@ -24,7 +24,7 @@
                     <div class="user-profile">
                         <div class="user-avatar">AD</div>
                         <div class="user-info">
-                            <h5>Admin User</h5>
+                            <h5>{{auth()->user()->name}}</h5>
                             <p>Administrateur</p>
                         </div>
                         <i class="fas fa-chevron-down"></i>

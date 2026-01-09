@@ -5,6 +5,7 @@ namespace Vendor\Editor\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Block;
 use App\Models\Section;
+use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -19,6 +20,7 @@ class BlockController extends Controller
     {
         $query = Block::with('section')
             ->active()
+            ->where('categorie_id', 1)
             ->ordered();
 
         // Filtres
@@ -69,8 +71,12 @@ class BlockController extends Controller
     public function getBlocks(Request $request)
     {
         try {
+
+            $template_id = $request->query('template_id');
+            $template = Template::find($template_id);
             $query = Block::with('section')
                 ->active()
+                ->where('categorie_id', $template->categorie_id)
                 ->ordered();
 
             // Filtres

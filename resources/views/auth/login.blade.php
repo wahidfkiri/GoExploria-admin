@@ -401,26 +401,26 @@
             </form>
 
             <!-- Lien vers inscription -->
-            <div class="text-center mt-5">
+            <!-- <div class="text-center mt-5">
                 <p class="text-gray-600 text-sm">
                     Pas encore de compte ? 
                     <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-800 font-medium hover:underline">
                         S'inscrire
                     </a>
                 </p>
-            </div>
+            </div> -->
 
             <!-- Séparateur -->
-            <div class="my-6">
+            <!-- <div class="my-6">
                 <div class="flex items-center">
                     <div class="flex-grow border-t border-gray-300"></div>
                     <span class="mx-4 text-gray-500 text-xs">Ou continuer avec</span>
                     <div class="flex-grow border-t border-gray-300"></div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Boutons sociaux -->
-            <div class="grid grid-cols-2 gap-3 mb-5">
+            <!-- <div class="grid grid-cols-2 gap-3 mb-5">
                 <a href="{{ route('auth.google') }}" 
                    class="social-btn flex items-center justify-center space-x-2">
                     <i class="fab fa-google text-red-500 text-sm"></i>
@@ -432,7 +432,7 @@
                     <i class="fab fa-facebook text-blue-600 text-sm"></i>
                     <span class="text-sm">Facebook</span>
                 </a>
-            </div>
+            </div> -->
 
             <!-- Footer -->
             <div class="text-center pt-4 border-t border-gray-200">
@@ -441,7 +441,7 @@
                     <a href="#" class="text-blue-600 hover:underline font-medium">Politique de confidentialité</a>
                 </p>
                 <p class="text-gray-500 text-xs mt-3">
-                    © 2024 Plateforme Moderne. Tous droits réservés.
+                    © 2026 Go Exploria Business. Tous droits réservés.
                 </p>
             </div>
         </div>

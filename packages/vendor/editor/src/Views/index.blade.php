@@ -503,8 +503,6 @@ function initEditor() {
         }
     });
 
-    // Initialiser les blocs avec l'interface moderne
-    initBlocksModern();
     
     // Initialiser le panneau couches
     initLayersPanel();
@@ -529,6 +527,10 @@ function initEditor() {
     if (templateIdFromURL) {
         window.currentTemplateId = templateIdFromURL;
         console.log('Setting currentTemplateId to:', window.currentTemplateId);
+
+        
+    // Initialiser les blocs avec l'interface moderne
+    initBlocksModern();
         
         // Attendre que l'éditeur soit complètement initialisé avant de charger
         setTimeout(() => {
@@ -1066,13 +1068,23 @@ async function handleCanvasDrop(e) {
         }
 
         // === FONCTIONS POUR L'INTERFACE MODERNE ===
-        async function loadBlocksModern() {
+        async function loadBlocksModern(templateId) {
             try {
                 showLoading('Loading blocks library...');
                 
-                console.log('Fetching blocks from API...');
-                
-                const response = await fetch('/api/blocks/data');
+                 console.log('Fetching blocks from API with templateId:', templateId);
+        
+        // MODIFIER L'URL POUR GÉRER LE CAS NULL
+        let apiUrl = '/api/blocks/data';
+        
+        // Ajouter le paramètre template_id seulement s'il n'est pas null
+        if (templateId) {
+            apiUrl += '?template_id=' + templateId;
+        }
+        
+        console.log('Fetching blocks from:', apiUrl);
+        
+        const response = await fetch(apiUrl);
                 
                 if (!response.ok) {
                     throw new Error(`API Error: ${response.status}`);
@@ -1821,9 +1833,12 @@ async function handleCanvasDrop(e) {
         }
 
         // === FONCTIONS EXISTANTES À CONSERVER ===
-        function initBlocksModern() {
-            loadBlocksModern();
-        }
+       function initBlocksModern() {
+    // Utiliser une valeur sécurisée
+    const templateId = window.currentTemplateId || null;
+    console.log('Initializing blocks with templateId:', templateId);
+    loadBlocksModern(templateId);
+}
 
         function initLayersPanel() {
             updateLayersPanel();

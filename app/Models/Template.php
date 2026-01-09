@@ -21,6 +21,7 @@ class Template extends Model
         'metadata',
         'user_id',
         'website_id',
+        'categorie_id',
         'url',
         'js_content',
         'assets_folder',
@@ -45,6 +46,11 @@ class Template extends Model
     public function website()
     {
         return $this->belongsTo(Website::class);
+    }
+
+    public function categorie()
+    {
+        return $this->belongsTo(Categorie::class);
     }
 
     /**

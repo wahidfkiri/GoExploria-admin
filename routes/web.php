@@ -23,6 +23,9 @@ use App\Http\Controllers\TemplateScraperController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/test', function () {
+    return view('test');
+});
 // Page de login
 Route::get('/login', function () {
     return view('auth.login');
