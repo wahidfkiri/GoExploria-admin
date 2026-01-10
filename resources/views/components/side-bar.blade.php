@@ -56,7 +56,7 @@
                 </a>
             </li> -->
             <li>
-                <a href="#" class="menu-item">
+                <a href="{{route('destinations.index')}}" class="menu-item">
                     <span class="menu-icon"><i class="fas fa-map-marked-alt"></i></span>
                     <span class="menu-text">Destinations</span>
                 </a>

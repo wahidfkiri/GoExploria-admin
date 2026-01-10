@@ -36,7 +36,9 @@
             "Vendor\\Editor\\": "packages/vendor/editor/src",
             "Vendor\\Gemini\\": "packages/vendor/gemini/src",
             "Vendor\\Customer\\": "packages/vendor/customer/src",
-            "Vendor\\Website\\": "packages/vendor/website/src"
+            "Vendor\\Website\\": "packages/vendor/website/src",
+            "Vendor\\Destination\\": "packages/vendor/destination/src",
+            "Vendor\\Administration\\": "packages/vendor/administration/src"
         }
     },
     "autoload-dev": {

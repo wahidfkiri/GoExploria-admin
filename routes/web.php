@@ -6,7 +6,6 @@ use App\Http\Controllers\{
     TemplateController,
     OpenAIController,
     AuthController,
-    AITemplateController,
     GeminiController
 };
 
@@ -87,22 +86,6 @@ Route::prefix('api')->group(function () {
 Route::post('/batch-scrape', [TemplateScraperController::class, 'batchScrape'])->name('batch.scrape');
 
 
-// routes/web.php
-
-// Routes pour la génération IA
-Route::prefix('ai-templates')->group(function () {
-    Route::get('/create', [AITemplateController::class, 'create'])->name('ai.templates.create');
-    Route::post('/generate', [AITemplateController::class, 'generate'])->name('ai.templates.generate');
-    Route::post('/generate-from-url', [AITemplateController::class, 'generateFromUrl'])->name('ai.templates.generate-from-url');
-    Route::post('/{template}/optimize', [AITemplateController::class, 'optimize'])->name('ai.templates.optimize');
-    Route::get('/', [AITemplateController::class, 'index'])->name('ai.templates.index');
-});
-
-// Ajouter aux routes existantes
-Route::prefix('ai/templates')->group(function () {
-    // ... routes existantes ...
-    Route::post('/{template}/ai-optimize', [AITemplateController::class, 'optimize'])->name('templates.ai-optimize');
-});
 
 // routes/web.php ou routes/api.php
 

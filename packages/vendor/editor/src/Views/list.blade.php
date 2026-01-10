@@ -469,7 +469,7 @@
                         </div>
                     </td>
                     <td>
-                        <a href="https://${template.url}" target="_blank" class="template-url-modern">
+                        <a href="{{url('templates/display/${template.id}')}}" target="_blank" class="template-url-modern">
                             <i class="fas fa-link me-1"></i>${template.url}
                         </a>
                     </td>

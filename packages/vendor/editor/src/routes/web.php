@@ -8,7 +8,7 @@ use Vendor\Editor\Controllers\BlockController;
 
 Auth::routes();
     Route::get('templates/display/{templateId}', [TemplateController::class, 'previewTemplate'])->name('templates.display');
-
+    
 Route::middleware(['auth','web'])->group(function () {
     Route::post('templates/save', [TemplateController::class, 'store'])->name('templates.save');
     Route::get('/editor', [EditorController::class, 'index'])->name('editor');

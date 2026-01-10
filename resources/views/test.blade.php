@@ -4,15 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Go Exploria Business - Plateforme de Création Digitale</title>
-    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Swiper CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
     
     <style>
         :root {
@@ -24,10 +22,7 @@
             --text-color: #333;
             --border-radius: 12px;
             --box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            --gradient-primary: linear-gradient(135deg, #1a5f7a 0%, #2c3e50 100%);
-            --gradient-secondary: linear-gradient(135deg, #57cc99 0%, #38b2ac 100%);
-            --gradient-accent: linear-gradient(135deg, #ff9a3c 0%, #ff6b6b 100%);
+            --transition: all 0.3s ease;
         }
         
         * {
@@ -46,48 +41,6 @@
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-        }
-        
-        /* Animations générales */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-15px);
-            }
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-        }
-        
-        .animate-fade-in-up {
-            animation: fadeInUp 0.8s ease forwards;
-        }
-        
-        .animate-float {
-            animation: float 4s ease-in-out infinite;
-        }
-        
-        .animate-pulse-slow {
-            animation: pulse 3s ease-in-out infinite;
         }
         
         /* Header avec informations en temps réel */
@@ -156,6 +109,83 @@
             color: var(--accent-color);
         }
         
+        .top-bar-icons {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .top-bar-icon {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+        
+        .top-bar-icon:hover {
+            color: var(--accent-color);
+        }
+        
+        .language-selector {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .language-btn {
+            background: none;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        
+        .language-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            min-width: 120px;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .language-dropdown.show {
+            display: block;
+        }
+        
+        .language-option {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: black !important;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .language-option:hover {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+        }
+        
+        .flag-icon {
+            width: 20px;
+            height: 15px;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+        
         .contact-link {
             margin-right: 15px;
             display: inline-block;
@@ -173,7 +203,7 @@
             transform: translateY(-2px);
         }
         
-        /* Main Navigation */
+        /* Main Navigation - RESPONSIVE */
         .main-navbar {
             background-color: white;
             box-shadow: var(--box-shadow);
@@ -184,7 +214,7 @@
         }
         
         .navbar-brand {
-            padding: 0;
+            padding: 10px 0;
         }
         
         .site-logo {
@@ -231,17 +261,17 @@
         
         .nav-link:after {
             content: '';
-            position: absolute;
+            /* position: absolute; */
             width: 0;
             height: 3px;
             background: var(--secondary-color);
-            bottom: 0;
-            left: 15px;
+            /* bottom: 0;
+            left: 15px; */
             transition: var(--transition);
         }
         
         .nav-link:hover:after, .nav-link.active:after {
-            width: calc(100% - 30px);
+            /* width: calc(100% - 30px); */
         }
         
         .special-buttons .btn {
@@ -274,36 +304,335 @@
             font-size: 1.2rem;
         }
         
-        /* Search Bar */
-        .search-container {
-            background-color: #f1f8ff;
-            padding: 20px 0;
-            border-bottom: 1px solid #dee2e6;
+        /* CORRECTIONS DÉFINITIVES - DROPDOWN CENTRÉ ET IMAGES COLLÉES */
+        .dropdown-menu.full-width {
+            width: 100vw !important;
+            max-width: 100vw !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            margin: 0 !important;
+            padding: 20px !important;
+            border: none !important;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15) !important;
+            border-radius: 0 0 var(--border-radius) var(--border-radius) !important;
+            overflow: hidden !important;
+            position: absolute !important;
+            top: 100% !important;
+            z-index: 9999 !important;
         }
         
-        .search-box {
-            max-width: 700px;
-            margin: 0 auto;
+        .dropdown-menu.full-width .container {
+            max-width: 100% !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
         }
         
-        .search-box input {
-            border-radius: 50px 0 0 50px;
-            border: 1px solid #ddd;
-            padding: 15px 25px;
-            font-size: 1.1rem;
+        .row.mega-menu-regions {
+            margin-left: -4px !important;
+            margin-right: -4px !important;
+            --bs-gutter-x: 0.25rem !important;
+            --bs-gutter-y: 0.25rem !important;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            width: calc(100% + 8px) !important;
         }
         
-        .search-box input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(26, 95, 122, 0.25);
+        .row.mega-menu-regions .col-md-3 {
+            padding-left: 4px !important;
+            padding-right: 4px !important;
+            margin-bottom: 8px !important;
+            flex: 0 0 25%;
+            max-width: 25%;
         }
         
-        .search-box button {
-            border-radius: 0 50px 50px 0;
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            padding: 0 30px;
-            font-size: 1.1rem;
+        .dropdown-item-with-img {
+            display: block !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            text-decoration: none;
+            border-radius: 6px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.08);
+            background: white;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .dropdown-item-with-img:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            border-color: var(--secondary-color);
+        }
+        
+        .dropdown-img {
+            width: 100% !important;
+            height: 160px !important;
+            object-fit: cover;
+            display: block;
+            margin: 0 !important;
+            padding: 0 !important;
+            border-bottom: 3px solid var(--secondary-color);
+            transition: transform 0.4s ease;
+        }
+        
+        .dropdown-item-with-img:hover .dropdown-img {
+            transform: scale(1.08);
+        }
+        
+        .dropdown-item-content {
+            padding: 10px !important;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dropdown-item-title {
+            font-weight: 700 !important;
+            color: var(--primary-color) !important;
+            margin: 0 !important;
+            font-size: 1rem !important;
+            line-height: 1.3;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+        }
+        
+        .dropdown-item-with-img:hover .dropdown-item-title {
+            color: var(--secondary-color) !important;
+        }
+        
+        .navbar .dropdown-menu {
+            border: none;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .dropdown-menu.full-width {
+            max-height: 75vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        .dropdown-divider.my-3 {
+            margin: 15px 0 !important;
+            width: 100% !important;
+        }
+        
+        .text-center.d-block {
+            display: block !important;
+            width: 100% !important;
+            margin: 10px auto 0 !important;
+            padding: 12px !important;
+            background: linear-gradient(135deg, var(--light-color) 0%, #e9ecef 100%);
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            border: 2px dashed var(--secondary-color);
+            transition: var(--transition);
+        }
+        
+        .text-center.d-block:hover {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #38b2ac 100%);
+            color: white !important;
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .row.mega-menu-regions .col-md-3 {
+                flex: 0 0 33.333%;
+                max-width: 33.333%;
+            }
+            
+            .dropdown-img {
+                height: 140px !important;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .dropdown-menu.full-width {
+                position: static !important;
+                width: 100% !important;
+                left: 0 !important;
+                transform: none !important;
+                margin-top: 0 !important;
+            }
+            
+            .row.mega-menu-regions .col-md-3 {
+                flex: 0 0 0;
+                max-width: 50%;
+            }
+            
+            .dropdown-img {
+                height: 130px !important;
+            }
+            
+            .row.mega-menu-regions {
+                margin-left: -3px !important;
+                margin-right: -3px !important;
+            }
+            
+            .row.mega-menu-regions .col-md-3 {
+                padding-left: 3px !important;
+                padding-right: 3px !important;
+            }
+            
+            /* Navigation mobile */
+            .navbar-collapse {
+                background: white;
+                padding: 20px;
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
+                margin-top: 10px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dropdown-menu.full-width {
+                padding: 15px 8px !important;
+            }
+            
+            .row.mega-menu-regions .col-md-3 {
+                flex: 0 0 100%;
+                max-width: 80%;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .dropdown-img {
+                height: 150px !important;
+            }
+            
+            .row.mega-menu-regions {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+            
+            .special-buttons {
+                margin-top: 15px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+        
+        /* Dropdown on hover - Full Width */
+        .navbar .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+            margin-top: 0;
+        }
+        
+        /* FIX POUR L'AFFICHAGE MOBILE */
+        @media (max-width: 992px) {
+            .navbar .nav-item.dropdown:hover .dropdown-menu {
+                display: none;
+            }
+            
+            .navbar .nav-item.dropdown .dropdown-menu.show {
+                display: block !important;
+            }
+        }
+        
+        /* Override Bootstrap position */
+        .dropdown-menu[data-bs-popper] {
+            margin-top: 0 !important;
+        }
+        
+        /* Video Slider Full Width */
+        .video-slider-section {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+        }
+        
+        .video-slider-container {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .video-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        
+        .video-slide.active {
+            opacity: 1;
+        }
+        
+        .video-slide iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .video-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .slider-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .slider-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+        
+        .slider-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(26, 95, 122, 0.8) 0%, rgba(44, 62, 80, 0.7) 50%, transparent 100%);
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+            z-index: 5;
+        }
+        
+        .slider-text {
+            color: white;
+            max-width: 600px;
+        }
+        
+        .slider-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .slider-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
         }
         
         /* Mega Menu Dropdown amélioré */
@@ -312,8 +641,7 @@
             top: 100%;
             left: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(15px);
+            background: white;
             border-radius: 0 0 var(--border-radius) var(--border-radius);
             box-shadow: 0 20px 50px rgba(0,0,0,0.15);
             padding: 30px;
@@ -321,9 +649,7 @@
             opacity: 0;
             visibility: hidden;
             transform: translateY(-20px);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-height: 70vh;
-            overflow-y: auto;
+            transition: all 0.3s ease;
         }
         
         .mega-dropdown-container.active {
@@ -332,14 +658,15 @@
             transform: translateY(0);
         }
         
-        .region-grid {
+        /* Régions en grille full width */
+        .region-grid-full {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 30px;
         }
         
-        .region-card {
+        .region-card-large {
             background: white;
             border-radius: var(--border-radius);
             overflow: hidden;
@@ -347,39 +674,40 @@
             transition: var(--transition);
             cursor: pointer;
             border: 1px solid rgba(0,0,0,0.05);
+            height: 300px;
+            position: relative;
         }
         
-        .region-card:hover {
-            transform: translateY(-10px) scale(1.02);
+        .region-card-large:hover {
+            transform: translateY(-10px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
         
-        .region-card-img {
-            height: 180px;
+        .region-card-img-large {
             width: 100%;
+            height: 100%;
             object-fit: cover;
             transition: var(--transition);
         }
         
-        .region-card:hover .region-card-img {
+        .region-card-large:hover .region-card-img-large {
             transform: scale(1.1);
         }
         
-        .region-card-content {
+        .region-card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
             padding: 20px;
+            color: white;
         }
         
-        .region-card-title {
-            font-size: 1.3rem;
-            color: var(--primary-color);
-            margin-bottom: 10px;
+        .region-card-title-large {
+            font-size: 1.5rem;
             font-weight: 700;
-        }
-        
-        .region-card-desc {
-            font-size: 0.95rem;
-            color: #666;
-            line-height: 1.5;
+            margin-bottom: 5px;
         }
         
         .region-list-all {
@@ -427,98 +755,6 @@
         .close-mega-menu:hover {
             color: var(--accent-color);
             transform: rotate(90deg);
-        }
-        
-        /* Section Hero pour création digitale */
-        .modern-hero {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .modern-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover;
-            opacity: 0.1;
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.2;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.3rem;
-            color: var(--dark-color);
-            margin-bottom: 30px;
-            max-width: 600px;
-        }
-        
-        .hero-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .hero-btn {
-            padding: 15px 35px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: var(--transition);
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .hero-btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-        }
-        
-        .hero-btn-primary:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(26, 95, 122, 0.3);
-        }
-        
-        .hero-btn-secondary {
-            background: var(--gradient-secondary);
-            color: white;
-        }
-        
-        .hero-btn-secondary:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(87, 204, 153, 0.3);
-        }
-        
-        .hero-image {
-            position: relative;
-            text-align: center;
-        }
-        
-        .hero-image img {
-            max-width: 100%;
-            border-radius: var(--border-radius);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            animation: float 6s ease-in-out infinite;
         }
         
         /* Section Éditeur de Site Web */
@@ -603,7 +839,7 @@
         .feature-icon {
             width: 80px;
             height: 80px;
-            background: var(--gradient-primary);
+            background: linear-gradient(135deg, #1a5f7a 0%, #2c3e50 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -674,7 +910,7 @@
         /* Section Statistiques */
         .stats-section {
             padding: 80px 0;
-            background: var(--gradient-primary);
+            background: linear-gradient(135deg, #1a5f7a 0%, #2c3e50 100%);
             color: white;
         }
         
@@ -695,25 +931,7 @@
             opacity: 0.9;
         }
         
-        /* Bouton pour activer le mega menu */
-        .mega-menu-trigger {
-            position: relative;
-        }
-        
-        .mega-menu-trigger i {
-            transition: var(--transition);
-        }
-        
-        .mega-menu-trigger.active i {
-            transform: rotate(180deg);
-        }
-        
-        /* Categories Section (existante) */
-        .categories-section {
-            padding: 80px 0;
-            background-color: var(--light-color);
-        }
-        
+        /* Section titre */
         .section-title {
             text-align: center;
             margin-bottom: 50px;
@@ -734,306 +952,46 @@
             transform: translateX(-50%);
         }
         
-        .category-card {
-            background: white;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            height: 100%;
-            margin-bottom: 30px;
-        }
-        
-        .category-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-        
-        .category-img {
-            height: 220px;
-            background-size: cover;
-            background-position: center;
-            transition: var(--transition);
-        }
-        
-        .category-card:hover .category-img {
-            transform: scale(1.05);
-        }
-        
-        .category-content {
-            padding: 25px;
-        }
-        
-        .category-title {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            font-size: 1.4rem;
-        }
-        
-        .category-link {
-            color: var(--accent-color);
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 15px;
-            transition: var(--transition);
-        }
-        
-        .category-link:hover {
-            color: var(--primary-color);
-            transform: translateX(8px);
-        }
-        
-        /* Featured Companies (existante) */
-        .featured-section {
-            padding: 80px 0;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-        }
-        
-        .company-list {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .company-list li {
-            padding: 18px 0;
-            border-bottom: 1px solid #eee;
-            transition: var(--transition);
-        }
-        
-        .company-list li:hover {
-            background-color: #f8f9fa;
-            padding-left: 15px;
-            border-radius: 6px;
-        }
-        
-        .company-list li:last-child {
-            border-bottom: none;
-        }
-        
-        .company-list a {
-            color: var(--primary-color);
-            font-weight: 700;
-            text-decoration: none;
-            transition: var(--transition);
-            font-size: 1.1rem;
-        }
-        
-        .company-list a:hover {
-            color: var(--accent-color);
-        }
-        
-        .company-list .activity {
-            color: #777;
-            font-size: 0.95rem;
-            margin-left: 10px;
-        }
-        
-        /* Gallery Section (existante) */
-        .gallery-section {
-            padding: 80px 0;
-            background-color: var(--light-color);
-        }
-        
-        .media-card {
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            margin-bottom: 30px;
-            transition: var(--transition);
-            background: white;
-        }
-        
-        .media-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-        
-        .media-img {
-            width: 100%;
-            height: 240px;
-            object-fit: cover;
-            transition: var(--transition);
-        }
-        
-        .media-card:hover .media-img {
-            transform: scale(1.05);
-        }
-        
-        .media-content {
-            padding: 20px;
-        }
-        
-        .media-title {
-            color: var(--primary-color);
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-        
-        .media-description {
-            color: #666;
-            font-size: 0.95rem;
-        }
-        
-        /* Welcome Section (existante) */
-        .welcome-section {
-            padding: 80px 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .welcome-section:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
-            background-size: cover;
-        }
-        
-        .welcome-content {
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Footer (existant) */
-        .main-footer {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 80px 0 30px;
-        }
-        
-        .footer-logo {
-            height: 70px;
-            margin-bottom: 25px;
-        }
-        
-        .footer-title {
-            color: white;
-            font-size: 1.3rem;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--accent-color);
-            display: inline-block;
-        }
-        
-        .footer-links {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-        
-        .footer-links a {
-            color: #ddd;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-        
-        .footer-links a:hover {
-            color: var(--accent-color);
-            padding-left: 8px;
-        }
-        
-        .copyright {
-            text-align: center;
-            padding-top: 40px;
-            margin-top: 40px;
-            border-top: 1px solid #444;
-            color: #aaa;
-            font-size: 0.95rem;
-        }
-        
-        /* Boutons avec animation */
-        .btn-modern {
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-        
-        .btn-modern::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.2);
-            transition: var(--transition);
-            z-index: -1;
-        }
-        
-        .btn-modern:hover::before {
-            left: 100%;
-        }
-        
-        /* Swiper custom */
-        .swiper {
-            width: 100%;
-            padding: 30px 0 50px;
-        }
-        
-        .swiper-slide {
-            background-position: center;
-            background-size: cover;
-            width: 300px;
-            height: 400px;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-        }
-        
-        .swiper-slide img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        /* Responsive */
+        /* Responsive Design */
         @media (max-width: 1200px) {
-            .region-columns {
-                columns: 2;
+            .region-grid-full {
+                grid-template-columns: repeat(3, 1fr);
             }
             
-            .hero-title {
+            .slider-title {
                 font-size: 3rem;
             }
         }
         
         @media (max-width: 992px) {
-            .hero-title {
+            .slider-title {
                 font-size: 2.5rem;
             }
             
+            .region-grid-full {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
             .region-columns {
-                columns: 1;
-            }
-            
-            .info-items {
-                justify-content: center;
-            }
-            
-            .info-item {
-                margin: 5px 15px;
+                columns: 2;
             }
         }
         
         @media (max-width: 768px) {
-            .hero-title {
+            .slider-title {
                 font-size: 2rem;
             }
             
-            .hero-subtitle {
+            .slider-subtitle {
                 font-size: 1.1rem;
+            }
+            
+            .slider-content {
+                padding: 0 20px;
+            }
+            
+            .video-slider-section {
+                height: 500px;
             }
             
             .top-bar .d-flex {
@@ -1041,49 +999,97 @@
                 text-align: center;
             }
             
-            .contact-info {
-                margin-bottom: 10px;
+            .top-bar-icons {
+                justify-content: center;
+                margin-top: 10px;
+                flex-wrap: wrap;
+                gap: 10px;
             }
             
-            .hero-buttons {
+            .info-items {
                 justify-content: center;
             }
             
-            .special-buttons {
-                margin-top: 15px;
-                justify-content: center;
+            .info-item {
+                margin: 5px 10px;
             }
             
-            .modern-hero, .editor-section, .features-section, .clients-section, .video-section {
+            .region-grid-full {
+                grid-template-columns: 1fr;
+            }
+            
+            .region-columns {
+                columns: 1;
+            }
+            
+            .editor-section, .features-section, .clients-section, .video-section {
                 padding: 60px 0;
             }
         }
         
         @media (max-width: 576px) {
-            .hero-title {
+            .slider-title {
                 font-size: 1.8rem;
             }
             
-            .hero-btn {
-                padding: 12px 25px;
-                font-size: 1rem;
+            .slider-dot {
+                width: 10px;
+                height: 10px;
             }
             
-            .mega-dropdown-container {
-                padding: 20px 15px;
-            }
-            
-            .info-header {
-                font-size: 0.75rem;
-            }
-            
-            .info-item {
-                margin: 3px 10px;
+            .video-slider-section {
+                height: 400px;
             }
             
             .stat-number {
                 font-size: 2.5rem;
             }
+            
+            .mega-dropdown-container {
+                padding: 20px 15px;
+            }
+        }
+        
+        /* CORRECTION POUR TOUS LES DROPDOWNS */
+        .navbar-nav .dropdown-menu {
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .navbar .container {
+            position: relative;
+        }
+        
+        .dropdown-item-with-img {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dropdown-item-with-img::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .dropdown-item-with-img:hover::after {
+            opacity: 1;
         }
     </style>
 </head>
@@ -1109,16 +1115,6 @@
                     <span class="info-label">Routes: </span>
                     <span class="info-value ms-1">Majoritairement dégagées</span>
                 </div>
-                <div class="info-item">
-                    <i class="fas fa-broadcast-tower info-icon"></i>
-                    <span class="info-label">Message aux voyageurs: </span>
-                    <span class="info-value ms-1">Pas d'alerte en vigueur</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-charging-station info-icon"></i>
-                    <span class="info-label">Bornes électriques: </span>
-                    <span class="info-value ms-1">85% disponibles</span>
-                </div>
             </div>
         </div>
     </header>
@@ -1135,8 +1131,41 @@
                         <i class="fas fa-envelope me-1"></i> infogoexploria@gmail.com
                     </a>
                 </div>
-                <div class="social-icons">
-                    <a href="https://www.youtube.com/user/explorezlemonde/videos?view_as=subscriber" target="_blank">
+                
+                <div class="top-bar-icons">
+                    <!-- Panier -->
+                    <a href="#" class="top-bar-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Panier</span>
+                    </a>
+                    
+                    <!-- Mon compte -->
+                    <a href="{{route('login')}}" class="top-bar-icon">
+                        <i class="fas fa-user"></i>
+                        <span>Mon compte</span>
+                    </a>
+                    
+                    <!-- Localisation / Langue -->
+                    <div class="language-selector">
+                        <button class="language-btn" id="languageBtn">
+                            <img src="https://flagcdn.com/w20/fr.png" class="flag-icon" alt="Français">
+                            <span>FR</span>
+                            <i class="fas fa-chevron-down ms-1"></i>
+                        </button>
+                        <div class="language-dropdown" id="languageDropdown">
+                            <a href="#" class="language-option" data-lang="fr">
+                                <img src="https://flagcdn.com/w20/fr.png" class="flag-icon" alt="Français">
+                                <span>Français</span>
+                            </a>
+                            <a href="#" class="language-option" data-lang="en">
+                                <img src="https://flagcdn.com/w20/gb.png" class="flag-icon" alt="English">
+                                <span>English</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- YouTube Icon -->
+                    <a href="https://www.youtube.com/user/explorezlemonde/videos?view_as=subscriber" target="_blank" class="top-bar-icon">
                         <i class="fab fa-youtube"></i>
                     </a>
                 </div>
@@ -1144,7 +1173,7 @@
         </div>
     </div>
 
-    <!-- Main Navigation -->
+    <!-- Main Navigation - RESPONSIVE -->
     <nav class="navbar navbar-expand-lg navbar-light main-navbar">
         <div class="container">
             <a class="navbar-brand" href="/fr/">
@@ -1157,34 +1186,128 @@
                 </div>
             </a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
             <div class="collapse navbar-collapse" id="navbarMain">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="a_tourisme">GO Explorez</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="a_business">GO Business</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="a_local">GO Local</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="a_prime">GO Prime Time</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="a_videos">GO Web TV</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="a_photos">GO Photos</a>
-                    </li>
-                    <li class="nav-item mega-menu-trigger-container">
-                        <a class="nav-link mega-menu-trigger" href="#regions">
-                            <i class="fas fa-map-marker-alt me-1"></i>Régions Canada
+                    <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="explorerDropdown" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+        <i class="fas fa-map-marked-alt me-1"></i>Explorer Région
+    </a>
+    <div class="dropdown-menu full-width" aria-labelledby="explorerDropdown">
+        <div class="container">
+            <div class="row mega-menu-regions" id="regionsDropdownContainer">
+                <!-- Les régions seront chargées par AJAX ici -->
+                <div class="col-12 text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-2">Chargement des régions...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                            <i class="fas fa-concierge-bell me-1"></i> GO Explorez
                         </a>
+                        <div class="dropdown-menu full-width" aria-labelledby="servicesDropdown">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5 class="dropdown-header">Services Digitaux</h5>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-briefcase me-2"></i>GO Business
+                                            <span class="text-muted d-block small mt-1">Solutions pour entreprises</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-store me-2"></i>GO Local
+                                            <span class="text-muted d-block small mt-1">Promotion commerciale locale</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-crown me-2"></i>GO Prime Time
+                                            <span class="text-muted d-block small mt-1">Services premium</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="dropdown-header">Médias & Contenu</h5>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-tv me-2"></i>GO Web TV
+                                            <span class="text-muted d-block small mt-1">Chaîne vidéo en ligne</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-camera me-2"></i>GO Photos
+                                            <span class="text-muted d-block small mt-1">Banque d'images exclusive</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-newspaper me-2"></i>GO Actualités
+                                            <span class="text-muted d-block small mt-1">Nouvelles locales et régionales</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                            <i class="fas fa-book me-1"></i>Ressources
+                        </a>
+                        <div class="dropdown-menu full-width" aria-labelledby="resourcesDropdown">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h5 class="dropdown-header">Contenu Éducatif</h5>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-file-alt me-2"></i>Blog
+                                            <span class="text-muted d-block small mt-1">Articles et conseils</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-newspaper me-2"></i>Actualités
+                                            <span class="text-muted d-block small mt-1">Nouvelles du Québec</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-graduation-cap me-2"></i>Guides
+                                            <span class="text-muted d-block small mt-1">Guides touristiques</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h5 class="dropdown-header">Événements</h5>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-calendar-alt me-2"></i>Calendrier
+                                            <span class="text-muted d-block small mt-1">Événements à venir</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-ticket-alt me-2"></i>Billeterie
+                                            <span class="text-muted d-block small mt-1">Achetez vos billets</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-bullhorn me-2"></i>Promotions
+                                            <span class="text-muted d-block small mt-1">Offres spéciales</span>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h5 class="dropdown-header">Support</h5>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-question-circle me-2"></i>Aide & FAQ
+                                            <span class="text-muted d-block small mt-1">Questions fréquentes</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-headset me-2"></i>Support Client
+                                            <span class="text-muted d-block small mt-1">Assistance 24/7</span>
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-download me-2"></i>Téléchargements
+                                            <span class="text-muted d-block small mt-1">Ressources gratuites</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </li>
                 </ul>
                 
@@ -1208,7 +1331,7 @@
         
         <h3 class="section-title mb-4">Explorez les Régions du Canada</h3>
         
-        <div class="region-grid" id="regionGrid">
+        <div class="region-grid-full" id="regionGrid">
             <!-- Les cartes régions seront ajoutées par JavaScript -->
         </div>
         
@@ -1220,47 +1343,60 @@
         </div>
     </div>
 
-    <!-- Search Bar -->
-    <div class="search-container">
-        <div class="container">
-            <div class="search-box">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Recherchez une destination, une entreprise ou une activité...">
-                    <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search"></i> Rechercher
-                    </button>
+    <!-- Video Slider Full Width -->
+    <section class="video-slider-section" id="home">
+        <div class="video-slider-container">
+            <!-- Slide 1: Vidéo YouTube -->
+            <div class="video-slide active">
+                <iframe src="https://www.youtube.com/embed/VKWE89nmIWs?autoplay=1&mute=1&loop=1&playlist=VKWE89nmIWs" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            
+            <!-- Slide 2: Image -->
+            <div class="video-slide">
+                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Montagnes canadiennes">
+            </div>
+            
+            <!-- Slide 3: Image -->
+            <div class="video-slide">
+                <img src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Paysage hivernal">
+            </div>
+            
+            <!-- Slide 4: Image -->
+            <div class="video-slide">
+                <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Ville de Québec">
+            </div>
+            
+            <!-- Slide 5: Image -->
+            <div class="video-slide">
+                <img src="https://images.unsplash.com/photo-1596394516093-9baa8e6c2b5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Lac canadien">
+            </div>
+        </div>
+        
+        <div class="slider-content">
+            <div class="slider-text">
+                <h1 class="slider-title">Créez votre présence digitale avec Go Exploria Business</h1>
+                <p class="slider-subtitle">Notre plateforme tout-en-un vous permet de créer, gérer et optimiser votre site web avec des outils puissants d'analyse, SEO, messagerie et IA intégrée.</p>
+                <div class="hero-buttons">
+                    <a href="#editor" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play-circle me-2"></i>Essayer la démo
+                    </a>
+                    <a href="#features" class="btn btn-outline-light btn-lg ms-2">
+                        <i class="fas fa-list-alt me-2"></i>Voir les fonctionnalités
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Section Hero pour création digitale -->
-    <section class="modern-hero" id="home">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <div class="hero-content animate-fade-in-up">
-                        <h1 class="hero-title">Créez votre présence digitale avec Go Exploria Business</h1>
-                        <p class="hero-subtitle">Notre plateforme tout-en-un vous permet de créer, gérer et optimiser votre site web avec des outils puissants d'analyse, SEO, messagerie et IA intégrée.</p>
-                        <div class="hero-buttons">
-                            <a href="#editor" class="hero-btn hero-btn-primary btn-modern">
-                                <i class="fas fa-play-circle me-2"></i>Essayer la démo
-                            </a>
-                            <a href="#features" class="hero-btn hero-btn-secondary btn-modern">
-                                <i class="fas fa-list-alt me-2"></i>Voir les fonctionnalités
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="hero-image">
-                        <img src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80" alt="Création de site web moderne" class="animate-float">
-                    </div>
-                </div>
-            </div>
+        
+        <div class="slider-controls">
+            <div class="slider-dot active" data-slide="0"></div>
+            <div class="slider-dot" data-slide="1"></div>
+            <div class="slider-dot" data-slide="2"></div>
+            <div class="slider-dot" data-slide="3"></div>
+            <div class="slider-dot" data-slide="4"></div>
         </div>
     </section>
 
+    <!-- Les autres sections restent identiques -->
     <!-- Section Éditeur de Site Web -->
     <section class="editor-section" id="editor">
         <div class="container">
@@ -1336,7 +1472,7 @@
                             </div>
                         </div>
                         
-                        <a href="#contact" class="hero-btn hero-btn-primary btn-modern">
+                        <a href="#contact" class="btn btn-primary btn-lg">
                             <i class="fas fa-magic me-2"></i>Créer mon site maintenant
                         </a>
                     </div>
@@ -1451,48 +1587,6 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Swiper pour les captures d'écran -->
-            <div class="mt-5">
-                <h3 class="text-center mb-4" style="color: var(--primary-color);">Sites créés avec notre plateforme</h3>
-                <div class="swiper mySwiper">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1036&q=80" alt="Site web restaurant" />
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1015&q=80" alt="Site web entreprise" />
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Site web e-commerce" />
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Site web portfolio" />
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Site web agence" />
-                        </div>
-                    </div>
-                    <div class="swiper-pagination"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section Vidéo -->
-    <section class="video-section" id="video">
-        <div class="container">
-            <h2 class="section-title text-center mb-5" style="color: white;">Démonstration en Vidéo</h2>
-            
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <div class="video-container">
-                        <div class="ratio ratio-16x9">
-                            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -1528,170 +1622,12 @@
         </div>
     </section>
 
-    <!-- Categories Section (existante) -->
-    <section class="categories-section">
-        <div class="container">
-            <h2 class="section-title">Explorez par catégories</h2>
-            
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="category-card">
-                        <div class="category-img" style="background-image: url('https://www.goexploria.com/uploads/galleries/336/voyage-quebec-canada.jpg');"></div>
-                        <div class="category-content">
-                            <h3 class="category-title">Activités hivernales</h3>
-                            <p>Découvrez les meilleures activités pour profiter de l'hiver québécois</p>
-                            <a href="#" class="category-link">Explorer <i class="fas fa-arrow-right ms-1"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <div class="category-card">
-                        <div class="category-img" style="background-image: url('https://www.goexploria.com/uploads/galleries/336/go-exploria-baie-st-paul.jpg');"></div>
-                        <div class="category-content">
-                            <h3 class="category-title">Agrotourisme et terroir</h3>
-                            <p>Dégustez les produits locaux et visitez nos fermes et vignobles</p>
-                            <a href="#" class="category-link">Explorer <i class="fas fa-arrow-right ms-1"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <div class="category-card">
-                        <div class="category-img" style="background-image: url('https://www.goexploria.com/uploads/galleries/336/restaurant-la-promenade-go-exploria.jpg');"></div>
-                        <div class="category-content">
-                            <h3 class="category-title">Restaurants et alimentation</h3>
-                            <p>Découvrez les meilleures tables et produits du Québec</p>
-                            <a href="#" class="category-link">Explorer <i class="fas fa-arrow-right ms-1"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <div class="category-card">
-                        <div class="category-img" style="background-image: url('https://www.goexploria.com/uploads/galleries/336/galerie-d-art-charlevoix-qc.jpg');"></div>
-                        <div class="category-content">
-                            <h3 class="category-title">Art et culture</h3>
-                            <p>Explorez la riche scène culturelle et artistique du Québec</p>
-                            <a href="#" class="category-link">Explorer <i class="fas fa-arrow-right ms-1"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Companies (existante) -->
-    <section class="featured-section">
-        <div class="container">
-            <h2 class="section-title">Établissements en vedette</h2>
-            
-            <div class="row">
-                <div class="col-lg-8">
-                    <ul class="company-list">
-                        <li>
-                            <a href="https://www.goexploria.com/company/147257/poissonnerie-unipeche-mdm">Poissonnerie Unipêche MDM</a>
-                            <span class="activity"> - Boutiques du terroir</span>
-                        </li>
-                        <li>
-                            <a href="https://www.goexploria.com/company/147256/yourtes-et-cabanes-chez-chalets-lanaudiere">Yourtes et Cabanes chez Chalets Lanaudière</a>
-                            <span class="activity"> - Traîneau à chiens</span>
-                        </li>
-                        <li>
-                            <a href="https://www.goexploria.com/company/147255/restaurant-tonino-quebec">Restaurant Tonino Québec</a>
-                            <span class="activity"> - Italiens</span>
-                        </li>
-                        <li>
-                            <a href="https://www.goexploria.com/company/147254/chalets-a-louer-la-malbaie-grand-fonds">CHALETS A LOUER La Malbaie Grand-Fonds</a>
-                            <span class="activity"> - Location motoneige</span>
-                        </li>
-                        <li>
-                            <a href="https://www.goexploria.com/company/147253/chalet-des-grands-duc">CHALET DES GRANDS DUC</a>
-                            <span class="activity"> - Traîneau à chiens</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="col-lg-4">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary">Besoin d'aide ?</h5>
-                            <p class="card-text">Contactez-nous pour planifier votre prochaine aventure ou pour ajouter votre entreprise sur GoExploria.</p>
-                            <a href="tel:4185257748" class="btn btn-primary w-100 mb-2">
-                                <i class="fas fa-phone me-2"></i> (418) 525-7748
-                            </a>
-                            <a href="mailto:infogoexploria@gmail.com" class="btn btn-secondary w-100">
-                                <i class="fas fa-envelope me-2"></i> Nous écrire
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery Section (existante) -->
-    <section class="gallery-section">
-        <div class="container">
-            <h2 class="section-title">Galeries en vedette</h2>
-            
-            <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <div class="media-card">
-                        <img src="https://www.goexploria.com/uploads/galleries/710/location-motoneige-grand-fonds.jpg" alt="Location de motoneige" class="media-img">
-                        <div class="media-content">
-                            <h3 class="media-title">Location-de-motoneige-quebec</h3>
-                            <p class="media-description">LOCATION DE MOTONEIGE-MONT-STE-ANNE</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="media-card">
-                        <img src="https://www.goexploria.com/uploads/galleries/2668/boulangerie-charlevoix.jpg" alt="Boulangerie Bouchard" class="media-img">
-                        <div class="media-content">
-                            <h3 class="media-title">Boulangerie Bouchard</h3>
-                            <p class="media-description">Boulangerie Bouchard - L'Isle-aux-Coudres</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="media-card">
-                        <img src="https://www.goexploria.com/uploads/galleries/2645/kit-chalet-bois-rond.jpg" alt="Kit chalet bois rond" class="media-img">
-                        <div class="media-content">
-                            <h3 class="media-title">KIT Chalet bois rond</h3>
-                            <p class="media-description">Construisez votre propre chalet en bois rond</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Welcome Section (existante) -->
-    <section class="welcome-section">
-        <div class="container">
-            <div class="welcome-content">
-                <h1 class="text-center mb-4">Bienvenue sur GO EXPLORIA BUSINESS</h1>
-                <p>C'est votre plateforme de création digitale pour le monde des affaires au Québec.</p>
-                <p>Notre objectif est de vous aider à créer votre présence en ligne avec des outils puissants et faciles à utiliser.</p>
-                <p>Merci de nous faire confiance pour vos projets web et digitaux.</p>
-                <p class="text-center"><strong>Profitez du Québec, il est grand, il est beau et rempli d'opportunités digitales</strong></p>
-                <div class="text-center mt-4">
-                    <img src="https://www.goexploria.com/images/logo-go-exploria-qc-3.png" alt="GoExploria" style="max-width: 300px;">
-                </div>
-                <h3 class="text-center mt-4" style="color: var(--primary-color);">La Force Numérique au Québec</h3>
-            </div>
-        </div>
-    </section>
-
     <!-- Footer -->
-    <footer class="main-footer">
+    <footer class="main-footer" style="background-color: var(--dark-color); color: white; padding: 80px 0 30px;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 mb-4">
-                    <img src="https://www.goexploria.com/images/logo-go-exploria-qc-3.png" alt="GoExploria" class="footer-logo">
+                    <img src="https://www.goexploria.com/images/logo-go-exploria-qc-3.png" alt="GoExploria" style="height: 70px; margin-bottom: 25px;">
                     <p>Votre guide touristique et d'affaires pour le Québec. Découvrez, explorez, vivez le Québec comme jamais auparavant.</p>
                     <div class="social-icons mt-3">
                         <a href="https://www.youtube.com/user/explorezlemonde/videos?view_as=subscriber" target="_blank">
@@ -1701,390 +1637,868 @@
                 </div>
                 
                 <div class="col-lg-4 mb-4">
-                    <h4 class="footer-title">Liens rapides</h4>
-                    <ul class="footer-links">
-                        <li><a href="#home">Accueil Digital</a></li>
-                        <li><a href="#editor">Éditeur de site</a></li>
-                        <li><a href="#features">Fonctionnalités</a></li>
-                        <li><a href="#clients">Nos clients</a></li>
-                        <li><a href="#video">Démonstration</a></li>
-                        <li><a href="#regions" class="mega-menu-trigger">Régions Canada</a></li>
+                    <h4 style="color: white; font-size: 1.3rem; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid var(--accent-color); display: inline-block;">Liens rapides</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 12px;"><a href="#home" style="color: #ddd; text-decoration: none; transition: var(--transition);">Accueil Digital</a></li>
+                        <li style="margin-bottom: 12px;"><a href="#editor" style="color: #ddd; text-decoration: none; transition: var(--transition);">Éditeur de site</a></li>
+                        <li style="margin-bottom: 12px;"><a href="#features" style="color: #ddd; text-decoration: none; transition: var(--transition);">Fonctionnalités</a></li>
+                        <li style="margin-bottom: 12px;"><a href="#clients" style="color: #ddd; text-decoration: none; transition: var(--transition);">Nos clients</a></li>
+                        <li style="margin-bottom: 12px;"><a href="#regions" class="mega-menu-trigger" style="color: #ddd; text-decoration: none; transition: var(--transition);">Régions Canada</a></li>
                     </ul>
                 </div>
                 
                 <div class="col-lg-4 mb-4">
-                    <h4 class="footer-title">Contactez-nous</h4>
-                    <ul class="footer-links">
-                        <li><i class="fas fa-phone me-2"></i> (418) 525-7748</li>
-                        <li><i class="fas fa-envelope me-2"></i> infogoexploria@gmail.com</li>
-                        <li><i class="fas fa-map-marker-alt me-2"></i> Québec, Canada</li>
+                    <h4 style="color: white; font-size: 1.3rem; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid var(--accent-color); display: inline-block;">Contactez-nous</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 12px;"><i class="fas fa-phone me-2"></i> (418) 525-7748</li>
+                        <li style="margin-bottom: 12px;"><i class="fas fa-envelope me-2"></i> infogoexploria@gmail.com</li>
+                        <li style="margin-bottom: 12px;"><i class="fas fa-map-marker-alt me-2"></i> Québec, Canada</li>
                     </ul>
                     <div class="mt-4">
                         <a href="https://www.goexploria.com/company/68620/go-exploria-plans-de-relance" class="btn btn-outline-light me-2">Plans de relance</a>
-                        <a href="https://www.goexploria.com/company/68619/go-exploria-services-web" class="btn btn-accent">Services web</a>
+                        <a href="https://www.goexploria.com/company/68619/go-exploria-services-web" class="btn btn-accent" style="background-color: var(--accent-color); border-color: var(--accent-color); color: white;">Services web</a>
                     </div>
                 </div>
             </div>
             
-            <div class="copyright">
-                <p>&copy; 2023 GoExploria. Tous droits réservés. | <a href="#" class="text-white">Politique de confidentialité</a> | <a href="#" class="text-white">Conditions d'utilisation</a></p>
+            <div class="copyright" style="text-align: center; padding-top: 40px; margin-top: 40px; border-top: 1px solid #444; color: #aaa; font-size: 0.95rem;">
+                <p>&copy; 2023 GoExploria. Tous droits réservés. | <a href="#" style="color: white;">Politique de confidentialité</a> | <a href="#" style="color: white;">Conditions d'utilisation</a></p>
             </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Swiper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     
     <script>
-        // Données pour les régions
-        const canadianRegions = [
-            {
-                id: 1,
-                title: "Québec",
-                description: "Province francophone avec une riche culture et histoire",
-                image: "https://images.unsplash.com/photo-1605058015762-7627e9b4b8c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-                link: "#",
-                capital: "Québec",
-                population: "8,5 millions"
-            },
-            {
-                id: 2,
-                title: "Ontario",
-                description: "Province la plus peuplée avec Toronto comme capitale économique",
-                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-                link: "#",
-                capital: "Toronto",
-                population: "14,8 millions"
-            },
-            {
-                id: 3,
-                title: "Colombie-Britannique",
-                description: "Province côtière avec des montagnes spectaculaires",
-                image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-                link: "#",
-                capital: "Victoria",
-                population: "5,2 millions"
-            },
-            {
-                id: 4,
-                title: "Alberta",
-                description: "Province des Rocheuses et de l'industrie pétrolière",
-                image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-                link: "#",
-                capital: "Edmonton",
-                population: "4,4 millions"
-            },
-            {
-                id: 5,
-                title: "Manitoba",
-                description: "Province des prairies avec de nombreux lacs",
-                image: "https://images.unsplash.com/photo-1582436416930-f5d21b5e1f2e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-                link: "#",
-                capital: "Winnipeg",
-                population: "1,4 million"
-            },
-            {
-                id: 6,
-                title: "Saskatchewan",
-                description: "Province des grandes plaines et de l'agriculture",
-                image: "https://images.unsplash.com/photo-1528181304800-259b08848526?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-                link: "#",
-                capital: "Regina",
-                population: "1,2 million"
-            },
-            {
-                id: 7,
-                title: "Nouvelle-Écosse",
-                description: "Province maritime avec une riche histoire acadienne",
-                image: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-                link: "#",
-                capital: "Halifax",
-                population: "1 million"
-            },
-            {
-                id: 8,
-                title: "Nouveau-Brunswick",
-                description: "Seule province officiellement bilingue du Canada",
-                image: "https://images.unsplash.com/photo-1541692641319-981cc79ee10a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-                link: "#",
-                capital: "Fredericton",
-                population: "800 000"
-            }
-        ];
+    // Variables globales
+    let currentSlide = 0;
+    let slideInterval;
 
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialiser le mega menu
-            initMegaMenu();
-            
-            // Initialiser Swiper
-            initSwiper();
-            
-            // Initialiser les animations de défilement
-            initScrollAnimations();
-            
-            // Initialiser les compteurs animés
-            initCounters();
-            
-            // Initialiser la navigation
-            initNavigation();
-            
-            // Mettre à jour les informations en temps réel
-            updateLiveInfo();
+    // Initialisation complète
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialiser le mega menu
+        initMegaMenu();
+        
+        // Initialiser le sélecteur de langue
+        initLanguageSelector();
+        
+        // Initialiser le slider vidéo
+        initVideoSlider();
+        
+        // Initialiser les animations de défilement
+        initScrollAnimations();
+        
+        // Initialiser les compteurs animés
+        initCounters();
+        
+        // Initialiser la navigation
+        initNavigation();
+        
+        // Mettre à jour les informations en temps réel
+        updateLiveInfo();
+        
+        // Configurer les dropdowns Bootstrap avec AJAX
+        initBootstrapDropdowns();
+
+        // Centrer les dropdowns
+        centerAndFixDropdowns();
+        
+        // Précharger les destinations sur desktop
+        if (window.innerWidth > 992) {
+            setTimeout(() => {
+                loadDestinationsFromAPI();
+            }, 1000);
+        }
+    });
+    
+    // Initialiser les dropdowns Bootstrap avec AJAX
+    function initBootstrapDropdowns() {
+        const dropdowns = document.querySelectorAll('.dropdown');
+        
+        dropdowns.forEach(dropdown => {
+            // Pour desktop, ouvrir au hover
+            if (window.innerWidth > 992) {
+                dropdown.addEventListener('mouseenter', function() {
+                    const dropdownMenu = this.querySelector('.dropdown-menu');
+                    if (dropdownMenu) {
+                        dropdownMenu.classList.add('show');
+                        centerAndFixDropdowns();
+                        
+                        // Charger les régions si c'est le dropdown "Explorer Région"
+                        if (this.querySelector('#explorerDropdown')) {
+                            loadDestinationsFromAPI();
+                        }
+                    }
+                });
+                
+                dropdown.addEventListener('mouseleave', function() {
+                    const dropdownMenu = this.querySelector('.dropdown-menu');
+                    if (dropdownMenu) {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+            }
         });
         
-        // Initialiser le mega menu
-        function initMegaMenu() {
-            const megaDropdown = document.getElementById('megaDropdown');
-            const megaMenuTrigger = document.querySelector('.mega-menu-trigger');
-            const closeMegaMenu = document.getElementById('closeMegaMenu');
-            const regionGrid = document.getElementById('regionGrid');
-            const regionColumns = document.getElementById('regionColumns');
+        // Écouter les événements de Bootstrap pour mobile
+        document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+            toggle.addEventListener('show.bs.dropdown', function(e) {
+                // Charger les régions si c'est le dropdown "Explorer Région"
+                if (this.id === 'explorerDropdown') {
+                    loadDestinationsFromAPI();
+                }
+            });
+        });
+    }
+
+    // Charger les destinations depuis l'API
+    function loadDestinationsFromAPI() {
+        const container = document.getElementById('regionsDropdownContainer');
+        
+        // Vérifier si les données sont déjà chargées
+        if (container.getAttribute('data-loaded') === 'true') {
+            return;
+        }
+        
+        // Afficher le loader
+        container.innerHTML = `
+            <div class="col-12 text-center py-3">
+                <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+                <span class="ms-2 small text-muted">Chargement des régions...</span>
+            </div>
+        `;
+        
+        // URL de l'API Laravel (à adapter)
+        const apiUrl = '/api/destinations';
+        
+        // Options de la requête
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin'
+        };
+        
+        // Ajouter le token CSRF
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (csrfToken) {
+            options.headers['X-CSRF-TOKEN'] = csrfToken;
+        }
+        
+        // Timeout de 5 secondes
+        const timeout = 5000;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeout);
+        options.signal = controller.signal;
+        
+        // Exécuter la requête
+        fetch(apiUrl, options)
+        .then(response => {
+            clearTimeout(timeoutId);
             
-            // Remplir les cartes de région
-            canadianRegions.forEach(region => {
-                const regionCard = document.createElement('div');
-                regionCard.className = 'region-card';
-                regionCard.innerHTML = `
-                    <img src="${region.image}" alt="${region.title}" class="region-card-img">
-                    <div class="region-card-content">
-                        <h3 class="region-card-title">${region.title}</h3>
-                        <p class="region-card-desc">${region.description}</p>
-                        <div class="d-flex justify-content-between mt-3">
-                            <small><i class="fas fa-landmark me-1"></i> ${region.capital}</small>
-                            <small><i class="fas fa-users me-1"></i> ${region.population}</small>
+            if (!response.ok) {
+                throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const formattedData = formatDestinationsData(data);
+            renderDestinationsDropdown(formattedData, container);
+            container.setAttribute('data-loaded', 'true');
+            container.classList.add('loaded');
+            
+            // Réinitialiser après 5 minutes
+            setTimeout(() => {
+                container.setAttribute('data-loaded', 'false');
+            }, 300000);
+        })
+        .catch(error => {
+            clearTimeout(timeoutId);
+            console.error('Erreur AJAX:', error);
+            
+            if (error.name === 'AbortError') {
+                showErrorMessage(container, 'Le chargement a pris trop de temps');
+            } else {
+                showErrorMessage(container, 'Impossible de charger les régions');
+            }
+        });
+    }
+
+    // Formater les données de l'API
+    function formatDestinationsData(data) {
+        // Si les données sont déjà dans le bon format
+        if (Array.isArray(data)) {
+            return data.map(item => ({
+                id: item.id || Math.random(),
+                name: item.name || item.title || 'Région',
+                image: item.image || item.image_url || getRandomDefaultImage(),
+                link: item.link || '#'
+            }));
+        }
+        
+        // Si les données ont une propriété 'data'
+        if (data.data && Array.isArray(data.data)) {
+            return formatDestinationsData(data.data);
+        }
+        
+        // Si les données ont une propriété 'destinations'
+        if (data.destinations && Array.isArray(data.destinations)) {
+            return formatDestinationsData(data.destinations);
+        }
+        
+        // Retourner des données par défaut
+        return getDefaultDestinations();
+    }
+
+    // Obtenir une image par défaut aléatoire
+    function getRandomDefaultImage() {
+        const defaultImages = [
+            'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80',
+            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80',
+            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80',
+            'https://images.unsplash.com/photo-1605058015762-7627e9b4b8c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80',
+            'https://images.unsplash.com/photo-1582436416930-f5d21b5e1f2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80'
+        ];
+        return defaultImages[Math.floor(Math.random() * defaultImages.length)];
+    }
+
+    // Données par défaut
+    function getDefaultDestinations() {
+        return [
+            { id: 1, name: "Québec", image: "https://images.unsplash.com/photo-1605058015762-7627e9b4b8c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 2, name: "Ontario", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 3, name: "Colombie-Britannique", image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 4, name: "Alberta", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 5, name: "Manitoba", image: "https://images.unsplash.com/photo-1582436416930-f5d21b5e1f2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 6, name: "Saskatchewan", image: "https://images.unsplash.com/photo-1528181304800-259b08848526?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 7, name: "Nouvelle-Écosse", image: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 8, name: "Nouveau-Brunswick", image: "https://images.unsplash.com/photo-1541692641319-981cc79ee10a?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 9, name: "Terre-Neuve", image: "https://images.unsplash.com/photo-1512476446317-8e4296b3d1f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 10, name: "Île-du-Prince-Édouard", image: "https://images.unsplash.com/photo-1529461174355-fd1f3f32d0b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 11, name: "Yukon", image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 12, name: "Territoires du Nord-Ouest", image: "https://images.unsplash.com/photo-1534083220759-4c66c2bf7498?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 13, name: "Nunavut", image: "https://images.unsplash.com/photo-1534270804882-6b5048b1c1fc?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 14, name: "Montréal", image: "https://images.unsplash.com/photo-1514715526270-5c7a5c9d35e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
+            { id: 15, name: "Vancouver", image: "https://images.unsplash.com/photo-1559501268-51b7d3e6b998?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" }
+        ];
+    }
+
+    // Afficher les destinations dans le dropdown (5 colonnes)
+    function renderDestinationsDropdown(destinations, container) {
+        if (!destinations || destinations.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center py-4">
+                    <i class="fas fa-map-marked-alt fa-3x text-muted mb-3 opacity-50"></i>
+                    <p class="text-muted small mb-0">Aucune région disponible</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Calculer la répartition en 5 colonnes
+        const totalDestinations = destinations.length;
+        const destinationsPerColumn = Math.ceil(totalDestinations / 5);
+        
+        let html = '';
+        
+        // Créer 5 colonnes
+        for (let colIndex = 0; colIndex < 5; colIndex++) {
+            html += `<div class="col-md-2-4">`; // 20% de largeur (100/5=20)
+            
+            // Calculer les indices pour cette colonne
+            const startIndex = colIndex * destinationsPerColumn;
+            const endIndex = Math.min(startIndex + destinationsPerColumn, totalDestinations);
+            
+            // Ajouter les destinations pour cette colonne
+            for (let i = startIndex; i < endIndex; i++) {
+                const destination = destinations[i];
+                
+                html += `
+                    <a href="${destination.link}" class="region-item-simple" data-id="${destination.id}">
+                        <div class="region-card-simple">
+                            <div class="region-img-wrapper">
+                                <img src="${destination.image}" 
+                                     alt="${destination.name}" 
+                                     class="region-img-simple"
+                                     loading="lazy"
+                                     onerror="this.onerror=null; this.src='${getRandomDefaultImage()}'">
+                            </div>
+                            <div class="region-name">${destination.name}</div>
                         </div>
-                    </div>
+                    </a>
                 `;
-                
-                regionCard.addEventListener('click', function() {
-                    console.log(`Navigation vers: ${region.title}`);
-                    // Fermer le mega menu après sélection
-                    megaDropdown.classList.remove('active');
-                    megaMenuTrigger.classList.remove('active');
-                    // Ici, vous pouvez rediriger vers la page de la région
-                    // window.location.href = region.link;
-                });
-                
-                regionGrid.appendChild(regionCard);
+            }
+            
+            html += `</div>`;
+        }
+        
+        // Bouton "Voir toutes les régions"
+        html += `
+            <div class="col-12 mt-3 pt-3 border-top">
+                <div class="text-center">
+                    <a href="/destinations" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-list me-1"></i>
+                        Voir toutes les régions (${totalDestinations})
+                    </a>
+                    <button class="btn btn-link btn-sm text-muted ms-2" onclick="refreshDestinations()" title="Actualiser">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Animation d'apparition
+        container.style.opacity = '0';
+        container.innerHTML = html;
+        
+        // Appliquer l'animation
+        setTimeout(() => {
+            container.style.opacity = '1';
+            initSimpleRegionHover();
+            applyStaggerAnimation();
+        }, 10);
+    }
+
+    // Appliquer l'animation en cascade
+    function applyStaggerAnimation() {
+        const items = document.querySelectorAll('.region-item-simple');
+        items.forEach((item, index) => {
+            item.style.setProperty('--item-index', index);
+            item.style.animationDelay = `${index * 0.05}s`;
+        });
+    }
+
+    // Initialiser les effets de hover
+    function initSimpleRegionHover() {
+        const regionItems = document.querySelectorAll('.region-item-simple');
+        
+        regionItems.forEach(item => {
+            // Effet au survol
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+                this.querySelector('.region-card-simple').style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                this.querySelector('.region-img-simple').style.transform = 'scale(1.05)';
             });
             
-            // Remplir la liste complète des régions
-            canadianRegions.forEach(region => {
-                const regionItem = document.createElement('div');
-                regionItem.className = 'region-list-item';
-                regionItem.innerHTML = `
-                    <i class="fas fa-map-marker-alt me-2" style="color: var(--secondary-color);"></i>
-                    ${region.title}
-                `;
-                
-                regionItem.addEventListener('click', function() {
-                    console.log(`Sélection de la région: ${region.title}`);
-                    megaDropdown.classList.remove('active');
-                    megaMenuTrigger.classList.remove('active');
-                });
-                
-                regionColumns.appendChild(regionItem);
+            // Effet quand la souris quitte
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.querySelector('.region-card-simple').style.boxShadow = '';
+                this.querySelector('.region-img-simple').style.transform = '';
             });
             
-            // Ouvrir le mega menu
-            megaMenuTrigger.addEventListener('click', function(e) {
-                e.preventDefault();
-                megaDropdown.classList.toggle('active');
-                this.classList.toggle('active');
+            // Animation au clic
+            item.addEventListener('click', function(e) {
+                const id = this.getAttribute('data-id');
+                const name = this.querySelector('.region-name').textContent;
+                
+                // Animation de clic
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+                
+                console.log(`Navigation vers: ${name} (ID: ${id})`);
             });
+        });
+    }
+
+    // Rafraîchir les destinations
+    function refreshDestinations() {
+        const container = document.getElementById('regionsDropdownContainer');
+        container.setAttribute('data-loaded', 'false');
+        container.classList.remove('loaded');
+        loadDestinationsFromAPI();
+    }
+
+    // Afficher un message d'erreur
+    function showErrorMessage(container, message) {
+        container.innerHTML = `
+            <div class="col-12 text-center py-4">
+                <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
+                <p class="small text-muted mb-3">${message}</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-primary btn-sm" onclick="refreshDestinations()">
+                        <i class="fas fa-redo me-1"></i> Réessayer
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="useDefaultData()">
+                        <i class="fas fa-eye me-1"></i> Exemples
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    // Utiliser les données par défaut
+    function useDefaultData() {
+        const container = document.getElementById('regionsDropdownContainer');
+        const defaultData = getDefaultDestinations();
+        renderDestinationsDropdown(defaultData, container);
+        container.setAttribute('data-loaded', 'true');
+    }
+
+    // Fonction pour centrer les dropdowns
+    function centerAndFixDropdowns() {
+        const dropdowns = document.querySelectorAll('.dropdown-menu.full-width');
+        
+        dropdowns.forEach(dropdown => {
+            if (dropdown.classList.contains('show') && window.innerWidth > 992) {
+                // Centrer le dropdown
+                dropdown.style.left = '50%';
+                dropdown.style.transform = 'translateX(-50%)';
+                dropdown.style.width = '100vw';
+                dropdown.style.maxWidth = '100vw';
+                dropdown.style.padding = '20px';
+                
+                // Vérifier et corriger le débordement
+                const rect = dropdown.getBoundingClientRect();
+                const windowWidth = window.innerWidth;
+                
+                // Débordement à droite
+                if (rect.right > windowWidth) {
+                    const overflow = rect.right - windowWidth;
+                    dropdown.style.left = `calc(50% - ${overflow}px)`;
+                }
+                
+                // Débordement à gauche
+                if (rect.left < 0) {
+                    const overflow = Math.abs(rect.left);
+                    dropdown.style.left = `calc(50% + ${overflow}px)`;
+                }
+                
+                // Limiter la hauteur
+                dropdown.style.maxHeight = '70vh';
+                dropdown.style.overflowY = 'auto';
+                dropdown.style.boxShadow = '0 10px 40px rgba(0,0,0,0.15)';
+            }
+        });
+    }
+
+    // Initialiser le mega menu
+    function initMegaMenu() {
+        const megaDropdown = document.getElementById('megaDropdown');
+        const megaMenuTrigger = document.querySelector('.mega-menu-trigger');
+        const closeMegaMenu = document.getElementById('closeMegaMenu');
+        const regionGrid = document.getElementById('regionGrid');
+        const regionColumns = document.getElementById('regionColumns');
+        
+        // Remplir les cartes de région
+        getDefaultDestinations().forEach(region => {
+            const regionCard = document.createElement('div');
+            regionCard.className = 'region-card-large';
+            regionCard.innerHTML = `
+                <img src="${region.image}" alt="${region.name}" class="region-card-img-large">
+                <div class="region-card-overlay">
+                    <h3 class="region-card-title-large">${region.name}</h3>
+                </div>
+            `;
             
-            // Fermer le mega menu
-            closeMegaMenu.addEventListener('click', function() {
+            regionCard.addEventListener('click', function() {
+                console.log(`Navigation vers: ${region.name}`);
                 megaDropdown.classList.remove('active');
                 megaMenuTrigger.classList.remove('active');
             });
             
-            // Fermer le mega menu en cliquant à l'extérieur
-            document.addEventListener('click', function(e) {
-                if (!megaDropdown.contains(e.target) && !megaMenuTrigger.contains(e.target)) {
-                    megaDropdown.classList.remove('active');
-                    megaMenuTrigger.classList.remove('active');
-                }
-            });
-        }
+            regionGrid.appendChild(regionCard);
+        });
         
-        // Initialiser Swiper
-        function initSwiper() {
-            const swiper = new Swiper(".mySwiper", {
-                effect: "coverflow",
-                grabCursor: true,
-                centeredSlides: true,
-                slidesPerView: "auto",
-                coverflowEffect: {
-                    rotate: 20,
-                    stretch: 0,
-                    depth: 200,
-                    modifier: 1,
-                    slideShadows: true,
-                },
-                loop: true,
-                autoplay: {
-                    delay: 3000,
-                    disableOnInteraction: false,
-                },
-                pagination: {
-                    el: ".swiper-pagination",
-                    clickable: true,
-                },
-                breakpoints: {
-                    640: {
-                        slidesPerView: 2,
-                    },
-                    768: {
-                        slidesPerView: 3,
-                    },
-                    1024: {
-                        slidesPerView: 4,
-                    },
-                },
+        // Remplir la liste des régions
+        getDefaultDestinations().forEach(region => {
+            const regionItem = document.createElement('div');
+            regionItem.className = 'region-list-item';
+            regionItem.innerHTML = `
+                <i class="fas fa-map-marker-alt me-2" style="color: var(--secondary-color);"></i>
+                ${region.name}
+            `;
+            
+            regionItem.addEventListener('click', function() {
+                console.log(`Sélection: ${region.name}`);
+                megaDropdown.classList.remove('active');
+                megaMenuTrigger.classList.remove('active');
             });
-        }
+            
+            regionColumns.appendChild(regionItem);
+        });
         
-        // Initialiser les animations de défilement
-        function initScrollAnimations() {
-            // Animation des éléments au défilement
-            const animateElements = document.querySelectorAll('.feature-card, .editor-preview, .hero-content, .category-card');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate-fade-in-up');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            animateElements.forEach(element => {
-                observer.observe(element);
-            });
-        }
+        // Ouvrir/fermer le mega menu
+        megaMenuTrigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            megaDropdown.classList.toggle('active');
+            this.classList.toggle('active');
+        });
         
-        // Initialiser les compteurs animés
-        function initCounters() {
-            const counters = document.querySelectorAll('.stat-number');
-            const speed = 200;
-            
-            const animateCounter = () => {
-                counters.forEach(counter => {
-                    const target = +counter.getAttribute('data-count');
-                    const count = +counter.innerText.replace(/,/g, '');
-                    const increment = target / speed;
-                    
-                    if (count < target) {
-                        counter.innerText = Math.ceil(count + increment).toLocaleString();
-                        setTimeout(animateCounter, 20);
-                    } else {
-                        counter.innerText = target.toLocaleString();
-                    }
-                });
-            };
-            
-            // Démarrer les compteurs quand la section est visible
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        animateCounter();
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.5 });
-            
-            // Observer la section statistiques
-            const statsSection = document.querySelector('.stats-section');
-            if (statsSection) {
-                observer.observe(statsSection);
+        closeMegaMenu.addEventListener('click', function() {
+            megaDropdown.classList.remove('active');
+            megaMenuTrigger.classList.remove('active');
+        });
+        
+        // Fermer en cliquant à l'extérieur
+        document.addEventListener('click', function(e) {
+            if (!megaDropdown.contains(e.target) && !megaMenuTrigger.contains(e.target)) {
+                megaDropdown.classList.remove('active');
+                megaMenuTrigger.classList.remove('active');
             }
-        }
+        });
+    }
+
+    // Initialiser le sélecteur de langue
+    function initLanguageSelector() {
+        const languageBtn = document.getElementById('languageBtn');
+        const languageDropdown = document.getElementById('languageDropdown');
+        const languageOptions = document.querySelectorAll('.language-option');
         
-        // Initialiser la navigation
-        function initNavigation() {
-            const navLinks = document.querySelectorAll('.nav-link');
-            
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    if (this.getAttribute('href').startsWith('#')) {
-                        e.preventDefault();
-                        
-                        // Retirer la classe active de tous les liens
-                        navLinks.forEach(item => item.classList.remove('active'));
-                        
-                        // Ajouter la classe active au lien cliqué
-                        this.classList.add('active');
-                        
-                        // Fermer le mega menu s'il est ouvert
-                        const megaDropdown = document.getElementById('megaDropdown');
-                        const megaMenuTrigger = document.querySelector('.mega-menu-trigger');
-                        megaDropdown.classList.remove('active');
-                        megaMenuTrigger.classList.remove('active');
-                        
-                        // Faire défiler jusqu'à la section
-                        const targetId = this.getAttribute('href');
-                        if (targetId !== '#') {
-                            const targetSection = document.querySelector(targetId);
-                            if (targetSection) {
-                                window.scrollTo({
-                                    top: targetSection.offsetTop - 100,
-                                    behavior: 'smooth'
-                                });
-                            }
-                        }
-                    }
-                });
+        languageBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('show');
+        });
+        
+        languageOptions.forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.preventDefault();
+                const lang = this.getAttribute('data-lang');
+                const flag = this.querySelector('img').src;
+                const text = this.querySelector('span').textContent;
+                
+                languageBtn.querySelector('img').src = flag;
+                languageBtn.querySelector('span').textContent = text.toUpperCase().substring(0, 2);
+                languageDropdown.classList.remove('show');
+                
+                console.log(`Langue changée: ${lang}`);
             });
+        });
+        
+        document.addEventListener('click', function() {
+            languageDropdown.classList.remove('show');
+        });
+        
+        languageDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+
+    // Initialiser le slider vidéo
+    function initVideoSlider() {
+        const slides = document.querySelectorAll('.video-slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
         }
         
-        // Mettre à jour les informations en temps réel
-        function updateLiveInfo() {
-            setInterval(() => {
-                // Mettre à jour la bourse
-                const stockElement = document.querySelector('.info-item:nth-child(1) .info-value');
-                if (stockElement) {
-                    const currentValue = parseFloat(stockElement.textContent.replace(',', ''));
-                    const change = (Math.random() - 0.5) * 100;
-                    const newValue = currentValue + change;
-                    stockElement.textContent = newValue.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                showSlide(index);
+                resetInterval();
+            });
+        });
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+        
+        function startInterval() {
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+        
+        function resetInterval() {
+            clearInterval(slideInterval);
+            startInterval();
+        }
+        
+        const sliderContainer = document.querySelector('.video-slider-container');
+        sliderContainer.addEventListener('mouseenter', () => {
+            clearInterval(slideInterval);
+        });
+        
+        sliderContainer.addEventListener('mouseleave', () => {
+            startInterval();
+        });
+        
+        startInterval();
+    }
+
+    // Initialiser les animations de défilement
+    function initScrollAnimations() {
+        const animateElements = document.querySelectorAll('.feature-card, .editor-preview, .category-card');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        animateElements.forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(30px)';
+            element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(element);
+        });
+    }
+
+    // Initialiser les compteurs animés
+    function initCounters() {
+        const counters = document.querySelectorAll('.stat-number');
+        const speed = 200;
+        
+        const animateCounter = () => {
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-count');
+                const count = +counter.innerText.replace(/,/g, '');
+                const increment = target / speed;
+                
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + increment).toLocaleString();
+                    setTimeout(animateCounter, 20);
+                } else {
+                    counter.innerText = target.toLocaleString();
+                }
+            });
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) {
+            observer.observe(statsSection);
+        }
+    }
+
+    // Initialiser la navigation
+    function initNavigation() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.getAttribute('href') && this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
                     
-                    // Mettre à jour la flèche
-                    const directionElement = stockElement.nextElementSibling;
-                    if (directionElement) {
-                        if (change > 0) {
-                            directionElement.textContent = '+' + change.toFixed(2) + '%';
-                            directionElement.className = 'info-up ms-1';
-                        } else {
-                            directionElement.textContent = change.toFixed(2) + '%';
-                            directionElement.className = 'info-down ms-1';
+                    const targetId = this.getAttribute('href');
+                    if (targetId !== '#') {
+                        const targetSection = document.querySelector(targetId);
+                        if (targetSection) {
+                            window.scrollTo({
+                                top: targetSection.offsetTop - 100,
+                                behavior: 'smooth'
+                            });
                         }
                     }
                 }
+            });
+        });
+    }
+
+    // Mettre à jour les informations en temps réel
+    function updateLiveInfo() {
+        setInterval(() => {
+            // Mettre à jour la bourse
+            const stockElement = document.querySelector('.info-item:nth-child(1) .info-value');
+            if (stockElement) {
+                const currentValue = parseFloat(stockElement.textContent.replace(',', ''));
+                const change = (Math.random() - 0.5) * 100;
+                const newValue = currentValue + change;
+                stockElement.textContent = newValue.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
                 
-                // Mettre à jour la température
-                const tempElement = document.querySelector('.info-item:nth-child(2) .info-value');
-                if (tempElement) {
-                    const currentTemp = parseFloat(tempElement.textContent);
-                    const change = (Math.random() - 0.5) * 2;
-                    const newTemp = currentTemp + change;
-                    tempElement.textContent = newTemp.toFixed(1) + '°C';
+                const directionElement = stockElement.nextElementSibling;
+                if (directionElement) {
+                    if (change > 0) {
+                        directionElement.textContent = '+' + change.toFixed(2) + '%';
+                        directionElement.className = 'info-up ms-1';
+                    } else {
+                        directionElement.textContent = change.toFixed(2) + '%';
+                        directionElement.className = 'info-down ms-1';
+                    }
                 }
-                
-                // Mettre à jour la disponibilité des bornes électriques
-                const chargerElement = document.querySelector('.info-item:nth-child(5) .info-value');
-                if (chargerElement) {
-                    const currentValue = parseFloat(chargerElement.textContent);
-                    const change = (Math.random() - 0.5) * 10;
-                    let newValue = currentValue + change;
-                    newValue = Math.max(0, Math.min(100, newValue));
-                    chargerElement.textContent = newValue.toFixed(0) + '% disponibles';
-                }
-            }, 10000); // Mettre à jour toutes les 10 secondes
+            }
+            
+            // Mettre à jour la température
+            const tempElement = document.querySelector('.info-item:nth-child(2) .info-value');
+            if (tempElement) {
+                const currentTemp = parseFloat(tempElement.textContent);
+                const change = (Math.random() - 0.5) * 2;
+                const newTemp = currentTemp + change;
+                tempElement.textContent = newTemp.toFixed(1) + '°C';
+            }
+        }, 10000);
+    }
+
+    // Gestionnaires d'événements pour les dropdowns
+    window.addEventListener('load', function() {
+        setTimeout(centerAndFixDropdowns, 100);
+    });
+    
+    window.addEventListener('resize', function() {
+        setTimeout(centerAndFixDropdowns, 50);
+    });
+    
+    document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+        toggle.addEventListener('show.bs.dropdown', function() {
+            setTimeout(centerAndFixDropdowns, 10);
+        });
+        
+        toggle.addEventListener('shown.bs.dropdown', function() {
+            setTimeout(centerAndFixDropdowns, 50);
+        });
+    });
+    
+    window.addEventListener('scroll', function() {
+        const openDropdowns = document.querySelectorAll('.dropdown-menu.show');
+        if (openDropdowns.length > 0) {
+            centerAndFixDropdowns();
         }
-    </script>
+    });
+    
+    // Debounce pour le redimensionnement
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            centerAndFixDropdowns();
+            initBootstrapDropdowns();
+        }, 150);
+    });
+    
+    // Initialisation finale
+    setTimeout(centerAndFixDropdowns, 200);
+</script>
+<style>
+    /* 5 colonnes - 20% chacune */
+    .col-md-2-4 {
+        width: 20%;
+        float: left;
+        padding: 0 8px;
+        box-sizing: border-box;
+    }
+    
+    /* Clearfix */
+    #regionsDropdownContainer::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    
+    /* Style minimaliste des cartes */
+    .region-card-simple {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 12px;
+        border: 1px solid #e9ecef;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    
+    .region-card-simple:hover {
+        border-color: #007bff;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .region-img-wrapper {
+        height: 80px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .region-img-simple {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .region-name {
+        padding: 10px 8px;
+        text-align: center;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .region-item-simple {
+        text-decoration: none;
+        display: block;
+        animation: fadeIn 0.3s ease forwards;
+        opacity: 0;
+    }
+    
+    /* Animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .col-md-2-4 { width: 25%; padding: 0 6px; }
+    }
+    
+    @media (max-width: 992px) {
+        .col-md-2-4 { width: 33.333%; padding: 0 5px; }
+        .region-img-wrapper { height: 70px; }
+    }
+    
+    @media (max-width: 768px) {
+        .col-md-2-4 { width: 50%; padding: 0 4px; }
+        .region-img-wrapper { height: 65px; }
+        .region-name { font-size: 0.8rem; padding: 8px 4px; }
+    }
+    
+    @media (max-width: 480px) {
+        .col-md-2-4 { width: 100%; padding: 0; }
+        .region-card-simple { 
+            display: flex; 
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .region-img-wrapper { 
+            width: 100px; 
+            height: 60px; 
+            flex-shrink: 0; 
+        }
+        .region-name { 
+            flex-grow: 1; 
+            border: none; 
+            text-align: left; 
+            padding-left: 12px;
+            background: white;
+        }
+    }
+    
+    /* Loader */
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+    }
+    
+    /* Dropdown centré */
+    .dropdown-menu.full-width {
+        min-width: 100vw !important;
+    }
+</style>
 </body>
 </html>
