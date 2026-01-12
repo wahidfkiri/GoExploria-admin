@@ -349,7 +349,7 @@
                                         <div class="col-12 text-center">
                                             <p class="mb-0">
                                                 <i class="fas fa-exclamation-circle me-2"></i>
-                                                Les promotions sont valables jusqu'au 31 décembre 2023. Une promotion par commande.
+                                                Les promotions sont valables jusqu'au 31 Janvier 2026. Une promotion par commande.
                                             </p>
                                         </div>
                                     </div>
@@ -1217,7 +1217,7 @@
             </div>
             
             <div class="copyright mt-5">
-                <p>&copy; 2023 Chez Jim Pizza. Tous droits réservés.</p>
+                <p>&copy; 2026 Chez Jim Pizza. Tous droits réservés.</p>
                 <p class="mt-2">Site créé à partir des données publiques de GoExploria.</p>
             </div>
         </div>
