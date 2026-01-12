@@ -7,6 +7,8 @@
         <style>
             {!! $template->css_content !!}
         </style>
+        {!! $template->assets_data !!}
+        {!! $template->assets_folder !!}
     </head>
     <body>
         {!! $template->html_content !!}

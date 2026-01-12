@@ -3,1386 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Go Exploria Business - Plateforme de Création Digitale</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Chez Jim Pizza | Meilleure pizza de la Côte de Beaupré</title>
+    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     
-    <style>
-        :root {
-            --primary-color: #1a5f7a;
-            --secondary-color: #57cc99;
-            --accent-color: #ff9a3c;
-            --dark-color: #2c3e50;
-            --light-color: #f8f9fa;
-            --text-color: #333;
-            --border-radius: 12px;
-            --box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            --transition: all 0.3s ease;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Open Sans', sans-serif;
-            color: var(--text-color);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-        }
-        
-        /* Header avec informations en temps réel */
-        .info-header {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 8px 0;
-            font-size: 0.85rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .info-items {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        
-        .info-item {
-            display: flex;
-            align-items: center;
-            margin-right: 20px;
-            padding: 3px 0;
-            transition: var(--transition);
-        }
-        
-        .info-item:hover {
-            color: var(--accent-color);
-        }
-        
-        .info-icon {
-            margin-right: 6px;
-            font-size: 0.9rem;
-            color: var(--secondary-color);
-        }
-        
-        .info-value {
-            font-weight: 500;
-        }
-        
-        .info-up {
-            color: #57cc99;
-            font-weight: 600;
-        }
-        
-        .info-down {
-            color: #ff6b6b;
-            font-weight: 600;
-        }
-        
-        /* Top Bar */
-        .top-bar {
-            background-color: #1c2836;
-            color: white;
-            padding: 8px 0;
-            font-size: 0.9rem;
-        }
-        
-        .top-bar a {
-            color: white;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-        
-        .top-bar a:hover {
-            color: var(--accent-color);
-        }
-        
-        .top-bar-icons {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .top-bar-icon {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: var(--transition);
-        }
-        
-        .top-bar-icon:hover {
-            color: var(--accent-color);
-        }
-        
-        .language-selector {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .language-btn {
-            background: none;
-            border: none;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 4px;
-            transition: var(--transition);
-        }
-        
-        .language-btn:hover {
-            background-color: rgba(255,255,255,0.1);
-        }
-        
-        .language-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            border-radius: 6px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            min-width: 120px;
-            z-index: 9999;
-            display: none;
-        }
-        
-        .language-dropdown.show {
-            display: block;
-        }
-        
-        .language-option {
-            padding: 10px 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: black !important;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-        
-        .language-option:hover {
-            background-color: #f8f9fa;
-            color: var(--primary-color);
-        }
-        
-        .flag-icon {
-            width: 20px;
-            height: 15px;
-            object-fit: cover;
-            border-radius: 2px;
-        }
-        
-        .contact-link {
-            margin-right: 15px;
-            display: inline-block;
-        }
-        
-        .social-icons a {
-            color: white;
-            margin-left: 10px;
-            font-size: 1.1rem;
-            transition: var(--transition);
-        }
-        
-        .social-icons a:hover {
-            color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-        
-        /* Main Navigation - RESPONSIVE */
-        .main-navbar {
-            background-color: white;
-            box-shadow: var(--box-shadow);
-            padding: 0;
-            position: sticky;
-            top: 0;
-            z-index: 1030;
-        }
-        
-        .navbar-brand {
-            padding: 10px 0;
-        }
-        
-        .site-logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-        
-        .logo-img {
-            height: 50px;
-            margin-right: 10px;
-        }
-        
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .logo-title {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            line-height: 1;
-        }
-        
-        .logo-subtitle {
-            font-size: 0.85rem;
-            color: var(--accent-color);
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
-        
-        .nav-link {
-            color: var(--dark-color) !important;
-            font-weight: 500;
-            padding: 20px 15px !important;
-            position: relative;
-            transition: var(--transition);
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            color: var(--primary-color) !important;
-        }
-        
-        .nav-link:after {
-            content: '';
-            /* position: absolute; */
-            width: 0;
-            height: 3px;
-            background: var(--secondary-color);
-            /* bottom: 0;
-            left: 15px; */
-            transition: var(--transition);
-        }
-        
-        .nav-link:hover:after, .nav-link.active:after {
-            /* width: calc(100% - 30px); */
-        }
-        
-        .special-buttons .btn {
-            border-radius: 50px;
-            padding: 8px 20px;
-            font-weight: 600;
-            margin-left: 10px;
-            display: inline-flex;
-            align-items: center;
-            transition: var(--transition);
-        }
-        
-        .special-buttons .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .special-buttons .btn-secondary {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-        }
-        
-        .special-buttons .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .btn-icon {
-            margin-right: 8px;
-            font-size: 1.2rem;
-        }
-        
-        /* CORRECTIONS DÉFINITIVES - DROPDOWN CENTRÉ ET IMAGES COLLÉES */
-        .dropdown-menu.full-width {
-            width: 100vw !important;
-            max-width: 100vw !important;
-            right: auto !important;
-            transform: translateX(-50%) !important;
-            margin: 0 !important;
-            padding: 20px !important;
-            border: none !important;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15) !important;
-            border-radius: 0 0 var(--border-radius) var(--border-radius) !important;
-            overflow: hidden !important;
-            position: absolute !important;
-            top: 100% !important;
-            z-index: 9999 !important;
-        }
-        
-        .dropdown-menu.full-width .container {
-            max-width: 100% !important;
-            padding-left: 10px !important;
-            padding-right: 10px !important;
-        }
-        
-        .row.mega-menu-regions {
-            margin-left: -4px !important;
-            margin-right: -4px !important;
-            --bs-gutter-x: 0.25rem !important;
-            --bs-gutter-y: 0.25rem !important;
-            display: flex !important;
-            flex-wrap: wrap !important;
-            width: calc(100% + 8px) !important;
-        }
-        
-        .row.mega-menu-regions .col-md-3 {
-            padding-left: 4px !important;
-            padding-right: 4px !important;
-            margin-bottom: 8px !important;
-            flex: 0 0 25%;
-            max-width: 25%;
-        }
-        
-        .dropdown-item-with-img {
-            display: block !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            text-decoration: none;
-            border-radius: 6px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0,0,0,0.08);
-            background: white;
-            height: 100%;
-            width: 100%;
-        }
-        
-        .dropdown-item-with-img:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-            border-color: var(--secondary-color);
-        }
-        
-        .dropdown-img {
-            width: 100% !important;
-            height: 160px !important;
-            object-fit: cover;
-            display: block;
-            margin: 0 !important;
-            padding: 0 !important;
-            border-bottom: 3px solid var(--secondary-color);
-            transition: transform 0.4s ease;
-        }
-        
-        .dropdown-item-with-img:hover .dropdown-img {
-            transform: scale(1.08);
-        }
-        
-        .dropdown-item-content {
-            padding: 10px !important;
-            text-align: center;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .dropdown-item-title {
-            font-weight: 700 !important;
-            color: var(--primary-color) !important;
-            margin: 0 !important;
-            font-size: 1rem !important;
-            line-height: 1.3;
-            text-decoration: none;
-            display: block;
-            width: 100%;
-        }
-        
-        .dropdown-item-with-img:hover .dropdown-item-title {
-            color: var(--secondary-color) !important;
-        }
-        
-        .navbar .dropdown-menu {
-            border: none;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-        }
-        
-        .dropdown-menu.full-width {
-            max-height: 75vh;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-        
-        .dropdown-divider.my-3 {
-            margin: 15px 0 !important;
-            width: 100% !important;
-        }
-        
-        .text-center.d-block {
-            display: block !important;
-            width: 100% !important;
-            margin: 10px auto 0 !important;
-            padding: 12px !important;
-            background: linear-gradient(135deg, var(--light-color) 0%, #e9ecef 100%);
-            border-radius: 8px;
-            font-weight: 600;
-            text-align: center;
-            border: 2px dashed var(--secondary-color);
-            transition: var(--transition);
-        }
-        
-        .text-center.d-block:hover {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #38b2ac 100%);
-            color: white !important;
-            border-color: var(--secondary-color);
-            transform: translateY(-2px);
-        }
-        
-        /* RESPONSIVE */
-        @media (max-width: 1200px) {
-            .row.mega-menu-regions .col-md-3 {
-                flex: 0 0 33.333%;
-                max-width: 33.333%;
-            }
-            
-            .dropdown-img {
-                height: 140px !important;
-            }
-        }
-        
-        @media (max-width: 992px) {
-            .dropdown-menu.full-width {
-                position: static !important;
-                width: 100% !important;
-                left: 0 !important;
-                transform: none !important;
-                margin-top: 0 !important;
-            }
-            
-            .row.mega-menu-regions .col-md-3 {
-                flex: 0 0 0;
-                max-width: 50%;
-            }
-            
-            .dropdown-img {
-                height: 130px !important;
-            }
-            
-            .row.mega-menu-regions {
-                margin-left: -3px !important;
-                margin-right: -3px !important;
-            }
-            
-            .row.mega-menu-regions .col-md-3 {
-                padding-left: 3px !important;
-                padding-right: 3px !important;
-            }
-            
-            /* Navigation mobile */
-            .navbar-collapse {
-                background: white;
-                padding: 20px;
-                border-radius: var(--border-radius);
-                box-shadow: var(--box-shadow);
-                margin-top: 10px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .dropdown-menu.full-width {
-                padding: 15px 8px !important;
-            }
-            
-            .row.mega-menu-regions .col-md-3 {
-                flex: 0 0 100%;
-                max-width: 80%;
-                padding-left: 0 !important;
-                padding-right: 0 !important;
-                margin-bottom: 10px !important;
-            }
-            
-            .dropdown-img {
-                height: 150px !important;
-            }
-            
-            .row.mega-menu-regions {
-                margin-left: 0 !important;
-                margin-right: 0 !important;
-            }
-            
-            .special-buttons {
-                margin-top: 15px;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-        }
-        
-        /* Dropdown on hover - Full Width */
-        .navbar .nav-item.dropdown:hover .dropdown-menu {
-            display: block;
-            margin-top: 0;
-        }
-        
-        /* FIX POUR L'AFFICHAGE MOBILE */
-        @media (max-width: 992px) {
-            .navbar .nav-item.dropdown:hover .dropdown-menu {
-                display: none;
-            }
-            
-            .navbar .nav-item.dropdown .dropdown-menu.show {
-                display: block !important;
-            }
-        }
-        
-        /* Override Bootstrap position */
-        .dropdown-menu[data-bs-popper] {
-            margin-top: 0 !important;
-        }
-        
-        /* Video Slider Full Width */
-        .video-slider-section {
-            position: relative;
-            width: 100%;
-            height: 600px;
-            overflow: hidden;
-        }
-        
-        .video-slider-container {
-            width: 100%;
-            height: 100%;
-        }
-        
-        .video-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-        
-        .video-slide.active {
-            opacity: 1;
-        }
-        
-        .video-slide iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        
-        .video-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .slider-controls {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            z-index: 10;
-        }
-        
-        .slider-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.5);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .slider-dot.active {
-            background: white;
-            transform: scale(1.2);
-        }
-        
-        .slider-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(26, 95, 122, 0.8) 0%, rgba(44, 62, 80, 0.7) 50%, transparent 100%);
-            display: flex;
-            align-items: center;
-            padding: 0 50px;
-            z-index: 5;
-        }
-        
-        .slider-text {
-            color: white;
-            max-width: 600px;
-        }
-        
-        .slider-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-        
-        .slider-subtitle {
-            font-size: 1.3rem;
-            margin-bottom: 30px;
-            opacity: 0.9;
-        }
-        
-        /* Mega Menu Dropdown amélioré */
-        .mega-dropdown-container {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: white;
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-            padding: 30px;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-20px);
-            transition: all 0.3s ease;
-        }
-        
-        .mega-dropdown-container.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        
-        /* Régions en grille full width */
-        .region-grid-full {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .region-card-large {
-            background: white;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.05);
-            height: 300px;
-            position: relative;
-        }
-        
-        .region-card-large:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-        
-        .region-card-img-large {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: var(--transition);
-        }
-        
-        .region-card-large:hover .region-card-img-large {
-            transform: scale(1.1);
-        }
-        
-        .region-card-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            padding: 20px;
-            color: white;
-        }
-        
-        .region-card-title-large {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        
-        .region-list-all {
-            background: #f8f9fa;
-            border-radius: var(--border-radius);
-            padding: 25px;
-            margin-top: 20px;
-        }
-        
-        .region-list-all h4 {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--secondary-color);
-        }
-        
-        .region-columns {
-            columns: 3;
-            column-gap: 30px;
-        }
-        
-        .region-list-item {
-            padding: 8px 0;
-            border-bottom: 1px dashed #ddd;
-            transition: var(--transition);
-        }
-        
-        .region-list-item:hover {
-            color: var(--primary-color);
-            transform: translateX(5px);
-        }
-        
-        .close-mega-menu {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--dark-color);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .close-mega-menu:hover {
-            color: var(--accent-color);
-            transform: rotate(90deg);
-        }
-        
-        /* Section Éditeur de Site Web */
-        .editor-section {
-            padding: 100px 0;
-            background: white;
-        }
-        
-        .editor-preview {
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            position: relative;
-        }
-        
-        .editor-toolbar {
-            background: #2c3e50;
-            padding: 15px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .toolbar-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        
-        .dot-red { background: #ff5f56; }
-        .dot-yellow { background: #ffbd2e; }
-        .dot-green { background: #27ca3f; }
-        
-        .editor-window {
-            background: white;
-            height: 400px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .editor-content {
-            padding: 30px;
-            height: 100%;
-        }
-        
-        .editor-element {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            transition: var(--transition);
-            border-left: 4px solid var(--secondary-color);
-        }
-        
-        .editor-element:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-        
-        /* Section Fonctionnalités */
-        .features-section {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        }
-        
-        .feature-card {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 30px;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-            height: 100%;
-            text-align: center;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-        }
-        
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #1a5f7a 0%, #2c3e50 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 2rem;
-            color: white;
-        }
-        
-        .feature-title {
-            font-size: 1.4rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-        
-        /* Section Clients */
-        .clients-section {
-            padding: 100px 0;
-            background: white;
-        }
-        
-        .client-logo {
-            padding: 20px;
-            text-align: center;
-            filter: grayscale(100%);
-            opacity: 0.7;
-            transition: var(--transition);
-        }
-        
-        .client-logo:hover {
-            filter: grayscale(0%);
-            opacity: 1;
-            transform: scale(1.1);
-        }
-        
-        .client-logo img {
-            max-height: 80px;
-            max-width: 100%;
-        }
-        
-        /* Section Vidéo */
-        .video-section {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #2c3e50 0%, #1a5f7a 100%);
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .video-section::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover;
-            opacity: 0.1;
-            top: 0;
-            left: 0;
-        }
-        
-        .video-container {
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-        }
-        
-        /* Section Statistiques */
-        .stats-section {
-            padding: 80px 0;
-            background: linear-gradient(135deg, #1a5f7a 0%, #2c3e50 100%);
-            color: white;
-        }
-        
-        .stat-item {
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .stat-number {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            color: var(--accent-color);
-        }
-        
-        .stat-label {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        /* Section titre */
-        .section-title {
-            text-align: center;
-            margin-bottom: 50px;
-            color: var(--primary-color);
-            position: relative;
-            padding-bottom: 20px;
-            font-size: 2.2rem;
-        }
-        
-        .section-title:after {
-            content: '';
-            position: absolute;
-            width: 100px;
-            height: 5px;
-            background: var(--secondary-color);
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .region-grid-full {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
-            .slider-title {
-                font-size: 3rem;
-            }
-        }
-        
-        @media (max-width: 992px) {
-            .slider-title {
-                font-size: 2.5rem;
-            }
-            
-            .region-grid-full {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .region-columns {
-                columns: 2;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .slider-title {
-                font-size: 2rem;
-            }
-            
-            .slider-subtitle {
-                font-size: 1.1rem;
-            }
-            
-            .slider-content {
-                padding: 0 20px;
-            }
-            
-            .video-slider-section {
-                height: 500px;
-            }
-            
-            .top-bar .d-flex {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .top-bar-icons {
-                justify-content: center;
-                margin-top: 10px;
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-            
-            .info-items {
-                justify-content: center;
-            }
-            
-            .info-item {
-                margin: 5px 10px;
-            }
-            
-            .region-grid-full {
-                grid-template-columns: 1fr;
-            }
-            
-            .region-columns {
-                columns: 1;
-            }
-            
-            .editor-section, .features-section, .clients-section, .video-section {
-                padding: 60px 0;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .slider-title {
-                font-size: 1.8rem;
-            }
-            
-            .slider-dot {
-                width: 10px;
-                height: 10px;
-            }
-            
-            .video-slider-section {
-                height: 400px;
-            }
-            
-            .stat-number {
-                font-size: 2.5rem;
-            }
-            
-            .mega-dropdown-container {
-                padding: 20px 15px;
-            }
-        }
-        
-        /* CORRECTION POUR TOUS LES DROPDOWNS */
-        .navbar-nav .dropdown-menu {
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .navbar .container {
-            position: relative;
-        }
-        
-        .dropdown-item-with-img {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .dropdown-item-with-img::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.1) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-        
-        .dropdown-item-with-img:hover::after {
-            opacity: 1;
-        }
-    </style>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+   
+    
+    <link rel="stylesheet" href="{{asset('css/styles.css')}}">
 </head>
 <body>
-    <!-- Header avec informations en temps réel -->
-    <header class="info-header">
-        <div class="container">
-            <div class="info-items">
-                <div class="info-item">
-                    <i class="fas fa-chart-line info-icon"></i>
-                    <span class="info-label">Bourse TSX: </span>
-                    <span class="info-value ms-1">21,450.12</span>
-                    <span class="info-up ms-1">+1.2%</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-cloud-sun info-icon"></i>
-                    <span class="info-label">Météo QC: </span>
-                    <span class="info-value ms-1">-5°C</span>
-                    <span class="info-details ms-1">Ensoleillé</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-road info-icon"></i>
-                    <span class="info-label">Routes: </span>
-                    <span class="info-value ms-1">Majoritairement dégagées</span>
+    <!-- Header avec Mega Menu -->
+    <header class="main-header">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <img src="{{asset('images/chez-jim-pizza.png')}}" alt="Chez Jim Pizza">
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#home">Accueil</a>
+                        </li>
+                        
+                        <!-- Mega Menu Carte -->
+                        <li class="nav-item dropdown has-mega-menu mega-hover">
+                            <a class="nav-link dropdown-toggle" href="#" id="carteDropdown" role="button" aria-expanded="false">
+                                 Carte
+                             </a>
+                           <div class="dropdown-menu mega-menu" aria-labelledby="carteDropdown">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <!-- Colonne 1: Pizzas -->
+                                        <div class="col-lg-3 col-md-6 mb-4">
+                                            <h5><i class="fas fa-pizza-slice me-2"></i> Menu Pizzas</h5>
+                                            <ul>
+                                                <li><a href="#pizzas-classiques"><i class="fas fa-circle"></i> Pizzas Classiques</a></li>
+                                                <li><a href="#pizzas-speciales"><i class="fas fa-star"></i> Pizzas Spéciales</a></li>
+                                                <li><a href="#pizzas-vegetariennes"><i class="fas fa-leaf"></i> Pizzas Végétariennes</a></li>
+                                                <li><a href="#pizzas-epicees"><i class="fas fa-pepper-hot"></i> Pizzas Épicées</a></li>
+                                                <li><a href="#create-your-own"><i class="fas fa-magic"></i> Créez votre pizza</a></li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <!-- Colonne 2: Entrées & Burgers -->
+                                        <div class="col-lg-3 col-md-6 mb-4">
+                                            <h5><i class="fas fa-utensils me-2"></i> Entrées & Plats</h5>
+                                            <ul>
+                                                <li><a href="#entrees"><i class="fas fa-appetizer"></i> Les Entrées</a></li>
+                                                <li><a href="#burgers"><i class="fas fa-hamburger"></i> Burgers & Assiettes</a></li>
+                                                <li><a href="#poutines"><i class="fas fa-cheese"></i> Poutines & Frites</a></li>
+                                                <li><a href="#salades"><i class="fas fa-leaf"></i> Salades Fraîches</a></li>
+                                                <li><a href="#menu-midi"><i class="fas fa-sun"></i> Menu Midi</a></li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <!-- Colonne 3: Menu Map -->
+                                        <div class="col-lg-3 col-md-6 mb-4">
+                                            <div class="menu-map">
+                                                <h5><i class="fas fa-map-marker-alt me-2"></i> Notre Carte Interactive</h5>
+                                                <ul>
+                                                    <li><a href="#menu-pizzas"><i class="fas fa-map-pin"></i> Explorer les pizzas</a></li>
+                                                    <li><a href="#menu-burgers"><i class="fas fa-map-pin"></i> Explorer les burgers</a></li>
+                                                    <li><a href="#menu-poutines"><i class="fas fa-map-pin"></i> Explorer les poutines</a></li>
+                                                    <li><a href="#menu-salades"><i class="fas fa-map-pin"></i> Explorer les salades</a></li>
+                                                </ul>
+                                                
+                                                <div class="map-container">
+                                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2724.991912612403!2d-71.20738268431515!3d46.84032267914217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8966c75a7b2f1%3A0x2e5e1a5c4b8c8b9e!2sQu%C3%A9bec%20City%2C%20QC!5e0!3m2!1sen!2sca!4v1623345678901!5m2!1sen!2sca" allowfullscreen="" loading="lazy"></iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Colonne 4: Image promotionnelle -->
+                                        <div class="col-lg-3 col-md-6 mb-4">
+                                            <div class="menu-img">
+                                                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza spéciale">
+                                            </div>
+                                            
+                                            <div class="menu-promo mt-3">
+                                                <h5>Spécial du Jour</h5>
+                                                <p>Pizza Pepperoni 12" + Boisson</p>
+                                                <div class="price">22.95$</div>
+                                                <small>Valable aujourd'hui seulement</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" href="#tourisme">Tourisme</a>
+                        </li> -->
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="#webtv">Web TV</a>
+                        </li>
+                        
+                        <!-- Mega Menu Photos -->
+                        <li class="nav-item dropdown has-mega-menu mega-hover">
+    <a class="nav-link dropdown-toggle" href="#" id="photosDropdown" role="button" aria-expanded="false">
+        Photos
+    </a>
+    <div class="dropdown-menu mega-menu photos-mega-menu" aria-labelledby="photosDropdown">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <!-- Galerie photos -->
+                                        <div class="col-lg-8 mb-4">
+                                            <h5><i class="fas fa-images me-2"></i> Galerie Photos</h5>
+                                            <div class="photo-grid">
+                                                <div class="photo-item">
+                                                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Intérieur restaurant">
+                                                </div>
+                                                <div class="photo-item">
+                                                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pizza préparée">
+                                                </div>
+                                                <div class="photo-item">
+                                                    <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pizza au four">
+                                                </div>
+                                                <div class="photo-item">
+                                                    <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Événement">
+                                                </div>
+                                                <div class="photo-item">
+                                                    <img src="https://images.unsplash.com/photo-1578474846511-04ba529f0b88?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Notre équipe">
+                                                </div>
+                                                <div class="photo-item">
+                                                    <img src="https://images.unsplash.com/photo-1571066811602-716837d681de?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Ingrédients frais">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Catégories photos -->
+                                        <div class="col-lg-4 mb-4">
+                                            <h5><i class="fas fa-folder me-2"></i> Catégories</h5>
+                                            <ul>
+                                                <li><a href="#galerie-interieur"><i class="fas fa-store"></i> Intérieur & Ambiance</a></li>
+                                                <li><a href="#galerie-plats"><i class="fas fa-utensils"></i> Nos Plats & Recettes</a></li>
+                                                <li><a href="#galerie-evenements"><i class="fas fa-glass-cheers"></i> Événements & Fêtes</a></li>
+                                                <li><a href="#galerie-equipe"><i class="fas fa-users"></i> Notre Équipe</a></li>
+                                                <li><a href="#galerie-ingredients"><i class="fas fa-carrot"></i> Ingrédients Frais</a></li>
+                                            </ul>
+                                            
+                                            <div class="menu-promo mt-4">
+                                                <h5>Partagez vos photos!</h5>
+                                                <p>Utilisez <strong>#ChezJimPizza</strong> sur Instagram pour apparaître ici</p>
+                                                <a href="#" class="btn btn-sm btn-primary mt-2">
+                                                    <i class="fab fa-instagram me-1"></i> Voir sur Instagram
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="#certificats">Certificats Cadeaux</a>
+                        </li>
+                        
+                       <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="extrasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Les Extras
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="extrasDropdown">
+                                <li><a class="dropdown-item" href="#extras-viande"><i class="fas fa-bacon"></i> Extras Viande</a></li>
+                                <li><a class="dropdown-item" href="#extras-legumes"><i class="fas fa-carrot"></i> Extras Légumes</a></li>
+                                <li><a class="dropdown-item" href="#extras-divers"><i class="fas fa-cheese"></i> Extras Divers</a></li>
+                            </ul>
+                        </li>
+                        
+                        <!-- Mega Menu Promotions -->
+                       <li class="nav-item dropdown has-mega-menu mega-hover">
+    <a class="nav-link dropdown-toggle" href="#" id="promosDropdown" role="button" aria-expanded="false">
+        Promotions
+    </a>
+    <div class="dropdown-menu mega-menu promo-mega-menu" aria-labelledby="promosDropdown">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <!-- Promo 1 -->
+                                        <div class="col-lg-3 col-md-6 mb-4">
+                                            <div class="promo-card">
+                                                <div class="promo-badge">Famille</div>
+                                                <h5>Formule Famille</h5>
+                                                <p>2 Pizzas 12" + Frites + 4 Boissons</p>
+                                                <div class="price">49.95$</div>
+                                                <small>Économisez 15$</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Promo 2 -->
+                                        <div class="col-lg-3 col-md-6 mb-4">
+                                            <div class="promo-card">
+                                                <div class="promo-badge">Duo</div>
+                                                <h5>Spécial Duo</h5>
+                                                <p>Pizza 10" + Salade César + 2 Boissons</p>
+                                                <div class="price">29.95$</div>
+                                                <small>Parfait pour 2 personnes</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Promo 3 -->
+                                        <div class="col-lg-3 col-md-6 mb-4">
+                                            <div class="promo-card">
+                                                <div class="promo-badge">Midi</div>
+                                                <h5>Menu Midi Express</h5>
+                                                <p>Pizza individuelle + Boisson + Dessert</p>
+                                                <div class="price">12.95$</div>
+                                                <small>Du lundi au vendredi 11h-14h</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Promo 4 -->
+                                        <div class="col-lg-3 col-md-6 mb-4">
+                                            <div class="promo-card">
+                                                <div class="promo-badge">Livraison</div>
+                                                <h5>Livraison Gratuite</h5>
+                                                <p>Commande de 40$ et plus</p>
+                                                <div class="price">0$</div>
+                                                <small>Dans un rayon de 5km</small>
+                                                <a href="#promos" class="btn btn-sm btn-primary mt-3">Voir toutes les promos</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mt-3">
+                                        <div class="col-12 text-center">
+                                            <p class="mb-0">
+                                                <i class="fas fa-exclamation-circle me-2"></i>
+                                                Les promotions sont valables jusqu'au 31 décembre 2023. Une promotion par commande.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <!-- Bouton téléphone -->
+                        <li class="nav-item">
+                            <a href="tel:4188279000" class="nav-link phone-btn">
+                                <i class="fas fa-phone"></i> 418-827-9000
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
+        </nav>
     </header>
 
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="contact-info">
-                    <a href="tel:4185257748" class="contact-link">
-                        <i class="fas fa-phone-alt me-1"></i> (418) 525-7748
-                    </a>
-                    <a href="mailto:infogoexploria@gmail.com" class="contact-link">
-                        <i class="fas fa-envelope me-1"></i> infogoexploria@gmail.com
-                    </a>
-                </div>
-                
-                <div class="top-bar-icons">
-                    <!-- Panier -->
-                    <a href="#" class="top-bar-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>Panier</span>
-                    </a>
-                    
-                    <!-- Mon compte -->
-                    <a href="{{route('login')}}" class="top-bar-icon">
-                        <i class="fas fa-user"></i>
-                        <span>Mon compte</span>
-                    </a>
-                    
-                    <!-- Localisation / Langue -->
-                    <div class="language-selector">
-                        <button class="language-btn" id="languageBtn">
-                            <img src="https://flagcdn.com/w20/fr.png" class="flag-icon" alt="Français">
-                            <span>FR</span>
-                            <i class="fas fa-chevron-down ms-1"></i>
-                        </button>
-                        <div class="language-dropdown" id="languageDropdown">
-                            <a href="#" class="language-option" data-lang="fr">
-                                <img src="https://flagcdn.com/w20/fr.png" class="flag-icon" alt="Français">
-                                <span>Français</span>
-                            </a>
-                            <a href="#" class="language-option" data-lang="en">
-                                <img src="https://flagcdn.com/w20/gb.png" class="flag-icon" alt="English">
-                                <span>English</span>
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- YouTube Icon -->
-                    <a href="https://www.youtube.com/user/explorezlemonde/videos?view_as=subscriber" target="_blank" class="top-bar-icon">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Navigation - RESPONSIVE -->
-    <nav class="navbar navbar-expand-lg navbar-light main-navbar">
-        <div class="container">
-            <a class="navbar-brand" href="/fr/">
-                <div class="site-logo">
-                    <img src="https://www.goexploria.com/images/logo-go-exploria-qc-3.png" alt="GoExploria" class="logo-img">
-                    <div class="logo-text">
-                        <span class="logo-title">GoExploria</span>
-                        <span class="logo-subtitle">Affaires</span>
-                    </div>
-                </div>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="explorerDropdown" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-        <i class="fas fa-map-marked-alt me-1"></i>Explorer Région
-    </a>
-    <div class="dropdown-menu full-width" aria-labelledby="explorerDropdown">
-        <div class="container">
-            <div class="row mega-menu-regions" id="regionsDropdownContainer">
-                <!-- Les régions seront chargées par AJAX ici -->
-                <div class="col-12 text-center py-4">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Chargement...</span>
-                    </div>
-                    <p class="mt-2">Chargement des régions...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</li>
-                    
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                            <i class="fas fa-concierge-bell me-1"></i> GO Explorez
-                        </a>
-                        <div class="dropdown-menu full-width" aria-labelledby="servicesDropdown">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <h5 class="dropdown-header">Services Digitaux</h5>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-briefcase me-2"></i>GO Business
-                                            <span class="text-muted d-block small mt-1">Solutions pour entreprises</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-store me-2"></i>GO Local
-                                            <span class="text-muted d-block small mt-1">Promotion commerciale locale</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-crown me-2"></i>GO Prime Time
-                                            <span class="text-muted d-block small mt-1">Services premium</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h5 class="dropdown-header">Médias & Contenu</h5>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-tv me-2"></i>GO Web TV
-                                            <span class="text-muted d-block small mt-1">Chaîne vidéo en ligne</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-camera me-2"></i>GO Photos
-                                            <span class="text-muted d-block small mt-1">Banque d'images exclusive</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-newspaper me-2"></i>GO Actualités
-                                            <span class="text-muted d-block small mt-1">Nouvelles locales et régionales</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                            <i class="fas fa-book me-1"></i>Ressources
-                        </a>
-                        <div class="dropdown-menu full-width" aria-labelledby="resourcesDropdown">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <h5 class="dropdown-header">Contenu Éducatif</h5>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-file-alt me-2"></i>Blog
-                                            <span class="text-muted d-block small mt-1">Articles et conseils</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-newspaper me-2"></i>Actualités
-                                            <span class="text-muted d-block small mt-1">Nouvelles du Québec</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-graduation-cap me-2"></i>Guides
-                                            <span class="text-muted d-block small mt-1">Guides touristiques</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <h5 class="dropdown-header">Événements</h5>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-calendar-alt me-2"></i>Calendrier
-                                            <span class="text-muted d-block small mt-1">Événements à venir</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-ticket-alt me-2"></i>Billeterie
-                                            <span class="text-muted d-block small mt-1">Achetez vos billets</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-bullhorn me-2"></i>Promotions
-                                            <span class="text-muted d-block small mt-1">Offres spéciales</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <h5 class="dropdown-header">Support</h5>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-question-circle me-2"></i>Aide & FAQ
-                                            <span class="text-muted d-block small mt-1">Questions fréquentes</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-headset me-2"></i>Support Client
-                                            <span class="text-muted d-block small mt-1">Assistance 24/7</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-download me-2"></i>Téléchargements
-                                            <span class="text-muted d-block small mt-1">Ressources gratuites</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-                
-                <div class="special-buttons d-flex">
-                    <a href="https://www.goexploria.com/company/68620/go-exploria-plans-de-relance" class="btn btn-primary">
-                        <i class="fas fa-seedling btn-icon"></i> Plans de relance
-                    </a>
-                    <a href="https://www.goexploria.com/company/68619/go-exploria-services-web" class="btn btn-secondary">
-                        <i class="fas fa-globe btn-icon"></i> Services web
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Mega Menu Dropdown pour les régions -->
-    <div class="mega-dropdown-container" id="megaDropdown">
-        <button class="close-mega-menu" id="closeMegaMenu">
-            <i class="fas fa-times"></i>
-        </button>
-        
-        <h3 class="section-title mb-4">Explorez les Régions du Canada</h3>
-        
-        <div class="region-grid-full" id="regionGrid">
-            <!-- Les cartes régions seront ajoutées par JavaScript -->
-        </div>
-        
-        <div class="region-list-all">
-            <h4>Toutes les régions disponibles</h4>
-            <div class="region-columns" id="regionColumns">
-                <!-- La liste complète sera ajoutée par JavaScript -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Video Slider Full Width -->
-    <section class="video-slider-section" id="home">
+    <!-- Hero Slider avec SOLUTION DE CONTOURNEMENT -->
+    <section class="hero-slider" id="home">
         <div class="video-slider-container">
-            <!-- Slide 1: Vidéo YouTube -->
-            <div class="video-slide active">
-                <iframe src="https://www.youtube.com/embed/VKWE89nmIWs?autoplay=1&mute=1&loop=1&playlist=VKWE89nmIWs" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <!-- Slide 1: Vidéo YouTube avec SOLUTION SPÉCIALE -->
+            <div class="video-slide active" id="videoSlide1">
+                <div class="youtube-video-container">
+<iframe 
+    src="https://www.youtube.com/embed/r9lfyTtewQI?autoplay=1&mute=1&loop=1&playlist=r9lfyTtewQI"
+    title="YouTube video"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen>
+</iframe>
+                    <div class="video-overlay-dark" id="videoOverlay1"></div>
+                </div>
             </div>
             
             <!-- Slide 2: Image -->
             <div class="video-slide">
-                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Montagnes canadiennes">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80" alt="Apportez votre vin">
             </div>
             
             <!-- Slide 3: Image -->
             <div class="video-slide">
-                <img src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Paysage hivernal">
+                <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80" alt="Livraison à domicile">
             </div>
             
             <!-- Slide 4: Image -->
             <div class="video-slide">
-                <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Ville de Québec">
+                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80" alt="Notre restaurant">
             </div>
             
             <!-- Slide 5: Image -->
             <div class="video-slide">
-                <img src="https://images.unsplash.com/photo-1596394516093-9baa8e6c2b5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Lac canadien">
+                <img src="https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80" alt="Nos spécialités">
             </div>
         </div>
         
         <div class="slider-content">
             <div class="slider-text">
-                <h1 class="slider-title">Créez votre présence digitale avec Go Exploria Business</h1>
-                <p class="slider-subtitle">Notre plateforme tout-en-un vous permet de créer, gérer et optimiser votre site web avec des outils puissants d'analyse, SEO, messagerie et IA intégrée.</p>
-                <div class="hero-buttons">
-                    <a href="#editor" class="btn btn-primary btn-lg">
-                        <i class="fas fa-play-circle me-2"></i>Essayer la démo
-                    </a>
-                    <a href="#features" class="btn btn-outline-light btn-lg ms-2">
-                        <i class="fas fa-list-alt me-2"></i>Voir les fonctionnalités
-                    </a>
+                <h1 class="slider-title">Chez Jim Pizza</h1>
+                <p class="slider-subtitle">Découvrez la meilleure pizza de la Côte de Beaupré, préparée avec des ingrédients frais et une passion authentique.</p>
+                <div class="hero-btns">
+                    <a href="#menu" class="btn btn-primary-custom btn-custom me-3">Voir notre carte</a>
+                    <a href="#promos" class="btn btn-secondary-custom btn-custom">Découvrir nos promos</a>
                 </div>
             </div>
         </div>
@@ -1396,804 +321,1047 @@
         </div>
     </section>
 
-    <!-- Les autres sections restent identiques -->
-    <!-- Section Éditeur de Site Web -->
-    <section class="editor-section" id="editor">
+    <!-- Section Menu Map -->
+    <section class="section-map" id="menu-map">
         <div class="container">
-            <h2 class="section-title text-center mb-5">Notre Éditeur de Site Web Intuitif</h2>
+            <h2 class="section-title text-center">Carte Interactive de Notre Menu</h2>
+            <p class="text-center mb-5" style="max-width: 700px; margin: 0 auto; color: var(--gray-color);">
+                Explorez notre menu comme jamais auparavant. Cliquez sur les sections pour découvrir nos délicieuses options.
+            </p>
             
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <div class="editor-preview">
-                        <div class="editor-toolbar">
-                            <div class="toolbar-dot dot-red"></div>
-                            <div class="toolbar-dot dot-yellow"></div>
-                            <div class="toolbar-dot dot-green"></div>
-                            <span class="text-white ms-3">Créateur de site Go Exploria Business</span>
-                        </div>
-                        <div class="editor-window">
-                            <div class="editor-content">
-                                <div class="editor-element">
-                                    <h5>En-tête personnalisable</h5>
-                                    <p class="mb-0">Logo, navigation, bannière</p>
-                                </div>
-                                <div class="editor-element">
-                                    <h5>Galerie d'images responsive</h5>
-                                    <p class="mb-0">Glisser-déposer pour organiser</p>
-                                </div>
-                                <div class="editor-element">
-                                    <h5>Section services</h5>
-                                    <p class="mb-0">Présentez vos offres</p>
-                                </div>
-                                <div class="editor-element">
-                                    <h5>Formulaire de contact intelligent</h5>
-                                    <p class="mb-0">Avec gestion des leads</p>
-                                </div>
-                                <div class="editor-element">
-                                    <h5>Intégration réseaux sociaux</h5>
-                                    <p class="mb-0">Automatisée et modifiable</p>
-                                </div>
+            <div class="menu-map-container">
+                <div class="row">
+                    <!-- Colonne de navigation -->
+                    <div class="col-lg-4 mb-4">
+                        <div class="map-navigation">
+                            <h4><i class="fas fa-map-signs me-2"></i> Navigation Rapide</h4>
+                            <div class="list-group">
+                                <a href="#pizzas" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-pizza-slice me-2"></i> Les Pizzas
+                                    <span class="badge bg-primary float-end">12 variétés</span>
+                                </a>
+                                <a href="#entrees" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-appetizer me-2"></i> Les Entrées
+                                    <span class="badge bg-primary float-end">8 options</span>
+                                </a>
+                                <a href="#burgers" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-hamburger me-2"></i> Burgers & Assiettes
+                                    <span class="badge bg-primary float-end">6 choix</span>
+                                </a>
+                                <a href="#poutines" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-cheese me-2"></i> Poutines & Frites
+                                    <span class="badge bg-primary float-end">10 spécialités</span>
+                                </a>
+                                <a href="#salades" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-leaf me-2"></i> Salades
+                                    <span class="badge bg-primary float-end">5 recettes</span>
+                                </a>
+                                <a href="#extras" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-plus-circle me-2"></i> Les Extras
+                                    <span class="badge bg-primary float-end">15+ ingrédients</span>
+                                </a>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h5><i class="fas fa-fire me-2"></i> Recommandations</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <i class="fas fa-crown text-warning me-2"></i>
+                                        <strong>Pizza Spéciale Jim:</strong> La préférée des clients
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-pepper-hot text-danger me-2"></i>
+                                        <strong>Poutine Épicée:</strong> Notre signature
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-leaf text-success me-2"></i>
+                                        <strong>Salade Méditerranéenne:</strong> Fraîche et légère
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="ps-lg-5 mt-5 mt-lg-0">
-                        <h3 class="mb-4" style="color: var(--primary-color);">Créez un site professionnel sans codage</h3>
-                        <p class="mb-4">Notre éditeur visuel vous permet de créer un site web professionnel en quelques heures, sans aucune connaissance technique.</p>
-                        
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="me-3">
-                                <i class="fas fa-check-circle" style="color: var(--secondary-color); font-size: 1.5rem;"></i>
+                    
+                    <!-- Carte interactive -->
+                    <div class="col-lg-8">
+                        <div class="interactive-map">
+                            <div class="map-visual">
+                                <div class="row g-3">
+                                    <!-- Pizzas -->
+                                    <div class="col-md-6">
+                                        <div class="map-section pizza-section" data-target="#pizzas">
+                                            <div class="map-icon">
+                                                <i class="fas fa-pizza-slice"></i>
+                                            </div>
+                                            <h5>Pizzas</h5>
+                                            <p>12 variétés de pizzas artisanales</p>
+                                            <div class="map-badge">À partir de 15$</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Entrées -->
+                                    <div class="col-md-6">
+                                        <div class="map-section entrees-section" data-target="#entrees">
+                                            <div class="map-icon">
+                                                <i class="fas fa-appetizer"></i>
+                                            </div>
+                                            <h5>Entrées</h5>
+                                            <p>Démarrez votre repas avec style</p>
+                                            <div class="map-badge">8 options</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Burgers -->
+                                    <div class="col-md-6">
+                                        <div class="map-section burgers-section" data-target="#burgers">
+                                            <div class="map-icon">
+                                                <i class="fas fa-hamburger"></i>
+                                            </div>
+                                            <h5>Burgers</h5>
+                                            <p>Burgers juteux et assiettes gourmandes</p>
+                                            <div class="map-badge">À partir de 12$</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Poutines -->
+                                    <div class="col-md-6">
+                                        <div class="map-section poutines-section" data-target="#poutines">
+                                            <div class="map-icon">
+                                                <i class="fas fa-cheese"></i>
+                                            </div>
+                                            <h5>Poutines</h5>
+                                            <p>Notre spécialité québécoise réinventée</p>
+                                            <div class="map-badge">10 variétés</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <h5>Glisser-déposer intuitif</h5>
-                                <p>Organisez vos pages avec une interface simple de glisser-déposer.</p>
+                            
+                            <!-- Légende -->
+                            <div class="map-legend mt-4">
+                                <h5><i class="fas fa-key me-2"></i> Légende de la Carte</h5>
+                                <div class="row">
+                                    <div class="col-6 col-md-3">
+                                        <div class="legend-item">
+                                            <span class="legend-color" style="background-color: #e63946;"></span>
+                                            <span>Populaire</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="legend-item">
+                                            <span class="legend-color" style="background-color: #f4a261;"></span>
+                                            <span>Nouveauté</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="legend-item">
+                                            <span class="legend-color" style="background-color: #2a9d8f;"></span>
+                                            <span>Végétarien</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <div class="legend-item">
+                                            <span class="legend-color" style="background-color: #e76f51;"></span>
+                                            <span>Épicé</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="d-flex align-items-start mb-3">
-                            <div class="me-3">
-                                <i class="fas fa-check-circle" style="color: var(--secondary-color); font-size: 1.5rem;"></i>
-                            </div>
-                            <div>
-                                <h5>Modèles professionnels</h5>
-                                <p>Choisissez parmi des centaines de modèles conçus par des experts.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="d-flex align-items-start mb-4">
-                            <div class="me-3">
-                                <i class="fas fa-check-circle" style="color: var(--secondary-color); font-size: 1.5rem;"></i>
-                            </div>
-                            <div>
-                                <h5>Optimisation mobile automatique</h5>
-                                <p>Votre site sera parfaitement adapté à tous les appareils.</p>
-                            </div>
-                        </div>
-                        
-                        <a href="#contact" class="btn btn-primary btn-lg">
-                            <i class="fas fa-magic me-2"></i>Créer mon site maintenant
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section Fonctionnalités -->
-    <section class="features-section" id="features">
+    <!-- Video Section -->
+    <section class="video-section" id="webtv">
         <div class="container">
-            <h2 class="section-title text-center mb-5">Fonctionnalités Complètes</h2>
+            <h2 class="section-title text-center text-white">Notre Web TV</h2>
+            <p class="text-center text-white mb-5" style="max-width: 700px; margin: 0 auto; opacity: 0.9;">
+                Regardez notre chaîne dédiée pour découvrir nos recettes, coulisses et événements spéciaux.
+            </p>
             
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line"></i>
+            <div class="video-container">
+                <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/r9lfyTtewQI&t?autoplay=1&mute=1&loop=1&playlist=r9lfyTtewQI" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+                    <div class="video-overlay" id="videoOverlay">
+                        <div class="play-btn" id="playButton">
+                            <i class="fas fa-play"></i>
                         </div>
-                        <h3 class="feature-title">Analytics Avancés</h3>
-                        <p>Suivez les performances de votre site avec des tableaux de bord détaillés et des rapports personnalisés.</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-search"></i>
-                        </div>
-                        <h3 class="feature-title">Optimisation SEO</h3>
-                        <p>Améliorez votre visibilité sur les moteurs de recherche avec nos outils SEO intégrés.</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-comments"></i>
-                        </div>
-                        <h3 class="feature-title">Messagerie Intelligente</h3>
-                        <p>Gérez vos communications avec un système de messagerie unifié et automatisé.</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <h3 class="feature-title">Assistance IA</h3>
-                        <p>Bénéficiez de l'assistance d'une IA pour la rédaction de contenu et l'optimisation.</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-tasks"></i>
-                        </div>
-                        <h3 class="feature-title">Gestion des Tâches</h3>
-                        <p>Organisez vos projets avec des outils de gestion de tâches et de collaboration.</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-eye"></i>
-                        </div>
-                        <h3 class="feature-title">Suivi en Temps Réel</h3>
-                        <p>Surveillez l'activité sur votre site en temps réel avec des notifications instantanées.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section Clients -->
-    <section class="clients-section" id="clients">
+    <!-- Les autres sections restent les mêmes... -->
+    <!-- Menu Section -->
+    <section class="menu-section" id="menu">
         <div class="container">
-            <h2 class="section-title text-center mb-5">Nos Clients Fidèles</h2>
+            <h2 class="section-title text-center">Notre Carte</h2>
+            <p class="text-center mb-5" style="max-width: 700px; margin: 0 auto; color: var(--gray-color);">
+                Découvrez notre sélection de pizzas, entrées, poutines et burgers préparés avec des ingrédients frais de qualité.
+            </p>
             
-            <div class="row align-items-center justify-content-center g-4">
-                <div class="col-lg-2 col-md-3 col-4">
-                    <div class="client-logo">
-                        <img src="https://www.goexploria.com/uploads/companies/78/logo/logo-78.png" alt="Client 1">
+            <!-- Menu Categories -->
+            <div class="menu-categories">
+                <button class="menu-category-btn active" data-category="entrees">Les Entrées</button>
+                <button class="menu-category-btn" data-category="pizzas">Les Pizzas</button>
+                <button class="menu-category-btn" data-category="burgers">Burgers & Assiettes</button>
+                <button class="menu-category-btn" data-category="poutines">Poutines & Frites</button>
+                <button class="menu-category-btn" data-category="salades">Salades</button>
+                <button class="menu-category-btn" data-category="extras">Les Extras</button>
+            </div>
+            
+            <!-- Menu Content -->
+            <div class="menu-items-container">
+                <!-- Entrées -->
+                <div id="entrees" class="menu-category-content active">
+                    <div class="row">
+                        <!-- Oignons français -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Oignons français" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Oignons français</h4>
+                                        <span class="menu-item-price">8.75$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Oignons croustillants servis avec sauce</p>
+                                    <div class="row">
+                                        <div class="col-6">Petit: 8.75$</div>
+                                        <div class="col-6">Grand: 12.50$</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bâtonnets de fromage -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Bâtonnets de fromage" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Bâtonnets de fromage</h4>
+                                        <span class="menu-item-price">8.99$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Bâtonnets de fromage fondant</p>
+                                    <div class="row">
+                                        <div class="col-4">4 bâtonnets: 8.99$</div>
+                                        <div class="col-4">6 bâtonnets: 10.25$</div>
+                                        <div class="col-4">9 bâtonnets: 14.50$</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Ailes de poulet -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="https://images.unsplash.com/photo-1567620832903-9fc6debc209f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Ailes de poulet" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Ailes de poulet</h4>
+                                        <span class="menu-item-price">10.45$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Ailes de poulet croustillantes</p>
+                                    <div class="row">
+                                        <div class="col-6">6 ailes: 10.45$</div>
+                                        <div class="col-6">12 ailes: 16.93$</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-3 col-4">
-                    <div class="client-logo">
-                        <img src="https://www.goexploria.com/uploads/companies/147257/logo/logo-147257.png" alt="Client 2">
+                
+                <!-- Pizzas -->
+                <div id="pizzas" class="menu-category-content">
+                    <div class="row">
+                        <!-- Pizza Pepperoni -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza Pepperoni" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Pepperoni</h4>
+                                        <span class="menu-item-price">15.00$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Sauce, pepperoni et mozzarella</p>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Taille</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>8"</td><td>15.00$</td></tr>
+                                            <tr><td>10"</td><td>19.79$</td></tr>
+                                            <tr><td>12"</td><td>27.50$</td></tr>
+                                            <tr><td>14"</td><td>33.75$</td></tr>
+                                            <tr><td>16"</td><td>37.95$</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pizza Hawaïenne -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza Hawaïenne" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Hawaïenne</h4>
+                                        <span class="menu-item-price">15.50$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Sauce, jambon, mozzarella et ananas</p>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Taille</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>8"</td><td>15.50$</td></tr>
+                                            <tr><td>10"</td><td>20.90$</td></tr>
+                                            <tr><td>12"</td><td>27.85$</td></tr>
+                                            <tr><td>14"</td><td>33.75$</td></tr>
+                                            <tr><td>16"</td><td>39.50$</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pizza Végétarienne -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="https://images.unsplash.com/photo-1571066811602-716837d681de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza Végétarienne" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Végétarienne</h4>
+                                        <span class="menu-item-price">14.76$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Sauce, champignon, mozzarella, piments rouges et verts, tomates et oignons</p>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Taille</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>8"</td><td>14.76$</td></tr>
+                                            <tr><td>10"</td><td>19.50$</td></tr>
+                                            <tr><td>12"</td><td>26.91$</td></tr>
+                                            <tr><td>14"</td><td>31.70$</td></tr>
+                                            <tr><td>16"</td><td>36.45$</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-3 col-4">
-                    <div class="client-logo">
-                        <img src="https://www.goexploria.com/uploads/companies/147256/logo/logo-147256.png" alt="Client 3">
+
+                
+                <!-- Burgers -->
+                <div id="burgers" class="menu-category-content">
+                    <div class="row">
+                        <!-- Pizza Pepperoni -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="{{ asset('images/9093d02c-620a-4939-a877-2f9bbc03f2ca-1280x854.jpg') }}" alt="Pizza Pepperoni" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Cheeseburger</h4>
+                                        <span class="menu-item-price">15.00$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Sauce, pepperoni et mozzarella</p>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Taille</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>8"</td><td>15.00$</td></tr>
+                                            <tr><td>10"</td><td>19.79$</td></tr>
+                                            <tr><td>12"</td><td>27.50$</td></tr>
+                                            <tr><td>14"</td><td>33.75$</td></tr>
+                                            <tr><td>16"</td><td>37.95$</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pizza Hawaïenne -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="{{asset('images/Beef-Burgers-067.jpg')}}" alt="Pizza Hawaïenne" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Classic Beef Burger</h4>
+                                        <span class="menu-item-price">15.50$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Sauce, jambon, mozzarella et ananas</p>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Taille</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>8"</td><td>15.50$</td></tr>
+                                            <tr><td>10"</td><td>20.90$</td></tr>
+                                            <tr><td>12"</td><td>27.85$</td></tr>
+                                            <tr><td>14"</td><td>33.75$</td></tr>
+                                            <tr><td>16"</td><td>39.50$</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pizza Végétarienne -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="{{asset('images/half-veggie-scaled.jpg')}}" alt="Pizza Végétarienne" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Veggie Burger</h4>
+                                        <span class="menu-item-price">14.76$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Sauce, champignon, mozzarella, piments rouges et verts, tomates et oignons</p>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Taille</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>8"</td><td>14.76$</td></tr>
+                                            <tr><td>10"</td><td>19.50$</td></tr>
+                                            <tr><td>12"</td><td>26.91$</td></tr>
+                                            <tr><td>14"</td><td>31.70$</td></tr>
+                                            <tr><td>16"</td><td>36.45$</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-3 col-4">
-                    <div class="client-logo">
-                        <img src="https://www.goexploria.com/uploads/companies/147255/logo/logo-147255.png" alt="Client 4">
+                
+                <!-- poutines -->
+                <div id="poutines" class="menu-category-content">
+                    <div class="row">
+                        <!-- Pizza Pepperoni -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="{{ asset('images/poutine classique.jpg') }}" alt="Pizza Pepperoni" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Poutine Classique (Frites & Sauce)</h4>
+                                        <span class="menu-item-price">15.00$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Sauce, pepperoni et mozzarella</p>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Taille</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>8"</td><td>15.00$</td></tr>
+                                            <tr><td>10"</td><td>19.79$</td></tr>
+                                            <tr><td>12"</td><td>27.50$</td></tr>
+                                            <tr><td>14"</td><td>33.75$</td></tr>
+                                            <tr><td>16"</td><td>37.95$</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pizza Hawaïenne -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza Hawaïenne" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Hawaïenne</h4>
+                                        <span class="menu-item-price">15.50$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Sauce, jambon, mozzarella et ananas</p>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Taille</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>8"</td><td>15.50$</td></tr>
+                                            <tr><td>10"</td><td>20.90$</td></tr>
+                                            <tr><td>12"</td><td>27.85$</td></tr>
+                                            <tr><td>14"</td><td>33.75$</td></tr>
+                                            <tr><td>16"</td><td>39.50$</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pizza Végétarienne -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="https://images.unsplash.com/photo-1571066811602-716837d681de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza Végétarienne" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Végétarienne</h4>
+                                        <span class="menu-item-price">14.76$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Sauce, champignon, mozzarella, piments rouges et verts, tomates et oignons</p>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Taille</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>8"</td><td>14.76$</td></tr>
+                                            <tr><td>10"</td><td>19.50$</td></tr>
+                                            <tr><td>12"</td><td>26.91$</td></tr>
+                                            <tr><td>14"</td><td>31.70$</td></tr>
+                                            <tr><td>16"</td><td>36.45$</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-3 col-4">
-                    <div class="client-logo">
-                        <img src="https://www.goexploria.com/uploads/companies/147254/logo/logo-147254.png" alt="Client 5">
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-3 col-4">
-                    <div class="client-logo">
-                        <img src="https://www.goexploria.com/uploads/companies/147253/logo/logo-147253.png" alt="Client 6">
+
+                
+                <!-- salades -->
+                <div id="salades" class="menu-category-content">
+                    <div class="row">
+                        <!-- Pizza Pepperoni -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="{{ asset('images/9ce5c8c2-a974-4e94-8d30-efdcc2caf3ae.avif') }}" alt="Pizza Pepperoni" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Salade Fraîche du Jardin</h4>
+                                        <span class="menu-item-price">15.00$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Sauce, pepperoni et mozzarella</p>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Taille</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>8"</td><td>15.00$</td></tr>
+                                            <tr><td>10"</td><td>19.79$</td></tr>
+                                            <tr><td>12"</td><td>27.50$</td></tr>
+                                            <tr><td>14"</td><td>33.75$</td></tr>
+                                            <tr><td>16"</td><td>37.95$</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section Statistiques -->
-    <section class="stats-section">
+    <!-- Promotions Section -->
+    <section id="promos" class="py-5" style="background-color: #f9f9f9;">
         <div class="container">
-            <div class="row text-center">
-                <div class="col-md-3 col-6">
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="1500">0</div>
-                        <div class="stat-label">Sites créés</div>
+            <h2 class="section-title text-center">Promotions Pizzas Chez Jim</h2>
+            <p class="text-center mb-5" style="max-width: 700px; margin: 0 auto; color: var(--gray-color);">
+                Profitez de nos formules promotionnelles exceptionnelles! Une promo par commande ou par adresse.
+            </p>
+            
+            <div class="row">
+                <!-- Promo 1 -->
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="promo-card">
+                        <div class="promo-badge">Promo</div>
+                        <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Promotion Pizza 10" class="img-fluid" style="height: 200px; width: 100%; object-fit: cover;">
+                        <div class="p-4">
+                            <h4 class="mb-3">Formule 10"</h4>
+                            <p class="mb-2">Pizza 10" + petite frite + 1 liqueur</p>
+                            <p class="text-primary" style="font-size: 1.8rem; font-weight: 700;">25.65$</p>
+                            <p class="text-muted small mt-2">Pizza garnie, pepperoni, végétarienne ou fromage</p>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-6">
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="98">0</div>
-                        <div class="stat-label">% de satisfaction</div>
+                
+                <!-- Promo 2 -->
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="promo-card">
+                        <div class="promo-badge">Top Vente</div>
+                        <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Promotion Pizza 12" class="img-fluid" style="height: 200px; width: 100%; object-fit: cover;">
+                        <div class="p-4">
+                            <h4 class="mb-3">Formule 12"</h4>
+                            <p class="mb-2">Pizza 12" + moyenne frite + 2 liqueurs</p>
+                            <p class="text-primary" style="font-size: 1.8rem; font-weight: 700;">36.96$</p>
+                            <p class="text-muted small mt-2">Pizza garnie, pepperoni, végétarienne ou fromage</p>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-6">
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="24">0</div>
-                        <div class="stat-label">Heures de création</div>
+                
+                <!-- Promo 3 -->
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="promo-card">
+                        <div class="promo-badge">Famille</div>
+                        <img src="https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Promotion Pizza 14" class="img-fluid" style="height: 200px; width: 100%; object-fit: cover;">
+                        <div class="p-4">
+                            <h4 class="mb-3">Formule 14"</h4>
+                            <p class="mb-2">Pizza 14" + moyenne frite + 3 liqueurs</p>
+                            <p class="text-primary" style="font-size: 1.8rem; font-weight: 700;">45.95$</p>
+                            <p class="text-muted small mt-2">Pizza garnie, pepperoni, végétarienne ou fromage</p>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-6">
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="50">0</div>
-                        <div class="stat-label">Régions couvertes</div>
+                
+                <!-- Promo 4 -->
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="promo-card">
+                        <div class="promo-badge">XXL</div>
+                        <img src="https://images.unsplash.com/photo-1601924582970-9238bcb495d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Promotion Pizza 16" class="img-fluid" style="height: 200px; width: 100%; object-fit: cover;">
+                        <div class="p-4">
+                            <h4 class="mb-3">Formule 16"</h4>
+                            <p class="mb-2">Pizza 16" + grosse frite + 4 liqueurs</p>
+                            <p class="text-primary" style="font-size: 1.8rem; font-weight: 700;">51.95$</p>
+                            <p class="text-muted small mt-2">Pizza garnie, pepperoni, végétarienne ou fromage</p>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Slider -->
+    <section class="gallery-slider" id="photos">
+        <div class="container">
+            <h2 class="section-title text-center">Galerie Photos</h2>
+            <p class="text-center mb-5" style="max-width: 700px; margin: 0 auto; color: var(--gray-color);">
+                Découvrez l'ambiance de notre restaurant et la qualité de nos plats.
+            </p>
+            
+            <div class="swiper gallerySwiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide gallery-slide">
+                        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Intérieur restaurant">
+                    </div>
+                    <div class="swiper-slide gallery-slide">
+                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w-800&q=80" alt="Pizza préparée">
+                    </div>
+                    <div class="swiper-slide gallery-slide">
+                        <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza au four">
+                    </div>
+                    <div class="swiper-slide gallery-slide">
+                        <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Événement">
+                    </div>
+                    <div class="swiper-slide gallery-slide">
+                        <img src="https://images.unsplash.com/photo-1578474846511-04ba529f0b88?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Notre équipe">
+                    </div>
+                </div>
+                
+                <div class="swiper-pagination"></div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="main-footer" style="background-color: var(--dark-color); color: white; padding: 80px 0 30px;">
+    <footer class="main-footer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <img src="https://www.goexploria.com/images/logo-go-exploria-qc-3.png" alt="GoExploria" style="height: 70px; margin-bottom: 25px;">
-                    <p>Votre guide touristique et d'affaires pour le Québec. Découvrez, explorez, vivez le Québec comme jamais auparavant.</p>
-                    <div class="social-icons mt-3">
-                        <a href="https://www.youtube.com/user/explorezlemonde/videos?view_as=subscriber" target="_blank">
-                            <i class="fab fa-youtube fa-2x"></i>
-                        </a>
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <div class="footer-logo">
+                        <h3>Chez Jim Pizza</h3>
+                        <p class="mt-3" style="color: rgba(255,255,255,0.8);">
+                            La meilleure pizza de la Côte de Beaupré! Depuis des années, nous servons des pizzas faites avec des ingrédients frais et beaucoup de passion.
+                        </p>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-tripadvisor"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="col-lg-4 mb-4">
-                    <h4 style="color: white; font-size: 1.3rem; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid var(--accent-color); display: inline-block;">Liens rapides</h4>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="margin-bottom: 12px;"><a href="#home" style="color: #ddd; text-decoration: none; transition: var(--transition);">Accueil Digital</a></li>
-                        <li style="margin-bottom: 12px;"><a href="#editor" style="color: #ddd; text-decoration: none; transition: var(--transition);">Éditeur de site</a></li>
-                        <li style="margin-bottom: 12px;"><a href="#features" style="color: #ddd; text-decoration: none; transition: var(--transition);">Fonctionnalités</a></li>
-                        <li style="margin-bottom: 12px;"><a href="#clients" style="color: #ddd; text-decoration: none; transition: var(--transition);">Nos clients</a></li>
-                        <li style="margin-bottom: 12px;"><a href="#regions" class="mega-menu-trigger" style="color: #ddd; text-decoration: none; transition: var(--transition);">Régions Canada</a></li>
-                    </ul>
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <div class="footer-links">
+                        <h4>Liens Rapides</h4>
+                        <ul>
+                            <li><a href="#home">Accueil</a></li>
+                            <li><a href="#menu">Notre Carte</a></li>
+                            <li><a href="#promos">Promotions</a></li>
+                            <li><a href="#party">Événements & Groupes</a></li>
+                            <li><a href="#salle">Salle de Réunion</a></li>
+                            <li><a href="#certificats">Certificats Cadeaux</a></li>
+                        </ul>
+                    </div>
                 </div>
                 
-                <div class="col-lg-4 mb-4">
-                    <h4 style="color: white; font-size: 1.3rem; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid var(--accent-color); display: inline-block;">Contactez-nous</h4>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="margin-bottom: 12px;"><i class="fas fa-phone me-2"></i> (418) 525-7748</li>
-                        <li style="margin-bottom: 12px;"><i class="fas fa-envelope me-2"></i> infogoexploria@gmail.com</li>
-                        <li style="margin-bottom: 12px;"><i class="fas fa-map-marker-alt me-2"></i> Québec, Canada</li>
-                    </ul>
-                    <div class="mt-4">
-                        <a href="https://www.goexploria.com/company/68620/go-exploria-plans-de-relance" class="btn btn-outline-light me-2">Plans de relance</a>
-                        <a href="https://www.goexploria.com/company/68619/go-exploria-services-web" class="btn btn-accent" style="background-color: var(--accent-color); border-color: var(--accent-color); color: white;">Services web</a>
+                <div class="col-lg-4">
+                    <div class="footer-contact">
+                        <h4>Contact & Horaires</h4>
+                        <p><i class="fas fa-phone me-2"></i> <strong>418-827-9000</strong></p>
+                        <p><i class="fas fa-wine-glass-alt me-2"></i> Apportez votre vin!</p>
+                        <p><i class="fas fa-users me-2"></i> Salle de réception: 24 personnes</p>
+                        <p><i class="fas fa-utensils me-2"></i> Restaurant: 35 personnes</p>
+                        
+                        <h5 class="mt-4 mb-3">Livraison</h5>
+                        <p>Dimanche: 16h30 à 20h</p>
+                        <p>Mercredi: 16h30 à 20h</p>
+                        <p>Jeudi à Samedi: 16h30 à 21h</p>
+                        <p>Lundi & Mardi: Fermé</p>
+                        <p><small>Frais de livraison: 4$</small></p>
                     </div>
                 </div>
             </div>
             
-            <div class="copyright" style="text-align: center; padding-top: 40px; margin-top: 40px; border-top: 1px solid #444; color: #aaa; font-size: 0.95rem;">
-                <p>&copy; 2023 GoExploria. Tous droits réservés. | <a href="#" style="color: white;">Politique de confidentialité</a> | <a href="#" style="color: white;">Conditions d'utilisation</a></p>
+            <div class="copyright mt-5">
+                <p>&copy; 2023 Chez Jim Pizza. Tous droits réservés.</p>
+                <p class="mt-2">Site créé à partir des données publiques de GoExploria.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
     
     <script>
     // Variables globales
     let currentSlide = 0;
     let slideInterval;
+    let gallerySwiper;
+    let youtubePlayer1;
+    let youtubePlayer2;
+    let isUserInteracted = false;
+
+    // Charger l'API YouTube
+    function onYouTubeIframeAPIReady() {
+        // Initialiser le player pour la slide 1
+        youtubePlayer1 = new YT.Player('youtubeVideo1', {
+            events: {
+                'onReady': onPlayer1Ready,
+                'onStateChange': onPlayer1StateChange
+            }
+        });
+        
+        // Initialiser le player pour la section vidéo
+        youtubePlayer2 = new YT.Player('sectionVideo', {
+            events: {
+                'onReady': onPlayer2Ready,
+                'onStateChange': onPlayer2StateChange
+            }
+        });
+    }
+
+    // Callback pour le player 1 (slider)
+    function onPlayer1Ready(event) {
+        console.log('YouTube Player 1 ready');
+        
+        // Solution spéciale pour l'autoplay: attendre un peu puis démarrer
+        setTimeout(() => {
+            event.target.mute(); // Mute obligatoire
+            event.target.playVideo(); // Démarrer la lecture
+            
+            // Cacher l'overlay après démarrage
+            setTimeout(() => {
+                const overlay = document.getElementById('videoOverlay1');
+                if (overlay) overlay.style.opacity = '0';
+            }, 1000);
+        }, 1000);
+    }
+
+    function onPlayer1StateChange(event) {
+        // Gérer la boucle
+        if (event.data === YT.PlayerState.ENDED) {
+            event.target.playVideo();
+        }
+        
+        // Mettre en pause quand on quitte la slide
+        if (currentSlide !== 0 && event.data === YT.PlayerState.PLAYING) {
+            event.target.pauseVideo();
+        }
+        
+        // Reprendre quand on revient à la slide
+        if (currentSlide === 0 && event.data === YT.PlayerState.PAUSED) {
+            event.target.playVideo();
+        }
+    }
+
+    // Callback pour le player 2 (section vidéo)
+    function onPlayer2Ready(event) {
+        console.log('YouTube Player 2 ready');
+        // Ne rien faire, attendre le clic utilisateur
+    }
+
+    function onPlayer2StateChange(event) {
+        // Gérer les changements d'état si besoin
+    }
+
+    // Dans votre script existant, ajoutez cette fonction
+function initHoverMegaMenu() {
+    const megaHoverItems = document.querySelectorAll('.mega-hover');
+    
+    // Sur desktop, on utilise le hover
+    if (window.innerWidth > 992) {
+        megaHoverItems.forEach(item => {
+            const link = item.querySelector('.nav-link');
+            const menu = item.querySelector('.mega-menu');
+            
+            // Désactiver le toggle Bootstrap
+            link.setAttribute('data-bs-toggle', '');
+            
+            // Gérer l'ouverture au hover
+            item.addEventListener('mouseenter', () => {
+                menu.classList.add('show');
+                link.setAttribute('aria-expanded', 'true');
+            });
+            
+            // Gérer la fermeture au mouseleave
+            item.addEventListener('mouseleave', () => {
+                setTimeout(() => {
+                    if (!item.matches(':hover') && !menu.matches(':hover')) {
+                        menu.classList.remove('show');
+                        link.setAttribute('aria-expanded', 'false');
+                    }
+                }, 300);
+            });
+            
+            // Garder ouvert si on survole le menu
+            menu.addEventListener('mouseenter', () => {
+                menu.classList.add('show');
+                link.setAttribute('aria-expanded', 'true');
+            });
+            
+            menu.addEventListener('mouseleave', () => {
+                setTimeout(() => {
+                    if (!item.matches(':hover') && !menu.matches(':hover')) {
+                        menu.classList.remove('show');
+                        link.setAttribute('aria-expanded', 'false');
+                    }
+                }, 300);
+            });
+        });
+    } else {
+        // Sur mobile, on réactive le comportement Bootstrap
+        megaHoverItems.forEach(item => {
+            const link = item.querySelector('.nav-link');
+            link.setAttribute('data-bs-toggle', 'dropdown');
+        });
+    }
+}
+
+
+// Ajoutez aussi cette fonction pour gérer la fermeture au scroll
+function handleMegaMenuOnScroll() {
+    if (window.innerWidth > 992) {
+        const openMegaMenus = document.querySelectorAll('.mega-hover .mega-menu.show');
+        openMegaMenus.forEach(menu => {
+            menu.classList.remove('show');
+            const link = menu.parentElement.querySelector('.nav-link');
+            if (link) link.setAttribute('aria-expanded', 'false');
+        });
+    }
+}
+
+// Fermer les mega menus au scroll
+window.addEventListener('scroll', function() {
+    if (window.innerWidth > 992) {
+        handleMegaMenuOnScroll();
+    }
+});
+
+// Fermer les mega menus au clic ailleurs sur la page
+document.addEventListener('click', function(e) {
+    if (window.innerWidth > 992) {
+        const megaHoverItems = document.querySelectorAll('.mega-hover');
+        let isClickInsideMegaMenu = false;
+        
+        megaHoverItems.forEach(item => {
+            if (item.contains(e.target)) {
+                isClickInsideMegaMenu = true;
+            }
+        });
+        
+        if (!isClickInsideMegaMenu) {
+            handleMegaMenuOnScroll();
+        }
+    }
+});
 
     // Initialisation complète
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialiser le mega menu
-        initMegaMenu();
-        
-        // Initialiser le sélecteur de langue
-        initLanguageSelector();
-        
         // Initialiser le slider vidéo
         initVideoSlider();
         
-        // Initialiser les animations de défilement
-        initScrollAnimations();
+        // Initialiser la galerie Swiper
+        initGallerySlider();
         
-        // Initialiser les compteurs animés
-        initCounters();
+        // Initialiser les événements
+        setupEventListeners();
         
         // Initialiser la navigation
         initNavigation();
         
-        // Mettre à jour les informations en temps réel
-        updateLiveInfo();
+        // Initialiser le header
+        initHeader();
         
-        // Configurer les dropdowns Bootstrap avec AJAX
-        initBootstrapDropdowns();
+        // Précharger les images
+        preloadImages();
+        
+        // Forcer l'interaction utilisateur pour débloquer l'autoplay
+        setupAutoplayWorkaround();
+        
+        // Initialiser la carte interactive du menu
+        initMenuMap();
 
-        // Centrer les dropdowns
-        centerAndFixDropdowns();
-        
-        // Précharger les destinations sur desktop
-        if (window.innerWidth > 992) {
-            setTimeout(() => {
-                loadDestinationsFromAPI();
-            }, 1000);
-        }
+        initHoverMegaMenu();
+    
+    // Re-initialiser au redimensionnement
+    window.addEventListener('resize', function() {
+        initHoverMegaMenu();
+    });
     });
     
-    // Initialiser les dropdowns Bootstrap avec AJAX
-    function initBootstrapDropdowns() {
-        const dropdowns = document.querySelectorAll('.dropdown');
+    // Initialiser la carte interactive du menu
+    function initMenuMap() {
+        const mapSections = document.querySelectorAll('.map-section');
         
-        dropdowns.forEach(dropdown => {
-            // Pour desktop, ouvrir au hover
-            if (window.innerWidth > 992) {
-                dropdown.addEventListener('mouseenter', function() {
-                    const dropdownMenu = this.querySelector('.dropdown-menu');
-                    if (dropdownMenu) {
-                        dropdownMenu.classList.add('show');
-                        centerAndFixDropdowns();
-                        
-                        // Charger les régions si c'est le dropdown "Explorer Région"
-                        if (this.querySelector('#explorerDropdown')) {
-                            loadDestinationsFromAPI();
-                        }
+        mapSections.forEach(section => {
+            section.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // Fermer le méga menu si ouvert
+                    const openDropdowns = document.querySelectorAll('.dropdown-menu.show');
+                    openDropdowns.forEach(dropdown => {
+                        dropdown.classList.remove('show');
+                    });
+                    
+                    // Faire défiler jusqu'à la section cible
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Activer la catégorie correspondante dans le menu
+                    const category = targetId.replace('#', '');
+                    const categoryBtn = document.querySelector(`.menu-category-btn[data-category="${category}"]`);
+                    if (categoryBtn) {
+                        categoryBtn.click();
                     }
-                });
-                
-                dropdown.addEventListener('mouseleave', function() {
-                    const dropdownMenu = this.querySelector('.dropdown-menu');
-                    if (dropdownMenu) {
-                        dropdownMenu.classList.remove('show');
-                    }
-                });
-            }
-        });
-        
-        // Écouter les événements de Bootstrap pour mobile
-        document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
-            toggle.addEventListener('show.bs.dropdown', function(e) {
-                // Charger les régions si c'est le dropdown "Explorer Région"
-                if (this.id === 'explorerDropdown') {
-                    loadDestinationsFromAPI();
                 }
             });
         });
     }
-
-    // Charger les destinations depuis l'API
-    function loadDestinationsFromAPI() {
-        const container = document.getElementById('regionsDropdownContainer');
-        
-        // Vérifier si les données sont déjà chargées
-        if (container.getAttribute('data-loaded') === 'true') {
-            return;
-        }
-        
-        // Afficher le loader
-        container.innerHTML = `
-            <div class="col-12 text-center py-3">
-                <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
-                <span class="ms-2 small text-muted">Chargement des régions...</span>
-            </div>
-        `;
-        
-        // URL de l'API Laravel (à adapter)
-        const apiUrl = '/api/destinations';
-        
-        // Options de la requête
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            credentials: 'same-origin'
-        };
-        
-        // Ajouter le token CSRF
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        if (csrfToken) {
-            options.headers['X-CSRF-TOKEN'] = csrfToken;
-        }
-        
-        // Timeout de 5 secondes
-        const timeout = 5000;
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), timeout);
-        options.signal = controller.signal;
-        
-        // Exécuter la requête
-        fetch(apiUrl, options)
-        .then(response => {
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) {
-                throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const formattedData = formatDestinationsData(data);
-            renderDestinationsDropdown(formattedData, container);
-            container.setAttribute('data-loaded', 'true');
-            container.classList.add('loaded');
-            
-            // Réinitialiser après 5 minutes
-            setTimeout(() => {
-                container.setAttribute('data-loaded', 'false');
-            }, 300000);
-        })
-        .catch(error => {
-            clearTimeout(timeoutId);
-            console.error('Erreur AJAX:', error);
-            
-            if (error.name === 'AbortError') {
-                showErrorMessage(container, 'Le chargement a pris trop de temps');
-            } else {
-                showErrorMessage(container, 'Impossible de charger les régions');
-            }
-        });
-    }
-
-    // Formater les données de l'API
-    function formatDestinationsData(data) {
-        // Si les données sont déjà dans le bon format
-        if (Array.isArray(data)) {
-            return data.map(item => ({
-                id: item.id || Math.random(),
-                name: item.name || item.title || 'Région',
-                image: item.image || item.image_url || getRandomDefaultImage(),
-                link: item.link || '#'
-            }));
-        }
-        
-        // Si les données ont une propriété 'data'
-        if (data.data && Array.isArray(data.data)) {
-            return formatDestinationsData(data.data);
-        }
-        
-        // Si les données ont une propriété 'destinations'
-        if (data.destinations && Array.isArray(data.destinations)) {
-            return formatDestinationsData(data.destinations);
-        }
-        
-        // Retourner des données par défaut
-        return getDefaultDestinations();
-    }
-
-    // Obtenir une image par défaut aléatoire
-    function getRandomDefaultImage() {
-        const defaultImages = [
-            'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80',
-            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80',
-            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80',
-            'https://images.unsplash.com/photo-1605058015762-7627e9b4b8c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80',
-            'https://images.unsplash.com/photo-1582436416930-f5d21b5e1f2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80'
-        ];
-        return defaultImages[Math.floor(Math.random() * defaultImages.length)];
-    }
-
-    // Données par défaut
-    function getDefaultDestinations() {
-        return [
-            { id: 1, name: "Québec", image: "https://images.unsplash.com/photo-1605058015762-7627e9b4b8c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 2, name: "Ontario", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 3, name: "Colombie-Britannique", image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 4, name: "Alberta", image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 5, name: "Manitoba", image: "https://images.unsplash.com/photo-1582436416930-f5d21b5e1f2e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 6, name: "Saskatchewan", image: "https://images.unsplash.com/photo-1528181304800-259b08848526?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 7, name: "Nouvelle-Écosse", image: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 8, name: "Nouveau-Brunswick", image: "https://images.unsplash.com/photo-1541692641319-981cc79ee10a?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 9, name: "Terre-Neuve", image: "https://images.unsplash.com/photo-1512476446317-8e4296b3d1f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 10, name: "Île-du-Prince-Édouard", image: "https://images.unsplash.com/photo-1529461174355-fd1f3f32d0b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 11, name: "Yukon", image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 12, name: "Territoires du Nord-Ouest", image: "https://images.unsplash.com/photo-1534083220759-4c66c2bf7498?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 13, name: "Nunavut", image: "https://images.unsplash.com/photo-1534270804882-6b5048b1c1fc?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 14, name: "Montréal", image: "https://images.unsplash.com/photo-1514715526270-5c7a5c9d35e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" },
-            { id: 15, name: "Vancouver", image: "https://images.unsplash.com/photo-1559501268-51b7d3e6b998?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=150&q=80", link: "#" }
-        ];
-    }
-
-    // Afficher les destinations dans le dropdown (5 colonnes)
-    function renderDestinationsDropdown(destinations, container) {
-        if (!destinations || destinations.length === 0) {
-            container.innerHTML = `
-                <div class="col-12 text-center py-4">
-                    <i class="fas fa-map-marked-alt fa-3x text-muted mb-3 opacity-50"></i>
-                    <p class="text-muted small mb-0">Aucune région disponible</p>
-                </div>
-            `;
-            return;
-        }
-        
-        // Calculer la répartition en 5 colonnes
-        const totalDestinations = destinations.length;
-        const destinationsPerColumn = Math.ceil(totalDestinations / 5);
-        
-        let html = '';
-        
-        // Créer 5 colonnes
-        for (let colIndex = 0; colIndex < 5; colIndex++) {
-            html += `<div class="col-md-2-4">`; // 20% de largeur (100/5=20)
-            
-            // Calculer les indices pour cette colonne
-            const startIndex = colIndex * destinationsPerColumn;
-            const endIndex = Math.min(startIndex + destinationsPerColumn, totalDestinations);
-            
-            // Ajouter les destinations pour cette colonne
-            for (let i = startIndex; i < endIndex; i++) {
-                const destination = destinations[i];
-                
-                html += `
-                    <a href="${destination.link}" class="region-item-simple" data-id="${destination.id}">
-                        <div class="region-card-simple">
-                            <div class="region-img-wrapper">
-                                <img src="${destination.image}" 
-                                     alt="${destination.name}" 
-                                     class="region-img-simple"
-                                     loading="lazy"
-                                     onerror="this.onerror=null; this.src='${getRandomDefaultImage()}'">
-                            </div>
-                            <div class="region-name">${destination.name}</div>
-                        </div>
-                    </a>
-                `;
-            }
-            
-            html += `</div>`;
-        }
-        
-        // Bouton "Voir toutes les régions"
-        html += `
-            <div class="col-12 mt-3 pt-3 border-top">
-                <div class="text-center">
-                    <a href="/destinations" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-list me-1"></i>
-                        Voir toutes les régions (${totalDestinations})
-                    </a>
-                    <button class="btn btn-link btn-sm text-muted ms-2" onclick="refreshDestinations()" title="Actualiser">
-                        <i class="fas fa-redo"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        // Animation d'apparition
-        container.style.opacity = '0';
-        container.innerHTML = html;
-        
-        // Appliquer l'animation
-        setTimeout(() => {
-            container.style.opacity = '1';
-            initSimpleRegionHover();
-            applyStaggerAnimation();
-        }, 10);
-    }
-
-    // Appliquer l'animation en cascade
-    function applyStaggerAnimation() {
-        const items = document.querySelectorAll('.region-item-simple');
-        items.forEach((item, index) => {
-            item.style.setProperty('--item-index', index);
-            item.style.animationDelay = `${index * 0.05}s`;
-        });
-    }
-
-    // Initialiser les effets de hover
-    function initSimpleRegionHover() {
-        const regionItems = document.querySelectorAll('.region-item-simple');
-        
-        regionItems.forEach(item => {
-            // Effet au survol
-            item.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-3px)';
-                this.querySelector('.region-card-simple').style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
-                this.querySelector('.region-img-simple').style.transform = 'scale(1.05)';
-            });
-            
-            // Effet quand la souris quitte
-            item.addEventListener('mouseleave', function() {
-                this.style.transform = '';
-                this.querySelector('.region-card-simple').style.boxShadow = '';
-                this.querySelector('.region-img-simple').style.transform = '';
-            });
-            
-            // Animation au clic
-            item.addEventListener('click', function(e) {
-                const id = this.getAttribute('data-id');
-                const name = this.querySelector('.region-name').textContent;
-                
-                // Animation de clic
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 200);
-                
-                console.log(`Navigation vers: ${name} (ID: ${id})`);
-            });
-        });
-    }
-
-    // Rafraîchir les destinations
-    function refreshDestinations() {
-        const container = document.getElementById('regionsDropdownContainer');
-        container.setAttribute('data-loaded', 'false');
-        container.classList.remove('loaded');
-        loadDestinationsFromAPI();
-    }
-
-    // Afficher un message d'erreur
-    function showErrorMessage(container, message) {
-        container.innerHTML = `
-            <div class="col-12 text-center py-4">
-                <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
-                <p class="small text-muted mb-3">${message}</p>
-                <div class="d-flex justify-content-center gap-2">
-                    <button class="btn btn-primary btn-sm" onclick="refreshDestinations()">
-                        <i class="fas fa-redo me-1"></i> Réessayer
-                    </button>
-                    <button class="btn btn-outline-secondary btn-sm" onclick="useDefaultData()">
-                        <i class="fas fa-eye me-1"></i> Exemples
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-
-    // Utiliser les données par défaut
-    function useDefaultData() {
-        const container = document.getElementById('regionsDropdownContainer');
-        const defaultData = getDefaultDestinations();
-        renderDestinationsDropdown(defaultData, container);
-        container.setAttribute('data-loaded', 'true');
-    }
-
-    // Fonction pour centrer les dropdowns
-    function centerAndFixDropdowns() {
-        const dropdowns = document.querySelectorAll('.dropdown-menu.full-width');
-        
-        dropdowns.forEach(dropdown => {
-            if (dropdown.classList.contains('show') && window.innerWidth > 992) {
-                // Centrer le dropdown
-                dropdown.style.left = '50%';
-                dropdown.style.transform = 'translateX(-50%)';
-                dropdown.style.width = '100vw';
-                dropdown.style.maxWidth = '100vw';
-                dropdown.style.padding = '20px';
-                
-                // Vérifier et corriger le débordement
-                const rect = dropdown.getBoundingClientRect();
-                const windowWidth = window.innerWidth;
-                
-                // Débordement à droite
-                if (rect.right > windowWidth) {
-                    const overflow = rect.right - windowWidth;
-                    dropdown.style.left = `calc(50% - ${overflow}px)`;
-                }
-                
-                // Débordement à gauche
-                if (rect.left < 0) {
-                    const overflow = Math.abs(rect.left);
-                    dropdown.style.left = `calc(50% + ${overflow}px)`;
-                }
-                
-                // Limiter la hauteur
-                dropdown.style.maxHeight = '70vh';
-                dropdown.style.overflowY = 'auto';
-                dropdown.style.boxShadow = '0 10px 40px rgba(0,0,0,0.15)';
-            }
-        });
-    }
-
-    // Initialiser le mega menu
-    function initMegaMenu() {
-        const megaDropdown = document.getElementById('megaDropdown');
-        const megaMenuTrigger = document.querySelector('.mega-menu-trigger');
-        const closeMegaMenu = document.getElementById('closeMegaMenu');
-        const regionGrid = document.getElementById('regionGrid');
-        const regionColumns = document.getElementById('regionColumns');
-        
-        // Remplir les cartes de région
-        getDefaultDestinations().forEach(region => {
-            const regionCard = document.createElement('div');
-            regionCard.className = 'region-card-large';
-            regionCard.innerHTML = `
-                <img src="${region.image}" alt="${region.name}" class="region-card-img-large">
-                <div class="region-card-overlay">
-                    <h3 class="region-card-title-large">${region.name}</h3>
-                </div>
-            `;
-            
-            regionCard.addEventListener('click', function() {
-                console.log(`Navigation vers: ${region.name}`);
-                megaDropdown.classList.remove('active');
-                megaMenuTrigger.classList.remove('active');
-            });
-            
-            regionGrid.appendChild(regionCard);
-        });
-        
-        // Remplir la liste des régions
-        getDefaultDestinations().forEach(region => {
-            const regionItem = document.createElement('div');
-            regionItem.className = 'region-list-item';
-            regionItem.innerHTML = `
-                <i class="fas fa-map-marker-alt me-2" style="color: var(--secondary-color);"></i>
-                ${region.name}
-            `;
-            
-            regionItem.addEventListener('click', function() {
-                console.log(`Sélection: ${region.name}`);
-                megaDropdown.classList.remove('active');
-                megaMenuTrigger.classList.remove('active');
-            });
-            
-            regionColumns.appendChild(regionItem);
-        });
-        
-        // Ouvrir/fermer le mega menu
-        megaMenuTrigger.addEventListener('click', function(e) {
-            e.preventDefault();
-            megaDropdown.classList.toggle('active');
-            this.classList.toggle('active');
-        });
-        
-        closeMegaMenu.addEventListener('click', function() {
-            megaDropdown.classList.remove('active');
-            megaMenuTrigger.classList.remove('active');
-        });
-        
-        // Fermer en cliquant à l'extérieur
-        document.addEventListener('click', function(e) {
-            if (!megaDropdown.contains(e.target) && !megaMenuTrigger.contains(e.target)) {
-                megaDropdown.classList.remove('active');
-                megaMenuTrigger.classList.remove('active');
-            }
-        });
-    }
-
-    // Initialiser le sélecteur de langue
-    function initLanguageSelector() {
-        const languageBtn = document.getElementById('languageBtn');
-        const languageDropdown = document.getElementById('languageDropdown');
-        const languageOptions = document.querySelectorAll('.language-option');
-        
-        languageBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            languageDropdown.classList.toggle('show');
-        });
-        
-        languageOptions.forEach(option => {
-            option.addEventListener('click', function(e) {
-                e.preventDefault();
-                const lang = this.getAttribute('data-lang');
-                const flag = this.querySelector('img').src;
-                const text = this.querySelector('span').textContent;
-                
-                languageBtn.querySelector('img').src = flag;
-                languageBtn.querySelector('span').textContent = text.toUpperCase().substring(0, 2);
-                languageDropdown.classList.remove('show');
-                
-                console.log(`Langue changée: ${lang}`);
-            });
-        });
-        
+    
+    // Solution de contournement pour l'autoplay
+    function setupAutoplayWorkaround() {
+        // Ajouter un événement de clic sur toute la page
         document.addEventListener('click', function() {
-            languageDropdown.classList.remove('show');
+            if (!isUserInteracted) {
+                isUserInteracted = true;
+                console.log('Utilisateur a interagi, autoplay débloqué');
+                
+                // Redémarrer la vidéo si elle est en pause
+                if (youtubePlayer1 && youtubePlayer1.getPlayerState() === YT.PlayerState.PAUSED) {
+                    youtubePlayer1.playVideo();
+                }
+            }
         });
         
-        languageDropdown.addEventListener('click', function(e) {
-            e.stopPropagation();
+        // Ajouter un événement de scroll
+        document.addEventListener('scroll', function() {
+            if (!isUserInteracted) {
+                isUserInteracted = true;
+                console.log('Utilisateur a scrollé, autoplay débloqué');
+            }
         });
     }
-
+    
     // Initialiser le slider vidéo
     function initVideoSlider() {
         const slides = document.querySelectorAll('.video-slide');
         const dots = document.querySelectorAll('.slider-dot');
         
         function showSlide(index) {
+            // Masquer toutes les slides
             slides.forEach(slide => slide.classList.remove('active'));
             dots.forEach(dot => dot.classList.remove('active'));
             
+            // Afficher la slide active
             currentSlide = index;
             slides[currentSlide].classList.add('active');
             dots[currentSlide].classList.add('active');
+            
+            // Gérer la vidéo YouTube
+            if (currentSlide === 0 && youtubePlayer1) {
+                // Si on revient à la slide vidéo
+                setTimeout(() => {
+                    if (youtubePlayer1.getPlayerState() !== YT.PlayerState.PLAYING) {
+                        youtubePlayer1.playVideo();
+                    }
+                }, 500);
+            } else if (youtubePlayer1 && youtubePlayer1.getPlayerState() === YT.PlayerState.PLAYING) {
+                // Mettre en pause si on quitte la slide vidéo
+                youtubePlayer1.pauseVideo();
+            }
+            
+            // Animation du texte
+            const sliderText = document.querySelector('.slider-text');
+            sliderText.style.opacity = '0';
+            sliderText.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                sliderText.style.opacity = '1';
+                sliderText.style.transform = 'translateY(0)';
+            }, 300);
         }
         
+        // Configurer les dots
         dots.forEach((dot, index) => {
             dot.addEventListener('click', () => {
                 showSlide(index);
@@ -2207,7 +1375,7 @@
         }
         
         function startInterval() {
-            slideInterval = setInterval(nextSlide, 5000);
+            slideInterval = setInterval(nextSlide, 8000);
         }
         
         function resetInterval() {
@@ -2215,6 +1383,7 @@
             startInterval();
         }
         
+        // Pause au survol
         const sliderContainer = document.querySelector('.video-slider-container');
         sliderContainer.addEventListener('mouseenter', () => {
             clearInterval(slideInterval);
@@ -2224,281 +1393,235 @@
             startInterval();
         });
         
+        // Démarrer
         startInterval();
     }
-
-    // Initialiser les animations de défilement
-    function initScrollAnimations() {
-        const animateElements = document.querySelectorAll('.feature-card, .editor-preview, .category-card');
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                    observer.unobserve(entry.target);
+    
+    // Initialiser la galerie Swiper
+    function initGallerySlider() {
+        gallerySwiper = new Swiper('.gallerySwiper', {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true,
+            autoplay: {
+                delay: 8000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                576: {
+                    slidesPerView: 2,
+                },
+                768: {
+                    slidesPerView: 3,
                 }
-            });
-        }, { threshold: 0.1 });
-        
-        animateElements.forEach(element => {
-            element.style.opacity = '0';
-            element.style.transform = 'translateY(30px)';
-            element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-            observer.observe(element);
+            }
         });
     }
-
-    // Initialiser les compteurs animés
-    function initCounters() {
-        const counters = document.querySelectorAll('.stat-number');
-        const speed = 200;
+    
+    // Configurer les événements
+    function setupEventListeners() {
+        // Video Player Control pour la section vidéo
+        const videoOverlay = document.getElementById('videoOverlay');
+        const playButton = document.getElementById('playButton');
         
-        const animateCounter = () => {
-            counters.forEach(counter => {
-                const target = +counter.getAttribute('data-count');
-                const count = +counter.innerText.replace(/,/g, '');
-                const increment = target / speed;
-                
-                if (count < target) {
-                    counter.innerText = Math.ceil(count + increment).toLocaleString();
-                    setTimeout(animateCounter, 20);
-                } else {
-                    counter.innerText = target.toLocaleString();
-                }
-            });
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounter();
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.5 });
-        
-        const statsSection = document.querySelector('.stats-section');
-        if (statsSection) {
-            observer.observe(statsSection);
-        }
-    }
-
-    // Initialiser la navigation
-    function initNavigation() {
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                if (this.getAttribute('href') && this.getAttribute('href').startsWith('#')) {
-                    e.preventDefault();
-                    
-                    const targetId = this.getAttribute('href');
-                    if (targetId !== '#') {
-                        const targetSection = document.querySelector(targetId);
-                        if (targetSection) {
-                            window.scrollTo({
-                                top: targetSection.offsetTop - 100,
-                                behavior: 'smooth'
-                            });
-                        }
-                    }
-                }
-            });
-        });
-    }
-
-    // Mettre à jour les informations en temps réel
-    function updateLiveInfo() {
-        setInterval(() => {
-            // Mettre à jour la bourse
-            const stockElement = document.querySelector('.info-item:nth-child(1) .info-value');
-            if (stockElement) {
-                const currentValue = parseFloat(stockElement.textContent.replace(',', ''));
-                const change = (Math.random() - 0.5) * 100;
-                const newValue = currentValue + change;
-                stockElement.textContent = newValue.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-                
-                const directionElement = stockElement.nextElementSibling;
-                if (directionElement) {
-                    if (change > 0) {
-                        directionElement.textContent = '+' + change.toFixed(2) + '%';
-                        directionElement.className = 'info-up ms-1';
-                    } else {
-                        directionElement.textContent = change.toFixed(2) + '%';
-                        directionElement.className = 'info-down ms-1';
-                    }
+        if (videoOverlay && playButton) {
+            function playVideo() {
+                videoOverlay.classList.add('hidden');
+                if (youtubePlayer2 && typeof youtubePlayer2.playVideo === 'function') {
+                    youtubePlayer2.playVideo();
                 }
             }
             
-            // Mettre à jour la température
-            const tempElement = document.querySelector('.info-item:nth-child(2) .info-value');
-            if (tempElement) {
-                const currentTemp = parseFloat(tempElement.textContent);
-                const change = (Math.random() - 0.5) * 2;
-                const newTemp = currentTemp + change;
-                tempElement.textContent = newTemp.toFixed(1) + '°C';
-            }
-        }, 10000);
-    }
-
-    // Gestionnaires d'événements pour les dropdowns
-    window.addEventListener('load', function() {
-        setTimeout(centerAndFixDropdowns, 100);
-    });
-    
-    window.addEventListener('resize', function() {
-        setTimeout(centerAndFixDropdowns, 50);
-    });
-    
-    document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
-        toggle.addEventListener('show.bs.dropdown', function() {
-            setTimeout(centerAndFixDropdowns, 10);
+            playButton.addEventListener('click', playVideo);
+            videoOverlay.addEventListener('click', playVideo);
+        }
+        
+        // Menu Category Switching
+        const menuCategoryBtns = document.querySelectorAll('.menu-category-btn');
+        const menuCategoryContents = document.querySelectorAll('.menu-category-content');
+        
+        menuCategoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Retirer la classe active de tous les boutons
+                menuCategoryBtns.forEach(b => b.classList.remove('active'));
+                
+                // Ajouter la classe active au bouton cliqué
+                btn.classList.add('active');
+                
+                // Obtenir la catégorie cible
+                const targetCategory = btn.getAttribute('data-category');
+                
+                // Cacher tous les contenus de menu
+                menuCategoryContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Afficher le contenu de la catégorie cible
+                const targetElement = document.getElementById(targetCategory);
+                if (targetElement) {
+                    targetElement.classList.add('active');
+                }
+            });
         });
         
-        toggle.addEventListener('shown.bs.dropdown', function() {
-            setTimeout(centerAndFixDropdowns, 50);
+        // Gestion du scroll pour le header
+        window.addEventListener('scroll', handleScroll);
+        
+        // Redimensionnement de la fenêtre
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                handleResize();
+            }, 250);
         });
+    }
+    
+    // Initialiser la navigation
+    function initNavigation() {
+        // Navigation fluide pour les liens d'ancrage
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#' || targetId === '#!') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    e.preventDefault();
+                    
+                    // Fermer la navbar sur mobile après le clic
+                    if (window.innerWidth < 992) {
+                        const navbarCollapse = document.querySelector('.navbar-collapse');
+                        if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                            const toggleBtn = document.querySelector('.navbar-toggler');
+                            if (toggleBtn) {
+                                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                                if (bsCollapse) {
+                                    bsCollapse.hide();
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Défilement fluide
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    }
+    
+    // Gestion du scroll
+    function handleScroll() {
+        const header = document.querySelector('.main-header');
+        if (window.scrollY > 100) {
+            header.classList.add('header-scrolled');
+        } else {
+            header.classList.remove('header-scrolled');
+        }
+        
+        // Mettre à jour les liens actifs
+        updateActiveMenuLinks();
+    }
+    
+    // Mettre à jour les liens du menu actifs
+    function updateActiveMenuLinks() {
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (window.scrollY >= (sectionTop - 150)) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+                link.classList.add('active');
+            }
+        });
+    }
+    
+    // Gérer le redimensionnement
+    function handleResize() {
+        // Mettre à jour les sliders
+        if (gallerySwiper) {
+            gallerySwiper.update();
+        }
+        
+        // Gérer le menu mobile
+        if (window.innerWidth >= 992) {
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                if (bsCollapse) {
+                    bsCollapse.hide();
+                }
+            }
+        }
+    }
+    
+    // Initialiser le header
+    function initHeader() {
+        // Initialiser l'état du header
+        handleScroll();
+    }
+    
+    // Précharger les images
+    function preloadImages() {
+        const images = [
+            'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+            'https://images.unsplash.com/photo-1551183053-bf91a1d81141?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+            'https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+            'https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+        ];
+        
+        images.forEach(src => {
+            const img = new Image();
+            img.src = src;
+        });
+    }
+    
+    // Fallback si YouTube ne se charge pas
+    function setupYouTubeFallback() {
+        const videoSlide = document.getElementById('videoSlide1');
+        if (videoSlide) {
+            const iframe = videoSlide.querySelector('iframe');
+            if (iframe && iframe.offsetHeight === 0) {
+                console.warn('YouTube vidéo non chargée, activation du fallback');
+                
+                // Remplacer par une image
+                iframe.style.display = 'none';
+                const fallbackImg = document.createElement('img');
+                fallbackImg.src = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80';
+                fallbackImg.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;';
+                videoSlide.querySelector('.youtube-video-container').appendChild(fallbackImg);
+            }
+        }
+    }
+    
+    // Démarrer quand la page est chargée
+    window.addEventListener('load', function() {
+        console.log('Page chargée');
+        
+        // Forcer le redimensionnement initial
+        handleResize();
+        
+        // Vérifier à nouveau la vidéo après chargement
+        setTimeout(setupYouTubeFallback, 3000);
     });
+    </script>
     
-    window.addEventListener('scroll', function() {
-        const openDropdowns = document.querySelectorAll('.dropdown-menu.show');
-        if (openDropdowns.length > 0) {
-            centerAndFixDropdowns();
-        }
-    });
     
-    // Debounce pour le redimensionnement
-    let resizeTimer;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() {
-            centerAndFixDropdowns();
-            initBootstrapDropdowns();
-        }, 150);
-    });
-    
-    // Initialisation finale
-    setTimeout(centerAndFixDropdowns, 200);
-</script>
-<style>
-    /* 5 colonnes - 20% chacune */
-    .col-md-2-4 {
-        width: 20%;
-        float: left;
-        padding: 0 8px;
-        box-sizing: border-box;
-    }
-    
-    /* Clearfix */
-    #regionsDropdownContainer::after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-    
-    /* Style minimaliste des cartes */
-    .region-card-simple {
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-        margin-bottom: 12px;
-        border: 1px solid #e9ecef;
-        transition: all 0.2s ease;
-        cursor: pointer;
-    }
-    
-    .region-card-simple:hover {
-        border-color: #007bff;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    
-    .region-img-wrapper {
-        height: 80px;
-        overflow: hidden;
-        position: relative;
-    }
-    
-    .region-img-simple {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-    
-    .region-name {
-        padding: 10px 8px;
-        text-align: center;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #333;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        background: #f8f9fa;
-        border-top: 1px solid #e9ecef;
-    }
-    
-    .region-item-simple {
-        text-decoration: none;
-        display: block;
-        animation: fadeIn 0.3s ease forwards;
-        opacity: 0;
-    }
-    
-    /* Animation */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Responsive */
-    @media (max-width: 1200px) {
-        .col-md-2-4 { width: 25%; padding: 0 6px; }
-    }
-    
-    @media (max-width: 992px) {
-        .col-md-2-4 { width: 33.333%; padding: 0 5px; }
-        .region-img-wrapper { height: 70px; }
-    }
-    
-    @media (max-width: 768px) {
-        .col-md-2-4 { width: 50%; padding: 0 4px; }
-        .region-img-wrapper { height: 65px; }
-        .region-name { font-size: 0.8rem; padding: 8px 4px; }
-    }
-    
-    @media (max-width: 480px) {
-        .col-md-2-4 { width: 100%; padding: 0; }
-        .region-card-simple { 
-            display: flex; 
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .region-img-wrapper { 
-            width: 100px; 
-            height: 60px; 
-            flex-shrink: 0; 
-        }
-        .region-name { 
-            flex-grow: 1; 
-            border: none; 
-            text-align: left; 
-            padding-left: 12px;
-            background: white;
-        }
-    }
-    
-    /* Loader */
-    .spinner-border-sm {
-        width: 1rem;
-        height: 1rem;
-    }
-    
-    /* Dropdown centré */
-    .dropdown-menu.full-width {
-        min-width: 100vw !important;
-    }
-</style>
 </body>
 </html>
