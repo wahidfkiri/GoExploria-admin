@@ -17,10 +17,36 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
    
-    
     <link rel="stylesheet" href="{{asset('css/styles.css')}}">
+ 
 </head>
 <body>
+    <!-- Top Bar -->
+    <div class="top-bar d-none d-lg-block">
+        <div class="container">
+            <div class="top-bar-left">
+                <a href="mailto:katylavoie1972@hotmail.com" class="top-bar-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>katylavoie1972@hotmail.com</span>
+                </a>
+                <a href="tel:4188279000" class="top-bar-item">
+                    <i class="fas fa-phone"></i>
+                    <span>418-827-9000</span>
+                </a>
+            </div>
+            <div class="top-bar-right">
+                <div class="top-bar-social">
+                    <a href="https://www.facebook.com/groups/763632935467487" target="_blank" class="top-bar-item">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.goexploria.com/fr/company/146197/chez-jim-pizza" target="_blank" class="top-bar-item">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Header avec Mega Menu -->
     <header class="main-header">
         <nav class="navbar navbar-expand-lg">
@@ -83,7 +109,7 @@
                                                 </ul>
                                                 
                                                 <div class="map-container">
-                                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2724.991912612403!2d-71.20738268431515!3d46.84032267914217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8966c75a7b2f1%3A0x2e5e1a5c4b8c8b9e!2sQu%C3%A9bec%20City%2C%20QC!5e0!3m2!1sen!2sca!4v1623345678901!5m2!1sen!2sca" allowfullscreen="" loading="lazy"></iframe>
+                                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2724.991912612403!2d-71.20738268431515!3d46.84032257914217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8966c75a7b2f1%3A0x2e5e1a5c4b8c8b9e!2sQu%C3%A9bec%20City%2C%20QC!5e0!3m2!1sen!2sca!4v1623345678901!5m2!1sen!2sca" allowfullscreen="" loading="lazy"></iframe>
                                                 </div>
                                             </div>
                                         </div>
@@ -106,9 +132,88 @@
                             </div>
                         </li>
                         
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="#tourisme">Tourisme</a>
-                        </li> -->
+                        <!-- Mega Menu Points de Vente -->
+                        <li class="nav-item dropdown has-mega-menu mega-hover">
+                            <a class="nav-link dropdown-toggle" href="#" id="pointsVenteDropdown" role="button" aria-expanded="false">
+                                Points de ventes
+                            </a>
+                            <div class="dropdown-menu mega-menu" aria-labelledby="pointsVenteDropdown">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h5 class="mb-4"><i class="fas fa-store me-2"></i> Nos Points de Vente</h5>
+                                            <div class="points-vente-grid">
+                                                <!-- Point de vente 1 -->
+                                                <div class="point-vente-card">
+                                                    <h6 class="point-vente-title">Restaurant Principal</h6>
+                                                    <div class="point-vente-info">
+                                                        <p>
+                                                            <i class="fas fa-map-marker-alt"></i>
+                                                            <span>123 Rue de la Pizza, Québec, QC G1A 0A1</span>
+                                                        </p>
+                                                        <p>
+                                                            <i class="fas fa-phone"></i>
+                                                            <a href="tel:4188279001">418-827-9001</a>
+                                                        </p>
+                                                        <p>
+                                                            <i class="fas fa-clock"></i>
+                                                            <span>Lun-Sam: 11h-22h, Dim: 12h-21h</span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="point-vente-map">
+                                                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2724.991912612403!2d-71.20738268431515!3d46.84032257914217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8966c75a7b2f1%3A0x2e5e1a5c4b8c8b9e!2sQu%C3%A9bec%20City%2C%20QC!5e0!3m2!1sen!2sca!4v1623345678901!5m2!1sen!2sca" allowfullscreen loading="lazy"></iframe>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Point de vente 2 -->
+                                                <div class="point-vente-card">
+                                                    <h6 class="point-vente-title">Succursale Beaupré</h6>
+                                                    <div class="point-vente-info">
+                                                        <p>
+                                                            <i class="fas fa-map-marker-alt"></i>
+                                                            <span>456 Av. des Saveurs, Beaupré, QC G0A 1E0</span>
+                                                        </p>
+                                                        <p>
+                                                            <i class="fas fa-phone"></i>
+                                                            <a href="tel:4188279002">418-827-9002</a>
+                                                        </p>
+                                                        <p>
+                                                            <i class="fas fa-clock"></i>
+                                                            <span>Mar-Dim: 11h-21h, Lun fermé</span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="point-vente-map">
+                                                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2725.123456789012!2d-71.215478!3d46.850123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8967d7b2f3a1b%3A0x3e4d1c2b3a4b5c6d!2sBeaupr%C3%A9%2C%20QC!5e0!3m2!1sen!2sca!4v1623345678901!5m2!1sen!2sca" allowfullscreen loading="lazy"></iframe>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Point de vente 3 -->
+                                                <div class="point-vente-card">
+                                                    <h6 class="point-vente-title">Kiosque Mont-Sainte-Anne</h6>
+                                                    <div class="point-vente-info">
+                                                        <p>
+                                                            <i class="fas fa-map-marker-alt"></i>
+                                                            <span>Station de ski Mont-Sainte-Anne, Beaupré</span>
+                                                        </p>
+                                                        <p>
+                                                            <i class="fas fa-phone"></i>
+                                                            <a href="tel:4188279003">418-827-9003</a>
+                                                        </p>
+                                                        <p>
+                                                            <i class="fas fa-clock"></i>
+                                                            <span>Saison hiver: 9h-17h, Été: 10h-16h</span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="point-vente-map">
+                                                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2725.234567890123!2d-71.225678!3d46.860234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8968e8b2f4a1c%3A0x4d5e6f7g8h9i0j1!2sMont-Sainte-Anne%2C%20Beaupr%C3%A9%2C%20QC!5e0!3m2!1sen!2sca!4v1623345678901!5m2!1sen!2sca" allowfullscreen loading="lazy"></iframe>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
                         
                         <li class="nav-item">
                             <a class="nav-link" href="#webtv">Web TV</a>
@@ -116,10 +221,10 @@
                         
                         <!-- Mega Menu Photos -->
                         <li class="nav-item dropdown has-mega-menu mega-hover">
-    <a class="nav-link dropdown-toggle" href="#" id="photosDropdown" role="button" aria-expanded="false">
-        Photos
-    </a>
-    <div class="dropdown-menu mega-menu photos-mega-menu" aria-labelledby="photosDropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="photosDropdown" role="button" aria-expanded="false">
+                                Photos
+                            </a>
+                            <div class="dropdown-menu mega-menu photos-mega-menu" aria-labelledby="photosDropdown">
                                 <div class="container-fluid">
                                     <div class="row">
                                         <!-- Galerie photos -->
@@ -171,15 +276,15 @@
                             </div>
                         </li>
                         
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="#certificats">Certificats Cadeaux</a>
-                        </li>
+                        </li> -->
                         
                        <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="extrasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Les Extras
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="extrasDropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="extrasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Les Extras
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="extrasDropdown">
                                 <li><a class="dropdown-item" href="#extras-viande"><i class="fas fa-bacon"></i> Extras Viande</a></li>
                                 <li><a class="dropdown-item" href="#extras-legumes"><i class="fas fa-carrot"></i> Extras Légumes</a></li>
                                 <li><a class="dropdown-item" href="#extras-divers"><i class="fas fa-cheese"></i> Extras Divers</a></li>
@@ -188,10 +293,10 @@
                         
                         <!-- Mega Menu Promotions -->
                        <li class="nav-item dropdown has-mega-menu mega-hover">
-    <a class="nav-link dropdown-toggle" href="#" id="promosDropdown" role="button" aria-expanded="false">
-        Promotions
-    </a>
-    <div class="dropdown-menu mega-menu promo-mega-menu" aria-labelledby="promosDropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="promosDropdown" role="button" aria-expanded="false">
+                                Promotions
+                            </a>
+                            <div class="dropdown-menu mega-menu promo-mega-menu" aria-labelledby="promosDropdown">
                                 <div class="container-fluid">
                                     <div class="row">
                                         <!-- Promo 1 -->
@@ -264,6 +369,7 @@
         </nav>
     </header>
 
+    <!-- Le reste du code reste inchangé -->
     <!-- Hero Slider avec SOLUTION DE CONTOURNEMENT -->
     <section class="hero-slider" id="home">
         <div class="video-slider-container">
@@ -321,6 +427,7 @@
         </div>
     </section>
 
+    <!-- Le reste du code HTML reste exactement le même... -->
     <!-- Section Menu Map -->
     <section class="section-map" id="menu-map">
         <div class="container">
@@ -861,7 +968,7 @@
                         <!-- Pizza Pepperoni -->
                         <div class="col-md-6 col-lg-4">
                             <div class="menu-item-card">
-                                <img src="{{ asset('images/9ce5c8c2-a974-4e94-8d30-efdcc2caf3ae.avif') }}" alt="Pizza Pepperoni" class="menu-item-img">
+                                <img src="{{ asset('images/9093d02c-620a-4939-a877-2f9bbc03f2ca-1280x854.jpg') }}" alt="Pizza Pepperoni" class="menu-item-img">
                                 <div class="menu-item-body">
                                     <div class="menu-item-title">
                                         <h4>Salade Fraîche du Jardin</h4>
@@ -887,6 +994,63 @@
                             </div>
                         </div>
                         
+                        <!-- Pizza Hawaïenne -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza Hawaïenne" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Hawaïenne</h4>
+                                        <span class="menu-item-price">15.50$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Sauce, jambon, mozzarella et ananas</p>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Taille</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>8"</td><td>15.50$</td></tr>
+                                            <tr><td>10"</td><td>20.90$</td></tr>
+                                            <tr><td>12"</td><td>27.85$</td></tr>
+                                            <tr><td>14"</td><td>33.75$</td></tr>
+                                            <tr><td>16"</td><td>39.50$</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pizza Végétarienne -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="menu-item-card">
+                                <img src="https://images.unsplash.com/photo-1571066811602-716837d681de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza Végétarienne" class="menu-item-img">
+                                <div class="menu-item-body">
+                                    <div class="menu-item-title">
+                                        <h4>Végétarienne</h4>
+                                        <span class="menu-item-price">14.76$</span>
+                                    </div>
+                                    <p class="menu-item-ingredients">Sauce, champignon, mozzarella, piments rouges et verts, tomates et oignons</p>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Taille</th>
+                                                <th>Prix</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>8"</td><td>14.76$</td></tr>
+                                            <tr><td>10"</td><td>19.50$</td></tr>
+                                            <tr><td>12"</td><td>26.91$</td></tr>
+                                            <tr><td>14"</td><td>31.70$</td></tr>
+                                            <tr><td>16"</td><td>36.45$</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1004,16 +1168,16 @@
                             La meilleure pizza de la Côte de Beaupré! Depuis des années, nous servons des pizzas faites avec des ingrédients frais et beaucoup de passion.
                         </p>
                         <div class="social-icons">
-                            <a href="#" class="social-icon">
+                            <a href="https://www.facebook.com/groups/763632935467487" target="_blank" class="social-icon">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a href="#" class="social-icon">
+                            <!-- <a href="#" class="social-icon">
                                 <i class="fab fa-instagram"></i>
                             </a>
                             <a href="#" class="social-icon">
                                 <i class="fab fa-tripadvisor"></i>
-                            </a>
-                            <a href="#" class="social-icon">
+                            </a> -->
+                            <a href="https://www.goexploria.com/fr/company/146197/chez-jim-pizza" target="_blank" class="social-icon">
                                 <i class="fab fa-youtube"></i>
                             </a>
                         </div>
@@ -1621,7 +1785,5 @@ document.addEventListener('click', function(e) {
         setTimeout(setupYouTubeFallback, 3000);
     });
     </script>
-    
-    
 </body>
 </html>
