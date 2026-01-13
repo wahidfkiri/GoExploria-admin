@@ -299,8 +299,8 @@ h5 { font-size: 1.1rem; }
 }
 
 .navbar-brand img {
-    height: 120px; /* Logo agrandi */
-    margin-left: 20px;
+     height: 180px !important;
+    margin-left: 30px;
     transition: var(--transition);
 }
 
