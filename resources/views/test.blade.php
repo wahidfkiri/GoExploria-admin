@@ -132,88 +132,121 @@
                             </div>
                         </li>
                         
-                        <!-- Mega Menu Points de Vente -->
-                        <li class="nav-item dropdown has-mega-menu mega-hover">
-                            <a class="nav-link dropdown-toggle" href="#" id="pointsVenteDropdown" role="button" aria-expanded="false">
-                                Points de ventes
-                            </a>
-                            <div class="dropdown-menu mega-menu" aria-labelledby="pointsVenteDropdown">
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <h5 class="mb-4"><i class="fas fa-store me-2"></i> Nos Points de Vente</h5>
-                                            <div class="points-vente-grid">
-                                                <!-- Point de vente 1 -->
-                                                <div class="point-vente-card">
-                                                    <h6 class="point-vente-title">Restaurant Principal</h6>
-                                                    <div class="point-vente-info">
-                                                        <p>
-                                                            <i class="fas fa-map-marker-alt"></i>
-                                                            <span>123 Rue de la Pizza, Québec, QC G1A 0A1</span>
-                                                        </p>
-                                                        <p>
-                                                            <i class="fas fa-phone"></i>
-                                                            <a href="tel:4188279001">418-827-9001</a>
-                                                        </p>
-                                                        <p>
-                                                            <i class="fas fa-clock"></i>
-                                                            <span>Lun-Sam: 11h-22h, Dim: 12h-21h</span>
-                                                        </p>
-                                                    </div>
-                                                    <div class="point-vente-map">
-                                                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2724.991912612403!2d-71.20738268431515!3d46.84032257914217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8966c75a7b2f1%3A0x2e5e1a5c4b8c8b9e!2sQu%C3%A9bec%20City%2C%20QC!5e0!3m2!1sen!2sca!4v1623345678901!5m2!1sen!2sca" allowfullscreen loading="lazy"></iframe>
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- Point de vente 2 -->
-                                                <div class="point-vente-card">
-                                                    <h6 class="point-vente-title">Succursale Beaupré</h6>
-                                                    <div class="point-vente-info">
-                                                        <p>
-                                                            <i class="fas fa-map-marker-alt"></i>
-                                                            <span>456 Av. des Saveurs, Beaupré, QC G0A 1E0</span>
-                                                        </p>
-                                                        <p>
-                                                            <i class="fas fa-phone"></i>
-                                                            <a href="tel:4188279002">418-827-9002</a>
-                                                        </p>
-                                                        <p>
-                                                            <i class="fas fa-clock"></i>
-                                                            <span>Mar-Dim: 11h-21h, Lun fermé</span>
-                                                        </p>
-                                                    </div>
-                                                    <div class="point-vente-map">
-                                                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2725.123456789012!2d-71.215478!3d46.850123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8967d7b2f3a1b%3A0x3e4d1c2b3a4b5c6d!2sBeaupr%C3%A9%2C%20QC!5e0!3m2!1sen!2sca!4v1623345678901!5m2!1sen!2sca" allowfullscreen loading="lazy"></iframe>
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- Point de vente 3 -->
-                                                <div class="point-vente-card">
-                                                    <h6 class="point-vente-title">Kiosque Mont-Sainte-Anne</h6>
-                                                    <div class="point-vente-info">
-                                                        <p>
-                                                            <i class="fas fa-map-marker-alt"></i>
-                                                            <span>Station de ski Mont-Sainte-Anne, Beaupré</span>
-                                                        </p>
-                                                        <p>
-                                                            <i class="fas fa-phone"></i>
-                                                            <a href="tel:4188279003">418-827-9003</a>
-                                                        </p>
-                                                        <p>
-                                                            <i class="fas fa-clock"></i>
-                                                            <span>Saison hiver: 9h-17h, Été: 10h-16h</span>
-                                                        </p>
-                                                    </div>
-                                                    <div class="point-vente-map">
-                                                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2725.234567890123!2d-71.225678!3d46.860234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8968e8b2f4a1c%3A0x4d5e6f7g8h9i0j1!2sMont-Sainte-Anne%2C%20Beaupr%C3%A9%2C%20QC!5e0!3m2!1sen!2sca!4v1623345678901!5m2!1sen!2sca" allowfullscreen loading="lazy"></iframe>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                       <!-- Mega Menu Points de Vente -->
+<li class="nav-item dropdown has-mega-menu mega-hover">
+    <a class="nav-link dropdown-toggle" href="#" id="pointsVenteDropdown" role="button" aria-expanded="false">
+        Points de ventes
+    </a>
+    <div class="dropdown-menu mega-menu" aria-labelledby="pointsVenteDropdown">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="mb-4"><i class="fas fa-store me-2"></i> Nos Points de Vente</h5>
+                    <div class="points-vente-grid">
+                        <!-- Point de vente 1 -->
+                        <div class="point-vente-card">
+                            <h6 class="point-vente-title">Restaurant Principal</h6>
+                            <div class="point-vente-info">
+                                <p>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>123 Rue de la Pizza, Québec, QC G1A 0A1</span>
+                                </p>
+                                <p>
+                                    <i class="fas fa-phone"></i>
+                                    <a href="tel:4188279001">418-827-9001</a>
+                                </p>
+                                <p>
+                                    <i class="fas fa-clock"></i>
+                                    <span>Lun-Sam: 11h-22h, Dim: 12h-21h</span>
+                                </p>
+                                <!-- NOUVEAU : Section produits vendus -->
+                                <div class="produits-vendus">
+                                    <h6><i class="fas fa-pizza-slice me-2"></i> Produits disponibles</h6>
+                                    <div class="produits-list">
+                                        <span class="badge bg-success">Pizza fraîche</span>
+                                        <span class="badge bg-warning">Pizza congelée</span>
+                                        <span class="badge bg-info">Entrées</span>
+                                        <span class="badge bg-primary">Burgers</span>
+                                        <span class="badge bg-danger">Poutines</span>
+                                        <span class="badge bg-secondary">Salades</span>
                                     </div>
                                 </div>
                             </div>
-                        </li>
+                            <div class="point-vente-map">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2724.991912612403!2d-71.20738268431515!3d46.84032257914217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8966c75a7b2f1%3A0x2e5e1a5c4b8c8b9e!2sQu%C3%A9bec%20City%2C%20QC!5e0!3m2!1sen!2sca!4v1623345678901!5m2!1sen!2sca" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        
+                        <!-- Point de vente 2 -->
+                        <div class="point-vente-card">
+                            <h6 class="point-vente-title">Succursale Beaupré</h6>
+                            <div class="point-vente-info">
+                                <p>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>456 Av. des Saveurs, Beaupré, QC G0A 1E0</span>
+                                </p>
+                                <p>
+                                    <i class="fas fa-phone"></i>
+                                    <a href="tel:4188279002">418-827-9002</a>
+                                </p>
+                                <p>
+                                    <i class="fas fa-clock"></i>
+                                    <span>Mar-Dim: 11h-21h, Lun fermé</span>
+                                </p>
+                                <!-- NOUVEAU : Section produits vendus -->
+                                <div class="produits-vendus">
+                                    <h6><i class="fas fa-pizza-slice me-2"></i> Produits disponibles</h6>
+                                    <div class="produits-list">
+                                        <span class="badge bg-success">Pizza fraîche</span>
+                                        <span class="badge bg-warning">Pizza congelée</span>
+                                        <span class="badge bg-info">Entrées</span>
+                                        <span class="badge bg-primary">Menu midi</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="point-vente-map">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2725.123456789012!2d-71.215478!3d46.850123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8967d7b2f3a1b%3A0x3e4d1c2b3a4b5c6d!2sBeaupr%C3%A9%2C%20QC!5e0!3m2!1sen!2sca!4v1623345678901!5m2!1sen!2sca" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        
+                        <!-- Point de vente 3 -->
+                        <div class="point-vente-card">
+                            <h6 class="point-vente-title">Kiosque Mont-Sainte-Anne</h6>
+                            <div class="point-vente-info">
+                                <p>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Station de ski Mont-Sainte-Anne, Beaupré</span>
+                                </p>
+                                <p>
+                                    <i class="fas fa-phone"></i>
+                                    <a href="tel:4188279003">418-827-9003</a>
+                                </p>
+                                <p>
+                                    <i class="fas fa-clock"></i>
+                                    <span>Saison hiver: 9h-17h, Été: 10h-16h</span>
+                                </p>
+                                <!-- NOUVEAU : Section produits vendus -->
+                                <div class="produits-vendus">
+                                    <h6><i class="fas fa-pizza-slice me-2"></i> Produits disponibles</h6>
+                                    <div class="produits-list">
+                                        <span class="badge bg-warning">Pizza congelée</span>
+                                        <span class="badge bg-info">Sandwiches</span>
+                                        <span class="badge bg-primary">Boissons</span>
+                                        <span class="badge bg-secondary">Collations</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="point-vente-map">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2725.234567890123!2d-71.225678!3d46.860234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb8968e8b2f4a1c%3A0x4d5e6f7g8h9i0j1!2sMont-Sainte-Anne%2C%20Beaupr%C3%A9%2C%20QC!5e0!3m2!1sen!2sca!4v1623345678901!5m2!1sen!2sca" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>
+                        
                         
                         <li class="nav-item">
                             <a class="nav-link" href="#webtv">Web TV</a>
@@ -1125,37 +1158,189 @@
         </div>
     </section>
 
-    <!-- Gallery Slider -->
-    <section class="gallery-slider" id="photos">
-        <div class="container">
-            <h2 class="section-title text-center">Galerie Photos</h2>
-            <p class="text-center mb-5" style="max-width: 700px; margin: 0 auto; color: var(--gray-color);">
-                Découvrez l'ambiance de notre restaurant et la qualité de nos plats.
-            </p>
-            
-            <div class="swiper gallerySwiper">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide gallery-slide">
-                        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Intérieur restaurant">
-                    </div>
-                    <div class="swiper-slide gallery-slide">
-                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w-800&q=80" alt="Pizza préparée">
-                    </div>
-                    <div class="swiper-slide gallery-slide">
-                        <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza au four">
-                    </div>
-                    <div class="swiper-slide gallery-slide">
-                        <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Événement">
-                    </div>
-                    <div class="swiper-slide gallery-slide">
-                        <img src="https://images.unsplash.com/photo-1578474846511-04ba529f0b88?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Notre équipe">
+    <!-- Instagram Style Gallery -->
+<section class="instagram-gallery" id="photos">
+    <div class="container">
+        <h2 class="section-title text-center">Notre Univers</h2>
+        <p class="text-center mb-5" style="max-width: 700px; margin: 0 auto; color: var(--gray-color);">
+            Découvrez l'ambiance de Chez Jim Pizza à travers nos moments préférés
+        </p>
+        
+        <div class="gallery-grid">
+            <!-- Grand élément vidéo YouTube (1ère position) -->
+            <div class="gallery-item large youtube-item">
+                <div class="video-container">
+                    <iframe 
+                        src="https://www.youtube.com/embed/r9lfyTtewQI?autoplay=1&mute=1&loop=1&playlist=r9lfyTtewQI&controls=0&modestbranding=1&rel=0&showinfo=0"
+                        title="Notre pizza signature"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                    <div class="video-overlay">
+                        <div class="play-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-info">
+                            <h4>Notre Pizza Signature</h4>
+                            <p>Vidéo • 2:30</p>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="swiper-pagination"></div>
+            </div>
+            
+            <!-- Image moyenne (2ème position) -->
+            <div class="gallery-item medium">
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" alt="Intérieur restaurant">
+                    <div class="image-overlay">
+                        <div class="overlay-content">
+                            <h4>Ambiance Chaleureuse</h4>
+                            <p>Notre restaurant vous accueille</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image petite (3ème position) -->
+            <div class="gallery-item large">
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza préparée">
+                    <div class="image-overlay">
+                        <div class="overlay-content">
+                            <h4>Artisanat</h4>
+                            <p>Préparation à la main</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image moyenne (4ème position) -->
+            <div class="gallery-item medium">
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1578474846511-04ba529f0b88?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" alt="Notre équipe">
+                    <div class="image-overlay">
+                        <div class="overlay-content">
+                            <h4>Notre Équipe</h4>
+                            <p>Des passionnés à votre service</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image petite (5ème position) -->
+            <div class="gallery-item large">
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1571066811602-716837d681de?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Ingrédients frais">
+                    <div class="image-overlay">
+                        <div class="overlay-content">
+                            <h4>Ingrédients Frais</h4>
+                            <p>Qualité supérieure</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image moyenne (6ème position) -->
+            <div class="gallery-item medium">
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" alt="Pizza gastronomique">
+                    <div class="image-overlay">
+                        <div class="overlay-content">
+                            <h4>Gastronomie</h4>
+                            <p>Des pizzas d'exception</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image large (7ème position) -->
+            <div class="gallery-item large">
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80" alt="Événement au restaurant">
+                    <div class="image-overlay">
+                        <div class="overlay-content">
+                            <h4>Événements</h4>
+                            <p>Moment de partage</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image petite (8ème position) -->
+            <div class="gallery-item small">
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Oignons frits">
+                    <div class="image-overlay">
+                        <div class="overlay-content">
+                            <h4>Spécialités</h4>
+                            <p>Nos entrées maison</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image petite (9ème position) -->
+            <div class="gallery-item small">
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Bâtonnets de fromage">
+                    <div class="image-overlay">
+                        <div class="overlay-content">
+                            <h4>Fromages Fondants</h4>
+                            <p>Notre spécialité fromagère</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image moyenne (10ème position) -->
+            <div class="gallery-item medium">
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1567620832903-9fc6debc209f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" alt="Ailes de poulet">
+                    <div class="image-overlay">
+                        <div class="overlay-content">
+                            <h4>Ailes Croustillantes</h4>
+                            <p>Nos incontournables</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image petite (11ème position) -->
+            <div class="gallery-item small">
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza Pepperoni">
+                    <div class="image-overlay">
+                        <div class="overlay-content">
+                            <h4>Pepperoni</h4>
+                            <p>Notre classique</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image petite (12ème position) -->
+            <div class="gallery-item small">
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Pizza Hawaïenne">
+                    <div class="image-overlay">
+                        <div class="overlay-content">
+                            <h4>Hawaïenne</h4>
+                            <p>Douceur tropicale</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+        
+        <!-- Instagram CTA -->
+        <!-- <div class="instagram-cta text-center mt-5">
+            <p class="mb-3">Partagez vos moments #ChezJimPizza</p>
+            <a href="https://www.instagram.com/explore/tags/chezjimpizza/" target="_blank" class="btn btn-instagram">
+                <i class="fab fa-instagram me-2"></i> #ChezJimPizza
+            </a>
+        </div> -->
+    </div>
+</section>
 
     <!-- Footer -->
     <footer class="main-footer">
@@ -1402,6 +1587,9 @@ document.addEventListener('click', function(e) {
         
         // Initialiser la galerie Swiper
         initGallerySlider();
+
+        
+    initInstagramGallery();
         
         // Initialiser les événements
         setupEventListeners();
@@ -1422,6 +1610,10 @@ document.addEventListener('click', function(e) {
         initMenuMap();
 
         initHoverMegaMenu();
+
+        
+    // Initialiser les tooltips produits
+    initProduitsTooltips();
     
     // Re-initialiser au redimensionnement
     window.addEventListener('resize', function() {
@@ -1585,6 +1777,186 @@ document.addEventListener('click', function(e) {
             }
         });
     }
+
+   // Instagram Gallery Functions
+function initInstagramGallery() {
+    // Gérer les vidéos YouTube (juste la première)
+    const youtubeItems = document.querySelectorAll('.youtube-item');
+    
+    youtubeItems.forEach(item => {
+        const iframe = item.querySelector('iframe');
+        const overlay = item.querySelector('.video-overlay');
+        
+        // Gérer le clic sur les vidéos
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Ouvrir la vidéo en plein écran ou dans une modale
+            const videoSrc = iframe.src;
+            const cleanSrc = videoSrc.split('?')[0];
+            
+            // Pour un effet simple, on peut juste rediriger vers YouTube
+            window.open(cleanSrc.replace('/embed/', '/watch?v='), '_blank');
+        });
+        
+        // Animation au survol
+        item.addEventListener('mouseenter', function() {
+            if (overlay) {
+                overlay.style.opacity = '1';
+            }
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            if (overlay) {
+                overlay.style.opacity = '';
+            }
+        });
+    });
+    
+    // Gérer les images pour l'effet de zoom
+    const imageItems = document.querySelectorAll('.gallery-item:not(.youtube-item)');
+    
+    imageItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.zIndex = '10';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.zIndex = '';
+        });
+    });
+    
+    // Lightbox pour les images
+    const imageContainers = document.querySelectorAll('.image-container');
+    
+    imageContainers.forEach(container => {
+        container.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const imgSrc = this.querySelector('img').src;
+            const imgAlt = this.querySelector('img').alt;
+            
+            // Créer une lightbox simple
+            createLightbox(imgSrc, imgAlt);
+        });
+    });
+}
+
+// Créer une lightbox simple
+function createLightbox(imgSrc, imgAlt) {
+    // Vérifier si une lightbox existe déjà
+    const existingLightbox = document.getElementById('galleryLightbox');
+    if (existingLightbox) {
+        existingLightbox.remove();
+    }
+    
+    // Créer les éléments de la lightbox
+    const lightbox = document.createElement('div');
+    lightbox.id = 'galleryLightbox';
+    lightbox.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.9);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+    
+    const lightboxImg = document.createElement('img');
+    lightboxImg.src = imgSrc;
+    lightboxImg.alt = imgAlt;
+    lightboxImg.style.cssText = `
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+        border-radius: 5px;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    `;
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+    closeBtn.style.cssText = `
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255,255,255,0.1);
+        border: none;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    `;
+    
+    closeBtn.addEventListener('mouseenter', function() {
+        this.style.background = 'rgba(255,255,255,0.2)';
+    });
+    
+    closeBtn.addEventListener('mouseleave', function() {
+        this.style.background = 'rgba(255,255,255,0.1)';
+    });
+    
+    closeBtn.addEventListener('click', function() {
+        lightbox.style.opacity = '0';
+        setTimeout(() => {
+            if (lightbox.parentNode) {
+                lightbox.parentNode.removeChild(lightbox);
+            }
+        }, 300);
+    });
+    
+    // Fermer la lightbox en cliquant sur le fond
+    lightbox.addEventListener('click', function(e) {
+        if (e.target === this) {
+            lightbox.style.opacity = '0';
+            setTimeout(() => {
+                if (lightbox.parentNode) {
+                    lightbox.parentNode.removeChild(lightbox);
+                }
+            }, 300);
+        }
+    });
+    
+    // Fermer avec la touche Échap
+    document.addEventListener('keydown', function closeOnEscape(e) {
+        if (e.key === 'Escape') {
+            if (lightbox.parentNode) {
+                lightbox.style.opacity = '0';
+                setTimeout(() => {
+                    if (lightbox.parentNode) {
+                        lightbox.parentNode.removeChild(lightbox);
+                    }
+                }, 300);
+            }
+            document.removeEventListener('keydown', closeOnEscape);
+        }
+    });
+    
+    // Ajouter les éléments au DOM
+    lightbox.appendChild(lightboxImg);
+    lightbox.appendChild(closeBtn);
+    document.body.appendChild(lightbox);
+    
+    // Animer l'ouverture
+    setTimeout(() => {
+        lightbox.style.opacity = '1';
+        lightboxImg.style.transform = 'scale(1)';
+    }, 10);
+}
+
     
     // Configurer les événements
     function setupEventListeners() {
@@ -1694,6 +2066,39 @@ document.addEventListener('click', function(e) {
         updateActiveMenuLinks();
     }
     
+
+    // Tooltips pour les badges produits
+function initProduitsTooltips() {
+    const badges = document.querySelectorAll('.produits-list .badge');
+    
+    badges.forEach(badge => {
+        // Ajouter des tooltips selon le type de produit
+        const badgeText = badge.textContent.toLowerCase();
+        
+        if (badgeText.includes('pizza congelée')) {
+            badge.setAttribute('data-tooltip', 'Disponible à emporter');
+        } else if (badgeText.includes('pizza fraîche')) {
+            badge.setAttribute('data-tooltip', 'Préparée sur place');
+        } else if (badgeText.includes('entrées')) {
+            badge.setAttribute('data-tooltip', 'Oignons frits, ailes, etc.');
+        } else if (badgeText.includes('burgers')) {
+            badge.setAttribute('data-tooltip', 'Burgers gourmets');
+        } else if (badgeText.includes('poutines')) {
+            badge.setAttribute('data-tooltip', 'Notre spécialité');
+        } else if (badgeText.includes('salades')) {
+            badge.setAttribute('data-tooltip', 'Salades fraîches');
+        } else if (badgeText.includes('menu midi')) {
+            badge.setAttribute('data-tooltip', 'Formules déjeuner');
+        } else if (badgeText.includes('sandwiches')) {
+            badge.setAttribute('data-tooltip', 'Sandwiches chauds');
+        } else if (badgeText.includes('boissons')) {
+            badge.setAttribute('data-tooltip', 'Boissons fraîches');
+        } else if (badgeText.includes('collations')) {
+            badge.setAttribute('data-tooltip', 'Snacks et desserts');
+        }
+    });
+}
+
     // Mettre à jour les liens du menu actifs
     function updateActiveMenuLinks() {
         const sections = document.querySelectorAll('section[id]');
