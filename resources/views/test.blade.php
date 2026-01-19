@@ -18,6 +18,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
    
     <link rel="stylesheet" href="{{asset('css/styles.css')}}">
+    
  
 </head>
 <body>
@@ -1158,6 +1159,294 @@
         </div>
     </section>
 
+    <!-- NOUVELLE SECTION: Gallery Slider avec Preview -->
+<section class="gallery-preview-section" id="gallery-preview">
+    <div class="container">
+        <h2 class="section-title text-center">Notre Galerie Interactive</h2>
+        <p class="text-center mb-5" style="max-width: 700px; margin: 0 auto; color: var(--gray-color);">
+            Explorez nos spécialités. Cliquez sur une miniature pour voir l'image en grand.
+        </p>
+        
+        <div class="row">
+            <!-- Colonne principale - Image Preview Grande -->
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <div class="main-preview-container">
+                    <div class="main-preview-image">
+                        <img id="main-preview-img" src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                             alt="Pizza Signature">
+                        <div class="preview-overlay">
+                            <div class="preview-info">
+                                <h3 id="main-preview-title">Pizza Signature Jim</h3>
+                                <p id="main-preview-desc">Notre création exclusive avec fromages fins</p>
+                                <div class="preview-badge" id="main-preview-badge">
+                                    <i class="fas fa-fire"></i> Populaire
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Controls pour l'image principale -->
+                    <div class="preview-controls">
+                        <button class="preview-control-btn" id="prev-main">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="preview-control-btn" id="next-main">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="preview-control-btn" id="zoom-main">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                        <button class="preview-control-btn" id="play-pause">
+                            <i class="fas fa-play" id="play-icon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Colonne secondaire - Miniatures -->
+            <div class="col-lg-4">
+                <div class="thumbnails-column">
+                    <div class="thumbnails-header">
+                        <h4>
+                            <i class="fas fa-images me-2"></i>
+                            <span id="current-category">Toutes les photos</span>
+                            <small class="ms-2" id="photo-count">(8 photos)</small>
+                        </h4>
+                        <div class="category-filters">
+                            <button class="category-filter active" data-category="all">Tout</button>
+                            <button class="category-filter" data-category="pizza">Pizzas</button>
+                            <button class="category-filter" data-category="burger">Burgers</button>
+                            <button class="category-filter" data-category="poutine">Poutines</button>
+                        </div>
+                    </div>
+                    
+                    <div class="thumbnails-container">
+                        <!-- Thumbnail 1 -->
+                        <div class="thumbnail-item active" data-index="0" data-category="pizza">
+                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
+                                 alt="Pizza Signature">
+                            <div class="thumbnail-overlay">
+                                <div class="thumbnail-info">
+                                    <h6>Pizza Signature</h6>
+                                    <span class="badge bg-primary">Populaire</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Thumbnail 2 -->
+                        <div class="thumbnail-item" data-index="1" data-category="burger">
+                            <img src="{{ asset('images/Beef-Burgers-067.jpg') }}" alt="Burger Gourmet">
+                            <div class="thumbnail-overlay">
+                                <div class="thumbnail-info">
+                                    <h6>Burger Classique</h6>
+                                    <span class="badge bg-success">Nouveau</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Thumbnail 3 -->
+                        <div class="thumbnail-item" data-index="2" data-category="poutine">
+                            <img src="{{ asset('images/poutine classique.jpg') }}" alt="Poutine Maison">
+                            <div class="thumbnail-overlay">
+                                <div class="thumbnail-info">
+                                    <h6>Poutine Classique</h6>
+                                    <span class="badge bg-warning">Épicé</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Thumbnail 4 -->
+                        <div class="thumbnail-item" data-index="3" data-category="pizza">
+                            <img src="https://images.unsplash.com/photo-1571066811602-716837d681de?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
+                                 alt="Pizza Végétarienne">
+                            <div class="thumbnail-overlay">
+                                <div class="thumbnail-info">
+                                    <h6>Pizza Végétarienne</h6>
+                                    <span class="badge bg-info">Végétarien</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Thumbnail 5 -->
+                        <div class="thumbnail-item" data-index="4" data-category="burger">
+                            <img src="https://images.unsplash.com/photo-1567620832903-9fc6debc209f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
+                                 alt="Ailes de poulet">
+                            <div class="thumbnail-overlay">
+                                <div class="thumbnail-info">
+                                    <h6>Ailes de Poulet</h6>
+                                    <span class="badge bg-danger">Spécialité</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Thumbnail 6 -->
+                        <div class="thumbnail-item" data-index="5" data-category="restaurant">
+                            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
+                                 alt="Intérieur restaurant">
+                            <div class="thumbnail-overlay">
+                                <div class="thumbnail-info">
+                                    <h6>Notre Restaurant</h6>
+                                    <span class="badge bg-secondary">Ambiance</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Thumbnail 7 -->
+                        <div class="thumbnail-item" data-index="6" data-category="restaurant">
+                            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
+                                 alt="Cuisine ouverte">
+                            <div class="thumbnail-overlay">
+                                <div class="thumbnail-info">
+                                    <h6>Cuisine Ouverte</h6>
+                                    <span class="badge bg-dark">Transparent</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Thumbnail 8 -->
+                        <div class="thumbnail-item" data-index="7" data-category="poutine">
+                            <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
+                                 alt="Poutine Garnie">
+                            <div class="thumbnail-overlay">
+                                <div class="thumbnail-info">
+                                    <h6>Poutine Garnie</h6>
+                                    <span class="badge bg-success">Récompensé</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Controls supplémentaires -->
+                    <div class="thumbnails-footer">
+                        <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" id="progress-bar" style="width: 12.5%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small id="current-position">Photo 1 sur 8</small>
+                            <div class="thumb-controls">
+                                <button class="thumb-control-btn" id="auto-play-toggle">
+                                    <i class="fas fa-pause" id="auto-play-icon"></i>
+                                </button>
+                                <button class="thumb-control-btn" id="fullscreen-toggle">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mini Sections Sliders -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h4 class="text-center mb-4">
+                    <i class="fas fa-th-large me-2"></i>Découvrez par catégories
+                </h4>
+            </div>
+            
+            <!-- Mini Slider Pizzas -->
+            <div class="col-md-4 mb-4">
+                <div class="mini-slider-card">
+                    <div class="mini-slider-header">
+                        <h5><i class="fas fa-pizza-slice me-2"></i> Nos Pizzas</h5>
+                        <div class="mini-slider-nav">
+                            <button class="mini-nav-btn" data-slider="pizza" data-direction="prev">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="mini-nav-btn" data-slider="pizza" data-direction="next">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mini-slider" id="pizza-slider">
+                        <div class="mini-slider-track">
+                            <div class="mini-slide">
+                                <img src="https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Pepperoni">
+                                <div class="mini-slide-caption">Pepperoni</div>
+                            </div>
+                            <div class="mini-slide">
+                                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Hawaïenne">
+                                <div class="mini-slide-caption">Hawaïenne</div>
+                            </div>
+                            <div class="mini-slide">
+                                <img src="https://images.unsplash.com/photo-1571066811602-716837d681de?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Végétarienne">
+                                <div class="mini-slide-caption">Végétarienne</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mini Slider Burgers -->
+            <div class="col-md-4 mb-4">
+                <div class="mini-slider-card">
+                    <div class="mini-slider-header">
+                        <h5><i class="fas fa-hamburger me-2"></i> Burgers & More</h5>
+                        <div class="mini-slider-nav">
+                            <button class="mini-nav-btn" data-slider="burger" data-direction="prev">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="mini-nav-btn" data-slider="burger" data-direction="next">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mini-slider" id="burger-slider">
+                        <div class="mini-slider-track">
+                            <div class="mini-slide">
+                                <img src="{{ asset('images/Beef-Burgers-067.jpg') }}" alt="Burger Classique">
+                                <div class="mini-slide-caption">Burger Classique</div>
+                            </div>
+                            <div class="mini-slide">
+                                <img src="https://images.unsplash.com/photo-1567620832903-9fc6debc209f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Ailes de poulet">
+                                <div class="mini-slide-caption">Ailes de Poulet</div>
+                            </div>
+                            <div class="mini-slide">
+                                <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Bâtonnets fromage">
+                                <div class="mini-slide-caption">Bâtonnets Fromage</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mini Slider Poutines -->
+            <div class="col-md-4 mb-4">
+                <div class="mini-slider-card">
+                    <div class="mini-slider-header">
+                        <h5><i class="fas fa-cheese me-2"></i> Poutines</h5>
+                        <div class="mini-slider-nav">
+                            <button class="mini-nav-btn" data-slider="poutine" data-direction="prev">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="mini-nav-btn" data-slider="poutine" data-direction="next">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mini-slider" id="poutine-slider">
+                        <div class="mini-slider-track">
+                            <div class="mini-slide">
+                                <img src="{{ asset('images/poutine classique.jpg') }}" alt="Poutine Classique">
+                                <div class="mini-slide-caption">Classique</div>
+                            </div>
+                            <div class="mini-slide">
+                                <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Poutine Garnie">
+                                <div class="mini-slide-caption">Garnie</div>
+                            </div>
+                            <div class="mini-slide">
+                                <img src="https://images.unsplash.com/photo-1571066811602-716837d681de?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Poutine Spéciale">
+                                <div class="mini-slide-caption">Spéciale</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
     <!-- Instagram Style Gallery -->
 <section class="instagram-gallery" id="photos">
     <div class="container">
@@ -2190,5 +2479,6 @@ function initProduitsTooltips() {
         setTimeout(setupYouTubeFallback, 3000);
     });
     </script>
+    <script src="{{asset('js/gallery.js')}}"></script>
 </body>
 </html>
