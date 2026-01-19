@@ -88,4 +88,9 @@ class AjaxAuthController extends Controller
             'redirect' => route('dashboard')
         ]);
     }
+
+    public function showRegisterForm()
+    {
+        return view('auth.register');
+    }
 }

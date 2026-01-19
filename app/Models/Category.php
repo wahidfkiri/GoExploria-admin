@@ -16,13 +16,18 @@ class Category extends Model
         'is_active',
     ];
 
-    public function websites(): HasMany
+    public function websites()
     {
         return $this->hasMany(Website::class, 'categorie_id');
     }
 
-    public function templates(): HasMany
+    public function templates()
     {
         return $this->hasMany(Template::class, 'categorie_id');
+    }
+
+     public function activities()
+    {
+        return $this->hasMany(Activity::class);
     }
 }

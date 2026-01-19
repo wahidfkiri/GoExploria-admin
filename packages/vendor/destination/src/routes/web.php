@@ -1,6 +1,11 @@
 <?php
 
 use Vendor\Destination\Controllers\DestinationController;
+use Vendor\Destination\Controllers\ContinentController;
+use Vendor\Destination\Controllers\CountryController;
+use Vendor\Destination\Controllers\ProvinceController;
+use Vendor\Destination\Controllers\RegionController;
+use Vendor\Destination\Controllers\VilleController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,6 +27,104 @@ Route::prefix('destinations')->group(function () {
     Route::get('/statistics', [DestinationController::class, 'statistics'])->name('destinations.statistics');
     
 });
+
+Route::resource('continents', ContinentController::class);
+
+// Routes supplémentaires
+Route::get('continents/{continent}/countries', [ContinentController::class, 'getCountries'])
+    ->name('continents.countries');
+Route::get('continents/statistics/data', [ContinentController::class, 'getStatistics'])
+    ->name('continents.statistics');
+
+// Routes pour les localisations
+Route::get('/secteurs', [DestinationController::class, 'getSecteurs'])->name('secteurs.index');
+
+
+
+// Routes pour les pays
+Route::resource('countries', CountryController::class);
+
+// Routes AJAX pour les pays
+Route::get('countries/statistics/data', [CountryController::class, 'getStatistics'])
+    ->name('countries.statistics');
+Route::get('countries/{country}/provinces', [CountryController::class, 'getProvinces'])
+    ->name('countries.provinces');
+Route::get('countries/by-continent/{continentCode}', [CountryController::class, 'getByContinent'])
+    ->name('countries.by-continent');
+Route::get('countries/search/autocomplete', [CountryController::class, 'search'])
+    ->name('countries.search');
+
+
+
+    // Routes pour les provinces
+Route::resource('provinces', ProvinceController::class);
+
+// Routes AJAX pour les provinces
+Route::get('provinces/statistics/data', [ProvinceController::class, 'getStatistics'])
+    ->name('provinces.statistics');
+Route::get('provinces/{province}/regions', [ProvinceController::class, 'getRegions'])
+    ->name('provinces.regions');
+Route::get('provinces/{province}/villes', [ProvinceController::class, 'getVilles'])
+    ->name('provinces.villes');
+Route::get('provinces/by-country/{countryCode}', [ProvinceController::class, 'getByCountry'])
+    ->name('provinces.by-country');
+Route::get('provinces/search/autocomplete', [ProvinceController::class, 'search'])
+    ->name('provinces.search');
+
+
+
+    // Routes pour les régions
+Route::resource('regions', RegionController::class);
+
+// Routes AJAX pour les régions
+Route::get('regions/statistics/data', [RegionController::class, 'getStatistics'])
+    ->name('regions.statistics');
+Route::get('regions/{region}/cities', [RegionController::class, 'getCities'])
+    ->name('regions.cities');
+Route::get('regions/{region}/secteurs', [RegionController::class, 'getSecteurs'])
+    ->name('regions.secteurs');
+Route::get('regions/by-province/{provinceCode}', [RegionController::class, 'getByProvince'])
+    ->name('regions.by-province');
+Route::get('regions/search/autocomplete', [RegionController::class, 'search'])
+    ->name('regions.search');
+Route::get('regions/by-classification/{classification}', [RegionController::class, 'getByClassification'])
+    ->name('regions.by-classification');
+Route::get('regions/export/data', [RegionController::class, 'export'])
+    ->name('regions.export');
+Route::post('regions/{id}/restore', [RegionController::class, 'restore'])
+    ->name('regions.restore');
+
+// Routes pour les villes
+Route::resource('villes', VilleController::class);
+
+// Routes AJAX pour les villes
+Route::get('villes/statistics/data', [VilleController::class, 'getStatistics'])
+    ->name('villes.statistics');
+Route::get('villes/by-country/{countryCode}', [VilleController::class, 'getByCountry'])
+    ->name('villes.by-country');
+Route::get('villes/by-province/{provinceCode}', [VilleController::class, 'getByProvince'])
+    ->name('villes.by-province');
+Route::get('villes/by-region/{regionCode}', [VilleController::class, 'getByRegion'])
+    ->name('villes.by-region');
+Route::get('villes/search/autocomplete', [VilleController::class, 'search'])
+    ->name('villes.search');
+Route::get('villes/by-status/{status}', [VilleController::class, 'getByStatus'])
+    ->name('villes.by-status');
+Route::get('villes/by-classification/{classification}', [VilleController::class, 'getByClassification'])
+    ->name('villes.by-classification');
+Route::get('villes/export/data', [VilleController::class, 'export'])
+    ->name('villes.export');
+Route::post('villes/{id}/restore', [VilleController::class, 'restore'])
+    ->name('villes.restore');
+
+// Routes pour les dépendances
+Route::get('villes/country/{countryId}/provinces', [VilleController::class, 'getProvincesByCountry'])
+    ->name('villes.provinces-by-country');
+Route::get('villes/province/{provinceId}/regions', [VilleController::class, 'getRegionsByProvince'])
+    ->name('villes.regions-by-province');
+Route::get('villes/region/{regionId}/secteurs', [VilleController::class, 'getSecteursByRegion'])
+    ->name('villes.secteurs-by-region');
+
 
 });
 

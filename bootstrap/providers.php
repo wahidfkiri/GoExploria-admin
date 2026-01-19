@@ -9,4 +9,6 @@ return [
     Vendor\Website\WebsiteServiceProvider::class,
     Vendor\Destination\DestinationServiceProvider::class,
     Vendor\Administration\AdministrationServiceProvider::class,
+    Vendor\GeoMap\GeoMapServiceProvider::class,
+    Vendor\Activitie\ActivitieServiceProvider::class,
 ];

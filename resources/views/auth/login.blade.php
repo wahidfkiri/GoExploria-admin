@@ -401,14 +401,14 @@
             </form>
 
             <!-- Lien vers inscription -->
-            <!-- <div class="text-center mt-5">
+            <div class="text-center mt-5">
                 <p class="text-gray-600 text-sm">
                     Pas encore de compte ? 
                     <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-800 font-medium hover:underline">
                         S'inscrire
                     </a>
                 </p>
-            </div> -->
+            </div>
 
             <!-- Séparateur -->
             <!-- <div class="my-6">

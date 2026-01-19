@@ -17,7 +17,8 @@
         "openai-php/laravel": "^0.18.0",
         "roach-php/core": "^3.2",
         "spatie/browsershot": "^5.2",
-        "spatie/crawler": "^8.4"
+        "spatie/crawler": "^8.4",
+        "spatie/laravel-permission": "^6.24"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -38,7 +39,9 @@
             "Vendor\\Customer\\": "packages/vendor/customer/src",
             "Vendor\\Website\\": "packages/vendor/website/src",
             "Vendor\\Destination\\": "packages/vendor/destination/src",
-            "Vendor\\Administration\\": "packages/vendor/administration/src"
+            "Vendor\\Administration\\": "packages/vendor/administration/src",
+            "Vendor\\GeoMap\\": "packages/vendor/geo-map/src",
+            "Vendor\\Activitie\\": "packages/vendor/activitie/src"
         }
     },
     "autoload-dev": {

@@ -22,6 +22,9 @@ use App\Http\Controllers\TemplateScraperController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/welcome', function () {
+    return view('welcome1');
+});
 Route::get('/test', function () {
     return view('test');
 });
@@ -43,6 +46,7 @@ Route::get('/home', function () {
 // Authentification Ajax
 Route::post('/ajax-login', [AjaxAuthController::class, 'login'])->name('ajax.login');
 Route::post('/ajax-register', [AjaxAuthController::class, 'register'])->name('register');
+Route::get('/ajax-register', [AjaxAuthController::class, 'showRegisterForm'])->name('register');
 // Routes d'authentification sociale
 Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);

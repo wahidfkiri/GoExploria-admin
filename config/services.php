@@ -47,4 +47,12 @@ return [
     'redirect' => env('FACEBOOK_REDIRECT_URI'),
 ],
 
+'weather' => [
+        'api_key' => env('OPENWEATHER_API_KEY'),
+    ],
+    
+    'stocks' => [
+        'api_key' => env('ALPHAVANTAGE_API_KEY'),
+    ],
+
 ];

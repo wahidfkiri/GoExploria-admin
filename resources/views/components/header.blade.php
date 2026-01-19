@@ -1,5 +1,4 @@
- <!-- HEADER -->
-    <header class="dashboard-header">
+<header class="dashboard-header">
         <div class="header-content">
             <div class="header-left">
                 <!-- <button class="sidebar-toggle" id="sidebarToggle">
