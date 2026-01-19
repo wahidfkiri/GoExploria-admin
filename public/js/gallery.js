@@ -497,3 +497,6 @@ window.addEventListener('resize', () => {
         window.galleryPreview.updateMiniSliders();
     }
 });
+
+
+// hhh
