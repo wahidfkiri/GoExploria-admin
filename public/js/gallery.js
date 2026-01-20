@@ -249,7 +249,9 @@ class GalleryPreview {
             if (index === this.currentIndex) {
                 thumb.classList.add('active');
                 // Scroll to active thumbnail
+               if (this.isInitialized) {
                 thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
             }
         });
         
@@ -498,5 +500,3 @@ window.addEventListener('resize', () => {
     }
 });
 
-
-// hhh
