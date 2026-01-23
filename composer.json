@@ -41,7 +41,10 @@
             "Vendor\\Destination\\": "packages/vendor/destination/src",
             "Vendor\\Administration\\": "packages/vendor/administration/src",
             "Vendor\\GeoMap\\": "packages/vendor/geo-map/src",
-            "Vendor\\Activitie\\": "packages/vendor/activitie/src"
+            "Vendor\\Activitie\\": "packages/vendor/activitie/src",
+            "Vendor\\Etablissement\\": "packages/vendor/etablissement/src",
+            "Vendor\\Setting\\": "packages/vendor/setting/src",
+            "Vendor\\Users\\": "packages/vendor/users/src"
         }
     },
     "autoload-dev": {

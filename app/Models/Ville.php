@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\HasPage;
 
 class Ville extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasPage;
 
     protected $fillable = [
         'name',
@@ -35,6 +36,7 @@ class Ville extends Model
         'postal_code_prefix',
         'latitude',
         'longitude',
+        'is_active',
         'secteur_id',
         'region_id',
         'province_id',
@@ -46,7 +48,8 @@ class Ville extends Model
         'area' => 'decimal:2',
         'households' => 'integer',
         'density' => 'decimal:2',
-        'altitude' => 'integer'
+        'altitude' => 'integer',
+        'is_active' => 'boolean'
     ];
 
     // Relations
@@ -162,4 +165,9 @@ class Ville extends Model
             $ville->calculateDensity();
         });
     }
+    
+public function scopeActive($query)
+{
+    return $query->where('is_active', true);
+}
 }

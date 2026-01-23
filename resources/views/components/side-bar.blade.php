@@ -49,7 +49,7 @@
       </a>
       <ul class="submenu">
         <li>
-          <a href="{{ route('continents.index') }}" class="submenu-item">
+          <a href="{{ route('etablissements.index') }}" class="submenu-item">
             <span class="submenu-text">liste des établissements</span>
           </a>
         </li>
@@ -98,21 +98,20 @@
         </li>
       </ul>
     </li>
-    <li>
+    <!-- <li>
       <a href="{{route('customers.index')}}" class="menu-item">
         <span class="menu-icon">
           <i class="fas fa-users"></i>
         </span>
         <span class="menu-text">Clients</span>
       </a>
-    </li>
-    <li>
+    </li> -->
+    <!-- <li>
       <a href="{{route('websites.index')}}" class="menu-item">
         <span class="menu-icon">
           <i class="fas fa-globe"></i>
         </span>
         <span class="menu-text">Sites web</span>
-        <!-- <span class="menu-badge">12</span> -->
       </a>
     </li>
     <li>
@@ -121,9 +120,8 @@
           <i class="fas fa-palette"></i>
         </span>
         <span class="menu-text">Templates</span>
-        <!-- <span class="menu-badge">5</span> -->
       </a>
-    </li>
+    </li> -->
     <!-- <li class="menu-title">Contenu</li> -->
     <li>
       <a href="#" class="menu-item">
@@ -141,13 +139,23 @@
         <span class="menu-text">Articles</span>
       </a>
     </li>
-    <li>
-      <a href="#" class="menu-item">
+    <li class="has-submenu">
+      <a href="#" class="menu-link">
         <span class="menu-icon">
           <i class="fas fa-users"></i>
         </span>
         <span class="menu-text">Utilisateurs</span>
+        <span class="menu-arrow">
+          <i class="fas fa-chevron-down"></i>
+        </span>
       </a>
+      <ul class="submenu">
+        <li>
+          <a href="{{ route('users.index') }}" class="submenu-item">
+            <span class="submenu-text">Utilisateurs</span>
+          </a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="#" class="menu-item">
@@ -157,13 +165,23 @@
         <span class="menu-text">Analytics</span>
       </a>
     </li>
-    <li>
-      <a href="#" class="menu-item">
+    <li class="has-submenu">
+      <a href="#" class="menu-link">
         <span class="menu-icon">
           <i class="fas fa-cog"></i>
         </span>
         <span class="menu-text">Paramètres</span>
+        <span class="menu-arrow">
+          <i class="fas fa-chevron-down"></i>
+        </span>
       </a>
+      <ul class="submenu">
+        <li>
+          <a href="{{ route('settings.pages.index') }}" class="submenu-item">
+            <span class="submenu-text">UX Design</span>
+          </a>
+        </li>
+      </ul>
     </li>
     <li>
       <a class="menu-item" href="{{route('logout')}}" onclick="event.preventDefault();

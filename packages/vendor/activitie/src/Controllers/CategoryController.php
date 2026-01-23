@@ -7,6 +7,8 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Models\CategorieType;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -14,56 +16,95 @@ class CategoryController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        $query = Category::withCount(['websites', 'templates']);
-        
-        // Recherche
-        if ($request->has('search') && !empty($request->search)) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('slug', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-        
-        // Filtre par statut
-        if ($request->has('status') && $request->status !== '') {
-            $query->where('is_active', $request->status === 'active');
-        }
-        
-        // Tri
-        if ($request->has('sort_by') && !empty($request->sort_by)) {
-            $sortable = ['name', 'websites_count', 'templates_count', 'created_at'];
-            if (in_array($request->sort_by, $sortable)) {
-                $query->orderBy($request->sort_by, $request->sort_direction ?? 'asc');
-            }
-        } else {
-            $query->orderBy('name');
-        }
-        
-        // Si requête AJAX
-        if ($request->ajax()) {
-            $perPage = $request->per_page ?? 10;
-            $categories = $query->paginate($perPage);
-            
-            return response()->json([
-                'success' => true,
-                'data' => $categories->items(),
-                'current_page' => $categories->currentPage(),
-                'last_page' => $categories->lastPage(),
-                'per_page' => $categories->perPage(),
-                'total' => $categories->total(),
-                'prev_page_url' => $categories->previousPageUrl(),
-                'next_page_url' => $categories->nextPageUrl(),
-            ]);
-        }
-        
-        // Pour la vue normale
-        $categories = $query->paginate(10);
-        
-        return view('activitie::categories.index', compact('categories'));
+{
+    // Charger les relations nécessaires
+    $query = Category::with(['type']) // Charger la relation type
+                    ->withCount(['websites', 'templates']); // Compter les relations
+    
+    // Recherche
+    if ($request->has('search') && !empty($request->search)) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('slug', 'like', "%{$search}%")
+              ->orWhere('description', 'like', "%{$search}%")
+              // Recherche aussi dans le nom du type
+              ->orWhereHas('type', function($q2) use ($search) {
+                  $q2->where('name', 'like', "%{$search}%");
+              });
+        });
     }
+    
+    // Filtre par statut
+    if ($request->has('status') && $request->status !== '') {
+        $query->where('is_active', $request->status === 'active');
+    }
+    
+    // Filtre par type de catégorie
+    if ($request->has('categorie_type_id') && $request->categorie_type_id !== '') {
+        $query->where('categorie_type_id', $request->categorie_type_id);
+    }
+    
+    // Tri
+    if ($request->has('sort_by') && !empty($request->sort_by)) {
+        $sortable = ['name', 'websites_count', 'templates_count', 'created_at'];
+        
+        // Tri spécial pour le type de catégorie
+        if ($request->sort_by === 'type_name') {
+            $query->leftJoin('categorie_types', 'categories.categorie_type_id', '=', 'categorie_types.id')
+                  ->orderBy('categorie_types.name', $request->sort_direction ?? 'asc')
+                  ->select('categories.*'); // Important pour éviter les colonnes dupliquées
+        } elseif (in_array($request->sort_by, $sortable)) {
+            $query->orderBy($request->sort_by, $request->sort_direction ?? 'asc');
+        }
+    } else {
+        $query->orderBy('name');
+    }
+    
+    // Si requête AJAX
+    if ($request->ajax()) {
+        $perPage = $request->per_page ?? 10;
+        $categories = $query->paginate($perPage);
+        
+        // Formater les données pour inclure le type
+        $formattedData = $categories->map(function($category) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'description' => $category->description,
+                'is_active' => $category->is_active,
+                'created_at' => $category->created_at,
+                'updated_at' => $category->updated_at,
+                'websites_count' => $category->websites_count,
+                'templates_count' => $category->templates_count,
+                'categorie_type_id' => $category->categorie_type_id,
+                'type' => $category->type ? [
+                    'id' => $category->type->id,
+                    'name' => $category->type->name,
+                    'slug' => $category->type->slug
+                ] : null
+            ];
+        });
+        
+        return response()->json([
+            'success' => true,
+            'data' => $formattedData,
+            'current_page' => $categories->currentPage(),
+            'last_page' => $categories->lastPage(),
+            'per_page' => $categories->perPage(),
+            'total' => $categories->total(),
+            'prev_page_url' => $categories->previousPageUrl(),
+            'next_page_url' => $categories->nextPageUrl(),
+        ]);
+    }
+    
+    // Pour la vue normale
+    $categories = $query->paginate(10);
+    $categorie_types = CategorieType::all();
+    
+    return view('activitie::categories.index', compact('categories', 'categorie_types'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -73,33 +114,156 @@ class CategoryController extends Controller
         return view('activitie::categories.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
+/**
+ * Store a newly created resource in storage.
+ */
+public function store(Request $request)
+{
+    try {
+        Log::info('Début de création d\'une nouvelle catégorie', [
+            'user_id' => auth()->id() ?? 'guest',
+            'ip_address' => $request->ip(),
+            'input_data' => $request->except(['_token', '_method'])
+        ]);
+
+        // Valider les données
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
             'description' => 'nullable|string',
-            'is_active' => 'boolean',
+            'is_active' => 'nullable',
+            'categorie_type_id' => 'required|exists:categorie_types,id'
         ]);
+
+        // Convertir is_active en boolean si présent
+        if (isset($validated['is_active'])) {
+            $validated['is_active'] = filter_var($validated['is_active'], FILTER_VALIDATE_BOOLEAN);
+        } else {
+            $validated['is_active'] = true; // Valeur par défaut
+        }
 
         // Générer le slug automatiquement
         $validated['slug'] = Str::slug($validated['name']);
         
+        Log::debug('Données validées pour la création de catégorie', [
+            'validated_data' => $validated
+        ]);
+
+        // Créer la catégorie
         $category = Category::create($validated);
+
+        Log::info('Catégorie créée avec succès', [
+            'category_id' => $category->id,
+            'category_name' => $category->name,
+            'category_type_id' => $category->categorie_type_id,
+            'slug' => $category->slug
+        ]);
 
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Catégorie créée avec succès!',
                 'data' => $category
-            ]);
+            ], 201); // 201 Created
         }
 
         return redirect()->route('categories.index')
-            ->with('success', 'Catégorie créée avec succès!');
+            ->with('success', 'Catégorie créée avec succès!')
+            ->with('created_category', $category->id);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        Log::warning('Erreur de validation lors de la création de catégorie', [
+            'errors' => $e->errors(),
+            'input_data' => $request->all(),
+            'user_id' => auth()->id() ?? 'guest'
+        ]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur de validation',
+                'errors' => $e->errors()
+            ], 422);
+        }
+
+        return back()
+            ->withErrors($e->errors())
+            ->withInput()
+            ->with('error', 'Veuillez corriger les erreurs de validation.');
+
+    } catch (\Illuminate\Database\QueryException $e) {
+        Log::error('Erreur de base de données lors de la création de catégorie', [
+            'error_message' => $e->getMessage(),
+            'error_code' => $e->getCode(),
+            'sql_query' => $e->getSql(),
+            'bindings' => $e->getBindings(),
+            'input_name' => $request->input('name'),
+            'user_id' => auth()->id() ?? 'guest'
+        ]);
+
+        // Vérifier si c'est une erreur de contrainte d'unicité (duplicate entry)
+        $errorCode = $e->errorInfo[1] ?? null;
+        if ($errorCode == 1062) { // Code d'erreur MySQL pour duplicate entry
+            $errorMessage = 'Une catégorie avec ce nom existe déjà.';
+        } else {
+            $errorMessage = 'Une erreur de base de données est survenue lors de la création.';
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => $errorMessage
+            ], 500);
+        }
+
+        return back()
+            ->withInput()
+            ->with('error', $errorMessage);
+
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        Log::error('Type de catégorie non trouvé lors de la création', [
+            'categorie_type_id' => $request->input('categorie_type_id'),
+            'error_message' => $e->getMessage(),
+            'user_id' => auth()->id() ?? 'guest'
+        ]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Le type de catégorie spécifié n\'existe pas.'
+            ], 404);
+        }
+
+        return back()
+            ->withInput()
+            ->with('error', 'Le type de catégorie spécifié n\'existe pas.');
+
+    } catch (\Exception $e) {
+        Log::error('Erreur inattendue lors de la création de catégorie', [
+            'error_message' => $e->getMessage(),
+            'error_code' => $e->getCode(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString(),
+            'input_name' => $request->input('name'),
+            'user_id' => auth()->id() ?? 'guest'
+        ]);
+
+        $errorMessage = config('app.debug') 
+            ? 'Erreur: ' . $e->getMessage()
+            : 'Une erreur inattendue est survenue lors de la création.';
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => $errorMessage
+            ], 500);
+        }
+
+        return back()
+            ->withInput()
+            ->with('error', $errorMessage);
     }
+}
 
     /**
      * Display the specified resource.
@@ -132,32 +296,119 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
-    {
+
+public function update(Request $request, Category $category)
+{
+    try {
+        // Valider les données
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'description' => 'nullable|string',
-            'is_active' => 'boolean',
+            'is_active' => 'nullable',
+            'categorie_type_id' => 'required|exists:categorie_types,id'
         ]);
+
+        // Convertir is_active en boolean si présent
+        if (isset($validated['is_active'])) {
+            $validated['is_active'] = filter_var($validated['is_active'], FILTER_VALIDATE_BOOLEAN);
+        }
 
         // Mettre à jour le slug si le nom change
         if ($category->name !== $validated['name']) {
             $validated['slug'] = Str::slug($validated['name']);
         }
 
+        Log::info('Mise à jour de la catégorie', [
+            'category_id' => $category->id,
+            'old_data' => $category->toArray(),
+            'new_data' => $validated,
+            'user_id' => auth()->id() ?? 'guest',
+            'ip_address' => $request->ip()
+        ]);
+
+        // Mettre à jour la catégorie
         $category->update($validated);
+
+        Log::info('Catégorie mise à jour avec succès', [
+            'category_id' => $category->id,
+            'category_name' => $category->name
+        ]);
 
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Catégorie mise à jour avec succès!',
-                'data' => $category
+                'data' => $category->fresh()
             ]);
         }
 
         return redirect()->route('categories.index')
             ->with('success', 'Catégorie mise à jour avec succès!');
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        Log::warning('Erreur de validation lors de la mise à jour de la catégorie', [
+            'category_id' => $category->id,
+            'errors' => $e->errors(),
+            'input_data' => $request->all(),
+            'user_id' => auth()->id() ?? 'guest'
+        ]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur de validation',
+                'errors' => $e->errors()
+            ], 422);
+        }
+
+        return back()->withErrors($e->errors())->withInput();
+
+    } catch (\Illuminate\Database\QueryException $e) {
+        Log::error('Erreur de base de données lors de la mise à jour de la catégorie', [
+            'category_id' => $category->id,
+            'error_message' => $e->getMessage(),
+            'error_code' => $e->getCode(),
+            'sql_query' => $e->getSql(),
+            'bindings' => $e->getBindings(),
+            'user_id' => auth()->id() ?? 'guest'
+        ]);
+
+        $errorMessage = 'Une erreur de base de données est survenue.';
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => $errorMessage
+            ], 500);
+        }
+
+        return back()->with('error', $errorMessage);
+
+    } catch (\Exception $e) {
+        Log::error('Erreur inattendue lors de la mise à jour de la catégorie', [
+            'category_id' => $category->id,
+            'error_message' => $e->getMessage(),
+            'error_code' => $e->getCode(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString(),
+            'user_id' => auth()->id() ?? 'guest'
+        ]);
+
+        $errorMessage = config('app.debug') 
+            ? 'Erreur: ' . $e->getMessage()
+            : 'Une erreur inattendue est survenue.';
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => $errorMessage
+            ], 500);
+        }
+
+        return back()->with('error', $errorMessage);
     }
+}
 
     /**
      * Remove the specified resource from storage.

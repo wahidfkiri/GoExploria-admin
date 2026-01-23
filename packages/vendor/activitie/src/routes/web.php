@@ -29,5 +29,5 @@ Route::post('activities/{activity}/toggle-status', [ActivityController::class, '
 Route::post('activities/bulk-update', [ActivityController::class, 'bulkUpdate'])->name('activities.bulk-update');
 Route::get('activities/search', [ActivityController::class, 'search'])->name('activities.search');
 Route::get('activities/by-category/{categorie}', [ActivityController::class, 'getByCategory'])->name('activities.by-category');
-    
+Route::get('api/activities/check-slug', [ActivityController::class, 'checkSlug'])->name('activities.check-slug');
 });

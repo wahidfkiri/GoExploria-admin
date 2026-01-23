@@ -361,7 +361,7 @@
         </div>
     </div>
 
-    <x-front.nav-bar />
+    @include('geo-map::countries.components.nav-bar')
 
    <!-- Main Content -->
 <div class="app-container" id="appContainer">

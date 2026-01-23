@@ -18,6 +18,16 @@
                         <div class="form-text-modern">Nom unique de la catégorie</div>
                     </div>
                     
+
+                    <div class="mb-3">
+                        <label for="editCategoryName" class="form-label-modern">Type *</label>
+                        <select class="form-control-modern" id="categorie_type_id" name="categorie_type_id" required>
+                            @foreach($categorie_types as $type)
+                            <option value="{{$type->id}}">{{ $type->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
                     <div class="mb-3">
                         <label for="createCategoryDescription" class="form-label-modern">Description</label>
                         <textarea class="form-control-modern" id="createCategoryDescription" name="description" 

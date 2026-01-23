@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\HasPage;
 
 class Province extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasPage;
 
     protected $fillable = [
         'name',
@@ -26,13 +27,22 @@ class Province extends Model
         'description',
         'latitude',    // Ajouté
         'longitude',   // Ajouté
+        'is_active',
         'country_id'
     ];
 
     protected $casts = [
         'population' => 'integer',
-        'area' => 'decimal:2'
+        'area' => 'decimal:2',
+        'is_active' => 'boolean',
     ];
+
+    
+
+   public function scopeActive($query)
+{
+    return $query->where('is_active', true);
+}
 
     // Relation avec le pays
     public function country(): BelongsTo

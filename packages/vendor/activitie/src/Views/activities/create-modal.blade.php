@@ -13,7 +13,8 @@
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <label for="createActivityName" class="form-label-modern">Nom *</label>
-                            <input type="text" class="form-control-modern" id="createActivityName" name="name" required>
+                            <input type="text" class="form-control-modern" id="createActivityName" name="name" required
+                                   oninput="generateSlugFromName()" placeholder="Nom de l'activité">
                         </div>
                         
                         <div class="col-md-12 mb-3">
@@ -25,30 +26,29 @@
                                 @endforeach
                             </select>
                         </div>
-                        
-                        <div class="col-md-6 mb-3 d-none">
-                            <label for="createActivityPrice" class="form-label-modern">Prix (€)</label>
-                            <input type="number" class="form-control-modern" id="createActivityPrice" name="price" step="0.01" min="0">
-                        </div>
-                        
-                        <div class="col-md-6 mb-3 d-none">
-                            <label for="createActivityDuration" class="form-label-modern">Durée (min)</label>
-                            <input type="number" class="form-control-modern" id="createActivityDuration" name="duration" min="1">
-                        </div>
-                        
-                        <div class="col-md-6 mb-3 d-none">
-                            <label for="createActivityMaxParticipants" class="form-label-modern">Max participants</label>
-                            <input type="number" class="form-control-modern" id="createActivityMaxParticipants" name="max_participants" min="1">
-                        </div>
-                        
-                        <div class="col-md-12 mb-3 d-none">
-                            <label for="createActivityLocation" class="form-label-modern">Lieu</label>
-                            <input type="text" class="form-control-modern" id="createActivityLocation" name="location">
-                        </div>
-                        
-                        <div class="col-md-12 mb-3 d-none">
-                            <label for="createActivityDescription" class="form-label-modern">Description</label>
-                            <textarea class="form-control-modern" id="createActivityDescription" name="description" rows="3"></textarea>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="createActivitySlug" class="form-label-modern">Slug *</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control-modern" id="createActivitySlug" name="slug" readonly required>
+                                <button type="button" class="btn btn-outline-secondary" onclick="checkSlugAvailability()">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                            <div class="mt-1">
+                                <small class="text-muted d-none" id="slugCheckingText">
+                                    <i class="fas fa-spinner fa-spin"></i> Vérification du slug...
+                                </small>
+                                <small class="text-success d-none" id="slugAvailableText">
+                                    <i class="fas fa-check-circle"></i> Slug disponible
+                                </small>
+                                <small class="text-danger d-none" id="slugUnavailableText">
+                                    <i class="fas fa-times-circle"></i> Slug déjà utilisé
+                                </small>
+                                <small class="form-text text-muted">
+                                    Le slug est généré automatiquement à partir du nom et sera utilisé dans l'URL.
+                                </small>
+                            </div>
                         </div>
                         
                         <div class="col-md-12">
@@ -64,7 +64,7 @@
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-2"></i>Annuler
                 </button>
-                <button type="button" class="btn btn-primary" id="submitActivityBtn" onclick="storeActivity()">
+                <button type="button" class="btn btn-primary" id="submitActivityBtn" onclick="storeActivity()" disabled>
                     <span class="btn-text">
                         <i class="fas fa-save me-2"></i>Créer l'activité
                     </span>

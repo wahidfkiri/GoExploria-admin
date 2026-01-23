@@ -146,6 +146,7 @@
                                 <th>Capital</th>
                                 <th>Population</th>
                                 <th>Superficie</th>
+                                 <th>Status</th>
                                 <th style="text-align: center;">Actions</th>
                             </tr>
                         </thead>
@@ -668,85 +669,180 @@
             });
         };
 
-        // Render countries with modern design
-        const renderCountries = (countries) => {
-            const tbody = document.getElementById('countriesTableBody');
-            tbody.innerHTML = '';
+      // Render countries with modern design
+const renderCountries = (countries) => {
+    const tbody = document.getElementById('countriesTableBody');
+    tbody.innerHTML = '';
+    
+    if (!countries || !Array.isArray(countries) || countries.length === 0) {
+        document.getElementById('emptyState').style.display = 'block';
+        document.getElementById('tableContainer').style.display = 'none';
+        document.getElementById('paginationContainer').style.display = 'none';
+        return;
+    }
+    
+    countries.forEach((country, index) => {
+        const row = document.createElement('tr');
+        row.id = `country-row-${country.id}`;
+        row.style.animationDelay = `${index * 0.05}s`;
+        
+        // Format population and area
+        const population = country.population ? formatNumber(country.population) : 'N/A';
+        const area = country.area ? formatNumber(country.area) : 'N/A';
+        const isActive = country.is_active ? true : false;
+        
+        row.innerHTML = `
+            <td class="country-name-cell">
+                <div class="country-name-modern">
+                    <div class="country-flag-modern">
+                        ${country.flag ? `<img src="${country.flag}" alt="${country.name}" class="flag-img">` : `<i class="fas fa-flag"></i>`}
+                    </div>
+                    <div>
+                        <div class="country-name-text">${country.name}</div>
+                        <small class="text-muted">${country.code}${country.iso2 ? ' | ' + country.iso2 : ''}</small>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="continent-badge" style="background: ${getContinentColor(country.continent?.code)}">
+                    ${country.continent?.name || 'N/A'}
+                </div>
+            </td>
+            <td>
+                <div>${country.capital || 'N/A'}</div>
+                <small class="text-muted">${country.currency ? country.currency + ' ' + (country.currency_symbol || '') : ''}</small>
+            </td>
+            <td>
+                <div>${population}</div>
+                <small class="text-muted">habitants</small>
+            </td>
+            <td>
+                <div>${area}</div>
+                <small class="text-muted">km²</small>
+            </td>
+            <td>
+                <div class="status-toggle-container">
+                    <div class="toggle-switch ${isActive ? 'active' : ''}" 
+                         onclick="toggleCountryStatus(${country.id}, ${isActive})">
+                        <div class="toggle-slider"></div>
+                    </div>
+                    <span class="status-text ${isActive ? 'text-success' : 'text-danger'}">
+                        ${isActive ? 'Actif' : 'Inactif'}
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div class="country-actions-modern">
+                    <a href="{{ url('countrie') }}/${country.code}" target="_blank"
+                       class="action-btn-modern view-btn-modern" title="Afficher la page">
+                        <i class="fas fa-globe"></i>
+                    </a>
+                    <a href="#" 
+                       class="action-btn-modern view-btn-modern" title="Voir détails">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <button class="action-btn-modern edit-btn-modern" title="Modifier" 
+                            onclick="openEditModal(${country.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn-modern delete-btn-modern" title="Supprimer" 
+                            onclick="showDeleteConfirmation(${country.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        tbody.appendChild(row);
+    });
+    
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('tableContainer').style.display = 'block';
+    document.getElementById('paginationContainer').style.display = 'flex';
+};
+
+// Toggle country status
+const toggleCountryStatus = (countryId, currentStatus) => {
+    // Find the toggle element
+    const toggleElement = document.querySelector(`#country-row-${countryId} .toggle-switch`);
+    const statusText = document.querySelector(`#country-row-${countryId} .status-text`);
+    
+    if (!toggleElement || !statusText) return;
+    
+    // Disable toggle during request
+    toggleElement.style.pointerEvents = 'none';
+    toggleElement.classList.add('loading');
+    
+    const newStatus = !currentStatus;
+    
+    console.log('Toggle country status - Début:', {
+        countryId,
+        currentStatus,
+        newStatus
+    });
+    
+    // Send AJAX request
+    $.ajax({
+        url: `/countries/${countryId}/toggle-status`,
+        type: 'PUT',
+        data: {
+            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            is_active: newStatus
+        },
+        dataType: 'json',
+        success: function(response) {
+            console.log('Toggle status - Réponse:', response);
             
-            if (!countries || !Array.isArray(countries) || countries.length === 0) {
-                document.getElementById('emptyState').style.display = 'block';
-                document.getElementById('tableContainer').style.display = 'none';
-                document.getElementById('paginationContainer').style.display = 'none';
-                return;
+            if (response.success) {
+                // Update UI
+                if (newStatus) {
+                    toggleElement.classList.add('active');
+                    statusText.textContent = 'Actif';
+                    statusText.classList.remove('text-danger');
+                    statusText.classList.add('text-success');
+                } else {
+                    toggleElement.classList.remove('active');
+                    statusText.textContent = 'Inactif';
+                    statusText.classList.remove('text-success');
+                    statusText.classList.add('text-danger');
+                }
+                
+                // Update the country in the array
+                const countryIndex = allCountries.findIndex(c => c.id === countryId);
+                if (countryIndex !== -1) {
+                    allCountries[countryIndex].is_active = newStatus;
+                }
+                
+                // Show success message
+                showAlert('success', `Pays ${newStatus ? 'activé' : 'désactivé'} avec succès !`);
+            } else {
+                showAlert('danger', response.message || 'Erreur lors de la mise à jour du statut');
+                // Revert toggle if error
+                toggleElement.style.pointerEvents = 'auto';
+                toggleElement.classList.remove('loading');
             }
-            
-            countries.forEach((country, index) => {
-                const row = document.createElement('tr');
-                row.id = `country-row-${country.id}`;
-                row.style.animationDelay = `${index * 0.05}s`;
-                
-                // Format population and area
-                const population = country.population ? formatNumber(country.population) : 'N/A';
-                const area = country.area ? formatNumber(country.area) : 'N/A';
-                
-                row.innerHTML = `
-                    <td class="country-name-cell">
-                        <div class="country-name-modern">
-                            <div class="country-flag-modern">
-                                ${country.flag ? `<img src="${country.flag}" alt="${country.name}" class="flag-img">` : `<i class="fas fa-flag"></i>`}
-                            </div>
-                            <div>
-                                <div class="country-name-text">${country.name}</div>
-                                <small class="text-muted">${country.code}${country.iso2 ? ' | ' + country.iso2 : ''}</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="continent-badge" style="background: ${getContinentColor(country.continent?.code)}">
-                            ${country.continent?.name || 'N/A'}
-                        </div>
-                    </td>
-                    <td>
-                        <div>${country.capital || 'N/A'}</div>
-                        <small class="text-muted">${country.currency ? country.currency + ' ' + (country.currency_symbol || '') : ''}</small>
-                    </td>
-                    <td>
-                        <div>${population}</div>
-                        <small class="text-muted">habitants</small>
-                    </td>
-                    <td>
-                        <div>${area}</div>
-                        <small class="text-muted">km²</small>
-                    </td>
-                    <td>
-                        <div class="country-actions-modern">
-                            <a href="{{ url('countrie') }}/${country.code}" target="_blank"
-                               class="action-btn-modern view-btn-modern" title="Afficher la page">
-                                <i class="fas fa-globe"></i>
-                            </a>
-                            <a href="#" 
-                               class="action-btn-modern view-btn-modern" title="Voir détails">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <button class="action-btn-modern edit-btn-modern" title="Modifier" 
-                                    onclick="openEditModal(${country.id})">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn-modern delete-btn-modern" title="Supprimer" 
-                                    onclick="showDeleteConfirmation(${country.id})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-                
-                tbody.appendChild(row);
+        },
+        error: function(xhr, status, error) {
+            console.error('Toggle status - Erreur:', {
+                status: xhr.status,
+                error: error,
+                responseText: xhr.responseText
             });
             
-            document.getElementById('emptyState').style.display = 'none';
-            document.getElementById('tableContainer').style.display = 'block';
-            document.getElementById('paginationContainer').style.display = 'flex';
-        };
+            showAlert('danger', 'Erreur lors de la mise à jour du statut: ' + error);
+            // Revert toggle on error
+            toggleElement.style.pointerEvents = 'auto';
+            toggleElement.classList.remove('loading');
+        },
+        complete: function() {
+            // Re-enable toggle after delay
+            setTimeout(() => {
+                toggleElement.style.pointerEvents = 'auto';
+                toggleElement.classList.remove('loading');
+            }, 500);
+        }
+    });
+};
 
         // Get continent color
         const getContinentColor = (continentCode) => {
@@ -1670,5 +1766,95 @@
                 grid-template-columns: 1fr;
             }
         }
+        /* Toggle Switch Styles */
+.status-toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toggle-switch {
+    width: 60px;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.toggle-switch.active {
+    background-color: #28a745;
+}
+
+.toggle-slider {
+    width: 26px;
+    height: 26px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.toggle-switch.active .toggle-slider {
+    transform: translateX(30px);
+}
+
+.status-text {
+    font-weight: 500;
+    font-size: 0.9rem;
+    min-width: 50px;
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Loading state for toggle */
+.toggle-switch.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.toggle-switch.loading .toggle-slider {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Responsive adjustments for toggle */
+@media (max-width: 768px) {
+    .status-toggle-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .toggle-switch {
+        width: 50px;
+        height: 25px;
+    }
+    
+    .toggle-switch.active .toggle-slider {
+        transform: translateX(25px);
+    }
+    
+    .toggle-slider {
+        width: 21px;
+        height: 21px;
+    }
+}
     </style>
 @endsection

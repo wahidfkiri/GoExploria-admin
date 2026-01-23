@@ -12,6 +12,12 @@ class Activity extends Model
         'name',
         'categorie_id',
         'slug',
+        'is_active',
+    ];
+
+    
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     // Relation avec le modèle Category
@@ -32,5 +38,49 @@ class Activity extends Model
         static::updating(function ($activity) {
             $activity->slug = Str::slug($activity->name);
         });
+    }
+
+    /**
+     * Relation Many-to-Many avec les établissements
+     */
+    public function etablissements(): BelongsToMany
+    {
+        return $this->belongsToMany(Etablissement::class)
+                    ->withTimestamps()
+                    ->withPivot('created_at', 'updated_at');
+    }
+    
+    /**
+     * Relation avec les établissements actifs seulement
+     */
+    public function activeEtablissements(): BelongsToMany
+    {
+        return $this->belongsToMany(Etablissement::class)
+                    ->where('etablissements.is_active', true)
+                    ->withTimestamps();
+    }
+    
+    /**
+     * Scope pour les activités actives
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+    
+    /**
+     * Scope pour les activités inactives
+     */
+    public function scopeInactive($query)
+    {
+        return $query->where('is_active', false);
+    }
+    
+    /**
+     * Compter le nombre d'établissements pour cette activité
+     */
+    public function etablissementsCount()
+    {
+        return $this->etablissements()->count();
     }
 }

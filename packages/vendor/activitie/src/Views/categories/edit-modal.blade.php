@@ -18,6 +18,15 @@
                         <label for="editCategoryName" class="form-label-modern">Nom de la catégorie *</label>
                         <input type="text" class="form-control-modern" id="editCategoryName" name="name" required>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="editCategoryName" class="form-label-modern">Type *</label>
+                        <select class="form-control-modern" id="categorie_type_id" name="categorie_type_id" required>
+                            @foreach($categorie_types as $type)
+                            <option value="{{$type->id}}">{{ $type->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     
                     <div class="mb-3">
                         <label for="editCategoryDescription" class="form-label-modern">Description</label>

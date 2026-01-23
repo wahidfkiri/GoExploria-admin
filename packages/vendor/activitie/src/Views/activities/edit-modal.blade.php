@@ -15,10 +15,11 @@
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <label for="editActivityName" class="form-label-modern">Nom *</label>
-                            <input type="text" class="form-control-modern" id="editActivityName" name="name" required>
+                            <input type="text" class="form-control-modern" id="editActivityName" name="name" required
+                                   oninput="generateEditSlugFromName()" placeholder="Nom de l'activité">
                         </div>
                         
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-12 mb-3">
                             <label for="editActivityCategorieId" class="form-label-modern">Catégorie *</label>
                             <select class="form-select-modern" id="editActivityCategorieId" name="categorie_id" required>
                                 <option value="">Sélectionnez une catégorie</option>
@@ -27,30 +28,26 @@
                                 @endforeach
                             </select>
                         </div>
-                        
-                        <div class="col-md-6 mb-3 d-none">
-                            <label for="editActivityPrice" class="form-label-modern">Prix (€)</label>
-                            <input type="number" class="form-control-modern" id="editActivityPrice" name="price" step="0.01" min="0">
-                        </div>
-                        
-                        <div class="col-md-6 mb-3 d-none">
-                            <label for="editActivityDuration" class="form-label-modern">Durée (min)</label>
-                            <input type="number" class="form-control-modern" id="editActivityDuration" name="duration" min="1">
-                        </div>
-                        
-                        <div class="col-md-6 mb-3 d-none">
-                            <label for="editActivityMaxParticipants" class="form-label-modern">Max participants</label>
-                            <input type="number" class="form-control-modern" id="editActivityMaxParticipants" name="max_participants" min="1">
-                        </div>
-                        
-                        <div class="col-md-12 mb-3 d-none">
-                            <label for="editActivityLocation" class="form-label-modern">Lieu</label>
-                            <input type="text" class="form-control-modern" id="editActivityLocation" name="location">
-                        </div>
-                        
-                        <div class="col-md-12 mb-3 d-none">
-                            <label for="editActivityDescription" class="form-label-modern">Description</label>
-                            <textarea class="form-control-modern" id="editActivityDescription" name="description" rows="3"></textarea>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="editActivitySlug" class="form-label-modern">Slug *</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control-modern" id="editActivitySlug" name="slug" required>
+                                <button type="button" class="btn btn-outline-secondary" onclick="checkEditSlugAvailability()">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                            <div class="mt-1">
+                                <small class="text-muted d-none" id="editSlugCheckingText">
+                                    <i class="fas fa-spinner fa-spin"></i> Vérification du slug...
+                                </small>
+                                <small class="text-success d-none" id="editSlugAvailableText">
+                                    <i class="fas fa-check-circle"></i> Slug disponible
+                                </small>
+                                <small class="text-danger d-none" id="editSlugUnavailableText">
+                                    <i class="fas fa-times-circle"></i> Slug déjà utilisé
+                                </small>
+                            </div>
                         </div>
                         
                         <div class="col-md-12">

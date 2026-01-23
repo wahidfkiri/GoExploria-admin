@@ -78,35 +78,43 @@ class ActivityController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'categorie_id' => 'required|exists:categories,id',
-            'description' => 'nullable|string',
-            'price' => 'nullable|numeric|min:0',
-            'duration' => 'nullable|integer|min:1',
-            'max_participants' => 'nullable|integer|min:1',
-            'location' => 'nullable|string|max:255',
-            'is_active' => 'boolean',
-        ]);
 
-        // Générer le slug automatiquement
-        $validated['slug'] = Str::slug($validated['name']);
-        
-        $activity = Activity::create($validated);
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'categorie_id' => 'required|exists:categories,id',
+        'slug' => 'required|string|max:255|unique:activities,slug',
+        'is_active' => 'nullable',
+    ]);
 
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Activité créée avec succès!',
-                'data' => $activity
-            ]);
-        }
-
-        return redirect()->route('activities.index')
-            ->with('success', 'Activité créée avec succès!');
+    // S'assurer que le slug est valide et unique
+    $validated['slug'] = Str::slug($validated['slug']);
+    
+    // Vérifier à nouveau l'unicité après le formatage
+    $counter = 1;
+    $originalSlug = $validated['slug'];
+    
+    while (Activity::where('slug', $validated['slug'])->exists()) {
+        $validated['slug'] = $originalSlug . '-' . $counter;
+        $counter++;
     }
+// Logique is_active : présent = true, absent = false
+    $validated['is_active'] = $request->has('is_active');
+    $activity = Activity::create($validated);
+
+    if ($request->ajax()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Activité créée avec succès!',
+            'data' => $activity
+        ]);
+    }
+
+    return redirect()->route('activities.index')
+        ->with('success', 'Activité créée avec succès!');
+}
+
 
     /**
      * Display the specified resource.
@@ -137,37 +145,46 @@ class ActivityController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Activity $activity)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:activities,name,' . $activity->id,
-            'categorie_id' => 'required|exists:categories,id',
-            'description' => 'nullable|string',
-            'price' => 'nullable|numeric|min:0',
-            'duration' => 'nullable|integer|min:1',
-            'max_participants' => 'nullable|integer|min:1',
-            'location' => 'nullable|string|max:255',
-            'is_active' => 'boolean',
-        ]);
+    
+public function update(Request $request, Activity $activity)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'categorie_id' => 'required|exists:categories,id',
+        'slug' => 'required|string|max:255|unique:activities,slug,' . $activity->id,
+        'is_active' => 'nullable',
+    ]);
 
-        // Mettre à jour le slug si le nom change
-        if ($activity->name !== $validated['name']) {
-            $validated['slug'] = Str::slug($validated['name']);
+    // Formater le slug
+    $validated['slug'] = Str::slug($validated['slug']);
+    
+    // Vérifier l'unicité après formatage (sauf pour l'activité courante)
+    if ($validated['slug'] !== $activity->slug) {
+        $counter = 1;
+        $originalSlug = $validated['slug'];
+        
+        while (Activity::where('slug', $validated['slug'])
+                      ->where('id', '!=', $activity->id)
+                      ->exists()) {
+            $validated['slug'] = $originalSlug . '-' . $counter;
+            $counter++;
         }
-
-        $activity->update($validated);
-
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Activité mise à jour avec succès!',
-                'data' => $activity
-            ]);
-        }
-
-        return redirect()->route('activities.index')
-            ->with('success', 'Activité mise à jour avec succès!');
     }
+// Logique is_active : présent = true, absent = false
+    $validated['is_active'] = $request->has('is_active');
+    $activity->update($validated);
+
+    if ($request->ajax()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Activité mise à jour avec succès!',
+            'data' => $activity
+        ]);
+    }
+
+    return redirect()->route('activities.index')
+        ->with('success', 'Activité mise à jour avec succès!');
+}
 
     /**
      * Remove the specified resource from storage.
@@ -398,4 +415,20 @@ class ActivityController extends Controller
             'data' => $activities
         ]);
     }
+
+
+public function checkSlug(Request $request)
+{
+    $request->validate([
+        'slug' => 'required|string'
+    ]);
+    
+    $slug = $request->input('slug');
+    $exists = Activity::where('slug', $slug)->exists();
+    
+    return response()->json([
+        'available' => !$exists,
+        'slug' => $slug
+    ]);
+}
 }

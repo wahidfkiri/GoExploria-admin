@@ -6,6 +6,9 @@ use Vendor\Destination\Controllers\CountryController;
 use Vendor\Destination\Controllers\ProvinceController;
 use Vendor\Destination\Controllers\RegionController;
 use Vendor\Destination\Controllers\VilleController;
+use Vendor\Destination\Controllers\PageController;
+use Vendor\Destination\Controllers\BlockController;
+use Vendor\Destination\Controllers\EditeurController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -35,7 +38,8 @@ Route::get('continents/{continent}/countries', [ContinentController::class, 'get
     ->name('continents.countries');
 Route::get('continents/statistics/data', [ContinentController::class, 'getStatistics'])
     ->name('continents.statistics');
-
+Route::put('continents/{continent}/toggle-status', [ContinentController::class, 'toggleStatus'])
+    ->name('continents.toggle-status');
 // Routes pour les localisations
 Route::get('/secteurs', [DestinationController::class, 'getSecteurs'])->name('secteurs.index');
 
@@ -53,7 +57,8 @@ Route::get('countries/by-continent/{continentCode}', [CountryController::class, 
     ->name('countries.by-continent');
 Route::get('countries/search/autocomplete', [CountryController::class, 'search'])
     ->name('countries.search');
-
+Route::put('/countries/{country}/toggle-status', [CountryController::class, 'toggleStatus'])
+    ->name('countries.toggle-status');
 
 
     // Routes pour les provinces
@@ -70,7 +75,10 @@ Route::get('provinces/by-country/{countryCode}', [ProvinceController::class, 'ge
     ->name('provinces.by-country');
 Route::get('provinces/search/autocomplete', [ProvinceController::class, 'search'])
     ->name('provinces.search');
-
+Route::get('provinces/page/{provinceId}', [ProvinceController::class, 'page'])
+    ->name('provinces.pages');
+Route::put('/provinces/{province}/toggle-status', [ProvinceController::class, 'toggleStatus'])
+    ->name('provinces.toggle-status');
 
 
     // Routes pour les régions
@@ -126,7 +134,174 @@ Route::get('villes/region/{regionId}/secteurs', [VilleController::class, 'getSec
     ->name('villes.secteurs-by-region');
 
 
-});
 
 Route::get('/api/destinations', [DestinationController::class, 'getActiveDestinations'])->name('destinations.active');
 Route::get('/destination/{id}', [DestinationController::class, 'show'])->name('destination.show');
+
+
+
+
+// Routes principales pour les pages
+Route::prefix('pages')->name('pages.')->group(function () {
+    // Liste des pages
+    Route::get('/', [PageController::class, 'index'])->name('index');
+    
+    // Création
+    Route::get('/create', [PageController::class, 'create'])->name('create');
+    Route::post('/', [PageController::class, 'store'])->name('store');
+    
+    // Par slug
+    Route::get('/{slug}', [PageController::class, 'show'])->name('show');
+    
+    // Édition
+    Route::get('/{id}/edit', [PageController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [PageController::class, 'update'])->name('update');
+    
+    // Suppression
+    Route::delete('/{id}', [PageController::class, 'destroy'])->name('destroy');
+    
+    // Statistiques
+    Route::get('/statistics', [PageController::class, 'statistics'])->name('statistics');
+    
+    // Recherche
+    Route::get('/search', [PageController::class, 'search'])->name('search');
+    
+    // Par type
+    Route::get('/type/{type?}', [PageController::class, 'pagesByType'])->name('byType');
+    
+    // Toggle status
+    Route::post('/{id}/toggle-status', [PageController::class, 'toggleStatus'])->name('toggleStatus');
+    
+    // Générer slug
+    Route::post('/generate-slug', [PageController::class, 'generateSlug'])->name('generateSlug');
+    
+    // Export
+    Route::get('/export', [PageController::class, 'export'])->name('export');
+    
+    // Bulk actions
+    Route::post('/bulk-actions', [PageController::class, 'bulkActions'])->name('bulkActions');
+});
+
+// Routes pour création de pages par destination spécifique
+Route::prefix('create-page')->name('pages.create.')->group(function () {
+    Route::get('/continent/{continent}', [PageController::class, 'createForDestination'])
+        ->name('continent');
+    
+    Route::get('/country/{country}', [PageController::class, 'createForDestination'])
+        ->name('country');
+    
+    Route::get('/region/{region}', [PageController::class, 'createForDestination'])
+        ->name('region');
+    
+    Route::get('/province/{province}', [PageController::class, 'createForDestination'])
+        ->name('province');
+    
+    Route::get('/city/{city}', [PageController::class, 'createForDestination'])
+        ->name('city');
+});
+
+// Routes API pour les pages
+Route::prefix('api/pages')->name('api.pages.')->group(function () {
+    // Récupérer toutes les pages (JSON)
+    Route::get('/', [PageController::class, 'index'])->name('index');
+    Route::get('/data/{page}', [PageController::class, 'showPage']);
+    // Statistiques
+    Route::get('/statistics', [PageController::class, 'statistics'])->name('statistics');
+    
+    // Destinations par type
+    Route::get('/destinations/{type}', [PageController::class, 'getDestinations'])->name('destinations');
+    
+    // Pages par destination
+    Route::get('/{type}/{id}/pages', [PageController::class, 'getPagesByDestination'])->name('byDestination');
+    
+    // Pages pour dropdown
+    Route::get('/{type}/{id}/dropdown', [PageController::class, 'getPagesForDropdown'])->name('dropdown');
+    
+    // Recherche API
+    Route::get('/search', [PageController::class, 'apiSearch'])->name('search');
+    
+    // Preview
+    Route::post('/preview', [PageController::class, 'preview'])->name('preview');
+    
+    // CRUD API
+    Route::post('/', [PageController::class, 'store'])->name('store');
+    Route::put('/{id}', [PageController::class, 'update'])->name('update');
+    Route::delete('/{id}', [PageController::class, 'destroy'])->name('destroy');
+    Route::post('/save', [EditeurController::class, 'store']);
+});
+
+// Routes spécifiques pour chaque type de destination
+Route::prefix('api')->name('api.')->group(function () {
+    // Continents
+    Route::prefix('continents/{continent}')->group(function () {
+        Route::get('/pages', [PageController::class, 'getPagesByDestination'])
+            ->name('continent.pages');
+    });
+    
+    // Pays
+    Route::prefix('countries/{country}')->group(function () {
+        Route::get('/pages', [PageController::class, 'getPagesByDestination'])
+            ->name('country.pages');
+    });
+    
+    // Régions
+    Route::prefix('regions/{region}')->group(function () {
+        Route::get('/pages', [PageController::class, 'getPagesByDestination'])
+            ->name('region.pages');
+    });
+    
+    // Provinces
+    Route::prefix('provinces/{province}')->group(function () {
+        Route::get('/pages', [PageController::class, 'getPagesByDestination'])
+            ->name('province.pages');
+    });
+    
+    // Villes
+    Route::prefix('cities/{city}')->group(function () {
+        Route::get('/pages', [PageController::class, 'getPagesByDestination'])
+            ->name('city.pages');
+    });
+});
+
+    Route::get('/pages/edit/{id}', function($id) {
+    $template = \App\Models\Page::findOrFail($id);
+    
+    
+    
+    return view('destination::provinces.builder.index', [
+        'template' => $template,
+        'template_id' => $id
+    ]);
+})->name('template.edit');
+
+Route::prefix('api/pages/blocks')->group(function () {
+    // Récupérer tous les blocs (pour l'éditeur)
+    Route::get('/data', [BlockController::class, 'getBlocks']);
+    
+    // Ajouter un bloc dans l'éditeur
+    Route::post('/add-to-editor', [BlockController::class, 'addToEditor']);
+    
+    // Sauvegarder comme nouveau bloc
+    Route::post('/save', [BlockController::class, 'storeFromEditor']);
+    Route::post('/save-as-block', [BlockController::class, 'saveAsBlock']);
+    
+    // Catégories et types
+    Route::get('/categories', [BlockController::class, 'getCategories']);
+    Route::get('/website-types', [BlockController::class, 'getWebsiteTypes']);
+    
+    // Statistiques
+    Route::get('/stats', [BlockController::class, 'getStats']);
+    
+    // Recherche
+    Route::get('/search', [BlockController::class, 'search']);
+    
+    // Code d'un bloc spécifique
+    Route::get('/{id}/code', [BlockController::class, 'getBlockCode']);
+    
+    // CRUD complet
+    Route::apiResource('/', BlockController::class)->except(['create', 'edit']);
+    
+    // Import
+    Route::post('/import', [BlockController::class, 'import']);
+});
+});

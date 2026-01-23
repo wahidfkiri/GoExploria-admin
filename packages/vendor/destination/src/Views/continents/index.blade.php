@@ -135,6 +135,7 @@
                                 <th>Pays</th>
                                 <th>Population</th>
                                 <th>Superficie</th>
+                                <th>Status</th>
                                 <th style="text-align: center;">Actions</th>
                             </tr>
                         </thead>
@@ -556,89 +557,166 @@
     };
 
     // Render continents with modern design
-    const renderContinents = (continents) => {
-        const tbody = document.getElementById('continentsTableBody');
-        tbody.innerHTML = '';
+ const renderContinents = (continents) => {
+    const tbody = document.getElementById('continentsTableBody');
+    tbody.innerHTML = '';
+    
+    if (!continents || !Array.isArray(continents) || continents.length === 0) {
+        document.getElementById('emptyState').style.display = 'block';
+        document.getElementById('tableContainer').style.display = 'none';
+        document.getElementById('paginationContainer').style.display = 'none';
+        return;
+    }
+    
+    continents.forEach((continent, index) => {
+        const row = document.createElement('tr');
+        row.id = `continent-row-${continent.id}`;
+        row.style.animationDelay = `${index * 0.05}s`;
         
-        if (!continents || !Array.isArray(continents) || continents.length === 0) {
-            document.getElementById('emptyState').style.display = 'block';
-            document.getElementById('tableContainer').style.display = 'none';
-            document.getElementById('paginationContainer').style.display = 'none';
-            return;
+        // Format population and area
+        const population = continent.population ? formatNumber(continent.population) : 'N/A';
+        const area = continent.area ? formatNumber(continent.area) : 'N/A';
+        const countriesCount = continent.countries_count || 0;
+        const isActive = continent.is_active ? true : false;
+        
+        // Get image URL or default
+        let imageHtml = '<i class="fas fa-globe"></i>';
+        if (continent.image) {
+            const imageUrl = `/storage/continents/${continent.image}`;
+            imageHtml = `<img src="${imageUrl}" alt="${continent.name}" class="continent-img">`;
         }
         
-        continents.forEach((continent, index) => {
-            const row = document.createElement('tr');
-            row.id = `continent-row-${continent.id}`;
-            row.style.animationDelay = `${index * 0.05}s`;
-            
-            // Format population and area
-            const population = continent.population ? formatNumber(continent.population) : 'N/A';
-            const area = continent.area ? formatNumber(continent.area) : 'N/A';
-            const countriesCount = continent.countries_count || 0;
-            
-            // Get image URL or default
-            let imageHtml = '<i class="fas fa-globe"></i>';
-            if (continent.image) {
-                const imageUrl = `/storage/continents/${continent.image}`;
-                imageHtml = `<img src="${imageUrl}" alt="${continent.name}" class="continent-img">`;
-            }
-            
-            row.innerHTML = `
-                <td class="continent-name-cell">
-                    <div class="continent-name-modern">
-                        <div class="continent-image-modern">
-                            ${imageHtml}
-                        </div>
-                        <div>
-                            <div class="continent-name-text">${continent.name}</div>
-                            <small class="text-muted">${continent.description ? continent.description.substring(0, 50) + '...' : 'Aucune description'}</small>
-                        </div>
+        row.innerHTML = `
+            <td class="continent-name-cell">
+                <div class="continent-name-modern">
+                    <div class="continent-image-modern">
+                        ${imageHtml}
                     </div>
-                </td>
-                <td>
-                    <span class="continent-code-badge">${continent.code}</span>
-                </td>
-                <td>
-                    <div class="countries-count-modern">
-                        <span class="countries-count-value">${countriesCount}</span>
-                        <small class="text-muted">pays</small>
+                    <div>
+                        <div class="continent-name-text">${continent.name}</div>
+                        <small class="text-muted">${continent.description ? continent.description.substring(0, 50) + '...' : 'Aucune description'}</small>
                     </div>
-                </td>
-                <td>
-                    <div>${population}</div>
-                    <small class="text-muted">habitants</small>
-                </td>
-                <td>
-                    <div>${area}</div>
-                    <small class="text-muted">km²</small>
-                </td>
-                <td>
-                    <div class="continent-actions-modern">
-                        <button class="action-btn-modern view-btn-modern" title="Voir détails" 
-                                onclick="viewContinent(${continent.id})">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="action-btn-modern edit-btn-modern" title="Modifier" 
-                                onclick="openEditModal(${continent.id})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn-modern delete-btn-modern" title="Supprimer" 
-                                onclick="showDeleteConfirmation(${continent.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                </div>
+            </td>
+            <td>
+                <span class="continent-code-badge">${continent.code}</span>
+            </td>
+            <td>
+                <div class="countries-count-modern">
+                    <span class="countries-count-value">${countriesCount}</span>
+                    <small class="text-muted">pays</small>
+                </div>
+            </td>
+            <td>
+                <div>${population}</div>
+                <small class="text-muted">habitants</small>
+            </td>
+            <td>
+                <div>${area}</div>
+                <small class="text-muted">km²</small>
+            </td>
+            <td>
+                <div class="status-toggle-container">
+                    <div class="toggle-switch ${isActive ? 'active' : ''}" 
+                         onclick="toggleContinentStatus(${continent.id}, ${isActive})">
+                        <div class="toggle-slider"></div>
                     </div>
-                </td>
-            `;
-            
-            tbody.appendChild(row);
-        });
+                    <span class="status-text ${isActive ? 'text-success' : 'text-danger'}">
+                        ${isActive ? 'Actif' : 'Inactif'}
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div class="continent-actions-modern">
+                    <button class="action-btn-modern view-btn-modern" title="Voir détails" 
+                            onclick="viewContinent(${continent.id})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="action-btn-modern edit-btn-modern" title="Modifier" 
+                            onclick="openEditModal(${continent.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn-modern delete-btn-modern" title="Supprimer" 
+                            onclick="showDeleteConfirmation(${continent.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
         
-        document.getElementById('emptyState').style.display = 'none';
-        document.getElementById('tableContainer').style.display = 'block';
-        document.getElementById('paginationContainer').style.display = 'flex';
-    };
+        tbody.appendChild(row);
+    });
+    
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('tableContainer').style.display = 'block';
+    document.getElementById('paginationContainer').style.display = 'flex';
+};
 
+
+// Toggle continent status
+const toggleContinentStatus = (continentId, currentStatus) => {
+    // Find the toggle element
+    const toggleElement = document.querySelector(`#continent-row-${continentId} .toggle-switch`);
+    const statusText = document.querySelector(`#continent-row-${continentId} .status-text`);
+    
+    if (!toggleElement || !statusText) return;
+    
+    // Disable toggle during request
+    toggleElement.style.pointerEvents = 'none';
+    
+    const newStatus = !currentStatus;
+    
+    // Send AJAX request
+    $.ajax({
+        url: `/continents/${continentId}/toggle-status`,
+        type: 'PUT',
+        data: {
+            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            is_active: newStatus
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                // Update UI
+                if (newStatus) {
+                    toggleElement.classList.add('active');
+                    statusText.textContent = 'Actif';
+                    statusText.classList.remove('text-danger');
+                    statusText.classList.add('text-success');
+                } else {
+                    toggleElement.classList.remove('active');
+                    statusText.textContent = 'Inactif';
+                    statusText.classList.remove('text-success');
+                    statusText.classList.add('text-danger');
+                }
+                
+                // Update the continent in the array
+                const continentIndex = allContinents.findIndex(c => c.id === continentId);
+                if (continentIndex !== -1) {
+                    allContinents[continentIndex].is_active = newStatus;
+                }
+                
+                // Show success message
+                showAlert('success', `Continent ${newStatus ? 'activé' : 'désactivé'} avec succès !`);
+            } else {
+                showAlert('danger', response.message || 'Erreur lors de la mise à jour du statut');
+                // Revert toggle if error
+                toggleElement.style.pointerEvents = 'auto';
+            }
+        },
+        error: function(xhr, status, error) {
+            showAlert('danger', 'Erreur lors de la mise à jour du statut: ' + error);
+            // Revert toggle on error
+            toggleElement.style.pointerEvents = 'auto';
+        },
+        complete: function() {
+            // Re-enable toggle after delay
+            setTimeout(() => {
+                toggleElement.style.pointerEvents = 'auto';
+            }, 500);
+        }
+    });
+};
     // Render pagination
     const renderPagination = (response) => {
         const pagination = document.getElementById('pagination');
@@ -1462,5 +1540,85 @@
                 align-items: flex-start;
             }
         }
+        /* Toggle Switch Styles */
+.status-toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toggle-switch {
+    width: 60px;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.toggle-switch.active {
+    background-color: #28a745;
+}
+
+.toggle-slider {
+    width: 26px;
+    height: 26px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.toggle-switch.active .toggle-slider {
+    transform: translateX(30px);
+}
+
+.status-text {
+    font-weight: 500;
+    font-size: 0.9rem;
+    min-width: 50px;
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Loading state for toggle */
+.toggle-switch.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Responsive adjustments for toggle */
+@media (max-width: 768px) {
+    .status-toggle-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .toggle-switch {
+        width: 50px;
+        height: 25px;
+    }
+    
+    .toggle-switch.active .toggle-slider {
+        transform: translateX(25px);
+    }
+    
+    .toggle-slider {
+        width: 21px;
+        height: 21px;
+    }
+}
     </style>
 @endsection

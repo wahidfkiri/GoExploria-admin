@@ -146,6 +146,8 @@
                                 <th>Capitale</th>
                                 <th>Population</th>
                                 <th>Superficie</th>
+                                <th>Status</th>
+                                <th>Pages</th>
                                 <th style="text-align: center;">Actions</th>
                             </tr>
                         </thead>
@@ -568,93 +570,188 @@
             });
         };
 
-        // Render provinces with modern design
-        const renderProvinces = (provinces) => {
-            const tbody = document.getElementById('provincesTableBody');
-            tbody.innerHTML = '';
+   // Render provinces with modern design
+const renderProvinces = (provinces) => {
+    const tbody = document.getElementById('provincesTableBody');
+    tbody.innerHTML = '';
+    
+    if (!provinces || !Array.isArray(provinces) || provinces.length === 0) {
+        document.getElementById('emptyState').style.display = 'block';
+        document.getElementById('tableContainer').style.display = 'none';
+        document.getElementById('paginationContainer').style.display = 'none';
+        return;
+    }
+    
+    provinces.forEach((province, index) => {
+        const row = document.createElement('tr');
+        row.id = `province-row-${province.id}`;
+        row.style.animationDelay = `${index * 0.05}s`;
+        
+        // Format population and area
+        const population = province.population ? formatNumber(province.population) : 'N/A';
+        const area = province.area ? formatNumber(province.area) : 'N/A';
+        const density = province.population && province.area && province.area > 0 
+            ? (province.population / province.area).toFixed(2) 
+            : null;
+        const isActive = province.is_active ? true : false;
+        
+        row.innerHTML = `
+            <td class="province-name-cell">
+                <div class="province-name-modern">
+                    <div class="province-flag-modern">
+                        <div class="province-circle" style="background-color: ${getProvinceColor(province.id)}">
+                            ${province.name ? `<span class="province-initial">${province.code}</span>` : `<i class="fas fa-map-marked-alt"></i>`}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="province-name-text">${province.name}</div>
+                        <small class="text-muted">${province.code ? 'Code: ' + province.code : ''}${province.area_rank ? ' | Rang: ' + province.area_rank : ''}</small>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="country-badge">
+                    <img src="${province.country?.flag || 'default-country-flag.svg'}" 
+                         alt="${province.country?.name || 'N/A'}" width="24" height="24" 
+                         class="country-flag-img-modern">
+                    ${province.country?.name || 'N/A'}
+                </div>
+            </td>
+            <td>
+                <div>${province.capital || 'N/A'}</div>
+                <small class="text-muted">${province.largest_city ? 'Plus grande: ' + province.largest_city : ''}</small>
+            </td>
+            <td>
+                <div>${population}</div>
+                <small class="text-muted">${density ? density + ' hab/km²' : ''}</small>
+            </td>
+            <td>
+                <div>${area}</div>
+                <small class="text-muted">km²</small>
+            </td>
+            <td>
+                <div class="status-toggle-container">
+                    <div class="toggle-switch ${isActive ? 'active' : ''}" 
+                         onclick="toggleProvinceStatus(${province.id}, ${isActive})">
+                        <div class="toggle-slider"></div>
+                    </div>
+                    <span class="status-text ${isActive ? 'text-success' : 'text-danger'}">
+                        ${isActive ? 'Actif' : 'Inactif'}
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div class="province-actions-modern">
+                    <a href="{{ url('countrie') }}/${province.country?.code}/${province.code}" 
+                       class="action-btn-modern view-btn-modern" target="_blank" title="Afficher la page">
+                        <i class="fas fa-globe"></i>
+                    </a>
+                    <a href="{{url('provinces/page')}}/${province.id}" 
+                       class="action-btn-modern pages-btn-modern" title="Gérer les pages">
+                        <i class="fas fa-file-alt"></i>
+                    </a>
+                    <button class="action-btn-modern edit-btn-modern" title="Modifier" 
+                            onclick="openEditModal(${province.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn-modern delete-btn-modern" title="Supprimer" 
+                            onclick="showDeleteConfirmation(${province.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        tbody.appendChild(row);
+    });
+    
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('tableContainer').style.display = 'block';
+    document.getElementById('paginationContainer').style.display = 'flex';
+};
+
+// Toggle province status
+const toggleProvinceStatus = (provinceId, currentStatus) => {
+    // Find the toggle element
+    const toggleElement = document.querySelector(`#province-row-${provinceId} .toggle-switch`);
+    const statusText = document.querySelector(`#province-row-${provinceId} .status-text`);
+    
+    if (!toggleElement || !statusText) return;
+    
+    // Disable toggle during request
+    toggleElement.style.pointerEvents = 'none';
+    toggleElement.classList.add('loading');
+    
+    const newStatus = !currentStatus;
+    
+    console.log('Toggle province status - Début:', {
+        provinceId,
+        currentStatus,
+        newStatus
+    });
+    
+    // Send AJAX request
+    $.ajax({
+        url: `/provinces/${provinceId}/toggle-status`,
+        type: 'PUT',
+        data: {
+            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            is_active: newStatus
+        },
+        dataType: 'json',
+        success: function(response) {
+            console.log('Toggle status - Réponse:', response);
             
-            if (!provinces || !Array.isArray(provinces) || provinces.length === 0) {
-                document.getElementById('emptyState').style.display = 'block';
-                document.getElementById('tableContainer').style.display = 'none';
-                document.getElementById('paginationContainer').style.display = 'none';
-                return;
+            if (response.success) {
+                // Update UI
+                if (newStatus) {
+                    toggleElement.classList.add('active');
+                    statusText.textContent = 'Actif';
+                    statusText.classList.remove('text-danger');
+                    statusText.classList.add('text-success');
+                } else {
+                    toggleElement.classList.remove('active');
+                    statusText.textContent = 'Inactif';
+                    statusText.classList.remove('text-success');
+                    statusText.classList.add('text-danger');
+                }
+                
+                // Update the province in the array
+                const provinceIndex = allProvinces.findIndex(p => p.id === provinceId);
+                if (provinceIndex !== -1) {
+                    allProvinces[provinceIndex].is_active = newStatus;
+                }
+                
+                // Show success message
+                showAlert('success', `Province ${newStatus ? 'activée' : 'désactivée'} avec succès !`);
+            } else {
+                showAlert('danger', response.message || 'Erreur lors de la mise à jour du statut');
+                // Revert toggle if error
+                toggleElement.style.pointerEvents = 'auto';
+                toggleElement.classList.remove('loading');
             }
-            
-            provinces.forEach((province, index) => {
-                const row = document.createElement('tr');
-                row.id = `province-row-${province.id}`;
-                row.style.animationDelay = `${index * 0.05}s`;
-                
-                // Format population and area
-                const population = province.population ? formatNumber(province.population) : 'N/A';
-                const area = province.area ? formatNumber(province.area) : 'N/A';
-                const density = province.population && province.area && province.area > 0 
-                    ? (province.population / province.area).toFixed(2) 
-                    : null;
-                
-                row.innerHTML = `
-                    <td class="province-name-cell">
-                        <div class="province-name-modern">
-                           <div class="province-flag-modern">
-    <div class="province-circle" style="background-color: ${getProvinceColor(province.id)}">
-        ${province.name ? `<span class="province-initial">${province.code}</span>` : `<i class="fas fa-map-marked-alt"></i>`}
-    </div>
-</div>
-                            <div>
-                                <div class="province-name-text">${province.name}</div>
-                                <small class="text-muted">${province.code ? 'Code: ' + province.code : ''}${province.area_rank ? ' | Rang: ' + province.area_rank : ''}</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="country-badge">
-                           <img src="${province.country?.flag || 'default-country-flag.svg'}" 
-                                alt="${province.country?.name || 'N/A'}" width="24" height="24" 
-                                class="country-flag-img-modern">
-                            ${province.country?.name || 'N/A'}
-                        </div>
-                    </td>
-                    <td>
-                        <div>${province.capital || 'N/A'}</div>
-                        <small class="text-muted">${province.largest_city ? 'Plus grande: ' + province.largest_city : ''}</small>
-                    </td>
-                    <td>
-                        <div>${population}</div>
-                        <small class="text-muted">${density ? density + ' hab/km²' : ''}</small>
-                    </td>
-                    <td>
-                        <div>${area}</div>
-                        <small class="text-muted">km²</small>
-                    </td>
-                    <td>
-                        <div class="province-actions-modern">
-                            <a href="{{ url('countrie') }}/${province.country?.code}/${province.code}" 
-                               class="action-btn-modern view-btn-modern" target="_blank" title="Afficher la page">
-                                <i class="fas fa-globe"></i>
-                            </a>
-                            <a href="#" 
-                               class="action-btn-modern view-btn-modern" title="Voir détails">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <button class="action-btn-modern edit-btn-modern" title="Modifier" 
-                                    onclick="openEditModal(${province.id})">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn-modern delete-btn-modern" title="Supprimer" 
-                                    onclick="showDeleteConfirmation(${province.id})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-                
-                tbody.appendChild(row);
+        },
+        error: function(xhr, status, error) {
+            console.error('Toggle status - Erreur:', {
+                status: xhr.status,
+                error: error,
+                responseText: xhr.responseText
             });
             
-            document.getElementById('emptyState').style.display = 'none';
-            document.getElementById('tableContainer').style.display = 'block';
-            document.getElementById('paginationContainer').style.display = 'flex';
-        };
+            showAlert('danger', 'Erreur lors de la mise à jour du statut: ' + error);
+            // Revert toggle on error
+            toggleElement.style.pointerEvents = 'auto';
+            toggleElement.classList.remove('loading');
+        },
+        complete: function() {
+            // Re-enable toggle after delay
+            setTimeout(() => {
+                toggleElement.style.pointerEvents = 'auto';
+                toggleElement.classList.remove('loading');
+            }, 500);
+        }
+    });
+};
 
         function getProvinceColor(provinceId) {
     const colors = [
@@ -1628,6 +1725,128 @@
 .province-circle i {
     color: white;
     font-size: 18px;
+}
+/* Toggle Switch Styles */
+.status-toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toggle-switch {
+    width: 60px;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.toggle-switch.active {
+    background-color: #28a745;
+}
+
+.toggle-slider {
+    width: 26px;
+    height: 26px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.toggle-switch.active .toggle-slider {
+    transform: translateX(30px);
+}
+
+.status-text {
+    font-weight: 500;
+    font-size: 0.9rem;
+    min-width: 50px;
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Loading state for toggle */
+.toggle-switch.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.toggle-switch.loading .toggle-slider {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* New pages button style */
+.pages-btn-modern {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.pages-btn-modern:hover {
+    background: linear-gradient(135deg, #8e44ad, #7d3c98);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive adjustments for toggle */
+@media (max-width: 768px) {
+    .status-toggle-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .toggle-switch {
+        width: 50px;
+        height: 25px;
+    }
+    
+    .toggle-switch.active .toggle-slider {
+        transform: translateX(25px);
+    }
+    
+    .toggle-slider {
+        width: 21px;
+        height: 21px;
+    }
+    
+    .province-actions-modern {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .action-btn-modern, .pages-btn-modern {
+        width: 100%;
+        height: 36px;
+    }
 }
     </style>
 @endsection

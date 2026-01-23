@@ -11,4 +11,7 @@ return [
     Vendor\Administration\AdministrationServiceProvider::class,
     Vendor\GeoMap\GeoMapServiceProvider::class,
     Vendor\Activitie\ActivitieServiceProvider::class,
+    Vendor\Etablissement\EtablissementServiceProvider::class,
+    Vendor\Setting\SettingServiceProvider::class,
+    Vendor\Users\UsersServiceProvider::class,
 ];

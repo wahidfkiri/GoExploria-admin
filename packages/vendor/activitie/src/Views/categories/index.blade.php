@@ -162,9 +162,7 @@
                                     </div>
                                 </th>
                                 <th>Catégorie</th>
-                                <th>Sites Web</th>
-                                <th>Templates</th>
-                                <th>Total</th>
+                                <th>Type</th>
                                 <th>Statut</th>
                                 <th style="text-align: center;">Actions</th>
                             </tr>
@@ -360,20 +358,13 @@
                             </div>
                         </div>
                     </td>
-                    <td>
-                        <div class="count-badge">
-                            <i class="fas fa-globe me-1"></i>
-                            ${category.websites_count || 0}
+                    <td class="category-name-cell">
+                        <div class="category-name-modern">
+                            
+                            <div>
+                                <div class="category-name-text"> ${category?.type?.name ?? 'Non défini'}</div>
+                            </div>
                         </div>
-                    </td>
-                    <td>
-                        <div class="count-badge">
-                            <i class="fas fa-paint-brush me-1"></i>
-                            ${category.templates_count || 0}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="total-count">${totalItems}</div>
                     </td>
                     <td>
                         <span class="status-badge ${statusClass}">${statusText}</span>

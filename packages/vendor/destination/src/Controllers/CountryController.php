@@ -370,4 +370,74 @@ class CountryController extends Controller
             'data' => $countries
         ]);
     }
+
+    public function toggleStatus(Request $request, Country $country)
+{
+    try {
+        \Log::info('ToggleStatus Country - Début', [
+            'country_id' => $country->id,
+            'country_name' => $country->name,
+            'input_data' => $request->all(),
+            'current_status' => $country->is_active
+        ]);
+        
+        $validated = $request->validate([
+            'is_active' => 'required'
+        ]);
+        
+        \Log::info('ToggleStatus Country - Données validées', [
+            'validated_data' => $validated,
+            'validated_is_active_type' => gettype($validated['is_active']),
+            'validated_is_active_value' => $validated['is_active']
+        ]);
+        
+        // Déterminer la nouvelle valeur
+        $newStatus = false;
+        
+        if ($validated['is_active'] === true || 
+            $validated['is_active'] === 'true' || 
+            $validated['is_active'] === 1 || 
+            $validated['is_active'] === '1') {
+            $newStatus = true;
+        }
+        
+        \Log::info('ToggleStatus Country - Nouveau statut déterminé', [
+            'new_status_bool' => $newStatus,
+            'new_status_int' => $newStatus ? 1 : 0
+        ]);
+        
+        // Mettre à jour le pays
+        $country->update([
+            'is_active' => $newStatus ? 1 : 0
+        ]);
+        
+        // Recharger le modèle pour vérifier
+        $country->refresh();
+        
+        \Log::info('ToggleStatus Country - Mise à jour réussie', [
+            'updated_status' => $country->is_active,
+            'updated_at' => $country->updated_at
+        ]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => $newStatus ? 'Pays activé avec succès' : 'Pays désactivé avec succès',
+            'data' => $country
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error('ToggleStatus Country - Erreur', [
+            'country_id' => $country->id ?? 'N/A',
+            'error_message' => $e->getMessage(),
+            'error_trace' => $e->getTraceAsString(),
+            'request_data' => $request->all()
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur lors de la mise à jour du statut: ' . $e->getMessage(),
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 }

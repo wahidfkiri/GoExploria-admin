@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\HasPage;
 
 class Secteur extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasPage;
 
     protected $fillable = [
         'name',
@@ -30,6 +31,7 @@ class Secteur extends Model
         'parks',
         'latitude',
         'longitude',
+        'is_active',
         'region_id'
     ];
 
@@ -37,7 +39,8 @@ class Secteur extends Model
         'population' => 'integer',
         'area' => 'decimal:2',
         'households' => 'integer',
-        'density' => 'decimal:2'
+        'density' => 'decimal:2',
+        'is_active' => 'boolean'
     ];
 
     // Relation avec la région
@@ -45,6 +48,13 @@ class Secteur extends Model
     {
         return $this->belongsTo(Region::class);
     }
+
+    
+
+    public function scopeActive($query)
+{
+    return $query->where('is_active', true);
+}
 
     // Accessor pour le nom complet
     public function getFullNameAttribute(): string

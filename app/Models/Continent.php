@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\HasPage;
 
 class Continent extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasPage;
 
     protected $fillable = [
         'name',
@@ -18,14 +19,16 @@ class Continent extends Model
         'population',
         'area',
         'countries_count',
-        'languages'
+        'languages',
+        'is_active'
     ];
 
     protected $casts = [
         'languages' => 'array',
         'population' => 'integer',
         'area' => 'decimal:2',
-        'countries_count' => 'integer'
+        'countries_count' => 'integer',
+        'is_active' => 'boolean'
     ];
 
     // Relation avec les pays
@@ -33,6 +36,13 @@ class Continent extends Model
     {
         return $this->hasMany(Country::class);
     }
+
+    
+
+    public function scopeActive($query)
+{
+    return $query->where('is_active', true);
+}
 
     // Méthode pour mettre à jour le nombre de pays automatiquement
     public function updateCountriesCount(): void

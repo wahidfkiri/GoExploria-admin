@@ -275,4 +275,87 @@ public function update(Request $request, Continent $continent)
             'data' => $countries
         ]);
     }
+
+ public function toggleStatus(Request $request, Continent $continent)
+{
+    try {
+        \Log::info('ToggleStatus - Début', [
+            'continent_id' => $continent->id,
+            'continent_name' => $continent->name,
+            'input_data' => $request->all(),
+            'current_status' => $continent->is_active
+        ]);
+        
+        $validated = $request->validate([
+            'is_active' => 'required'
+        ]);
+        
+        \Log::info('ToggleStatus - Données validées', [
+            'validated_data' => $validated,
+            'validated_is_active_type' => gettype($validated['is_active']),
+            'validated_is_active_value' => $validated['is_active']
+        ]);
+        
+        // Debug: Vérifier les valeurs possibles
+        \Log::debug('ToggleStatus - Conversion en booléen', [
+            'raw_value' => $validated['is_active'],
+            'is_true' => $validated['is_active'] === true,
+            'is_false' => $validated['is_active'] === false,
+            'is_1' => $validated['is_active'] == 1,
+            'is_0' => $validated['is_active'] == 0,
+            'is_string_true' => $validated['is_active'] === 'true',
+            'is_string_false' => $validated['is_active'] === 'false',
+            'is_string_1' => $validated['is_active'] === '1',
+            'is_string_0' => $validated['is_active'] === '0',
+        ]);
+        
+        // Déterminer la nouvelle valeur
+        $newStatus = false;
+        
+        if ($validated['is_active'] === true || 
+            $validated['is_active'] === 'true' || 
+            $validated['is_active'] === 1 || 
+            $validated['is_active'] === '1') {
+            $newStatus = true;
+        }
+        
+        \Log::info('ToggleStatus - Nouveau statut déterminé', [
+            'new_status_bool' => $newStatus,
+            'new_status_int' => $newStatus ? 1 : 0
+        ]);
+        
+        // Mettre à jour le continent
+        $continent->update([
+            'is_active' => $newStatus ? 1 : 0
+        ]);
+        
+        // Recharger le modèle pour vérifier
+        $continent->refresh();
+        
+        \Log::info('ToggleStatus - Mise à jour réussie', [
+            'updated_status' => $continent->is_active,
+            'updated_at' => $continent->updated_at
+        ]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => $newStatus ? 'Continent activé avec succès' : 'Continent désactivé avec succès',
+            'data' => $continent
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error('ToggleStatus - Erreur', [
+            'continent_id' => $continent->id ?? 'N/A',
+            'error_message' => $e->getMessage(),
+            'error_trace' => $e->getTraceAsString(),
+            'request_data' => $request->all()
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur lors de la mise à jour du statut: ' . $e->getMessage(),
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 }

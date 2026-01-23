@@ -373,4 +373,83 @@ class ProvinceController extends Controller
             'data' => $provinces
         ]);
     }
+
+    public function toggleStatus(Request $request, Province $province)
+{
+    try {
+        \Log::info('ToggleStatus Province - Début', [
+            'province_id' => $province->id,
+            'province_name' => $province->name,
+            'input_data' => $request->all(),
+            'current_status' => $province->is_active
+        ]);
+        
+        $validated = $request->validate([
+            'is_active' => 'required'
+        ]);
+        
+        \Log::info('ToggleStatus Province - Données validées', [
+            'validated_data' => $validated,
+            'validated_is_active_type' => gettype($validated['is_active']),
+            'validated_is_active_value' => $validated['is_active']
+        ]);
+        
+        // Déterminer la nouvelle valeur
+        $newStatus = false;
+        
+        if ($validated['is_active'] === true || 
+            $validated['is_active'] === 'true' || 
+            $validated['is_active'] === 1 || 
+            $validated['is_active'] === '1') {
+            $newStatus = true;
+        }
+        
+        \Log::info('ToggleStatus Province - Nouveau statut déterminé', [
+            'new_status_bool' => $newStatus,
+            'new_status_int' => $newStatus ? 1 : 0
+        ]);
+        
+        // Mettre à jour la province
+        $province->update([
+            'is_active' => $newStatus ? 1 : 0
+        ]);
+        
+        // Recharger le modèle pour vérifier
+        $province->refresh();
+        
+        \Log::info('ToggleStatus Province - Mise à jour réussie', [
+            'updated_status' => $province->is_active,
+            'updated_at' => $province->updated_at
+        ]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => $newStatus ? 'Province activée avec succès' : 'Province désactivée avec succès',
+            'data' => $province
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error('ToggleStatus Province - Erreur', [
+            'province_id' => $province->id ?? 'N/A',
+            'error_message' => $e->getMessage(),
+            'error_trace' => $e->getTraceAsString(),
+            'request_data' => $request->all()
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur lors de la mise à jour du statut: ' . $e->getMessage(),
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
+    public function page($provinceId)
+    {
+        $pages = \App\Models\Page::where('pageable_type', 'App\Models\Province')
+            ->where('pageable_id', $provinceId)
+            ->with('pageable') // Charge la relation province
+            ->get();
+        return view('destination::provinces.pages.index', compact('pages'));
+    }
 }

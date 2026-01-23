@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\HasPage;
 
 class Country extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasPage;
 
     protected $fillable = [
         'name',
@@ -29,13 +30,15 @@ class Country extends Model
         'official_language',
         'timezones',
         'region',
+        'is_active',
         'continent_id'
     ];
 
     protected $casts = [
         'timezones' => 'array',
         'population' => 'integer',
-        'area' => 'decimal:2'
+        'area' => 'decimal:2',
+        'is_active' => 'boolean'
     ];
 
     // Relation avec le continent
@@ -55,6 +58,11 @@ class Country extends Model
     {
         return "{$this->name} ({$this->code})";
     }
+
+    public function scopeActive($query)
+{
+    return $query->where('is_active', true);
+}
 
     // Scope pour les pays par continent
     public function scopeByContinent($query, $continentCode)

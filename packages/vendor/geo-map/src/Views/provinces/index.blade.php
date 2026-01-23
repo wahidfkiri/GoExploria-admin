@@ -19,6 +19,55 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{{ asset('front/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/geo-map/css/map.css') }}">
+    
+    <style>
+        /* Styles pour les onglets principaux */
+        .main-tabs {
+            display: flex;
+            background: #2c5282;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        
+        .main-tab {
+            padding: 15px 25px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .main-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .main-tab.active {
+            background: white;
+            color: #2c5282;
+            border-bottom-color: #4299e1;
+        }
+        
+        .tab-content-main {
+            display: none;
+            height: calc(100vh - 160px);
+        }
+        
+        .tab-content-main.active {
+            display: block;
+        }
+        
+        /* Style pour l'onglet Carte */
+        #tab-carte-content .app-container {
+            display: flex;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <!-- Header avec informations en temps réel -->
@@ -100,239 +149,272 @@
         </div>
     </div>
 
-    <!-- Main Navigation - RESPONSIVE -->
-    <nav class="navbar navbar-expand-lg navbar-light main-navbar">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">
-                <div class="site-logo">
-                    <img src="https://www.goexploria.com/images/logo-go-exploria-qc-3.png" alt="GoExploria" class="logo-img">
-                    <div class="logo-text">
-                        <span class="logo-title">GoExploria</span>
-                        <span class="logo-subtitle">Affaires</span>
+    
+    @include('components.front.nav-bar')
+    
+    <!-- Onglets principaux -->
+    <ul class="main-tabs">
+        <li class="main-tab active" data-tab="carte">
+            <i class="fas fa-map"></i>
+            <span>Carte Interactive</span>
+        </li>
+        <li class="main-tab" data-tab="details">
+            <i class="fas fa-info-circle"></i>
+            <span>Détails Province</span>
+        </li>
+        <li class="main-tab" data-tab="statistiques">
+            <i class="fas fa-chart-bar"></i>
+            <span>Statistiques</span>
+        </li>
+        <li class="main-tab" data-tab="galerie">
+            <i class="fas fa-images"></i>
+            <span>Galerie</span>
+        </li>
+    </ul>
+    
+    <!-- Contenu des onglets principaux -->
+    
+    <!-- Onglet 1: Carte Interactive -->
+    <div id="tab-carte-content" class="tab-content-main active">
+        <!-- Main Content -->
+        <div class="app-container" id="appContainer">
+            <!-- Carte à gauche -->
+            <div class="map-container">
+                <div id="map"></div>
+                
+                <!-- Overlay de chargement -->
+                <div class="loading-overlay" id="mapLoading">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Chargement de la carte...</span>
+                        </div>
+                        <p class="mt-2">Chargement de la carte...</p>
                     </div>
                 </div>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="explorerDropdown" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                            <i class="fas fa-map-marked-alt me-1"></i>Explorer Région
-                        </a>
-                        <div class="dropdown-menu full-width" aria-labelledby="explorerDropdown">
-                            <div class="container">
-                                <div class="row mega-menu-regions" id="regionsDropdownContainer">
-                                    <div class="col-12 text-center py-4">
-                                        <div class="spinner-border text-primary" role="status">
-                                            <span class="visually-hidden">Chargement...</span>
-                                        </div>
-                                        <p class="mt-2">Chargement des régions...</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                            <i class="fas fa-concierge-bell me-1"></i> GO Explorez
-                        </a>
-                        <div class="dropdown-menu full-width" aria-labelledby="servicesDropdown">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <h5 class="dropdown-header">Services Digitaux</h5>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-briefcase me-2"></i>GO Business
-                                            <span class="text-muted d-block small mt-1">Solutions pour entreprises</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-store me-2"></i>GO Local
-                                            <span class="text-muted d-block small mt-1">Promotion commerciale locale</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-crown me-2"></i>GO Prime Time
-                                            <span class="text-muted d-block small mt-1">Services premium</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h5 class="dropdown-header">Médias & Contenu</h5>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-tv me-2"></i>GO Web TV
-                                            <span class="text-muted d-block small mt-1">Chaîne vidéo en ligne</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-camera me-2"></i>GO Photos
-                                            <span class="text-muted d-block small mt-1">Banque d'images exclusive</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-newspaper me-2"></i>GO Actualités
-                                            <span class="text-muted d-block small mt-1">Nouvelles locales et régionales</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                            <i class="fas fa-book me-1"></i>Ressources
-                        </a>
-                        <div class="dropdown-menu full-width" aria-labelledby="resourcesDropdown">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <h5 class="dropdown-header">Contenu Éducatif</h5>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-file-alt me-2"></i>Blog
-                                            <span class="text-muted d-block small mt-1">Articles et conseils</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-newspaper me-2"></i>Actualités
-                                            <span class="text-muted d-block small mt-1">Nouvelles du Québec</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-graduation-cap me-2"></i>Guides
-                                            <span class="text-muted d-block small mt-1">Guides touristiques</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <h5 class="dropdown-header">Événements</h5>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-calendar-alt me-2"></i>Calendrier
-                                            <span class="text-muted d-block small mt-1">Événements à venir</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-ticket-alt me-2"></i>Billeterie
-                                            <span class="text-muted d-block small mt-1">Achetez vos billets</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-bullhorn me-2"></i>Promotions
-                                            <span class="text-muted d-block small mt-1">Offres spéciales</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <h5 class="dropdown-header">Support</h5>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-question-circle me-2"></i>Aide & FAQ
-                                            <span class="text-muted d-block small mt-1">Questions fréquentes</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-headset me-2"></i>Support Client
-                                            <span class="text-muted d-block small mt-1">Assistance 24/7</span>
-                                        </a>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-download me-2"></i>Téléchargements
-                                            <span class="text-muted d-block small mt-1">Ressources gratuites</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
                 
-                <div class="special-buttons d-flex">
-                    <a href="https://www.goexploria.com/company/68620/go-exploria-plans-de-relance" class="btn btn-primary">
-                        <i class="fas fa-seedling btn-icon"></i> Plans de relance
-                    </a>
-                    <a href="https://www.goexploria.com/company/68619/go-exploria-services-web" class="btn btn-secondary">
-                        <i class="fas fa-globe btn-icon"></i> Services web
-                    </a>
+                <!-- Bouton pour ouvrir/fermer sidebar sur mobile -->
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars" id="sidebarToggleIcon"></i>
+                </button>
+            </div>
+            
+            <!-- Sidebar à droite - Positionnée dans app-container -->
+            <div class="sidebar-right" id="sidebarRight" style="min-height:800px;">
+                
+                <div class="filters-section">
+                    <h3>Filtres</h3>
+                    
+                    <!-- Information de la province -->
+                    <div class="filter-group" style="background: #f0f7ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <h4 style="margin: 0 0 10px 0; color: #2c5282;">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Province: <?php echo e($province->name); ?>
+                        </h4>
+                        <p style="margin: 0; color: #666; font-size: 14px;">
+                            Code: <?php echo e($province->code); ?> | 
+                            Population: <?php echo e(number_format($province->population, 0, ',', ' ')); ?>
+                        </p>
+                    </div>
+                    
+                    <!-- Sélection de région -->
+                    <div class="filter-group">
+                        <label for="region-filter">Région :</label>
+                        <select id="region-filter" class="form-select">
+                            <option value="">Toutes les régions</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Sélection de catégorie -->
+                    <div class="filter-group">
+                        <label for="category-filter">Catégorie :</label>
+                        <select id="category-filter" class="form-select">
+                            <option value="all">Toutes les catégories</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Filtre de rayon -->
+                    <div class="filter-group">
+                        <label for="radius-filter">Rayon de recherche :</label>
+                        <div class="slider-container">
+                            <input type="range" id="radius-filter" min="1" max="500" value="100" class="form-range">
+                            <span id="radius-value">100 km</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Bouton de localisation -->
+                    <div class="filter-group">
+                        <button id="locate-me" class="btn locate-btn">
+                            <i class="fas fa-location-arrow"></i> Me localiser
+                        </button>
+                    </div>
+                    
+                    <!-- Statistiques -->
+                    <div class="stats">
+                        <p><span id="places-count">0</span> lieux trouvés dans la zone</p>
+                    </div>
+                </div>
+                
+                <!-- Liste des lieux -->
+                <div class="places-list" id="places-list">
+                    <div class="no-results">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h4>Aucun lieu trouvé</h4>
+                        <p>Utilisez les filtres pour trouver des lieux intéressants</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="app-container" id="appContainer">
-        <!-- Carte à gauche -->
-        <div class="map-container">
-            <div id="map"></div>
+    </div>
+    
+    <!-- Onglet 2: Détails Province -->
+    <div id="tab-details-content" class="tab-content-main">
+        <div class="container py-4">
+            <h2 class="mb-4">Détails de la Province: <?php echo e($province->name); ?></h2>
             
-            <!-- Overlay de chargement -->
-            <div class="loading-overlay" id="mapLoading">
-                <div class="text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Chargement de la carte...</span>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Informations générales</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <tr>
+                                    <th>Nom complet:</th>
+                                    <td><?php echo e($province->name); ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Code:</th>
+                                    <td><?php echo e($province->code); ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Population:</th>
+                                    <td><?php echo e(number_format($province->population, 0, ',', ' ')); ?> habitants</td>
+                                </tr>
+                                <tr>
+                                    <th>Superficie:</th>
+                                    <td><?php echo e(isset($province->area) ? number_format($province->area, 0, ',', ' ') . ' km²' : 'Non disponible'); ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Chef-lieu:</th>
+                                    <td><?php echo e($province->capital ?? 'Non spécifié'); ?></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
-                    <p class="mt-2">Chargement de la carte...</p>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Description</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><?php echo e($province->description ?? 'Aucune description disponible pour cette province.'); ?></p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Coordonnées géographiques</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><i class="fas fa-map-marker-alt me-2"></i> Latitude: <?php echo e($province->latitude); ?></p>
+                            <p><i class="fas fa-map-marker-alt me-2"></i> Longitude: <?php echo e($province->longitude); ?></p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <!-- Bouton pour ouvrir/fermer sidebar sur mobile -->
-            <button class="sidebar-toggle" id="sidebarToggle">
-                <i class="fas fa-bars" id="sidebarToggleIcon"></i>
-            </button>
         </div>
-        
-        <!-- Sidebar à droite - Positionnée dans app-container -->
-        <div class="sidebar-right" id="sidebarRight">
+    </div>
+    
+    <!-- Onglet 3: Statistiques -->
+    <div id="tab-statistiques-content" class="tab-content-main">
+        <div class="container py-4">
+            <h2 class="mb-4">Statistiques de la Province: <?php echo e($province->name); ?></h2>
             
-            <div class="filters-section">
-                <h3>Filtres</h3>
-                
-                <!-- Information de la province -->
-                <div class="filter-group" style="background: #f0f7ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                    <h4 style="margin: 0 0 10px 0; color: #2c5282;">
-                        <i class="fas fa-map-marker-alt me-2"></i>
-                        Province: <?php echo e($province->name); ?>
-                    </h4>
-                    <p style="margin: 0; color: #666; font-size: 14px;">
-                        Code: <?php echo e($province->code); ?> | 
-                        Population: <?php echo e(number_format($province->population, 0, ',', ' ')); ?>
-                    </p>
-                </div>
-                
-                <!-- Sélection de région -->
-                <div class="filter-group">
-                    <label for="region-filter">Région :</label>
-                    <select id="region-filter" class="form-select">
-                        <option value="">Toutes les régions</option>
-                    </select>
-                </div>
-                
-                <!-- Sélection de catégorie -->
-                <div class="filter-group">
-                    <label for="category-filter">Catégorie :</label>
-                    <select id="category-filter" class="form-select">
-                        <option value="all">Toutes les catégories</option>
-                    </select>
-                </div>
-                
-                <!-- Filtre de rayon -->
-                <div class="filter-group">
-                    <label for="radius-filter">Rayon de recherche :</label>
-                    <div class="slider-container">
-                        <input type="range" id="radius-filter" min="1" max="500" value="100" class="form-range">
-                        <span id="radius-value">100 km</span>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card text-center mb-4">
+                        <div class="card-body">
+                            <h1 class="display-4 text-primary"><?php echo e(number_format($province->population, 0, ',', ' ')); ?></h1>
+                            <p class="card-text">Habitants</p>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Bouton de localisation -->
-                <div class="filter-group">
-                    <button id="locate-me" class="btn locate-btn">
-                        <i class="fas fa-location-arrow"></i> Me localiser
-                    </button>
+                <div class="col-md-4">
+                    <div class="card text-center mb-4">
+                        <div class="card-body">
+                            <h1 class="display-4 text-success">
+                                <?php if(isset($province->area) && $province->area > 0): ?>
+                                    <?php echo e(number_format($province->population / $province->area, 2, ',', ' ')); ?>
+                                <?php else: ?>
+                                    -
+                                <?php endif; ?>
+                            </h1>
+                            <p class="card-text">hab/km² (densité)</p>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Statistiques -->
-                <div class="stats">
-                    <p><span id="places-count">0</span> lieux trouvés dans la zone</p>
+                <div class="col-md-4">
+                    <div class="card text-center mb-4">
+                        <div class="card-body">
+                            <h1 class="display-4 text-warning">
+                                <?php echo e(isset($province->area) ? number_format($province->area, 0, ',', ' ') : '-'); ?>
+                            </h1>
+                            <p class="card-text">km² (superficie)</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <!-- Liste des lieux -->
-            <div class="places-list" id="places-list">
-                <div class="no-results">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <h4>Aucun lieu trouvé</h4>
-                    <p>Utilisez les filtres pour trouver des lieux intéressants</p>
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Évolution démographique</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="populationChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Onglet 4: Galerie -->
+    <div id="tab-galerie-content" class="tab-content-main">
+        <div class="container py-4">
+            <h2 class="mb-4">Galerie photos: <?php echo e($province->name); ?></h2>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             class="card-img-top" alt="Paysage de <?php echo e($province->name); ?>">
+                        <div class="card-body">
+                            <h5 class="card-title">Paysages naturels</h5>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             class="card-img-top" alt="Monuments de <?php echo e($province->name); ?>">
+                        <div class="card-body">
+                            <h5 class="card-title">Monuments historiques</h5>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                             class="card-img-top" alt="Villes de <?php echo e($province->name); ?>">
+                        <div class="card-body">
+                            <h5 class="card-title">Villes et villages</h5>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -357,6 +439,9 @@
     
     <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <!-- Chart.js pour les statistiques -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
 <script>
 class InteractiveMap {
@@ -562,8 +647,6 @@ class InteractiveMap {
         if (infoHeader) totalHeaderHeight += infoHeader.offsetHeight;
         if (topBar) totalHeaderHeight += topBar.offsetHeight;
         if (mainNavbar) totalHeaderHeight += mainNavbar.offsetHeight;
-        
-       
     }
     
     addLocateControl() {
@@ -1703,14 +1786,131 @@ class InteractiveMap {
     }
 }
 
-// Initialisation
+// Gestion des onglets principaux
+function initMainTabs() {
+    const mainTabs = document.querySelectorAll('.main-tab');
+    const tabContents = document.querySelectorAll('.tab-content-main');
+    
+    // Fonction pour activer un onglet
+    function activateTab(tabElement) {
+        const tabId = tabElement.getAttribute('data-tab');
+        
+        // Retirer la classe active de tous les onglets
+        mainTabs.forEach(tab => tab.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        
+        // Ajouter la classe active à l'onglet cliqué
+        tabElement.classList.add('active');
+        document.getElementById(`tab-${tabId}-content`).classList.add('active');
+        
+        // Sauvegarder l'onglet actif dans localStorage
+        localStorage.setItem('mainActiveTab', tabId);
+        
+        // Redimensionner la carte si on revient sur l'onglet carte
+        if (tabId === 'carte' && window.mapApp && window.mapApp.map) {
+            setTimeout(() => {
+                window.mapApp.map.invalidateSize();
+            }, 300);
+        }
+    }
+    
+    // Gérer les clics sur les onglets
+    mainTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            activateTab(this);
+        });
+    });
+    
+    // Restaurer l'onglet actif depuis localStorage
+    const savedTab = localStorage.getItem('mainActiveTab');
+    if (savedTab) {
+        const tabToActivate = document.querySelector(`.main-tab[data-tab="${savedTab}"]`);
+        if (tabToActivate) {
+            activateTab(tabToActivate);
+        }
+    }
+}
+
+// Initialiser le graphique de population
+function initPopulationChart() {
+    const ctx = document.getElementById('populationChart');
+    if (!ctx) return;
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023'],
+            datasets: [{
+                label: 'Population de <?php echo e($province->name); ?>',
+                data: [
+                    <?php echo e($province->population * 0.92); ?>,
+                    <?php echo e($province->population * 0.94); ?>,
+                    <?php echo e($province->population * 0.96); ?>,
+                    <?php echo e($province->population * 0.97); ?>,
+                    <?php echo e($province->population * 0.98); ?>,
+                    <?php echo e($province->population * 0.99); ?>,
+                    <?php echo e($province->population); ?>,
+                    <?php echo e($province->population * 1.01); ?>,
+                    <?php echo e($province->population * 1.02); ?>
+                ],
+                borderColor: '#2c5282',
+                backgroundColor: 'rgba(44, 82, 130, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Évolution démographique 2015-2023'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: 'Population'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Initialisation globale
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        window.mapApp = new InteractiveMap();
-        console.log('Application carte interactive prête pour la province:', window.mapApp.provinceName);
+        // Initialiser les onglets principaux
+        initMainTabs();
+        
+        // Initialiser la carte seulement si on est sur l'onglet carte
+        if (document.querySelector('.main-tab.active').getAttribute('data-tab') === 'carte') {
+            window.mapApp = new InteractiveMap();
+            console.log('Application carte interactive prête pour la province:', window.mapApp.provinceName);
+        }
+        
+        // Initialiser le graphique de population
+        initPopulationChart();
+        
     } catch (error) {
         console.error('Erreur fatale:', error);
         alert('Erreur lors du chargement de l\'application. Veuillez recharger la page.');
+    }
+});
+
+// Réinitialiser la carte quand on change d'onglet
+document.addEventListener('click', (e) => {
+    if (e.target.closest('.main-tab')) {
+        const tabId = e.target.closest('.main-tab').getAttribute('data-tab');
+        if (tabId === 'carte' && window.mapApp && window.mapApp.map) {
+            setTimeout(() => {
+                window.mapApp.map.invalidateSize();
+            }, 300);
+        }
     }
 });
 </script>
