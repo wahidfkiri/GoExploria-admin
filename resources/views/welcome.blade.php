@@ -96,28 +96,9 @@
 
     <x-front.nav-bar />
 
-        <!-- Mega Menu Dropdown pour les régions -->
-    <div class="mega-dropdown-container" id="megaDropdown">
-        <button class="close-mega-menu" id="closeMegaMenu">
-            <i class="fas fa-times"></i>
-        </button>
-        
-        <h3 class="section-title mb-4">Explorez les Régions du Canada</h3>
-        
-        <div class="region-grid-full" id="regionGrid">
-            <!-- Les cartes régions seront ajoutées par JavaScript -->
-        </div>
-        
-        <div class="region-list-all">
-            <h4>Toutes les régions disponibles</h4>
-            <div class="region-columns" id="regionColumns">
-                <!-- La liste complète sera ajoutée par JavaScript -->
-            </div>
-        </div>
-    </div>
 
     <!-- Video Slider Full Width -->
-    <section class="video-slider-section" id="home">
+    <section class="video-slider-section">
         <div class="video-slider-container">
             <!-- Slide 1: Vidéo YouTube -->
             <div class="video-slide active">

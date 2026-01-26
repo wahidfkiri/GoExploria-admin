@@ -27,6 +27,17 @@ class GeoMapController extends Controller
         return view('geo-map::countries.index', compact('countrie', 'provinces'));
     }
 
+    
+    public function getCountries($countrieCode)
+    {
+        $countrie = Country::where('code', strtolower($countrieCode))->first();
+        if (!$countrie) {
+            return abort(404, 'Country not found');
+        }
+        $provinces = $countrie->provinces;
+        return view('geo-map::countries.index1', compact('countrie', 'provinces'));
+    }
+
     public function getProvince($countrieCode, $provinceCode)
     {
         $province = Province::with('country')->where('code', $provinceCode)->first();

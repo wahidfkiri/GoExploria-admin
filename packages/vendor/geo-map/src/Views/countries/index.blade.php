@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Go Exploria Business - Plateforme de Création Digitale</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
+        <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
     
     <!-- Leaflet CSS -->
@@ -19,8 +15,47 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{{ asset('front/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/geo-map/css/map.css') }}">
-    <style>
-        /* Styles pour les onglets avec liens */
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Masonry CSS pour Pinterest style -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.css">
+    
+  <link rel="stylesheet" href="{{ asset('front/css/style.css') }}">
+
+    <!-- Leaflet CSS seulement -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <link rel="stylesheet" href="{{ asset('vendor/geo-map/css/map.css') }}">
+    <!-- Main Navigation - RESPONSIVE -->
+     
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+   
+<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+	<link href="/vendor/geo-map/continents/css2?family=Inter:wght@400;700&family=Source+Serif+Pro:wght@400;700&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="/vendor/geo-map/continents/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/vendor/geo-map/continents/css/owl.carousel.min.css">
+	<link rel="stylesheet" href="/vendor/geo-map/continents/css/owl.theme.default.min.css">
+	<link rel="stylesheet" href="/vendor/geo-map/continents/css/jquery.fancybox.min.css">
+	<link rel="stylesheet" href="/vendor/geo-map/continents/fonts/icomoon/style.css">
+	<link rel="stylesheet" href="/vendor/geo-map/continents/fonts/flaticon/font/flaticon.css">
+	<link rel="stylesheet" href="/vendor/geo-map/continents/css/daterangepicker.css">
+	<link rel="stylesheet" href="/vendor/geo-map/continents/css/aos.css">
+	<link rel="stylesheet" href="/vendor/geo-map/continents/css/style.css">
+<style>
+    /* Styles pour les onglets avec liens */
 .app-tabs {
     display: flex;
     flex-direction: column;
@@ -279,10 +314,306 @@
         min-width: 120px;
     }
 }
-    </style>
+    /* CSS pour la sidebar droite */
+.right-sidebar {
+    padding-left: 30px;
+    position: sticky;
+    top: 20px;
+}
+
+.sidebar-widget {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid #e9ecef;
+}
+
+.widget-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+/* Tags */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    background: #fff;
+    color: #495057;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.tag:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    transform: translateY(-2px);
+}
+
+/* Archives */
+.archives-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.archives-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.archives-list li:last-child {
+    border-bottom: none;
+}
+
+.archives-list a {
+    color: #495057;
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.archives-list a:hover {
+    color: #007bff;
+}
+
+.archive-count {
+    background: #007bff;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+}
+
+/* Événements à venir */
+.upcoming-events {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.event-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: transform 0.3s ease;
+}
+
+.event-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.event-date {
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 60px;
+}
+
+.event-day {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: block;
+}
+
+.event-month {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.event-info {
+    flex: 1;
+}
+
+.event-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.event-location {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.btn-event-link {
+    background: #28a745;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s ease;
+}
+
+.btn-event-link:hover {
+    background: #218838;
+    color: white;
+}
+
+/* Informations */
+.info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-item-sidebar {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.info-item-sidebar i {
+    color: #007bff;
+    font-size: 1.2rem;
+    margin-top: 5px;
+}
+
+.info-item-sidebar h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.info-item-sidebar p {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Contact Form */
+.contact-form .form-group {
+    margin-bottom: 15px;
+}
+
+.contact-form .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 0.9rem;
+}
+
+.contact-form .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.contact-form .btn {
+    padding: 10px;
+    font-weight: 600;
+}
+
+/* Produits populaires */
+.popular-products {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.product-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: transform 0.3s ease;
+}
+
+.product-item:hover {
+    transform: translateX(5px);
+}
+
+.product-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-details {
+    flex: 1;
+}
+
+.product-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+.product-price {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #28a745;
+    margin-bottom: 5px;
+}
+
+.product-rating {
+    color: #ffc107;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .right-sidebar {
+        padding-left: 0;
+        margin-top: 50px;
+    }
+    
+    .main-content-container {
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar-widget {
+        padding: 20px;
+    }
+    
+    .event-item, .product-item {
+        flex-direction: column;
+    }
+    
+    .event-date, .product-img {
+        align-self: flex-start;
+    }
+}
+</style>
 </head>
 <body>
-    <!-- Header avec informations en temps réel -->
+  <!-- Header avec informations en temps réel -->
     <header class="info-header">
         <div class="container">
             <div class="info-items">
@@ -361,29 +692,579 @@
         </div>
     </div>
 
-    @include('geo-map::countries.components.nav-bar')
+    @include('geo-map::countries.components.index')
 
-   <!-- Main Content -->
-<div class="app-container" id="appContainer">
+   
+    <!-- Sections existantes du template (conserver votre contenu actuel) -->
+	<div class="hero">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-lg-7">
+					<div class="intro-wrap">
+						<h1 class="mb-5"><span class="d-block">Profitez de votre voyage au</span> <span class="typed-words"></span></h1>
+					</div>
+				</div>
+				<div class="col-lg-5">
+					<div class="slides">
+						<img src="/vendor/geo-map/continents/images/hero-slider-1.jpg" alt="Image" class="img-fluid active">
+						<img src="/vendor/geo-map/continents/images/hero-slider-2.jpg" alt="Image" class="img-fluid">
+						<img src="/vendor/geo-map/continents/images/hero-slider-3.jpg" alt="Image" class="img-fluid">
+						<img src="/vendor/geo-map/continents/images/hero-slider-4.jpg" alt="Image" class="img-fluid">
+						<img src="/vendor/geo-map/continents/images/hero-slider-5.jpg" alt="Image" class="img-fluid">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+   
+    <div class="container main-content-container mt-5">
+        <div class="row">
+            
+    
+    <!-- Modal pour les détails -->
+    <div id="place-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+            <!-- Main Container Left (8 columns on large screens) -->
+            <div class="col-lg-8 col-md-12">
+                
+                <!-- Our Services Section -->
+                <div class="untree_co-section">
+                    <div class="container-fluid">
+                        <div class="row mb-5 justify-content-center">
+                            <div class="col-lg-12 text-center">
+                                <h2 class="section-title text-center mb-3">Historique</h2>
+                                <p>{{$countrie->description}}</p>
+                            </div>
+                        </div>
+                        <div class="row align-items-stretch">
+                            <div class="col-lg-4 order-lg-1">
+                                <div class="h-100"><div class="frame h-100"><div class="feature-img-bg h-100" style="background-image: url('/storage/{{$countrie->image}}');"></div></div></div>
+                            </div>
+
+                            <div class="col-6 col-sm-6 col-lg-4 feature-1-wrap d-md-flex flex-md-column order-lg-1">
+
+                                <div class="feature-1 d-md-flex">
+    <div class="align-self-center">
+       
+        <h3>Capital</h3>
+        <p class="mb-0">{{$countrie->capital}}</p>
+    </div>
+</div>
+
+<div class="feature-1">
+    <div class="align-self-center">
+      
+        <h3>Devise</h3>
+        <p class="mb-0">{{$countrie->currency}}</p>
+    </div>
+</div>
+
+                            </div>
+
+                            <div class="col-6 col-sm-6 col-lg-4 feature-1-wrap d-md-flex flex-md-column order-lg-3">
+
+                                <div class="feature-1 d-md-flex">
+                                    <div class="align-self-center">
+                                        <h3>langues officielles</h3>
+                                        <p class="mb-0">{{$countrie->official_language}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="feature-1 d-md-flex">
+                                    <div class="align-self-center">
+                                        <h3>Times Zone</h3>
+                                        <p class="mb-0">{{$countrie->timezones}}</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Événements -->
+                <section class="events-section mt-5">
+                    <div class="container-fluid">
+                        <h2 class="section-title">Événements à venir</h2>
+                        <div class="row">
+                            <!-- Événement 1 -->
+                            <div class="col-md-6 col-lg-6 mb-4">
+                                <div class="event-card">
+                                    <div class="event-img">
+                                        <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Festival de musique">
+                                        <div class="event-date">
+                                            <span class="day">15</span>
+                                            <span class="month">Juin</span>
+                                        </div>
+                                    </div>
+                                    <div class="event-content">
+                                        <h3>Festival de musique d'été</h3>
+                                        <div class="event-location">
+                                            <i class="fas fa-map-marker-alt"></i> Parc Mont-Royal, Montréal
+                                        </div>
+                                        <p>Le plus grand festival de musique en plein air de l'été avec plus de 50 artistes internationaux.</p>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="event-price">75$</span>
+                                            <a href="#" class="btn btn-primary btn-sm">Détails</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Événement 2 -->
+                            <div class="col-md-6 col-lg-6 mb-4">
+                                <div class="event-card">
+                                    <div class="event-img">
+                                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Conférence">
+                                        <div class="event-date">
+                                            <span class="day">22</span>
+                                            <span class="month">Juin</span>
+                                        </div>
+                                    </div>
+                                    <div class="event-content">
+                                        <h3>Conférence Tech Innovation</h3>
+                                        <div class="event-location">
+                                            <i class="fas fa-map-marker-alt"></i> Palais des congrès, Québec
+                                        </div>
+                                        <p>Découvrez les dernières innovations technologiques avec des experts mondiaux.</p>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="event-price">Gratuit</span>
+                                            <a href="#" class="btn btn-primary btn-sm">Détails</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+
+            </div> <!-- End of Main Container Left -->
+
+            <!-- Right Sidebar (4 columns on large screens) -->
+            <div class="col-lg-4 col-md-12">
+                <div class="right-sidebar">
+                    <!-- Tags Widget -->
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">Tags</h3>
+                        <div class="tags-container">
+                            <a href="#" class="tag">Voyage</a>
+                            <a href="#" class="tag">Aventure</a>
+                            <a href="#" class="tag">Découverte</a>
+                            <a href="#" class="tag">Culture</a>
+                            <a href="#" class="tag">Gastronomie</a>
+                            <a href="#" class="tag">Nature</a>
+                            <a href="#" class="tag">Photographie</a>
+                            <a href="#" class="tag">Sport</a>
+                            <a href="#" class="tag">Événements</a>
+                            <a href="#" class="tag">Promotions</a>
+                        </div>
+                    </div>
+
+
+                    <!-- Événements à venir Widget -->
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">Événements à venir</h3>
+                        <div class="upcoming-events">
+                            <!-- Événement 3 -->
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <span class="event-day">05</span>
+                                    <span class="event-month">Juil</span>
+                                </div>
+                                <div class="event-info">
+                                    <h4 class="event-title">Exposition d'art contemporain</h4>
+                                    <div class="event-location">
+                                        <i class="fas fa-map-marker-alt"></i> Musée des beaux-arts
+                                    </div>
+                                    <a href="#" class="btn-event-link">Détails</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Événement 4 -->
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <span class="event-day">12</span>
+                                    <span class="event-month">Juil</span>
+                                </div>
+                                <div class="event-info">
+                                    <h4 class="event-title">Marathon de Montréal</h4>
+                                    <div class="event-location">
+                                        <i class="fas fa-map-marker-alt"></i> Centre-ville
+                                    </div>
+                                    <a href="#" class="btn-event-link">Participer</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Événement supplémentaire -->
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <span class="event-day">28</span>
+                                    <span class="event-month">Juil</span>
+                                </div>
+                                <div class="event-info">
+                                    <h4 class="event-title">Festival de Jazz</h4>
+                                    <div class="event-location">
+                                        <i class="fas fa-map-marker-alt"></i> Place des Arts
+                                    </div>
+                                    <a href="#" class="btn-event-link">Réserver</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Infos Widget -->
+                    <div class="sidebar-widget d-none">
+                        <h3 class="widget-title">Informations</h3>
+                        <div class="info-content">
+                            <div class="info-item-sidebar">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <h5>Heures d'ouverture</h5>
+                                    <p>Lun-Ven: 9h-18h<br>Samedi: 10h-16h<br>Dimanche: Fermé</p>
+                                </div>
+                            </div>
+                            <div class="info-item-sidebar">
+                                <i class="fas fa-phone"></i>
+                                <div>
+                                    <h5>Contact</h5>
+                                    <p>Tél: (418) 525-7748<br>Email: infogoexploria@gmail.com</p>
+                                </div>
+                            </div>
+                            <div class="info-item-sidebar">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <h5>Adresse</h5>
+                                    <p>123 Rue Principale<br>Québec, QC G1V 2M3</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Produits en vedette Widget -->
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">Produits populaires</h3>
+                        <div class="popular-products">
+                            <!-- Produit 3 -->
+                            <div class="product-item">
+                                <div class="product-img">
+                                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80" alt="Montre intelligente">
+                                </div>
+                                <div class="product-details">
+                                    <h4 class="product-title">Montre intelligente sport</h4>
+                                    <div class="product-price">249.99$</div>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Produit 4 -->
+                            <div class="product-item">
+                                <div class="product-img">
+                                    <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80" alt="Lunettes de soleil">
+                                </div>
+                                <div class="product-details">
+                                    <h4 class="product-title">Lunettes de soleil polarisées</h4>
+                                    <div class="product-price">89.99$</div>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- End of Right Sidebar -->
+            </div>
+        </div>
+    </div> <!-- End of Main Content Container -->
+
+    <div class="container">
+        
+        <div class="row">
+             <div class="col-lg-12 col-md-12">
+                
+    <!-- Section Produits en Vedette -->
+    <section class="featured-products d-none">
+        <div class="container">
+            <h2 class="section-title">Produits en vedette</h2>
+            <div class="row">
+                <!-- Produit 1 -->
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="product-card">
+                        <div class="product-img" style="width:100%;height:150px;">
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Écouteurs">
+                            <div class="product-badge">Promo -30%</div>
+                        </div>
+                        <div class="product-content">
+                            <div class="product-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span class="ms-2">(128)</span>
+                            </div>
+                            <h3>Écouteurs sans fil premium</h3>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <span class="product-price">129.99$</span>
+                                    <span class="product-old-price">185.99$</span>
+                                    <span class="product-discount">-30%</span>
+                                </div>
+                            </div>
+                            <button class="add-to-cart-btn">
+                                <i class="fas fa-shopping-cart me-2"></i>Ajouter au panier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Produit 2 -->
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="product-card">
+                        <div class="product-img" style="width:100%;height:150px;">
+                            <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Appareil photo">
+                            <div class="product-badge">Nouveau</div>
+                        </div>
+                        <div class="product-content">
+                            <div class="product-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                                <span class="ms-2">(95)</span>
+                            </div>
+                            <h3>Appareil photo</h3>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <span class="product-price">799.99$</span>
+                                </div>
+                            </div>
+                            <button class="add-to-cart-btn">
+                                <i class="fas fa-shopping-cart me-2"></i>Ajouter au panier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Produit 2 -->
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="product-card">
+                        <div class="product-img" style="width:100%;height:150px;">
+                            <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Appareil photo">
+                            <div class="product-badge">Nouveau</div>
+                        </div>
+                        <div class="product-content">
+                            <div class="product-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                                <span class="ms-2">(95)</span>
+                            </div>
+                            <h3>Appareil photo</h3>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <span class="product-price">799.99$</span>
+                                </div>
+                            </div>
+                            <button class="add-to-cart-btn">
+                                <i class="fas fa-shopping-cart me-2"></i>Ajouter au panier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Produit 2 -->
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="product-card">
+                        <div class="product-img" style="width:100%;height:150px;">
+                            <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Appareil photo">
+                            <div class="product-badge">Nouveau</div>
+                        </div>
+                        <div class="product-content">
+                            <div class="product-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                                <span class="ms-2">(95)</span>
+                            </div>
+                            <h3>Appareil photo</h3>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <span class="product-price">799.99$</span>
+                                </div>
+                            </div>
+                            <button class="add-to-cart-btn">
+                                <i class="fas fa-shopping-cart me-2"></i>Ajouter au panier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+                <div class="untree_co-section">
+		<div class="container">
+			<div class="row text-center justify-content-center mb-5">
+				<div class="col-lg-7"><h2 class="section-title text-center">Notre gallerie</h2></div>
+			</div>
+
+			<div class="owl-carousel owl-3-slider">
+
+				<div class="item">
+					<a class="media-thumb" href="/vendor/geo-map/continents/images/hero-slider-1.jpg" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Pragser Wildsee</h3>
+							<span class="location">Italy</span>
+						</div>
+						<img src="/vendor/geo-map/continents/images/hero-slider-1.jpg" alt="Image" class="img-fluid">
+					</a> 
+				</div>
+
+				<div class="item">
+					<a class="media-thumb" href="/vendor/geo-map/continents/images/hero-slider-2.jpg" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Oia</h3>
+							<span class="location">Greece</span>
+						</div>
+						<img src="/vendor/geo-map/continents/images/hero-slider-2.jpg" alt="Image" class="img-fluid">
+					</a> 
+				</div>
+
+				<div class="item">
+					<a class="media-thumb" href="/vendor/geo-map/continents/images/hero-slider-3.jpg" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Perhentian Islands</h3>
+							<span class="location">Malaysia</span>
+						</div>
+						<img src="/vendor/geo-map/continents/images/hero-slider-3.jpg" alt="Image" class="img-fluid">
+					</a> 
+				</div>
+
+
+				<div class="item">
+					<a class="media-thumb" href="/vendor/geo-map/continents/images/hero-slider-4.jpg" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Rialto Bridge</h3>
+							<span class="location">Italy</span>
+						</div>
+						<img src="/vendor/geo-map/continents/images/hero-slider-4.jpg" alt="Image" class="img-fluid">
+					</a> 
+				</div>
+
+				<div class="item">
+					<a class="media-thumb" href="/vendor/geo-map/continents/images/hero-slider-5.jpg" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>San Francisco, United States</h3>
+							<span class="location">United States</span>
+						</div>
+						<img src="/vendor/geo-map/continents/images/hero-slider-5.jpg" alt="Image" class="img-fluid">
+					</a> 
+				</div>
+
+				<div class="item">
+					<a class="media-thumb" href="/vendor/geo-map/continents/images/hero-slider-1.jpg" data-fancybox="gallery">
+						<div class="media-text">
+							<h3>Lake Thun</h3>
+							<span class="location">Switzerland</span>
+						</div>
+						<img src="/vendor/geo-map/continents/images/hero-slider-2.jpg" alt="Image" class="img-fluid">
+					</a> 
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+             </div>
+        </div>
+    </div>
+
+	<div class="untree_co-section">
+		<div class="container">
+			<div class="row justify-content-center text-center mb-5">
+				<div class="col-lg-6">
+					<h2 class="section-title text-center mb-3">Découvrir nos régions</h2>
+					<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+					<div class="media-1">
+						<a href="#" class="d-block mb-3"><img src="/vendor/geo-map/continents/images/hero-slider-1.jpg" alt="Image" class="img-fluid"></a>
+						<span class="d-flex align-items-center loc mb-2">
+							<span class="icon-room mr-3"></span>
+							<span>Italy</span>
+						</span>
+						
+					</div>
+				</div>
+				<div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+					<div class="media-1">
+						<a href="#" class="d-block mb-3"><img src="/vendor/geo-map/continents/images/hero-slider-2.jpg" alt="Image" class="img-fluid"></a>
+						<span class="d-flex align-items-center loc mb-2">
+							<span class="icon-room mr-3"></span>
+							<span>United States</span>
+						</span>
+						
+					</div>
+				</div>
+				<div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+					<div class="media-1">
+						<a href="#" class="d-block mb-3"><img src="/vendor/geo-map/continents/images/hero-slider-3.jpg" alt="Image" class="img-fluid"></a>
+						<span class="d-flex align-items-center loc mb-2">
+							<span class="icon-room mr-3"></span>
+							<span>Malaysia</span>
+						</span>
+						
+					</div>
+				</div>
+				<div class="col-6 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+					<div class="media-1">
+						<a href="#" class="d-block mb-3"><img src="/vendor/geo-map/continents/images/hero-slider-4.jpg" alt="Image" class="img-fluid"></a>
+
+						<span class="d-flex align-items-center loc mb-2">
+							<span class="icon-room mr-3"></span>
+							<span>Switzerland</span>
+						</span>
+
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+     <!-- Main Content with Sidebar -->
+     <div class="container" style="max-width:100%;">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-title text-center mb-3">Notre carte</h2>
+                <div class="app-container" id="appContainer">
     <!-- Onglets de navigation -->
     <div class="app-tabs" id="appTabs">
-        <div class="tabs-header">
-            <a href="#carte" class="tab-link active" data-tab="carte">
-                <i class="fas fa-map"></i> Carte
-            </a>
-            <a href="#info" class="tab-link" data-tab="info">
-                <i class="fas fa-info-circle"></i> Détails
-            </a>
-            <!-- <a href="#generale" class="tab-link" data-tab="generale">
-                <i class="fas fa-cog"></i> Générale
-            </a> -->
-            <!-- Ajoutez d'autres onglets au besoin -->
-        </div>
         
-        <!-- Contenu des onglets -->
-        <div class="tabs-content">
-            <!-- Onglet Carte -->
-            <div class="tab-pane active" id="tab-carte">
                 <!-- Carte à gauche -->
                 <div class="map-container">
                     <div id="map"></div>
@@ -405,10 +1286,9 @@
                 </div>
                 
                 <!-- Sidebar à droite - Positionnée dans app-container -->
-                <div class="sidebar-right" id="sidebarRight">
+                <div class="sidebar-right" id="sidebarRight" style="width:300px;">
                     
                     <div class="filters-section">
-                        <h3>Filtres</h3>
                         
                         <!-- Sélection de province -->
                         <div class="filter-group">
@@ -426,14 +1306,6 @@
                             </select>
                         </div>
                         
-                        <!-- Filtre de rayon -->
-                        <div class="filter-group">
-                            <label for="radius-filter">Rayon de recherche :</label>
-                            <div class="slider-container">
-                                <input type="range" id="radius-filter" min="1" max="500" value="100" class="form-range">
-                                <span id="radius-value">100 km</span>
-                            </div>
-                        </div>
                         
                         <!-- Bouton de localisation -->
                         <div class="filter-group">
@@ -457,59 +1329,202 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Onglet Informations -->
-            <div class="tab-pane" id="tab-info">
-                <div class="info-content">
-                    <h2><i class="fas fa-info-circle"></i> Informations sur l'application</h2>
-                    <div class="info-grid">
-                        <div class="info-card">
-                            <i class="fas fa-globe"></i>
-                            <h3>Carte Interactive</h3>
-                            <p>Explorez les lieux sur une carte interactive avec filtres avancés pour une recherche précise.</p>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-filter"></i>
-                            <h3>Filtres Dynamiques</h3>
-                            <p>Filtrez par province, catégorie et rayon de recherche pour trouver exactement ce que vous cherchez.</p>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <h3>Localisation</h3>
-                            <p>Trouvez des lieux près de votre position actuelle avec la fonction de géolocalisation.</p>
-                        </div>
-                        <div class="info-card">
-                            <i class="fas fa-list"></i>
-                            <h3>Liste Détailée</h3>
-                            <p>Consultez la liste des lieux avec toutes les informations importantes en un coup d'œil.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="info-text">
-                        <h3>Comment utiliser l'application</h3>
-                        <ol>
-                            <li>Sélectionnez une province ou région dans le filtre</li>
-                            <li>Choisissez une catégorie si nécessaire</li>
-                            <li>Définissez le rayon de recherche</li>
-                            <li>Cliquez sur "Me localiser" pour centrer sur votre position</li>
-                            <li>Explorez les lieux sur la carte ou dans la liste</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-            
-        </div>
     </div>
 </div>
-    
-    <!-- Modal pour les détails -->
-    <div id="place-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div id="modal-content"></div>
+            </div>
         </div>
-    </div>
+        
+     </div>
+	<!-- Footer -->
+	<div class="site-footer">
+		<div class="inner first">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6 col-lg-4">
+						<div class="widget">
+							<h3 class="heading">About Tour</h3>
+							<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+						</div>
+						<div class="widget d-none">
+							<ul class="list-unstyled social">
+								<li><a href="#"><span class="icon-twitter"></span></a></li>
+								<li><a href="#"><span class="icon-instagram"></span></a></li>
+								<li><a href="#"><span class="icon-facebook"></span></a></li>
+								<li><a href="#"><span class="icon-linkedin"></span></a></li>
+								<li><a href="#"><span class="icon-dribbble"></span></a></li>
+								<li><a href="#"><span class="icon-pinterest"></span></a></li>
+								<li><a href="#"><span class="icon-apple"></span></a></li>
+								<li><a href="#"><span class="icon-google"></span></a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-2 pl-lg-5">
+						<div class="widget">
+							<h3 class="heading">Pages</h3>
+							<ul class="links list-unstyled">
+								<li><a href="#">Blog</a></li>
+								<li><a href="#">About</a></li>
+								<li><a href="#">Contact</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-2">
+						<div class="widget">
+							<h3 class="heading">Resources</h3>
+							<ul class="links list-unstyled">
+								<li><a href="#">Blog</a></li>
+								<li><a href="#">About</a></li>
+								<li><a href="#">Contact</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-md-6 col-lg-4">
+						<div class="widget">
+							<h3 class="heading">Contact</h3>
+							<ul class="list-unstyled quick-info links">
+								<li class="email"><a href="#">mail@example.com</a></li>
+								<li class="phone"><a href="#">+1 222 212 3819</a></li>
+								<li class="address"><a href="#">43 Raymouth Rd. Baltemoer, London 3910</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="inner dark d-none">
+			<div class="container">
+				<div class="row text-center">
+					<div class="col-md-8 mb-3 mb-md-0 mx-auto">
+						<p>Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Designed with love by <a href="https://untree.co" class="link-highlight">Untree.co</a> <!-- License information: https://untree.co/license/ -->Distributed By <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="overlayer"></div>
+	<div class="loader">
+		<div class="spinner-border" role="status">
+			<span class="sr-only">Loading...</span>
+		</div>
+	</div>
+
+	<!-- Scripts pour les nouvelles sections -->
+	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/imagesloaded/5.0.0/imagesloaded.pkgd.min.js"></script>
+	
+	<script>
+		// Initialisation Swiper pour Instagram Gallery
+		const instagramSwiper = new Swiper('.instagramSwiper', {
+			slidesPerView: 1,
+			spaceBetween: 20,
+			loop: true,
+			autoplay: {
+				delay: 3000,
+				disableOnInteraction: false,
+			},
+			pagination: {
+				el: '.swiper-pagination',
+				clickable: true,
+			},
+			navigation: {
+				nextEl: '.swiper-button-next',
+				prevEl: '.swiper-button-prev',
+			},
+			breakpoints: {
+				640: {
+					slidesPerView: 2,
+				},
+				768: {
+					slidesPerView: 3,
+				},
+				1024: {
+					slidesPerView: 4,
+				},
+			},
+		});
+		
+		// Initialisation Masonry pour Pinterest Grid
+		document.addEventListener('DOMContentLoaded', function() {
+			var grid = document.querySelector('#pinterestGrid');
+			if(grid) {
+				imagesLoaded(grid, function() {
+					new Masonry(grid, {
+						itemSelector: '.pinterest-item',
+						columnWidth: '.pinterest-item',
+						percentPosition: true,
+						gutter: 15
+					});
+				});
+			}
+			
+			// Gestionnaire d'événements pour les boutons "Ajouter au panier"
+			document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+				button.addEventListener('click', function(e) {
+					e.preventDefault();
+					const productName = this.closest('.product-card').querySelector('h3').textContent;
+					const productPrice = this.closest('.product-card').querySelector('.product-price').textContent;
+					
+					// Ici, vous pouvez ajouter la logique d'ajout au panier
+					alert(`Produit ajouté au panier : ${productName} - ${productPrice}`);
+					
+					// Animation du bouton
+					this.innerHTML = '<i class="fas fa-check me-2"></i>Ajouté !';
+					this.style.background = '#28a745';
+					
+					setTimeout(() => {
+						this.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Ajouter au panier';
+						this.style.background = '#007bff';
+					}, 2000);
+				});
+			});
+		});
+	</script>
+
+	<script src="/vendor/geo-map/continents/js/jquery-3.4.1.min.js"></script>
+	<script src="/vendor/geo-map/continents/js/popper.min.js"></script>
+	<script src="/vendor/geo-map/continents/js/bootstrap.min.js"></script>
+	<script src="/vendor/geo-map/continents/js/owl.carousel.min.js"></script>
+	<script src="/vendor/geo-map/continents/js/jquery.animateNumber.min.js"></script>
+	<script src="/vendor/geo-map/continents/js/jquery.waypoints.min.js"></script>
+	<script src="/vendor/geo-map/continents/js/jquery.fancybox.min.js"></script>
+	<script src="/vendor/geo-map/continents/js/aos.js"></script>
+	<script src="/vendor/geo-map/continents/js/moment.min.js"></script>
+	<script src="/vendor/geo-map/continents/js/daterangepicker.js"></script>
+
+	<script src="/vendor/geo-map/continents/js/typed.js"></script>
+	<script>
+		$(function() {
+			var slides = $('.slides'),
+			images = slides.find('img');
+
+			images.each(function(i) {
+				$(this).attr('data-id', i + 1);
+			})
+
+			var typed = new Typed('.typed-words', {
+				strings: ["Québec."," Montreal."," Montreal.", " Québec.", " London."],
+				typeSpeed: 80,
+				backSpeed: 80,
+				backDelay: 4000,
+				startDelay: 1000,
+				loop: true,
+				showCursor: true,
+				preStringTyped: (arrayPos, self) => {
+					arrayPos++;
+					console.log(arrayPos);
+					$('.slides img').removeClass('active');
+					$('.slides img[data-id="'+arrayPos+'"]').addClass('active');
+				}
+
+			});
+		})
+	</script>
+
+	<script src="/vendor/geo-map/continents/js/custom.js"></script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

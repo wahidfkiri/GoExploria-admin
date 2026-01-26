@@ -200,7 +200,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body modal-body-modern">
-                    <form id="createCountryForm">
+                    <form id="createCountryForm" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -221,6 +221,15 @@
                                        placeholder="Ex: FR, CA, JP" maxlength="2">
                                 <div class="form-text-modern">Code ISO à 2 lettres</div>
                             </div>
+                            <!-- In CREATE COUNTRY MODAL, replace the flag URL input -->
+<div class="col-md-12 mb-3">
+    <label for="countryFlag" class="form-label-modern">Drapeau (Image)</label>
+    <input type="file" class="form-control-modern" id="countryFlag" name="image" accept="image/*">
+    <div class="form-text-modern">Formats acceptés: JPG, PNG, GIF, SVG (Max: 2MB)</div>
+    <div class="image-preview mt-2" id="flagPreview" style="display: none;">
+        <img id="previewFlagImage" class="preview-image" style="max-width: 100px; max-height: 60px;">
+    </div>
+</div>
                         </div>
                         
                         <div class="row">
@@ -376,7 +385,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body modal-body-modern">
-                    <form id="editCountryForm">
+                    <form id="editCountryForm" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <input type="hidden" id="editCountryId" name="id">
@@ -394,6 +403,23 @@
                                 <label for="editCountryIso2" class="form-label-modern">Code (2 lettres)</label>
                                 <input type="text" class="form-control-modern" id="editCountryIso2" name="iso2" maxlength="2">
                             </div>
+                            <!-- In EDIT COUNTRY MODAL, replace the flag URL input -->
+<div class="col-md-12 mb-3">
+    <label for="editCountryFlag" class="form-label-modern">Drapeau (Image)</label>
+    
+    <!-- Current image preview -->
+    <div class="current-image-preview mb-2" id="currentFlagPreview" style="display: none;">
+        <img id="currentFlagImage" class="preview-image" style="max-width: 100px; max-height: 60px;">
+        <small class="text-muted d-block">Image actuelle</small>
+    </div>
+    
+    <input type="file" class="form-control-modern" id="editCountryFlag" name="image" accept="image/*">
+    <div class="form-text-modern">Laissez vide pour conserver l'image actuelle</div>
+    <div class="image-preview mt-2" id="editFlagPreview" style="display: none;">
+        <img id="editPreviewFlagImage" class="preview-image" style="max-width: 100px; max-height: 60px;">
+        <small class="text-muted d-block">Nouvelle image</small>
+    </div>
+</div>
                         </div>
                         
                         <div class="row">
@@ -566,110 +592,209 @@
     
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Configuration
-        let currentPage = 1;
-        let currentFilters = {};
-        let allCountries = [];
-        let countryToDelete = null;
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Configuration
+    let currentPage = 1;
+    let currentFilters = {};
+    let allCountries = [];
+    let countryToDelete = null;
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            setupAjax();
-            loadCountries();
-            loadStatistics();
-            setupEventListeners();
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        setupAjax();
+        loadCountries();
+        loadStatistics();
+        setupEventListeners();
+        setupImagePreview();
+    });
+
+    // AJAX setup
+    const setupAjax = () => {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
         });
+    };
 
-        // AJAX setup
-        const setupAjax = () => {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-        };
-
-        // Load countries
-        const loadCountries = (page = 1, filters = {}) => {
-            showLoading();
-            
-            const searchTerm = document.getElementById('searchInput')?.value || '';
-            
-            $.ajax({
-                url: '{{ route("countries.index") }}',
-                type: 'GET',
-                data: {
-                    page: page,
-                    search: searchTerm,
-                    ...filters,
-                    ajax: true
-                },
-                success: function(response) {
-                    console.log('Countries response:', response);
-                    
-                    if (response.success) {
-                        allCountries = response.data || [];
-                        renderCountries(allCountries);
-                        renderPagination(response);
-                        hideLoading();
-                    } else {
-                        showError('Erreur lors du chargement des pays');
-                    }
-                },
-                error: function(xhr) {
+    // Load countries
+    const loadCountries = (page = 1, filters = {}) => {
+        showLoading();
+        
+        const searchTerm = document.getElementById('searchInput')?.value || '';
+        
+        $.ajax({
+            url: '{{ route("countries.index") }}',
+            type: 'GET',
+            data: {
+                page: page,
+                search: searchTerm,
+                ...filters,
+                ajax: true
+            },
+            success: function(response) {
+                console.log('Countries response:', response);
+                
+                if (response.success) {
+                    allCountries = response.data || [];
+                    renderCountries(allCountries);
+                    renderPagination(response);
                     hideLoading();
-                    showError('Erreur de connexion au serveur');
-                    console.error('Error:', xhr.responseText);
+                } else {
+                    showError('Erreur lors du chargement des pays');
                 }
-            });
-        };
+            },
+            error: function(xhr) {
+                hideLoading();
+                showError('Erreur de connexion au serveur');
+                console.error('Error:', xhr.responseText);
+            }
+        });
+    };
 
-        // Load statistics
-        const loadStatistics = () => {
-            $.ajax({
-                url: '{{ route("countries.statistics") }}',
-                type: 'GET',
-                success: function(response) {
-                    console.log('Statistics response:', response);
+    // Load statistics
+    const loadStatistics = () => {
+        $.ajax({
+            url: '{{ route("countries.statistics") }}',
+            type: 'GET',
+            success: function(response) {
+                console.log('Statistics response:', response);
+                
+                if (response.success) {
+                    const stats = response.data;
+                    document.getElementById('totalCountries').textContent = stats.total_countries || 0;
+                    document.getElementById('totalPopulation').textContent = formatNumber(stats.total_population || 0);
+                    document.getElementById('totalArea').textContent = formatNumber(stats.total_area || 0);
                     
-                    if (response.success) {
-                        const stats = response.data;
-                        document.getElementById('totalCountries').textContent = stats.total_countries || 0;
-                        document.getElementById('totalPopulation').textContent = formatNumber(stats.total_population || 0);
-                        document.getElementById('totalArea').textContent = formatNumber(stats.total_area || 0);
-                        
-                        // Calculer le total des provinces si disponible
-                        let totalProvinces = 0;
-                        if (stats.by_continent) {
-                            stats.by_continent.forEach(continent => {
-                                // Pour simplifier, on peut estimer ou charger les provinces séparément
-                            });
-                        }
-                        document.getElementById('totalProvinces').textContent = '...';
-                        
-                        // Optionnel: Mettre à jour les statistiques avancées
-                        updateAdvancedStats(stats);
-                    } else {
-                        console.error('Error loading statistics:', response.message);
+                    // Calculer le total des provinces si disponible
+                    let totalProvinces = 0;
+                    if (stats.by_continent) {
+                        stats.by_continent.forEach(continent => {
+                            // Pour simplifier, on peut estimer ou charger les provinces séparément
+                        });
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Statistics AJAX error:', xhr.responseText, status, error);
+                    document.getElementById('totalProvinces').textContent = '...';
                     
-                    // Valeurs par défaut
-                    document.getElementById('totalCountries').textContent = '0';
-                    document.getElementById('totalPopulation').textContent = '0';
-                    document.getElementById('totalArea').textContent = '0';
-                    document.getElementById('totalProvinces').textContent = '0';
+                    // Optionnel: Mettre à jour les statistiques avancées
+                    updateAdvancedStats(stats);
+                } else {
+                    console.error('Error loading statistics:', response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Statistics AJAX error:', xhr.responseText, status, error);
+                
+                // Valeurs par défaut
+                document.getElementById('totalCountries').textContent = '0';
+                document.getElementById('totalPopulation').textContent = '0';
+                document.getElementById('totalArea').textContent = '0';
+                document.getElementById('totalProvinces').textContent = '0';
+            }
+        });
+    };
+
+    // Setup image preview
+    const setupImagePreview = () => {
+        // Preview image for create form
+        const flagInput = document.getElementById('countryFlag');
+        const preview = document.getElementById('flagPreview');
+        const previewImage = document.getElementById('previewFlagImage');
+        
+        if (flagInput) {
+            flagInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Check file size (max 2MB)
+                    if (file.size > 20 * 1024 * 1024) {
+                        showAlert('danger', 'L\'image ne doit pas dépasser 20MB');
+                        this.value = '';
+                        preview.style.display = 'none';
+                        return;
+                    }
+                    
+                    // Check file type
+                    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+                    if (!validTypes.includes(file.type)) {
+                        showAlert('danger', 'Format d\'image non supporté. Utilisez JPG, PNG, GIF ou SVG.');
+                        this.value = '';
+                        preview.style.display = 'none';
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.style.display = 'none';
                 }
             });
-        };
+        }
+        
+        // For edit form
+        const editFlagInput = document.getElementById('editCountryFlag');
+        const editPreview = document.getElementById('editFlagPreview');
+        const editPreviewImage = document.getElementById('editPreviewFlagImage');
+        
+        if (editFlagInput) {
+            editFlagInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Check file size (max 2MB)
+                    if (file.size > 20 * 1024 * 1024) {
+                        showAlert('danger', 'L\'image ne doit pas dépasser 2MB');
+                        this.value = '';
+                        editPreview.style.display = 'none';
+                        return;
+                    }
+                    
+                    // Check file type
+                    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+                    if (!validTypes.includes(file.type)) {
+                        showAlert('danger', 'Format d\'image non supporté. Utilisez JPG, PNG, GIF ou SVG.');
+                        this.value = '';
+                        editPreview.style.display = 'none';
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        editPreviewImage.src = e.target.result;
+                        editPreview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    editPreview.style.display = 'none';
+                }
+            });
+        }
+    };
 
-      // Render countries with modern design
+    // Show current image in edit modal
+    const showCurrentImageInEdit = (country) => {
+        const currentPreview = document.getElementById('currentFlagPreview');
+        const currentImage = document.getElementById('currentFlagImage');
+        
+        if (country.image) {
+                // Direct path to storage
+                currentImage.src = `/storage/${country.image}`;
+                currentPreview.style.display = 'block';
+           
+        } else {
+            currentPreview.style.display = 'none';
+        }
+    };
+
+  // Render countries with modern design
 const renderCountries = (countries) => {
     const tbody = document.getElementById('countriesTableBody');
     tbody.innerHTML = '';
@@ -691,11 +816,17 @@ const renderCountries = (countries) => {
         const area = country.area ? formatNumber(country.area) : 'N/A';
         const isActive = country.is_active ? true : false;
         
+        // Determine flag URL
+        let flagUrl = '';
+        if (country.image) {
+            flagUrl = 'storage/' + country.image;
+        }
+        
         row.innerHTML = `
             <td class="country-name-cell">
                 <div class="country-name-modern">
                     <div class="country-flag-modern">
-                        ${country.flag ? `<img src="${country.flag}" alt="${country.name}" class="flag-img">` : `<i class="fas fa-flag"></i>`}
+                        ${flagUrl ? `<img src="${flagUrl}" alt="${country.name}" class="flag-img" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\"fas fa-flag\"></i>';" style="width: 40px; height: 40px; object-fit: cover;">` : `<i class="fas fa-flag"></i>`}
                     </div>
                     <div>
                         <div class="country-name-text">${country.name}</div>
@@ -870,10 +1001,24 @@ const toggleCountryStatus = (countryId, currentStatus) => {
             
             countryToDelete = country;
             
+            // Determine flag URL for modal
+            let flagUrl = '';
+            if (country.flag) {
+                if (country.flag.startsWith('http') || country.flag.startsWith('https')) {
+                    flagUrl = country.flag;
+                } else if (country.flag.includes('storage')) {
+                    flagUrl = `/storage/${country.flag.replace('storage/', '')}`;
+                } else if (country.flag.includes('flags/')) {
+                    flagUrl = `/storage/${country.flag}`;
+                } else {
+                    flagUrl = country.flag;
+                }
+            }
+            
             document.getElementById('countryToDeleteInfo').innerHTML = `
                 <div class="country-info">
                     <div class="country-info-flag">
-                        ${country.flag ? `<img src="${country.flag}" alt="${country.name}" class="flag-img-large">` : `<i class="fas fa-flag fa-2x"></i>`}
+                        ${flagUrl ? `<img src="${flagUrl}" alt="${country.name}" class="flag-img-large" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\"fas fa-flag fa-2x\"></i>';">` : `<i class="fas fa-flag fa-2x"></i>`}
                     </div>
                     <div>
                         <div class="country-info-name">${country.name}</div>
@@ -1093,6 +1238,13 @@ const toggleCountryStatus = (countryId, currentStatus) => {
                 return;
             }
             
+            // Check file size if present
+            const fileInput = document.getElementById('countryFlag');
+            if (fileInput.files[0] && fileInput.files[0].size > 20 * 1024 * 1024) {
+                showAlert('danger', 'L\'image ne doit pas dépasser 2MB');
+                return;
+            }
+            
             // Show processing animation
             submitBtn.classList.add('btn-processing');
             submitBtn.innerHTML = `
@@ -1106,23 +1258,25 @@ const toggleCountryStatus = (countryId, currentStatus) => {
             `;
             submitBtn.disabled = true;
             
+            // Use FormData to handle file upload
             const formData = new FormData(form);
             
-            // Convert FormData to object
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                if (key === 'timezones[]') {
-                    if (!data['timezones']) data['timezones'] = [];
-                    data['timezones'].push(value);
-                } else {
-                    data[key] = value;
-                }
+            // Add timezones
+            const timezonesSelect = document.getElementById('countryTimezones');
+            if (timezonesSelect) {
+                const selectedTimezones = Array.from(timezonesSelect.selectedOptions)
+                    .map(option => option.value);
+                selectedTimezones.forEach(timezone => {
+                    formData.append('timezones[]', timezone);
+                });
             }
             
             $.ajax({
                 url: '{{ route("countries.store") }}',
                 type: 'POST',
-                data: data,
+                data: formData,
+                contentType: false,
+                processData: false,
                 dataType: 'json',
                 success: function(response) {
                     // Reset button state
@@ -1141,6 +1295,7 @@ const toggleCountryStatus = (countryId, currentStatus) => {
                         
                         // Reset form
                         form.reset();
+                        document.getElementById('flagPreview').style.display = 'none';
                         
                         // Reload countries
                         loadCountries(1, currentFilters);
@@ -1187,6 +1342,13 @@ const toggleCountryStatus = (countryId, currentStatus) => {
                 return;
             }
             
+            // Check file size if present
+            const fileInput = document.getElementById('editCountryFlag');
+            if (fileInput.files[0] && fileInput.files[0].size > 20 * 1024 * 1024) {
+                showAlert('danger', 'L\'image ne doit pas dépasser 2MB');
+                return;
+            }
+            
             // Show processing animation
             submitBtn.classList.add('btn-processing');
             submitBtn.innerHTML = `
@@ -1200,25 +1362,28 @@ const toggleCountryStatus = (countryId, currentStatus) => {
             `;
             submitBtn.disabled = true;
             
+            // Use FormData to handle file upload
             const formData = new FormData(form);
             
-            // Convert FormData to object
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                if (key === 'timezones[]') {
-                    if (!data['timezones']) data['timezones'] = [];
-                    data['timezones'].push(value);
-                } else {
-                    data[key] = value;
-                }
+            // Add timezones
+            const timezonesSelect = document.getElementById('editCountryTimezones');
+            if (timezonesSelect) {
+                const selectedTimezones = Array.from(timezonesSelect.selectedOptions)
+                    .map(option => option.value);
+                selectedTimezones.forEach(timezone => {
+                    formData.append('timezones[]', timezone);
+                });
             }
             
-            data._method = 'PUT';
+            // Add the method override for PUT
+            formData.append('_method', 'PUT');
             
             $.ajax({
                 url: `/countries/${countryId}`,
                 type: 'POST',
-                data: data,
+                data: formData,
+                contentType: false,
+                processData: false,
                 dataType: 'json',
                 success: function(response) {
                     // Reset button state
@@ -1287,14 +1452,23 @@ const toggleCountryStatus = (countryId, currentStatus) => {
                 document.getElementById('editCountryCurrencySymbol').value = country.currency_symbol || '';
                 document.getElementById('editCountryPhoneCode').value = country.phone_code || '';
                 document.getElementById('editCountryOfficialLanguage').value = country.official_language || '';
-                document.getElementById('editCountryFlag').value = country.flag || '';
+                
+                // Clear file input
+                document.getElementById('editCountryFlag').value = '';
+                
                 document.getElementById('editCountryLatitude').value = country.latitude || '';
                 document.getElementById('editCountryLongitude').value = country.longitude || '';
                 document.getElementById('editCountryDescription').value = country.description || '';
                 
+                // Show current image
+                showCurrentImageInEdit(country);
+                
+                // Hide new image preview
+                document.getElementById('editFlagPreview').style.display = 'none';
+                
                 // Set timezones
                 const timezonesSelect = document.getElementById('editCountryTimezones');
-                if (country.timezones && Array.isArray(country.timezones)) {
+                if (timezonesSelect && country.timezones && Array.isArray(country.timezones)) {
                     Array.from(timezonesSelect.options).forEach(option => {
                         option.selected = country.timezones.includes(option.value);
                     });
@@ -1406,10 +1580,19 @@ const toggleCountryStatus = (countryId, currentStatus) => {
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
             
-            document.body.appendChild(alert);
+            // Insert after page header
+            const pageHeader = document.querySelector('.page-header');
+            if (pageHeader && pageHeader.nextSibling) {
+                pageHeader.parentNode.insertBefore(alert, pageHeader.nextSibling);
+            } else {
+                document.body.appendChild(alert);
+            }
             
             setTimeout(() => {
-                if (alert.parentNode) alert.remove();
+                if (alert.parentNode) {
+                    alert.classList.remove('show');
+                    setTimeout(() => alert.remove(), 300);
+                }
             }, 5000);
         };
 
@@ -1512,6 +1695,7 @@ const toggleCountryStatus = (countryId, currentStatus) => {
             if (createModal) {
                 createModal.addEventListener('hidden.bs.modal', function() {
                     document.getElementById('createCountryForm').reset();
+                    document.getElementById('flagPreview').style.display = 'none';
                     const submitBtn = document.getElementById('submitCountryBtn');
                     submitBtn.classList.remove('btn-processing');
                     submitBtn.innerHTML = `
@@ -1527,6 +1711,9 @@ const toggleCountryStatus = (countryId, currentStatus) => {
             const editModal = document.getElementById('editCountryModal');
             if (editModal) {
                 editModal.addEventListener('hidden.bs.modal', function() {
+                    document.getElementById('editCountryForm').reset();
+                    document.getElementById('currentFlagPreview').style.display = 'none';
+                    document.getElementById('editFlagPreview').style.display = 'none';
                     const submitBtn = document.getElementById('updateCountryBtn');
                     submitBtn.classList.remove('btn-processing');
                     submitBtn.innerHTML = `
@@ -1539,7 +1726,6 @@ const toggleCountryStatus = (countryId, currentStatus) => {
             }
         };
     </script>
-
     <style>
         /* Styles spécifiques pour la page pays */
         .country-name-modern {
@@ -1855,6 +2041,57 @@ const toggleCountryStatus = (countryId, currentStatus) => {
         width: 21px;
         height: 21px;
     }
+}
+/* Add these styles to your existing CSS */
+
+.preview-image {
+    border-radius: 8px;
+    border: 2px solid #eaeaea;
+    padding: 4px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.current-image-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.image-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+/* File input styling */
+.form-control-modern[type="file"] {
+    padding: 10px;
+    background: white;
+    border: 2px dashed #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.form-control-modern[type="file"]:hover {
+    border-color: var(--primary-color);
+    background: #f8f9ff;
+}
+
+.form-control-modern[type="file"]::file-selector-button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background 0.3s ease;
+}
+
+.form-control-modern[type="file"]::file-selector-button:hover {
+    background: var(--primary-dark);
 }
     </style>
 @endsection
