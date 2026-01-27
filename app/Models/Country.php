@@ -48,6 +48,12 @@ class Country extends Model
         return $this->belongsTo(Continent::class);
     }
 
+    public function activities()
+    {
+        return $this->belongsToMany(Activity::class, 'activity_country')
+                    ->withTimestamps();
+    }
+
     // Relation avec les villes (si vous en avez)
     public function cities(): HasMany
     {

@@ -52,6 +52,13 @@ class Ville extends Model
         'is_active' => 'boolean'
     ];
 
+
+    public function activities(): BelongsToMany
+    {
+        return $this->belongsToMany(Activity::class, 'activity_city')
+                    ->withTimestamps();
+    }
+
     // Relations
     public function secteur(): BelongsTo
     {

@@ -42,6 +42,12 @@ class Region extends Model
     ];
     
 
+    public function activities(): BelongsToMany
+    {
+        return $this->belongsToMany(Activity::class, 'activity_region')
+                    ->withTimestamps();
+    }
+
     
 
     public function scopeActive($query)

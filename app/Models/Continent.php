@@ -37,6 +37,13 @@ class Continent extends Model
         return $this->hasMany(Country::class);
     }
 
+
+    public function activities()
+    {
+        return $this->belongsToMany(Activity::class, 'activity_continent')
+                    ->withTimestamps();
+    }
+
     
 
     public function scopeActive($query)

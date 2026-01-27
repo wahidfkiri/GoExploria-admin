@@ -150,6 +150,9 @@
         </div>
     </section>
 
+    @include('components.front.slider')
+ 
+
     <!-- Les autres sections restent identiques -->
     <!-- Section Éditeur de Site Web -->
     <section class="editor-section" id="editor">

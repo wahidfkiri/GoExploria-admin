@@ -15,6 +15,32 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::middleware(['auth','web'])->group(function () {
+
+
+    // Routes pour les activités
+Route::prefix('/countries/activities')->group(function () {
+    Route::get('/{countrieId}', [\Vendor\Destination\Controllers\Countries\ActivityController::class, 'index'])->name('countries.activities.index');
+    Route::get('/create', [\Vendor\Destination\Controllers\Countries\ActivityController::class, 'create'])->name('countries.activities.create');
+    Route::post('/store', [\Vendor\Destination\Controllers\Countries\ActivityController::class, 'store'])->name('countries.activities.store');
+    Route::get('/{id}', [\Vendor\Destination\Controllers\Countries\ActivityController::class, 'show'])->name('countries.activities.show');
+    Route::get('/{id}/edit', [\Vendor\Destination\Controllers\Countries\ActivityController::class, 'edit'])->name('countries.activities.edit');
+    Route::put('/{id}', [\Vendor\Destination\Controllers\Countries\ActivityController::class, 'update'])->name('countries.activities.update');
+    Route::delete('/{id}', [\Vendor\Destination\Controllers\Countries\ActivityController::class, 'destroy'])->name('countries.activities.destroy');
+    Route::put('/{id}/toggle-status', [\Vendor\Destination\Controllers\Countries\ActivityController::class, 'toggleStatus'])->name('countries.activities.toggle-status');
+    Route::get('/statistics/{countrieId}', [\Vendor\Destination\Controllers\Countries\ActivityController::class, 'statistics'])->name('countries.activities.statistics');
+});
+
+
+Route::prefix('countries/country-medias')->group(function () {
+    Route::get('/', [\Vendor\Destination\Controllers\Countries\CountryMediaController::class, 'index']);
+    Route::post('/', [\Vendor\Destination\Controllers\Countries\CountryMediaController::class, 'store']);
+    Route::get('/statistics', [\Vendor\Destination\Controllers\Countries\CountryMediaController::class, 'statistics']);
+    Route::get('/{id}', [\Vendor\Destination\Controllers\Countries\CountryMediaController::class, 'show']);
+    Route::put('/{id}', [\Vendor\Destination\Controllers\Countries\CountryMediaController::class, 'update']);
+    Route::delete('/{id}', [\Vendor\Destination\Controllers\Countries\CountryMediaController::class, 'destroy']);
+    Route::post('/{id}/toggle-status', [\Vendor\Destination\Controllers\Countries\CountryMediaController::class, 'toggleStatus']);
+    Route::post('/{id}/toggle-featured', [\Vendor\Destination\Controllers\Countries\CountryMediaController::class, 'toggleFeatured']);
+});
 // Routes pour les destinations
 Route::prefix('destinations')->group(function () {
     Route::get('/', [DestinationController::class, 'index'])->name('destinations.index');
