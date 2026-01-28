@@ -890,8 +890,7 @@ const createMediaGridItem = (media) => {
                 
                 <img src="${media.image_path || '/images/default-thumbnail.jpg'}" 
                      alt="${media.alt_text || media.title || 'Media'}"
-                     class="img-fluid w-100 h-100 object-fit-cover"
-                     onerror="this.src='/images/default-thumbnail.jpg'">
+                     class="img-fluid w-100 h-100 object-fit-cover">
                 
                 <div class="media-overlay">
                     <div class="form-check">
@@ -955,7 +954,7 @@ const createMediaListItem = (media) => {
                 <img src="${media.image_path || '/images/default-thumbnail.jpg'}" 
                      alt="${media.alt_text || media.title || 'Media'}"
                      class="img-fluid w-100 h-100 object-fit-cover"
-                     onerror="this.src='/images/default-thumbnail.jpg'">
+                     >
             </div>
         </td>
         <td>
