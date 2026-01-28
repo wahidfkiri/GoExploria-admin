@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeUserMail;
 
 class UserController extends Controller
 {
@@ -73,56 +75,60 @@ class UserController extends Controller
     /**
      * Store a newly created user.
      */
-    public function store(Request $request)
-    {
-        // Validate request
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'is_active' => 'boolean',
+
+public function store(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|string|min:8|confirmed',
+        'is_active' => 'nullable',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation error',
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    try {
+        DB::beginTransaction();
+        
+        // Garder le mot de passe en clair pour l'email
+        $passwordPlain = $request->password;
+
+        // Créer l'utilisateur
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($passwordPlain),
+            'is_active' => $request->boolean('is_active', true),
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        try {
-            DB::beginTransaction();
-            
-            // Create user
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'is_active' => $request->boolean('is_active', true),
-            ]);
-            
-            // Assign default role if needed
-            // $user->assignRole('user');
-            
-            DB::commit();
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Utilisateur créé avec succès !',
-                'user' => $user->load('roles')
-            ]);
-            
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Erreur lors de la création de l\'utilisateur',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        // Envoyer email de bienvenue
+        Mail::to($user->email)->send(new WelcomeUserMail($user, $passwordPlain));
+        
+        DB::commit();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Utilisateur créé avec succès !',
+            'user' => $user->load('roles')
+        ]);
+        
+    } catch (\Exception $e) {
+        DB::rollBack();
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur lors de la création de l\'utilisateur',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
+
 
     /**
      * Update the specified user.
