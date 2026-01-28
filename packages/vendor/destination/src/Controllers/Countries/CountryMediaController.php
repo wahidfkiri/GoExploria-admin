@@ -85,8 +85,8 @@ class CountryMediaController extends Controller
 
 public function store(Request $request)
 {
-    try {
         Log::info('Début création de média', ['request' => $request->all()]);
+    try {
         
         $validator = Validator::make($request->all(), [
             'title' => 'nullable|string|max:255',
