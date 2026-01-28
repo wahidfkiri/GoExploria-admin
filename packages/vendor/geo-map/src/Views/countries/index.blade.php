@@ -694,6 +694,8 @@
 
     @include('geo-map::countries.components.index')
 
+    
+
    
     <!-- Sections existantes du template (conserver votre contenu actuel) -->
 	<div class="hero">
@@ -716,6 +718,9 @@
 			</div>
 		</div>
 	</div>
+
+    
+    @include('geo-map::countries.components.slide')
 
    
     <div class="container main-content-container mt-5">
@@ -2083,36 +2088,80 @@
         }
         
         createTooltipContent(place) {
-            const firstImage = place.images && place.images.length > 0 
-                ? place.images[0] 
-                : 'https://via.placeholder.com/200x150?text=No+Image';
-            
-            return `
-                <div style="min-width:200px; padding:10px;">
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-                        <div style="width:40px; height:40px; border-radius:50%; background:${this.getCategoryColor(place.category)}; display:flex; align-items:center; justify-content:center;">
-                            <i class="${this.getCategoryIcon(place.category)}" style="color:white; font-size:18px;"></i>
-                        </div>
-                        <div>
-                            <strong style="color:#1a1a1a; font-size:15px;">${place.name}</strong>
-                            <div style="font-size:12px; color:#666; margin-top:2px;">${this.capitalizeFirstLetter(place.category)}</div>
-                        </div>
+    // Déterminer le contenu média
+    let mediaContent = '';
+    
+    if (place.video_id) {
+        // Afficher directement la vidéo YouTube en iframe (auto-play muet)
+        mediaContent = `
+            <div style="width:100%; height:100px; border-radius:6px; overflow:hidden; margin-bottom:8px; position:relative;">
+                <iframe 
+                    src="https://www.youtube.com/embed/${place.video_id}?autoplay=0&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1"
+                    style="width:100%; height:100%; border:none;"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+                <div style="position:absolute; top:5px; right:5px; background:rgba(0,0,0,0.7); color:white; padding:2px 6px; border-radius:3px; font-size:10px;">
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+        `;
+    } else {
+        const firstImage = place.images && place.images.length > 0 
+            ? place.images[0] 
+            : 'https://via.placeholder.com/200x150?text=No+Image';
+        
+        mediaContent = `
+            <div style="width:100%; height:100px; border-radius:6px; overflow:hidden; margin-bottom:8px;">
+                <img src="${firstImage}" 
+                     alt="${place.name}" 
+                     style="width:100%; height:100%; object-fit:cover;">
+            </div>
+        `;
+    }
+    
+    return `
+        <div style="min-width:200px; max-width:250px; padding:10px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                <div style="width:36px; height:36px; border-radius:50%; background:${this.getCategoryColor(place.category)}; display:flex; align-items:center; justify-content:center;">
+                    <i class="${this.getCategoryIcon(place.category)}" style="color:white; font-size:16px;"></i>
+                </div>
+                <div style="flex:1; min-width:0;">
+                    <div style="color:#1a1a1a; font-size:14px; font-weight:600; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                        ${place.name}
                     </div>
-                    <div style="width:100%; height:100px; border-radius:6px; overflow:hidden; margin-bottom:8px;">
-                        <img src="${firstImage}" alt="${place.name}" style="width:100%; height:100%; object-fit:cover;">
-                    </div>
-                    <p style="margin:0; font-size:12px; color:#666; line-height:1.4; -webkit-line-clamp: 3;">
-                        ${place.description?.substring(0, 30) || 'Aucune description disponible'}...
-                    </p>
-                    <div style="margin-top:10px; text-align:center;">
-                        <button class="tooltip-details-btn" 
-                                style="background:#4299e1; color:white; border:none; border-radius:4px; padding:8px 15px; font-size:13px; cursor:pointer; width:100%; transition:all 0.3s ease;">
-                            <i class="fas fa-info-circle"></i> Voir détails complets
-                        </button>
+                    <div style="font-size:11px; color:#666; display:flex; align-items:center; gap:4px;">
+                        <span>${this.capitalizeFirstLetter(place.category)}</span>
+                        ${place.is_featured ? '<i class="fas fa-star" style="color:#f59e0b; font-size:10px;"></i>' : ''}
                     </div>
                 </div>
-            `;
-        }
+            </div>
+            
+            ${mediaContent}
+            
+            <p style="margin:8px 0; font-size:11px; color:#666; line-height:1.4; max-height:40px; overflow:hidden; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                ${place.description || 'Aucune description disponible'}
+            </p>
+            
+            <div style="margin-top:12px; display:flex; gap:8px;">
+                <button class="tooltip-details-btn" 
+                        data-place-id="${place.id}"
+                        style="background:#3b82f6; color:white; border:none; border-radius:4px; padding:8px 12px; font-size:11px; cursor:pointer; flex:1; transition:all 0.3s ease; display:flex; align-items:center; justify-content:center; gap:5px; font-weight:500;">
+                    <i class="fas fa-info-circle"></i> Voir
+                </button>
+                
+                ${place.video_id ? `
+                    <a href="https://www.youtube.com/watch?v=${place.video_id}" 
+                       target="_blank"
+                       style="background:#ef4444; color:white; border:none; border-radius:4px; padding:8px 12px; font-size:11px; cursor:pointer; width:40px; transition:all 0.3s ease; display:flex; align-items:center; justify-content:center; text-decoration:none;">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
         
         highlightPlace(placeId) {
             // Mettre en surbrillance le marqueur

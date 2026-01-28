@@ -41,6 +41,19 @@ Route::prefix('countries/country-medias')->group(function () {
     Route::post('/{id}/toggle-status', [\Vendor\Destination\Controllers\Countries\CountryMediaController::class, 'toggleStatus']);
     Route::post('/{id}/toggle-featured', [\Vendor\Destination\Controllers\Countries\CountryMediaController::class, 'toggleFeatured']);
 });
+
+Route::prefix('countries/places')->group(function () {
+    Route::get('/', [\Vendor\Destination\Controllers\Countries\PlaceController::class, 'index']);
+    Route::post('/', [\Vendor\Destination\Controllers\Countries\PlaceController::class, 'store']);
+    Route::get('/statistics', [\Vendor\Destination\Controllers\Countries\PlaceController::class, 'statistics']);
+    Route::get('/categories', [\Vendor\Destination\Controllers\Countries\PlaceController::class, 'categories']);
+    Route::get('/map-data', [\Vendor\Destination\Controllers\Countries\PlaceController::class, 'mapData']);
+    Route::get('/{id}', [\Vendor\Destination\Controllers\Countries\PlaceController::class, 'show']);
+    Route::put('/{id}', [\Vendor\Destination\Controllers\Countries\PlaceController::class, 'update']);
+    Route::delete('/{id}', [\Vendor\Destination\Controllers\Countries\PlaceController::class, 'destroy']);
+    Route::post('/{id}/toggle-status', [\Vendor\Destination\Controllers\Countries\PlaceController::class, 'toggleStatus']);
+    Route::post('/{id}/toggle-featured', [\Vendor\Destination\Controllers\Countries\PlaceController::class, 'toggleFeatured']);
+});
 // Routes pour les destinations
 Route::prefix('destinations')->group(function () {
     Route::get('/', [DestinationController::class, 'index'])->name('destinations.index');

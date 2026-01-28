@@ -661,10 +661,12 @@ const toggleContinentStatus = (continentId, currentStatus) => {
     
     if (!toggleElement || !statusText) return;
     
+    // Get the actual current status from the DOM, not from the parameter
+    const isCurrentlyActive = toggleElement.classList.contains('active');
+    const newStatus = !isCurrentlyActive;
+    
     // Disable toggle during request
     toggleElement.style.pointerEvents = 'none';
-    
-    const newStatus = !currentStatus;
     
     // Send AJAX request
     $.ajax({
@@ -710,10 +712,12 @@ const toggleContinentStatus = (continentId, currentStatus) => {
             toggleElement.style.pointerEvents = 'auto';
         },
         complete: function() {
-            // Re-enable toggle after delay
-            setTimeout(() => {
-                toggleElement.style.pointerEvents = 'auto';
-            }, 500);
+            // Only re-enable if not already done in error handlers
+            if (toggleElement.style.pointerEvents === 'none') {
+                setTimeout(() => {
+                    toggleElement.style.pointerEvents = 'auto';
+                }, 500);
+            }
         }
     });
 };

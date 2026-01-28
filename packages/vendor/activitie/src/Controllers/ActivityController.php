@@ -16,7 +16,7 @@ class ActivityController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Activity::with(['categorie']);
+        $query = Activity::with(['categoryRelation']);
         
         // Recherche
         if ($request->has('search') && !empty($request->search)) {

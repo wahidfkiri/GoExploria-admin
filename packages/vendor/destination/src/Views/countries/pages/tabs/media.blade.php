@@ -459,6 +459,11 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label for="videoUrl" class="form-label">Image de la vidéo *</label>
+                            <input type="file" class="form-control" id="videoImage" name="video_image" accept="image/*">
+                           
+                        </div>
                     </div>
                     
                     <!-- Common Fields -->
@@ -1562,6 +1567,9 @@ const storeMedia = () => {
                 showAlerts('danger', 'Erreur lors de l\'ajout: ' + error);
             }
         }
+        // complete: function() {
+        //     //
+        // }
     });
 };
 

@@ -1097,7 +1097,7 @@
                         </a>
                         <a href="{{ url('countries/activities') }}/${country.id}"
                            class="action-btn-modern view-btn-modern" title="Gérer la page">
-                             <i class="fa-solid fa-page"></i>
+                             <i class="fa-solid fa-cog"></i>
                         </a>
                         <a href="#" 
                            class="action-btn-modern view-btn-modern" title="Voir détails">
@@ -1124,88 +1124,92 @@
     };
 
     // Toggle country status
-    const toggleCountryStatus = (countryId, currentStatus) => {
-        // Find the toggle element
-        const toggleElement = document.querySelector(`#country-row-${countryId} .toggle-switch`);
-        const statusText = document.querySelector(`#country-row-${countryId} .status-text`);
-        
-        if (!toggleElement || !statusText) return;
-        
-        // Disable toggle during request
-        toggleElement.style.pointerEvents = 'none';
-        toggleElement.classList.add('loading');
-        
-        const newStatus = !currentStatus;
-        
-        console.log('Toggle country status - Début:', {
-            countryId,
-            currentStatus,
-            newStatus
-        });
-        
-        // Send AJAX request
-        $.ajax({
-            url: `/countries/${countryId}/toggle-status`,
-            type: 'PUT',
-            data: {
-                _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                is_active: newStatus
-            },
-            dataType: 'json',
-            success: function(response) {
-                console.log('Toggle status - Réponse:', response);
-                
-                if (response.success) {
-                    // Update UI
-                    if (newStatus) {
-                        toggleElement.classList.add('active');
-                        statusText.textContent = 'Actif';
-                        statusText.classList.remove('text-danger');
-                        statusText.classList.add('text-success');
-                    } else {
-                        toggleElement.classList.remove('active');
-                        statusText.textContent = 'Inactif';
-                        statusText.classList.remove('text-success');
-                        statusText.classList.add('text-danger');
-                    }
-                    
-                    // Update the country in the array
-                    const countryIndex = allCountries.findIndex(c => c.id === countryId);
-                    if (countryIndex !== -1) {
-                        allCountries[countryIndex].is_active = newStatus;
-                    }
-                    
-                    // Show success message
-                    showAlert('success', `Pays ${newStatus ? 'activé' : 'désactivé'} avec succès !`);
+const toggleCountryStatus = (countryId, currentStatus) => {
+    // Find the toggle element
+    const toggleElement = document.querySelector(`#country-row-${countryId} .toggle-switch`);
+    const statusText = document.querySelector(`#country-row-${countryId} .status-text`);
+    
+    if (!toggleElement || !statusText) return;
+    
+    // Get the actual current status from the DOM, not from the parameter
+    const isCurrentlyActive = toggleElement.classList.contains('active');
+    const newStatus = !isCurrentlyActive;
+    
+    // Disable toggle during request
+    toggleElement.style.pointerEvents = 'none';
+    toggleElement.classList.add('loading');
+    
+    console.log('Toggle country status - Début:', {
+        countryId,
+        currentStatus: isCurrentlyActive,
+        newStatus,
+        passedStatus: currentStatus
+    });
+    
+    // Send AJAX request
+    $.ajax({
+        url: `/countries/${countryId}/toggle-status`,
+        type: 'PUT',
+        data: {
+            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            is_active: newStatus
+        },
+        dataType: 'json',
+        success: function(response) {
+            console.log('Toggle status - Réponse:', response);
+            
+            if (response.success) {
+                // Update UI
+                if (newStatus) {
+                    toggleElement.classList.add('active');
+                    statusText.textContent = 'Actif';
+                    statusText.classList.remove('text-danger');
+                    statusText.classList.add('text-success');
                 } else {
-                    showAlert('danger', response.message || 'Erreur lors de la mise à jour du statut');
-                    // Revert toggle if error
-                    toggleElement.style.pointerEvents = 'auto';
-                    toggleElement.classList.remove('loading');
+                    toggleElement.classList.remove('active');
+                    statusText.textContent = 'Inactif';
+                    statusText.classList.remove('text-success');
+                    statusText.classList.add('text-danger');
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error('Toggle status - Erreur:', {
-                    status: xhr.status,
-                    error: error,
-                    responseText: xhr.responseText
-                });
                 
-                showAlert('danger', 'Erreur lors de la mise à jour du statut: ' + error);
-                // Revert toggle on error
+                // Update the country in the array
+                const countryIndex = allCountries.findIndex(c => c.id === countryId);
+                if (countryIndex !== -1) {
+                    allCountries[countryIndex].is_active = newStatus;
+                }
+                
+                // Show success message
+                showAlert('success', `Pays ${newStatus ? 'activé' : 'désactivé'} avec succès !`);
+            } else {
+                showAlert('danger', response.message || 'Erreur lors de la mise à jour du statut');
+                // Revert toggle if error
                 toggleElement.style.pointerEvents = 'auto';
                 toggleElement.classList.remove('loading');
-            },
-            complete: function() {
-                // Re-enable toggle after delay
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Toggle status - Erreur:', {
+                status: xhr.status,
+                error: error,
+                responseText: xhr.responseText
+            });
+            
+            showAlert('danger', 'Erreur lors de la mise à jour du statut: ' + error);
+            // Revert toggle on error
+            toggleElement.style.pointerEvents = 'auto';
+            toggleElement.classList.remove('loading');
+        },
+        complete: function() {
+            // Only re-enable if not already done in error handlers
+            if (toggleElement.style.pointerEvents === 'none') {
                 setTimeout(() => {
                     toggleElement.style.pointerEvents = 'auto';
                     toggleElement.classList.remove('loading');
                 }, 500);
             }
-        });
-    };
-
+        }
+    });
+};
     // Get continent color
     const getContinentColor = (continentCode) => {
         const continentColors = {

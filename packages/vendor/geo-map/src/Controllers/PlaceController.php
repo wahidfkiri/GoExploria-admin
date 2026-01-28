@@ -20,7 +20,7 @@ class PlaceController extends Controller
         
         // Filtrage par rayon géographique (optionnel)
         if ($request->has(['lat', 'lng', 'radius'])) {
-            $radius = 1000; // en kilomètres
+            $radius = 2000; // en kilomètres
             $query->whereRaw("
                 (6371 * acos(cos(radians(?)) * cos(radians(latitude)) * 
                 cos(radians(longitude) - radians(?)) + sin(radians(?)) * 

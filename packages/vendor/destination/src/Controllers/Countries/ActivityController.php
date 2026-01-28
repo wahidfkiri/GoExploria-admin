@@ -21,6 +21,7 @@ class ActivityController extends Controller
     $countries = Country::all();
     $categorie_types = CategorieType::all();
     $categories = Category::all();
+    $activities = Activity::all();
     
     // Obtenir le pays si l'ID est fourni
     $country = null;
@@ -48,9 +49,9 @@ class ActivityController extends Controller
             });
         }
         
-        if ($request->has('category') && !empty($request->category)) {
-            $query->where('category', $request->category);
-        }
+        // if ($request->has('categorie') && !empty($request->categorie)) {
+        //     $query->where('categorie_id', $request->category);
+        // }
         
         // Si on filtre par continent (uniquement si pas de pays spécifique)
         if ($request->has('continent') && !empty($request->continent) && !$countryId) {
@@ -109,14 +110,13 @@ class ActivityController extends Controller
     }
     
     // Retourner la vue normale
-    return view('destination::countries.pages.index', compact('continents', 'countries', 'country', 'categories','categorie_types'));
+    return view('destination::countries.pages.index', compact('continents', 'countries', 'country', 'categories','categorie_types', 'activities'));
 }
     
     public function create()
     {
         $continents = Continent::all();
         $countries = Country::all();
-        
         return view('activities.create', compact('continents', 'countries'));
     }
     
@@ -477,27 +477,60 @@ public function update(Request $request, $id)
         ]);
     }
     
-    public function statistics()
-    {
-        $totalActivities = Activity::count();
-        $activeActivities = Activity::where('is_active', true)->count();
+  public function statistics($countrieId = null)
+{
+    // Vérifier si le pays existe
+    if ($countrieId !== null) {
+        $country = \App\Models\Country::find($countrieId);
+        if (!$country) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pays non trouvé'
+            ], 404);
+        }
+    }
+
+    // Si un pays est spécifié
+    if ($countrieId !== null) {
+        $totalActivities = Activity::whereHas('countries', function ($q) use ($countrieId) {
+            $q->where('countries.id', $countrieId);
+        })->count();
         
-        // Compter le nombre de catégories distinctes
-        $categoriesCount = Activity::distinct('categorie_id')->count('categorie_id');
+        $activeActivities = Activity::whereHas('countries', function ($q) use ($countrieId) {
+            $q->where('countries.id', $countrieId);
+        })->where('is_active', true)->count();
         
-        // Compter le nombre de pays avec au moins une activité
+        $categoriesCount = Activity::whereHas('countries', function ($q) use ($countrieId) {
+            $q->where('countries.id', $countrieId);
+        })->distinct('categorie_id')->count('categorie_id');
+        
+        // Pour un pays spécifique, compter le nombre d'autres pays liés à ces activités
+        $activityIds = Activity::whereHas('countries', function ($q) use ($countrieId) {
+            $q->where('countries.id', $countrieId);
+        })->pluck('id');
+        
         $countriesWithActivities = \DB::table('activity_country')
+            ->whereIn('activity_id', $activityIds)
             ->distinct('country_id')
             ->count('country_id');
-        
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'total_activities' => $totalActivities,
-                'active_activities' => $activeActivities,
-                'categories_count' => $categoriesCount,
-                'countries_with_activities' => $countriesWithActivities
-            ]
-        ]);
+    } else {
+        // Si aucun pays n'est spécifié, statistiques globales
+        $totalActivities = Activity::count();
+        $activeActivities = Activity::where('is_active', true)->count();
+        $categoriesCount = Activity::distinct('categorie_id')->count('categorie_id');
+        $countriesWithActivities = \DB::table('activity_country')
+            ->distinct('countrie_id')
+            ->count('countrie_id');
     }
+
+    return response()->json([
+        'success' => true,
+        'data' => [
+            'total_activities' => $totalActivities,
+            'active_activities' => $activeActivities,
+            'categories_count' => $categoriesCount,
+            'countries_with_activities' => $countriesWithActivities
+        ]
+    ]);
+}
 }

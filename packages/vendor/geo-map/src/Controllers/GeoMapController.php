@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Continent;
 use App\Models\Country;
 use App\Models\Province;
+use App\Models\CountryMedia;
 
 class GeoMapController extends Controller
 {
@@ -20,11 +21,13 @@ class GeoMapController extends Controller
     public function getCountrie($countrieCode)
     {
         $countrie = Country::where('code', strtolower($countrieCode))->first();
+        $geo_data = Place::where('country_id', $countrie->id)->get();
+        $medias = CountryMedia::where('country_id', $countrie->id)->get();
         if (!$countrie) {
             return abort(404, 'Country not found');
         }
         $provinces = $countrie->provinces;
-        return view('geo-map::countries.index', compact('countrie', 'provinces'));
+        return view('geo-map::countries.index', compact('countrie', 'provinces','geo_data','medias'));
     }
 
     
