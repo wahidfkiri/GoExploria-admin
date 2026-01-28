@@ -129,6 +129,9 @@ class EtablissementController extends Controller
  */
 
 
+/**
+ * Store a newly created resource in storage.
+ */
 public function store(Request $request)
 {
     Log::info('Etablissement store request', [
@@ -139,7 +142,6 @@ public function store(Request $request)
 
     try {
         return DB::transaction(function () use ($request) {
-
             // ✅ Validation (is_active volontairement sans boolean)
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
@@ -188,7 +190,10 @@ public function store(Request $request)
                 'fax'           => $validated['fax'] ?? null,
                 'email_contact' => $validated['email_contact'] ?? null,
                 'website'       => $validated['website'] ?? null,
-                'is_active'     => $request->boolean('is_active'), // ✅ true or false
+                'is_active'     => $request->boolean('is_active'),
+                'region_id'     => $validated['region_id'],
+                'province_id'   => $validated['province_id'],
+                'country_id'    => $validated['country_id'],
             ]);
 
             // 4️⃣ Attach activities
@@ -196,11 +201,24 @@ public function store(Request $request)
                 $etablissement->activities()->attach($validated['activities']);
             }
 
+            // ✅ 5️⃣ Envoyer l'email avec les identifiants
+            try {
+                $this->sendWelcomeEmail($user, $validated['password'], $etablissement);
+            } catch (\Exception $emailException) {
+                // Loguer l'erreur mais ne pas bloquer la création
+                Log::error('Erreur lors de l\'envoi de l\'email de bienvenue', [
+                    'user_id' => $user->id,
+                    'error' => $emailException->getMessage(),
+                    'file' => $emailException->getFile(),
+                    'line' => $emailException->getLine(),
+                ]);
+            }
+
             // AJAX response
             if ($request->ajax()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Établissement créé avec succès',
+                    'message' => 'Établissement créé avec succès. Un email avec les identifiants a été envoyé au client.',
                     'data'    => $etablissement->load(
                         'user',
                         'activities',
@@ -214,11 +232,10 @@ public function store(Request $request)
             // Normal response
             return redirect()
                 ->route('etablissements.index')
-                ->with('success', 'Établissement créé avec succès');
+                ->with('success', 'Établissement créé avec succès. Un email avec les identifiants a été envoyé au client.');
         });
 
     } catch (\Throwable $e) {
-
         Log::error('Erreur création établissement', [
             'message' => $e->getMessage(),
             'file'    => $e->getFile(),
@@ -237,6 +254,67 @@ public function store(Request $request)
             ->back()
             ->withInput()
             ->with('error', 'Une erreur est survenue lors de la création');
+    }
+}
+
+/**
+ * Envoyer un email de bienvenue avec les identifiants
+ */
+private function sendWelcomeEmail(User $user, string $password, Etablissement $etablissement): void
+{
+    try {
+        // CONFIGURATION SMTP DIRECTE DANS LE CODE
+        config([
+            'mail.mailers.smtp' => [
+                'transport' => 'smtp',
+                'host' => 'smtp.nextstep-it.com',
+                'port' => 465,
+                'encryption' => 'tls',
+                'username' => 'contact@turkiavocats.com',
+                'password' => '6NsNs23Nu', // SANS ESPACES !
+                'timeout' => null,
+            ],
+            'mail.from' => [
+                'address' => 'contact@turkiavocats.com',
+                'name' => 'GoExploria',
+            ],
+        ]);
+
+        // Données pour l'email
+        $emailData = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'password' => $password,
+            'etablissement_name' => $etablissement->name,
+            'login_url' => route('login'),
+            'dashboard_url' => route('login'),
+            'support_email' => 'wahidfkiri5@gmail.com',
+            'site_name' => config('app.name', 'GoExploria'),
+        ];
+
+        Log::info('Tentative d\'envoi email', [
+            'from' => config('mail.from'),
+            'to' => $user->email,
+        ]);
+
+        // Envoyer l'email avec configuration explicite
+        $mailer = app('mailer');
+        
+        $mailer->alwaysFrom('wahidfkiri5@gmail.com', 'GoExploria');
+        $mailer->alwaysReplyTo('wahidfkiri5@gmail.com', 'Support GoExploria');
+        
+        $mailer->to($user->email)->send(
+            new \App\Mail\WelcomeEmail($emailData)
+        );
+
+        Log::info('✅ Email envoyé avec succès', ['user_id' => $user->id]);
+
+    } catch (\Exception $e) {
+        Log::error('❌ Erreur envoi email', [
+            'user_id' => $user->id,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
     }
 }
 
