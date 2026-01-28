@@ -888,7 +888,7 @@ const createMediaGridItem = (media) => {
                     </div>
                 ` : ''}
                 
-                <img src="${media.image_path || '/images/default-thumbnail.jpg'}" 
+                <img src="/storage/${media.image_path || '/images/default-thumbnail.jpg'}" 
                      alt="${media.alt_text || media.title || 'Media'}"
                      class="img-fluid w-100 h-100 object-fit-cover">
                 
@@ -951,7 +951,7 @@ const createMediaListItem = (media) => {
         </td>
         <td>
             <div style="width: 60px; height: 40px; overflow: hidden;" class="rounded">
-                <img src="${media.image_path || '/images/default-thumbnail.jpg'}" 
+                <img src="/storage/${media.image_path || '/images/default-thumbnail.jpg'}" 
                      alt="${media.alt_text || media.title || 'Media'}"
                      class="img-fluid w-100 h-100 object-fit-cover"
                      >
@@ -1406,7 +1406,7 @@ const openEditMediaModal = (mediaId) => {
                         <div class="mb-3">
                             <label class="form-label">Vidéo actuelle</label>
                             <div>
-                                <img src="${media.image_path || '/images/default-thumbnail.jpg'}" 
+                                <img src="/storage/${media.image_path || '/images/default-thumbnail.jpg'}" 
                                      alt="${media.alt_text || media.title}"
                                      class="img-thumbnail" 
                                      style="max-width: 200px;">
@@ -1448,7 +1448,7 @@ const showDeleteMediaConfirmation = (mediaId) => {
         <div class="media-info">
             <div class="d-flex align-items-center gap-3">
                 <div class="media-info-image" style="width: 80px; height: 60px; overflow: hidden;">
-                    <img src="${media.image_path || '/images/default-thumbnail.jpg'}" 
+                    <img src="/storage/${media.image_path || '/images/default-thumbnail.jpg'}" 
                          alt="${media.alt_text || media.title}"
                          class="img-fluid w-100 h-100 object-fit-cover">
                 </div>
