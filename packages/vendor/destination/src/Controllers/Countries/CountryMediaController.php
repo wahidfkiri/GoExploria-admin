@@ -140,7 +140,7 @@ public function store(Request $request)
             // Obtenir les dimensions de l'image avec Intervention Image
             try {
                 $manager = ImageManager::gd(); // ou ImageManager::imagick()
-                $image = $manager->make($imageFile);
+                $image = $manager->read($imageFile);
                 $data['width'] = $image->width();
                 $data['height'] = $image->height();
                 
@@ -179,7 +179,7 @@ public function store(Request $request)
                 // Obtenir les dimensions de la thumbnail
                 try {
                     $manager = ImageManager::gd();
-                    $image = $manager->make(storage_path('app/public/' . $thumbnailPath));
+                    $image = $manager->read(storage_path('app/public/' . $thumbnailPath));
                     $data['width'] = $image->width();
                     $data['height'] = $image->height();
                 } catch (\Exception $thumbError) {
@@ -200,7 +200,7 @@ public function store(Request $request)
             // Obtenir les dimensions de l'image avec Intervention Image
             try {
                 $manager = ImageManager::gd(); // ou ImageManager::imagick()
-                $image = $manager->make($imageVideo);
+                $image = $manager->read($imageVideo);
                 $data['width'] = $image->width();
                 $data['height'] = $image->height();
                 
@@ -474,7 +474,7 @@ private function downloadThumbnailFromUrl($url, $filename)
             if (getimagesize($fullPath)) {
                 // Optimiser l'image
                 $manager = ImageManager::gd();
-                $image = $manager->make($fullPath);
+                $image = $manager->read($fullPath);
                 
                 // Redimensionner si trop grand
                 if ($image->width() > 640) {
