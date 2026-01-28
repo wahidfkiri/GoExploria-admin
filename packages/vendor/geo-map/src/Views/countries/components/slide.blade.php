@@ -653,7 +653,8 @@
     <script>
         // Données des vidéos
         const videoData = [
-           <?php foreach(\App\Models\CountryMedia::all() as $item){ ?>
+           <?php foreach(\App\Models\CountryMedia::where('country_id',$countrie->id)
+            ->where('type', '!=','image')->get() as $item){ ?>
             {
                 id: 0,
                 videoId: "<?php echo $item->video_id; ?>",
