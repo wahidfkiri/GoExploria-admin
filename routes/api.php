@@ -6,6 +6,7 @@ use App\Http\Controllers\{
     TemplateController,
     ProjectController
 };
+use App\Http\Controllers\Api\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,12 @@ use App\Http\Controllers\{
 |--------------------------------------------------------------------------
 */
 
+Route::prefix('chat')->group(function () {
+    Route::post('/send', [ChatController::class, 'chat']);
+    Route::post('/with-context', [ChatController::class, 'chatWithContext']);
+    Route::get('/history', [ChatController::class, 'getHistory']);
+    Route::delete('/clear', [ChatController::class, 'clearHistory']);
+});
 Route::prefix('v1')->group(function () {
     
     // Public routes

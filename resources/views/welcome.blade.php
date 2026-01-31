@@ -94,7 +94,7 @@
         </div>
     </div>
 
-    <x-front.nav-bar />
+    @include('components.front.navbar')
 
 
     <!-- Video Slider Full Width -->
@@ -152,6 +152,26 @@
 
  
      <!-- resources/views/main.blade.php -->
+      
+<!-- Marketing -->
+<iframe 
+    id="iframe-page-marketing-1"
+    src="{{ url('/theme/marketing/page-1') }}" 
+    width="100%" 
+    style="border:0; overflow:hidden;"
+    scrolling="no">
+</iframe>
+
+
+<!-- Business -->
+<iframe 
+    id="iframe-page-business-1"
+    src="{{ url('/theme/business/page-1') }}" 
+    width="100%" 
+    style="border:0; overflow:hidden;"
+    scrolling="no">
+</iframe>
+<!-- E-commerce -->
 <iframe 
     id="iframe-page-1"
     src="{{ url('/theme/ecommerce/page-1') }}" 
@@ -201,7 +221,6 @@
 
 <!-- Media -->
  
-    @include('components.front.slide')
 <iframe 
     id="iframe-page-media-2"
     src="{{ url('/theme/media/page-2') }}" 
@@ -219,6 +238,8 @@
     style="border:0; overflow:hidden;"
     scrolling="no">
 </iframe>
+
+
 
 
 <script>
@@ -391,7 +412,7 @@ window.addEventListener('message', function(event) {
     </section>
 
     <!-- Section Clients -->
-    <section class="clients-section" id="clients">
+    <section class="clients-section d-none" id="clients">
         <div class="container">
             <h2 class="section-title text-center mb-5">Nos Clients Fidèles</h2>
             
@@ -430,7 +451,7 @@ window.addEventListener('message', function(event) {
         </div>
     </section>
 
-
+@include('chat.index')
     <!-- Footer -->
     <footer class="main-footer" style="background-color: var(--dark-color); color: white; padding: 80px 0 30px;">
         <div class="container">
@@ -619,5 +640,6 @@ window.addEventListener('message', function(event) {
         min-width: 100vw !important;
     }
 </style>
+
 </body>
 </html>

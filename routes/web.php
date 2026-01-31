@@ -12,12 +12,17 @@ use App\Http\Controllers\{
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Auth\AjaxAuthController;
 use App\Http\Controllers\TemplateScraperController;
+use App\Http\Controllers\ChatController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 */
+
+Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+Route::post('/chat/clear-history', [ChatController::class, 'clearHistory'])->name('chat.clear-history');
 // Page de login
 Route::get('/', function () {
     return view('welcome');

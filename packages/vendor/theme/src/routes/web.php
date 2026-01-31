@@ -47,4 +47,14 @@ Route::prefix('theme')->group(function () {
             return view('theme::seo.index-2');
         });
     });
+    Route::prefix('business')->group(function () {
+        Route::get('page-1', function () {
+            return view('theme::business.index-1');
+        });
+    });
+    Route::prefix('marketing')->group(function () {
+        Route::get('page-1', function () {
+            return view('theme::marketing.index-1');
+        });
+    });
 });
