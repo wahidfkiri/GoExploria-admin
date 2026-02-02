@@ -739,7 +739,7 @@
             
             // Configurer les animations au défilement
             document.querySelectorAll('.social-card, .detail-item, .highlight').forEach(el => {
-                el.style.opacity = '0';
+                el.style.opacity = '1';
                 el.style.transform = 'translateY(20px)';
                 el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             });
