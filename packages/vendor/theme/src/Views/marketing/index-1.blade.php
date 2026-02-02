@@ -186,6 +186,7 @@
             border: 2px solid transparent;
             position: relative;
             overflow: hidden;
+            opacity: 1 !important;
         }
 
         .social-card:hover {
@@ -743,9 +744,9 @@
                 el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             });
             
-         //   window.addEventListener('scroll', handleScrollAnimations);
+            window.addEventListener('scroll', handleScrollAnimations);
             // Déclencher une première fois pour les éléments visibles
-         //   setTimeout(handleScrollAnimations, 100);
+            setTimeout(handleScrollAnimations, 100);
             
             // Animation pour le bouton CTA
             const ctaButton = document.querySelector('.cta-button');
