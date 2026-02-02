@@ -51,7 +51,7 @@
 @endphp
 
 {!! MenuRenderer::renderMenu() !!}
-            <!--end: Navigation Responsive Trigger-->
+            <!--end: Navigation Responsive Trigger g-->
 
 <div id="mainMenu" style="display:none;">
     <div class="container">
