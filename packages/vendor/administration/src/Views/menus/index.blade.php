@@ -159,7 +159,7 @@
                                 <th>Ordre</th>
                                 <th>Statut</th>
                                 <th style="text-align: center;">Actions</th>
-                                <th style="display: none;">Pages</th>
+                                <th>Pages</th>
                             </tr>
                         </thead>
                         <tbody id="menusTableBody">
@@ -733,34 +733,34 @@
                     </td>
                 `;
                 // Dans la fonction renderMenus(), ajoutez une colonne pour les pages
-// row.innerHTML += `
-//     <td>
-//         <div class="page-management">
-//             <div class="page-status-badge ${menu.has_page ? 'has-page' : 'no-page'}">
-//                 ${menu.has_page ? '📄 Page' : '❌ Pas de page'}
-//             </div>
-//             ${menu.has_page ? `
-//                 <div class="page-actions">
-//                     <a href="${menu.page_url}" target="_blank" class="btn btn-sm btn-outline-primary" title="Voir la page">
-//                         <i class="fas fa-eye"></i>
-//                     </a>
-//                     <a href="/menus/${menu.id}/page" class="btn btn-sm btn-outline-success" title="Éditer la page">
-//                         <i class="fas fa-edit"></i>
-//                     </a>
-//                     <button class="btn btn-sm btn-outline-warning toggle-page-btn" 
-//                             data-id="${menu.id}" 
-//                             title="${menu.has_page ? 'Désactiver la page' : 'Activer la page'}">
-//                         <i class="fas ${menu.has_page ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
-//                     </button>
-//                 </div>
-//             ` : `
-//                 <button class="btn btn-sm btn-outline-success create-page-btn" data-id="${menu.id}">
-//                     <i class="fas fa-plus"></i> Créer une page
-//                 </button>
-//             `}
-//         </div>
-//     </td>
-// `;
+row.innerHTML += `
+    <td>
+        <div class="page-management">
+            <div class="page-status-badge ${menu.has_page ? 'has-page' : 'no-page'}">
+                ${menu.has_page ? '📄 Page' : '❌ Pas de page'}
+            </div>
+            ${menu.has_page ? `
+                <div class="page-actions">
+                    <a href="${menu.page_url}" target="_blank" class="btn btn-sm btn-outline-primary" title="Voir la page">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="/menus/${menu.id}/page" class="btn btn-sm btn-outline-success" title="Éditer la page">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <button class="btn btn-sm btn-outline-warning toggle-page-btn" 
+                            data-id="${menu.id}" 
+                            title="${menu.has_page ? 'Désactiver la page' : 'Activer la page'}">
+                        <i class="fas ${menu.has_page ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
+                    </button>
+                </div>
+            ` : `
+                <button class="btn btn-sm btn-outline-success create-page-btn" data-id="${menu.id}">
+                    <i class="fas fa-plus"></i> Créer une page
+                </button>
+            `}
+        </div>
+    </td>
+`;
 
 // Gestionnaires d'événements pour les boutons de page
 $(document).on('click', '.toggle-page-btn', function() {

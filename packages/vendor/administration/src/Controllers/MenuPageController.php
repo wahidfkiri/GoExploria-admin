@@ -28,7 +28,6 @@ class MenuPageController extends Controller
             // Créer une révision initiale
             $menu->createRevision('Création initiale de la page');
         }
-        
         return view('administration::menus.page-editor', compact('menu'));
     }
     
