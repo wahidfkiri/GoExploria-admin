@@ -154,13 +154,21 @@
      <!-- resources/views/main.blade.php -->
       
 <!-- Marketing -->
-<!-- <iframe 
+<iframe 
     id="iframe-page-marketing-1"
     src="{{ url('/theme/marketing/page-1') }}" 
     width="100%" 
     style="border:0; overflow:hidden;"
     scrolling="no">
-</iframe> -->
+</iframe>
+
+<iframe 
+    id="iframe-page-web-1"
+    src="{{ url('/theme/web/page-1') }}" 
+    width="100%" 
+    style="border:0; overflow:hidden;"
+    scrolling="no">
+</iframe>
 
 
 <!-- Business -->

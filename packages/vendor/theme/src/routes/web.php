@@ -57,4 +57,9 @@ Route::prefix('theme')->group(function () {
             return view('theme::marketing.index-1');
         });
     });
+    Route::prefix('web')->group(function () {
+        Route::get('page-1', function () {
+            return view('theme::web.index-1');
+        });
+    });
 });
