@@ -45,15 +45,15 @@
                 <a class="lines-button x"><span class="lines"></span></a>
             </div>
 
-            {{-- resources/views/components/mega-menu.blade.php --}}
+            <!-- {{-- resources/views/components/mega-menu.blade.php --}}
 @php
     use App\Helpers\MenuRenderer;
 @endphp
 
-{!! MenuRenderer::renderMenu() !!}
+{!! MenuRenderer::renderMenu() !!} -->
             <!--end: Navigation Responsive Trigger-->
 
-<div id="mainMenu" style="display:none;">
+<div id="mainMenu">
     <div class="container">
         <nav>
             <ul>
