@@ -113,7 +113,7 @@ class MenuRenderer
             $hasGrandChildren = $child->activeChildren->isNotEmpty();
             
             $html .= '<div class="col-lg-4"><li class="' . ($hasGrandChildren ? 'mega-menu-title' : '') . '">';
-            $html .= '<a href="' . $child->final_url . '">';
+            $html .= '<a href="' . $child->slug . '">';
             
             if ($child->icon) {
                 $html .= '<i class="' . $child->icon . ' me-1"></i>';
