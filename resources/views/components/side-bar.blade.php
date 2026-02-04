@@ -177,6 +177,11 @@
       </a>
       <ul class="submenu">
         <li>
+          <a href="{{ route('menus.index') }}" class="submenu-item">
+            <span class="submenu-text">Gestion de menus</span>
+          </a>
+        </li>
+        <li>
           <a href="{{ route('settings.pages.index') }}" class="submenu-item">
             <span class="submenu-text">UX Design</span>
           </a>

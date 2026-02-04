@@ -3,13 +3,28 @@
 <header id="header" data-transparent="true" data-fullwidth="true" class="dark submenu-light">
     <div class="header-inner">
         <div class="container">
-            <!--Logo-->
-            <div id="logo">
-                <a href="#index.html">
+            <!--Logo avec texte qui change-->
+            <div id="logo" style="position: relative; display: inline-block;">
+                <a href="{{url('/')}}">
                     <img src="logo.png" class="d-block">
                 </a>
+                <!-- Texte qui change en bas à droite -->
+                <div id="logo-text" style="
+                    position: absolute;
+                    top: 20px;
+                    right: 5px;
+                    font-weight: bold;
+                    font-style: italic;
+                    font-size: 15px;
+                    color: red;
+                    /* background: rgba(0,0,0,0.7); */
+                    padding: 2px 6px;
+                    border-radius: 3px;
+                    white-space: nowrap;
+                ">{{\App\Models\Menu::firstOrFail()->title}}</div>
             </div>
             <!--End: Logo-->
+            
             <!-- Search -->
             <div id="search">
                 <a id="btn-search-close" class="btn-search-close" aria-label="Close search form">
@@ -21,6 +36,7 @@
                 </form>
             </div>
             <!-- end: search -->
+            
             <!--Header Extras-->
             <div class="header-extras">
                 <ul>
@@ -40,6 +56,7 @@
                 </ul>
             </div>
             <!--end: Header Extras-->
+            
             <!--Navigation Responsive Trigger-->
             <div id="mainMenu-trigger">
                 <a class="lines-button x"><span class="lines"></span></a>
@@ -454,6 +471,27 @@
 
 <script src="front/js/jquery.js"></script>
 <script src="front/js/functions.js"></script>
+
+<!-- Script pour faire changer le texte automatiquement -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const logoText = document.getElementById('logo-text');
+    const texts = [
+        <?php $menus = \App\Models\Menu::where('is_active', 1)->get();
+        foreach($menus as $menu) {
+            echo "'" . addslashes($menu->title) . "',";
+        }
+        ?>
+    ];
+    let currentIndex = 0;
+    
+    // Changer le texte toutes les 3 secondes
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % texts.length;
+        logoText.textContent = texts[currentIndex];
+    }, 3000);
+});
+</script>
 
 <!-- Optionnel: Si vous voulez garder la structure pour l'instant -->
 <!-- <script src="front/js/plugins.js"></script> -->

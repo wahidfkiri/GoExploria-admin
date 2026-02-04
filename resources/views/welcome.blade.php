@@ -17,28 +17,28 @@
 <body>
     <!-- Header avec informations en temps réel -->
     <header class="info-header">
-        <div class="container">
-            <div class="info-items">
-                <div class="info-item">
-                    <i class="fas fa-chart-line info-icon"></i>
-                    <span class="info-label">Bourse TSX: </span>
-                    <span class="info-value ms-1">21,450.12</span>
-                    <span class="info-up ms-1">+1.2%</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-cloud-sun info-icon"></i>
-                    <span class="info-label">Météo QC: </span>
-                    <span class="info-value ms-1">-5°C</span>
-                    <span class="info-details ms-1">Ensoleillé</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-road info-icon"></i>
-                    <span class="info-label">Routes: </span>
-                    <span class="info-value ms-1">Majoritairement dégagées</span>
-                </div>
-            </div>
+    <div class="container">
+        <div class="info-items">
+            <a href="#iframe-page-meteo-1" class="info-item">
+                <i class="fas fa-chart-line info-icon"></i>
+                <span class="info-label">Bourse TSX: </span>
+                <span class="info-value ms-1">21,450.12</span>
+                <span class="info-up ms-1">+1.2%</span>
+            </a>
+            <a href="#iframe-page-meteo-1" class="info-item">
+                <i class="fas fa-cloud-sun info-icon"></i>
+                <span class="info-label">Météo QC: </span>
+                <span class="info-value ms-1">-5°C</span>
+                <span class="info-details ms-1">Ensoleillé</span>
+            </a>
+            <a href="#iframe-page-meteo-1" class="info-item">
+                <i class="fas fa-road info-icon"></i>
+                <span class="info-label">Routes: </span>
+                <span class="info-value ms-1">Majoritairement dégagées</span>
+            </a>
         </div>
-    </header>
+    </div>
+</header>
 
     <!-- Top Bar -->
     <div class="top-bar">
@@ -52,13 +52,17 @@
                         <i class="fas fa-envelope me-1"></i> infogoexploria@gmail.com
                     </a>
                 </div>
+
+                <div class="item-btns">
+                    <a href="#iframe-page-web-1" class="btn btn-sm btn-primary me-2">
+                        <i class="fas fa-globe me-1"></i>Services Web
+                    </a>
+                    <a href="#contact" class="btn btn-sm btn-secondary">
+                        <i class="fas fa-list me-1"></i>Nos plans
+                    </a>
+                </div>
                 
                 <div class="top-bar-icons">
-                    <!-- Panier -->
-                    <a href="#" class="top-bar-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>Panier</span>
-                    </a>
                     
                     <!-- Mon compte -->
                     <a href="{{route('login')}}" class="top-bar-icon">
@@ -88,6 +92,16 @@
                     <!-- YouTube Icon -->
                     <a href="https://www.youtube.com/user/explorezlemonde/videos?view_as=subscriber" target="_blank" class="top-bar-icon">
                         <i class="fab fa-youtube"></i>
+                    </a>
+                    <!-- Panier -->
+                    <a href="#" class="top-bar-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Panier</span>
+                    </a>
+                    <!-- Panier -->
+                    <a href="#" class="top-bar-icon">
+                        <i class="fas fa-heart"></i>
+                        <span>Favoris</span>
                     </a>
                 </div>
             </div>
@@ -152,35 +166,52 @@
 
  
      <!-- resources/views/main.blade.php -->
+      @foreach(\App\Models\Menu::where('is_active', true)->where('has_page', true)->get() as $page)
       
-<!-- Marketing -->
 <iframe 
-    id="iframe-page-marketing-1"
-    src="{{ url('/theme/marketing/page-1') }}" 
+    id="{{$page->slug}}"
+    src="{{ url('/theme/'.$page->slug.'/preview') }}" 
     width="100%" 
     style="border:0; overflow:hidden;"
     scrolling="no">
 </iframe>
-
-<iframe 
+      @endforeach
+<!-- Marketing -->
+ <iframe 
     id="iframe-page-web-1"
     src="{{ url('/theme/web/page-1') }}" 
     width="100%" 
     style="border:0; overflow:hidden;"
     scrolling="no">
 </iframe>
+<!-- <iframe 
+    id="digital-marketing"
+    src="{{ url('/theme/marketing/page-1') }}" 
+    width="100%" 
+    style="border:0; overflow:hidden;"
+    scrolling="no">
+</iframe> -->
 
+
+
+<iframe 
+    id="iframe-page-meteo-1"
+    src="{{ url('/theme/meteo/page-1') }}" 
+    width="100%" 
+    style="border:0; overflow:hidden;"
+    scrolling="no">
+</iframe>
 
 <!-- Business -->
 <iframe 
-    id="iframe-page-business-1"
+    id="business-tourism"
     src="{{ url('/theme/business/page-1') }}" 
     width="100%" 
     style="border:0; overflow:hidden;"
     scrolling="no">
 </iframe>
 <!-- E-commerce -->
-<iframe 
+<!-- <iframe 
     id="iframe-page-1"
     src="{{ url('/theme/ecommerce/page-1') }}" 
     width="100%" 
@@ -194,18 +225,18 @@
     width="100%" 
     style="border:0; overflow:hidden;"
     scrolling="no">
-</iframe>
+</iframe> -->
 
-<iframe 
+<!-- <iframe 
     id="iframe-page-3"
     src="{{ url('/theme/ecommerce/page-3') }}" 
     width="100%" 
     style="border:0; overflow:hidden;"
     scrolling="no">
-</iframe>
+</iframe> -->
 <!-- Travel Pages-->
  
-<iframe 
+<!-- <iframe 
     id="iframe-page-travel-1"
     src="{{ url('/theme/travel/page-1') }}" 
     width="100%" 
@@ -225,27 +256,29 @@
     width="100%" 
     style="border:0; overflow:hidden;"
     scrolling="no">
-</iframe>
+</iframe> -->
+
+
 
 <!-- Media -->
  
-<iframe 
+<!-- <iframe 
     id="iframe-page-media-2"
     src="{{ url('/theme/media/page-2') }}" 
     width="100%" 
     style="border:0; overflow:hidden;"
     scrolling="no">
-</iframe>
+</iframe> -->
 
 
 <!-- SEO -->
-<iframe 
+<!-- <iframe 
     id="iframe-page-seo-1"
     src="{{ url('/theme/seo/page-1') }}" 
     width="100%" 
     style="border:0; overflow:hidden;"
     scrolling="no">
-</iframe>
+</iframe> -->
 
 
 

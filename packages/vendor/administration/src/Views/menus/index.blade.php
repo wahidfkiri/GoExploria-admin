@@ -200,195 +200,236 @@
             <i class="fas fa-plus"></i>
         </button>
     </main>
-    
-    <!-- CREATE MENU MODAL -->
-    <div class="modal fade" id="createMenuModal" tabindex="-1" aria-labelledby="createMenuModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content modal-content-modern">
-                <div class="modal-header modal-header-modern">
-                    <h5 class="modal-title modal-title-modern" id="createMenuModalLabel">
-                        <i class="fas fa-plus-circle me-2"></i>Créer un nouveau menu
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body modal-body-modern">
-                    <form id="createMenuForm">
-                        @csrf
-                        
-                        <!-- Menu Level Selection -->
-                        <div class="form-section-modern">
-                            <h6 class="section-title-modern">
-                                <i class="fas fa-layer-group me-2"></i>Niveau du menu
-                            </h6>
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <div class="level-selector">
-                                        <div class="level-option" data-level="0">
-                                            <div class="level-icon">
-                                                <i class="fas fa-layer-group"></i>
-                                            </div>
-                                            <div class="level-info">
-                                                <div class="level-title">Menu Principal</div>
-                                                <div class="level-description">Niveau supérieur du menu</div>
-                                            </div>
-                                            <div class="level-check">
-                                                <i class="fas fa-check"></i>
-                                            </div>
+ <!-- CREATE MENU MODAL -->
+<div class="modal fade" id="createMenuModal" tabindex="-1" aria-labelledby="createMenuModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content modal-content-modern">
+            <div class="modal-header modal-header-modern">
+                <h5 class="modal-title modal-title-modern" id="createMenuModalLabel">
+                    <i class="fas fa-plus-circle me-2"></i>Créer un nouveau menu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body modal-body-modern">
+                <form id="createMenuForm">
+                    @csrf
+                    
+                    <!-- Menu Level Selection -->
+                    <div class="form-section-modern">
+                        <h6 class="section-title-modern">
+                            <i class="fas fa-layer-group me-2"></i>Niveau du menu
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <div class="level-selector">
+                                    <div class="level-option" data-level="0">
+                                        <div class="level-icon">
+                                            <i class="fas fa-layer-group"></i>
                                         </div>
-                                        
-                                        <div class="level-option" data-level="1">
-                                            <div class="level-icon">
-                                                <i class="fas fa-layer-group"></i>
-                                            </div>
-                                            <div class="level-info">
-                                                <div class="level-title">Sous-menu</div>
-                                                <div class="level-description">Premier niveau enfant</div>
-                                            </div>
-                                            <div class="level-check">
-                                                <i class="fas fa-check"></i>
-                                            </div>
+                                        <div class="level-info">
+                                            <div class="level-title">Menu Principal</div>
+                                            <div class="level-description">Niveau supérieur du menu</div>
                                         </div>
-                                        
-                                        <div class="level-option" data-level="2">
-                                            <div class="level-icon">
-                                                <i class="fas fa-layer-group"></i>
-                                            </div>
-                                            <div class="level-info">
-                                                <div class="level-title">Sous-sous-menu</div>
-                                                <div class="level-description">Deuxième niveau enfant</div>
-                                            </div>
-                                            <div class="level-check">
-                                                <i class="fas fa-check"></i>
-                                            </div>
+                                        <div class="level-check">
+                                            <i class="fas fa-check"></i>
                                         </div>
                                     </div>
-                                    <input type="hidden" id="selectedLevel" name="level" value="0">
+                                    
+                                    <div class="level-option" data-level="1">
+                                        <div class="level-icon">
+                                            <i class="fas fa-layer-group"></i>
+                                        </div>
+                                        <div class="level-info">
+                                            <div class="level-title">Sous-menu</div>
+                                            <div class="level-description">Premier niveau enfant</div>
+                                        </div>
+                                        <div class="level-check">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="level-option" data-level="2">
+                                        <div class="level-icon">
+                                            <i class="fas fa-layer-group"></i>
+                                        </div>
+                                        <div class="level-info">
+                                            <div class="level-title">Sous-sous-menu</div>
+                                            <div class="level-description">Deuxième niveau enfant</div>
+                                        </div>
+                                        <div class="level-check">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="selectedLevel" name="level" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Parent Selection (for submenus) -->
+                    <div class="form-section-modern" id="parentSelectionSection" style="display: none;">
+                        <h6 class="section-title-modern">
+                            <i class="fas fa-sitemap me-2"></i>Menu Parent
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <div id="parentSelectContainer">
+                                    <!-- Parent selection will be loaded dynamically -->
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Parent Selection (for submenus) -->
-                        <div class="form-section-modern" id="parentSelectionSection" style="display: none;">
-                            <h6 class="section-title-modern">
-                                <i class="fas fa-sitemap me-2"></i>Menu Parent
-                            </h6>
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <div id="parentSelectContainer">
-                                        <!-- Parent selection will be loaded dynamically -->
+                    </div>
+                    
+                    <!-- Image Upload Section (for submenus) -->
+                    <div class="form-section-modern" id="imageUploadSection" style="display: none;">
+                        <h6 class="section-title-modern">
+                            <i class="fas fa-image me-2"></i>Image du sous-menu
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <div class="image-upload-container">
+                                    <!-- Image preview -->
+                                    <div class="image-preview mb-3" id="imagePreview" style="display: none;">
+                                        <img id="previewImage" src="" alt="Aperçu de l'image" class="img-fluid rounded" style="max-height: 200px;">
+                                        <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeImage()">
+                                            <i class="fas fa-trash me-1"></i>Supprimer l'image
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Upload input -->
+                                    <div class="upload-area" id="uploadArea">
+                                        <div class="upload-placeholder">
+                                            <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-primary"></i>
+                                            <h5>Glissez-déposez votre image ici</h5>
+                                            <p class="text-muted">ou cliquez pour parcourir</p>
+                                            <p class="small text-muted">Formats supportés: JPG, PNG, GIF, SVG, WEBP (max 2MB)</p>
+                                        </div>
+                                        <input type="file" 
+                                               class="form-control-modern d-none" 
+                                               id="menuImage" 
+                                               name="image"
+                                               accept=".jpg,.jpeg,.png,.gif,.svg,.webp">
+                                        <input type="hidden" id="removeImageFlag" name="remove_image" value="0">
+                                    </div>
+                                    
+                                    <!-- Progress bar -->
+                                    <div class="progress mt-3" id="uploadProgress" style="display: none; height: 10px;">
+                                        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                             role="progressbar" style="width: 0%"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Basic Information -->
-                        <div class="form-section-modern">
-                            <h6 class="section-title-modern">
-                                <i class="fas fa-info-circle me-2"></i>Informations de base
-                            </h6>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="menuTitle" class="form-label-modern">Titre *</label>
-                                    <input type="text" class="form-control-modern" id="menuTitle" name="title" 
-                                           placeholder="Ex: Accueil, Produits, Contact..." required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="menuSlug" class="form-label-modern">Slug *</label>
-                                    <input type="text" class="form-control-modern" id="menuSlug" name="slug" 
-                                           placeholder="Ex: accueil, produits, contact..." required>
-                                    <div class="form-text-modern">Identifiant unique pour le menu</div>
-                                </div>
+                    </div>
+                    
+                    <!-- Basic Information -->
+                    <div class="form-section-modern">
+                        <h6 class="section-title-modern">
+                            <i class="fas fa-info-circle me-2"></i>Informations de base
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="menuTitle" class="form-label-modern">Titre *</label>
+                                <input type="text" class="form-control-modern" id="menuTitle" name="title" 
+                                       placeholder="Ex: Accueil, Produits, Contact..." required>
                             </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="menuType" class="form-label-modern">Type de menu *</label>
-                                    <select class="form-select-modern" id="menuType" name="type" required>
-                                        <option value="custom">Personnalisé</option>
-                                        <option value="category">Catégorie</option>
-                                        <option value="activity">Activité</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="menuOrder" class="form-label-modern">Ordre</label>
-                                    <input type="number" class="form-control-modern" id="menuOrder" name="order" 
-                                           value="0" min="0">
-                                    <div class="form-text-modern">Position dans le menu</div>
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="menuSlug" class="form-label-modern">Slug *</label>
+                                <input type="text" class="form-control-modern" id="menuSlug" name="slug" 
+                                       placeholder="Ex: accueil, produits, contact..." required>
+                                <div class="form-text-modern">Identifiant unique pour le menu</div>
                             </div>
                         </div>
                         
-                        <!-- Content Selection (for category/activity types) -->
-                        <div class="form-section-modern" id="contentSelectionSection" style="display: none;">
-                            <h6 class="section-title-modern">
-                                <i class="fas fa-link me-2"></i>Sélection du contenu
-                            </h6>
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <div id="contentSelectContainer">
-                                        <!-- Content selection will be loaded dynamically based on type -->
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="menuType" class="form-label-modern">Type de menu *</label>
+                                <select class="form-select-modern" id="menuType" name="type" required>
+                                    <option value="custom">Personnalisé</option>
+                                    <option value="category">Catégorie</option>
+                                    <option value="activity">Activité</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="menuOrder" class="form-label-modern">Ordre</label>
+                                <input type="number" class="form-control-modern" id="menuOrder" name="order" 
+                                       value="0" min="0">
+                                <div class="form-text-modern">Position dans le menu</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Content Selection (for category/activity types) -->
+                    <div class="form-section-modern" id="contentSelectionSection" style="display: none;">
+                        <h6 class="section-title-modern">
+                            <i class="fas fa-link me-2"></i>Sélection du contenu
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <div id="contentSelectContainer">
+                                    <!-- Content selection will be loaded dynamically based on type -->
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- URL Configuration -->
-                        <div class="form-section-modern" id="urlConfigurationSection">
-                            <h6 class="section-title-modern">
-                                <i class="fas fa-link me-2"></i>Configuration de l'URL
-                            </h6>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="menuUrl" class="form-label-modern">URL personnalisée</label>
-                                    <input type="text" class="form-control-modern" id="menuUrl" name="url" 
-                                           placeholder="Ex: /about, /products, https://example.com">
-                                    <div class="form-text-modern">Laisser vide pour URL automatique</div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="menuRoute" class="form-label-modern">Route Laravel</label>
-                                    <input type="text" class="form-control-modern" id="menuRoute" name="route" 
-                                           placeholder="Ex: home, products.index, contact.show">
-                                </div>
+                    </div>
+                    
+                    <!-- URL Configuration -->
+                    <div class="form-section-modern d-none" id="urlConfigurationSection">
+                        <h6 class="section-title-modern">
+                            <i class="fas fa-link me-2"></i>Configuration de l'URL
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="menuUrl" class="form-label-modern">URL personnalisée</label>
+                                <input type="text" class="form-control-modern" id="menuUrl" name="url" 
+                                       placeholder="Ex: /about, /products, https://example.com">
+                                <div class="form-text-modern">Laisser vide pour URL automatique</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="menuRoute" class="form-label-modern">Route Laravel</label>
+                                <input type="text" class="form-control-modern" id="menuRoute" name="route" 
+                                       placeholder="Ex: home, products.index, contact.show">
                             </div>
                         </div>
-                        
-                        <!-- Advanced Options -->
-                        <div class="form-section-modern">
-                            <h6 class="section-title-modern">
-                                <i class="fas fa-cog me-2"></i>Options avancées
-                            </h6>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="menuIcon" class="form-label-modern">Icône</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-icons"></i></span>
-                                        <input type="text" class="form-control-modern" id="menuIcon" name="icon" 
-                                               placeholder="Ex: fas fa-home, fas fa-user">
-                                    </div>
-                                    <div class="form-text-modern">Classes FontAwesome</div>
+                    </div>
+                    
+                    <!-- Advanced Options -->
+                    <div class="form-section-modern">
+                        <h6 class="section-title-modern">
+                            <i class="fas fa-cog me-2"></i>Options avancées
+                        </h6>
+                        <div class="row">
+                            <!-- <div class="col-md-6 mb-3">
+                                <label for="menuIcon" class="form-label-modern">Icône</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-icons"></i></span>
+                                    <input type="text" class="form-control-modern" id="menuIcon" name="icon" 
+                                           placeholder="Ex: fas fa-home, fas fa-user">
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="menuStatus" class="form-label-modern">Statut</label>
-                                    <select class="form-select-modern" id="menuStatus" name="is_active">
-                                        <option value="1">Actif</option>
-                                        <option value="0">Inactif</option>
-                                    </select>
-                                </div>
+                                <div class="form-text-modern">Classes FontAwesome</div>
+                            </div> -->
+                            <div class="col-md-12 mb-3">
+                                <label for="menuStatus" class="form-label-modern">Statut</label>
+                                <select class="form-select-modern" id="menuStatus" name="is_active">
+                                    <option value="1">Actif</option>
+                                    <option value="0">Inactif</option>
+                                </select>
                             </div>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer modal-footer-modern">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="button" class="btn btn-primary btn-pulse" id="submitMenuBtn">
-                        <span class="btn-text">
-                            <i class="fas fa-save me-2"></i>Créer le menu
-                        </span>
-                    </button>
-                </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer modal-footer-modern">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary btn-pulse" id="submitMenuBtn">
+                    <span class="btn-text">
+                        <i class="fas fa-save me-2"></i>Créer le menu
+                    </span>
+                </button>
             </div>
         </div>
     </div>
+</div>
     
     <!-- EDIT MENU MODAL -->
     <div class="modal fade" id="editMenuModal" tabindex="-1" aria-labelledby="editMenuModalLabel" aria-hidden="true">
@@ -436,6 +477,8 @@
                                     <input type="number" class="form-control-modern" id="editMenuOrder" name="order" min="0">
                                 </div>
                             </div>
+
+                            
                             
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -456,7 +499,7 @@
                         </div>
                         
                         <!-- URL Configuration -->
-                        <div class="form-section-modern">
+                        <!-- <div class="form-section-modern">
                             <h6 class="section-title-modern">
                                 <i class="fas fa-link me-2"></i>Configuration de l'URL
                             </h6>
@@ -470,7 +513,9 @@
                                     <input type="text" class="form-control-modern" id="editMenuRoute" name="route">
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
+
+
                         
                         <!-- Advanced Options -->
                         <div class="form-section-modern">
@@ -741,10 +786,10 @@ row.innerHTML += `
             </div>
             ${menu.has_page ? `
                 <div class="page-actions">
-                    <a href="${menu.page_url}" target="_blank" class="btn btn-sm btn-outline-primary" title="Voir la page">
+                    <a href="{{ url('menus/template/view') }}/${menu.id}" target="_blank" class="btn btn-sm btn-outline-primary" title="Voir la page">
                         <i class="fas fa-eye"></i>
                     </a>
-                    <a href="/menus/${menu.id}/page" class="btn btn-sm btn-outline-success" title="Éditer la page">
+                    <a href="{{ url('menus/template/edit') }}/${menu.id}" class="btn btn-sm btn-outline-success" title="Éditer la page" target="_blank">
                         <i class="fas fa-edit"></i>
                     </a>
                     <button class="btn btn-sm btn-outline-warning toggle-page-btn" 
@@ -789,6 +834,252 @@ const togglePage = (menuId) => {
         }
     });
 };
+
+// Image upload handling for create form
+const setupImageUpload = () => {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('menuImage');
+    const preview = document.getElementById('imagePreview');
+    const previewImage = document.getElementById('previewImage');
+    const imageSection = document.getElementById('imageUploadSection');
+    
+    if (uploadArea && fileInput) {
+        // Click to select file
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleImageSelection(fileInput.files[0]);
+            }
+        });
+        
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleImageSelection(e.target.files[0]);
+            }
+        });
+    }
+};
+
+// Handle image selection
+const handleImageSelection = (file) => {
+    if (!file.type.match('image.*')) {
+        showAlert('danger', 'Veuillez sélectionner une image valide');
+        return;
+    }
+    
+    if (file.size > 2 * 1024 * 1024) { // 2MB
+        showAlert('danger', 'L\'image est trop volumineuse (max 2MB)');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const preview = document.getElementById('imagePreview');
+        const previewImage = document.getElementById('previewImage');
+        const uploadArea = document.getElementById('uploadArea');
+        
+        previewImage.src = e.target.result;
+        preview.style.display = 'block';
+        uploadArea.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+};
+
+// Remove image in create form
+const removeImage = () => {
+    const fileInput = document.getElementById('menuImage');
+    const preview = document.getElementById('imagePreview');
+    const uploadArea = document.getElementById('uploadArea');
+    
+    fileInput.value = '';
+    preview.style.display = 'none';
+    uploadArea.style.display = 'block';
+    
+    // Set flag to remove image on server
+    document.getElementById('removeImageFlag').value = '1';
+};
+
+// Setup image upload for edit form
+const setupEditImageUpload = () => {
+    const uploadArea = document.getElementById('editUploadArea');
+    const fileInput = document.getElementById('editMenuImage');
+    
+    if (uploadArea && fileInput) {
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleEditImageSelection(e.target.files[0]);
+            }
+        });
+    }
+};
+
+// Handle edit image selection
+const handleEditImageSelection = (file) => {
+    if (!file.type.match('image.*')) {
+        showAlert('danger', 'Veuillez sélectionner une image valide');
+        return;
+    }
+    
+    if (file.size > 2 * 1024 * 1024) {
+        showAlert('danger', 'L\'image est trop volumineuse (max 2MB)');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const preview = document.getElementById('editImagePreview');
+        const previewImage = document.getElementById('editPreviewImage');
+        const uploadArea = document.getElementById('editUploadArea');
+        
+        previewImage.src = e.target.result;
+        preview.style.display = 'block';
+        uploadArea.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+};
+
+// Remove new image in edit form
+const removeNewImage = () => {
+    const fileInput = document.getElementById('editMenuImage');
+    const preview = document.getElementById('editImagePreview');
+    const uploadArea = document.getElementById('editUploadArea');
+    
+    fileInput.value = '';
+    preview.style.display = 'none';
+    uploadArea.style.display = 'block';
+};
+
+// Remove current image in edit form
+const removeCurrentImage = () => {
+    const currentImageContainer = document.getElementById('currentImageContainer');
+    const removeFlag = document.getElementById('editRemoveImageFlag');
+    
+    currentImageContainer.style.display = 'none';
+    removeFlag.value = '1';
+    
+    showAlert('warning', 'L\'image actuelle sera supprimée lors de l\'enregistrement');
+};
+
+// Show/hide image section based on level
+// Show/hide image section based on level
+const toggleImageSection = (level) => {
+    const imageSection = document.getElementById('imageUploadSection');
+    
+    console.log('Toggle image section - Level:', level, 'Section:', imageSection);
+    
+    if (level > 0) {
+        // Sous-menu ou sous-sous-menu
+        imageSection.style.display = 'block';
+        console.log('Image section should be visible');
+    } else {
+        // Menu principal
+        imageSection.style.display = 'none';
+        removeImage(); // Clear image if switching to main menu
+        console.log('Image section should be hidden');
+    }
+};
+
+// Dans setupLevelSelector, modifier l'écouteur d'événements
+const setupLevelSelector = () => {
+    const levelOptions = document.querySelectorAll('.level-option');
+    const parentSection = document.getElementById('parentSelectionSection');
+    const imageSection = document.getElementById('imageUploadSection');
+    
+    levelOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove active class from all options
+            levelOptions.forEach(opt => opt.classList.remove('active'));
+            
+            // Add active class to clicked option
+            this.classList.add('active');
+            
+            // Update hidden input
+            const level = parseInt(this.dataset.level);
+            document.getElementById('selectedLevel').value = level;
+            
+            console.log('Level selected:', level);
+            
+            // Show/hide parent selection
+            if (level > 0) {
+                parentSection.style.display = 'block';
+                loadParentOptions(level);
+            } else {
+                parentSection.style.display = 'none';
+            }
+            
+            // Show/hide image section - TOUJOURS AFFICHER POUR SOUS-MENU
+            if (level > 0) {
+                console.log('Level > 0, showing image section');
+                imageSection.style.display = 'block';
+            } else {
+                console.log('Level = 0, hiding image section');
+                imageSection.style.display = 'none';
+                removeImage(); // Clear image if switching to main menu
+            }
+        });
+    });
+    
+    // Select first level by default
+    levelOptions[0].classList.add('active');
+    
+    // Initial state - hide image section for main menu
+    if (imageSection) {
+        imageSection.style.display = 'none';
+    }
+};
+
+// Load current image in edit form
+const loadCurrentImage = (menu) => {
+    const container = document.getElementById('currentImageContainer');
+    const preview = document.getElementById('currentImagePreview');
+    const link = document.getElementById('currentImageLink');
+    
+    if (menu.image_url) {
+        preview.src = menu.image_url;
+        link.href = menu.image_url;
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+    }
+};
+
+// Initialize image upload in DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+    setupImageUpload();
+    setupEditImageUpload();
+    
+    // Add image toggle to level selector
+    const levelOptions = document.querySelectorAll('.level-option');
+    levelOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            const level = parseInt(this.dataset.level);
+            toggleImageSection(level);
+        });
+    });
+});
 
 const createPage = (menuId) => {
     window.location.href = `/menus/${menuId}/page`;
@@ -1032,7 +1323,7 @@ const createPage = (menuId) => {
             }
         };
 
-        // Store menu - VERSION COMPLÈTE
+    // Store menu with image upload
 const storeMenu = () => {
     const form = document.getElementById('createMenuForm');
     const submitBtn = document.getElementById('submitMenuBtn');
@@ -1047,45 +1338,81 @@ const storeMenu = () => {
         '<div class="spinner-border spinner-border-sm me-2"></div>Création en cours...'
     );
     
-    // Récupérer les valeurs
-    const level = parseInt($('#selectedLevel').val());
-    const data = {
-        _token: $('meta[name="csrf-token"]').attr('content'),
-        title: $('#menuTitle').val().trim(),
-        slug: $('#menuSlug').val().trim(),
-        type: $('#menuType').val(),
-        parent_id: level > 0 ? $('#menuParent').val() : '',
-        order: $('#menuOrder').val() || 0,
-        url: $('#menuUrl').val(),
-        route: $('#menuRoute').val(),
-        icon: $('#menuIcon').val(),
-        is_active: $('#menuStatus').val() || 1
-    };
+    // Use FormData to handle file upload
+    const formData = new FormData(form);
     
-    // Ajouter reference_id si nécessaire
-    if ($('#menuType').val() !== 'custom') {
-        data.reference_id = $('#menuReference').val();
+    // Get additional data
+    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+    formData.append('title', $('#menuTitle').val().trim());
+    formData.append('slug', $('#menuSlug').val().trim());
+    formData.append('type', $('#menuType').val());
+    formData.append('level', $('#selectedLevel').val());
+    formData.append('order', $('#menuOrder').val() || 0);
+    formData.append('is_active', $('#menuStatus').val() || 1);
+    
+    // Add parent_id if level > 0
+    const level = parseInt($('#selectedLevel').val());
+    if (level > 0) {
+        formData.append('parent_id', $('#menuParent').val());
     }
     
-    // Envoyer la requête
+    // Add reference_id if not custom
+    if ($('#menuType').val() !== 'custom') {
+        formData.append('reference_id', $('#menuReference').val());
+    }
+    
+    // Add url and route
+    if ($('#menuUrl').val()) {
+        formData.append('url', $('#menuUrl').val());
+    }
+    if ($('#menuRoute').val()) {
+        formData.append('route', $('#menuRoute').val());
+    }
+    
+    // Add icon
+    if ($('#menuIcon').val()) {
+        formData.append('icon', $('#menuIcon').val());
+    }
+    
+    // Envoyer la requête avec FormData
     $.ajax({
         url: '{{ route("menus.store") }}',
         type: 'POST',
-        data: data,
+        data: formData,
+        processData: false,
+        contentType: false,
         dataType: 'json',
+        xhr: function() {
+            const xhr = new window.XMLHttpRequest();
+            
+            // Upload progress
+            xhr.upload.addEventListener('progress', function(evt) {
+                if (evt.lengthComputable) {
+                    const percentComplete = (evt.loaded / evt.total) * 100;
+                    $('#progressBar').css('width', percentComplete + '%');
+                }
+            }, false);
+            
+            return xhr;
+        },
+        beforeSend: function() {
+            $('#uploadProgress').show();
+        },
         success: function(response) {
             if (response.success) {
                 // Fermer le modal
-                $('#createMenuModal').modal('hide');
+                closeModalProperly('#createMenuModal');
                 
                 // Réinitialiser le formulaire
                 form.reset();
+                resetImageUpload();
                 
                 // Réinitialiser le level selector
                 $('.level-option').removeClass('active');
                 $('.level-option[data-level="0"]').addClass('active');
                 $('#selectedLevel').val('0');
                 $('#parentSelectionSection').hide();
+                $('#imageUploadSection').hide();
                 
                 // Recharger les données
                 loadMenus(1, currentFilters);
@@ -1118,12 +1445,28 @@ const storeMenu = () => {
             }
         },
         complete: function() {
+            // Cacher la barre de progression
+            $('#uploadProgress').hide();
+            $('#progressBar').css('width', '0%');
+            
             // Réactiver le bouton
             $(submitBtn).prop('disabled', false).html(
                 '<i class="fas fa-save me-2"></i>Créer le menu'
             );
         }
     });
+};
+
+// Reset image upload
+const resetImageUpload = () => {
+    const fileInput = document.getElementById('menuImage');
+    const preview = document.getElementById('imagePreview');
+    const uploadArea = document.getElementById('uploadArea');
+    
+    fileInput.value = '';
+    preview.style.display = 'none';
+    uploadArea.style.display = 'block';
+    document.getElementById('removeImageFlag').value = '0';
 };
 
 
@@ -1220,6 +1563,20 @@ const validateCreateMenuForm = () => {
     
     return isValid;
 };
+
+ // Helper function to close modal properly
+    const closeModalProperly = (modalId) => {
+        $(modalId).modal('hide');
+        setTimeout(() => {
+            cleanupModalBackdrop();
+        }, 300);
+    };
+
+    // Cleanup modal backdrop
+    const cleanupModalBackdrop = () => {
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    };
 
 // Fonction pour générer le slug automatiquement
 const generateSlug = (text) => {
@@ -1367,7 +1724,8 @@ const updateMenu = () => {
             
             if (response.success) {
                 // Fermer le modal
-                $('#editMenuModal').modal('hide');
+                
+                    closeModalProperly('#editMenuModal');
                 
                 // Recharger les données
                 loadMenus(currentPage, currentFilters);
@@ -2295,5 +2653,68 @@ const validateEditMenuForm = () => {
                 margin-left: 20px;
             }
         }
+
+        /* Image upload styles */
+.image-upload-container {
+    border: 2px dashed #dee2e6;
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.upload-area {
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    background-color: #f8f9fa;
+}
+
+.upload-area.dragover {
+    background-color: #e7f1ff;
+    border-color: #007bff;
+}
+
+.upload-placeholder {
+    text-align: center;
+    color: #6c757d;
+}
+
+.image-preview, .current-image-preview {
+    text-align: center;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    background: #f8f9fa;
+}
+
+.image-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.new-image-upload {
+    margin-top: 20px;
+}
+
+/* Responsive adjustments for image upload */
+@media (max-width: 768px) {
+    .image-upload-container {
+        padding: 15px;
+    }
+    
+    .upload-placeholder h5 {
+        font-size: 1rem;
+    }
+    
+    .image-actions {
+        flex-direction: column;
+    }
+    
+    .image-actions .btn {
+        width: 100%;
+    }
+}
     </style>
 @endsection

@@ -1583,7 +1583,8 @@
             featureObserver.observe(featuresContainer);
         });
     </script>
-         <script>
+
+    <script>
 function sendHeight() {
     const height = document.body.scrollHeight;
     window.parent.postMessage({
@@ -1617,5 +1618,6 @@ function sendHeight() {
 window.addEventListener('load', sendHeight);
 window.addEventListener('resize', sendHeight);
 </script>
+
 </body>
 </html>

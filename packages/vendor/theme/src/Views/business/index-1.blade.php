@@ -2302,7 +2302,7 @@ function sendHeight() {
     const height = document.body.scrollHeight;
     window.parent.postMessage({
         type: 'setHeight',
-        iframeId: 'iframe-page-business-1',
+        iframeId: 'business-tourism',
         height: height
     }, '*');
 }
