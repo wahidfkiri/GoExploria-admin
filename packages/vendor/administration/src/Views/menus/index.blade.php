@@ -200,236 +200,237 @@
             <i class="fas fa-plus"></i>
         </button>
     </main>
- <!-- CREATE MENU MODAL -->
-<div class="modal fade" id="createMenuModal" tabindex="-1" aria-labelledby="createMenuModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content modal-content-modern">
-            <div class="modal-header modal-header-modern">
-                <h5 class="modal-title modal-title-modern" id="createMenuModalLabel">
-                    <i class="fas fa-plus-circle me-2"></i>Créer un nouveau menu
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body modal-body-modern">
-                <form id="createMenuForm">
-                    @csrf
-                    
-                    <!-- Menu Level Selection -->
-                    <div class="form-section-modern">
-                        <h6 class="section-title-modern">
-                            <i class="fas fa-layer-group me-2"></i>Niveau du menu
-                        </h6>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <div class="level-selector">
-                                    <div class="level-option" data-level="0">
-                                        <div class="level-icon">
-                                            <i class="fas fa-layer-group"></i>
+    
+    <!-- CREATE MENU MODAL -->
+    <div class="modal fade" id="createMenuModal" tabindex="-1" aria-labelledby="createMenuModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-modern">
+                    <h5 class="modal-title modal-title-modern" id="createMenuModalLabel">
+                        <i class="fas fa-plus-circle me-2"></i>Créer un nouveau menu
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body modal-body-modern">
+                    <form id="createMenuForm">
+                        @csrf
+                        
+                        <!-- Menu Level Selection -->
+                        <div class="form-section-modern">
+                            <h6 class="section-title-modern">
+                                <i class="fas fa-layer-group me-2"></i>Niveau du menu
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <div class="level-selector">
+                                        <div class="level-option" data-level="0">
+                                            <div class="level-icon">
+                                                <i class="fas fa-layer-group"></i>
+                                            </div>
+                                            <div class="level-info">
+                                                <div class="level-title">Menu Principal</div>
+                                                <div class="level-description">Niveau supérieur du menu</div>
+                                            </div>
+                                            <div class="level-check">
+                                                <i class="fas fa-check"></i>
+                                            </div>
                                         </div>
-                                        <div class="level-info">
-                                            <div class="level-title">Menu Principal</div>
-                                            <div class="level-description">Niveau supérieur du menu</div>
+                                        
+                                        <div class="level-option" data-level="1">
+                                            <div class="level-icon">
+                                                <i class="fas fa-layer-group"></i>
+                                            </div>
+                                            <div class="level-info">
+                                                <div class="level-title">Sous-menu</div>
+                                                <div class="level-description">Premier niveau enfant</div>
+                                            </div>
+                                            <div class="level-check">
+                                                <i class="fas fa-check"></i>
+                                            </div>
                                         </div>
-                                        <div class="level-check">
-                                            <i class="fas fa-check"></i>
+                                        
+                                        <div class="level-option" data-level="2">
+                                            <div class="level-icon">
+                                                <i class="fas fa-layer-group"></i>
+                                            </div>
+                                            <div class="level-info">
+                                                <div class="level-title">Sous-sous-menu</div>
+                                                <div class="level-description">Deuxième niveau enfant</div>
+                                            </div>
+                                            <div class="level-check">
+                                                <i class="fas fa-check"></i>
+                                            </div>
                                         </div>
                                     </div>
-                                    
-                                    <div class="level-option" data-level="1">
-                                        <div class="level-icon">
-                                            <i class="fas fa-layer-group"></i>
-                                        </div>
-                                        <div class="level-info">
-                                            <div class="level-title">Sous-menu</div>
-                                            <div class="level-description">Premier niveau enfant</div>
-                                        </div>
-                                        <div class="level-check">
-                                            <i class="fas fa-check"></i>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="level-option" data-level="2">
-                                        <div class="level-icon">
-                                            <i class="fas fa-layer-group"></i>
-                                        </div>
-                                        <div class="level-info">
-                                            <div class="level-title">Sous-sous-menu</div>
-                                            <div class="level-description">Deuxième niveau enfant</div>
-                                        </div>
-                                        <div class="level-check">
-                                            <i class="fas fa-check"></i>
-                                        </div>
-                                    </div>
+                                    <input type="hidden" id="selectedLevel" name="level" value="0">
                                 </div>
-                                <input type="hidden" id="selectedLevel" name="level" value="0">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Parent Selection (for submenus) -->
-                    <div class="form-section-modern" id="parentSelectionSection" style="display: none;">
-                        <h6 class="section-title-modern">
-                            <i class="fas fa-sitemap me-2"></i>Menu Parent
-                        </h6>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <div id="parentSelectContainer">
-                                    <!-- Parent selection will be loaded dynamically -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Image Upload Section (for submenus) -->
-                    <div class="form-section-modern" id="imageUploadSection" style="display: none;">
-                        <h6 class="section-title-modern">
-                            <i class="fas fa-image me-2"></i>Image du sous-menu
-                        </h6>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <div class="image-upload-container">
-                                    <!-- Image preview -->
-                                    <div class="image-preview mb-3" id="imagePreview" style="display: none;">
-                                        <img id="previewImage" src="" alt="Aperçu de l'image" class="img-fluid rounded" style="max-height: 200px;">
-                                        <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeImage()">
-                                            <i class="fas fa-trash me-1"></i>Supprimer l'image
-                                        </button>
-                                    </div>
-                                    
-                                    <!-- Upload input -->
-                                    <div class="upload-area" id="uploadArea">
-                                        <div class="upload-placeholder">
-                                            <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-primary"></i>
-                                            <h5>Glissez-déposez votre image ici</h5>
-                                            <p class="text-muted">ou cliquez pour parcourir</p>
-                                            <p class="small text-muted">Formats supportés: JPG, PNG, GIF, SVG, WEBP (max 2MB)</p>
-                                        </div>
-                                        <input type="file" 
-                                               class="form-control-modern d-none" 
-                                               id="menuImage" 
-                                               name="image"
-                                               accept=".jpg,.jpeg,.png,.gif,.svg,.webp">
-                                        <input type="hidden" id="removeImageFlag" name="remove_image" value="0">
-                                    </div>
-                                    
-                                    <!-- Progress bar -->
-                                    <div class="progress mt-3" id="uploadProgress" style="display: none; height: 10px;">
-                                        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
-                                             role="progressbar" style="width: 0%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Basic Information -->
-                    <div class="form-section-modern">
-                        <h6 class="section-title-modern">
-                            <i class="fas fa-info-circle me-2"></i>Informations de base
-                        </h6>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label for="menuTitle" class="form-label-modern">Titre *</label>
-                                <input type="text" class="form-control-modern" id="menuTitle" name="title" 
-                                       placeholder="Ex: Accueil, Produits, Contact..." required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="menuSlug" class="form-label-modern">Slug *</label>
-                                <input type="text" class="form-control-modern" id="menuSlug" name="slug" 
-                                       placeholder="Ex: accueil, produits, contact..." required>
-                                <div class="form-text-modern">Identifiant unique pour le menu</div>
                             </div>
                         </div>
                         
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="menuType" class="form-label-modern">Type de menu *</label>
-                                <select class="form-select-modern" id="menuType" name="type" required>
-                                    <option value="custom">Personnalisé</option>
-                                    <option value="category">Catégorie</option>
-                                    <option value="activity">Activité</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="menuOrder" class="form-label-modern">Ordre</label>
-                                <input type="number" class="form-control-modern" id="menuOrder" name="order" 
-                                       value="0" min="0">
-                                <div class="form-text-modern">Position dans le menu</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Content Selection (for category/activity types) -->
-                    <div class="form-section-modern" id="contentSelectionSection" style="display: none;">
-                        <h6 class="section-title-modern">
-                            <i class="fas fa-link me-2"></i>Sélection du contenu
-                        </h6>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <div id="contentSelectContainer">
-                                    <!-- Content selection will be loaded dynamically based on type -->
+                        <!-- Parent Selection (for submenus) -->
+                        <div class="form-section-modern" id="parentSelectionSection" style="display: none;">
+                            <h6 class="section-title-modern">
+                                <i class="fas fa-sitemap me-2"></i>Menu Parent
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <div id="parentSelectContainer">
+                                        <!-- Parent selection will be loaded dynamically -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- URL Configuration -->
-                    <div class="form-section-modern d-none" id="urlConfigurationSection">
-                        <h6 class="section-title-modern">
-                            <i class="fas fa-link me-2"></i>Configuration de l'URL
-                        </h6>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="menuUrl" class="form-label-modern">URL personnalisée</label>
-                                <input type="text" class="form-control-modern" id="menuUrl" name="url" 
-                                       placeholder="Ex: /about, /products, https://example.com">
-                                <div class="form-text-modern">Laisser vide pour URL automatique</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="menuRoute" class="form-label-modern">Route Laravel</label>
-                                <input type="text" class="form-control-modern" id="menuRoute" name="route" 
-                                       placeholder="Ex: home, products.index, contact.show">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Advanced Options -->
-                    <div class="form-section-modern">
-                        <h6 class="section-title-modern">
-                            <i class="fas fa-cog me-2"></i>Options avancées
-                        </h6>
-                        <div class="row">
-                            <!-- <div class="col-md-6 mb-3">
-                                <label for="menuIcon" class="form-label-modern">Icône</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-icons"></i></span>
-                                    <input type="text" class="form-control-modern" id="menuIcon" name="icon" 
-                                           placeholder="Ex: fas fa-home, fas fa-user">
+                        
+                        <!-- Basic Information -->
+                        <div class="form-section-modern">
+                            <h6 class="section-title-modern">
+                                <i class="fas fa-info-circle me-2"></i>Informations de base
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="menuTitle" class="form-label-modern">Titre *</label>
+                                    <input type="text" class="form-control-modern" id="menuTitle" name="title" 
+                                           placeholder="Ex: Accueil, Produits, Contact..." required>
                                 </div>
-                                <div class="form-text-modern">Classes FontAwesome</div>
-                            </div> -->
-                            <div class="col-md-12 mb-3">
-                                <label for="menuStatus" class="form-label-modern">Statut</label>
-                                <select class="form-select-modern" id="menuStatus" name="is_active">
-                                    <option value="1">Actif</option>
-                                    <option value="0">Inactif</option>
-                                </select>
+                                <div class="col-md-6 mb-3">
+                                    <label for="menuSlug" class="form-label-modern">Slug *</label>
+                                    <input type="text" class="form-control-modern" id="menuSlug" name="slug" 
+                                           placeholder="Ex: accueil, produits, contact..." required>
+                                    <div class="form-text-modern">Identifiant unique pour le menu</div>
+                                </div>
                             </div>
-                        </div>
+
+                            <!-- Image upload section - visible only for submenus -->
+<div class="form-section-modern" id="imageUploadSection" style="display: none;">
+    <h6 class="section-title-modern">
+        <i class="fas fa-image me-2"></i>Image du sous-menu
+    </h6>
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <div class="image-upload-container">
+                <!-- Image preview -->
+                <div class="image-preview mb-3" id="imagePreview" style="display: none;">
+                    <img id="previewImage" src="" alt="Aperçu de l'image" class="img-fluid rounded" style="max-height: 200px;">
+                    <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeImage()">
+                        <i class="fas fa-trash me-1"></i>Supprimer l'image
+                    </button>
+                </div>
+                
+                <!-- Upload input -->
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-placeholder">
+                        <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-primary"></i>
+                        <h5>Glissez-déposez votre image ici</h5>
+                        <p class="text-muted">ou cliquez pour parcourir</p>
+                        <p class="small text-muted">Formats supportés: JPG, PNG, GIF, SVG (max 2MB)</p>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer modal-footer-modern">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="button" class="btn btn-primary btn-pulse" id="submitMenuBtn">
-                    <span class="btn-text">
-                        <i class="fas fa-save me-2"></i>Créer le menu
-                    </span>
-                </button>
+                    <input type="file" 
+                           class="form-control-modern d-none" 
+                           id="menuImage" 
+                           name="image"
+                           accept=".jpg,.jpeg,.png,.gif,.svg,.webp">
+                    <input type="hidden" id="removeImageFlag" name="remove_image" value="0">
+                </div>
+                
+                <!-- Progress bar (hidden by default) -->
+                <div class="progress mt-3" id="uploadProgress" style="display: none; height: 10px;">
+                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" style="width: 0%"></div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="menuType" class="form-label-modern">Type de menu *</label>
+                                    <select class="form-select-modern" id="menuType" name="type" required>
+                                        <option value="custom">Personnalisé</option>
+                                        <option value="category">Catégorie</option>
+                                        <option value="activity">Activité</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="menuOrder" class="form-label-modern">Ordre</label>
+                                    <input type="number" class="form-control-modern" id="menuOrder" name="order" 
+                                           value="0" min="0">
+                                    <div class="form-text-modern">Position dans le menu</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Content Selection (for category/activity types) -->
+                        <div class="form-section-modern" id="contentSelectionSection" style="display: none;">
+                            <h6 class="section-title-modern">
+                                <i class="fas fa-link me-2"></i>Sélection du contenu
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <div id="contentSelectContainer">
+                                        <!-- Content selection will be loaded dynamically based on type -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- URL Configuration -->
+                        <div class="form-section-modern d-none" id="urlConfigurationSection">
+                            <h6 class="section-title-modern">
+                                <i class="fas fa-link me-2"></i>Configuration de l'URL
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="menuUrl" class="form-label-modern">URL personnalisée</label>
+                                    <input type="text" class="form-control-modern" id="menuUrl" name="url" 
+                                           placeholder="Ex: /about, /products, https://example.com">
+                                    <div class="form-text-modern">Laisser vide pour URL automatique</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="menuRoute" class="form-label-modern">Route Laravel</label>
+                                    <input type="text" class="form-control-modern" id="menuRoute" name="route" 
+                                           placeholder="Ex: home, products.index, contact.show">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Advanced Options -->
+                        <div class="form-section-modern">
+                            <h6 class="section-title-modern">
+                                <i class="fas fa-cog me-2"></i>Options avancées
+                            </h6>
+                            <div class="row">
+                                <!-- <div class="col-md-6 mb-3">
+                                    <label for="menuIcon" class="form-label-modern">Icône</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-icons"></i></span>
+                                        <input type="text" class="form-control-modern" id="menuIcon" name="icon" 
+                                               placeholder="Ex: fas fa-home, fas fa-user">
+                                    </div>
+                                    <div class="form-text-modern">Classes FontAwesome</div>
+                                </div> -->
+                                <div class="col-md-12 mb-3">
+                                    <label for="menuStatus" class="form-label-modern">Statut</label>
+                                    <select class="form-select-modern" id="menuStatus" name="is_active">
+                                        <option value="1">Actif</option>
+                                        <option value="0">Inactif</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer modal-footer-modern">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary btn-pulse" id="submitMenuBtn">
+                        <span class="btn-text">
+                            <i class="fas fa-save me-2"></i>Créer le menu
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- EDIT MENU MODAL -->
     <div class="modal fade" id="editMenuModal" tabindex="-1" aria-labelledby="editMenuModalLabel" aria-hidden="true">
@@ -499,7 +500,7 @@
                         </div>
                         
                         <!-- URL Configuration -->
-                        <!-- <div class="form-section-modern">
+                        <div class="form-section-modern">
                             <h6 class="section-title-modern">
                                 <i class="fas fa-link me-2"></i>Configuration de l'URL
                             </h6>
@@ -513,7 +514,7 @@
                                     <input type="text" class="form-control-modern" id="editMenuRoute" name="route">
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
 
 
                         
@@ -983,70 +984,14 @@ const removeCurrentImage = () => {
 };
 
 // Show/hide image section based on level
-// Show/hide image section based on level
 const toggleImageSection = (level) => {
     const imageSection = document.getElementById('imageUploadSection');
     
-    console.log('Toggle image section - Level:', level, 'Section:', imageSection);
-    
     if (level > 0) {
-        // Sous-menu ou sous-sous-menu
         imageSection.style.display = 'block';
-        console.log('Image section should be visible');
     } else {
-        // Menu principal
         imageSection.style.display = 'none';
         removeImage(); // Clear image if switching to main menu
-        console.log('Image section should be hidden');
-    }
-};
-
-// Dans setupLevelSelector, modifier l'écouteur d'événements
-const setupLevelSelector = () => {
-    const levelOptions = document.querySelectorAll('.level-option');
-    const parentSection = document.getElementById('parentSelectionSection');
-    const imageSection = document.getElementById('imageUploadSection');
-    
-    levelOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            // Remove active class from all options
-            levelOptions.forEach(opt => opt.classList.remove('active'));
-            
-            // Add active class to clicked option
-            this.classList.add('active');
-            
-            // Update hidden input
-            const level = parseInt(this.dataset.level);
-            document.getElementById('selectedLevel').value = level;
-            
-            console.log('Level selected:', level);
-            
-            // Show/hide parent selection
-            if (level > 0) {
-                parentSection.style.display = 'block';
-                loadParentOptions(level);
-            } else {
-                parentSection.style.display = 'none';
-            }
-            
-            // Show/hide image section - TOUJOURS AFFICHER POUR SOUS-MENU
-            if (level > 0) {
-                console.log('Level > 0, showing image section');
-                imageSection.style.display = 'block';
-            } else {
-                console.log('Level = 0, hiding image section');
-                imageSection.style.display = 'none';
-                removeImage(); // Clear image if switching to main menu
-            }
-        });
-    });
-    
-    // Select first level by default
-    levelOptions[0].classList.add('active');
-    
-    // Initial state - hide image section for main menu
-    if (imageSection) {
-        imageSection.style.display = 'none';
     }
 };
 
