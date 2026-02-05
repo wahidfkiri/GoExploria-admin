@@ -488,7 +488,7 @@
             <!-- Slide 1 -->
             <div class="video-slide active" data-slide="1">
                 <div class="video-wrapper-full">
-                    <iframe class="youtube-video-full" src="https://www.youtube.com/embed/Tmn9inxTvPo?si=k8ZWeEbQa_rYax8K&autoplay=1&mute=1&controls=0&loop=1&playlist=Tmn9inxTvPo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <iframe class="youtube-video-full" src="https://www.youtube.com/embed/Tmn9inxTvPo?si=k8ZWeEbQa_rYax8K" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
                 <div class="video-slide-overlay">
                     <div class="video-slide-content">
@@ -516,7 +516,7 @@
             <!-- Slide 2 -->
             <div class="video-slide" data-slide="2">
                 <div class="video-wrapper-full">
-                    <iframe class="youtube-video-full" src="https://www.youtube.com/embed/Tmn9inxTvPo?si=k8ZWeEbQa_rYax8K&autoplay=1&mute=1&controls=0&loop=1&playlist=Tmn9inxTvPo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <iframe class="youtube-video-full" src="https://www.youtube.com/embed/Tmn9inxTvPo?si=k8ZWeEbQa_rYax8K" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
                 <div class="video-slide-overlay">
                     <div class="video-slide-content">
