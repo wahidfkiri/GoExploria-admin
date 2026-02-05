@@ -488,7 +488,7 @@
             <!-- Slide 1 -->
             <div class="video-slide active" data-slide="1">
                 <div class="video-wrapper-full">
-                    <iframe class="youtube-video-full" src="https://www.youtube.com/embed/Tmn9inxTvPo?si=k8ZWeEbQa_rYax8K" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <iframe class="youtube-video-full" src="https://www.youtube.com/embed/MfAAJgCzOAs?si=LJchPRKqKx9Itwpt" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
                 <div class="video-slide-overlay">
                     <div class="video-slide-content">
@@ -516,7 +516,7 @@
             <!-- Slide 2 -->
             <div class="video-slide" data-slide="2">
                 <div class="video-wrapper-full">
-                    <iframe class="youtube-video-full" src="https://www.youtube.com/embed/Tmn9inxTvPo?si=k8ZWeEbQa_rYax8K" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <iframe class="youtube-video-full" src="https://www.youtube.com/embed/kwB4snBq4ZE?si=lH7-P-sFfh2L4i3x" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
                 <div class="video-slide-overlay">
                     <div class="video-slide-content">
@@ -544,7 +544,7 @@
             <!-- Slide 3 -->
             <div class="video-slide" data-slide="3">
                 <div class="video-wrapper-full">
-                    <iframe class="youtube-video-full" src="https://www.youtube.com/embed/Tmn9inxTvPo?si=k8ZWeEbQa_rYax8K&autoplay=1&mute=1&controls=0&loop=1&playlist=Tmn9inxTvPo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <iframe class="youtube-video-full" src="https://www.youtube.com/embed/f3KaqmXFm1M?si=pM1IuGa1ynAS_qIb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
                 <div class="video-slide-overlay">
                     <div class="video-slide-content">
@@ -780,19 +780,19 @@
             // Données des vidéos (5 cartes avec la même vidéo)
             const videoData = [
                 {
-                    id: 'Tmn9inxTvPo',
+                    id: 'MfAAJgCzOAs',
                     title: 'Québec - Vidéo Exclusive',
                     slideIndex: 0,
                     image: 'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
                 },
                 {
-                    id: 'Tmn9inxTvPo',
+                    id: 'kwB4snBq4ZE',
                     title: 'Québec - Vidéo Exclusive',
                     slideIndex: 1,
                     image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
                 },
                 {
-                    id: 'Tmn9inxTvPo',
+                    id: 'f3KaqmXFm1M',
                     title: 'Québec - Vidéo Exclusive',
                     slideIndex: 2,
                     image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
