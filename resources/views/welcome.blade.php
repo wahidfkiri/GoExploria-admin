@@ -873,9 +873,10 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 
     @include('components.front.navbar')
+    @include('components.front.slideshow')
 
     <!-- Video Slider Full Width -->
-    <section class="video-slider-section">
+    <section class="video-slider-section d-none">
         <div class="video-slider-container">
             <!-- Slide 1: Vidéo YouTube -->
             <div class="video-slide active">
