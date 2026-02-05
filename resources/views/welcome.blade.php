@@ -11,36 +11,644 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <script>
+// À placer en tête de page
+document.addEventListener('DOMContentLoaded', function() {
+    // État verrouillé
+    let scrollLocked = true;
     
-  <link rel="stylesheet" href="{{ asset('front/css/style.css') }}">
+    // Force brute - bloquer physiquement
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    
+    // Scroll immédiat et répété
+    const lockScroll = () => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    };
+    
+    // Appliquer intensément
+    lockScroll();
+    const intenseInterval = setInterval(lockScroll, 10);
+    
+    // Observer la position de scroll
+    const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting && scrollLocked) {
+                lockScroll();
+            }
+        });
+    }, { threshold: 0 });
+    
+    // Créer un élément d'ancrage en haut
+    const anchor = document.createElement('div');
+    anchor.id = 'scroll-anchor';
+    anchor.style.position = 'absolute';
+    anchor.style.top = '0';
+    anchor.style.left = '0';
+    anchor.style.width = '1px';
+    anchor.style.height = '1px';
+    document.body.prepend(anchor);
+    scrollObserver.observe(anchor);
+    
+    // Gérer les iframes
+    const iframes = document.querySelectorAll('iframe');
+    let loadedCount = 0;
+    
+    iframes.forEach(iframe => {
+        // Désactiver le scroll dans l'iframe
+        iframe.style.pointerEvents = 'none';
+        
+        iframe.addEventListener('load', function() {
+            loadedCount++;
+            
+            // Forcer le scroll dans l'iframe
+            try {
+                this.contentWindow.scrollTo(0, 0);
+                this.contentDocument.body.style.overflow = 'hidden';
+            } catch(e) {}
+            
+            // Activer après chargement
+            this.style.pointerEvents = 'auto';
+            
+            // Quand tous sont chargés
+            if (loadedCount === iframes.length) {
+                setTimeout(() => {
+                    scrollLocked = false;
+                    clearInterval(intenseInterval);
+                    
+                    // Libérer le scroll
+                    document.body.style.overflow = 'auto';
+                    document.documentElement.style.overflow = 'auto';
+                    
+                    // Dernier ajustement
+                    lockScroll();
+                    
+                    // Nettoyer
+                    scrollObserver.unobserve(anchor);
+                    anchor.remove();
+                }, 500);
+            }
+        });
+    });
+    
+    // Sécurité : déverrouiller après 3s
+    setTimeout(() => {
+        if (scrollLocked) {
+            scrollLocked = false;
+            clearInterval(intenseInterval);
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+        }
+    }, 3000);
+});
+</script>
+    <link rel="stylesheet" href="{{ asset('front/css/style.css') }}">
+    <style>
+        /* Style pour le bouton retour en haut */
+        .back-to-top {
+            position: fixed;
+            bottom: 100px;
+            right: 35px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            transform: translateY(-10px);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .back-to-top:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* Styles pour le méga-menu */
+        .mega-menu-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .mega-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(15px);
+            width: 1100px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            z-index: 1050;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        
+        .mega-menu-container:hover .mega-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .mega-menu-column h4 {
+            color: var(--dark-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .mega-menu-link {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s ease;
+            background: #f9f9f9;
+        }
+        
+        .mega-menu-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .mega-menu-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin-right: 15px;
+            object-fit: cover;
+            transition: all 0.2s ease;
+        }
+        
+        .mega-menu-text {
+            flex: 1;
+        }
+        
+        .mega-menu-text h6 {
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .mega-menu-text p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin: 0;
+        }
+        
+        .mega-menu-highlight {
+            grid-column: span 2;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            padding: 25px;
+            color: white;
+            margin-top: 10px;
+        }
+        
+        .mega-menu-highlight h4 {
+            color: white;
+            border-bottom-color: rgba(255,255,255,0.3);
+        }
+        
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+        
+        .highlight-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        
+        /* Footer avec photo de fond filtrée */
+        .footer-with-bg {
+            position: relative;
+            background-color: var(--dark-color);
+            color: white;
+            padding: 80px 0 30px;
+            overflow: hidden;
+        }
+        
+        .footer-bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            opacity: 0.15;
+            filter: blur(2px) grayscale(30%) brightness(0.7);
+        }
+        
+        .footer-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .footer-logo {
+            height: 70px;
+            margin-bottom: 25px;
+            filter: brightness(0) invert(1);
+        }
+        
+        .footer-social-icons {
+            margin-top: 25px;
+        }
+        
+        .footer-social-icons a {
+            display: inline-block;
+            margin-right: 15px;
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-social-icons a:hover {
+            color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+        
+        .footer-section-title {
+            color: white;
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent-color);
+            display: inline-block;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .footer-contact li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .footer-contact i {
+            margin-right: 10px;
+            color: var(--accent-color);
+            margin-top: 3px;
+        }
+        
+        .footer-buttons {
+            margin-top: 25px;
+        }
+        
+        .footer-copyright {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Styles pour le nouveau header avec bande défilante */
+        .info-header {
+            background: linear-gradient(90deg, #1a3a5f 0%, #2c5282 50%, #1a3a5f 100%);
+            padding: 8px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .left-info-items {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            padding: 4px 12px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .info-icon {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-right: 4px;
+        }
+        
+        .info-value {
+            font-size: 0.85rem;
+        }
+        
+        .info-up {
+            color: #4ade80;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .info-down {
+            color: #f87171;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .info-details {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        /* Bande défilante des voyageurs */
+        .travel-marquee-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            margin: 0 20px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .travel-marquee {
+            display: inline-block;
+            white-space: nowrap;
+            animation: marquee 45s linear infinite;
+            padding-left: 100%;
+        }
+        
+        .travel-marquee:hover {
+            animation-play-state: paused;
+        }
+        
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        
+        .travel-message {
+            display: inline-flex;
+            align-items: center;
+            margin: 0 30px;
+            font-size: 0.85rem;
+            color: white;
+        }
+        
+        .travel-icon {
+            margin-right: 8px;
+            color: #fbbf24;
+            font-size: 0.9rem;
+        }
+        
+        .travel-text {
+            position: relative;
+        }
+        
+        .travel-text::after {
+            content: "•";
+            margin-left: 30px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .mega-menu {
+                width: 95vw;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .mega-menu-highlight {
+                grid-column: span 2;
+            }
+            
+            .travel-marquee {
+                animation: marquee 45s linear infinite;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .mega-menu {
+                width: 95vw;
+                left: 50%;
+                transform: translateX(-50%) translateY(15px);
+                grid-template-columns: repeat(2, 1fr);
+                padding: 20px;
+            }
+            
+            .mega-menu-container:hover .mega-menu {
+                transform: translateX(-50%) translateY(0);
+            }
+            
+            .footer-with-bg {
+                padding: 60px 0 25px;
+            }
+            
+            .info-header .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .left-info-items {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .travel-marquee-container {
+                width: 100%;
+                margin: 10px 0;
+                order: 3;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .back-to-top {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+                bottom: 250px;
+                right: 15px;
+            }
+            
+            .mega-menu {
+                width: 90vw;
+            }
+            
+            .footer-with-bg {
+                padding: 50px 0 20px;
+            }
+            
+            .footer-logo {
+                height: 60px;
+            }
+            
+            .left-info-items {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .info-item {
+                justify-content: center;
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .travel-marquee {
+                animation: marquee 35s linear infinite;
+            }
+            
+            .travel-message {
+                margin: 0 15px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .mega-menu {
+                grid-template-columns: 1fr;
+                width: 85vw;
+            }
+            
+            .mega-menu-highlight {
+                grid-column: span 1;
+            }
+            
+            .travel-marquee {
+                animation: marquee 30s linear infinite;
+            }
+            
+            .travel-text::after {
+                margin-left: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header avec informations en temps réel -->
-    <header class="info-header">
-    <div class="container">
-        <div class="info-items">
-            <a href="#iframe-page-meteo-1" class="info-item">
-                <i class="fas fa-chart-line info-icon"></i>
-                <span class="info-label">Bourse TSX: </span>
-                <span class="info-value ms-1">21,450.12</span>
-                <span class="info-up ms-1">+1.2%</span>
-            </a>
-            <a href="#iframe-page-meteo-1" class="info-item">
-                <i class="fas fa-cloud-sun info-icon"></i>
-                <span class="info-label">Météo QC: </span>
-                <span class="info-value ms-1">-5°C</span>
-                <span class="info-details ms-1">Ensoleillé</span>
-            </a>
-            <a href="#iframe-page-meteo-1" class="info-item">
-                <i class="fas fa-road info-icon"></i>
-                <span class="info-label">Routes: </span>
-                <span class="info-value ms-1">Majoritairement dégagées</span>
-            </a>
-        </div>
-    </div>
-</header>
+    <!-- Bouton retour en haut -->
+    <button class="back-to-top" id="backToTop" aria-label="Retour en haut">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
-    <!-- Top Bar -->
+    <!-- Header avec informations en temps réel et bande défilante -->
+    <header class="info-header" id="myScrollableContainer">
+        <div class="container">
+            <!-- Bourse et Météo à gauche -->
+            <div class="left-info-items">
+                <a href="#iframe-page-meteo-1" class="info-item">
+                    <i class="fas fa-chart-line info-icon"></i>
+                    <span class="info-label">Bourse TSX:</span>
+                    <span class="info-value ms-1">21,450.12</span>
+                    <span class="info-up ms-1">+1.2%</span>
+                </a>
+                <a href="#iframe-page-meteo-1" class="info-item">
+                    <i class="fas fa-cloud-sun info-icon"></i>
+                    <span class="info-label">Météo QC:</span>
+                    <span class="info-value ms-1">-5°C</span>
+                    <span class="info-details ms-1">Ensoleillé</span>
+                </a>
+            </div>
+            
+            <!-- Bande défilante avec messages aux voyageurs -->
+            <div class="travel-marquee-container">
+                <div class="travel-marquee">
+                    <div class="travel-message">
+                        <i class="fas fa-plane travel-icon"></i>
+                        <span class="travel-text">✈️ Explorez les magnifiques paysages du Québec cet été !</span>
+                    </div>
+                    <div class="travel-message">
+                        <i class="fas fa-snowflake travel-icon"></i>
+                        <span class="travel-text">❄️ Stations de ski ouvertes - Profitez de la poudreuse fraîche !</span>
+                    </div>
+                    <div class="travel-message">
+                        <i class="fas fa-map-marked-alt travel-icon"></i>
+                        <span class="travel-text">🗺️ Découvrez nos itinéraires touristiques exclusifs</span>
+                    </div>
+                    <div class="travel-message">
+                        <i class="fas fa-utensils travel-icon"></i>
+                        <span class="travel-text">🍽️ Goûtez à la cuisine québécoise authentique dans nos restaurants partenaires</span>
+                    </div>
+                    <div class="travel-message">
+                        <i class="fas fa-tags travel-icon"></i>
+                        <span class="travel-text">🏷️ Offres spéciales vacances - Jusqu'à 30% de réduction</span>
+                    </div>
+                    <div class="travel-message">
+                        <i class="fas fa-calendar-alt travel-icon"></i>
+                        <span class="travel-text">📅 Événements à venir : Festival d'été de Québec, Fête nationale et plus !</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Top Bar avec méga-menu -->
     <div class="top-bar">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
@@ -54,9 +662,161 @@
                 </div>
 
                 <div class="item-btns">
-                    <a href="#iframe-page-web-1" class="btn btn-sm btn-primary me-2">
-                        <i class="fas fa-globe me-1"></i>Services Web
-                    </a>
+                    <!-- Bouton Services Web avec méga-menu -->
+                    <div class="mega-menu-container">
+                        <button class="btn btn-sm btn-primary me-2" id="servicesWebBtn">
+                            <i class="fas fa-globe me-1"></i>Services Web
+                        </button>
+                        
+                        <!-- Méga-menu -->
+                        <div class="mega-menu" id="webServicesMegaMenu">
+                            <!-- Colonne 1 : Création Web -->
+                            <div class="mega-menu-column">
+                                <h4>Création Web</h4>
+                                <a href="#iframe-page-web-1" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=400&fit=crop" class="mega-menu-image" alt="Sites Vitrine">
+                                    <div class="mega-menu-text">
+                                        <h6>Sites Vitrine</h6>
+                                        <p>Présence en ligne professionnelle</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=400&fit=crop" class="mega-menu-image" alt="E-commerce">
+                                    <div class="mega-menu-text">
+                                        <h6>E-commerce</h6>
+                                        <p>Boutique en ligne complète</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=400&h=400&fit=crop" class="mega-menu-image" alt="Blogs & CMS">
+                                    <div class="mega-menu-text">
+                                        <h6>Blogs & CMS</h6>
+                                        <p>Plateformes de contenu</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=400&fit=crop" class="mega-menu-image" alt="Applications Web">
+                                    <div class="mega-menu-text">
+                                        <h6>Applications Web</h6>
+                                        <p>Solutions sur mesure</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 2 : Marketing Digital -->
+                            <div class="mega-menu-column">
+                                <h4>Marketing Digital</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=400&fit=crop" class="mega-menu-image" alt="SEO">
+                                    <div class="mega-menu-text">
+                                        <h6>SEO</h6>
+                                        <p>Optimisation pour moteurs</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=400&fit=crop" class="mega-menu-image" alt="Publicité en Ligne">
+                                    <div class="mega-menu-text">
+                                        <h6>Publicité en Ligne</h6>
+                                        <p>Google Ads, Facebook Ads</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=400&fit=crop" class="mega-menu-image" alt="Analyse Web">
+                                    <div class="mega-menu-text">
+                                        <h6>Analyse Web</h6>
+                                        <p>Google Analytics, tracking</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1545235617-9465d2a55698?w=400&h=400&fit=crop" class="mega-menu-image" alt="Email Marketing">
+                                    <div class="mega-menu-text">
+                                        <h6>Email Marketing</h6>
+                                        <p>Campagnes automatiques</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 3 : Hébergement & Support -->
+                            <div class="mega-menu-column">
+                                <h4>Hébergement & Support</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=400&fit=crop" class="mega-menu-image" alt="Hébergement Web">
+                                    <div class="mega-menu-text">
+                                        <h6>Hébergement Web</h6>
+                                        <p>Serveurs performants</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=400&h=400&fit=crop" class="mega-menu-image" alt="Sécurité SSL">
+                                    <div class="mega-menu-text">
+                                        <h6>Sécurité SSL</h6>
+                                        <p>Certificats de sécurité</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=400&fit=crop" class="mega-menu-image" alt="Maintenance">
+                                    <div class="mega-menu-text">
+                                        <h6>Maintenance</h6>
+                                        <p>Mises à jour régulières</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop" class="mega-menu-image" alt="Support 24/7">
+                                    <div class="mega-menu-text">
+                                        <h6>Support 24/7</h6>
+                                        <p>Assistance technique</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 4 : Solutions Entreprise -->
+                            <div class="mega-menu-column">
+                                <h4>Solutions Entreprise</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=400&fit=crop" class="mega-menu-image" alt="ERP & CRM">
+                                    <div class="mega-menu-text">
+                                        <h6>ERP & CRM</h6>
+                                        <p>Systèmes de gestion intégrés</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=400&fit=crop" class="mega-menu-image" alt="Réseaux Sociaux">
+                                    <div class="mega-menu-text">
+                                        <h6>Gestion Réseaux Sociaux</h6>
+                                        <p>Stratégie et publication</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop" class="mega-menu-image" alt="Formation">
+                                    <div class="mega-menu-text">
+                                        <h6>Formation Digital</h6>
+                                        <p>Formation à vos outils</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=400&h=400&fit=crop" class="mega-menu-image" alt="Consultation">
+                                    <div class="mega-menu-text">
+                                        <h6>Consultation Stratégique</h6>
+                                        <p>Audit et recommandations</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
                     <a href="#contact" class="btn btn-sm btn-secondary">
                         <i class="fas fa-list me-1"></i>Nos plans
                     </a>
@@ -65,6 +825,10 @@
                 <div class="top-bar-icons">
                     
                     <!-- Mon compte -->
+                    <a href="{{route('register')}}" class="top-bar-icon">
+                        <i class="fas fa-user-plus"></i>
+                        <span>S'inscrire</span>
+                    </a>
                     <a href="{{route('login')}}" class="top-bar-icon">
                         <i class="fas fa-user"></i>
                         <span>Mon compte</span>
@@ -109,7 +873,6 @@
     </div>
 
     @include('components.front.navbar')
-
 
     <!-- Video Slider Full Width -->
     <section class="video-slider-section">
@@ -164,139 +927,56 @@
         </div>
     </section>
 
- 
-     <!-- resources/views/main.blade.php -->
-      @foreach(\App\Models\Menu::where('is_active', true)->where('has_page', true)->get() as $page)
-      
-<iframe 
-    id="{{$page->slug}}"
-    src="{{ url('/theme/'.$page->slug.'/preview') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe>
-      @endforeach
-<!-- Marketing -->
- <iframe 
-    id="iframe-page-web-1"
-    src="{{ url('/theme/web/page-1') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe>
-<!-- <iframe 
-    id="digital-marketing"
-    src="{{ url('/theme/marketing/page-1') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe> -->
+    <!-- resources/views/main.blade.php -->
+    @foreach(\App\Models\Menu::where('is_active', true)->where('has_page', true)->get() as $page)
+    <iframe 
+        id="{{$page->slug}}"
+        src="{{ url('/theme/'.$page->slug.'/preview') }}" 
+        width="100%" 
+        style="border:0; overflow:hidden;"
+        scrolling="no">
+    </iframe>
+    @endforeach
+    
+    <!-- Marketing -->
+    <iframe 
+        id="iframe-page-web-1"
+        src="{{ url('/theme/web/page-1') }}" 
+        width="100%" 
+        style="border:0; overflow:hidden;"
+        scrolling="no">
+    </iframe>
 
+    <iframe 
+        id="iframe-page-meteo-1"
+        src="{{ url('/theme/meteo/page-1') }}" 
+        width="100%" 
+        style="border:0; overflow:hidden;"
+        scrolling="no">
+    </iframe>
 
+    <!-- Business -->
+    <iframe 
+        id="business-tourism"
+        src="{{ url('/theme/business/page-1') }}" 
+        width="100%" 
+        style="border:0; overflow:hidden;"
+        scrolling="no">
+    </iframe>
 
-<iframe 
-    id="iframe-page-meteo-1"
-    src="{{ url('/theme/meteo/page-1') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe>
+    <script>
+    window.addEventListener('message', function(event) {
+        if (!event.data || event.data.type !== 'setHeight') return;
 
-<!-- Business -->
-<iframe 
-    id="business-tourism"
-    src="{{ url('/theme/business/page-1') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe>
-<!-- E-commerce -->
-<!-- <iframe 
-    id="iframe-page-1"
-    src="{{ url('/theme/ecommerce/page-1') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe>
+        const iframeId = event.data.iframeId;
+        const height   = event.data.height;
 
-<iframe 
-    id="iframe-page-2"
-    src="{{ url('/theme/ecommerce/page-2') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe> -->
-
-<!-- <iframe 
-    id="iframe-page-3"
-    src="{{ url('/theme/ecommerce/page-3') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe> -->
-<!-- Travel Pages-->
- 
-<!-- <iframe 
-    id="iframe-page-travel-1"
-    src="{{ url('/theme/travel/page-1') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe>
-<iframe 
-    id="iframe-page-travel-2"
-    src="{{ url('/theme/travel/page-2') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe>
-<iframe 
-    id="iframe-page-travel-3"
-    src="{{ url('/theme/travel/page-3') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe> -->
-
-
-
-<!-- Media -->
- 
-<!-- <iframe 
-    id="iframe-page-media-2"
-    src="{{ url('/theme/media/page-2') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe> -->
-
-
-<!-- SEO -->
-<!-- <iframe 
-    id="iframe-page-seo-1"
-    src="{{ url('/theme/seo/page-1') }}" 
-    width="100%" 
-    style="border:0; overflow:hidden;"
-    scrolling="no">
-</iframe> -->
-
-
-
-
-<script>
-window.addEventListener('message', function(event) {
-    if (!event.data || event.data.type !== 'setHeight') return;
-
-    const iframeId = event.data.iframeId;
-    const height   = event.data.height;
-
-    const iframe = document.getElementById(iframeId);
-    if (iframe) {
-        iframe.style.height = height + 'px';
-    }
-});
-</script>
-
+        const iframe = document.getElementById(iframeId);
+        if (iframe) {
+            iframe.style.height = height + 'px';
+        }
+    });
+    </script>
 
     <!-- Les autres sections restent identiques -->
     <!-- Section Éditeur de Site Web -->
@@ -492,48 +1172,85 @@ window.addEventListener('message', function(event) {
         </div>
     </section>
 
-@include('chat.index')
-    <!-- Footer -->
-    <footer class="main-footer" style="background-color: var(--dark-color); color: white; padding: 80px 0 30px;">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <img src="https://www.goexploria.com/images/logo-go-exploria-qc-3.png" alt="GoExploria" style="height: 70px; margin-bottom: 25px;">
-                    <p>Votre guide touristique et d'affaires pour le Québec. Découvrez, explorez, vivez le Québec comme jamais auparavant.</p>
-                    <div class="social-icons mt-3">
-                        <a href="https://www.youtube.com/user/explorezlemonde/videos?view_as=subscriber" target="_blank">
-                            <i class="fab fa-youtube fa-2x"></i>
-                        </a>
+    @include('chat.index')
+
+    <!-- Footer avec photo de fond filtrée -->
+    <footer class="footer-with-bg">
+        <!-- Image de fond filtrée -->
+        <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+             alt="Québec paysage" 
+             class="footer-bg-image">
+        
+        <div class="footer-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 mb-4">
+                        <img src="https://www.goexploria.com/images/logo-go-exploria-qc-3.png" alt="GoExploria" class="footer-logo">
+                        <p>Votre guide touristique et d'affaires pour le Québec. Découvrez, explorez, vivez le Québec comme jamais auparavant.</p>
+                        <div class="footer-social-icons">
+                            <a href="https://www.youtube.com/user/explorezlemonde/videos?view_as=subscriber" target="_blank" aria-label="YouTube">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                            <a href="#" aria-label="Facebook">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            <a href="#" aria-label="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" aria-label="LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" aria-label="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 mb-4">
+                        <h4 class="footer-section-title">Liens rapides</h4>
+                        <ul class="footer-links">
+                            <li><a href="#home">Accueil Digital</a></li>
+                            <li><a href="#editor">Éditeur de site</a></li>
+                            <li><a href="#features">Fonctionnalités</a></li>
+                            <li><a href="#clients">Nos clients</a></li>
+                            <li><a href="#regions" class="mega-menu-trigger">Régions Canada</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-lg-4 mb-4">
+                        <h4 class="footer-section-title">Contactez-nous</h4>
+                        <ul class="footer-links footer-contact">
+                            <li>
+                                <i class="fas fa-phone"></i>
+                                <div>
+                                    <a href="tel:4185257748">(418) 525-7748</a>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <a href="mailto:infogoexploria@gmail.com">infogoexploria@gmail.com</a>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>Québec, Canada</div>
+                            </li>
+                            <li>
+                                <i class="fas fa-clock"></i>
+                                <div>Lun-Ven: 9h-17h</div>
+                            </li>
+                        </ul>
+                        <div class="footer-buttons">
+                            <a href="https://www.goexploria.com/company/68620/go-exploria-plans-de-relance" class="btn btn-outline-light me-2 mb-2">Plans de relance</a>
+                            <a href="https://www.goexploria.com/company/68619/go-exploria-services-web" class="btn btn-accent mb-2" style="background-color: var(--accent-color); border-color: var(--accent-color); color: white;">Services web</a>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="col-lg-4 mb-4">
-                    <h4 style="color: white; font-size: 1.3rem; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid var(--accent-color); display: inline-block;">Liens rapides</h4>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="margin-bottom: 12px;"><a href="#home" style="color: #ddd; text-decoration: none; transition: var(--transition);">Accueil Digital</a></li>
-                        <li style="margin-bottom: 12px;"><a href="#editor" style="color: #ddd; text-decoration: none; transition: var(--transition);">Éditeur de site</a></li>
-                        <li style="margin-bottom: 12px;"><a href="#features" style="color: #ddd; text-decoration: none; transition: var(--transition);">Fonctionnalités</a></li>
-                        <li style="margin-bottom: 12px;"><a href="#clients" style="color: #ddd; text-decoration: none; transition: var(--transition);">Nos clients</a></li>
-                        <li style="margin-bottom: 12px;"><a href="#regions" class="mega-menu-trigger" style="color: #ddd; text-decoration: none; transition: var(--transition);">Régions Canada</a></li>
-                    </ul>
+                <div class="footer-copyright">
+                    <p>&copy; <span id="currentYear"></span> GoExploria. Tous droits réservés. | <a href="#" style="color: white;">Politique de confidentialité</a> | <a href="#" style="color: white;">Conditions d'utilisation</a></p>
                 </div>
-                
-                <div class="col-lg-4 mb-4">
-                    <h4 style="color: white; font-size: 1.3rem; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid var(--accent-color); display: inline-block;">Contactez-nous</h4>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="margin-bottom: 12px;"><i class="fas fa-phone me-2"></i> (418) 525-7748</li>
-                        <li style="margin-bottom: 12px;"><i class="fas fa-envelope me-2"></i> infogoexploria@gmail.com</li>
-                        <li style="margin-bottom: 12px;"><i class="fas fa-map-marker-alt me-2"></i> Québec, Canada</li>
-                    </ul>
-                    <div class="mt-4">
-                        <a href="https://www.goexploria.com/company/68620/go-exploria-plans-de-relance" class="btn btn-outline-light me-2">Plans de relance</a>
-                        <a href="https://www.goexploria.com/company/68619/go-exploria-services-web" class="btn btn-accent" style="background-color: var(--accent-color); border-color: var(--accent-color); color: white;">Services web</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="copyright" style="text-align: center; padding-top: 40px; margin-top: 40px; border-top: 1px solid #444; color: #aaa; font-size: 0.95rem;">
-                <p>&copy; 2023 GoExploria. Tous droits réservés. | <a href="#" style="color: white;">Politique de confidentialité</a> | <a href="#" style="color: white;">Conditions d'utilisation</a></p>
             </div>
         </div>
     </footer>
@@ -541,146 +1258,217 @@ window.addEventListener('message', function(event) {
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-let resizing = false;
+    let resizing = false;
 
-window.addEventListener('message', function(event) {
-    if (!event.data || event.data.type !== 'setHeight') return;
+    window.addEventListener('message', function(event) {
+        if (!event.data || event.data.type !== 'setHeight') return;
 
-    resizing = true;
+        resizing = true;
 
-    const iframe = document.getElementById(event.data.iframeId);
-    if (iframe) {
-        iframe.style.height = event.data.height + 'px';
-    }
-
-    // Restore scroll to top if first load
-    if (resizing) {
-        window.scrollTo({ top: 0, behavior: 'instant' });
-        resizing = false;
-    }
-});
-</script>
-
-   
-<style>
-    /* 5 colonnes - 20% chacune */
-    .col-md-2-4 {
-        width: 20%;
-        float: left;
-        padding: 0 8px;
-        box-sizing: border-box;
-    }
-    
-    /* Clearfix */
-    #regionsDropdownContainer::after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-    
-    /* Style minimaliste des cartes */
-    .region-card-simple {
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-        margin-bottom: 12px;
-        border: 1px solid #e9ecef;
-        transition: all 0.2s ease;
-        cursor: pointer;
-    }
-    
-    .region-card-simple:hover {
-        border-color: #007bff;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    
-    .region-img-wrapper {
-        height: 80px;
-        overflow: hidden;
-        position: relative;
-    }
-    
-    .region-img-simple {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-    
-    .region-name {
-        padding: 10px 8px;
-        text-align: center;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #333;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        background: #f8f9fa;
-        border-top: 1px solid #e9ecef;
-    }
-    
-    .region-item-simple {
-        text-decoration: none;
-        display: block;
-        animation: fadeIn 0.3s ease forwards;
-        opacity: 0;
-    }
-    
-    /* Animation */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Responsive */
-    @media (max-width: 1200px) {
-        .col-md-2-4 { width: 25%; padding: 0 6px; }
-    }
-    
-    @media (max-width: 992px) {
-        .col-md-2-4 { width: 33.333%; padding: 0 5px; }
-        .region-img-wrapper { height: 70px; }
-    }
-    
-    @media (max-width: 768px) {
-        .col-md-2-4 { width: 50%; padding: 0 4px; }
-        .region-img-wrapper { height: 65px; }
-        .region-name { font-size: 0.8rem; padding: 8px 4px; }
-    }
-    
-    @media (max-width: 480px) {
-        .col-md-2-4 { width: 100%; padding: 0; }
-        .region-card-simple { 
-            display: flex; 
-            align-items: center;
-            margin-bottom: 8px;
+        const iframe = document.getElementById(event.data.iframeId);
+        if (iframe) {
+            iframe.style.height = event.data.height + 'px';
         }
-        .region-img-wrapper { 
-            width: 100px; 
-            height: 60px; 
-            flex-shrink: 0; 
+
+        // Restore scroll to top if first load
+        if (resizing) {
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            resizing = false;
         }
-        .region-name { 
-            flex-grow: 1; 
-            border: none; 
-            text-align: left; 
-            padding-left: 12px;
+    });
+
+    // Script pour le bouton retour en haut
+    document.addEventListener('DOMContentLoaded', function() {
+        const backToTopButton = document.getElementById('backToTop');
+        
+        // Afficher/masquer le bouton selon le défilement
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+        
+        // Retour en haut avec animation fluide
+        backToTopButton.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Script pour fermer le méga-menu en cliquant ailleurs
+        document.addEventListener('click', function(event) {
+            const megaMenu = document.getElementById('webServicesMegaMenu');
+            const servicesBtn = document.getElementById('servicesWebBtn');
+            
+            if (megaMenu && servicesBtn) {
+                if (!megaMenu.contains(event.target) && !servicesBtn.contains(event.target)) {
+                    megaMenu.style.opacity = '0';
+                    megaMenu.style.visibility = 'hidden';
+                    megaMenu.style.transform = 'translateX(-50%) translateY(15px)';
+                }
+            }
+        });
+        
+        // Ouvrir/fermer le méga-menu au clic sur mobile
+        const servicesBtn = document.getElementById('servicesWebBtn');
+        const megaMenu = document.getElementById('webServicesMegaMenu');
+        
+        if (servicesBtn && megaMenu) {
+            servicesBtn.addEventListener('click', function(event) {
+                if (window.innerWidth < 992) {
+                    event.preventDefault();
+                    const isVisible = megaMenu.style.opacity === '1';
+                    
+                    if (isVisible) {
+                        megaMenu.style.opacity = '0';
+                        megaMenu.style.visibility = 'hidden';
+                        megaMenu.style.transform = 'translateX(-50%) translateY(15px)';
+                    } else {
+                        megaMenu.style.opacity = '1';
+                        megaMenu.style.visibility = 'visible';
+                        megaMenu.style.transform = 'translateX(-50%) translateY(0)';
+                    }
+                }
+            });
+        }
+        
+        // Mettre à jour l'année dynamiquement
+        function updateCurrentYear() {
+            const currentYear = new Date().getFullYear();
+            document.getElementById('currentYear').textContent = currentYear;
+        }
+        
+        // Appeler la fonction au chargement
+        updateCurrentYear();
+        
+        // Dupliquer le contenu de la bande défilante pour un défilement fluide
+        const marqueeContent = document.querySelector('.travel-marquee').innerHTML;
+        document.querySelector('.travel-marquee').innerHTML += marqueeContent + marqueeContent;
+    });
+    </script>
+
+    <style>
+        /* 5 colonnes - 20% chacune */
+        .col-md-2-4 {
+            width: 20%;
+            float: left;
+            padding: 0 8px;
+            box-sizing: border-box;
+        }
+        
+        /* Clearfix */
+        #regionsDropdownContainer::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        /* Style minimaliste des cartes */
+        .region-card-simple {
             background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+            cursor: pointer;
         }
-    }
-    
-    /* Loader */
-    .spinner-border-sm {
-        width: 1rem;
-        height: 1rem;
-    }
-    
-    /* Dropdown centré */
-    .dropdown-menu.full-width {
-        min-width: 100vw !important;
-    }
-</style>
+        
+        .region-card-simple:hover {
+            border-color: #007bff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .region-img-wrapper {
+            height: 80px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .region-img-simple {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .region-name {
+            padding: 10px 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .region-item-simple {
+            text-decoration: none;
+            display: block;
+            animation: fadeIn 0.3s ease forwards;
+            opacity: 0;
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .col-md-2-4 { width: 25%; padding: 0 6px; }
+        }
+        
+        @media (max-width: 992px) {
+            .col-md-2-4 { width: 33.333%; padding: 0 5px; }
+            .region-img-wrapper { height: 70px; }
+        }
+        
+        @media (max-width: 768px) {
+            .col-md-2-4 { width: 50%; padding: 0 4px; }
+            .region-img-wrapper { height: 65px; }
+            .region-name { font-size: 0.8rem; padding: 8px 4px; }
+        }
+        
+        @media (max-width: 480px) {
+            .col-md-2-4 { width: 100%; padding: 0; }
+            .region-card-simple { 
+                display: flex; 
+                align-items: center;
+                margin-bottom: 8px;
+            }
+            .region-img-wrapper { 
+                width: 100px; 
+                height: 60px; 
+                flex-shrink: 0; 
+            }
+            .region-name { 
+                flex-grow: 1; 
+                border: none; 
+                text-align: left; 
+                padding-left: 12px;
+                background: white;
+            }
+        }
+        
+        /* Loader */
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+        
+        /* Dropdown centré */
+        .dropdown-menu.full-width {
+            min-width: 100vw !important;
+        }
+    </style>
 
 </body>
 </html>

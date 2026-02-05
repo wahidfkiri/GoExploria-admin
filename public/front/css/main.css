@@ -1520,6 +1520,8 @@ section.dark,
 }
 #mainMenu {
   padding: 0;
+  width: 80%;
+  float: right;
 }
 #mainMenu > .container {
   padding: 0 !important;
