@@ -1521,7 +1521,7 @@ section.dark,
 #mainMenu {
   padding: 0;
   width: 80%;
-  float: right;
+  float: right !important;
 }
 #mainMenu > .container {
   padding: 0 !important;
