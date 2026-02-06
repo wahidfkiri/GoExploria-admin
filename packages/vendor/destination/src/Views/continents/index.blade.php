@@ -1070,7 +1070,7 @@ const toggleContinentStatus = (continentId, currentStatus) => {
         
         // Send AJAX request with FormData
         $.ajax({
-            url: `/continents/${continentId}`,
+            url: `/admin/continents/${continentId}`,
             type: 'POST',
             data: formData,
             processData: false,

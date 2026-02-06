@@ -70,8 +70,9 @@ Route::prefix('destinations')->group(function () {
     
 });
 
+Route::prefix('admin')->group(function () {
 Route::resource('continents', ContinentController::class);
-
+});
 // Routes supplémentaires
 Route::get('continents/{continent}/countries', [ContinentController::class, 'getCountries'])
     ->name('continents.countries');
