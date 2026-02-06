@@ -12,64 +12,71 @@ use Illuminate\Support\Facades\DB;
 class MenuController extends Controller
 {
     // Display menus
-    public function index(Request $request)
-    {
-        $query = Menu::with(['parent', 'children', 'category', 'activity'])
-            ->orderBy('parent_id', 'asc')
-            ->orderBy('order', 'asc');
-        
-        // Search
-        if ($request->has('search') && $request->search) {
-            $query->where(function($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('slug', 'like', '%' . $request->search . '%');
-            });
+    // In your MenuController or wherever you're loading menus
+public function index(Request $request)
+{
+    $query = Menu::with(['children' => function ($query) {
+        $query->with(['children'])->orderBy('order');
+    }])->orderBy('order');
+    
+    // Apply filters
+    // if ($request->has('search') && $request->search) {
+    //     $query->where('title', 'like', '%' . $request->search . '%')
+    //           ->orWhere('slug', 'like', '%' . $request->search . '%');
+    // }
+    
+    if ($request->has('type') && $request->type) {
+        $query->where('type', $request->type);
+    }
+    
+    if ($request->has('status') && $request->status) {
+        $query->where('is_active', $request->status === 'active');
+    }
+    
+    // For parent filter
+    if ($request->has('parent')) {
+        if ($request->parent === 'root') {
+            $query->whereNull('parent_id');
+        } elseif ($request->parent === 'child') {
+            $query->whereNotNull('parent_id');
         }
-        
-        // Filters
-        if ($request->has('type') && $request->type) {
-            $query->where('type', $request->type);
-        }
-        
-        if ($request->has('parent') && $request->parent) {
-            switch ($request->parent) {
-                case 'root':
-                    $query->whereNull('parent_id');
-                    break;
-                case 'child':
-                    $query->whereNotNull('parent_id')
-                          ->whereDoesntHave('children');
-                    break;
-                case 'subchild':
-                    $query->whereHas('parent', function($q) {
-                        $q->whereNotNull('parent_id');
-                    });
-                    break;
-            }
-        }
-        
-        if ($request->has('status') && $request->status) {
-            $query->where('is_active', $request->status === 'active' ? 1 : 0);
-        }
-        
-        // Pagination
-        $menus = $query->paginate(10);
-        
-        if ($request->ajax()) {
+    }
+    
+    // Sort
+    $sortBy = $request->get('sort_by', 'order');
+    $sortDirection = $request->get('sort_direction', 'asc');
+    $query->orderBy($sortBy, $sortDirection);
+    
+    if ($request->ajax()) {
+        // For tree view, get all menus with children
+        if ($request->has('tree')) {
+            $menus = $query->whereNull('parent_id')->get();
+            
             return response()->json([
                 'success' => true,
-                'data' => $menus->items(),
-                'current_page' => $menus->currentPage(),
-                'last_page' => $menus->lastPage(),
-                'per_page' => $menus->perPage(),
-                'total' => $menus->total(),
-                'prev_page_url' => $menus->previousPageUrl(),
-                'next_page_url' => $menus->nextPageUrl(),
+                'data' => $menus,
+                'tree' => true
             ]);
         }
         
-        return view('administration::menus.index');
+        // For table view, paginate
+        $menus = $query->get();
+        
+        return response()->json([
+            'success' => true,
+            'data' => $menus,
+            'current_page' => 1,
+            'last_page' => 1,
+            'total' => $menus->count(),
+            'per_page' => $menus->count()
+        ]);
     }
+    
+    // For non-ajax requests
+    $menus = $query->paginate(10);
+    
+    return view('administration::menus.index', compact('menus'));
+}
     
     // Get statistics
     public function statistics()

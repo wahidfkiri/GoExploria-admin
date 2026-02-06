@@ -10,6 +10,72 @@ use Illuminate\Support\Str;
 
 class MenuPageController extends Controller
 {
+
+// In your MenuController or wherever you're loading menus
+public function index(Request $request)
+{
+    $query = Menu::with(['children' => function ($query) {
+        $query->with(['children'])->orderBy('order');
+    }])->orderBy('order');
+    
+    // Apply filters
+    if ($request->has('search') && $request->search) {
+        $query->where('title', 'like', '%' . $request->search . '%')
+              ->orWhere('slug', 'like', '%' . $request->search . '%');
+    }
+    
+    if ($request->has('type') && $request->type) {
+        $query->where('type', $request->type);
+    }
+    
+    if ($request->has('status') && $request->status) {
+        $query->where('is_active', $request->status === 'active');
+    }
+    
+    // For parent filter
+    if ($request->has('parent')) {
+        if ($request->parent === 'root') {
+            $query->whereNull('parent_id');
+        } elseif ($request->parent === 'child') {
+            $query->whereNotNull('parent_id');
+        }
+    }
+    
+    // Sort
+    $sortBy = $request->get('sort_by', 'order');
+    $sortDirection = $request->get('sort_direction', 'asc');
+    $query->orderBy($sortBy, $sortDirection);
+    
+    if ($request->ajax()) {
+        // For tree view, get all menus with children
+        if ($request->has('tree')) {
+            $menus = $query->whereNull('parent_id')->get();
+            
+            return response()->json([
+                'success' => true,
+                'data' => $menus,
+                'tree' => true
+            ]);
+        }
+        
+        // For table view, paginate
+        $menus = $query->paginate(10);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $menus->items(),
+            'current_page' => $menus->currentPage(),
+            'last_page' => $menus->lastPage(),
+            'total' => $menus->total(),
+            'per_page' => $menus->perPage()
+        ]);
+    }
+    
+    // For non-ajax requests
+    $menus = $query->paginate(10);
+    
+    return view('administration::menus.index', compact('menus'));
+}
     // Éditer la page d'un menu
     public function edit(Menu $menu)
     {

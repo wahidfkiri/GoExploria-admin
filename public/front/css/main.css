@@ -16818,3 +16818,125 @@ body[data-bg-image] {
     width: 100%;
 }
 
+/* Dans votre fichier CSS principal */
+#mainMenu .dropdown-menu.mega-menu {
+    width: 1200px;
+    max-width: 100%;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+.continent-section {
+    padding: 15px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.continent-section:hover {
+    border-color: #e0e0e0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.continent-thumb {
+    flex-shrink: 0;
+    border: 2px solid #fff;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.continent-section:hover .continent-thumb {
+    transform: scale(1.05);
+}
+
+.continent-title a {
+    color: #2c3e50;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+
+.continent-title a:hover {
+    color: #3498db;
+}
+
+.country-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.country-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.country-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.country-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.country-item a {
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    color: #555;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.country-item a:hover {
+    background-color: #3498db;
+    color: white !important;
+    transform: translateX(5px);
+}
+
+.country-item a:hover img {
+    filter: brightness(0) invert(1);
+}
+
+.country-item .fa-chevron-right {
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+.country-item a:hover .fa-chevron-right {
+    opacity: 1;
+    transform: translateX(3px);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    #mainMenu .dropdown-menu.mega-menu {
+        width: 1000px;
+    }
+}
+
+@media (max-width: 992px) {
+    #mainMenu .dropdown-menu.mega-menu {
+        width: 800px;
+    }
+    
+    .country-list .row .col-6 {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    #mainMenu .dropdown-menu.mega-menu {
+        width: 100%;
+        position: static !important;
+        transform: none !important;
+    }
+}
