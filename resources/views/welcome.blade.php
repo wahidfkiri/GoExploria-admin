@@ -948,13 +948,13 @@ document.addEventListener('DOMContentLoaded', function() {
         scrolling="no">
     </iframe>
 
-    <iframe 
+    <!-- <iframe 
         id="iframe-page-meteo-1"
         src="{{ url('/theme/meteo/page-1') }}" 
         width="100%" 
         style="border:0; overflow:hidden;"
         scrolling="no">
-    </iframe>
+    </iframe> -->
 
     <!-- Business -->
     <iframe 
