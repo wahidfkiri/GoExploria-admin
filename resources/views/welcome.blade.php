@@ -817,7 +817,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                     
-                    <a href="#nos-plans" class="btn btn-sm btn-secondary">
+                    <a href="#info-forfaits-go-exploria" class="btn btn-sm btn-secondary">
                         <i class="fas fa-list me-1"></i>Nos plans
                     </a>
                 </div>
