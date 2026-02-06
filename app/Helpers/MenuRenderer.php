@@ -1,5 +1,4 @@
 <?php
-// app/Helpers/MenuRenderer.php
 namespace App\Helpers;
 
 use App\Models\Menu;
@@ -57,7 +56,33 @@ class MenuRenderer
             $html .= '</li>';
         }
         
+        // Ajouter le formulaire de recherche à la fin du menu
+        $html .= self::renderSearchForm();
+        
         $html .= '</ul></nav></div></div><!--end: Main Navigation-->';
+        
+        return $html;
+    }
+
+    private static function renderSearchForm()
+    {
+        $html = '<li class="search-menu-item">';
+        $html .= '<div class="search-form-container">';
+        $html .= '<form action="' . route('search') . '" method="GET" class="d-flex search-form">';
+        $html .= '<div class="input-group">';
+        $html .= '<input type="text" 
+                        name="q" 
+                        class="form-control search-input" 
+                        placeholder="Rechercher..." 
+                        aria-label="Rechercher" 
+                        aria-describedby="search-button">';
+        $html .= '<button class="btn btn-outline-primary search-button" type="submit" id="search-button">';
+        $html .= '<i class="fas fa-search"></i>';
+        $html .= '</button>';
+        $html .= '</div>';
+        $html .= '</form>';
+        $html .= '</div>';
+        $html .= '</li>';
         
         return $html;
     }
@@ -109,7 +134,7 @@ class MenuRenderer
                         $html .= '<div class="col-6">';
                         foreach ($chunk as $country) {
                             $html .= '<li class="country-item mb-1">';
-                            $html .= '<a href="' . route('countries.show', $country->slug ?? $country->id) . '" 
+                            $html .= '<a href="' . url('countrie/' . ($country->code ?? $country->id)) . '" 
                                       class="text-muted small d-flex align-items-center">';
                             
                             // Optionnel : ajouter un drapeau du pays si disponible
@@ -153,32 +178,32 @@ class MenuRenderer
     }
 
     private static function organizeContinentsIntoColumns($continents, $maxColumns = 4)
-{
-    $total = $continents->count();
-    
-    // Vérifier si la collection est vide
-    if ($total === 0) {
-        return []; // Retourner un tableau vide si aucun continent
-    }
-    
-    // S'assurer qu'on a au moins 1 colonne
-    $columns = min($maxColumns, max(1, ceil($total / 3)));
-    
-    // Éviter la division par zéro
-    $itemsPerColumn = ceil($total / $columns);
-    $organized = [];
-    
-    $index = 0;
-    for ($col = 0; $col < $columns; $col++) {
-        $organized[$col] = [];
-        for ($i = 0; $i < $itemsPerColumn && $index < $total; $i++) {
-            $organized[$col][] = $continents[$index];
-            $index++;
+    {
+        $total = $continents->count();
+        
+        // Vérifier si la collection est vide
+        if ($total === 0) {
+            return []; // Retourner un tableau vide si aucun continent
         }
+        
+        // S'assurer qu'on a au moins 1 colonne
+        $columns = min($maxColumns, max(1, ceil($total / 3)));
+        
+        // Éviter la division par zéro
+        $itemsPerColumn = ceil($total / $columns);
+        $organized = [];
+        
+        $index = 0;
+        for ($col = 0; $col < $columns; $col++) {
+            $organized[$col] = [];
+            for ($i = 0; $i < $itemsPerColumn && $index < $total; $i++) {
+                $organized[$col][] = $continents[$index];
+                $index++;
+            }
+        }
+        
+        return $organized;
     }
-    
-    return $organized;
-}
 
     private static function renderMegaMenu($children)
     {
@@ -244,10 +269,6 @@ class MenuRenderer
             }
             
             $html .= $child->final_title;
-            
-            // if ($hasGrandChildren) {
-            //     $html .= '<i class="fas fa-chevron-right float-end"></i>';
-            // }
             
             $html .= '</a>';
             

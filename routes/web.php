@@ -185,3 +185,6 @@ Route::get('/health', function () {
 
 
 
+Route::get('/search', function () {
+    return null;
+})->name('search');
