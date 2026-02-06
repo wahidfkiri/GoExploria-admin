@@ -74,11 +74,11 @@ Route::prefix('admin')->group(function () {
 Route::resource('continents', ContinentController::class);
 });
 // Routes supplémentaires
-Route::get('continents/{continent}/countries', [ContinentController::class, 'getCountries'])
+Route::get('admin/continents/{continent}/countries', [ContinentController::class, 'getCountries'])
     ->name('continents.countries');
-Route::get('continents/statistics/data', [ContinentController::class, 'getStatistics'])
+Route::get('/admin/continents/statistics/data', [ContinentController::class, 'getStatistics'])
     ->name('continents.statistics');
-Route::put('continents/{continent}/toggle-status', [ContinentController::class, 'toggleStatus'])
+Route::put('/admin/continents/{continent}/toggle-status', [ContinentController::class, 'toggleStatus'])
     ->name('continents.toggle-status');
 // Routes pour les localisations
 Route::get('/secteurs', [DestinationController::class, 'getSecteurs'])->name('secteurs.index');

@@ -670,7 +670,7 @@ const toggleContinentStatus = (continentId, currentStatus) => {
     
     // Send AJAX request
     $.ajax({
-        url: `/continents/${continentId}/toggle-status`,
+        url: `/admin/continents/${continentId}/toggle-status`,
         type: 'PUT',
         data: {
             _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
