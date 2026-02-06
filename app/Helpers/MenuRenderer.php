@@ -153,24 +153,32 @@ class MenuRenderer
     }
 
     private static function organizeContinentsIntoColumns($continents, $maxColumns = 4)
-    {
-        $total = $continents->count();
-        $columns = min($maxColumns, ceil($total / 3));
-        
-        $itemsPerColumn = ceil($total / $columns);
-        $organized = [];
-        
-        $index = 0;
-        for ($col = 0; $col < $columns; $col++) {
-            $organized[$col] = [];
-            for ($i = 0; $i < $itemsPerColumn && $index < $total; $i++) {
-                $organized[$col][] = $continents[$index];
-                $index++;
-            }
-        }
-        
-        return $organized;
+{
+    $total = $continents->count();
+    
+    // Vérifier si la collection est vide
+    if ($total === 0) {
+        return []; // Retourner un tableau vide si aucun continent
     }
+    
+    // S'assurer qu'on a au moins 1 colonne
+    $columns = min($maxColumns, max(1, ceil($total / 3)));
+    
+    // Éviter la division par zéro
+    $itemsPerColumn = ceil($total / $columns);
+    $organized = [];
+    
+    $index = 0;
+    for ($col = 0; $col < $columns; $col++) {
+        $organized[$col] = [];
+        for ($i = 0; $i < $itemsPerColumn && $index < $total; $i++) {
+            $organized[$col][] = $continents[$index];
+            $index++;
+        }
+    }
+    
+    return $organized;
+}
 
     private static function renderMegaMenu($children)
     {
