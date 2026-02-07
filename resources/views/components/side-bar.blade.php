@@ -95,6 +95,10 @@
           <a href="{{ route('villes.index') }}" class="submenu-item">
             <span class="submenu-text">Villes</span>
           </a>
+        <li>
+          <a href="{{ route('villes.index') }}" class="submenu-item">
+            <span class="submenu-text">Quartiers</span>
+          </a>
         </li>
       </ul>
     </li>
@@ -170,7 +174,7 @@
         <span class="menu-icon">
           <i class="fas fa-cog"></i>
         </span>
-        <span class="menu-text">Paramètres</span>
+        <span class="menu-text">Paramètres Page Accueil</span>
         <span class="menu-arrow">
           <i class="fas fa-chevron-down"></i>
         </span>
