@@ -4,7 +4,7 @@
     <div class="header-inner">
         <div class="container">
             <!--Logo avec texte qui change-->
-            <div id="logo" style="position: relative; display: inline-block;">
+            <div id="logo" style="position: relative; display: inline-block;top:30px;">
                 <a href="{{url('/')}}">
                     <img src="logo.png" class="d-block">
                 </a>
