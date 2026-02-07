@@ -873,7 +873,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 
     @include('components.front.navbar')
-    @include('components.front.slideshow')
+    @include('components.front.slideshows')
 
     <!-- Video Slider Full Width -->
     <section class="video-slider-section d-none">
