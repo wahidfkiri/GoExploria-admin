@@ -16944,7 +16944,7 @@ body[data-bg-image] {
 /* Styles pour le formulaire de recherche dans le menu */
 #mainMenu .search-menu-item {
     margin-left: auto; /* Pousse le formulaire à droite */
-    padding: 15px 165px;
+    padding: 15px 30px;
 }
 
 #mainMenu .search-form-container {
