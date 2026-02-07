@@ -94,7 +94,7 @@ class MenuRenderer
         $html .= '<i class="fas fa-globe-americas me-1"></i>';
         $html .= 'Destinations</a>';
         
-        $html .= '<ul class="dropdown-menu" style="width:900px;">';
+        $html .= '<ul class="dropdown-menu" style="width:600px;">';
         $html .= '<li class="mega-menu-content"><div class="row">';
         
         // Organiser les continents en colonnes
@@ -107,9 +107,9 @@ class MenuRenderer
                 $html .= '<div class="continent-section mb-4">';
                 
                 // En-tête du continent avec image
-                $html .= '<div class="continent-header d-flex align-items-center mb-2">';
+                $html .= '<div class="continent-header align-items-center mb-2">';
                 if ($continent->image) {
-                    $html .= '<div class="continent-thumb me-3" style="width: 150px; height: 150px; border-radius: 8px; overflow: hidden;">';
+                    $html .= '<div class="continent-thumb me-3" style="width: 100%; height: 150px; border-radius: 8px; overflow: hidden;">';
                     $html .= '<img src="' . asset('storage/continents/' . $continent->image) . '" 
                             alt="' . $continent->name . '" 
                             style="width: 100%; height: 100%; object-fit: cover;">';
