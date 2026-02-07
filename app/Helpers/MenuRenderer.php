@@ -94,7 +94,7 @@ class MenuRenderer
         $html .= '<i class="fas fa-globe-americas me-1"></i>';
         $html .= 'Destinations</a>';
         
-        $html .= '<ul class="dropdown-menu" style="width:400px;">';
+        $html .= '<ul class="dropdown-menu" style="width:900px;">';
         $html .= '<li class="mega-menu-content"><div class="row">';
         
         // Organiser les continents en colonnes
