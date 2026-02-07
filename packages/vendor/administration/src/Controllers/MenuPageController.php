@@ -67,7 +67,8 @@ public function index(Request $request)
             'current_page' => 1,
             'last_page' => 1,
             'total' => count($menus),
-            'per_page' => count($menus)
+            'per_page' => count($menus),
+            'message' => 'Menus loaded successfully'
         ]);
     }
     
