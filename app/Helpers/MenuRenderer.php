@@ -109,7 +109,7 @@ class MenuRenderer
                 // En-tête du continent avec image
                 $html .= '<div class="continent-header d-flex align-items-center mb-2">';
                 if ($continent->image) {
-                    $html .= '<div class="continent-thumb me-3" style="width: 50px; height: 50px; border-radius: 8px; overflow: hidden;">';
+                    $html .= '<div class="continent-thumb me-3" style="width: 150px; height: 150px; border-radius: 8px; overflow: hidden;">';
                     $html .= '<img src="' . asset('storage/continents/' . $continent->image) . '" 
                             alt="' . $continent->name . '" 
                             style="width: 100%; height: 100%; object-fit: cover;">';
