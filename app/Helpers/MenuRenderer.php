@@ -116,7 +116,7 @@ class MenuRenderer
                     $html .= '</div>';
                 }
                 $html .= '<h6 class="continent-title mb-0">';
-                $html .= '<a href="' . route('continents.show', $continent->slug ?? $continent->id) . '" 
+                $html .= '<a href="#" 
                           class="text-dark fw-bold">';
                 $html .= $continent->name . '</a>';
                 $html .= '</h6>';
@@ -134,7 +134,7 @@ class MenuRenderer
                         $html .= '<div class="col-6">';
                         foreach ($chunk as $country) {
                             $html .= '<li class="country-item mb-1">';
-                            $html .= '<a href="' . url('countrie/' . ($country->code ?? $country->id)) . '" 
+                            $html .= '<a href="#" 
                                       class="text-muted small d-flex align-items-center">';
                             
                             // Optionnel : ajouter un drapeau du pays si disponible
