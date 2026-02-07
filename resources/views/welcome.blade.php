@@ -439,7 +439,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .travel-marquee {
             display: inline-block;
             white-space: nowrap;
-            animation: marquee 45s linear infinite;
+            animation: marquee 65s linear infinite;
             padding-left: 100%;
         }
         
@@ -492,7 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             .travel-marquee {
-                animation: marquee 45s linear infinite;
+                animation: marquee 65s linear infinite;
             }
         }
         
@@ -563,7 +563,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             .travel-marquee {
-                animation: marquee 35s linear infinite;
+                animation: marquee 55s linear infinite;
             }
             
             .travel-message {
@@ -582,7 +582,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             .travel-marquee {
-                animation: marquee 30s linear infinite;
+                animation: marquee 50s linear infinite;
             }
             
             .travel-text::after {
@@ -1172,89 +1172,12 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
     </section>
-
+    
+    @include('components.front.call-action')
     @include('chat.index')
 
     <!-- Footer avec photo de fond filtrée -->
-    <footer class="footer-with-bg">
-        <!-- Image de fond filtrée -->
-        <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-             alt="Québec paysage" 
-             class="footer-bg-image">
-        
-        <div class="footer-content">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-4 mb-4">
-                        <img src="https://www.goexploria.com/images/logo-go-exploria-qc-3.png" alt="GoExploria" class="footer-logo">
-                        <p>Votre guide touristique et d'affaires pour le Québec. Découvrez, explorez, vivez le Québec comme jamais auparavant.</p>
-                        <div class="footer-social-icons">
-                            <a href="https://www.youtube.com/user/explorezlemonde/videos?view_as=subscriber" target="_blank" aria-label="YouTube">
-                                <i class="fab fa-youtube"></i>
-                            </a>
-                            <a href="#" aria-label="Facebook">
-                                <i class="fab fa-facebook"></i>
-                            </a>
-                            <a href="#" aria-label="Instagram">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" aria-label="LinkedIn">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                            <a href="#" aria-label="Twitter">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="col-lg-4 mb-4">
-                        <h4 class="footer-section-title">Liens rapides</h4>
-                        <ul class="footer-links">
-                            <li><a href="#home">Accueil Digital</a></li>
-                            <li><a href="#editor">Éditeur de site</a></li>
-                            <li><a href="#features">Fonctionnalités</a></li>
-                            <li><a href="#clients">Nos clients</a></li>
-                            <li><a href="#regions" class="mega-menu-trigger">Régions Canada</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="col-lg-4 mb-4">
-                        <h4 class="footer-section-title">Contactez-nous</h4>
-                        <ul class="footer-links footer-contact">
-                            <li>
-                                <i class="fas fa-phone"></i>
-                                <div>
-                                    <a href="tel:4185257748">(418) 525-7748</a>
-                                </div>
-                            </li>
-                            <li>
-                                <i class="fas fa-envelope"></i>
-                                <div>
-                                    <a href="mailto:infogoexploria@gmail.com">infogoexploria@gmail.com</a>
-                                </div>
-                            </li>
-                            <li>
-                                <i class="fas fa-map-marker-alt"></i>
-                                <div>Québec, Canada</div>
-                            </li>
-                            <li>
-                                <i class="fas fa-clock"></i>
-                                <div>Lun-Ven: 9h-17h</div>
-                            </li>
-                        </ul>
-                        <div class="footer-buttons">
-                            <a href="https://www.goexploria.com/company/68620/go-exploria-plans-de-relance" class="btn btn-outline-light me-2 mb-2">Plans de relance</a>
-                            <a href="https://www.goexploria.com/company/68619/go-exploria-services-web" class="btn btn-accent mb-2" style="background-color: var(--accent-color); border-color: var(--accent-color); color: white;">Services web</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="footer-copyright">
-                    <p>&copy; <span id="currentYear"></span> GoExploria. Tous droits réservés. | <a href="#" style="color: white;">Politique de confidentialité</a> | <a href="#" style="color: white;">Conditions d'utilisation</a></p>
-                </div>
-            </div>
-        </div>
-    </footer>
+   @include('components.front.footer')
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -1319,7 +1242,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (servicesBtn && megaMenu) {
             servicesBtn.addEventListener('click', function(event) {
-                if (window.innerWidth < 992) {
+               // if (window.innerWidth < 992) {
                     event.preventDefault();
                     const isVisible = megaMenu.style.opacity === '1';
                     
@@ -1332,7 +1255,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         megaMenu.style.visibility = 'visible';
                         megaMenu.style.transform = 'translateX(-50%) translateY(0)';
                     }
-                }
+               // }
             });
         }
         

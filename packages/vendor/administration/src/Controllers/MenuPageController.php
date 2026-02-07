@@ -78,24 +78,132 @@ public function index(Request $request)
 }
     // Éditer la page d'un menu
     public function edit(Menu $menu)
-    {
-        // Vérifier si le menu a une page
-        if (!$menu->has_page) {
-            $menu->update([
-                'has_page' => true,
-                'page_slug' => $menu->slug . '-' . Str::random(6),
-                'page_meta' => [
-                    'title' => $menu->title,
-                    'description' => 'Page de ' . $menu->title,
-                    'keywords' => $menu->title . ', tourisme, voyage'
-                ]
-            ]);
-            
-            // Créer une révision initiale
-            $menu->createRevision('Création initiale de la page');
+{
+    // Vérifier si le menu a une page
+    if (!$menu->has_page) {
+        // Version ultra-minimaliste (2 sections basiques)
+        $pageContent = '<body>
+    <!-- Section 1: Titre et Introduction -->
+    <section id="section-1" class="simple-section">
+        <div class="section-container">
+            <h1>' . e($menu->title) . '</h1>
+            <p>Cette page a été créée automatiquement. Utilisez l\'éditeur pour la personnaliser.</p>
+        </div>
+    </section>
+
+    <!-- Section 2: Contenu Principal -->
+    <section id="section-2" class="simple-section">
+        <div class="section-container">
+            <div class="content-block">
+                <h2>Votre Contenu Ici</h2>
+                <p>Ajoutez du texte, des images ou d\'autres éléments dans cette section.</p>
+                <p>Vous pouvez supprimer, modifier ou ajouter de nouvelles sections selon vos besoins.</p>
+            </div>
+        </div>
+    </section>
+</body>';
+
+        $pageStyles = '
+        /* Styles très basiques pour GrapeJS */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
         }
-        return view('administration::menus.page-editor', compact('menu'));
+        
+        .simple-section {
+            padding: 60px 20px;
+        }
+        
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        #section-1 {
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        #section-1 h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        
+        #section-1 p {
+            font-size: 1.2em;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        #section-2 {
+            background: white;
+        }
+        
+        .content-block {
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        #section-2 h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        #section-2 p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .simple-section {
+                padding: 40px 15px;
+            }
+            
+            #section-1 h1 {
+                font-size: 2em;
+            }
+            
+            .content-block {
+                padding: 25px;
+            }
+        }
+        
+        /* GrapeJS compatibility */
+        [data-gjs-type="section"] {
+            min-height: 100px;
+        }
+        
+        [data-gjs-type="text"] {
+            min-height: 20px;
+        }
+    ';
+
+        $menu->update([
+            'has_page' => true,
+            'page_slug' => $menu->slug . '-' . Str::random(6),
+            'page_content' => $pageContent,
+            'page_styles' => $pageStyles,
+            'page_meta' => [
+                'title' => $menu->title,
+                'description' => 'Page de ' . $menu->title,
+                'keywords' => $menu->title . ', tourisme, voyage'
+            ]
+        ]);
+        
+        $menu->createRevision('Création initiale de la page');
     }
+    
+    return redirect('menus/template/edit/' . $menu->id);
+}
     
     // Mettre à jour le contenu de la page
     public function update(Request $request, Menu $menu)
