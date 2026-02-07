@@ -59,15 +59,15 @@ public function index(Request $request)
         }
         
         // For table view, paginate
-        $menus = $query->paginate(10);
+        $menus = $query->get();
         
         return response()->json([
             'success' => true,
-            'data' => $menus->items(),
-            'current_page' => $menus->currentPage(),
-            'last_page' => $menus->lastPage(),
-            'total' => $menus->total(),
-            'per_page' => $menus->perPage()
+            'data' => $menus,
+            'current_page' => 1,
+            'last_page' => 1,
+            'total' => count($menus),
+            'per_page' => count($menus)
         ]);
     }
     
