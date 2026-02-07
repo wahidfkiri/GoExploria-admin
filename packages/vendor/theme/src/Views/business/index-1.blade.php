@@ -1102,7 +1102,7 @@
                     address: '1000 Bd René-Lévesque E, Québec, QC G1R 5T8',
                     phone: '+1-418-644-4000',
                     website: 'https://www.quebeccongres.com',
-                    video_id: 'g6C3qNRmXz0', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'qc'
                 },
                 {
@@ -1115,7 +1115,7 @@
                     address: '1 Rue des Carrières, Québec, QC G1R 4P5',
                     phone: '+1-418-692-3861',
                     website: 'https://www.fairmont.com/frontenac-quebec/',
-                    video_id: '7Pq-S557XQU', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'qc'
                 },
                 {
@@ -1127,7 +1127,7 @@
                     category: 'tourism',
                     address: '333 Rue de la Commune O, Montréal, QC H2Y 2E2',
                     website: 'https://www.quaysoftheoldport.com',
-                    video_id: 'Bk4KkC3Efdw', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'qc'
                 },
                 {
@@ -1140,7 +1140,7 @@
                     address: '1380 Rue Sherbrooke O, Montréal, QC H3G 1J5',
                     phone: '+1-514-285-2000',
                     website: 'https://www.mbam.qc.ca',
-                    video_id: 'dQw4w9WgXcQ', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'qc'
                 },
                 {
@@ -1153,7 +1153,7 @@
                     address: '900 Place Jean-Paul-Riopelle, Montréal, QC H2Z 2B2',
                     phone: '+1-514-499-2084',
                     website: 'https://restaurant-toque.com',
-                    video_id: '9bZkp7q19f0', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'qc'
                 },
                 {
@@ -1165,7 +1165,7 @@
                     category: 'tourism',
                     address: '1000 Chemin des Voyageurs, Mont-Tremblant, QC J8E 1T1',
                     website: 'https://www.tremblant.ca',
-                    video_id: 'C0DPdy98e4c', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'qc'
                 },
 
@@ -1180,7 +1180,7 @@
                     address: '290 Bremner Blvd, Toronto, ON M5V 3L9',
                     phone: '+1-416-868-6937',
                     website: 'https://www.cntower.ca',
-                    video_id: 'g6C3qNRmXz0', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'on'
                 },
                 {
@@ -1192,7 +1192,7 @@
                     category: 'tourism',
                     address: '6650 Niagara Pkwy, Niagara Falls, ON L2E 6T2',
                     website: 'https://www.niagaraparks.com',
-                    video_id: '7Pq-S557XQU', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'on'
                 },
                 {
@@ -1205,7 +1205,7 @@
                     address: '1 Blue Jays Way, Toronto, ON M5V 1J1',
                     phone: '+1-416-341-1000',
                     website: 'https://www.rogerscentre.com',
-                    video_id: 'Bk4KkC3Efdw', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'on'
                 },
                 {
@@ -1217,7 +1217,7 @@
                     category: 'university',
                     address: '27 King\'s College Cir, Toronto, ON M5S 1A1',
                     website: 'https://www.utoronto.ca',
-                    video_id: 'dQw4w9WgXcQ', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'on'
                 },
                 {
@@ -1230,7 +1230,7 @@
                     address: '1 Austin Terrace, Toronto, ON M5R 1X8',
                     phone: '+1-416-923-1171',
                     website: 'https://casaloma.ca',
-                    video_id: '9bZkp7q19f0', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'on'
                 },
                 {
@@ -1242,7 +1242,7 @@
                     category: 'shopping',
                     address: '55 Mill St, Toronto, ON M5A 3C4',
                     website: 'https://www.thedistillerydistrict.com',
-                    video_id: 'C0DPdy98e4c', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'on'
                 },
 
@@ -1256,7 +1256,7 @@
                     category: 'park',
                     address: 'Stanley Park, Vancouver, BC V6G 1Z4',
                     website: 'https://vancouver.ca/parks-recreation-culture/stanley-park.aspx',
-                    video_id: 'g6C3qNRmXz0', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'bc'
                 },
                 {
@@ -1269,7 +1269,7 @@
                     address: '107 Tunnel Mountain Dr, Banff, AB T1L 1H5',
                     phone: '+1-403-762-6100',
                     website: 'https://www.banffcentre.ca',
-                    video_id: '7Pq-S557XQU', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'ab'
                 },
                 {
@@ -1281,7 +1281,7 @@
                     category: 'tourism',
                     address: '4545 Blackcomb Way, Whistler, BC V8E 0X9',
                     website: 'https://www.whistlerblackcomb.com',
-                    video_id: 'Bk4KkC3Efdw', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'bc'
                 },
                 {
@@ -1294,7 +1294,7 @@
                     address: '721 Government St, Victoria, BC V8W 1W5',
                     phone: '+1-250-384-8111',
                     website: 'https://www.fairmont.com/empress-victoria/',
-                    video_id: 'dQw4w9WgXcQ', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'bc'
                 },
                 {
@@ -1307,7 +1307,7 @@
                     address: '1055 Canada Pl, Vancouver, BC V6C 0C3',
                     phone: '+1-604-689-8232',
                     website: 'https://www.vancouverconventioncentre.com',
-                    video_id: '9bZkp7q19f0', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'bc'
                 },
                 {
@@ -1319,7 +1319,7 @@
                     category: 'beach',
                     address: '1499 Arbutus St, Vancouver, BC V6J 5N2',
                     website: 'https://vancouver.ca/parks-recreation-culture/kitsilano-beach.aspx',
-                    video_id: 'C0DPdy98e4c', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'bc'
                 },
 
@@ -1334,7 +1334,7 @@
                     address: '8882 170 St NW, Edmonton, AB T5T 4J2',
                     phone: '+1-780-444-5200',
                     website: 'https://www.wem.ca',
-                    video_id: 'g6C3qNRmXz0', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'ab'
                 },
                 {
@@ -1346,7 +1346,7 @@
                     category: 'event',
                     address: '1410 Olympic Way SE, Calgary, AB T2G 2W1',
                     website: 'https://www.calgarystampede.com',
-                    video_id: '7Pq-S557XQU', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'ab'
                 },
                 {
@@ -1358,7 +1358,7 @@
                     category: 'lake',
                     address: 'Lake Louise, AB T0L 1E0',
                     website: 'https://www.banfflakelouise.com',
-                    video_id: 'Bk4KkC3Efdw', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'ab'
                 },
                 {
@@ -1370,7 +1370,7 @@
                     category: 'park',
                     address: 'Jasper, AB T0E 1E0',
                     website: 'https://www.pc.gc.ca/en/pn-np/ab/jasper',
-                    video_id: 'dQw4w9WgXcQ', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'ab'
                 },
 
@@ -1384,7 +1384,7 @@
                     category: 'tourism',
                     address: '131 Discovery Rd, Hopewell Cape, NB E4H 4Z5',
                     website: 'https://www.thehopewellrocks.ca',
-                    video_id: 'g6C3qNRmXz0', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'nb'
                 },
                 {
@@ -1396,7 +1396,7 @@
                     category: 'tourism',
                     address: 'Peggy\'s Cove, NS B3Z 3S3',
                     website: 'https://www.peggyscoveregion.com',
-                    video_id: '7Pq-S557XQU', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'ns'
                 },
                 {
@@ -1408,7 +1408,7 @@
                     category: 'museum',
                     address: 'L\'Anse aux Meadows, NL A0K 2X0',
                     website: 'https://www.pc.gc.ca/en/lhn-nhs/nl/meadows',
-                    video_id: 'Bk4KkC3Efdw', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube
                     province: 'nl'
                 },
                 {
@@ -1420,7 +1420,7 @@
                     category: 'museum',
                     address: '8619 Cavendish Rd, Cavendish, PE C0A 1M0',
                     website: 'https://www.pc.gc.ca/en/lhn-nhs/pe/greengables',
-                    video_id: 'dQw4w9WgXcQ', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'pe'
                 },
                 {
@@ -1432,7 +1432,7 @@
                     category: 'museum',
                     address: 'RR #4, Penner Road, Saskatoon, SK S7K 3J7',
                     website: 'https://wanuskewin.com',
-                    video_id: '9bZkp7q19f0', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'sk'
                 },
                 {
@@ -1444,7 +1444,7 @@
                     category: 'tourism',
                     address: 'Churchill, MB R0B 0E0',
                     website: 'https://churchill.ca',
-                    video_id: 'C0DPdy98e4c', // Vidéo YouTube exemple
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'mb'
                 },
                 {
@@ -1456,7 +1456,7 @@
                     category: 'park',
                     address: 'Kluane National Park and Reserve, YT Y0B 1H0',
                     website: 'https://www.pc.gc.ca/en/pn-np/yt/kluane',
-                    video_id: 'g6C3qNRmXz0', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'yt'
                 },
                 {
@@ -1468,7 +1468,7 @@
                     category: 'park',
                     address: 'Nahanni National Park Reserve, NT X0E 0N0',
                     website: 'https://www.pc.gc.ca/en/pn-np/nt/nahanni',
-                    video_id: '7Pq-S557XQU', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'nt'
                 },
                 {
@@ -1480,7 +1480,7 @@
                     category: 'park',
                     address: 'Auyuittuq National Park, NU X0A 0H0',
                     website: 'https://www.pc.gc.ca/en/pn-np/nu/auyuittuq',
-                    video_id: 'Bk4KkC3Efdw', // Vidéo YouTube
+                    video_id: 'jHfjAfPxWSs', // Vidéo YouTube exemple
                     province: 'nu'
                 }
             ];
