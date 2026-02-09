@@ -813,6 +813,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </div>
                                 </a>
                             </div>
+
+                            
+                        <div>
+                            <a href="">Voir nos plans d'affichages</a>
+                        </div>
                             
                         </div>
                     </div>
@@ -929,7 +934,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </section>
 
     <!-- resources/views/main.blade.php -->
-    @foreach(\App\Models\Menu::where('is_active', true)->where('has_page', true)->get() as $page)
+    @foreach(\App\Models\Menu::where('is_active', true)->where('has_page', true)->orderBy('order','ASC')->get() as $page)
     <iframe 
         id="{{$page->slug}}"
         src="{{ url('/theme/'.$page->slug.'/preview') }}" 
