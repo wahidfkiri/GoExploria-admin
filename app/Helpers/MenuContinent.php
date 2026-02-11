@@ -87,7 +87,7 @@ class MenuContinent
         return $html;
     }
 
-    private static function renderDestinationMegaMenu($continents)
+    private static function renderDestinationMegaMenu($countries)
     {
         $html = '<li class="dropdown">';
         $html .= '<a href="#">';
@@ -97,59 +97,59 @@ class MenuContinent
         $html .= '<ul class="dropdown-menu" style="width:900px;">';
         $html .= '<li class="mega-menu-content"><div class="row">';
         
-        // Organiser les continents en colonnes
-        $columns = self::organizeContinentsIntoColumns($continents, 4);
+        // Organiser les countries en colonnes
+        $columns = self::organizeContinentsIntoColumns($countries, 4);
         
         foreach ($columns as $columnIndex => $columnContinents) {
             $html .= '<div class="col-lg-' . (12 / count($columns)) . '">';
             
-            foreach ($columnContinents as $continent) {
+            foreach ($columnContinents as $countrie) {
                 $html .= '<div class="continent-section mb-4">';
                 
                 // En-tête du continent avec image
                 $html .= '<div class="continent-header align-items-center mb-2">';
-                if ($continent->image) {
+                if ($countrie->image) {
                     $html .= '<div class="continent-thumb me-3" style="width: 100%; height: 150px; border-radius: 8px; overflow: hidden;">';
-                    $html .= '<img src="' . asset('storage/continents/' . $continent->image) . '" 
-                            alt="' . $continent->name . '" 
+                    $html .= '<img src="' . asset('storage/' . $countrie->image) . '" 
+                            alt="' . $countrie->name . '" 
                             style="width: 100%; height: 100%; object-fit: cover;">';
                     $html .= '</div>';
                 }
                 $html .= '<h6 class="continent-title mb-0">';
                 $html .= '<a href="#" 
                           class="text-dark fw-bold">';
-                $html .= $continent->name . '</a>';
+                $html .= $countrie->name . '</a>';
                 $html .= '</h6>';
                 $html .= '</div>';
                 
                 // Liste des pays du continent
-                if ($continent->countries && $continent->countries->isNotEmpty()) {
+                if ($countrie->provinces && $countrie->provinces->isNotEmpty()) {
                     $html .= '<ul class="list-unstyled country-list">';
                     
                     // Organiser les pays en 2 colonnes si nécessaire
-                    $countryChunks = $continent->countries->chunk(ceil($continent->countries->count() / 2));
+                    $countryChunks = $countrie->provinces->chunk(ceil($countrie->provinces->count() / 2));
                     
                     $html .= '<div class="row">';
                     foreach ($countryChunks as $chunk) {
                         $html .= '<div class="col-6">';
-                        foreach ($chunk as $country) {
+                        foreach ($chunk as $province) {
                             $html .= '<li class="country-item mb-1">';
                             $html .= '<a href="#" 
                                       class="text-muted small d-flex align-items-center">';
                             
                             // Optionnel : ajouter un drapeau du pays si disponible
-                            if ($country->flag_emoji) {
-                                $html .= '<span class="me-1">' . $country->flag_emoji . '</span>';
-                            } elseif ($country->image) {
-                                $html .= '<img src="' . asset('/storage/' . $country->image) . '" 
-                                        alt="' . $country->name . '"
+                            if ($province->flag_emoji) {
+                                $html .= '<span class="me-1">' . $province->flag_emoji . '</span>';
+                            } elseif ($province->image) {
+                                $html .= '<img src="' . asset('/storage/' . $province->image) . '" 
+                                        alt="' . $province->name . '"
                                         style="width: 16px; height: 12px; object-fit: cover; margin-right: 4px;">';
                             }
                             
-                            $html .= '<span class="">' . $country->name . '</span>';
+                            $html .= '<span class="">' . $province->name . '</span>';
                             
                             // Indicateur si le pays a des sous-pages
-                            if ($country->cities_count > 0 || $country->regions_count > 0) {
+                            if ($province->cities_count > 0 || $province->regions_count > 0) {
                                 $html .= '<small class="ms-1 text-primary"><i class="fas fa-chevron-right"></i></small>';
                             }
                             
