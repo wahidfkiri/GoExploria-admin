@@ -934,7 +934,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </section>
 
     <!-- resources/views/main.blade.php -->
-    @foreach(\App\Models\Menu::where('is_active', true)->where('has_page', true)->where('parent_id', '!=', null)->orderBy('order','ASC')->get() as $page)
+    @foreach(\App\Models\Menu::where('is_active', true)->where('has_page', true)->whereNotNull('parent_id')->orderBy('order','ASC')->get() as $page)
     <iframe 
         id="{{$page->slug}}"
         src="{{ url('/theme/'.$page->slug.'/preview') }}" 
