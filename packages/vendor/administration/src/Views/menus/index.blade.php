@@ -1208,6 +1208,13 @@ const createPage = (menuId) => {
                             <div class="tree-item-icon">
                                 <i class="${menu.icon || 'fas fa-link'}"></i>
                             </div>
+                            
+                    <a href="{{ url('menus/template/view') }}/${menu.id}" target="_blank" class="btn btn-sm btn-outline-primary" title="Voir la page">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="{{ url('menus/template/edit') }}/${menu.id}" class="btn btn-sm btn-outline-success" title="Éditer la page" target="_blank">
+                        <i class="fas fa-edit"></i>
+                    </a>
                             <div class="tree-item-info">
                                 <div class="tree-item-title">${menu.title}</div>
                                 <div class="tree-item-details">
