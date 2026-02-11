@@ -1328,7 +1328,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 
-    @include('geo-map::components.front.navbar')
+    @include('geo-map::continents.components.front.navbar')
     @include('components.front.slideshows')
 
     <!-- Video Slider Full Width -->

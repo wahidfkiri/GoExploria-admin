@@ -61,7 +61,7 @@
             <div id="mainMenu-trigger">
                 <a class="lines-button x"><span class="lines"></span></a>
             </div>
-
+            <!--end: Navigation Responsive Trigger-->
             {{-- resources/views/components/mega-menu.blade.php --}}
 @php
     use App\Helpers\MenuRenderer;
