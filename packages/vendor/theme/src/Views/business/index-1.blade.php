@@ -2302,7 +2302,7 @@ function sendHeight() {
     const height = document.body.scrollHeight;
     window.parent.postMessage({
         type: 'setHeight',
-        iframeId: 'info-business-go-exploria',
+        iframeId: 'affichez-vos-entreprises',
         height: height
     }, '*');
 }

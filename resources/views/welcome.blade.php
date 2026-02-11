@@ -963,7 +963,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <!-- Business -->
     <iframe 
-        id="info-business-go-exploria"
+        id="affichez-vos-entreprises"
         src="{{ url('/theme/business/page-1') }}" 
         width="100%" 
         style="border:0; overflow:hidden;"
