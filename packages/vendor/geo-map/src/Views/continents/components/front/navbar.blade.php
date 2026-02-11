@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="front/css/main.css">
+<link rel="stylesheet" href="{{ asset('front/css/main.css') }}">
 
 <header id="header" data-transparent="true" data-fullwidth="true" class="dark submenu-light">
     <div class="header-inner">
