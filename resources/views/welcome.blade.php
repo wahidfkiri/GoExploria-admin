@@ -935,23 +935,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <!-- resources/views/main.blade.php -->
     @php
-    // Get the specific page with id = 22
-    $specificPage = \App\Models\Menu::where('id', 22)
-        ->where('is_active', true)
-        ->where('has_page', true)
-        ->whereNull('parent_id')
-        ->first();
+    // IDs à afficher en premier
+    $priorityIds = [22, 23];
     
-    // Get all other pages except id = 22
+    // Récupérer les pages prioritaires dans l'ordre spécifié
+    $priorityPages = collect();
+    foreach ($priorityIds as $id) {
+        $page = \App\Models\Menu::where('id', $id)
+            ->where('is_active', true)
+            ->where('has_page', true)
+            ->whereNull('parent_id')
+            ->first();
+        if ($page) {
+            $priorityPages->push($page);
+        }
+    }
+    
+    // Récupérer toutes les autres pages
     $otherPages = \App\Models\Menu::where('is_active', true)
         ->where('has_page', true)
         ->whereNull('parent_id')
-        ->where('id', '!=', 22)
+        ->whereNotIn('id', $priorityIds)
         ->orderBy('order','ASC')
         ->get();
     
-    // Merge them with the specific page first
-    $pages = $specificPage ? $otherPages->prepend($specificPage) : $otherPages;
+    // Fusionner les collections
+    $pages = $priorityPages->concat($otherPages);
 @endphp
 
 @foreach($pages as $page)
