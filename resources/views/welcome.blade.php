@@ -829,14 +829,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Colonne 1 : E-commerce & Retail -->
                             <div class="mega-menu-column">
                                 <h4><i class="fas fa-shopping-cart me-2"></i>E-commerce</h4>
-                                <a href="#" class="mega-menu-link">
+                                <a href="{{url('template/preview/84')}}" class="mega-menu-link">
                                     <img src="https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?w=400&h=400&fit=crop" class="mega-menu-image" alt="Boutique Mode">
                                     <div class="mega-menu-text">
                                         <h6>Boutique Mode</h6>
                                         <p>Site e-commerce pour vêtements</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="{{url('template/preview/87')}}" class="mega-menu-link">
                                     <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=400&fit=crop" class="mega-menu-image" alt="Marketplace">
                                     <div class="mega-menu-text">
                                         <h6>Marketplace</h6>
@@ -862,14 +862,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Colonne 2 : Services & Professionnels -->
                             <div class="mega-menu-column">
                                 <h4><i class="fas fa-briefcase me-2"></i>Services</h4>
-                                <a href="#" class="mega-menu-link">
+                                <a href="{{url('template/preview/91')}}" class="mega-menu-link">
                                     <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=400&fit=crop" class="mega-menu-image" alt="Cabinet Conseil">
                                     <div class="mega-menu-text">
                                         <h6>Cabinet Conseil</h6>
                                         <p>Site vitrine professionnel</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="{{url('template/preview/92')}}" class="mega-menu-link">
                                     <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop" class="mega-menu-image" alt="Services Médicaux">
                                     <div class="mega-menu-text">
                                         <h6>Services Médicaux</h6>
@@ -895,7 +895,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Colonne 3 : Travel & Hospitality -->
                             <div class="mega-menu-column">
                                 <h4><i class="fas fa-plane me-2"></i>Travel</h4>
-                                <a href="#" class="mega-menu-link">
+                                <a href="{{url('template/preview/89')}}" class="mega-menu-link">
                                     <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=400&fit=crop" class="mega-menu-image" alt="Agence Voyage">
                                     <div class="mega-menu-text">
                                         <h6>Agence de Voyage</h6>
@@ -928,7 +928,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Colonne 4 : Entreprise & B2B -->
                             <div class="mega-menu-column">
                                 <h4><i class="fas fa-building me-2"></i>Entreprise</h4>
-                                <a href="#" class="mega-menu-link">
+                                <a href="{{url('template/preview/90')}}" class="mega-menu-link">
                                     <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=400&fit=crop" class="mega-menu-image" alt="Site Corporate">
                                     <div class="mega-menu-text">
                                         <h6>Site Corporate</h6>
