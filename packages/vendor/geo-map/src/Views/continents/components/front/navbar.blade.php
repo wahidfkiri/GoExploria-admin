@@ -6,7 +6,7 @@
             <!--Logo avec texte qui change-->
             <div id="logo" style="position: relative; display: inline-block;top:30px;">
                 <a href="{{url('/')}}">
-                    <img src="logo.png" class="d-block">
+                    <img src="{{ asset('logo.png') }}" class="d-block">
                 </a>
                 <!-- Texte qui change en bas à droite -->
                 <div id="logo-text" style="
