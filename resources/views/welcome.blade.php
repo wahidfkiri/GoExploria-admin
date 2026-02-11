@@ -829,28 +829,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Colonne 1 : E-commerce & Retail -->
                             <div class="mega-menu-column">
                                 <h4><i class="fas fa-shopping-cart me-2"></i>E-commerce</h4>
-                                <a href="{{url('template/preview/84')}}" class="mega-menu-link">
+                                <a href="{{url('template/preview/84')}}" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?w=400&h=400&fit=crop" class="mega-menu-image" alt="Boutique Mode">
                                     <div class="mega-menu-text">
                                         <h6>Boutique Mode</h6>
                                         <p>Site e-commerce pour vêtements</p>
                                     </div>
                                 </a>
-                                <a href="{{url('template/preview/87')}}" class="mega-menu-link">
+                                <a href="{{url('template/preview/87')}}" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=400&fit=crop" class="mega-menu-image" alt="Marketplace">
                                     <div class="mega-menu-text">
                                         <h6>Marketplace</h6>
                                         <p>Place de marché multi-vendeurs</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&h=400&fit=crop" class="mega-menu-image" alt="DropShipping">
                                     <div class="mega-menu-text">
                                         <h6>Dropshipping</h6>
                                         <p>Solution clé en main</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400&h=400&fit=crop" class="mega-menu-image" alt="Cosmétiques">
                                     <div class="mega-menu-text">
                                         <h6>Cosmétiques & Beauté</h6>
@@ -862,28 +862,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Colonne 2 : Services & Professionnels -->
                             <div class="mega-menu-column">
                                 <h4><i class="fas fa-briefcase me-2"></i>Services</h4>
-                                <a href="{{url('template/preview/91')}}" class="mega-menu-link">
+                                <a href="{{url('template/preview/91')}}" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=400&fit=crop" class="mega-menu-image" alt="Cabinet Conseil">
                                     <div class="mega-menu-text">
                                         <h6>Cabinet Conseil</h6>
                                         <p>Site vitrine professionnel</p>
                                     </div>
                                 </a>
-                                <a href="{{url('template/preview/92')}}" class="mega-menu-link">
+                                <a href="{{url('template/preview/92')}}" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop" class="mega-menu-image" alt="Services Médicaux">
                                     <div class="mega-menu-text">
                                         <h6>Services Médicaux</h6>
                                         <p>Prise de rendez-vous en ligne</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=400&fit=crop" class="mega-menu-image" alt="Services Juridiques">
                                     <div class="mega-menu-text">
                                         <h6>Services Juridiques</h6>
                                         <p>Avocats & notaires</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1560250056-07ba64664864?w=400&h=400&fit=crop" class="mega-menu-image" alt="Coaching">
                                     <div class="mega-menu-text">
                                         <h6>Coaching & Formation</h6>
@@ -895,28 +895,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Colonne 3 : Travel & Hospitality -->
                             <div class="mega-menu-column">
                                 <h4><i class="fas fa-plane me-2"></i>Travel</h4>
-                                <a href="{{url('template/preview/89')}}" class="mega-menu-link">
+                                <a href="{{url('template/preview/89')}}" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=400&fit=crop" class="mega-menu-image" alt="Agence Voyage">
                                     <div class="mega-menu-text">
                                         <h6>Agence de Voyage</h6>
                                         <p>Forfaits et réservations</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=400&fit=crop" class="mega-menu-image" alt="Hôtellerie">
                                     <div class="mega-menu-text">
                                         <h6>Hôtellerie</h6>
                                         <p>Réservation en ligne</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&h=400&fit=crop" class="mega-menu-image" alt="Location Saisonnière">
                                     <div class="mega-menu-text">
                                         <h6>Location Saisonnière</h6>
                                         <p>Gestion des disponibilités</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=400&fit=crop" class="mega-menu-image" alt="Tours Opérateur">
                                     <div class="mega-menu-text">
                                         <h6>Tours Opérateur</h6>
@@ -928,28 +928,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Colonne 4 : Entreprise & B2B -->
                             <div class="mega-menu-column">
                                 <h4><i class="fas fa-building me-2"></i>Entreprise</h4>
-                                <a href="{{url('template/preview/90')}}" class="mega-menu-link">
+                                <a href="{{url('template/preview/90')}}" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=400&fit=crop" class="mega-menu-image" alt="Site Corporate">
                                     <div class="mega-menu-text">
                                         <h6>Site Corporate</h6>
                                         <p>Présence institutionnelle</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=400&fit=crop" class="mega-menu-image" alt="Startup">
                                     <div class="mega-menu-text">
                                         <h6>Startup</h6>
                                         <p>Landing page moderne</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=400&fit=crop" class="mega-menu-image" alt="Industrie">
                                     <div class="mega-menu-text">
                                         <h6>Industrie & Manufacture</h6>
                                         <p>Catalogue produits</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&h=400&fit=crop" class="mega-menu-image" alt="Immobilier">
                                     <div class="mega-menu-text">
                                         <h6>Immobilier</h6>
@@ -961,28 +961,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Colonne 5 : Food & Alimentation -->
                             <div class="mega-menu-column">
                                 <h4><i class="fas fa-utensils me-2"></i>Food & Alimentation</h4>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop" class="mega-menu-image" alt="Restaurant">
                                     <div class="mega-menu-text">
                                         <h6>Restaurant</h6>
                                         <p>Menu et réservations</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1556740714-a8395b3bf30f?w=400&h=400&fit=crop" class="mega-menu-image" alt="Boulangerie">
                                     <div class="mega-menu-text">
                                         <h6>Boulangerie/Pâtisserie</h6>
                                         <p>Commande en ligne</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=400&h=400&fit=crop" class="mega-menu-image" alt="Traiteur">
                                     <div class="mega-menu-text">
                                         <h6>Traiteur</h6>
                                         <p>Événements et buffets</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1564758582685-88e7885d10c7?w=400&h=400&fit=crop" class="mega-menu-image" alt="Épicerie Fine">
                                     <div class="mega-menu-text">
                                         <h6>Épicerie Fine</h6>
@@ -994,28 +994,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Colonne 6 : Beauté & Bien-être -->
                             <div class="mega-menu-column">
                                 <h4><i class="fas fa-heart me-2"></i>Beauté & Bien-être</h4>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=400&h=400&fit=crop" class="mega-menu-image" alt="Salon Coiffure">
                                     <div class="mega-menu-text">
                                         <h6>Salon de Coiffure</h6>
                                         <p>Prise de rendez-vous</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=400&h=400&fit=crop" class="mega-menu-image" alt="Spa">
                                     <div class="mega-menu-text">
                                         <h6>Spa & Bien-être</h6>
                                         <p>Forfaits relaxants</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=400&fit=crop" class="mega-menu-image" alt="Salle Sport">
                                     <div class="mega-menu-text">
                                         <h6>Salle de Sport</h6>
                                         <p>Abonnements en ligne</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1598514982418-0f7051c30492?w=400&h=400&fit=crop" class="mega-menu-image" alt="Yoga">
                                     <div class="mega-menu-text">
                                         <h6>Yoga & Méditation</h6>
@@ -1027,28 +1027,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Colonne 7 : Éducation & Formation -->
                             <div class="mega-menu-column">
                                 <h4><i class="fas fa-graduation-cap me-2"></i>Éducation & Formation</h4>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&h=400&fit=crop" class="mega-menu-image" alt="École">
                                     <div class="mega-menu-text">
                                         <h6>École & Université</h6>
                                         <p>Portail éducatif</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=400&fit=crop" class="mega-menu-image" alt="Formation Pro">
                                     <div class="mega-menu-text">
                                         <h6>Formation Professionnelle</h6>
                                         <p>LMS et certifications</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=400&fit=crop" class="mega-menu-image" alt="Cours en Ligne">
                                     <div class="mega-menu-text">
                                         <h6>Cours en Ligne</h6>
                                         <p>Plateforme e-learning</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=400&fit=crop" class="mega-menu-image" alt="Tutorat">
                                     <div class="mega-menu-text">
                                         <h6>Tutorat</h6>
@@ -1060,28 +1060,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Colonne 8 : Créatifs & Artisans -->
                             <div class="mega-menu-column">
                                 <h4><i class="fas fa-paint-brush me-2"></i>Créatifs & Artisans</h4>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=400&h=400&fit=crop" class="mega-menu-image" alt="Portfolio">
                                     <div class="mega-menu-text">
                                         <h6>Portfolio Artiste</h6>
                                         <p>Galerie d'oeuvres</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=400&fit=crop" class="mega-menu-image" alt="Photographe">
                                     <div class="mega-menu-text">
                                         <h6>Photographe</h6>
                                         <p>Shooting et portfolios</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&h=400&fit=crop" class="mega-menu-image" alt="Designer">
                                     <div class="mega-menu-text">
                                         <h6>Designer</h6>
                                         <p>Showcase créatif</p>
                                     </div>
                                 </a>
-                                <a href="#" class="mega-menu-link">
+                                <a href="#" class="mega-menu-link" target="_blank">
                                     <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop" class="mega-menu-image" alt="Artisanat">
                                     <div class="mega-menu-text">
                                         <h6>Artisanat</h6>
