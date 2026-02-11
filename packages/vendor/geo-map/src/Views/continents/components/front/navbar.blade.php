@@ -67,7 +67,7 @@
     use App\Helpers\MenuRenderer;
 @endphp
 
-{!! MenuRenderer::renderMenu() !!}
+{!! MenuRenderer::renderMenuContinent($continentId) !!}
             <!--end: Navigation Responsive Trigger g-->
 
 <div id="mainMenu" style="display:none;">

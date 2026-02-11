@@ -116,7 +116,7 @@ class MenuRenderer
                     $html .= '</div>';
                 }
                 $html .= '<h6 class="continent-title mb-0">';
-                $html .= '<a href="#" 
+                $html .= '<a href="continent/' . $continent->id . '" 
                           class="text-dark fw-bold">';
                 $html .= $continent->name . '</a>';
                 $html .= '</h6>';

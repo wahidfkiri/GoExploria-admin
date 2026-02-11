@@ -22,8 +22,8 @@ Route::prefix('api')->group(function () {
     Route::get('/regions/{provinceId}', [GeoDataController::class, 'getRegions']);
 });
 
-Route::get('continent/{code}', function () {
-    return view('geo-map::continents.index');
+Route::get('continent/{continentId}', function ($continentId) {
+    return view('geo-map::continents.page', compact('continentId'));
 });
 Route::get('/countrie/{countrieCode}', [GeoMapController::class, 'getCountrie'])
     ->name('geomap.countrie');
