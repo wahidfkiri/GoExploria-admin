@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .mega-menu {
             position: absolute;
             top: 100%;
-            left: 50%;
+            left: 75%;
             transform: translateX(-50%) translateY(15px);
             width: 1100px;
             background: white;
@@ -200,8 +200,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         .mega-menu-image {
-            width: 40px;
-            height: 40px;
+            width: 100px;
+            height: 100px;
             border-radius: 8px;
             margin-right: 15px;
             object-fit: cover;
