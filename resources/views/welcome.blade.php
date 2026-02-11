@@ -934,7 +934,27 @@ document.addEventListener('DOMContentLoaded', function() {
     </section>
 
     <!-- resources/views/main.blade.php -->
-    @foreach(\App\Models\Menu::where('is_active', true)->where('has_page', true)->whereNull('parent_id')->orderBy('order','ASC')->get() as $page)
+    @php
+    // Get the specific page with id = 20
+    $specificPage = \App\Models\Menu::where('id', 20)
+        ->where('is_active', true)
+        ->where('has_page', true)
+        ->whereNull('parent_id')
+        ->first();
+    
+    // Get all other pages except id = 20
+    $otherPages = \App\Models\Menu::where('is_active', true)
+        ->where('has_page', true)
+        ->whereNull('parent_id')
+        ->where('id', '!=', 20)
+        ->orderBy('order','ASC')
+        ->get();
+    
+    // Merge them with the specific page first
+    $pages = $specificPage ? $otherPages->prepend($specificPage) : $otherPages;
+@endphp
+
+@foreach($pages as $page)
     <iframe 
         id="{{$page->slug}}"
         src="{{ url('/theme/'.$page->slug.'/preview') }}" 
@@ -942,7 +962,7 @@ document.addEventListener('DOMContentLoaded', function() {
         style="border:0; overflow:hidden;"
         scrolling="no">
     </iframe>
-    @endforeach
+@endforeach
     
     <!-- Marketing -->
     <iframe 
