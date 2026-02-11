@@ -22,7 +22,7 @@ Route::prefix('api')->group(function () {
     Route::get('/regions/{provinceId}', [GeoDataController::class, 'getRegions']);
 });
 
-Route::get('continent/{continentId}', function ($continentId) {
+Route::get('continent/page/{continentId}', function ($continentId) {
     return view('geo-map::continents.page', compact('continentId'));
 });
 Route::get('/countrie/{countrieCode}', [GeoMapController::class, 'getCountrie'])
