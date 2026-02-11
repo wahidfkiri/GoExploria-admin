@@ -935,18 +935,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <!-- resources/views/main.blade.php -->
     @php
-    // Get the specific page with id = 20
-    $specificPage = \App\Models\Menu::where('id', 20)
+    // Get the specific page with id = 22
+    $specificPage = \App\Models\Menu::where('id', 22)
         ->where('is_active', true)
         ->where('has_page', true)
         ->whereNull('parent_id')
         ->first();
     
-    // Get all other pages except id = 20
+    // Get all other pages except id = 22
     $otherPages = \App\Models\Menu::where('is_active', true)
         ->where('has_page', true)
         ->whereNull('parent_id')
-        ->where('id', '!=', 20)
+        ->where('id', '!=', 22)
         ->orderBy('order','ASC')
         ->get();
     
