@@ -61,13 +61,13 @@
             <div id="mainMenu-trigger">
                 <a class="lines-button x"><span class="lines"></span></a>
             </div>
-            <!--end: Navigation Responsive Trigger-->
+            
             {{-- resources/views/components/mega-menu.blade.php --}}
 @php
-    use App\Helpers\MenuRenderer;
+    use App\Helpers\MenuContinent;
 @endphp
 
-{!! MenuRenderer::renderMenuContinent($continentId) !!}
+{!! MenuContinent::renderMenuContinent($continentId) !!}
             <!--end: Navigation Responsive Trigger g-->
 
 <div id="mainMenu" style="display:none;">
