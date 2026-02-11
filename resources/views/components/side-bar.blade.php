@@ -117,7 +117,7 @@
         </span>
         <span class="menu-text">Sites web</span>
       </a>
-    </li>
+    </li> -->
     <li>
       <a href="{{route('templates')}}" class="menu-item">
         <span class="menu-icon">
@@ -125,7 +125,7 @@
         </span>
         <span class="menu-text">Templates</span>
       </a>
-    </li> -->
+    </li> 
     <!-- <li class="menu-title">Contenu</li> -->
     <li>
       <a href="#" class="menu-item">
