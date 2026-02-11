@@ -141,7 +141,7 @@ class MenuContinent
                             if ($country->flag_emoji) {
                                 $html .= '<span class="me-1">' . $country->flag_emoji . '</span>';
                             } elseif ($country->image) {
-                                $html .= '<img src="' . asset('storage/' . $country->image) . '" 
+                                $html .= '<img src="' . asset('/storage/' . $country->image) . '" 
                                         alt="' . $country->name . '"
                                         style="width: 16px; height: 12px; object-fit: cover; margin-right: 4px;">';
                             }
