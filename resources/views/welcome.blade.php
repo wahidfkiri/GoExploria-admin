@@ -252,6 +252,35 @@ document.addEventListener('DOMContentLoaded', function() {
             margin-right: 15px;
         }
         
+        /* Style spécifique pour le méga-menu templates */
+        .mega-menu-templates {
+            width: 1200px !important;
+            max-width: 95vw !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 20px !important;
+            padding: 25px !important;
+        }
+        
+        .mega-menu-templates .mega-menu-column {
+            margin-bottom: 20px;
+        }
+        
+        .mega-menu-templates .mega-menu-column h4 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .mega-menu-templates .mega-menu-column h4 i {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+        
+        .mega-menu-templates .mega-menu-link:hover .mega-menu-image {
+            transform: scale(1.05);
+        }
+        
         /* Footer avec photo de fond filtrée */
         .footer-with-bg {
             position: relative;
@@ -494,6 +523,11 @@ document.addEventListener('DOMContentLoaded', function() {
             .travel-marquee {
                 animation: marquee 65s linear infinite;
             }
+            
+            .mega-menu-templates {
+                grid-template-columns: repeat(2, 1fr) !important;
+                width: 95vw !important;
+            }
         }
         
         @media (max-width: 992px) {
@@ -569,6 +603,10 @@ document.addEventListener('DOMContentLoaded', function() {
             .travel-message {
                 margin: 0 15px;
             }
+            
+            .mega-menu-templates {
+                grid-template-columns: 1fr !important;
+            }
         }
         
         @media (max-width: 576px) {
@@ -588,6 +626,124 @@ document.addEventListener('DOMContentLoaded', function() {
             .travel-text::after {
                 margin-left: 15px;
             }
+        }
+
+        /* 5 colonnes - 20% chacune */
+        .col-md-2-4 {
+            width: 20%;
+            float: left;
+            padding: 0 8px;
+            box-sizing: border-box;
+        }
+        
+        /* Clearfix */
+        #regionsDropdownContainer::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        /* Style minimaliste des cartes */
+        .region-card-simple {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .region-card-simple:hover {
+            border-color: #007bff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .region-img-wrapper {
+            height: 80px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .region-img-simple {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .region-name {
+            padding: 10px 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .region-item-simple {
+            text-decoration: none;
+            display: block;
+            animation: fadeIn 0.3s ease forwards;
+            opacity: 0;
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .col-md-2-4 { width: 25%; padding: 0 6px; }
+        }
+        
+        @media (max-width: 992px) {
+            .col-md-2-4 { width: 33.333%; padding: 0 5px; }
+            .region-img-wrapper { height: 70px; }
+        }
+        
+        @media (max-width: 768px) {
+            .col-md-2-4 { width: 50%; padding: 0 4px; }
+            .region-img-wrapper { height: 65px; }
+            .region-name { font-size: 0.8rem; padding: 8px 4px; }
+        }
+        
+        @media (max-width: 480px) {
+            .col-md-2-4 { width: 100%; padding: 0; }
+            .region-card-simple { 
+                display: flex; 
+                align-items: center;
+                margin-bottom: 8px;
+            }
+            .region-img-wrapper { 
+                width: 100px; 
+                height: 60px; 
+                flex-shrink: 0; 
+            }
+            .region-name { 
+                flex-grow: 1; 
+                border: none; 
+                text-align: left; 
+                padding-left: 12px;
+                background: white;
+            }
+        }
+        
+        /* Loader */
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+        
+        /* Dropdown centré */
+        .dropdown-menu.full-width {
+            min-width: 100vw !important;
         }
     </style>
 </head>
@@ -661,320 +817,469 @@ document.addEventListener('DOMContentLoaded', function() {
                     </a>
                 </div>
 
-                <!-- Dans la section item-btns, juste avant le bouton Services Web -->
+                <div class="item-btns">
+                    <!-- NOUVEAU : Bouton Nos Templates avec méga-menu -->
+                    <div class="mega-menu-container">
+                        <button class="btn btn-sm btn-outline-primary me-2" id="templatesBtn">
+                            <i class="fas fa-palette me-1"></i>Nos Templates
+                        </button>
+                        
+                        <!-- Méga-menu Templates 8 catégories -->
+                        <div class="mega-menu mega-menu-templates" id="templatesMegaMenu">
+                            <!-- Colonne 1 : E-commerce & Retail -->
+                            <div class="mega-menu-column">
+                                <h4><i class="fas fa-shopping-cart me-2"></i>E-commerce</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?w=400&h=400&fit=crop" class="mega-menu-image" alt="Boutique Mode">
+                                    <div class="mega-menu-text">
+                                        <h6>Boutique Mode</h6>
+                                        <p>Site e-commerce pour vêtements</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=400&fit=crop" class="mega-menu-image" alt="Marketplace">
+                                    <div class="mega-menu-text">
+                                        <h6>Marketplace</h6>
+                                        <p>Place de marché multi-vendeurs</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&h=400&fit=crop" class="mega-menu-image" alt="DropShipping">
+                                    <div class="mega-menu-text">
+                                        <h6>Dropshipping</h6>
+                                        <p>Solution clé en main</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400&h=400&fit=crop" class="mega-menu-image" alt="Cosmétiques">
+                                    <div class="mega-menu-text">
+                                        <h6>Cosmétiques & Beauté</h6>
+                                        <p>Design épuré et élégant</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 2 : Services & Professionnels -->
+                            <div class="mega-menu-column">
+                                <h4><i class="fas fa-briefcase me-2"></i>Services</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=400&fit=crop" class="mega-menu-image" alt="Cabinet Conseil">
+                                    <div class="mega-menu-text">
+                                        <h6>Cabinet Conseil</h6>
+                                        <p>Site vitrine professionnel</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop" class="mega-menu-image" alt="Services Médicaux">
+                                    <div class="mega-menu-text">
+                                        <h6>Services Médicaux</h6>
+                                        <p>Prise de rendez-vous en ligne</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=400&fit=crop" class="mega-menu-image" alt="Services Juridiques">
+                                    <div class="mega-menu-text">
+                                        <h6>Services Juridiques</h6>
+                                        <p>Avocats & notaires</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1560250056-07ba64664864?w=400&h=400&fit=crop" class="mega-menu-image" alt="Coaching">
+                                    <div class="mega-menu-text">
+                                        <h6>Coaching & Formation</h6>
+                                        <p>Plateforme de cours</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 3 : Travel & Hospitality -->
+                            <div class="mega-menu-column">
+                                <h4><i class="fas fa-plane me-2"></i>Travel</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=400&fit=crop" class="mega-menu-image" alt="Agence Voyage">
+                                    <div class="mega-menu-text">
+                                        <h6>Agence de Voyage</h6>
+                                        <p>Forfaits et réservations</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=400&fit=crop" class="mega-menu-image" alt="Hôtellerie">
+                                    <div class="mega-menu-text">
+                                        <h6>Hôtellerie</h6>
+                                        <p>Réservation en ligne</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&h=400&fit=crop" class="mega-menu-image" alt="Location Saisonnière">
+                                    <div class="mega-menu-text">
+                                        <h6>Location Saisonnière</h6>
+                                        <p>Gestion des disponibilités</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=400&fit=crop" class="mega-menu-image" alt="Tours Opérateur">
+                                    <div class="mega-menu-text">
+                                        <h6>Tours Opérateur</h6>
+                                        <p>Circuits et excursions</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 4 : Entreprise & B2B -->
+                            <div class="mega-menu-column">
+                                <h4><i class="fas fa-building me-2"></i>Entreprise</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=400&fit=crop" class="mega-menu-image" alt="Site Corporate">
+                                    <div class="mega-menu-text">
+                                        <h6>Site Corporate</h6>
+                                        <p>Présence institutionnelle</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=400&fit=crop" class="mega-menu-image" alt="Startup">
+                                    <div class="mega-menu-text">
+                                        <h6>Startup</h6>
+                                        <p>Landing page moderne</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=400&fit=crop" class="mega-menu-image" alt="Industrie">
+                                    <div class="mega-menu-text">
+                                        <h6>Industrie & Manufacture</h6>
+                                        <p>Catalogue produits</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&h=400&fit=crop" class="mega-menu-image" alt="Immobilier">
+                                    <div class="mega-menu-text">
+                                        <h6>Immobilier</h6>
+                                        <p>Listings propriétés</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 5 : Food & Alimentation -->
+                            <div class="mega-menu-column">
+                                <h4><i class="fas fa-utensils me-2"></i>Food & Alimentation</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop" class="mega-menu-image" alt="Restaurant">
+                                    <div class="mega-menu-text">
+                                        <h6>Restaurant</h6>
+                                        <p>Menu et réservations</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1556740714-a8395b3bf30f?w=400&h=400&fit=crop" class="mega-menu-image" alt="Boulangerie">
+                                    <div class="mega-menu-text">
+                                        <h6>Boulangerie/Pâtisserie</h6>
+                                        <p>Commande en ligne</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=400&h=400&fit=crop" class="mega-menu-image" alt="Traiteur">
+                                    <div class="mega-menu-text">
+                                        <h6>Traiteur</h6>
+                                        <p>Événements et buffets</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1564758582685-88e7885d10c7?w=400&h=400&fit=crop" class="mega-menu-image" alt="Épicerie Fine">
+                                    <div class="mega-menu-text">
+                                        <h6>Épicerie Fine</h6>
+                                        <p>Produits locaux</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 6 : Beauté & Bien-être -->
+                            <div class="mega-menu-column">
+                                <h4><i class="fas fa-heart me-2"></i>Beauté & Bien-être</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=400&h=400&fit=crop" class="mega-menu-image" alt="Salon Coiffure">
+                                    <div class="mega-menu-text">
+                                        <h6>Salon de Coiffure</h6>
+                                        <p>Prise de rendez-vous</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=400&h=400&fit=crop" class="mega-menu-image" alt="Spa">
+                                    <div class="mega-menu-text">
+                                        <h6>Spa & Bien-être</h6>
+                                        <p>Forfaits relaxants</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=400&fit=crop" class="mega-menu-image" alt="Salle Sport">
+                                    <div class="mega-menu-text">
+                                        <h6>Salle de Sport</h6>
+                                        <p>Abonnements en ligne</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1598514982418-0f7051c30492?w=400&h=400&fit=crop" class="mega-menu-image" alt="Yoga">
+                                    <div class="mega-menu-text">
+                                        <h6>Yoga & Méditation</h6>
+                                        <p>Cours virtuels</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 7 : Éducation & Formation -->
+                            <div class="mega-menu-column">
+                                <h4><i class="fas fa-graduation-cap me-2"></i>Éducation & Formation</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&h=400&fit=crop" class="mega-menu-image" alt="École">
+                                    <div class="mega-menu-text">
+                                        <h6>École & Université</h6>
+                                        <p>Portail éducatif</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=400&fit=crop" class="mega-menu-image" alt="Formation Pro">
+                                    <div class="mega-menu-text">
+                                        <h6>Formation Professionnelle</h6>
+                                        <p>LMS et certifications</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=400&fit=crop" class="mega-menu-image" alt="Cours en Ligne">
+                                    <div class="mega-menu-text">
+                                        <h6>Cours en Ligne</h6>
+                                        <p>Plateforme e-learning</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=400&fit=crop" class="mega-menu-image" alt="Tutorat">
+                                    <div class="mega-menu-text">
+                                        <h6>Tutorat</h6>
+                                        <p>Soutien scolaire</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 8 : Créatifs & Artisans -->
+                            <div class="mega-menu-column">
+                                <h4><i class="fas fa-paint-brush me-2"></i>Créatifs & Artisans</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=400&h=400&fit=crop" class="mega-menu-image" alt="Portfolio">
+                                    <div class="mega-menu-text">
+                                        <h6>Portfolio Artiste</h6>
+                                        <p>Galerie d'oeuvres</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=400&fit=crop" class="mega-menu-image" alt="Photographe">
+                                    <div class="mega-menu-text">
+                                        <h6>Photographe</h6>
+                                        <p>Shooting et portfolios</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&h=400&fit=crop" class="mega-menu-image" alt="Designer">
+                                    <div class="mega-menu-text">
+                                        <h6>Designer</h6>
+                                        <p>Showcase créatif</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop" class="mega-menu-image" alt="Artisanat">
+                                    <div class="mega-menu-text">
+                                        <h6>Artisanat</h6>
+                                        <p>Créations uniques</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Élément mis en avant -->
+                            <div class="mega-menu-highlight">
+                                <h4><i class="fas fa-star me-2"></i>Templates Populaires</h4>
+                                <div class="d-flex gap-3">
+                                    <div class="highlight-item">
+                                        <i class="fas fa-crown highlight-icon"></i>
+                                        <div>
+                                            <h6>Template Premium</h6>
+                                            <p>Design exclusif - 30% de réduction</p>
+                                        </div>
+                                    </div>
+                                    <div class="highlight-item">
+                                        <i class="fas fa-rocket highlight-icon"></i>
+                                        <div>
+                                            <h6>Nouveauté 2026</h6>
+                                            <p>Templates IA générative</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 text-center">
+                                    <a href="#" class="btn btn-sm btn-light">Voir tous les templates →</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-<div class="item-btns">
-    <!-- NOUVEAU : Bouton Nos Templates avec méga-menu -->
-    <div class="mega-menu-container">
-        <button class="btn btn-sm btn-outline-primary me-2" id="templatesBtn">
-            <i class="fas fa-palette me-1"></i>Nos Templates
-        </button>
-        
-        <!-- Méga-menu Templates -->
-        <div class="mega-menu mega-menu-templates" id="templatesMegaMenu" style="width: 1100px; grid-template-columns: repeat(4, 1fr);">
-            <!-- Colonne 1 : E-commerce & Retail -->
-            <div class="mega-menu-column">
-                <h4><i class="fas fa-shopping-cart me-2"></i>E-commerce</h4>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?w=400&h=400&fit=crop" class="mega-menu-image" alt="Boutique Mode">
-                    <div class="mega-menu-text">
-                        <h6>Boutique Mode</h6>
-                        <p>Site e-commerce pour vêtements</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=400&fit=crop" class="mega-menu-image" alt="Marketplace">
-                    <div class="mega-menu-text">
-                        <h6>Marketplace</h6>
-                        <p>Place de marché multi-vendeurs</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&h=400&fit=crop" class="mega-menu-image" alt="DropShipping">
-                    <div class="mega-menu-text">
-                        <h6>Dropshipping</h6>
-                        <p>Solution clé en main</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400&h=400&fit=crop" class="mega-menu-image" alt="Cosmétiques">
-                    <div class="mega-menu-text">
-                        <h6>Cosmétiques & Beauté</h6>
-                        <p>Design épuré et élégant</p>
-                    </div>
-                </a>
-            </div>
-            
-            <!-- Colonne 2 : Services & Professionnels -->
-            <div class="mega-menu-column">
-                <h4><i class="fas fa-briefcase me-2"></i>Services</h4>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=400&fit=crop" class="mega-menu-image" alt="Cabinet Conseil">
-                    <div class="mega-menu-text">
-                        <h6>Cabinet Conseil</h6>
-                        <p>Site vitrine professionnel</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop" class="mega-menu-image" alt="Services Médicaux">
-                    <div class="mega-menu-text">
-                        <h6>Services Médicaux</h6>
-                        <p>Prise de rendez-vous en ligne</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=400&fit=crop" class="mega-menu-image" alt="Services Juridiques">
-                    <div class="mega-menu-text">
-                        <h6>Services Juridiques</h6>
-                        <p>Avocats & notaires</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1560250056-07ba64664864?w=400&h=400&fit=crop" class="mega-menu-image" alt="Coaching">
-                    <div class="mega-menu-text">
-                        <h6>Coaching & Formation</h6>
-                        <p>Plateforme de cours</p>
-                    </div>
-                </a>
-            </div>
-            
-            <!-- Colonne 3 : Travel & Hospitality -->
-            <div class="mega-menu-column">
-                <h4><i class="fas fa-plane me-2"></i>Travel</h4>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=400&fit=crop" class="mega-menu-image" alt="Agence Voyage">
-                    <div class="mega-menu-text">
-                        <h6>Agence de Voyage</h6>
-                        <p>Forfaits et réservations</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=400&fit=crop" class="mega-menu-image" alt="Hôtellerie">
-                    <div class="mega-menu-text">
-                        <h6>Hôtellerie</h6>
-                        <p>Réservation en ligne</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&h=400&fit=crop" class="mega-menu-image" alt="Location Saisonnière">
-                    <div class="mega-menu-text">
-                        <h6>Location Saisonnière</h6>
-                        <p>Gestion des disponibilités</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=400&fit=crop" class="mega-menu-image" alt="Tours Opérateur">
-                    <div class="mega-menu-text">
-                        <h6>Tours Opérateur</h6>
-                        <p>Circuits et excursions</p>
-                    </div>
-                </a>
-            </div>
-            
-            <!-- Colonne 4 : Entreprise & B2B -->
-            <div class="mega-menu-column">
-                <h4><i class="fas fa-building me-2"></i>Entreprise</h4>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=400&fit=crop" class="mega-menu-image" alt="Site Corporate">
-                    <div class="mega-menu-text">
-                        <h6>Site Corporate</h6>
-                        <p>Présence institutionnelle</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=400&fit=crop" class="mega-menu-image" alt="Startup">
-                    <div class="mega-menu-text">
-                        <h6>Startup</h6>
-                        <p>Landing page moderne</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=400&fit=crop" class="mega-menu-image" alt="Industrie">
-                    <div class="mega-menu-text">
-                        <h6>Industrie & Manufacture</h6>
-                        <p>Catalogue produits</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&h=400&fit=crop" class="mega-menu-image" alt="Immobilier">
-                    <div class="mega-menu-text">
-                        <h6>Immobilier</h6>
-                        <p>Listings propriétés</p>
-                    </div>
-                </a>
-            </div>
-            
-            <!-- Deuxième ligne : Food & Alimentation + Autres catégories -->
-            <div class="mega-menu-column">
-                <h4><i class="fas fa-utensils me-2"></i>Food & Alimentation</h4>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop" class="mega-menu-image" alt="Restaurant">
-                    <div class="mega-menu-text">
-                        <h6>Restaurant</h6>
-                        <p>Menu et réservations</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1556740714-a8395b3bf30f?w=400&h=400&fit=crop" class="mega-menu-image" alt="Boulangerie">
-                    <div class="mega-menu-text">
-                        <h6>Boulangerie/Pâtisserie</h6>
-                        <p>Commande en ligne</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=400&h=400&fit=crop" class="mega-menu-image" alt="Traiteur">
-                    <div class="mega-menu-text">
-                        <h6>Traiteur</h6>
-                        <p>Événements et buffets</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1564758582685-88e7885d10c7?w=400&h=400&fit=crop" class="mega-menu-image" alt="Épicerie Fine">
-                    <div class="mega-menu-text">
-                        <h6>Épicerie Fine</h6>
-                        <p>Produits locaux</p>
-                    </div>
-                </a>
-            </div>
-            
-            <div class="mega-menu-column">
-                <h4><i class="fas fa-heart me-2"></i>Beauté & Bien-être</h4>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=400&h=400&fit=crop" class="mega-menu-image" alt="Salon Coiffure">
-                    <div class="mega-menu-text">
-                        <h6>Salon de Coiffure</h6>
-                        <p>Prise de rendez-vous</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=400&h=400&fit=crop" class="mega-menu-image" alt="Spa">
-                    <div class="mega-menu-text">
-                        <h6>Spa & Bien-être</h6>
-                        <p>Forfaits relaxants</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=400&fit=crop" class="mega-menu-image" alt="Salle Sport">
-                    <div class="mega-menu-text">
-                        <h6>Salle de Sport</h6>
-                        <p>Abonnements en ligne</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1598514982418-0f7051c30492?w=400&h=400&fit=crop" class="mega-menu-image" alt="Yoga">
-                    <div class="mega-menu-text">
-                        <h6>Yoga & Méditation</h6>
-                        <p>Cours virtuels</p>
-                    </div>
-                </a>
-            </div>
-            
-            <div class="mega-menu-column">
-                <h4><i class="fas fa-graduation-cap me-2"></i>Éducation & Formation</h4>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&h=400&fit=crop" class="mega-menu-image" alt="École">
-                    <div class="mega-menu-text">
-                        <h6>École & Université</h6>
-                        <p>Portail éducatif</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=400&fit=crop" class="mega-menu-image" alt="Formation Pro">
-                    <div class="mega-menu-text">
-                        <h6>Formation Professionnelle</h6>
-                        <p>LMS et certifications</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=400&fit=crop" class="mega-menu-image" alt="Cours en Ligne">
-                    <div class="mega-menu-text">
-                        <h6>Cours en Ligne</h6>
-                        <p>Plateforme e-learning</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=400&fit=crop" class="mega-menu-image" alt="Tutorat">
-                    <div class="mega-menu-text">
-                        <h6>Tutorat</h6>
-                        <p>Soutien scolaire</p>
-                    </div>
-                </a>
-            </div>
-            
-            <div class="mega-menu-column">
-                <h4><i class="fas fa-paint-brush me-2"></i>Créatifs & Artisans</h4>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=400&h=400&fit=crop" class="mega-menu-image" alt="Portfolio">
-                    <div class="mega-menu-text">
-                        <h6>Portfolio Artiste</h6>
-                        <p>Galerie d'oeuvres</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=400&fit=crop" class="mega-menu-image" alt="Photographe">
-                    <div class="mega-menu-text">
-                        <h6>Photographe</h6>
-                        <p>Shooting et portfolios</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&h=400&fit=crop" class="mega-menu-image" alt="Designer">
-                    <div class="mega-menu-text">
-                        <h6>Designer</h6>
-                        <p>Showcase créatif</p>
-                    </div>
-                </a>
-                <a href="#" class="mega-menu-link">
-                    <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop" class="mega-menu-image" alt="Artisanat">
-                    <div class="mega-menu-text">
-                        <h6>Artisanat</h6>
-                        <p>Créations uniques</p>
-                    </div>
-                </a>
-            </div>
-            
-            <!-- Élément mis en avant -->
-            <div class="mega-menu-highlight">
-                <h4><i class="fas fa-star me-2"></i>Templates Populaires</h4>
-                <div class="d-flex gap-3">
-                    <div class="highlight-item">
-                        <i class="fas fa-crown highlight-icon"></i>
-                        <div>
-                            <h6>Template Premium</h6>
-                            <p>Design exclusif - 30% de réduction</p>
+                    <!-- Bouton Services Web avec méga-menu -->
+                    <div class="mega-menu-container">
+                        <button class="btn btn-sm btn-primary me-2" id="servicesWebBtn">
+                            <i class="fas fa-globe me-1"></i>Services Web
+                        </button>
+                        
+                        <!-- Méga-menu Services Web -->
+                        <div class="mega-menu" id="webServicesMegaMenu">
+                            <!-- Colonne 1 : Création Web -->
+                            <div class="mega-menu-column">
+                                <h4>Création Web</h4>
+                                <a href="#iframe-page-web-1" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=400&fit=crop" class="mega-menu-image" alt="Sites Vitrine">
+                                    <div class="mega-menu-text">
+                                        <h6>Sites Vitrine</h6>
+                                        <p>Présence en ligne professionnelle</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=400&fit=crop" class="mega-menu-image" alt="E-commerce">
+                                    <div class="mega-menu-text">
+                                        <h6>E-commerce</h6>
+                                        <p>Boutique en ligne complète</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=400&h=400&fit=crop" class="mega-menu-image" alt="Blogs & CMS">
+                                    <div class="mega-menu-text">
+                                        <h6>Blogs & CMS</h6>
+                                        <p>Plateformes de contenu</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=400&fit=crop" class="mega-menu-image" alt="Applications Web">
+                                    <div class="mega-menu-text">
+                                        <h6>Applications Web</h6>
+                                        <p>Solutions sur mesure</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 2 : Marketing Digital -->
+                            <div class="mega-menu-column">
+                                <h4>Marketing Digital</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=400&fit=crop" class="mega-menu-image" alt="SEO">
+                                    <div class="mega-menu-text">
+                                        <h6>SEO</h6>
+                                        <p>Optimisation pour moteurs</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=400&fit=crop" class="mega-menu-image" alt="Publicité en Ligne">
+                                    <div class="mega-menu-text">
+                                        <h6>Publicité en Ligne</h6>
+                                        <p>Google Ads, Facebook Ads</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=400&fit=crop" class="mega-menu-image" alt="Analyse Web">
+                                    <div class="mega-menu-text">
+                                        <h6>Analyse Web</h6>
+                                        <p>Google Analytics, tracking</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1545235617-9465d2a55698?w=400&h=400&fit=crop" class="mega-menu-image" alt="Email Marketing">
+                                    <div class="mega-menu-text">
+                                        <h6>Email Marketing</h6>
+                                        <p>Campagnes automatiques</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 3 : Hébergement & Support -->
+                            <div class="mega-menu-column">
+                                <h4>Hébergement & Support</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=400&fit=crop" class="mega-menu-image" alt="Hébergement Web">
+                                    <div class="mega-menu-text">
+                                        <h6>Hébergement Web</h6>
+                                        <p>Serveurs performants</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=400&h=400&fit=crop" class="mega-menu-image" alt="Sécurité SSL">
+                                    <div class="mega-menu-text">
+                                        <h6>Sécurité SSL</h6>
+                                        <p>Certificats de sécurité</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=400&fit=crop" class="mega-menu-image" alt="Maintenance">
+                                    <div class="mega-menu-text">
+                                        <h6>Maintenance</h6>
+                                        <p>Mises à jour régulières</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=400&fit=crop" class="mega-menu-image" alt="Support 24/7">
+                                    <div class="mega-menu-text">
+                                        <h6>Support 24/7</h6>
+                                        <p>Assistance technique</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <!-- Colonne 4 : Solutions Entreprise -->
+                            <div class="mega-menu-column">
+                                <h4>Solutions Entreprise</h4>
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=400&fit=crop" class="mega-menu-image" alt="ERP & CRM">
+                                    <div class="mega-menu-text">
+                                        <h6>ERP & CRM</h6>
+                                        <p>Systèmes de gestion intégrés</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=400&fit=crop" class="mega-menu-image" alt="Réseaux Sociaux">
+                                    <div class="mega-menu-text">
+                                        <h6>Gestion Réseaux Sociaux</h6>
+                                        <p>Stratégie et publication</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop" class="mega-menu-image" alt="Formation">
+                                    <div class="mega-menu-text">
+                                        <h6>Formation Digital</h6>
+                                        <p>Formation à vos outils</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="mega-menu-link">
+                                    <img src="https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=400&h=400&fit=crop" class="mega-menu-image" alt="Consultation">
+                                    <div class="mega-menu-text">
+                                        <h6>Consultation Stratégique</h6>
+                                        <p>Audit et recommandations</p>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <div>
+                                <a href="">Voir nos plans d'affichages</a>
+                            </div>
                         </div>
                     </div>
-                    <div class="highlight-item">
-                        <i class="fas fa-rocket highlight-icon"></i>
-                        <div>
-                            <h6>Nouveauté 2026</h6>
-                            <p>Templates IA générative</p>
-                        </div>
-                    </div>
+                    
+                    <a href="#info-forfaits-go-exploria" class="btn btn-sm btn-secondary">
+                        <i class="fas fa-list me-1"></i>Nos plans
+                    </a>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Ancien bouton Services Web -->
-    <div class="mega-menu-container">
-        <button class="btn btn-sm btn-primary me-2" id="servicesWebBtn">
-            <i class="fas fa-globe me-1"></i>Services Web
-        </button>
-        
-        <!-- Méga-menu Services Web (inchangé) -->
-        <div class="mega-menu" id="webServicesMegaMenu">
-            <!-- Contenu existant... -->
-        </div>
-    </div>
-    
-    <a href="#info-forfaits-go-exploria" class="btn btn-sm btn-secondary">
-        <i class="fas fa-list me-1"></i>Nos plans
-    </a>
-</div>
                 
                 <div class="top-bar-icons">
-                    
                     <!-- Mon compte -->
                     <a href="{{route('register')}}" class="top-bar-icon">
                         <i class="fas fa-user-plus"></i>
@@ -1013,7 +1318,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <i class="fas fa-shopping-cart"></i>
                         <span>Panier</span>
                     </a>
-                    <!-- Panier -->
+                    <!-- Favoris -->
                     <a href="#" class="top-bar-icon">
                         <i class="fas fa-heart"></i>
                         <span>Favoris</span>
@@ -1127,14 +1432,6 @@ document.addEventListener('DOMContentLoaded', function() {
         style="border:0; overflow:hidden;"
         scrolling="no">
     </iframe>
-
-    <!-- <iframe 
-        id="iframe-page-meteo-1"
-        src="{{ url('/theme/meteo/page-1') }}" 
-        width="100%" 
-        style="border:0; overflow:hidden;"
-        scrolling="no">
-    </iframe> -->
 
     <!-- Business -->
     <iframe 
@@ -1403,39 +1700,80 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Script pour fermer le méga-menu en cliquant ailleurs
+        const megaMenus = [
+            { btn: document.getElementById('servicesWebBtn'), menu: document.getElementById('webServicesMegaMenu') },
+            { btn: document.getElementById('templatesBtn'), menu: document.getElementById('templatesMegaMenu') }
+        ];
+        
         document.addEventListener('click', function(event) {
-            const megaMenu = document.getElementById('webServicesMegaMenu');
-            const servicesBtn = document.getElementById('servicesWebBtn');
-            
-            if (megaMenu && servicesBtn) {
-                if (!megaMenu.contains(event.target) && !servicesBtn.contains(event.target)) {
-                    megaMenu.style.opacity = '0';
-                    megaMenu.style.visibility = 'hidden';
-                    megaMenu.style.transform = 'translateX(-50%) translateY(15px)';
+            megaMenus.forEach(({btn, menu}) => {
+                if (menu && btn) {
+                    if (!menu.contains(event.target) && !btn.contains(event.target)) {
+                        menu.style.opacity = '0';
+                        menu.style.visibility = 'hidden';
+                        menu.style.transform = 'translateX(-50%) translateY(15px)';
+                    }
                 }
-            }
+            });
         });
         
-        // Ouvrir/fermer le méga-menu au clic sur mobile
+        // Ouvrir/fermer le méga-menu au clic sur mobile pour Services Web
         const servicesBtn = document.getElementById('servicesWebBtn');
-        const megaMenu = document.getElementById('webServicesMegaMenu');
+        const servicesMegaMenu = document.getElementById('webServicesMegaMenu');
         
-        if (servicesBtn && megaMenu) {
+        if (servicesBtn && servicesMegaMenu) {
             servicesBtn.addEventListener('click', function(event) {
-               // if (window.innerWidth < 992) {
-                    event.preventDefault();
-                    const isVisible = megaMenu.style.opacity === '1';
-                    
-                    if (isVisible) {
-                        megaMenu.style.opacity = '0';
-                        megaMenu.style.visibility = 'hidden';
-                        megaMenu.style.transform = 'translateX(-50%) translateY(15px)';
-                    } else {
-                        megaMenu.style.opacity = '1';
-                        megaMenu.style.visibility = 'visible';
-                        megaMenu.style.transform = 'translateX(-50%) translateY(0)';
-                    }
-               // }
+                event.preventDefault();
+                const isVisible = servicesMegaMenu.style.opacity === '1';
+                
+                // Fermer l'autre menu d'abord
+                const templatesBtn = document.getElementById('templatesBtn');
+                const templatesMegaMenu = document.getElementById('templatesMegaMenu');
+                if (templatesBtn && templatesMegaMenu) {
+                    templatesMegaMenu.style.opacity = '0';
+                    templatesMegaMenu.style.visibility = 'hidden';
+                    templatesMegaMenu.style.transform = 'translateX(-50%) translateY(15px)';
+                }
+                
+                if (isVisible) {
+                    servicesMegaMenu.style.opacity = '0';
+                    servicesMegaMenu.style.visibility = 'hidden';
+                    servicesMegaMenu.style.transform = 'translateX(-50%) translateY(15px)';
+                } else {
+                    servicesMegaMenu.style.opacity = '1';
+                    servicesMegaMenu.style.visibility = 'visible';
+                    servicesMegaMenu.style.transform = 'translateX(-50%) translateY(0)';
+                }
+            });
+        }
+        
+        // Ouvrir/fermer le méga-menu au clic sur mobile pour Templates
+        const templatesBtn = document.getElementById('templatesBtn');
+        const templatesMegaMenu = document.getElementById('templatesMegaMenu');
+        
+        if (templatesBtn && templatesMegaMenu) {
+            templatesBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                const isVisible = templatesMegaMenu.style.opacity === '1';
+                
+                // Fermer l'autre menu d'abord
+                const servicesBtn = document.getElementById('servicesWebBtn');
+                const servicesMegaMenu = document.getElementById('webServicesMegaMenu');
+                if (servicesBtn && servicesMegaMenu) {
+                    servicesMegaMenu.style.opacity = '0';
+                    servicesMegaMenu.style.visibility = 'hidden';
+                    servicesMegaMenu.style.transform = 'translateX(-50%) translateY(15px)';
+                }
+                
+                if (isVisible) {
+                    templatesMegaMenu.style.opacity = '0';
+                    templatesMegaMenu.style.visibility = 'hidden';
+                    templatesMegaMenu.style.transform = 'translateX(-50%) translateY(15px)';
+                } else {
+                    templatesMegaMenu.style.opacity = '1';
+                    templatesMegaMenu.style.visibility = 'visible';
+                    templatesMegaMenu.style.transform = 'translateX(-50%) translateY(0)';
+                }
             });
         }
         
@@ -1449,206 +1787,12 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCurrentYear();
         
         // Dupliquer le contenu de la bande défilante pour un défilement fluide
-        const marqueeContent = document.querySelector('.travel-marquee').innerHTML;
-        document.querySelector('.travel-marquee').innerHTML += marqueeContent + marqueeContent;
-
-         // Gestion du méga-menu Templates
-    const templatesBtn = document.getElementById('templatesBtn');
-    const templatesMegaMenu = document.getElementById('templatesMegaMenu');
-    
-    if (templatesBtn && templatesMegaMenu) {
-        templatesBtn.addEventListener('click', function(event) {
-            event.preventDefault();
-            const isVisible = templatesMegaMenu.style.opacity === '1';
-            
-            if (isVisible) {
-                templatesMegaMenu.style.opacity = '0';
-                templatesMegaMenu.style.visibility = 'hidden';
-                templatesMegaMenu.style.transform = 'translateX(-50%) translateY(15px)';
-            } else {
-                templatesMegaMenu.style.opacity = '1';
-                templatesMegaMenu.style.visibility = 'visible';
-                templatesMegaMenu.style.transform = 'translateX(-50%) translateY(0)';
-            }
-        });
-    }
-    
-    // Fermer les méga-menus en cliquant ailleurs
-    document.addEventListener('click', function(event) {
-        // Pour le menu Templates
-        if (templatesMegaMenu && templatesBtn) {
-            if (!templatesMegaMenu.contains(event.target) && !templatesBtn.contains(event.target)) {
-                templatesMegaMenu.style.opacity = '0';
-                templatesMegaMenu.style.visibility = 'hidden';
-                templatesMegaMenu.style.transform = 'translateX(-50%) translateY(15px)';
-            }
+        const marquee = document.querySelector('.travel-marquee');
+        if (marquee) {
+            marquee.innerHTML += marquee.innerHTML;
         }
-    });
     });
     </script>
-
-    <style>
-        /* 5 colonnes - 20% chacune */
-        .col-md-2-4 {
-            width: 20%;
-            float: left;
-            padding: 0 8px;
-            box-sizing: border-box;
-        }
-        
-        /* Clearfix */
-        #regionsDropdownContainer::after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-        
-        /* Style minimaliste des cartes */
-        .region-card-simple {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 12px;
-            border: 1px solid #e9ecef;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        
-        .region-card-simple:hover {
-            border-color: #007bff;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .region-img-wrapper {
-            height: 80px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .region-img-simple {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-        
-        .region-name {
-            padding: 10px 8px;
-            text-align: center;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #333;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            background: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-        }
-        
-        .region-item-simple {
-            text-decoration: none;
-            display: block;
-            animation: fadeIn 0.3s ease forwards;
-            opacity: 0;
-        }
-        
-        /* Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .col-md-2-4 { width: 25%; padding: 0 6px; }
-        }
-        
-        @media (max-width: 992px) {
-            .col-md-2-4 { width: 33.333%; padding: 0 5px; }
-            .region-img-wrapper { height: 70px; }
-        }
-        
-        @media (max-width: 768px) {
-            .col-md-2-4 { width: 50%; padding: 0 4px; }
-            .region-img-wrapper { height: 65px; }
-            .region-name { font-size: 0.8rem; padding: 8px 4px; }
-        }
-        
-        @media (max-width: 480px) {
-            .col-md-2-4 { width: 100%; padding: 0; }
-            .region-card-simple { 
-                display: flex; 
-                align-items: center;
-                margin-bottom: 8px;
-            }
-            .region-img-wrapper { 
-                width: 100px; 
-                height: 60px; 
-                flex-shrink: 0; 
-            }
-            .region-name { 
-                flex-grow: 1; 
-                border: none; 
-                text-align: left; 
-                padding-left: 12px;
-                background: white;
-            }
-        }
-        
-        /* Loader */
-        .spinner-border-sm {
-            width: 1rem;
-            height: 1rem;
-        }
-        
-        /* Dropdown centré */
-        .dropdown-menu.full-width {
-            min-width: 100vw !important;
-        }
-        /* Style spécifique pour le méga-menu templates */
-.mega-menu-templates {
-    width: 1200px !important; /* Un peu plus large pour 8 catégories */
-    max-width: 95vw !important;
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 20px !important;
-    padding: 25px !important;
-}
-
-.mega-menu-templates .mega-menu-column {
-    margin-bottom: 20px;
-}
-
-.mega-menu-templates .mega-menu-column h4 {
-    font-size: 1rem;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-}
-
-.mega-menu-templates .mega-menu-column h4 i {
-    color: var(--primary-color);
-    font-size: 0.9rem;
-}
-
-/* Animation au survol */
-.mega-menu-templates .mega-menu-link:hover .mega-menu-image {
-    transform: scale(1.05);
-}
-
-/* Responsive */
-@media (max-width: 1200px) {
-    .mega-menu-templates {
-        grid-template-columns: repeat(2, 1fr) !important;
-        width: 95vw !important;
-    }
-}
-
-@media (max-width: 768px) {
-    .mega-menu-templates {
-        grid-template-columns: 1fr !important;
-    }
-}
-    </style>
 
 </body>
 </html>
