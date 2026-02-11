@@ -123,7 +123,7 @@ class MenuContinent
                 $html .= '</div>';
                 
                 // Liste des pays du continent
-                if ($continent->countries->isNotEmpty()) {
+                if ($continent->countries && $continent->countries->isNotEmpty()) {
                     $html .= '<ul class="list-unstyled country-list">';
                     
                     // Organiser les pays en 2 colonnes si nécessaire
