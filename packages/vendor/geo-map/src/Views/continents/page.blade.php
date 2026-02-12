@@ -1425,14 +1425,6 @@ document.addEventListener('DOMContentLoaded', function() {
     </iframe>
 @endforeach
     
-    <!-- Marketing -->
-    <iframe 
-        id="iframe-page-web-1"
-        src="{{ url('/theme/web/page-1') }}" 
-        width="100%" 
-        style="border:0; overflow:hidden;"
-        scrolling="no">
-    </iframe>
 
     <!-- Business -->
     <iframe 
