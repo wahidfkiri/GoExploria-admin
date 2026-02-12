@@ -18,6 +18,7 @@ class MenuRenderer
             $query->with('activeChildren')->orderBy('order');
         }])
         ->whereNull('parent_id')
+        ->where('menu_type', 'Accueil')
         ->where('is_active', true)
         ->orderBy('order')
         ->get();
