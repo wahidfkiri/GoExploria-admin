@@ -103,7 +103,7 @@ class MenuContinent
         $columns = self::organizeContinentsIntoColumns($countries, 4);
         
         foreach ($columns as $columnIndex => $columnContinents) {
-            $html .= '<div class="col-lg-' . (12 / count($columns)) . '">';
+            $html .= '<div class="col-lg-4">';
             
             foreach ($columnContinents as $countrie) {
                 $html .= '<div class="continent-section mb-4">';
