@@ -1225,7 +1225,7 @@ const createPage = (menuId) => {
                             <button class="btn btn-sm btn-outline-danger" onclick="showDeleteConfirmation(${menu.id})">
                                 <i class="fas fa-trash"></i>
                             </button>
-                            ${!hasChildren ? `  
+                            ${!menu.parent_id ? `  
                     <a href="{{ url('menus/template/view') }}/${menu.id}" target="_blank" class="btn btn-sm btn-outline-primary" title="Voir la page">
                         <i class="fas fa-eye"></i>
                     </a>
