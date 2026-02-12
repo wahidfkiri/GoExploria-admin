@@ -495,7 +495,7 @@
                             <a href="{{ route('templates.display', '') }}/${template.id}" target="_blank" class="action-btn-modern preview-btn-modern" title="Prévisualiser">
                             <i class="fas fa-eye"></i>
                            </a>
-                            <a href="{{ route('template.edit', '') }}/${template.id}" target="_blank" class="action-btn-modern edit-btn-modern" title="Modifier" onclick="openEditModal(${template.id})">
+                            <a href="{{ url('template/edit') }}/${template.id}" target="_blank" class="action-btn-modern edit-btn-modern" title="Modifier" onclick="openEditModal(${template.id})">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <button class="action-btn-modern delete-btn-modern" title="Supprimer" onclick="showDeleteConfirmation(${template.id})">
