@@ -1387,7 +1387,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <!-- resources/views/main.blade.php -->
     @php
     // IDs à afficher en premier
-    $priorityIds = [22, 23];
+    $priorityIds = [];
     
     // Récupérer les pages prioritaires dans l'ordre spécifié
     $priorityPages = collect();
