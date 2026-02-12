@@ -20,7 +20,6 @@ class BlockController extends Controller
     {
         $query = Block::with('section')
             ->active()
-            ->where('categorie_id', 1)
             ->ordered();
 
         // Filtres
@@ -76,7 +75,6 @@ class BlockController extends Controller
             $template = Template::find($template_id);
             $query = Block::with('section')
                 ->active()
-                ->where('categorie_id', $template->categorie_id)
                 ->ordered();
 
             // Filtres
