@@ -349,7 +349,7 @@ Route::prefix('api/pages/blocks')->group(function () {
 
 
 
-Route::prefix('destinations/menus')->name('destinations.menus.')->group(function () {
+Route::prefix('/destinations/menus')->name('destinations.menus.')->group(function () {
         Route::get('/', [MenuController::class, 'index'])->name('index');
         Route::get('/statistics', [MenuController::class, 'statistics'])->name('statistics');
         Route::get('/categories', [MenuController::class, 'getCategories'])->name('categories');
