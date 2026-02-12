@@ -14,6 +14,7 @@ class Menu extends Model
         'type',
         'parent_id',
         'reference_id',
+        'menu_type',
         'order',
         'route',
         'url',

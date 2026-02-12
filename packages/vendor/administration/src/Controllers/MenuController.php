@@ -17,7 +17,7 @@ public function index(Request $request)
 {
     $query = Menu::with(['children' => function ($query) {
         $query->with(['children'])->orderBy('order');
-    }])->orderBy('order');
+    }])->where('menu_type', 'Accueil')->orderBy('order');
     
     // Apply filters
     // if ($request->has('search') && $request->search) {
@@ -205,6 +205,7 @@ public function index(Request $request)
             'type' => $request->type,
             'parent_id' => $request->parent_id,
             'reference_id' => $referenceId,
+            'menu_type' => 'Accueil', // Default menu type, can be modified later
             'order' => $request->order ?? 0,
             'route' => $request->route,
             'url' => $request->url,
