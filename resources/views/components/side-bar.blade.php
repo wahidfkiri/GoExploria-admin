@@ -72,6 +72,11 @@
       </a>
       <ul class="submenu">
         <li>
+          <a href="{{ route('destinations.menus.index') }}" class="submenu-item">
+            <span class="submenu-text">Gestion de menus</span>
+          </a>
+        </li>
+        <li>
           <a href="{{ route('continents.index') }}" class="submenu-item">
             <span class="submenu-text">Continents</span>
           </a>

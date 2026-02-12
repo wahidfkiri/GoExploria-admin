@@ -1,6 +1,6 @@
 <?php 
 
-namespace Vendor\Administration\Controllers;
+namespace Vendor\Destination\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
@@ -17,7 +17,7 @@ public function index(Request $request)
 {
     $query = Menu::with(['children' => function ($query) {
         $query->with(['children'])->orderBy('order');
-    }])->where('menu_type', 'Accueil')->orderBy('order');
+    }])->where('menu_type', 'Destination')->orderBy('order');
     
     // Apply filters
     // if ($request->has('search') && $request->search) {
@@ -75,17 +75,17 @@ public function index(Request $request)
     // For non-ajax requests
     $menus = $query->paginate(10);
     
-    return view('administration::menus.index', compact('menus'));
+    return view('destination::menus.index', compact('menus'));
 }
     
     // Get statistics
     public function statistics()
     {
         $stats = [
-            'total_menus' => Menu::where('menu_type', 'Accueil')->count(),
-            'active_menus' => Menu::where('is_active', true)->where('menu_type', 'Accueil')->count(),
-            'main_menus' => Menu::whereNull('parent_id')->where('menu_type', 'Accueil')->count(),
-            'sub_menus' => Menu::whereNotNull('parent_id')->where('menu_type', 'Accueil')->count(),
+            'total_menus' => Menu::where('menu_type', 'Destination')->count(),
+            'active_menus' => Menu::where('is_active', true)->where('menu_type', 'Destination')->count(),
+            'main_menus' => Menu::whereNull('parent_id')->where('menu_type', 'Destination')->count(),
+            'sub_menus' => Menu::whereNotNull('parent_id')->where('menu_type', 'Destination')->count(),
         ];
         
         return response()->json([
@@ -132,10 +132,10 @@ public function index(Request $request)
     public function getParentMenus()
     {
         $parents = Menu::whereNull('parent_id')
-            ->where('menu_type', 'Accueil')
             ->select('id', 'title')
             ->orderBy('order')
             ->orderBy('title')
+            ->where('menu_type', 'Destination')
             ->get();
         
         return response()->json([
@@ -149,10 +149,10 @@ public function index(Request $request)
     {
         $parents = Menu::whereNotNull('parent_id')
             ->whereNull(DB::raw('(SELECT parent_id FROM menus as m2 WHERE m2.parent_id = menus.id LIMIT 1)'))
-            ->where('menu_type', 'Accueil')
             ->select('id', 'title')
             ->orderBy('order')
             ->orderBy('title')
+            ->where('menu_type', 'Destination')
             ->get()
             ->map(function($menu) {
                 $menu->title = $menu->title . ' (Sous-menu)';
@@ -169,7 +169,7 @@ public function index(Request $request)
     public function getAllParentMenus()
     {
         $parents = Menu::whereNull('parent_id')
-            ->where('menu_type', 'Accueil')
+            ->where('menu_type', 'Destination')
             ->select('id', 'title')
             ->orderBy('order')
             ->orderBy('title')
@@ -208,7 +208,7 @@ public function index(Request $request)
             'type' => $request->type,
             'parent_id' => $request->parent_id,
             'reference_id' => $referenceId,
-            'menu_type' => 'Accueil', // Default menu type, can be modified later
+            'menu_type' => 'Destination', // Default menu type, can be modified later
             'order' => $request->order ?? 0,
             'route' => $request->route,
             'url' => $request->url,
