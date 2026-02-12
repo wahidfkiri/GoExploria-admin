@@ -1405,6 +1405,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Récupérer toutes les autres pages
     $otherPages = \App\Models\Menu::where('is_active', true)
         ->where('has_page', true)
+        ->where('menu_type', 'Accueil')
         ->whereNull('parent_id')
         ->whereNotIn('id', $priorityIds)
         ->orderBy('order','ASC')
