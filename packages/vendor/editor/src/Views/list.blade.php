@@ -472,7 +472,7 @@
                     </td>
                     <td>
                         <a href="{{url('templates/display/${template.id}')}}" target="_blank" class="template-url-modern">
-                            <i class="fas fa-link me-1"></i>${template.url}
+                            <i class="fas fa-link me-1"></i>http://37.59.113.151/template/preview/${template.id} </a>
                         </a>
                     </td>
                     <td>
@@ -492,13 +492,13 @@
                     </td>
                     <td>
                         <div class="template-actions-modern">
-                            <a href="{{ route('templates.display', '') }}/${template.id}" target="_blank" class="action-btn-modern preview-btn-modern" title="Prévisualiser">
+                            <a href="{{ route('templates.display', '') }}/${template.id}" target="_blank" class="btn btn-sm btn-outline-primary" title="Prévisualiser">
                             <i class="fas fa-eye"></i>
                            </a>
-                            <a href="{{ url('template/edit') }}/${template.id}" target="_blank" class="action-btn-modern edit-btn-modern" title="Modifier" onclick="openEditModal(${template.id})">
+                            <a href="{{ url('template/edit') }}/${template.id}" target="_blank" class="btn btn-sm btn-outline-success" title="Modifier" onclick="openEditModal(${template.id})">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <button class="action-btn-modern delete-btn-modern" title="Supprimer" onclick="showDeleteConfirmation(${template.id})">
+                            <button class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="showDeleteConfirmation(${template.id})">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
