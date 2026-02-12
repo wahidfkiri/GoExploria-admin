@@ -75,7 +75,7 @@ class BlockController extends Controller
             $template = Template::find($template_id);
             $query = Block::with('section')
                 ->active()
-                ->ordered();
+                ->orderBy('id', 'DESC');
 
             // Filtres
             if ($request->has('section_id')) {
