@@ -157,10 +157,10 @@ class MenuContinent
                             
                             $html .= '</a>';
                             $html .= '</li>';
-                        }
                         $html .= '</div>';
-                    $html .= '</div>';
+                        }
                     }
+                    $html .= '</div>';
                     
                     $html .= '</ul>';
                 } else {
