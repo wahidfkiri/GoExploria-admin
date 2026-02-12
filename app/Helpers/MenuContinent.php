@@ -103,9 +103,9 @@ class MenuContinent
         $columns = self::organizeContinentsIntoColumns($countries, 4);
         
         foreach ($columns as $columnIndex => $columnContinents) {
-            $html .= '<div class="col-lg-4">';
             
             foreach ($columnContinents as $countrie) {
+            $html .= '<div class="col-lg-4">';
                 $html .= '<div class="continent-section mb-4">';
                 
                 // En-tête du continent avec image
@@ -133,8 +133,8 @@ class MenuContinent
                     
                     $html .= '<div class="row">';
                     foreach ($countryChunks as $chunk) {
-                        foreach ($chunk as $province) {
                         $html .= '<div class="col-6">';
+                        foreach ($chunk as $province) {
                             $html .= '<li class="country-item mb-1">';
                             $html .= '<a href="#" 
                                       class="text-muted small d-flex align-items-center">';
@@ -157,8 +157,8 @@ class MenuContinent
                             
                             $html .= '</a>';
                             $html .= '</li>';
-                        $html .= '</div>';
                         }
+                        $html .= '</div>';
                     }
                     $html .= '</div>';
                     
@@ -168,9 +168,9 @@ class MenuContinent
                 }
                 
                 $html .= '</div>'; // Fin continent-section
+            $html .= '</div>'; // Fin col-lg-
             }
             
-            $html .= '</div>'; // Fin col-lg-
         }
         
         $html .= '</div></li></ul>';
