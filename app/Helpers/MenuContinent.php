@@ -11,12 +11,14 @@ class MenuContinent
         $menuDestinations = Country::with(['provinces' => function($query) {
             $query->where('is_active', true)->orderBy('name');
         }])
+        ->where('continent_id', $continentId)
         ->where('is_active', true)
         ->get();
 
         $menus = Menu::with(['activeChildren' => function($query) {
             $query->with('activeChildren')->orderBy('order');
         }])
+        ->where('menu_type', 'Destination')
         ->whereNull('parent_id')
         ->where('is_active', true)
         ->orderBy('order')
