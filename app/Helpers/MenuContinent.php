@@ -133,8 +133,8 @@ class MenuContinent
                     
                     $html .= '<div class="row">';
                     foreach ($countryChunks as $chunk) {
-                        $html .= '<div class="col-6">';
                         foreach ($chunk as $province) {
+                        $html .= '<div class="col-6">';
                             $html .= '<li class="country-item mb-1">';
                             $html .= '<a href="#" 
                                       class="text-muted small d-flex align-items-center">';
@@ -159,8 +159,8 @@ class MenuContinent
                             $html .= '</li>';
                         }
                         $html .= '</div>';
-                    }
                     $html .= '</div>';
+                    }
                     
                     $html .= '</ul>';
                 } else {
