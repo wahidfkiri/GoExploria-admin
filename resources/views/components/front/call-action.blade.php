@@ -629,14 +629,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const pageHeight = document.documentElement.scrollHeight;
         const threshold = pageHeight * scrollThreshold;
         
-        if (scrollPosition >= threshold) {
-            showModal();
-            modalShown = true;
-            // Marquer comme montré dans cette session
-            sessionStorage.setItem('contactModalShown', 'true');
-            // Retirer l'écouteur d'événement
-            window.removeEventListener('scroll', checkScrollPosition);
-        }
+        // if (scrollPosition >= threshold) {
+        //     showModal();
+        //     modalShown = true;
+        //     // Marquer comme montré dans cette session
+        //     sessionStorage.setItem('contactModalShown', 'true');
+        //     // Retirer l'écouteur d'événement
+        //     window.removeEventListener('scroll', checkScrollPosition);
+        // }
     }
     
     function showModal() {
