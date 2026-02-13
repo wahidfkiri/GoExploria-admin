@@ -1435,13 +1435,16 @@ document.addEventListener('DOMContentLoaded', function() {
     </iframe>
 
     <!-- Business -->
-    <iframe 
-        id="affichez-vos-entreprises"
-        src="{{ url('/theme/business/page-1') }}" 
-        width="100%" 
-        style="border:0; overflow:hidden;"
-        scrolling="no">
-    </iframe>
+   
+<!-- Iframe avec un name pour le cibler -->
+<iframe 
+    id="affichez-vos-entreprises"
+    name="business-iframe"
+    src="{{ url('/theme/business/page-1') }}" 
+    width="100%" 
+    style="border:0; overflow:hidden;"
+    scrolling="no">
+</iframe>
 
     <script>
     window.addEventListener('message', function(event) {

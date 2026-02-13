@@ -4,26 +4,35 @@
     <div class="header-inner">
         <div class="container">
             <!--Logo avec texte qui change-->
-            <div id="logo" style="position: relative; display: inline-block;top:30px;">
-                <a href="{{url('/')}}">
-                    <img src="logo.png" class="d-block">
-                </a>
-                <!-- Texte qui change en bas à droite -->
-                <div id="logo-text" style="
-                    position: absolute;
-                    top: 20px;
-                    right: 5px;
-                    font-weight: bold;
-                    font-style: italic;
-                    font-size: 15px;
-                    color: red;
-                    /* background: rgba(0,0,0,0.7); */
-                    padding: 2px 6px;
-                    border-radius: 3px;
-                    white-space: nowrap;
-                ">{{\App\Models\Menu::firstOrFail()->title}}</div>
-            </div>
-            <!--End: Logo-->
+<div id="logo" style="position: relative; display: inline-block; top:10px;">
+    <a href="{{url('/')}}">
+        <img src="logo.png" class="d-block">
+    </a>
+    <!-- Texte qui change en bas à droite -->
+    <div id="logo-text" style="
+        position: absolute;
+        top: 20px;
+        right: 5px;
+        font-weight: bold;
+        font-style: italic;
+        font-size: 15px;
+        color: red;
+        padding: 2px 6px;
+        border-radius: 3px;
+        white-space: nowrap;
+    ">{{\App\Models\Menu::firstOrFail()->title}}</div>
+    
+    <!-- GIF qui recharge l'iframe avec l'ancre -->
+    <a href="{{ url('/theme/business/page-1#plans-daffichage-mondial') }}" 
+       target="business-iframe" 
+       style="cursor: pointer;">
+        <img src="https://media.tenor.com/57TRBE6D9C8AAAAM/location-graphics.gif" 
+             alt="Location graphics" 
+             style="width: 140px; height: 65px; display: block; margin: 0 auto;">
+    </a>   
+</div>
+<!--End: Logo-->
+
             
             <!-- Search -->
             <div id="search">
