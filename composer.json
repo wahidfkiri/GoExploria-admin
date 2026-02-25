@@ -47,7 +47,8 @@
             "Vendor\\Setting\\": "packages/vendor/setting/src",
             "Vendor\\Users\\": "packages/vendor/users/src",
             "Vendor\\Theme\\": "packages/vendor/theme/src",
-            "Vendor\\Template\\": "packages/vendor/template/src"
+            "Vendor\\Template\\": "packages/vendor/template/src",
+            "Vendor\\Project\\": "packages/vendor/project/src"
         }
     },
     "autoload-dev": {

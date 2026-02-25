@@ -15,5 +15,6 @@ return [
     Vendor\Setting\SettingServiceProvider::class,
     Vendor\Users\UsersServiceProvider::class,
     Vendor\Theme\ThemeServiceProvider::class,
-    Vendor\Template\TemplateServiceProvider::class
+    Vendor\Template\TemplateServiceProvider::class,
+    Vendor\Project\ProjectServiceProvider::class
 ];

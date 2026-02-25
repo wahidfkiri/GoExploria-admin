@@ -132,16 +132,31 @@
       </a>
     </li> 
     <!-- <li class="menu-title">Contenu</li> -->
-    <li>
-      <a href="#" class="menu-item">
+    <li class="has-submenu">
+      <a href="#" class="menu-link">
         <span class="menu-icon">
-          <i class="fas fa-images"></i>
+          <i class="fas fa-cube"></i>
         </span>
-        <span class="menu-text">Médias & Contenus</span>
+        <span class="menu-text">Projets</span>
+        <span class="menu-arrow">
+          <i class="fas fa-chevron-down"></i>
+        </span>
       </a>
+      <ul class="submenu">
+        <li>
+          <a href="{{ route('projects.index') }}" class="submenu-item">
+            <span class="submenu-text">Gestion des projets</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('projects.calendar') }}" class="submenu-item">
+            <span class="submenu-text">Calendrier des projets</span>
+          </a>
+        </li>
+      </ul>
     </li>
-    <li>
-      <a href="#" class="menu-item">
+    
+      <a href="#" class="menu-item -none">
         <span class="menu-icon">
           <i class="fas fa-newspaper"></i>
         </span>

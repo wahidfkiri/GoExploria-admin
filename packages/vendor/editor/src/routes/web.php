@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Vendor\Editor\Controllers\EditorController;
 use Vendor\Editor\Controllers\TemplateController;
 use Vendor\Editor\Controllers\BlockController;
+use Illuminate\Support\Facades\Auth;
 
 
 Auth::routes();
