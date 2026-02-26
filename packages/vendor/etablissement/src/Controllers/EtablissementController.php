@@ -325,7 +325,7 @@ private function sendWelcomeEmail(User $user, string $password, Etablissement $e
     public function show(Etablissement $etablissement)
     {
         $etablissement->load(['user', 'activities']);
-        return view('etablissements.show', compact('etablissement'));
+        return view('etablissement::etablissements.show', compact('etablissement'));
     }
 
     /**

@@ -6,7 +6,8 @@ use App\Http\Controllers\{
     TemplateController,
     OpenAIController,
     AuthController,
-    GeminiController
+    GeminiController,
+    HomeController
 };
 
 use App\Http\Controllers\Auth\SocialAuthController;
@@ -39,9 +40,7 @@ Route::get('/login', function () {
 })->name('login');
 
 // Route pour le dashboard (à protéger)
-Route::get('/dashboard', function () {
-    return view('home');
-})->name('dashboard')->middleware('auth');
+Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard')->middleware('auth');
 
 // Route pour le dashboard (à protéger)
 Route::get('/home', function () {

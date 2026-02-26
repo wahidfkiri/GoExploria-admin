@@ -473,216 +473,395 @@
     </main>
 
     <!-- CREATE TASK MODAL -->
-    <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createTaskModalLabel">
-                        <i class="fas fa-plus-circle me-2" style="color: #45b7d1;"></i>
-                        Nouvelle tâche
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="createTaskForm" method="POST">
-                    @csrf
-                    <input type="hidden" name="project_id" value="{{ $project->id }}">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-8 mb-3">
-                                <label for="task_name" class="form-label required-field">Nom de la tâche</label>
-                                <input type="text" class="form-control" id="task_name" name="name" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="task_status" class="form-label">Statut</label>
-                                <select class="form-select" id="task_status" name="status">
-                                    <option value="pending">En attente</option>
-                                    <option value="in_progress">En cours</option>
-                                    <option value="test">En test</option>
-                                    <option value="integrated">Intégré</option>
-                                    <option value="delivered">Livré</option>
-                                    <option value="approved">Approuvé</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="task_description" class="form-label">Description</label>
-                            <textarea class="form-control" id="task_description" name="details" rows="3"></textarea>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="task_user_id" class="form-label required-field">Assigné à</label>
-                                <select class="form-select" id="task_user_id" name="user_id" required>
-                                    <option value="">Sélectionner...</option>
-                                    @foreach($users ?? [] as $user)
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="task_contact_name" class="form-label">Contact client</label>
-                                <input type="text" class="form-control" id="task_contact_name" name="contact_name" value="{{ $project->contact_name }}">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="task_due_date" class="form-label">Date d'échéance</label>
-                                <input type="datetime-local" class="form-control" id="task_due_date" name="due_date">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="task_delivery_date" class="form-label">Date de livraison</label>
-                                <input type="datetime-local" class="form-control" id="task_delivery_date" name="delivery_date">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="task_estimated_hours" class="form-label">Heures estimées</label>
-                                <input type="number" class="form-control" id="task_estimated_hours" name="estimated_hours" min="0" step="0.5">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="task_country" class="form-label">Pays</label>
-                                <input type="text" class="form-control" id="task_country" name="country" placeholder="France">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="task_location" class="form-label">Lieu</label>
-                                <input type="text" class="form-control" id="task_location" name="location" placeholder="Paris">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="task_contract_number" class="form-label">N° Contrat</label>
-                                <input type="text" class="form-control" id="task_contract_number" name="contract_number" value="{{ $project->contract_number }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="task_hourly_rate" class="form-label">Taux horaire (€)</label>
-                                <input type="number" class="form-control" id="task_hourly_rate" name="hourly_rate" min="0" step="0.01" value="{{ $project->hourly_rate }}">
-                            </div>
-                        </div>
-
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            La tâche sera associée au projet "{{ $project->name }}"
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="submit" class="btn btn-primary" id="saveTaskBtn">
-                            <i class="fas fa-save me-2"></i>Créer la tâche
-                        </button>
-                    </div>
-                </form>
+<div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createTaskModalLabel">
+                    <i class="fas fa-plus-circle me-2" style="color: #45b7d1;"></i>
+                    Nouvelle tâche
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form id="createTaskForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="project_id" value="{{ $project->id }}">
+                <div class="modal-body">
+                    <!-- Tabs Navigation -->
+                    <ul class="nav nav-tabs mb-4" id="createTaskTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="create-info-tab" data-bs-toggle="tab" data-bs-target="#create-info" type="button" role="tab">
+                                <i class="fas fa-info-circle me-2"></i>Informations
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="create-files-tab" data-bs-toggle="tab" data-bs-target="#create-files" type="button" role="tab">
+                                <i class="fas fa-paperclip me-2"></i>Fichiers
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="create-advanced-tab" data-bs-toggle="tab" data-bs-target="#create-advanced" type="button" role="tab">
+                                <i class="fas fa-cog me-2"></i>Avancé
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="createTaskTabContent">
+                        <!-- Informations Tab -->
+                        <div class="tab-pane fade show active" id="create-info" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label for="task_name" class="form-label required-field">Nom de la tâche</label>
+                                    <input type="text" class="form-control" id="task_name" name="name" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="task_status" class="form-label">Statut</label>
+                                    <select class="form-select" id="task_status" name="status">
+                                        <option value="pending">En attente</option>
+                                        <option value="in_progress">En cours</option>
+                                        <option value="test">En test</option>
+                                        <option value="integrated">Intégré</option>
+                                        <option value="delivered">Livré</option>
+                                        <option value="approved">Approuvé</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="task_description" class="form-label">Description</label>
+                                <textarea class="form-control" id="task_description" name="details" rows="3"></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="task_user_id" class="form-label required-field">Assigné à</label>
+                                    <select class="form-select select2-modern" id="task_user_id" name="user_id" required>
+                                        <option value="">Sélectionner...</option>
+                                        @foreach($users ?? [] as $user)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="task_contact_name" class="form-label">Contact client</label>
+                                    <input type="text" class="form-control" id="task_contact_name" name="contact_name" value="{{ $project->contact_name }}">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="task_due_date" class="form-label">Date d'échéance</label>
+                                    <input type="datetime-local" class="form-control" id="task_due_date" name="due_date">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="task_delivery_date" class="form-label">Date de livraison</label>
+                                    <input type="datetime-local" class="form-control" id="task_delivery_date" name="delivery_date">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="task_estimated_hours" class="form-label">Heures estimées</label>
+                                    <input type="number" class="form-control" id="task_estimated_hours" name="estimated_hours" min="0" step="0.5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fichiers Tab -->
+                        <div class="tab-pane fade" id="create-files" role="tabpanel">
+                            <div class="file-upload-area">
+                                <div class="dropzone-container mb-3" id="createTaskDropzone">
+                                    <div class="dropzone-message">
+                                        <i class="fas fa-cloud-upload-alt fa-3x mb-3" style="color: #45b7d1;"></i>
+                                        <h5>Déposez vos fichiers ici</h5>
+                                        <p class="text-muted mb-2">ou cliquez pour sélectionner</p>
+                                        <small class="text-muted">Taille max: 10MB par fichier</small>
+                                    </div>
+                                    <input type="file" class="file-input" id="create_task_files" name="files[]" multiple style="display: none;" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.zip">
+                                </div>
+
+                                <!-- Liste des fichiers sélectionnés -->
+                                <div class="selected-files-list" id="createSelectedFiles">
+                                    <!-- Les fichiers sélectionnés apparaîtront ici -->
+                                </div>
+
+                                <div class="alert alert-info mt-3">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Formats acceptés :</strong> PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, JPG, PNG, GIF, ZIP
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Avancé Tab -->
+                        <div class="tab-pane fade" id="create-advanced" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="task_priority" class="form-label">Priorité</label>
+                                    <select class="form-select" id="task_priority" name="priority">
+                                        <option value="low">Basse</option>
+                                        <option value="medium" selected>Moyenne</option>
+                                        <option value="high">Haute</option>
+                                        <option value="urgent">Urgente</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="task_tags" class="form-label">Tags</label>
+                                    <input type="text" class="form-control" id="task_tags" name="tags" placeholder="tag1, tag2, tag3">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="task_country" class="form-label">Pays</label>
+                                    <input type="text" class="form-control" id="task_country" name="country" placeholder="France">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="task_location" class="form-label">Lieu</label>
+                                    <input type="text" class="form-control" id="task_location" name="location" placeholder="Paris">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="task_contract_number" class="form-label">N° Contrat</label>
+                                    <input type="text" class="form-control" id="task_contract_number" name="contract_number" value="{{ $project->contract_number }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="task_hourly_rate" class="form-label">Taux horaire (€)</label>
+                                    <input type="number" class="form-control" id="task_hourly_rate" name="hourly_rate" min="0" step="0.01" value="{{ $project->hourly_rate }}">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="task_test_date" class="form-label">Date de test</label>
+                                    <input type="datetime-local" class="form-control" id="task_test_date" name="test_date">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="task_integration_date" class="form-label">Date d'intégration</label>
+                                    <input type="datetime-local" class="form-control" id="task_integration_date" name="integration_date">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary" id="saveTaskBtn">
+                        <i class="fas fa-save me-2"></i>Créer la tâche
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <!-- EDIT TASK MODAL -->
-    <div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editTaskModalLabel">
-                        <i class="fas fa-edit me-2" style="color: #45b7d1;"></i>
-                        Modifier la tâche
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="editTaskForm" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" id="edit_task_id" name="task_id">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-8 mb-3">
-                                <label for="edit_task_name" class="form-label required-field">Nom de la tâche</label>
-                                <input type="text" class="form-control" id="edit_task_name" name="name" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="edit_task_status" class="form-label">Statut</label>
-                                <select class="form-select" id="edit_task_status" name="status">
-                                    <option value="pending">En attente</option>
-                                    <option value="in_progress">En cours</option>
-                                    <option value="test">En test</option>
-                                    <option value="integrated">Intégré</option>
-                                    <option value="delivered">Livré</option>
-                                    <option value="approved">Approuvé</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <input type="hidden" name="project_id" value="{{$project->id}}">
-
-                        <div class="mb-3">
-                            <label for="edit_task_description" class="form-label">Description</label>
-                            <textarea class="form-control" id="edit_task_description" name="details" rows="3"></textarea>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_task_user_id" class="form-label required-field">Assigné à</label>
-                                <select class="form-select" id="edit_task_user_id" name="user_id" required>
-                                    <option value="">Sélectionner...</option>
-                                    @foreach($users ?? [] as $user)
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_task_contact_name" class="form-label">Contact client</label>
-                                <input type="text" class="form-control" id="edit_task_contact_name" name="contact_name">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="edit_task_due_date" class="form-label">Date d'échéance</label>
-                                <input type="datetime-local" class="form-control" id="edit_task_due_date" name="due_date">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="edit_task_delivery_date" class="form-label">Date de livraison</label>
-                                <input type="datetime-local" class="form-control" id="edit_task_delivery_date" name="delivery_date">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="edit_task_estimated_hours" class="form-label">Heures estimées</label>
-                                <input type="number" class="form-control" id="edit_task_estimated_hours" name="estimated_hours" min="0" step="0.5">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_task_country" class="form-label">Pays</label>
-                                <input type="text" class="form-control" id="edit_task_country" name="country" placeholder="France">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_task_location" class="form-label">Lieu</label>
-                                <input type="text" class="form-control" id="edit_task_location" name="location" placeholder="Paris">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_task_contract_number" class="form-label">N° Contrat</label>
-                                <input type="text" class="form-control" id="edit_task_contract_number" name="contract_number">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="edit_task_hourly_rate" class="form-label">Taux horaire (€)</label>
-                                <input type="number" class="form-control" id="edit_task_hourly_rate" name="hourly_rate" min="0" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="submit" class="btn btn-primary" id="updateTaskBtn">
-                            <i class="fas fa-save me-2"></i>Mettre à jour
-                        </button>
-                    </div>
-                </form>
+ <!-- EDIT TASK MODAL -->
+<div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTaskModalLabel">
+                    <i class="fas fa-edit me-2" style="color: #45b7d1;"></i>
+                    Modifier la tâche
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form id="editTaskForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <input type="hidden" id="edit_task_id" name="task_id">
+                <input type="hidden" name="project_id" value="{{ $project->id }}">
+                
+                <div class="modal-body">
+                    <!-- Tabs Navigation -->
+                    <ul class="nav nav-tabs mb-4" id="editTaskTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="edit-info-tab" data-bs-toggle="tab" data-bs-target="#edit-info" type="button" role="tab">
+                                <i class="fas fa-info-circle me-2"></i>Informations
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="edit-files-tab" data-bs-toggle="tab" data-bs-target="#edit-files" type="button" role="tab">
+                                <i class="fas fa-paperclip me-2"></i>Fichiers
+                                <span class="badge bg-primary ms-2" id="filesCount">0</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="edit-advanced-tab" data-bs-toggle="tab" data-bs-target="#edit-advanced" type="button" role="tab">
+                                <i class="fas fa-cog me-2"></i>Avancé
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="editTaskTabContent">
+                        <!-- Informations Tab -->
+                        <div class="tab-pane fade show active" id="edit-info" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <label for="edit_task_name" class="form-label required-field">Nom de la tâche</label>
+                                    <input type="text" class="form-control" id="edit_task_name" name="name" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="edit_task_status" class="form-label">Statut</label>
+                                    <select class="form-select" id="edit_task_status" name="status">
+                                        <option value="pending">En attente</option>
+                                        <option value="in_progress">En cours</option>
+                                        <option value="test">En test</option>
+                                        <option value="integrated">Intégré</option>
+                                        <option value="delivered">Livré</option>
+                                        <option value="approved">Approuvé</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="edit_task_description" class="form-label">Description</label>
+                                <textarea class="form-control" id="edit_task_description" name="details" rows="3"></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="edit_task_user_id" class="form-label required-field">Assigné à</label>
+                                    <select class="form-select select2-modern" id="edit_task_user_id" name="user_id" required>
+                                        <option value="">Sélectionner...</option>
+                                        @foreach($users ?? [] as $user)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="edit_task_contact_name" class="form-label">Contact client</label>
+                                    <input type="text" class="form-control" id="edit_task_contact_name" name="contact_name">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="edit_task_due_date" class="form-label">Date d'échéance</label>
+                                    <input type="datetime-local" class="form-control" id="edit_task_due_date" name="due_date">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="edit_task_delivery_date" class="form-label">Date de livraison</label>
+                                    <input type="datetime-local" class="form-control" id="edit_task_delivery_date" name="delivery_date">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="edit_task_estimated_hours" class="form-label">Heures estimées</label>
+                                    <input type="number" class="form-control" id="edit_task_estimated_hours" name="estimated_hours" min="0" step="0.5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fichiers Tab -->
+                        <div class="tab-pane fade" id="edit-files" role="tabpanel">
+                            <!-- Liste des fichiers existants -->
+                            <div class="existing-files-section mb-4">
+                                <h6 class="mb-3">Fichiers existants</h6>
+                                <div id="existingFilesList" class="file-list">
+                                    <!-- Les fichiers existants seront chargés ici -->
+                                </div>
+                            </div>
+
+                            <!-- Upload de nouveaux fichiers -->
+                            <div class="new-files-section">
+                                <h6 class="mb-3">Ajouter des fichiers</h6>
+                                <div class="file-upload-area">
+                                    <div class="dropzone-container mb-3" id="editTaskDropzone">
+                                        <div class="dropzone-message">
+                                            <i class="fas fa-cloud-upload-alt fa-3x mb-3" style="color: #45b7d1;"></i>
+                                            <h5>Déposez vos fichiers ici</h5>
+                                            <p class="text-muted mb-2">ou cliquez pour sélectionner</p>
+                                            <small class="text-muted">Taille max: 10MB par fichier</small>
+                                        </div>
+                                        <input type="file" class="file-input" id="edit_task_files" name="new_files[]" multiple style="display: none;" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.zip">
+                                    </div>
+
+                                    <!-- Liste des nouveaux fichiers sélectionnés -->
+                                    <div class="selected-files-list" id="editSelectedFiles">
+                                        <!-- Les nouveaux fichiers sélectionnés apparaîtront ici -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Avancé Tab -->
+                        <div class="tab-pane fade" id="edit-advanced" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="edit_task_priority" class="form-label">Priorité</label>
+                                    <select class="form-select" id="edit_task_priority" name="priority">
+                                        <option value="low">Basse</option>
+                                        <option value="medium">Moyenne</option>
+                                        <option value="high">Haute</option>
+                                        <option value="urgent">Urgente</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="edit_task_tags" class="form-label">Tags</label>
+                                    <input type="text" class="form-control" id="edit_task_tags" name="tags" placeholder="tag1, tag2, tag3">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="edit_task_country" class="form-label">Pays</label>
+                                    <input type="text" class="form-control" id="edit_task_country" name="country" placeholder="France">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="edit_task_location" class="form-label">Lieu</label>
+                                    <input type="text" class="form-control" id="edit_task_location" name="location" placeholder="Paris">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="edit_task_contract_number" class="form-label">N° Contrat</label>
+                                    <input type="text" class="form-control" id="edit_task_contract_number" name="contract_number">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="edit_task_hourly_rate" class="form-label">Taux horaire (€)</label>
+                                    <input type="number" class="form-control" id="edit_task_hourly_rate" name="hourly_rate" min="0" step="0.01">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="edit_task_test_date" class="form-label">Date de test</label>
+                                    <input type="datetime-local" class="form-control" id="edit_task_test_date" name="test_date">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="edit_task_integration_date" class="form-label">Date d'intégration</label>
+                                    <input type="datetime-local" class="form-control" id="edit_task_integration_date" name="integration_date">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="edit_task_push_prod_date" class="form-label">Date de MEP</label>
+                                    <input type="datetime-local" class="form-control" id="edit_task_push_prod_date" name="push_prod_date">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="edit_task_module_url" class="form-label">URL du module</label>
+                                    <input type="url" class="form-control" id="edit_task_module_url" name="module_url" placeholder="https://...">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="edit_task_test_details" class="form-label">Détails du test</label>
+                                <textarea class="form-control" id="edit_task_test_details" name="test_details" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary" id="updateTaskBtn">
+                        <i class="fas fa-save me-2"></i>Mettre à jour
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
     <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1">
@@ -1152,207 +1331,843 @@
             flex-wrap: wrap;
         }
     }
+    /* File Upload Styles */
+.file-upload-area {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.dropzone-container {
+    border: 2px dashed #45b7d1;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(69, 183, 209, 0.05);
+}
+
+.dropzone-container:hover {
+    border-color: #3a56e4;
+    background: rgba(69, 183, 209, 0.1);
+}
+
+.dropzone-container.dragover {
+    border-color: #06b48a;
+    background: rgba(6, 180, 138, 0.1);
+}
+
+.dropzone-message h5 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Selected Files List */
+.selected-files-list {
+    margin-top: 15px;
+}
+
+.selected-file-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #eaeaea;
+    animation: slideIn 0.3s ease;
+}
+
+.selected-file-item:last-child {
+    margin-bottom: 0;
+}
+
+.selected-file-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #45b7d1, #3a56e4);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: 12px;
+}
+
+.selected-file-info {
+    flex: 1;
+}
+
+.selected-file-name {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.selected-file-size {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.selected-file-remove {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    border: none;
+    background: #fee;
+    color: #ef476f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.selected-file-remove:hover {
+    background: #ef476f;
+    color: white;
+}
+
+/* Existing Files List */
+.file-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.existing-file-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #eaeaea;
+}
+
+.existing-file-item:last-child {
+    margin-bottom: 0;
+}
+
+.existing-file-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #45b7d1, #3a56e4);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: 12px;
+}
+
+.existing-file-info {
+    flex: 1;
+}
+
+.existing-file-name {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.existing-file-meta {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.existing-file-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.existing-file-download,
+.existing-file-delete {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.existing-file-download {
+    background: #e3f2fd;
+    color: #45b7d1;
+}
+
+.existing-file-download:hover {
+    background: #45b7d1;
+    color: white;
+}
+
+.existing-file-delete {
+    background: #fee;
+    color: #ef476f;
+}
+
+.existing-file-delete:hover {
+    background: #ef476f;
+    color: white;
+}
+
+.existing-file-delete:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* File Progress Bar */
+.file-progress {
+    margin-top: 10px;
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.file-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #45b7d1, #06b48a);
+    transition: width 0.3s ease;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+@keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+    
+    .modal-body.loading {
+        position: relative;
+        min-height: 200px;
+    }
+    
+    .modal-body.loading::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+    }
+    
+    .modal-body.loading::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #45b7d1;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        z-index: 11;
+    }
+    
+    @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
-    let projectId = {{ $project->id }};
-    let deleteModal;
-    let statusModal;
-    let createTaskModal;
-    let editTaskModal;
+    // ============================================
+    // CONFIGURATION GLOBALE
+    // ============================================
+    const projectId = {{ $project->id }};
+    let currentTaskId = null;
+    
+    // Gestionnaires de fichiers
+    let createFileManager = null;
+    let editFileManager = null;
+    
+    // Modals
+    let deleteModal, statusModal, createTaskModal, editTaskModal;
 
+    // ============================================
+    // CLASSE DE GESTION DES FICHIERS
+    // ============================================
+    class FileManager {
+        constructor(context) {
+            this.context = context; // 'create' ou 'edit'
+            this.selectedFiles = [];
+            this.existingFiles = [];
+            this.maxSize = 10 * 1024 * 1024; // 10MB
+            this.allowedTypes = [
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.ms-powerpoint',
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                'text/plain',
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'application/zip',
+                'application/x-zip-compressed'
+            ];
+            
+            this.init();
+        }
+        
+        init() {
+            this.dropzone = document.getElementById(`${this.context}TaskDropzone`);
+            this.fileInput = document.getElementById(`${this.context}_task_files`);
+            this.selectedList = document.getElementById(`${this.context}SelectedFiles`);
+            
+            if (!this.dropzone || !this.fileInput) return;
+            
+            this.bindEvents();
+        }
+        
+        bindEvents() {
+            // Click sur la dropzone
+            this.dropzone.addEventListener('click', () => {
+                this.fileInput.click();
+            });
+            
+            // Drag & Drop
+            this.dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                this.dropzone.classList.add('dragover');
+            });
+            
+            this.dropzone.addEventListener('dragleave', () => {
+                this.dropzone.classList.remove('dragover');
+            });
+            
+            this.dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                this.dropzone.classList.remove('dragover');
+                this.handleFiles(e.dataTransfer.files);
+            });
+            
+            // Sélection de fichiers
+            this.fileInput.addEventListener('change', (e) => {
+                this.handleFiles(e.target.files);
+            });
+        }
+        
+        handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (!this.validateFile(file)) return;
+                
+                // Vérifier les doublons
+                if (this.selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                    this.showNotification('warning', `Le fichier ${file.name} est déjà dans la liste`);
+                    return;
+                }
+                
+                this.selectedFiles.push(file);
+                this.displayFile(file);
+            });
+            
+            this.updateFileInput();
+        }
+        
+        validateFile(file) {
+            // Vérifier la taille
+            if (file.size > this.maxSize) {
+                this.showNotification('warning', `Le fichier ${file.name} dépasse la taille maximale de 10MB`);
+                return false;
+            }
+            
+            // Vérifier le type (optionnel)
+            // if (!this.allowedTypes.includes(file.type)) {
+            //     this.showNotification('warning', `Le type du fichier ${file.name} n'est pas autorisé`);
+            //     return false;
+            // }
+            
+            return true;
+        }
+        
+        displayFile(file) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'selected-file-item';
+            fileItem.dataset.fileName = file.name;
+            fileItem.dataset.fileSize = file.size;
+            
+            const fileInfo = this.getFileInfo(file.name);
+            
+            fileItem.innerHTML = `
+                <div class="selected-file-icon">
+                    <i class="${fileInfo.icon}"></i>
+                </div>
+                <div class="selected-file-info">
+                    <div class="selected-file-name">${file.name}</div>
+                    <div class="selected-file-size">${this.formatSize(file.size)}</div>
+                </div>
+                <button type="button" class="selected-file-remove" onclick="window.${this.context}FileManager.removeFile('${file.name}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            this.selectedList.appendChild(fileItem);
+        }
+        
+        removeFile(fileName) {
+            this.selectedFiles = this.selectedFiles.filter(f => f.name !== fileName);
+            this.refreshDisplay();
+            this.updateFileInput();
+        }
+        
+        refreshDisplay() {
+            this.selectedList.innerHTML = '';
+            this.selectedFiles.forEach(file => this.displayFile(file));
+        }
+        
+        updateFileInput() {
+            const dataTransfer = new DataTransfer();
+            this.selectedFiles.forEach(file => dataTransfer.items.add(file));
+            this.fileInput.files = dataTransfer.files;
+        }
+        
+        getFileInfo(filename) {
+            const extension = filename.split('.').pop().toLowerCase();
+            
+            const icons = {
+                pdf: 'fas fa-file-pdf text-danger',
+                doc: 'fas fa-file-word text-primary',
+                docx: 'fas fa-file-word text-primary',
+                xls: 'fas fa-file-excel text-success',
+                xlsx: 'fas fa-file-excel text-success',
+                ppt: 'fas fa-file-powerpoint text-warning',
+                pptx: 'fas fa-file-powerpoint text-warning',
+                jpg: 'fas fa-file-image text-info',
+                jpeg: 'fas fa-file-image text-info',
+                png: 'fas fa-file-image text-info',
+                gif: 'fas fa-file-image text-info',
+                zip: 'fas fa-file-archive text-secondary',
+                rar: 'fas fa-file-archive text-secondary',
+                txt: 'fas fa-file-alt text-muted'
+            };
+            
+            return {
+                icon: icons[extension] || 'fas fa-file text-muted'
+            };
+        }
+        
+        formatSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const units = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(1024));
+            return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + units[i];
+        }
+        
+        showNotification(type, message) {
+            if (typeof window.showNotification === 'function') {
+                window.showNotification(type, message);
+            } else {
+                alert(message);
+            }
+        }
+        
+        reset() {
+            this.selectedFiles = [];
+            if (this.selectedList) {
+                this.selectedList.innerHTML = '';
+            }
+            this.updateFileInput();
+        }
+        
+        // Pour le mode édition uniquement
+        async loadExistingFiles(taskId) {
+            if (this.context !== 'edit') return;
+            
+            try {
+                const response = await $.ajax({
+                    url: `/tasks/${taskId}/files`,
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                
+                if (response.success) {
+                    this.existingFiles = response.data;
+                    this.displayExistingFiles();
+                    $('#filesCount').text(this.existingFiles.length);
+                }
+            } catch (error) {
+                console.error('Error loading files:', error);
+            }
+        }
+        
+        displayExistingFiles() {
+            const container = document.getElementById('existingFilesList');
+            if (!container) return;
+            
+            if (this.existingFiles.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-3">Aucun fichier joint</p>';
+                return;
+            }
+            
+            let html = '';
+            this.existingFiles.forEach(file => {
+                html += `
+                    <div class="existing-file-item" id="file-${file.id}">
+                        <div class="existing-file-icon">
+                            <i class="${file.icon || 'fas fa-file'}"></i>
+                        </div>
+                        <div class="existing-file-info">
+                            <div class="existing-file-name">${this.escapeHtml(file.name)}</div>
+                            <div class="existing-file-meta">
+                                ${file.size || 'N/A'} • ${file.uploaded_by || 'Système'} • ${file.uploaded_at || ''}
+                            </div>
+                        </div>
+                        <div class="existing-file-actions">
+                            <a href="${file.download_url || '#'}" class="existing-file-download" target="_blank" title="Télécharger">
+                                <i class="fas fa-download"></i>
+                            </a>
+                            <button class="existing-file-delete" onclick="window.editFileManager.deleteFile(${file.id})" title="Supprimer">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        async deleteFile(fileId) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer ce fichier ?')) return;
+            
+            const fileElement = document.getElementById(`file-${fileId}`);
+            const deleteBtn = fileElement?.querySelector('.existing-file-delete');
+            
+            if (deleteBtn) {
+                deleteBtn.disabled = true;
+                deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            }
+            
+            try {
+                const response = await $.ajax({
+                    url: `/tasks/${window.currentTaskId}/files/${fileId}`,
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                
+                if (response.success) {
+                    if (fileElement) {
+                        fileElement.style.animation = 'fadeOut 0.3s ease';
+                        setTimeout(() => {
+                            fileElement.remove();
+                            this.existingFiles = this.existingFiles.filter(f => f.id !== fileId);
+                            $('#filesCount').text(this.existingFiles.length);
+                            
+                            if (this.existingFiles.length === 0) {
+                                document.getElementById('existingFilesList').innerHTML = 
+                                    '<p class="text-muted text-center py-3">Aucun fichier joint</p>';
+                            }
+                        }, 300);
+                    }
+                    
+                    this.showNotification('success', 'Fichier supprimé avec succès');
+                }
+            } catch (error) {
+                console.error('Error deleting file:', error);
+                this.showNotification('error', 'Erreur lors de la suppression');
+                if (deleteBtn) {
+                    deleteBtn.disabled = false;
+                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                }
+            }
+        }
+        
+        escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        getFormData() {
+            const data = new FormData();
+            this.selectedFiles.forEach(file => {
+                data.append('files[]', file);
+            });
+            return data;
+        }
+    }
+
+    // ============================================
+    // INITIALISATION
+    // ============================================
     $(document).ready(function() {
-        // Initialize modals
+        // Initialiser les modals
         deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
         statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
         createTaskModal = new bootstrap.Modal(document.getElementById('createTaskModal'));
         editTaskModal = new bootstrap.Modal(document.getElementById('editTaskModal'));
-
-        // Initialize Select2 in modals
+        
+        // Initialiser les gestionnaires de fichiers
+        window.createFileManager = new FileManager('create');
+        window.editFileManager = new FileManager('edit');
+        
+        // Initialiser Select2
         $('.modal').on('shown.bs.modal', function() {
             $(this).find('.select2-modern').select2({
                 dropdownParent: $(this),
                 width: '100%'
             });
         });
-
-        // Create Task Form Submit
-        $('#createTaskForm').on('submit', function(e) {
-            e.preventDefault();
-            createTask();
+        
+        // Form submissions
+        $('#createTaskForm').on('submit', createTask);
+        $('#editTaskForm').on('submit', updateTask);
+        
+        // Reset forms when modals are hidden
+        $('#createTaskModal').on('hidden.bs.modal', function() {
+            $('#createTaskForm')[0].reset();
+            if (window.createFileManager) {
+                window.createFileManager.reset();
+            }
         });
-
-        // Edit Task Form Submit
-        $('#editTaskForm').on('submit', function(e) {
-            e.preventDefault();
-            updateTask();
+        
+        $('#editTaskModal').on('hidden.bs.modal', function() {
+            $('#editTaskForm')[0].reset();
+            if (window.editFileManager) {
+                window.editFileManager.reset();
+                window.editFileManager.existingFiles = [];
+                $('#existingFilesList').empty();
+                $('#filesCount').text('0');
+            }
+            window.currentTaskId = null;
         });
     });
 
-    // Helper functions for avatar
-    function getInitials(name) {
-        if (!name) return '?';
-        return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-    }
-
-    function getAvatarColor(name) {
-        const colors = ['#45b7d1', '#96ceb4', '#feca57', '#ff6b6b', '#9b59b6'];
-        const index = (name?.length || 0) % colors.length;
-        return colors[index];
-    }
-
-    // Activity helpers
-    function getActivityColor(description) {
-        const colors = {
-            'created': '#06b48a',
-            'updated': '#45b7d1',
-            'deleted': '#ef476f',
-            'status': '#ffd166'
-        };
-        
-        if (description.includes('créé')) return colors.created;
-        if (description.includes('supprim')) return colors.deleted;
-        if (description.includes('statut')) return colors.status;
-        return colors.updated;
-    }
-
-    function getActivityIcon(description) {
-        const icons = {
-            'created': 'fa-plus-circle',
-            'updated': 'fa-edit',
-            'deleted': 'fa-trash',
-            'status': 'fa-exchange-alt'
-        };
-        
-        if (description.includes('créé')) return icons.created;
-        if (description.includes('supprim')) return icons.deleted;
-        if (description.includes('statut')) return icons.status;
-        return icons.updated;
-    }
-
-    // Open Create Task Modal
+    // ============================================
+    // FONCTIONS PRINCIPALES
+    // ============================================
+    
+    // Ouvrir le modal de création
     function openCreateTaskModal() {
         $('#createTaskForm')[0].reset();
-        $('#createTaskModal').modal('show');
+        if (window.createFileManager) {
+            window.createFileManager.reset();
+        }
+        createTaskModal.show();
     }
-
-    // Create Task
-    function createTask() {
-        const formData = $('#createTaskForm').serialize();
+    
+    // Créer une tâche
+    async function createTask(e) {
+        e.preventDefault();
         
-        $.ajax({
-            url: '{{ route("tasks.store") }}',
-            type: 'POST',
-            data: formData,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success) {
-                    createTaskModal.hide();
-                    showNotification('success', 'Tâche créée avec succès');
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
-                } else {
-                    showNotification('error', response.message || 'Erreur lors de la création');
+        const formData = new FormData(this);
+        
+        // Ajouter les fichiers
+        if (window.createFileManager) {
+            window.createFileManager.selectedFiles.forEach(file => {
+                formData.append('files[]', file);
+            });
+        }
+        
+        const submitBtn = $('#saveTaskBtn');
+        const originalText = submitBtn.html();
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Création...');
+        
+        try {
+            const response = await $.ajax({
+                url: '{{ route("tasks.store") }}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            },
-            error: function(xhr) {
-                if (xhr.status === 422) {
-                    const errors = xhr.responseJSON.errors;
-                    let errorMessage = 'Erreurs de validation:\n';
-                    for (let field in errors) {
-                        errorMessage += `- ${errors[field].join('\n')}\n`;
-                    }
-                    showNotification('error', errorMessage);
-                } else {
-                    showNotification('error', 'Erreur de connexion au serveur');
-                }
+            });
+            
+            if (response.success) {
+                createTaskModal.hide();
+                showNotification('success', 'Tâche créée avec succès');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showNotification('error', response.message || 'Erreur lors de la création');
             }
-        });
+        } catch (error) {
+            handleAjaxError(error);
+        } finally {
+            submitBtn.prop('disabled', false).html(originalText);
+        }
     }
-
-    // Open Edit Task Modal
-    function openEditTaskModal(taskId) {
-        $.ajax({
-            url: `/tasks/${taskId}/edit`,
-            type: 'GET',
-            success: function(response) {
-                if (response.success) {
-                    const task = response.data;
-                    
-                    $('#edit_task_id').val(task.id);
-                    $('#edit_task_name').val(task.name);
-                    $('#edit_task_status').val(task.status);
-                    $('#edit_task_description').val(task.details);
-                    $('#edit_task_user_id').val(task.user_id);
-                    $('#edit_task_contact_name').val(task.contact_name);
-                    
-                    if (task.due_date) {
-                        $('#edit_task_due_date').val(task.due_date.replace(' ', 'T').substring(0, 16));
-                    }
-                    if (task.delivery_date) {
-                        $('#edit_task_delivery_date').val(task.delivery_date.replace(' ', 'T').substring(0, 16));
-                    }
-                    
-                    $('#edit_task_estimated_hours').val(task.estimated_hours);
-                    $('#edit_task_country').val(task.country);
-                    $('#edit_task_location').val(task.location);
-                    $('#edit_task_contract_number').val(task.contract_number);
-                    $('#edit_task_hourly_rate').val(task.hourly_rate);
-                    
-                    editTaskModal.show();
+    
+    // Voir une tâche (redirection vers la page show)
+    function viewTask(taskId) {
+        window.location.href = `/tasks/${taskId}`;
+    }
+    
+    // Ouvrir le modal d'édition
+    async function openEditTaskModal(taskId) {
+        window.currentTaskId = taskId;
+        
+        $('#editTaskForm')[0].reset();
+        $('#editTaskModal .modal-body').addClass('loading');
+        
+        try {
+            // Charger les données de la tâche
+            const response = await $.ajax({
+                url: `/tasks/${taskId}/edit`,
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            },
-            error: function(xhr) {
-                showNotification('error', 'Erreur lors du chargement de la tâche');
+            });
+            
+            if (response.success) {
+                const task = response.data;
+                
+                // Remplir le formulaire
+                $('#edit_task_id').val(task.id);
+                $('#edit_task_name').val(task.name);
+                $('#edit_task_status').val(task.status);
+                $('#edit_task_description').val(task.details);
+                $('#edit_task_user_id').val(task.user_id);
+                $('#edit_task_contact_name').val(task.contact_name);
+                
+                if (task.due_date) {
+                    $('#edit_task_due_date').val(task.due_date.substring(0, 16));
+                }
+                if (task.delivery_date) {
+                    $('#edit_task_delivery_date').val(task.delivery_date.substring(0, 16));
+                }
+                
+                $('#edit_task_estimated_hours').val(task.estimated_hours);
+                $('#edit_task_country').val(task.country);
+                $('#edit_task_location').val(task.location);
+                $('#edit_task_contract_number').val(task.contract_number);
+                $('#edit_task_hourly_rate').val(task.hourly_rate);
+                $('#edit_task_priority').val(task.priority || 'medium');
+                $('#edit_task_tags').val(task.tags || '');
+                
+                if (task.test_date) {
+                    $('#edit_task_test_date').val(task.test_date.substring(0, 16));
+                }
+                if (task.integration_date) {
+                    $('#edit_task_integration_date').val(task.integration_date.substring(0, 16));
+                }
+                if (task.push_prod_date) {
+                    $('#edit_task_push_prod_date').val(task.push_prod_date.substring(0, 16));
+                }
+                
+                $('#edit_task_module_url').val(task.module_url);
+                $('#edit_task_test_details').val(task.test_details);
+                
+                // Charger les fichiers existants
+                if (window.editFileManager) {
+                    await window.editFileManager.loadExistingFiles(taskId);
+                }
+                
+                editTaskModal.show();
             }
-        });
+        } catch (error) {
+            handleAjaxError(error);
+        } finally {
+            $('#editTaskModal .modal-body').removeClass('loading');
+        }
     }
-
-    // Update Task
-    function updateTask() {
+    
+    // Mettre à jour une tâche
+    async function updateTask(e) {
+        e.preventDefault();
+        
         const taskId = $('#edit_task_id').val();
-        const formData = $('#editTaskForm').serialize();
+        const formData = new FormData(this);
+        formData.append('_method', 'PUT');
         
-        $.ajax({
-            url: `/tasks/${taskId}`,
-            type: 'POST',
-            data: formData,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success) {
-                    editTaskModal.hide();
-                    showNotification('success', 'Tâche mise à jour avec succès');
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
-                } else {
-                    showNotification('error', response.message || 'Erreur lors de la mise à jour');
+        // Ajouter les nouveaux fichiers
+        if (window.editFileManager) {
+            window.editFileManager.selectedFiles.forEach(file => {
+                formData.append('new_files[]', file);
+            });
+        }
+        
+        const submitBtn = $('#updateTaskBtn');
+        const originalText = submitBtn.html();
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Mise à jour...');
+        
+        try {
+            const response = await $.ajax({
+                url: `/tasks/${taskId}`,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            },
-            error: function(xhr) {
-                if (xhr.status === 422) {
-                    const errors = xhr.responseJSON.errors;
-                    let errorMessage = 'Erreurs de validation:\n';
-                    for (let field in errors) {
-                        errorMessage += `- ${errors[field].join('\n')}\n`;
-                    }
-                    showNotification('error', errorMessage);
-                } else {
-                    showNotification('error', 'Erreur de connexion au serveur');
-                }
+            });
+            
+            if (response.success) {
+                editTaskModal.hide();
+                showNotification('success', 'Tâche mise à jour avec succès');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showNotification('error', response.message || 'Erreur lors de la mise à jour');
             }
-        });
+        } catch (error) {
+            handleAjaxError(error);
+        } finally {
+            submitBtn.prop('disabled', false).html(originalText);
+        }
     }
-
-    // Task filtering
+    
+    // ============================================
+    // FONCTIONS DE GESTION DES TÂCHES
+    // ============================================
+    
+    // Filtrer les tâches
     function filterTasks(filter) {
         $('.task-item').each(function() {
             const status = $(this).data('status');
@@ -1360,164 +2175,194 @@
             if (filter === 'all') {
                 $(this).show();
             } else if (filter === 'pending') {
-                $(this).show(status !== 'approved' && status !== 'cancelled');
+                // Afficher toutes les tâches non terminées
+                $(this).toggle(status !== 'approved');
             } else if (filter === 'completed') {
-                $(this).show(status === 'approved');
+                // Afficher uniquement les tâches terminées
+                $(this).toggle(status === 'approved');
             }
         });
     }
-
-    // Toggle task status
-    function toggleTaskStatus(taskId, completed) {
-        $.ajax({
-            url: `/tasks/${taskId}/toggle-status`,
-            type: 'PATCH',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                completed: completed
-            },
-            success: function(response) {
-                if (response.success) {
-                    const taskItem = $(`#task-${taskId}`);
-                    const taskName = taskItem.find('.task-name');
-                    
-                    if (completed) {
-                        taskName.addClass('task-completed');
-                        taskItem.find('.task-badge').text('Terminée').attr('class', 'task-badge status-approved');
-                    } else {
-                        taskName.removeClass('task-completed');
-                        taskItem.find('.task-badge').text('En cours').attr('class', 'task-badge status-in_progress');
-                    }
-                    
-                    showNotification('success', 'Statut de la tâche mis à jour');
+    
+    // Changer le statut d'une tâche
+    async function toggleTaskStatus(taskId, completed) {
+        try {
+            const response = await $.ajax({
+                url: `/tasks/${taskId}/toggle-status`,
+                type: 'PATCH',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    completed: completed
                 }
-            },
-            error: function(xhr) {
-                console.error('Error:', xhr.responseText);
-                showNotification('error', 'Erreur lors de la mise à jour');
+            });
+            
+            if (response.success) {
+                const taskItem = $(`#task-${taskId}`);
+                const taskName = taskItem.find('.task-name');
+                const taskBadge = taskItem.find('.task-badge');
+                
+                if (completed) {
+                    taskName.addClass('task-completed');
+                    taskBadge.text('Approuvé').attr('class', 'task-badge status-approved');
+                } else {
+                    taskName.removeClass('task-completed');
+                    taskBadge.text('En cours').attr('class', 'task-badge status-in_progress');
+                }
+                
+                showNotification('success', 'Statut de la tâche mis à jour');
             }
-        });
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('error', 'Erreur lors de la mise à jour');
+        }
     }
-
-    // Delete task
-    function deleteTask(taskId) {
-        if (confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')) {
-            $.ajax({
+    
+    // Supprimer une tâche
+    async function deleteTask(taskId) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')) return;
+        
+        const taskElement = $(`#task-${taskId}`);
+        
+        try {
+            const response = await $.ajax({
                 url: `/tasks/${taskId}`,
                 type: 'DELETE',
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $(`#task-${taskId}`).fadeOut(300, function() {
-                            $(this).remove();
-                            showNotification('success', 'Tâche supprimée avec succès');
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    console.error('Error:', xhr.responseText);
-                    showNotification('error', 'Erreur lors de la suppression');
                 }
             });
+            
+            if (response.success) {
+                taskElement.fadeOut(300, function() {
+                    $(this).remove();
+                    showNotification('success', 'Tâche supprimée avec succès');
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('error', 'Erreur lors de la suppression');
         }
     }
-
-    // Duplicate project
-    function duplicateProject(id) {
-        $.ajax({
-            url: `/projects/${id}/duplicate`,
-            type: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success) {
-                    showNotification('success', 'Projet dupliqué avec succès');
-                    setTimeout(() => {
-                        window.location.href = response.redirect;
-                    }, 1500);
+    
+    // ============================================
+    // FONCTIONS DE GESTION DES PROJETS
+    // ============================================
+    
+    // Dupliquer un projet
+    async function duplicateProject(id) {
+        try {
+            const response = await $.ajax({
+                url: `/projects/${id}/duplicate`,
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
                 }
-            },
-            error: function(xhr) {
-                console.error('Error:', xhr.responseText);
-                showNotification('error', 'Erreur lors de la duplication');
+            });
+            
+            if (response.success) {
+                showNotification('success', 'Projet dupliqué avec succès');
+                setTimeout(() => {
+                    window.location.href = response.redirect;
+                }, 1500);
             }
-        });
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('error', 'Erreur lors de la duplication');
+        }
     }
-
-    // Export project
+    
+    // Exporter un projet
     function exportProject(id) {
         window.location.href = `/projects/${id}/export`;
     }
-
-    // Delete confirmation
+    
+    // Confirmation de suppression
     function confirmDelete(id) {
         deleteModal.show();
-        $('#confirmDeleteBtn').off('click').on('click', function() {
-            deleteProject(id);
-        });
+        $('#confirmDeleteBtn').off('click').on('click', () => deleteProject(id));
     }
-
-    function deleteProject(id) {
-        $.ajax({
-            url: `/projects/${id}`,
-            type: 'DELETE',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success) {
-                    deleteModal.hide();
-                    showNotification('success', 'Projet supprimé avec succès');
-                    setTimeout(() => {
-                        window.location.href = '{{ route("projects.index") }}';
-                    }, 1500);
+    
+    // Supprimer un projet
+    async function deleteProject(id) {
+        try {
+            const response = await $.ajax({
+                url: `/projects/${id}`,
+                type: 'DELETE',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
                 }
-            },
-            error: function(xhr) {
-                console.error('Error:', xhr.responseText);
+            });
+            
+            if (response.success) {
                 deleteModal.hide();
-                showNotification('error', 'Erreur lors de la suppression');
+                showNotification('success', 'Projet supprimé avec succès');
+                setTimeout(() => {
+                    window.location.href = '{{ route("projects.index") }}';
+                }, 1500);
             }
-        });
+        } catch (error) {
+            console.error('Error:', error);
+            deleteModal.hide();
+            showNotification('error', 'Erreur lors de la suppression');
+        }
     }
-
-    // Update status
-    function updateStatus(id) {
+    
+    // Mettre à jour le statut
+    function updateStatus() {
         statusModal.show();
     }
-
-    function submitStatusUpdate() {
+    
+    async function submitStatusUpdate() {
         const newStatus = $('#new_status').val();
         
-        $.ajax({
-            url: `/projects/${projectId}/status`,
-            type: 'PATCH',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                status: newStatus
-            },
-            success: function(response) {
-                if (response.success) {
-                    statusModal.hide();
-                    showNotification('success', 'Statut mis à jour avec succès');
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
+        try {
+            const response = await $.ajax({
+                url: `/projects/${projectId}/status`,
+                type: 'PATCH',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    status: newStatus
                 }
-            },
-            error: function(xhr) {
-                console.error('Error:', xhr.responseText);
+            });
+            
+            if (response.success) {
                 statusModal.hide();
-                showNotification('error', 'Erreur lors de la mise à jour');
+                showNotification('success', 'Statut mis à jour avec succès');
+                setTimeout(() => location.reload(), 1000);
             }
-        });
+        } catch (error) {
+            console.error('Error:', error);
+            statusModal.hide();
+            showNotification('error', 'Erreur lors de la mise à jour');
+        }
     }
-
-    // Notification system
+    
+    // ============================================
+    // FONCTIONS UTILITAIRES
+    // ============================================
+    
+    // Gérer les erreurs AJAX
+    function handleAjaxError(error) {
+        if (error.status === 422) {
+            // Erreurs de validation
+            const errors = error.responseJSON.errors;
+            let errorMessage = 'Erreurs de validation:\n';
+            for (let field in errors) {
+                errorMessage += `- ${errors[field].join('\n')}\n`;
+            }
+            showNotification('error', errorMessage);
+        } else if (error.status === 403) {
+            showNotification('error', 'Action non autorisée');
+        } else if (error.status === 404) {
+            showNotification('error', 'Ressource non trouvée');
+        } else {
+            showNotification('error', 'Erreur de connexion au serveur');
+        }
+    }
+    
+    // Système de notification
     function showNotification(type, message) {
+        // Supprimer les notifications précédentes
         $('.notification-toast').remove();
         
         const icons = {
@@ -1564,11 +2409,69 @@
         
         $('body').append(notification);
         
-        setTimeout(function() {
+        setTimeout(() => {
             $('.notification-toast').fadeOut(300, function() {
                 $(this).remove();
             });
         }, 5000);
     }
+    
+    // Helper functions (pour la rétrocompatibilité)
+    function getInitials(name) {
+        if (!name) return '?';
+        return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+    }
+    
+    function getAvatarColor(name) {
+        const colors = ['#45b7d1', '#96ceb4', '#feca57', '#ff6b6b', '#9b59b6'];
+        const index = (name?.length || 0) % colors.length;
+        return colors[index];
+    }
+    
+    function getActivityColor(description) {
+        const colors = {
+            'created': '#06b48a',
+            'updated': '#45b7d1',
+            'deleted': '#ef476f',
+            'status': '#ffd166'
+        };
+        
+        if (description.includes('créé')) return colors.created;
+        if (description.includes('supprim')) return colors.deleted;
+        if (description.includes('statut')) return colors.status;
+        return colors.updated;
+    }
+    
+    function getActivityIcon(description) {
+        const icons = {
+            'created': 'fa-plus-circle',
+            'updated': 'fa-edit',
+            'deleted': 'fa-trash',
+            'status': 'fa-exchange-alt'
+        };
+        
+        if (description.includes('créé')) return icons.created;
+        if (description.includes('supprim')) return icons.deleted;
+        if (description.includes('statut')) return icons.status;
+        return icons.updated;
+    }
+
+    // Exposer les fonctions globalement
+    window.openCreateTaskModal = openCreateTaskModal;
+    window.openEditTaskModal = openEditTaskModal;
+    window.viewTask = viewTask;
+    window.filterTasks = filterTasks;
+    window.toggleTaskStatus = toggleTaskStatus;
+    window.deleteTask = deleteTask;
+    window.duplicateProject = duplicateProject;
+    window.exportProject = exportProject;
+    window.confirmDelete = confirmDelete;
+    window.updateStatus = updateStatus;
+    window.submitStatusUpdate = submitStatusUpdate;
+    window.getInitials = getInitials;
+    window.getAvatarColor = getAvatarColor;
+    window.getActivityColor = getActivityColor;
+    window.getActivityIcon = getActivityIcon;
 </script>
+
 @endsection

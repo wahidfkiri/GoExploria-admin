@@ -208,6 +208,67 @@ class Task extends Model
     }
 
     /**
+     * MÉTHODE PROGRESS - Ajoutez cette méthode
+     * Calcule le pourcentage d'avancement basé sur le statut
+     */
+    public function getProgress(): int
+    {
+        $statusProgress = [
+            'pending' => 0,
+            'in_progress' => 20,
+            'test' => 40,
+            'integrated' => 60,
+            'delivered' => 80,
+            'approved' => 100,
+            'cancelled' => 0,
+        ];
+        
+        return $statusProgress[$this->status] ?? 0;
+    }
+
+    /**
+     * MÉTHODE IS OVERDUE - Vérifie si la tâche est en retard
+     */
+    public function isOverdue(): bool
+    {
+        if (!$this->due_date || in_array($this->status, ['approved', 'cancelled', 'delivered'])) {
+            return false;
+        }
+        
+        return $this->due_date->isPast();
+    }
+
+    /**
+     * MÉTHODE DAYS REMAINING - Jours restants avant échéance
+     */
+    public function getDaysRemainingAttribute(): ?int
+    {
+        if (!$this->due_date || $this->isOverdue()) {
+            return null;
+        }
+        
+        return now()->diffInDays($this->due_date, false);
+    }
+
+    /**
+     * MÉTHODE IS_COMPLETED - Vérifie si la tâche est terminée
+     */
+    public function isCompleted(): bool
+    {
+        return in_array($this->status, ['approved', 'delivered']);
+    }
+
+    /**
+     * MÉTHODE CAN_BE_APPROVED - Vérifie si la tâche peut être approuvée
+     */
+    public function canBeApproved(): bool
+    {
+        return !$this->is_approved_by_manager && 
+               !in_array($this->status, ['cancelled', 'pending']) &&
+               $this->status !== 'approved';
+    }
+
+    /**
      * Mutateurs
      */
     public function setDueDateAttribute($value)
@@ -233,14 +294,17 @@ class Task extends Model
         ]);
     }
 
-    public function isOverdue(): bool
-    {
-        return $this->due_date && $this->due_date->isPast() && !in_array($this->status, ['delivered', 'approved', 'cancelled']);
-    }
-
     public function sendStatusNotification(): void
     {
         // Logique pour envoyer les emails automatiques
         // Vous pouvez utiliser les événements ou les notifications Laravel ici
     }
+
+    /**
+ * Relation avec les fichiers
+ */
+public function files(): HasMany
+{
+    return $this->hasMany(TaskFile::class);
+}
 }
