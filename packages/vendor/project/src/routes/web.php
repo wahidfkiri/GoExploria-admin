@@ -64,6 +64,21 @@ Route::resource('projects', ProjectController::class);
             Route::patch('/test-date', [TaskController::class, 'updateTestDate'])->name('update-test-date');
             Route::patch('/integration-date', [TaskController::class, 'updateIntegrationDate'])->name('update-integration-date');
             Route::patch('/push-prod-date', [TaskController::class, 'updatePushProdDate'])->name('update-push-prod-date');
+
+    // Routes pour les fichiers
+    Route::prefix('files')->name('files.')->group(function () {
+        Route::get('/', [TaskController::class, 'getFiles'])->name('index');
+        Route::post('/upload', [TaskController::class, 'uploadFile'])->name('upload');
+        Route::post('/upload-multiple', [TaskController::class, 'uploadMultipleFiles'])->name('upload-multiple');
+        Route::get('/{file}/download', [TaskController::class, 'downloadFile'])->name('download');
+        Route::get('/{file}/preview', [TaskController::class, 'previewFile'])->name('preview');
+        Route::delete('/{file}', [TaskController::class, 'deleteFile'])->name('delete');
+        Route::patch('/{file}/description', [TaskController::class, 'updateFileDescription'])->name('description');
+        Route::patch('/{file}/toggle-public', [TaskController::class, 'toggleFilePublic'])->name('toggle-public');
+    });
+
+        // Route pour nettoyer les fichiers expirés (à protéger par middleware admin)
+        Route::post('/tasks/clean-expired-files', [TaskController::class, 'cleanExpiredFiles'])->name('tasks.files.clean-expired');
         });
     });
 });
