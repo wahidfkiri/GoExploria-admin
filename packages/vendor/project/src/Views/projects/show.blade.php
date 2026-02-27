@@ -405,6 +405,9 @@
                                                 <button class="task-action-btn" onclick="openEditTaskModal({{ $task->id }})" title="Modifier">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
+                                                <a href="{{route('tasks.show', $task->id)}}" class="task-action-btn" title="Voir Détails">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
                                                 <button class="task-action-btn" onclick="deleteTask({{ $task->id }})" title="Supprimer">
                                                     <i class="fas fa-trash"></i>
                                                 </button>

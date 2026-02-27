@@ -518,7 +518,7 @@ class ProjectController extends Controller
             $project = Project::create([
                 'name' => $request->name,
                 'description' => $request->description,
-                'etablissement_id' => 11,
+                'etablissement_id' => 2,
                 'client_id' => $request->client_id,
                 'user_id' => $request->user_id,
                 'contract_number' => $request->contract_number,
