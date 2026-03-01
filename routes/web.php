@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Auth\AjaxAuthController;
 use App\Http\Controllers\TemplateScraperController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,6 +67,32 @@ Route::post('/logout', function () {
 
 // Éditeur (protégé)
 Route::middleware('auth')->group(function () {
+
+
+
+    
+    // Profil utilisateur
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'index'])->name('index');
+        
+        // Mise à jour des informations
+        Route::put('/info', [ProfileController::class, 'updateInfo'])->name('update.info');
+        Route::post('/avatar', [ProfileController::class, 'updateAvatar'])->name('update.avatar');
+        
+        // Sécurité
+        Route::put('/password', [ProfileController::class, 'changePassword'])->name('change.password');
+        Route::post('/2fa/toggle', [ProfileController::class, 'toggleTwoFactor'])->name('2fa.toggle');
+        Route::delete('/sessions/{session}', [ProfileController::class, 'revokeSession'])->name('sessions.revoke');
+        
+        // Préférences
+        Route::put('/preferences', [ProfileController::class, 'updatePreferences'])->name('update.preferences');
+        
+        // Notifications
+        Route::put('/notifications', [ProfileController::class, 'updateNotifications'])->name('update.notifications');
+        
+        // Activités
+        Route::get('/activities', [ProfileController::class, 'getActivities'])->name('activities');
+    });
 
 
 // Template scraping routes
@@ -187,3 +214,4 @@ Route::get('/health', function () {
 Route::get('/search', function () {
     return null;
 })->name('search');
+

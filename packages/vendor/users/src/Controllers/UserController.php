@@ -140,7 +140,7 @@ public function store(Request $request)
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
-            'is_active' => 'boolean',
+            'is_active' => 'nullable',
         ]);
 
         if ($validator->fails()) {
@@ -515,4 +515,12 @@ public function store(Request $request)
         
         return response()->stream($callback, 200, $headers);
     }
+
+    /**
+ * Get user statistics (alias for statistics method)
+ */
+public function getStatistics()
+{
+    return $this->statistics();
+}
 }

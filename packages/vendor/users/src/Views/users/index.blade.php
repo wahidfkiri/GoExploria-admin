@@ -562,46 +562,46 @@
 
         // Open roles modal
         const openRolesModal = (userId) => {
-            const user = allUsers.find(u => u.id === userId);
+    const user = allUsers.find(u => u.id === userId);
+    
+    if (!user) {
+        showAlert('danger', 'Utilisateur non trouvé');
+        return;
+    }
+    
+    // Load available roles
+    $.ajax({
+        url: '/api/roles',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            const rolesContainer = document.getElementById('rolesContainer');
+            rolesContainer.innerHTML = '';
             
-            if (!user) {
-                showAlert('danger', 'Utilisateur non trouvé');
-                return;
-            }
-            
-            // Load available roles
-            $.ajax({
-                url: '/api/roles',
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    const rolesContainer = document.getElementById('rolesContainer');
-                    rolesContainer.innerHTML = '';
-                    
-                    response.forEach(role => {
-                        const isAssigned = user.roles.some(r => r.id === role.id);
-                        rolesContainer.innerHTML += `
-                            <div class="form-check">
-                                <input class="form-check-input role-checkbox" type="checkbox" 
-                                       value="${role.id}" id="role-${role.id}" 
-                                       ${isAssigned ? 'checked' : ''}>
-                                <label class="form-check-label" for="role-${role.id}">
-                                    ${role.name}
-                                </label>
-                            </div>
-                        `;
-                    });
-                    
-                    document.getElementById('userRolesId').value = user.id;
-                    document.getElementById('userRolesName').textContent = user.name;
-                    
-                    new bootstrap.Modal(document.getElementById('rolesModal')).show();
-                },
-                error: function(xhr) {
-                    showAlert('danger', 'Erreur lors du chargement des rôles');
-                }
+            response.forEach(role => {
+                const isAssigned = user.roles.some(r => r.id === role.id);
+                rolesContainer.innerHTML += `
+                    <div class="form-check">
+                        <input class="form-check-input role-radio" type="radio" 
+                               name="userRole" value="${role.id}" id="role-${role.id}" 
+                               ${isAssigned ? 'checked' : ''}>
+                        <label class="form-check-label" for="role-${role.id}">
+                            ${role.name}
+                        </label>
+                    </div>
+                `;
             });
-        };
+            
+            document.getElementById('userRolesId').value = user.id;
+            document.getElementById('userRolesName').textContent = user.name;
+            
+            new bootstrap.Modal(document.getElementById('rolesModal')).show();
+        },
+        error: function(xhr) {
+            showAlert('danger', 'Erreur lors du chargement des rôles');
+        }
+    });
+};
 
         // Update user roles
         const updateUserRoles = () => {

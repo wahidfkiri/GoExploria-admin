@@ -2,627 +2,720 @@
 
 @section('content')
     <!-- MAIN CONTENT -->
-    <main class="dashboard-content">
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1 class="page-title">
-                <span class="page-title-icon"><i class="fas fa-plus-circle"></i></span>
-                Nouveau Projet
-            </h1>
-            
-            <div class="page-actions">
-                <a href="{{ route('projects.index') }}" class="btn btn-outline-secondary me-2" id="cancelBtn">
-                    <i class="fas fa-arrow-left me-2"></i>Retour à la liste
-                </a>
-                <button type="button" class="btn btn-primary" id="saveProjectBtn">
-                    <i class="fas fa-save me-2"></i>Enregistrer
-                </button>
+   <main class="dashboard-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <span class="page-title-icon"><i class="fas fa-plus-circle"></i></span>
+            Nouveau Projet
+        </h1>
+        
+        <div class="page-actions">
+            <a href="{{ route('projects.index') }}" class="btn btn-outline-secondary me-2" id="cancelBtn" data-bs-toggle="tooltip" title="Retourner à la liste des projets sans sauvegarder">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+            <button type="button" class="btn btn-primary" id="saveProjectBtn" data-bs-toggle="tooltip" title="Enregistrer le projet (Ctrl+S)">
+                <i class="fas fa-save me-2"></i>Enregistrer
+            </button>
+        </div>
+    </div>
+
+    <!-- Form Container -->
+    <form id="projectForm" method="POST" action="{{ route('projects.store') }}" enctype="multipart/form-data">
+        @csrf
+        
+        <!-- Progress Bar -->
+        <div class="form-progress-modern">
+            <div class="progress-steps">
+                <div class="progress-step active" data-step="1" data-bs-toggle="tooltip" title="Étape 1: Informations générales du projet">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Informations générales</div>
+                </div>
+                <div class="progress-step" data-step="2" data-bs-toggle="tooltip" title="Étape 2: Informations client et contact">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Client & Contact</div>
+                </div>
+                <div class="progress-step" data-step="3" data-bs-toggle="tooltip" title="Étape 3: Dates et budget">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Planning & Budget</div>
+                </div>
+                <div class="progress-step" data-step="4" data-bs-toggle="tooltip" title="Étape 4: Configuration avancée">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Options avancées</div>
+                </div>
+            </div>
+            <div class="progress-bar-modern">
+                <div class="progress-fill" id="formProgressFill" style="width: 25%"></div>
             </div>
         </div>
 
-        <!-- Form Container -->
-        <form id="projectForm" method="POST" action="{{ route('projects.store') }}" enctype="multipart/form-data">
-            @csrf
-            
-            <!-- Progress Bar -->
-            <div class="form-progress-modern">
-                <div class="progress-steps">
-                    <div class="progress-step active" data-step="1">
-                        <div class="step-number">1</div>
-                        <div class="step-label">Informations générales</div>
-                    </div>
-                    <div class="progress-step" data-step="2">
-                        <div class="step-number">2</div>
-                        <div class="step-label">Client & Contact</div>
-                    </div>
-                    <div class="progress-step" data-step="3">
-                        <div class="step-number">3</div>
-                        <div class="step-label">Planning & Budget</div>
-                    </div>
-                    <div class="progress-step" data-step="4">
-                        <div class="step-number">4</div>
-                        <div class="step-label">Options avancées</div>
-                    </div>
+        <!-- Step 1: Informations générales -->
+        <div class="form-step active" id="step1">
+            <div class="form-card-modern">
+                <div class="form-card-header">
+                    <h3 class="form-card-title">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Informations générales
+                    </h3>
+                    <p class="form-card-subtitle">Les informations de base du projet</p>
                 </div>
-                <div class="progress-bar-modern">
-                    <div class="progress-fill" id="formProgressFill" style="width: 25%"></div>
-                </div>
-            </div>
-
-            <!-- Step 1: Informations générales -->
-            <div class="form-step active" id="step1">
-                <div class="form-card-modern">
-                    <div class="form-card-header">
-                        <h3 class="form-card-title">
-                            <i class="fas fa-info-circle me-2"></i>
-                            Informations générales
-                        </h3>
-                        <p class="form-card-subtitle">Les informations de base du projet</p>
-                    </div>
-                    
-                    <div class="form-card-body">
-                        <div class="row">
-                            <!-- Nom du projet -->
-                            <div class="col-md-8 mb-4">
-                                <label for="name" class="form-label-modern required-field">
-                                    Nom du projet
-                                </label>
-                                <input type="text" 
-                                       class="form-control-modern @error('name') is-invalid @enderror" 
-                                       id="name" 
-                                       name="name" 
-                                       value="{{ old('name') }}"
-                                       placeholder="Ex: Refonte site web, Application mobile..."
-                                       required>
-                                @error('name')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                                <small class="form-text-modern text-muted">
-                                    Choisissez un nom descriptif et unique pour le projet
-                                </small>
-                            </div>
-
-                            <!-- Statut -->
-                            <div class="col-md-4 mb-4">
-                                <label for="status" class="form-label-modern required-field">
-                                    Statut initial
-                                </label>
-                                <select class="form-select-modern @error('status') is-invalid @enderror" 
-                                        id="status" 
-                                        name="status"
-                                        required>
-                                    <option value="">Sélectionner un statut</option>
-                                    @foreach($statuses as $value => $label)
-                                        <option value="{{ $value }}" {{ old('status') == $value ? 'selected' : '' }}>
-                                            {{ $label }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('status')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <!-- Responsable -->
-                            <div class="col-md-6 mb-4">
-                                <label for="user_id" class="form-label-modern required-field">
-                                    Responsable du projet
-                                </label>
-                                <select class="form-select-modern select2-modern @error('user_id') is-invalid @enderror" 
-                                        id="user_id" 
-                                        name="user_id"
-                                        required>
-                                    <option value="">Sélectionner un responsable</option>
-                                    @foreach($users as $user)
-                                        <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                            {{ $user->name }} ({{ $user->email }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('user_id')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Numéro de contrat -->
-                            <div class="col-md-6 mb-4">
-                                <label for="contract_number" class="form-label-modern">
-                                    Numéro de contrat
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text"><i class="fas fa-file-contract"></i></span>
-                                    <input type="text" 
-                                           class="form-control-modern @error('contract_number') is-invalid @enderror" 
-                                           id="contract_number" 
-                                           name="contract_number" 
-                                           value="{{ old('contract_number') }}"
-                                           placeholder="Ex: CT-2024-001"
-                                           list="recentContracts">
-                                    <datalist id="recentContracts">
-                                        @foreach($recentContracts ?? [] as $contract)
-                                            <option value="{{ $contract }}">
-                                        @endforeach
-                                    </datalist>
-                                </div>
-                                @error('contract_number')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                                <small class="form-text-modern text-muted">
-                                    Laissez vide si pas encore de contrat
-                                </small>
-                            </div>
-                        </div>
-
-                        <!-- Description -->
-                        <div class="mb-4">
-                            <label for="description" class="form-label-modern">
-                                Description du projet
+                
+                <div class="form-card-body">
+                    <div class="row">
+                        <!-- Nom du projet -->
+                        <div class="col-md-8 mb-4">
+                            <label for="name" class="form-label-modern required-field" data-bs-toggle="tooltip" title="Nom unique et descriptif du projet">
+                                Nom du projet
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
                             </label>
-                            <textarea class="form-control-modern rich-editor @error('description') is-invalid @enderror" 
-                                      id="description" 
-                                      name="description" 
-                                      rows="5">{{ old('description') }}</textarea>
-                            @error('description')
+                            <input type="text" 
+                                   class="form-control-modern @error('name') is-invalid @enderror" 
+                                   id="name" 
+                                   name="name" 
+                                   value="{{ old('name') }}"
+                                   placeholder="Ex: Refonte site web, Application mobile..."
+                                   required
+                                   data-bs-toggle="tooltip"
+                                   title="Choisissez un nom clair et unique pour identifier facilement le projet">
+                            @error('name')
                                 <div class="invalid-feedback-modern">{{ $message }}</div>
                             @enderror
                             <small class="form-text-modern text-muted">
-                                Décrivez les objectifs, le périmètre et les livrables attendus
+                                Choisissez un nom descriptif et unique pour le projet
                             </small>
                         </div>
 
-                        <!-- Tags - Version sans plugin -->
-                        <div class="mb-4">
-                            <label for="tags" class="form-label-modern">
-                                Tags
+                        <!-- Statut -->
+                        <div class="col-md-4 mb-4">
+                            <label for="status" class="form-label-modern required-field" data-bs-toggle="tooltip" title="État d'avancement initial du projet">
+                                Statut initial
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
                             </label>
-                            <input type="text" 
-                                   class="form-control-modern" 
-                                   id="tags" 
-                                   name="tags" 
-                                   value="{{ old('tags') }}"
-                                   placeholder="Ex: web, mobile, urgent, important">
-                            <small class="form-text-modern text-muted">
-                                Séparez les tags par des virgules
-                            </small>
-                            <div class="tags-container" id="tagsContainer"></div>
-                        </div>
-
-                        <div class="form-navigation">
-                            <button type="button" class="btn btn-primary next-step" data-next="2">
-                                Étape suivante
-                                <i class="fas fa-arrow-right ms-2"></i>
-                            </button>
+                            <select class="form-select-modern @error('status') is-invalid @enderror" 
+                                    id="status" 
+                                    name="status"
+                                    required
+                                    data-bs-toggle="tooltip"
+                                    title="Sélectionnez le statut de démarrage du projet">
+                                <option value="">Sélectionner un statut</option>
+                                @foreach($statuses as $value => $label)
+                                    <option value="{{ $value }}" {{ old('status') == $value ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('status')
+                                <div class="invalid-feedback-modern">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Step 2: Client & Contact -->
-            <div class="form-step" id="step2">
-                <div class="form-card-modern">
-                    <div class="form-card-header">
-                        <h3 class="form-card-title">
-                            <i class="fas fa-building me-2"></i>
-                            Client & Contact
-                        </h3>
-                        <p class="form-card-subtitle">Informations sur le client et le contact principal</p>
-                    </div>
-                    
-                    <div class="form-card-body">
-                        <div class="row">
-                            <!-- Client -->
-                            <div class="col-md-6 mb-4">
-                                <label for="client_id" class="form-label-modern">
-                                    Client
-                                </label>
-                                <select class="form-select-modern select2-modern @error('client_id') is-invalid @enderror" 
-                                        id="client_id" 
-                                        name="client_id">
-                                    <option value="">Sélectionner un client</option>
-                                    @foreach($clients as $client)
-                                        <option value="{{ $client->id }}" 
-                                                data-ville="{{ $client->ville }}"
-                                                data-phone="{{ $client->phone }}"
-                                                data-email="{{ $client->email_contact }}"
-                                                {{ old('client_id') == $client->id ? 'selected' : '' }}>
-                                            {{ $client->name }} - {{ $client->ville }}
-                                        </option>
+                    <div class="row">
+                        <!-- Responsable -->
+                        <div class="col-md-6 mb-4">
+                            <label for="user_id" class="form-label-modern required-field" data-bs-toggle="tooltip" title="Personne responsable de la gestion du projet">
+                                Responsable du projet
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                            </label>
+                            <select class="form-select-modern select2-modern @error('user_id') is-invalid @enderror" 
+                                    id="user_id" 
+                                    name="user_id"
+                                    required
+                                    data-bs-toggle="tooltip"
+                                    title="Choisissez le chef de projet ou responsable principal">
+                                <option value="">Sélectionner un responsable</option>
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }} ({{ $user->email }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('user_id')
+                                <div class="invalid-feedback-modern">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Numéro de contrat -->
+                        <div class="col-md-6 mb-4">
+                            <label for="contract_number" class="form-label-modern" data-bs-toggle="tooltip" title="Numéro de contrat ou de devis associé">
+                                Numéro de contrat
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text"><i class="fas fa-file-contract"></i></span>
+                                <input type="text" 
+                                       class="form-control-modern @error('contract_number') is-invalid @enderror" 
+                                       id="contract_number" 
+                                       name="contract_number" 
+                                       value="{{ old('contract_number') }}"
+                                       placeholder="Ex: CT-2024-001"
+                                       list="recentContracts"
+                                       data-bs-toggle="tooltip"
+                                       title="Format recommandé: CT-ANNÉE-NUMÉRO (ex: CT-2024-001)">
+                                <datalist id="recentContracts">
+                                    @foreach($recentContracts ?? [] as $contract)
+                                        <option value="{{ $contract }}">
                                     @endforeach
-                                </select>
-                                @error('client_id')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                                <small class="form-text-modern text-muted">
-                                    Laissez vide si pas de client associé
-                                </small>
+                                </datalist>
                             </div>
-
-                            <!-- Contact name -->
-                            <div class="col-md-6 mb-4">
-                                <label for="contact_name" class="form-label-modern">
-                                    Nom du contact
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" 
-                                           class="form-control-modern @error('contact_name') is-invalid @enderror" 
-                                           id="contact_name" 
-                                           name="contact_name" 
-                                           value="{{ old('contact_name') }}"
-                                           placeholder="Nom du contact principal">
-                                </div>
-                                @error('contact_name')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            @error('contract_number')
+                                <div class="invalid-feedback-modern">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text-modern text-muted">
+                                Laissez vide si pas encore de contrat
+                            </small>
                         </div>
+                    </div>
 
-                        <div class="row">
-                            <!-- Contact phone -->
-                            <div class="col-md-6 mb-4">
-                                <label for="contact_phone" class="form-label-modern">
-                                    Téléphone du contact
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                                    <input type="tel" 
-                                           class="form-control-modern @error('contact_phone') is-invalid @enderror" 
-                                           id="contact_phone" 
-                                           name="contact_phone" 
-                                           value="{{ old('contact_phone') }}"
-                                           placeholder="Ex: 01 23 45 67 89">
-                                </div>
-                                @error('contact_phone')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                            </div>
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <label for="description" class="form-label-modern" data-bs-toggle="tooltip" title="Description détaillée des objectifs et livrables">
+                            Description du projet
+                            <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                        </label>
+                        <textarea class="form-control-modern rich-editor @error('description') is-invalid @enderror" 
+                                  id="description" 
+                                  name="description" 
+                                  rows="5"
+                                  data-bs-toggle="tooltip"
+                                  title="Décrivez le contexte, les objectifs, le périmètre et les livrables attendus">{{ old('description') }}</textarea>
+                        @error('description')
+                            <div class="invalid-feedback-modern">{{ $message }}</div>
+                        @enderror
+                        <small class="form-text-modern text-muted">
+                            Décrivez les objectifs, le périmètre et les livrables attendus
+                        </small>
+                    </div>
 
-                            <!-- Contact email -->
-                            <div class="col-md-6 mb-4">
-                                <label for="contact_email" class="form-label-modern">
-                                    Email du contact
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                    <input type="email" 
-                                           class="form-control-modern @error('contact_email') is-invalid @enderror" 
-                                           id="contact_email" 
-                                           name="contact_email" 
-                                           value="{{ old('contact_email') }}"
-                                           placeholder="contact@exemple.com">
-                                </div>
-                                @error('contact_email')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
+                    <!-- Tags - Version sans plugin -->
+                    <div class="mb-4">
+                        <label for="tags" class="form-label-modern" data-bs-toggle="tooltip" title="Mots-clés pour catégoriser et filtrer le projet">
+                            Tags
+                            <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                        </label>
+                        <input type="text" 
+                               class="form-control-modern" 
+                               id="tags" 
+                               name="tags" 
+                               value="{{ old('tags') }}"
+                               placeholder="Ex: web, mobile, urgent, important"
+                               data-bs-toggle="tooltip"
+                               title="Séparez les tags par des virgules (ex: web, mobile, urgent)">
+                        <small class="form-text-modern text-muted">
+                            Séparez les tags par des virgules
+                        </small>
+                        <div class="tags-container" id="tagsContainer"></div>
+                    </div>
 
-                        <!-- Client Info Card (hidden by default) -->
-                        <div class="client-info-card" id="clientInfoCard" style="display: none;">
-                            <div class="client-info-header">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Informations client
-                            </div>
-                            <div class="client-info-body">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <strong>Ville:</strong> <span id="clientVille"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Téléphone:</strong> <span id="clientPhone"></span>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Email:</strong> <span id="clientEmail"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-navigation d-flex justify-content-between">
-                            <button type="button" class="btn btn-outline-secondary prev-step" data-prev="1">
-                                <i class="fas fa-arrow-left me-2"></i>
-                                Étape précédente
-                            </button>
-                            <button type="button" class="btn btn-primary next-step" data-next="3">
-                                Étape suivante
-                                <i class="fas fa-arrow-right ms-2"></i>
-                            </button>
-                        </div>
+                    <div class="form-navigation">
+                        <button type="button" class="btn btn-primary next-step" data-next="2" data-bs-toggle="tooltip" title="Passer à l'étape suivante : Client & Contact">
+                            Étape suivante
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
                     </div>
                 </div>
-            </div>
-
-            <!-- Step 3: Planning & Budget -->
-            <div class="form-step" id="step3">
-                <div class="form-card-modern">
-                    <div class="form-card-header">
-                        <h3 class="form-card-title">
-                            <i class="fas fa-calendar-alt me-2"></i>
-                            Planning & Budget
-                        </h3>
-                        <p class="form-card-subtitle">Dates et estimations financières</p>
-                    </div>
-                    
-                    <div class="form-card-body">
-                        <div class="row">
-                            <!-- Start date -->
-                            <div class="col-md-6 mb-4">
-                                <label for="start_date" class="form-label-modern">
-                                    Date de début
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                                    <input type="date" 
-                                           class="form-control-modern datepicker @error('start_date') is-invalid @enderror" 
-                                           id="start_date" 
-                                           name="start_date" 
-                                           value="{{ old('start_date') }}">
-                                </div>
-                                @error('start_date')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- End date -->
-                            <div class="col-md-6 mb-4">
-                                <label for="end_date" class="form-label-modern">
-                                    Date de fin prévisionnelle
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
-                                    <input type="date" 
-                                           class="form-control-modern datepicker @error('end_date') is-invalid @enderror" 
-                                           id="end_date" 
-                                           name="end_date" 
-                                           value="{{ old('end_date') }}">
-                                </div>
-                                @error('end_date')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <!-- Estimated hours -->
-                            <div class="col-md-4 mb-4">
-                                <label for="estimated_hours" class="form-label-modern">
-                                    Heures estimées
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text"><i class="fas fa-clock"></i></span>
-                                    <input type="number" 
-                                           class="form-control-modern @error('estimated_hours') is-invalid @enderror" 
-                                           id="estimated_hours" 
-                                           name="estimated_hours" 
-                                           value="{{ old('estimated_hours') }}"
-                                           min="0"
-                                           step="1"
-                                           placeholder="Ex: 120">
-                                    <span class="input-group-text">heures</span>
-                                </div>
-                                @error('estimated_hours')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Hourly rate -->
-                            <div class="col-md-4 mb-4">
-                                <label for="hourly_rate" class="form-label-modern">
-                                    Taux horaire
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text"><i class="fas fa-euro-sign"></i></span>
-                                    <input type="number" 
-                                           class="form-control-modern @error('hourly_rate') is-invalid @enderror" 
-                                           id="hourly_rate" 
-                                           name="hourly_rate" 
-                                           value="{{ old('hourly_rate') }}"
-                                           min="0"
-                                           step="0.01"
-                                           placeholder="Ex: 50">
-                                    <span class="input-group-text">€/h</span>
-                                </div>
-                                @error('hourly_rate')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Estimated budget -->
-                            <div class="col-md-4 mb-4">
-                                <label for="estimated_budget" class="form-label-modern">
-                                    Budget estimé
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text"><i class="fas fa-euro-sign"></i></span>
-                                    <input type="number" 
-                                           class="form-control-modern @error('estimated_budget') is-invalid @enderror" 
-                                           id="estimated_budget" 
-                                           name="estimated_budget" 
-                                           value="{{ old('estimated_budget') }}"
-                                           min="0"
-                                           step="0.01"
-                                           placeholder="Ex: 6000">
-                                    <span class="input-group-text">€</span>
-                                </div>
-                                @error('estimated_budget')
-                                    <div class="invalid-feedback-modern">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <!-- Budget calculator preview -->
-                        <div class="budget-preview" id="budgetPreview" style="display: none;">
-                            <div class="budget-preview-header">
-                                <i class="fas fa-calculator me-2"></i>
-                                Aperçu du budget
-                            </div>
-                            <div class="budget-preview-body">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="budget-item">
-                                            <span class="budget-label">Heures:</span>
-                                            <span class="budget-value" id="previewHours">0</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="budget-item">
-                                            <span class="budget-label">Taux horaire:</span>
-                                            <span class="budget-value" id="previewRate">0 €</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="budget-item total">
-                                            <span class="budget-label">Total calculé:</span>
-                                            <span class="budget-value" id="previewTotal">0 €</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-navigation d-flex justify-content-between">
-                            <button type="button" class="btn btn-outline-secondary prev-step" data-prev="2">
-                                <i class="fas fa-arrow-left me-2"></i>
-                                Étape précédente
-                            </button>
-                            <button type="button" class="btn btn-primary next-step" data-next="4">
-                                Étape suivante
-                                <i class="fas fa-arrow-right ms-2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 4: Options avancées -->
-            <div class="form-step" id="step4">
-                <div class="form-card-modern">
-                    <div class="form-card-header">
-                        <h3 class="form-card-title">
-                            <i class="fas fa-cog me-2"></i>
-                            Options avancées
-                        </h3>
-                        <p class="form-card-subtitle">Configuration supplémentaire</p>
-                    </div>
-                    
-                    <div class="form-card-body">
-                        <div class="row">
-                            <!-- Priorité -->
-                            <div class="col-md-6 mb-4">
-                                <label for="priority" class="form-label-modern">
-                                    Priorité
-                                </label>
-                                <select class="form-select-modern" id="priority" name="priority">
-                                    <option value="low">Basse</option>
-                                    <option value="medium" selected>Moyenne</option>
-                                    <option value="high">Haute</option>
-                                    <option value="urgent">Urgente</option>
-                                </select>
-                                <small class="form-text-modern text-muted">
-                                    Définit l'importance relative du projet
-                                </small>
-                            </div>
-
-                            <!-- Statut actif -->
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label-modern d-block">État du projet</label>
-                                <div class="toggle-switch-modern">
-                                    <input type="checkbox" 
-                                           name="is_active" 
-                                           id="is_active" 
-                                           value="1" 
-                                           {{ old('is_active', '1') == '1' ? 'checked' : '' }}
-                                           class="toggle-checkbox">
-                                    <label for="is_active" class="toggle-label">
-                                        <span class="toggle-inner"></span>
-                                        <span class="toggle-switch"></span>
-                                    </label>
-                                    <span class="toggle-text ms-2" id="activeStatusText">
-                                        Projet actif
-                                    </span>
-                                </div>
-                                <small class="form-text-modern text-muted">
-                                    Un projet inactif n'apparaîtra pas dans les listes par défaut
-                                </small>
-                            </div>
-                        </div>
-
-                        <!-- Notifications -->
-                        <div class="mb-4">
-                            <label class="form-label-modern">Notifications</label>
-                            <div class="notification-options">
-                                <div class="form-check-modern">
-                                    <input type="checkbox" class="form-check-input" id="notify_team" name="notify_team" checked>
-                                    <label class="form-check-label" for="notify_team">
-                                        <i class="fas fa-users me-2"></i>
-                                        Notifier l'équipe à la création
-                                    </label>
-                                </div>
-                                <div class="form-check-modern">
-                                    <input type="checkbox" class="form-check-input" id="notify_client" name="notify_client">
-                                    <label class="form-check-label" for="notify_client">
-                                        <i class="fas fa-building me-2"></i>
-                                        Notifier le client
-                                    </label>
-                                </div>
-                                <div class="form-check-modern">
-                                    <input type="checkbox" class="form-check-input" id="create_calendar" name="create_calendar" checked>
-                                    <label class="form-check-label" for="create_calendar">
-                                        <i class="fas fa-calendar-plus me-2"></i>
-                                        Créer des événements dans le calendrier
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Fichiers joints -->
-                        <div class="mb-4">
-                            <label for="attachments" class="form-label-modern">
-                                Fichiers joints
-                            </label>
-                            <div class="file-upload-modern">
-                                <input type="file" 
-                                       class="file-input" 
-                                       id="attachments" 
-                                       name="attachments[]" 
-                                       multiple
-                                       accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png">
-                                <div class="file-upload-area">
-                                    <i class="fas fa-cloud-upload-alt fa-2x mb-2"></i>
-                                    <p>Glissez-déposez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="text-muted">PDF, DOC, XLS, JPG (max 10MB)</small>
-                                </div>
-                            </div>
-                            <div id="fileList" class="file-list mt-2"></div>
-                        </div>
-
-                        <div class="form-navigation d-flex justify-content-between">
-                            <button type="button" class="btn btn-outline-secondary prev-step" data-prev="3">
-                                <i class="fas fa-arrow-left me-2"></i>
-                                Étape précédente
-                            </button>
-                            <button type="submit" class="btn btn-success" id="submitBtn">
-                                <i class="fas fa-check-circle me-2"></i>
-                                Créer le projet
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-
-        <!-- Loading Overlay -->
-        <div class="loading-overlay" id="loadingOverlay" style="display: none;">
-            <div class="loading-content">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Chargement...</span>
-                </div>
-                <p class="mt-3">Création du projet en cours...</p>
             </div>
         </div>
-    </main>
+
+        <!-- Step 2: Client & Contact -->
+        <div class="form-step" id="step2">
+            <div class="form-card-modern">
+                <div class="form-card-header">
+                    <h3 class="form-card-title">
+                        <i class="fas fa-building me-2"></i>
+                        Client & Contact
+                    </h3>
+                    <p class="form-card-subtitle">Informations sur le client et le contact principal</p>
+                </div>
+                
+                <div class="form-card-body">
+                    <div class="row">
+                        <!-- Client -->
+                        <div class="col-md-6 mb-4">
+                            <label for="client_id" class="form-label-modern" data-bs-toggle="tooltip" title="Sélectionnez un client existant ou laissez vide pour créer un projet sans client">
+                                Client
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                            </label>
+                            <select class="form-select-modern select2-modern @error('client_id') is-invalid @enderror" 
+                                    id="client_id" 
+                                    name="client_id"
+                                    data-bs-toggle="tooltip"
+                                    title="Les informations client seront automatiquement chargées">
+                                <option value="">Sélectionner un client</option>
+                                @foreach($clients as $client)
+                                    <option value="{{ $client->id }}" 
+                                            data-ville="{{ $client->ville }}"
+                                            data-phone="{{ $client->phone }}"
+                                            data-email="{{ $client->email_contact }}"
+                                            {{ old('client_id') == $client->id ? 'selected' : '' }}>
+                                        {{ $client->name }} - {{ $client->ville }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('client_id')
+                                <div class="invalid-feedback-modern">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text-modern text-muted">
+                                Laissez vide si pas de client associé
+                            </small>
+                        </div>
+
+                        <!-- Contact name -->
+                        <div class="col-md-6 mb-4">
+                            <label for="contact_name" class="form-label-modern" data-bs-toggle="tooltip" title="Nom du contact principal chez le client">
+                                Nom du contact
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" 
+                                       class="form-control-modern @error('contact_name') is-invalid @enderror" 
+                                       id="contact_name" 
+                                       name="contact_name" 
+                                       value="{{ old('contact_name') }}"
+                                       placeholder="Nom du contact principal"
+                                       data-bs-toggle="tooltip"
+                                       title="Personne à contacter pour ce projet">
+                            </div>
+                            @error('contact_name')
+                                <div class="invalid-feedback-modern">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Contact phone -->
+                        <div class="col-md-6 mb-4">
+                            <label for="contact_phone" class="form-label-modern" data-bs-toggle="tooltip" title="Numéro de téléphone du contact">
+                                Téléphone du contact
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                <input type="tel" 
+                                       class="form-control-modern @error('contact_phone') is-invalid @enderror" 
+                                       id="contact_phone" 
+                                       name="contact_phone" 
+                                       value="{{ old('contact_phone') }}"
+                                       placeholder="Ex: 01 23 45 67 89"
+                                       data-bs-toggle="tooltip"
+                                       title="Format: 01 23 45 67 89 ou +33 1 23 45 67 89">
+                            </div>
+                            @error('contact_phone')
+                                <div class="invalid-feedback-modern">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Contact email -->
+                        <div class="col-md-6 mb-4">
+                            <label for="contact_email" class="form-label-modern" data-bs-toggle="tooltip" title="Adresse email du contact">
+                                Email du contact
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input type="email" 
+                                       class="form-control-modern @error('contact_email') is-invalid @enderror" 
+                                       id="contact_email" 
+                                       name="contact_email" 
+                                       value="{{ old('contact_email') }}"
+                                       placeholder="contact@exemple.com"
+                                       data-bs-toggle="tooltip"
+                                       title="Format valide: nom@domaine.com">
+                            </div>
+                            @error('contact_email')
+                                <div class="invalid-feedback-modern">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Client Info Card (hidden by default) -->
+                    <div class="client-info-card" id="clientInfoCard" style="display: none;" data-bs-toggle="tooltip" title="Informations détaillées du client sélectionné">
+                        <div class="client-info-header">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Informations client
+                        </div>
+                        <div class="client-info-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <strong>Ville:</strong> <span id="clientVille"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Téléphone:</strong> <span id="clientPhone"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Email:</strong> <span id="clientEmail"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-navigation d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary prev-step" data-prev="1" data-bs-toggle="tooltip" title="Retour à l'étape 1 : Informations générales">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Étape précédente
+                        </button>
+                        <button type="button" class="btn btn-primary next-step" data-next="3" data-bs-toggle="tooltip" title="Passer à l'étape 3 : Planning & Budget">
+                            Étape suivante
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Planning & Budget -->
+        <div class="form-step" id="step3">
+            <div class="form-card-modern">
+                <div class="form-card-header">
+                    <h3 class="form-card-title">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        Planning & Budget
+                    </h3>
+                    <p class="form-card-subtitle">Dates et estimations financières</p>
+                </div>
+                
+                <div class="form-card-body">
+                    <div class="row">
+                        <!-- Start date -->
+                        <div class="col-md-6 mb-4">
+                            <label for="start_date" class="form-label-modern" data-bs-toggle="tooltip" title="Date de début prévisionnelle du projet">
+                                Date de début
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                <input type="date" 
+                                       class="form-control-modern datepicker @error('start_date') is-invalid @enderror" 
+                                       id="start_date" 
+                                       name="start_date" 
+                                       value="{{ old('start_date') }}"
+                                       data-bs-toggle="tooltip"
+                                       title="Sélectionnez la date de démarrage du projet">
+                            </div>
+                            @error('start_date')
+                                <div class="invalid-feedback-modern">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- End date -->
+                        <div class="col-md-6 mb-4">
+                            <label for="end_date" class="form-label-modern" data-bs-toggle="tooltip" title="Date de fin prévisionnelle du projet">
+                                Date de fin prévisionnelle
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text"><i class="fas fa-calendar-check"></i></span>
+                                <input type="date" 
+                                       class="form-control-modern datepicker @error('end_date') is-invalid @enderror" 
+                                       id="end_date" 
+                                       name="end_date" 
+                                       value="{{ old('end_date') }}"
+                                       data-bs-toggle="tooltip"
+                                       title="Date estimée de livraison ou de fin du projet">
+                            </div>
+                            @error('end_date')
+                                <div class="invalid-feedback-modern">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Estimated hours -->
+                        <div class="col-md-4 mb-4">
+                            <label for="estimated_hours" class="form-label-modern" data-bs-toggle="tooltip" title="Nombre d'heures de travail estimé">
+                                Heures estimées
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                <input type="number" 
+                                       class="form-control-modern @error('estimated_hours') is-invalid @enderror" 
+                                       id="estimated_hours" 
+                                       name="estimated_hours" 
+                                       value="{{ old('estimated_hours') }}"
+                                       min="0"
+                                       step="1"
+                                       placeholder="Ex: 120"
+                                       data-bs-toggle="tooltip"
+                                       title="Estimation en heures homme">
+                                <span class="input-group-text">heures</span>
+                            </div>
+                            @error('estimated_hours')
+                                <div class="invalid-feedback-modern">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Hourly rate -->
+                        <div class="col-md-4 mb-4">
+                            <label for="hourly_rate" class="form-label-modern" data-bs-toggle="tooltip" title="Taux horaire facturé au client">
+                                Taux horaire
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text"><i class="fas fa-euro-sign"></i></span>
+                                <input type="number" 
+                                       class="form-control-modern @error('hourly_rate') is-invalid @enderror" 
+                                       id="hourly_rate" 
+                                       name="hourly_rate" 
+                                       value="{{ old('hourly_rate') }}"
+                                       min="0"
+                                       step="0.01"
+                                       placeholder="Ex: 50"
+                                       data-bs-toggle="tooltip"
+                                       title="Prix par heure de travail">
+                                <span class="input-group-text">€/h</span>
+                            </div>
+                            @error('hourly_rate')
+                                <div class="invalid-feedback-modern">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Estimated budget -->
+                        <div class="col-md-4 mb-4">
+                            <label for="estimated_budget" class="form-label-modern" data-bs-toggle="tooltip" title="Budget total estimé pour le projet">
+                                Budget estimé
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text"><i class="fas fa-euro-sign"></i></span>
+                                <input type="number" 
+                                       class="form-control-modern @error('estimated_budget') is-invalid @enderror" 
+                                       id="estimated_budget" 
+                                       name="estimated_budget" 
+                                       value="{{ old('estimated_budget') }}"
+                                       min="0"
+                                       step="0.01"
+                                       placeholder="Ex: 6000"
+                                       data-bs-toggle="tooltip"
+                                       title="Budget global estimé (heures × taux ou montant forfaitaire)">
+                                <span class="input-group-text">€</span>
+                            </div>
+                            @error('estimated_budget')
+                                <div class="invalid-feedback-modern">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Budget calculator preview -->
+                    <div class="budget-preview" id="budgetPreview" style="display: none;" data-bs-toggle="tooltip" title="Calcul automatique basé sur les heures et le taux horaire">
+                        <div class="budget-preview-header">
+                            <i class="fas fa-calculator me-2"></i>
+                            Aperçu du budget
+                        </div>
+                        <div class="budget-preview-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="budget-item">
+                                        <span class="budget-label">Heures:</span>
+                                        <span class="budget-value" id="previewHours">0</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="budget-item">
+                                        <span class="budget-label">Taux horaire:</span>
+                                        <span class="budget-value" id="previewRate">0 €</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="budget-item total">
+                                        <span class="budget-label">Total calculé:</span>
+                                        <span class="budget-value" id="previewTotal">0 €</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-navigation d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary prev-step" data-prev="2" data-bs-toggle="tooltip" title="Retour à l'étape 2 : Client & Contact">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Étape précédente
+                        </button>
+                        <button type="button" class="btn btn-primary next-step" data-next="4" data-bs-toggle="tooltip" title="Passer à l'étape 4 : Options avancées">
+                            Étape suivante
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Options avancées -->
+        <div class="form-step" id="step4">
+            <div class="form-card-modern">
+                <div class="form-card-header">
+                    <h3 class="form-card-title">
+                        <i class="fas fa-cog me-2"></i>
+                        Options avancées
+                    </h3>
+                    <p class="form-card-subtitle">Configuration supplémentaire</p>
+                </div>
+                
+                <div class="form-card-body">
+                    <div class="row">
+                        <!-- Priorité -->
+                        <div class="col-md-6 mb-4">
+                            <label for="priority" class="form-label-modern" data-bs-toggle="tooltip" title="Niveau d'importance du projet">
+                                Priorité
+                                <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                            </label>
+                            <select class="form-select-modern" id="priority" name="priority" data-bs-toggle="tooltip" title="Définit l'ordre de traitement des projets">
+                                <option value="low" data-bs-toggle="tooltip" title="Priorité basse - projet standard">Basse</option>
+                                <option value="medium" selected data-bs-toggle="tooltip" title="Priorité moyenne - projet normal">Moyenne</option>
+                                <option value="high" data-bs-toggle="tooltip" title="Priorité haute - projet important">Haute</option>
+                                <option value="urgent" data-bs-toggle="tooltip" title="Urgent - projet prioritaire">Urgente</option>
+                            </select>
+                            <small class="form-text-modern text-muted">
+                                Définit l'importance relative du projet
+                            </small>
+                        </div>
+
+                        <!-- Statut actif -->
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label-modern d-block" data-bs-toggle="tooltip" title="Active ou désactive le projet">État du projet</label>
+                            <div class="toggle-switch-modern">
+                                <input type="checkbox" 
+                                       name="is_active" 
+                                       id="is_active" 
+                                       value="1" 
+                                       {{ old('is_active', '1') == '1' ? 'checked' : '' }}
+                                       class="toggle-checkbox"
+                                       data-bs-toggle="tooltip"
+                                       title="Cochez pour rendre le projet actif et visible">
+                                <label for="is_active" class="toggle-label">
+                                    <span class="toggle-inner"></span>
+                                    <span class="toggle-switch"></span>
+                                </label>
+                                <span class="toggle-text ms-2" id="activeStatusText">
+                                    Projet actif
+                                </span>
+                            </div>
+                            <small class="form-text-modern text-muted">
+                                Un projet inactif n'apparaîtra pas dans les listes par défaut
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="mb-4">
+                        <label class="form-label-modern" data-bs-toggle="tooltip" title="Configurer les notifications automatiques">Notifications</label>
+                        <div class="notification-options">
+                            <div class="form-check-modern">
+                                <input type="checkbox" class="form-check-input" id="notify_team" name="notify_team" checked
+                                       data-bs-toggle="tooltip" title="Envoyer une notification à tous les membres de l'équipe">
+                                <label class="form-check-label" for="notify_team">
+                                    <i class="fas fa-users me-2"></i>
+                                    Notifier l'équipe à la création
+                                </label>
+                            </div>
+                            <div class="form-check-modern">
+                                <input type="checkbox" class="form-check-input" id="notify_client" name="notify_client"
+                                       data-bs-toggle="tooltip" title="Envoyer un email au client pour l'informer de la création du projet">
+                                <label class="form-check-label" for="notify_client">
+                                    <i class="fas fa-building me-2"></i>
+                                    Notifier le client
+                                </label>
+                            </div>
+                            <div class="form-check-modern">
+                                <input type="checkbox" class="form-check-input" id="create_calendar" name="create_calendar" checked
+                                       data-bs-toggle="tooltip" title="Créer automatiquement des événements dans le calendrier">
+                                <label class="form-check-label" for="create_calendar">
+                                    <i class="fas fa-calendar-plus me-2"></i>
+                                    Créer des événements dans le calendrier
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fichiers joints -->
+                    <div class="mb-4">
+                        <label for="attachments" class="form-label-modern" data-bs-toggle="tooltip" title="Ajouter des documents au projet">
+                            Fichiers joints
+                            <i class="fas fa-question-circle ms-1 text-muted" style="font-size: 0.9rem;"></i>
+                        </label>
+                        <div class="file-upload-modern">
+                            <input type="file" 
+                                   class="file-input" 
+                                   id="attachments" 
+                                   name="attachments[]" 
+                                   multiple
+                                   accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png"
+                                   data-bs-toggle="tooltip"
+                                   title="Formats acceptés: PDF, DOC, XLS, JPG (max 10MB par fichier)">
+                            <div class="file-upload-area" data-bs-toggle="tooltip" title="Cliquez ou glissez-déposez des fichiers">
+                                <i class="fas fa-cloud-upload-alt fa-2x mb-2"></i>
+                                <p>Glissez-déposez vos fichiers ici ou cliquez pour sélectionner</p>
+                                <small class="text-muted">PDF, DOC, XLS, JPG (max 10MB)</small>
+                            </div>
+                        </div>
+                        <div id="fileList" class="file-list mt-2"></div>
+                    </div>
+
+                    <div class="form-navigation d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary prev-step" data-prev="3" data-bs-toggle="tooltip" title="Retour à l'étape 3 : Planning & Budget">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Étape précédente
+                        </button>
+                        <button type="submit" class="btn btn-success" id="submitBtn" data-bs-toggle="tooltip" title="Créer le projet avec toutes les informations saisies">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Créer le projet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+            <p class="mt-3">Création du projet en cours...</p>
+        </div>
+    </div>
+</main>
+
+<!-- Ajouter le script pour initialiser les tooltips -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialiser tous les tooltips Bootstrap
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            placement: 'auto',
+            trigger: 'hover focus',
+            html: false,
+            delay: { show: 500, hide: 100 }
+        });
+    });
+
+    // Actualiser les tooltips après les changements AJAX/dynamiques
+    function refreshTooltips() {
+        tooltipList.forEach(tooltip => {
+            if (tooltip._element && !document.body.contains(tooltip._element)) {
+                tooltip.dispose();
+            }
+        });
+        
+        tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]:not([data-bs-original-title])'));
+        tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                placement: 'auto',
+                trigger: 'hover focus',
+                html: false,
+                delay: { show: 500, hide: 100 }
+            });
+        });
+    }
+
+    // Observer les changements dans le DOM pour les éléments dynamiques
+    const observer = new MutationObserver(refreshTooltips);
+    observer.observe(document.body, { childList: true, subtree: true });
+});
+</script>
 <!-- Bibliothèques CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

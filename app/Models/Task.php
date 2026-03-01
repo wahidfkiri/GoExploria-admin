@@ -307,4 +307,74 @@ public function files(): HasMany
 {
     return $this->hasMany(TaskFile::class);
 }
+
+// Dans app/Models/Task.php - Ajouter ces relations
+
+/**
+ * Relation many-to-many avec les utilisateurs assignés à la tâche
+ */
+public function assignedUsers(): BelongsToMany
+{
+    return $this->belongsToMany(User::class, 'task_user')
+                ->withPivot('role', 'assigned_at', 'assigned_by')
+                ->withTimestamps();
+}
+
+/**
+ * Alias pour assignedUsers()
+ */
+public function users(): BelongsToMany
+{
+    return $this->belongsToMany(User::class, 'task_user')
+                ->withPivot('role', 'assigned_at', 'assigned_by')
+                ->withTimestamps();
+}
+
+/**
+ * Relation avec l'utilisateur responsable principal (déjà existante probablement)
+ */
+public function responsible(): BelongsTo
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
+
+/**
+ * Ajouter une méthode pour assigner un utilisateur à la tâche
+ */
+public function assignUser(User $user, string $role = 'assignee', ?User $assignedBy = null): void
+{
+    $this->assignedUsers()->syncWithoutDetaching([
+        $user->id => [
+            'role' => $role,
+            'assigned_at' => now(),
+            'assigned_by' => $assignedBy ? $assignedBy->id : auth()->id(),
+        ]
+    ]);
+}
+
+/**
+ * Retirer un utilisateur de la tâche
+ */
+public function removeUser(User $user): void
+{
+    $this->assignedUsers()->detach($user->id);
+}
+
+/**
+ * Vérifier si un utilisateur est assigné à la tâche
+ */
+public function hasUser(User $user): bool
+{
+    return $this->assignedUsers()->where('user_id', $user->id)->exists();
+}
+
+/**
+ * Obtenir le rôle d'un utilisateur dans la tâche
+ */
+public function getUserRole(User $user): ?string
+{
+    $assigned = $this->assignedUsers()->where('user_id', $user->id)->first();
+    
+    return $assigned ? $assigned->pivot->role : null;
+}
 }
