@@ -384,7 +384,7 @@
                                 </div>
                                 <div>
                                     <div class="project-name-text">
-                                        ${project.name}
+                                        ${project.name.length > 20 ? project.name.substring(0, 20) + '...' : project.name}
                                         ${project.contract_number ? `<small class="text-muted ms-2">(Contrat: ${project.contract_number})</small>` : ''}
                                     </div>
                                     <small class="text-muted">

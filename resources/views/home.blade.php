@@ -42,7 +42,7 @@
                         </div>
                         <button class="stats-more"><i class="fas fa-ellipsis-h"></i></button>
                     </div>
-                    <div class="stats-value">{{ $totalPays ?? 24 }}</div>
+                    <div class="stats-value">{{ $totalPays ?? 0 }}</div>
                     <div class="stats-label">Pays enregistrés</div>
                     <div class="stats-change positive">
                         <i class="fas fa-arrow-up"></i> 12.3% depuis hier
@@ -58,7 +58,7 @@
                         </div>
                         <button class="stats-more"><i class="fas fa-ellipsis-h"></i></button>
                     </div>
-                    <div class="stats-value">{{ $totalProjetsEnCours ?? 48 }}</div>
+                    <div class="stats-value">{{ $totalProjetsEnCours ?? 0 }}</div>
                     <div class="stats-label">Projets en cours</div>
                     <div class="stats-change positive">
                         <i class="fas fa-arrow-up"></i> 5.7% cette semaine
@@ -74,7 +74,7 @@
                         </div>
                         <button class="stats-more"><i class="fas fa-ellipsis-h"></i></button>
                     </div>
-                    <div class="stats-value">{{ $totalTasks ?? 156 }}</div>
+                    <div class="stats-value">{{ $totalTasks ?? 0 }}</div>
                     <div class="stats-label">Tasks totales</div>
                     <div class="stats-change negative">
                         <i class="fas fa-arrow-down"></i> 2.1% cette semaine
@@ -93,7 +93,7 @@
                         </div>
                         <button class="stats-more"><i class="fas fa-ellipsis-h"></i></button>
                     </div>
-                    <div class="stats-value">{{ $totalUsers ?? 1250 }}</div>
+                    <div class="stats-value">{{ $totalUsers ?? 0 }}</div>
                     <div class="stats-label">Tous les utilisateurs</div>
                     <div class="stats-change positive">
                         <i class="fas fa-arrow-up"></i> 3.2% ce mois
@@ -109,7 +109,7 @@
                         </div>
                         <button class="stats-more"><i class="fas fa-ellipsis-h"></i></button>
                     </div>
-                    <div class="stats-value">{{ $totalTemplates ?? 24 }}</div>
+                    <div class="stats-value">{{ $totalTemplates ?? 0 }}</div>
                     <div class="stats-label">Templates disponibles</div>
                     <div class="stats-change positive">
                         <i class="fas fa-arrow-up"></i> 4 nouveaux ce mois
@@ -174,7 +174,7 @@ function getProgressColor($progress) {
         <div class="project-header">
             <div>
                 <div class="project-title">{{ $project->nom ?? $project->title ?? 'Projet sans nom' }}</div>
-                <div class="project-desc">{{ $project->description ?? $project->etablissement->nom ?? 'Description du projet' }}</div>
+                <div class="project-desc">{!! substr($project->description, 0, 30) ?? $project->etablissement->nom ?? 'Description du projet' !!}</div>
             </div>
             <span class="project-status status-{{ $project->statut ?? 'active' }}">
                 {{ $project->statut ?? 'En cours' }}

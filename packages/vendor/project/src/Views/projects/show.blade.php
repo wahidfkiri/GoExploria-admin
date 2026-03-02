@@ -205,7 +205,7 @@
                                 @if($project->end_date && !in_array($project->status, ['completed', 'cancelled']))
                                     <div class="mt-2">
                                         @php
-                                            $daysRemaining = now()->diffInDays($project->end_date, false);
+                                          $daysRemaining = intval(now()->diffInDays($project->end_date, false));
                                         @endphp
                                         @if($daysRemaining < 0)
                                             <span class="badge bg-danger">En retard de {{ abs($daysRemaining) }} jours</span>
@@ -331,28 +331,104 @@
                         @endif
                     </div>
                 </div>
+
+                <!-- Files Card -->
+<div class="info-card-modern mt-4">
+    <div class="info-card-header d-flex justify-content-between align-items-center">
+        <h5 class="info-card-title mb-0">
+            <i class="fas fa-paperclip me-2"></i>
+            Fichiers du projet
+        </h5>
+        <span class="badge bg-primary" id="filesCount">{{ $project->files->count() }}</span>
+    </div>
+    <div class="info-card-body">
+        <div class="files-container">
+            @if($project->files && $project->files->count() > 0)
+                <div class="files-list" style="max-height: 300px; overflow-y: auto;">
+                    @foreach($project->files as $file)
+                        <div class="file-item d-flex align-items-center p-2 mb-2 bg-light rounded" id="project-file-{{ $file->id }}">
+                            <div class="file-icon me-3">
+                                <i class="{{ \App\Helpers\ViewHelper::getFileIcon($file->file_extension ?? pathinfo($file->file_name, PATHINFO_EXTENSION)) }} fa-2x"></i>
+                            </div>
+                            <div class="file-info flex-grow-1">
+                                <div class="file-name fw-bold">{{ $file->file_name }}</div>
+                                <div class="file-meta small text-muted">
+                                    <span><i class="fas fa-user me-1"></i>{{ $file->uploader->name ?? 'N/A' }}</span>
+                                    <span class="mx-2">•</span>
+                                    <span><i class="fas fa-calendar me-1"></i>{{ $file->created_at->format('d/m/Y') }}</span>
+                                    <span class="mx-2">•</span>
+                                    <span><i class="fas fa-weight me-1"></i>{{ \App\Helpers\ViewHelper::formatBytes($file->file_size) }}</span>
+                                </div>
+                            </div>
+                            <div class="file-actions">
+                                <a href="{{ route('projects.files.download', [$project->id, $file->id]) }}" class="btn btn-sm btn-outline-primary me-1" title="Télécharger">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteProjectFile({{ $file->id }})" title="Supprimer">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                
+                @if($project->files->count() > 5)
+                    <div class="text-center mt-3">
+                        <a href="#" class="btn btn-link" onclick="showAllFiles()">
+                            Voir tous les fichiers ({{ $project->files->count() }})
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                @endif
+            @else
+                <div class="empty-state-modern text-center py-4">
+                    <div class="empty-icon-modern mb-3">
+                        <i class="fas fa-file-upload fa-3x text-muted"></i>
+                    </div>
+                    <p class="text-muted">Aucun fichier attaché à ce projet</p>
+                    <button onclick="openUploadFileModal()" class="btn btn-sm btn-primary">
+                        <i class="fas fa-upload me-2"></i>Ajouter des fichiers
+                    </button>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
             </div>
 
             <!-- Right Column - Description & Tasks -->
             <div class="col-lg-8">
                 <!-- Description Card -->
-                <div class="info-card-modern mb-4">
-                    <div class="info-card-header">
-                        <h5 class="info-card-title">
-                            <i class="fas fa-align-left me-2"></i>
-                            Description
-                        </h5>
-                    </div>
-                    <div class="info-card-body">
-                        <div class="project-description">
-                            @if($project->description)
-                                {!! $project->description !!}
-                            @else
-                                <p class="text-muted fst-italic">Aucune description fournie</p>
-                            @endif
-                        </div>
-                    </div>
+<div class="info-card-modern mb-4">
+    <div class="info-card-header">
+        <h5 class="info-card-title">
+            <i class="fas fa-align-left me-2"></i>
+            Description
+        </h5>
+    </div>
+    <div class="info-card-body">
+        <div class="project-description">
+            @if($project->description)
+                @php
+                    // Limiter à 200 caractères pour l'affichage court
+                    $shortDescription = Str::limit(strip_tags($project->description), 200);
+                @endphp
+                <div class="description-short">
+                    {!! nl2br(e($shortDescription)) !!}
                 </div>
+                @if(strlen(strip_tags($project->description)) > 200)
+                    <div class="text-end mt-3">
+                        <button type="button" class="btn btn-link p-0" onclick="openDescriptionModal()">
+                            Afficher plus <i class="fas fa-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                @endif
+            @else
+                <p class="text-muted fst-italic">Aucune description fournie</p>
+            @endif
+        </div>
+    </div>
+</div>
 
                 <!-- Tasks Card -->
                 <div class="info-card-modern">
@@ -440,37 +516,64 @@
                     </div>
                 </div>
 
-                <!-- Timeline Card -->
-                @if(isset($activities) && $activities->count() > 0)
-                <div class="info-card-modern mt-4">
-                    <div class="info-card-header">
-                        <h5 class="info-card-title">
-                            <i class="fas fa-history me-2"></i>
-                            Activités récentes
-                        </h5>
+               <!-- Timeline Card -->
+@if(isset($activities) && $activities->count() > 0)
+<div class="info-card-modern mt-4">
+    <div class="info-card-header">
+        <h5 class="info-card-title">
+            <i class="fas fa-history me-2"></i>
+            Activités récentes
+        </h5>
+    </div>
+    <div class="info-card-body">
+        <div class="timeline">
+            @foreach($activities as $activity)
+                @php
+                    // Raccourcir la description à 30 caractères
+                    $fullDescription = $activity->description;
+                    $shortDescription = Str::limit(strip_tags($fullDescription), 30);
+                    $hasMore = strlen(strip_tags($fullDescription)) > 30;
+                @endphp
+                <div class="timeline-item" data-activity-id="{{ $activity->id }}">
+                    <div class="timeline-icon" style="background: {{ \App\Helpers\ViewHelper::getActivityColor($activity->description) }}">
+                        <i class="fas {{ \App\Helpers\ViewHelper::getActivityIcon($activity->description) }}"></i>
                     </div>
-                    <div class="info-card-body">
-                        <div class="timeline">
-                            @foreach($activities as $activity)
-                                <div class="timeline-item">
-                                    <div class="timeline-icon" style="background: {{ \App\Helpers\ViewHelper::getActivityColor($activity->description) }}">
-                                        <i class="fas {{ \App\Helpers\ViewHelper::getActivityIcon($activity->description) }}"></i>
-                                    </div>
-                                    <div class="timeline-content">
-                                        <div class="timeline-header">
-                                            <span class="timeline-title">{!! $activity->description !!}</span>
-                                            <span class="timeline-time">{{ $activity->created_at->diffForHumans() }}</span>
-                                        </div>
-                                        <div class="timeline-body">
-                                            {{ $activity->causer->name ?? 'Système' }}
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-title">
+                                {!! $shortDescription !!}
+                                @if($hasMore)
+                                    <button type="button" class="btn btn-link p-0 ms-2" onclick="showActivityDetails({{ $activity->id }})" style="font-size: 0.8rem;">
+                                        <i class="fas fa-eye me-1"></i>Voir plus
+                                    </button>
+                                @endif
+                            </span>
+                            <span class="timeline-time">{{ $activity->created_at->diffForHumans() }}</span>
+                        </div>
+                        <div class="timeline-body">
+                            <i class="fas fa-user me-1"></i>{{ $activity->causer->name ?? 'Système' }}
+                            @if($activity->properties && count($activity->properties) > 0)
+                                <span class="badge bg-info ms-2" style="font-size: 0.7rem;">
+                                    <i class="fas fa-tag me-1"></i>{{ count($activity->properties) }} modif.
+                                </span>
+                            @endif
                         </div>
                     </div>
                 </div>
-                @endif
+            @endforeach
+        </div>
+        
+        @if(isset($activities) && $activities->count() > 5)
+            <div class="text-center mt-3">
+                <a href="#" class="btn btn-link" onclick="showAllActivities()">
+                    Voir toutes les activités
+                    <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        @endif
+    </div>
+</div>
+@endif
             </div>
         </div>
     </main>
@@ -920,9 +1023,145 @@
             </div>
         </div>
     </div>
+
+    <!-- Description Modal -->
+<div class="modal fade" id="descriptionModal" tabindex="-1" aria-labelledby="descriptionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="descriptionModalLabel">
+                    <i class="fas fa-align-left me-2" style="color: #45b7d1;"></i>
+                    Description complète - {{ $project->name }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="project-description-full">
+                    @if($project->description)
+                        {!! $project->description !!}
+                    @else
+                        <p class="text-muted fst-italic">Aucune description fournie</p>
+                    @endif
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload File Modal -->
+<div class="modal fade" id="uploadFileModal" tabindex="-1" aria-labelledby="uploadFileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadFileModalLabel">
+                    <i class="fas fa-upload me-2" style="color: #45b7d1;"></i>
+                    Ajouter des fichiers au projet
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="uploadFileForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="file-upload-area">
+                        <div class="dropzone-container mb-3" id="projectFileDropzone">
+                            <div class="dropzone-message">
+                                <i class="fas fa-cloud-upload-alt fa-3x mb-3" style="color: #45b7d1;"></i>
+                                <h5>Déposez vos fichiers ici</h5>
+                                <p class="text-muted mb-2">ou cliquez pour sélectionner</p>
+                                <small class="text-muted">Taille max: 10MB par fichier</small>
+                            </div>
+                            <input type="file" class="file-input" id="project_files" name="files[]" multiple style="display: none;" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.zip">
+                        </div>
+
+                        <div class="selected-files-list" id="projectSelectedFiles">
+                            <!-- Les fichiers sélectionnés apparaîtront ici -->
+                        </div>
+
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Formats acceptés :</strong> PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, JPG, PNG, GIF, ZIP
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary" id="uploadFileBtn">
+                        <i class="fas fa-upload me-2"></i>Uploader
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Activity Details Modal -->
+<div class="modal fade" id="activityModal" tabindex="-1" aria-labelledby="activityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="activityModalLabel">
+                    <i class="fas fa-history me-2" style="color: #45b7d1;"></i>
+                    Détails de l'activité
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="activity-detail-content">
+                    <!-- Les détails seront chargés dynamiquement -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Bibliothèques CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
+    /* Styles pour la modal d'activité */
+.activity-detail-content {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.activity-detail-content::-webkit-scrollbar {
+    width: 5px;
+}
+
+.activity-detail-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.activity-detail-content::-webkit-scrollbar-thumb {
+    background: #45b7d1;
+    border-radius: 10px;
+}
+
+.activity-detail-content::-webkit-scrollbar-thumb:hover {
+    background: #3a56e4;
+}
+
+.activity-detail pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Courier New', monospace;
+}
+
+.timeline-title .btn-link {
+    font-size: 0.75rem;
+    text-decoration: none;
+    color: #45b7d1;
+}
+
+.timeline-title .btn-link:hover {
+    color: #3a56e4;
+    text-decoration: underline;
+}
     /* Info Cards */
     .info-card-modern {
         background: white;
@@ -1615,6 +1854,25 @@
         0% { transform: translate(-50%, -50%) rotate(0deg); }
         100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
+    @keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -1630,16 +1888,17 @@
     // Gestionnaires de fichiers
     let createFileManager = null;
     let editFileManager = null;
+    let projectFileManager = null;
     
     // Modals
-    let deleteModal, statusModal, createTaskModal, editTaskModal;
+    let deleteModal, statusModal, createTaskModal, editTaskModal, descriptionModal, uploadFileModal, activityModal;
 
     // ============================================
     // CLASSE DE GESTION DES FICHIERS
     // ============================================
     class FileManager {
         constructor(context) {
-            this.context = context; // 'create' ou 'edit'
+            this.context = context; // 'create', 'edit', ou 'project'
             this.selectedFiles = [];
             this.existingFiles = [];
             this.maxSize = 10 * 1024 * 1024; // 10MB
@@ -1663,8 +1922,10 @@
         }
         
         init() {
-            this.dropzone = document.getElementById(`${this.context}TaskDropzone`);
-            this.fileInput = document.getElementById(`${this.context}_task_files`);
+            this.dropzone = document.getElementById(`${this.context}TaskDropzone`) || 
+                           document.getElementById(`${this.context}FileDropzone`);
+            this.fileInput = document.getElementById(`${this.context}_task_files`) || 
+                            document.getElementById(`${this.context}_files`);
             this.selectedList = document.getElementById(`${this.context}SelectedFiles`);
             
             if (!this.dropzone || !this.fileInput) return;
@@ -1724,11 +1985,11 @@
                 return false;
             }
             
-            // Vérifier le type (optionnel)
-            // if (!this.allowedTypes.includes(file.type)) {
-            //     this.showNotification('warning', `Le type du fichier ${file.name} n'est pas autorisé`);
-            //     return false;
-            // }
+            // Vérifier le type
+            if (!this.allowedTypes.includes(file.type) && file.type !== '') {
+                this.showNotification('warning', `Le type du fichier ${file.name} n'est pas autorisé`);
+                return false;
+            }
             
             return true;
         }
@@ -1746,10 +2007,10 @@
                     <i class="${fileInfo.icon}"></i>
                 </div>
                 <div class="selected-file-info">
-                    <div class="selected-file-name">${file.name}</div>
+                    <div class="selected-file-name">${this.escapeHtml(file.name)}</div>
                     <div class="selected-file-size">${this.formatSize(file.size)}</div>
                 </div>
-                <button type="button" class="selected-file-remove" onclick="window.${this.context}FileManager.removeFile('${file.name}')">
+                <button type="button" class="selected-file-remove" onclick="window.${this.context}FileManager.removeFile('${this.escapeHtml(file.name)}')">
                     <i class="fas fa-times"></i>
                 </button>
             `;
@@ -1791,7 +2052,9 @@
                 gif: 'fas fa-file-image text-info',
                 zip: 'fas fa-file-archive text-secondary',
                 rar: 'fas fa-file-archive text-secondary',
-                txt: 'fas fa-file-alt text-muted'
+                txt: 'fas fa-file-alt text-muted',
+                mp4: 'fas fa-file-video text-danger',
+                mp3: 'fas fa-file-audio text-warning'
             };
             
             return {
@@ -1820,6 +2083,12 @@
                 this.selectedList.innerHTML = '';
             }
             this.updateFileInput();
+        }
+        
+        escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
         // Pour le mode édition uniquement
@@ -1859,12 +2128,12 @@
                 html += `
                     <div class="existing-file-item" id="file-${file.id}">
                         <div class="existing-file-icon">
-                            <i class="${file.icon || 'fas fa-file'}"></i>
+                            <i class="${file.icon || this.getFileInfo(file.name).icon}"></i>
                         </div>
                         <div class="existing-file-info">
                             <div class="existing-file-name">${this.escapeHtml(file.name)}</div>
                             <div class="existing-file-meta">
-                                ${file.size || 'N/A'} • ${file.uploaded_by || 'Système'} • ${file.uploaded_at || ''}
+                                ${this.formatSize(file.size)} • ${file.uploaded_by || 'Système'} • ${file.uploaded_at || ''}
                             </div>
                         </div>
                         <div class="existing-file-actions">
@@ -1929,12 +2198,6 @@
             }
         }
         
-        escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
         getFormData() {
             const data = new FormData();
             this.selectedFiles.forEach(file => {
@@ -1945,53 +2208,344 @@
     }
 
     // ============================================
-    // INITIALISATION
+    // GESTION DE LA DESCRIPTION DU PROJET
     // ============================================
-    $(document).ready(function() {
-        // Initialiser les modals
-        deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
-        createTaskModal = new bootstrap.Modal(document.getElementById('createTaskModal'));
-        editTaskModal = new bootstrap.Modal(document.getElementById('editTaskModal'));
-        
-        // Initialiser les gestionnaires de fichiers
-        window.createFileManager = new FileManager('create');
-        window.editFileManager = new FileManager('edit');
-        
-        // Initialiser Select2
-        $('.modal').on('shown.bs.modal', function() {
-            $(this).find('.select2-modern').select2({
-                dropdownParent: $(this),
-                width: '100%'
-            });
-        });
-        
-        // Form submissions
-        $('#createTaskForm').on('submit', createTask);
-        $('#editTaskForm').on('submit', updateTask);
-        
-        // Reset forms when modals are hidden
-        $('#createTaskModal').on('hidden.bs.modal', function() {
-            $('#createTaskForm')[0].reset();
-            if (window.createFileManager) {
-                window.createFileManager.reset();
-            }
-        });
-        
-        $('#editTaskModal').on('hidden.bs.modal', function() {
-            $('#editTaskForm')[0].reset();
-            if (window.editFileManager) {
-                window.editFileManager.reset();
-                window.editFileManager.existingFiles = [];
-                $('#existingFilesList').empty();
-                $('#filesCount').text('0');
-            }
-            window.currentTaskId = null;
-        });
-    });
+    function openDescriptionModal() {
+        if (!descriptionModal) {
+            descriptionModal = new bootstrap.Modal(document.getElementById('descriptionModal'));
+        }
+        descriptionModal.show();
+    }
 
     // ============================================
-    // FONCTIONS PRINCIPALES
+    // GESTION DES FICHIERS DU PROJET
+    // ============================================
+    
+    // Initialiser le gestionnaire de fichiers du projet
+    function initProjectFileManager() {
+        projectFileManager = new FileManager('project');
+    }
+
+    // Ouvrir le modal d'upload
+    function openUploadFileModal() {
+        if (!uploadFileModal) {
+            uploadFileModal = new bootstrap.Modal(document.getElementById('uploadFileModal'));
+        }
+        
+        if (!projectFileManager) {
+            initProjectFileManager();
+        } else {
+            projectFileManager.reset();
+        }
+        
+        uploadFileModal.show();
+    }
+
+    // Uploader des fichiers
+    async function uploadProjectFiles(e) {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        
+        if (projectFileManager && projectFileManager.selectedFiles.length > 0) {
+            projectFileManager.selectedFiles.forEach(file => {
+                formData.append('files[]', file);
+            });
+        } else {
+            showNotification('warning', 'Veuillez sélectionner des fichiers');
+            return;
+        }
+        
+        const submitBtn = $('#uploadFileBtn');
+        const originalText = submitBtn.html();
+        submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Upload...');
+        
+        try {
+            const response = await $.ajax({
+                url: `/projects/${projectId}/files`,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            
+            if (response.success) {
+                uploadFileModal.hide();
+                showNotification('success', 'Fichiers uploadés avec succès');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showNotification('error', response.message || 'Erreur lors de l\'upload');
+            }
+        } catch (error) {
+            handleAjaxError(error);
+        } finally {
+            submitBtn.prop('disabled', false).html(originalText);
+        }
+    }
+
+    // Supprimer un fichier du projet
+    async function deleteProjectFile(fileId) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer ce fichier ?')) return;
+        
+        const fileElement = $(`#project-file-${fileId}`);
+        
+        try {
+            const response = await $.ajax({
+                url: `/projects/${projectId}/files/${fileId}`,
+                type: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            
+            if (response.success) {
+                fileElement.fadeOut(300, function() {
+                    $(this).remove();
+                    showNotification('success', 'Fichier supprimé avec succès');
+                    
+                    // Mettre à jour le compteur
+                    const remainingFiles = $('.file-item').length;
+                    $('#filesCount').text(remainingFiles);
+                    
+                    if (remainingFiles === 0) {
+                        location.reload(); // Recharger pour afficher l'état vide
+                    }
+                });
+            }
+        } catch (error) {
+            handleAjaxError(error);
+        }
+    }
+
+    // Voir tous les fichiers
+    function showAllFiles() {
+        showNotification('info', 'Fonctionnalité à venir');
+    }
+
+    // ============================================
+    // GESTION DES ACTIVITÉS
+    // ============================================
+    
+    // Initialiser la modal des activités
+    function initActivityModal() {
+        if (!activityModal) {
+            activityModal = new bootstrap.Modal(document.getElementById('activityModal'));
+        }
+    }
+
+    // Afficher les détails d'une activité
+    async function showActivityDetails(activityId) {
+        initActivityModal();
+        
+        // Afficher un indicateur de chargement
+        const modalBody = $('#activityModal .modal-body .activity-detail-content');
+        modalBody.html(`
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+                <p class="mt-2 text-muted">Chargement des détails...</p>
+            </div>
+        `);
+        
+        activityModal.show();
+        
+        try {
+            // Récupérer les détails de l'activité
+            const response = await $.ajax({
+                url: `/activities/${activityId}`,
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            
+            if (response.success) {
+                displayActivityDetails(response.data);
+            } else {
+                modalBody.html(`
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        Erreur lors du chargement des détails
+                    </div>
+                `);
+            }
+        } catch (error) {
+            console.error('Error loading activity:', error);
+            modalBody.html(`
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Impossible de charger les détails de l'activité
+                </div>
+            `);
+        }
+    }
+
+    // Afficher les détails dans la modal
+    function displayActivityDetails(activity) {
+        const modalBody = $('#activityModal .modal-body .activity-detail-content');
+        
+        // Formater la date
+        const createdAt = new Date(activity.created_at).toLocaleString('fr-FR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        let propertiesHtml = '';
+        if (activity.properties && Object.keys(activity.properties).length > 0) {
+            propertiesHtml = '<div class="mt-3"><h6 class="mb-2">Modifications :</h6><div class="bg-light p-3 rounded">';
+            
+            // Afficher les anciennes et nouvelles valeurs si disponibles
+            if (activity.properties.old && activity.properties.attributes) {
+                propertiesHtml += '<div class="mb-3"><h6 class="mb-2">Changements :</h6>';
+                
+                const oldValues = activity.properties.old;
+                const newValues = activity.properties.attributes;
+                
+                for (let [key, newValue] of Object.entries(newValues)) {
+                    if (oldValues[key] !== undefined && oldValues[key] !== newValue) {
+                        // Formater le nom du champ
+                        const fieldName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        
+                        // Formater les valeurs
+                        let oldVal = oldValues[key];
+                        let newVal = newValue;
+                        
+                        if (oldVal === null || oldVal === '') oldVal = 'vide';
+                        if (newVal === null || newVal === '') newVal = 'vide';
+                        
+                        propertiesHtml += `
+                            <div class="mb-3 p-2 border-start border-3 border-primary">
+                                <strong class="d-block mb-2">${fieldName}:</strong>
+                                <div class="row">
+                                    <div class="col-5 text-end">
+                                        <span class="badge bg-danger bg-opacity-10 text-danger p-2">
+                                            <i class="fas fa-arrow-left me-1"></i>${oldVal}
+                                        </span>
+                                    </div>
+                                    <div class="col-2 text-center">
+                                        <i class="fas fa-arrow-right text-muted"></i>
+                                    </div>
+                                    <div class="col-5 text-start">
+                                        <span class="badge bg-success bg-opacity-10 text-success p-2">
+                                            <i class="fas fa-arrow-right me-1"></i>${newVal}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                
+                propertiesHtml += '</div>';
+            } else {
+                // Afficher toutes les propriétés
+                for (let [key, value] of Object.entries(activity.properties)) {
+                    if (key !== 'attributes' && key !== 'old' && typeof value !== 'object') {
+                        propertiesHtml += `<div><strong>${key}:</strong> ${value}</div>`;
+                    }
+                }
+            }
+            
+            propertiesHtml += '</div></div>';
+        }
+        
+        const html = `
+            <div class="activity-detail">
+                <div class="mb-4">
+                    <h6 class="text-muted mb-2">Description complète</h6>
+                    <div class="bg-light p-3 rounded">
+                        <i class="fas fa-quote-left text-primary me-2" style="opacity: 0.5;"></i>
+                        ${activity.description}
+                        <i class="fas fa-quote-right text-primary ms-2" style="opacity: 0.5;"></i>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <h6 class="text-muted mb-2">
+                            <i class="fas fa-user-circle me-1"></i>Auteur
+                        </h6>
+                        <div class="d-flex align-items-center">
+                            <div class="activity-user-avatar me-2" style="background: ${getAvatarColor(activity.causer?.name)}; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                ${getInitials(activity.causer?.name)}
+                            </div>
+                            <div>
+                                <strong>${activity.causer?.name || 'Système'}</strong>
+                                <br>
+                                <small class="text-muted">${activity.causer?.email || ''}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="text-muted mb-2">
+                            <i class="fas fa-clock me-1"></i>Date et heure
+                        </h6>
+                        <p class="mb-0">
+                            <i class="fas fa-calendar-day text-primary me-2"></i>${createdAt}
+                        </p>
+                        <small class="text-muted">
+                            <i class="fas fa-hourglass-half me-1"></i>${timeAgo(activity.created_at)}
+                        </small>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h6 class="text-muted mb-2">
+                        <i class="fas fa-tag me-1"></i>Type d'activité
+                    </h6>
+                    <span class="badge" style="background: ${getActivityColor(activity.description)}; color: white; padding: 8px 15px;">
+                        <i class="fas ${getActivityIcon(activity.description)} me-2"></i>
+                        ${activity.log_name || 'Activité'}
+                    </span>
+                </div>
+                
+                ${propertiesHtml}
+                
+                <div class="mt-4">
+                    <h6 class="text-muted mb-2">
+                        <i class="fas fa-code me-1"></i>Données brutes
+                        <button class="btn btn-sm btn-link ms-2" onclick="toggleRawData(this)">
+                            <i class="fas fa-eye"></i> Afficher
+                        </button>
+                    </h6>
+                    <pre class="bg-dark text-light p-3 rounded" style="font-size: 0.75rem; max-height: 200px; overflow-y: auto; display: none;" id="rawData-${activity.id}">${JSON.stringify(activity, null, 2)}</pre>
+                </div>
+            </div>
+        `;
+        
+        modalBody.html(html);
+    }
+
+    // Basculer l'affichage des données brutes
+    function toggleRawData(button) {
+        const pre = $(button).closest('div').find('pre');
+        const icon = $(button).find('i');
+        
+        pre.slideToggle(300);
+        
+        if (pre.is(':visible')) {
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            $(button).html('<i class="fas fa-eye-slash me-1"></i>Masquer');
+        } else {
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            $(button).html('<i class="fas fa-eye me-1"></i>Afficher');
+        }
+    }
+
+    // Voir toutes les activités
+    function showAllActivities() {
+        window.location.href = `/projects/${projectId}/activities`;
+    }
+
+    // ============================================
+    // FONCTIONS PRINCIPALES DES TÂCHES
     // ============================================
     
     // Ouvrir le modal de création
@@ -2046,7 +2600,7 @@
         }
     }
     
-    // Voir une tâche (redirection vers la page show)
+    // Voir une tâche
     function viewTask(taskId) {
         window.location.href = `/tasks/${taskId}`;
     }
@@ -2059,7 +2613,6 @@
         $('#editTaskModal .modal-body').addClass('loading');
         
         try {
-            // Charger les données de la tâche
             const response = await $.ajax({
                 url: `/tasks/${taskId}/edit`,
                 type: 'GET',
@@ -2178,11 +2731,9 @@
             if (filter === 'all') {
                 $(this).show();
             } else if (filter === 'pending') {
-                // Afficher toutes les tâches non terminées
-                $(this).toggle(status !== 'approved');
+                $(this).toggle(status !== 'approved' && status !== 'completed');
             } else if (filter === 'completed') {
-                // Afficher uniquement les tâches terminées
-                $(this).toggle(status === 'approved');
+                $(this).toggle(status === 'approved' || status === 'completed');
             }
         });
     }
@@ -2347,7 +2898,6 @@
     // Gérer les erreurs AJAX
     function handleAjaxError(error) {
         if (error.status === 422) {
-            // Erreurs de validation
             const errors = error.responseJSON.errors;
             let errorMessage = 'Erreurs de validation:\n';
             for (let field in errors) {
@@ -2358,9 +2908,12 @@
             showNotification('error', 'Action non autorisée');
         } else if (error.status === 404) {
             showNotification('error', 'Ressource non trouvée');
+        } else if (error.status === 500) {
+            showNotification('error', 'Erreur serveur interne');
         } else {
             showNotification('error', 'Erreur de connexion au serveur');
         }
+        console.error('AJAX Error:', error);
     }
     
     // Système de notification
@@ -2419,14 +2972,14 @@
         }, 5000);
     }
     
-    // Helper functions (pour la rétrocompatibilité)
+    // Helper functions
     function getInitials(name) {
         if (!name) return '?';
         return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
     }
     
     function getAvatarColor(name) {
-        const colors = ['#45b7d1', '#96ceb4', '#feca57', '#ff6b6b', '#9b59b6'];
+        const colors = ['#45b7d1', '#96ceb4', '#feca57', '#ff6b6b', '#9b59b6', '#3498db', '#e67e22', '#2ecc71'];
         const index = (name?.length || 0) % colors.length;
         return colors[index];
     }
@@ -2441,7 +2994,7 @@
         
         if (description.includes('créé')) return colors.created;
         if (description.includes('supprim')) return colors.deleted;
-        if (description.includes('statut')) return colors.status;
+        if (description.includes('statut') || description.includes('status')) return colors.status;
         return colors.updated;
     }
     
@@ -2455,11 +3008,111 @@
         
         if (description.includes('créé')) return icons.created;
         if (description.includes('supprim')) return icons.deleted;
-        if (description.includes('statut')) return icons.status;
+        if (description.includes('statut') || description.includes('status')) return icons.status;
         return icons.updated;
     }
+    
+    function timeAgo(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.floor((now - date) / 1000);
+        
+        const intervals = {
+            année: 31536000,
+            mois: 2592000,
+            semaine: 604800,
+            jour: 86400,
+            heure: 3600,
+            minute: 60,
+            seconde: 1
+        };
+        
+        for (let [unit, secondsInUnit] of Object.entries(intervals)) {
+            const interval = Math.floor(seconds / secondsInUnit);
+            
+            if (interval >= 1) {
+                if (interval === 1) {
+                    return `il y a 1 ${unit}`;
+                } else {
+                    let pluralUnit = unit;
+                    if (unit === 'mois') {
+                        pluralUnit = 'mois';
+                    } else {
+                        pluralUnit = unit + 's';
+                    }
+                    return `il y a ${interval} ${pluralUnit}`;
+                }
+            }
+        }
+        
+        return 'à l\'instant';
+    }
 
+    // ============================================
+    // INITIALISATION
+    // ============================================
+    $(document).ready(function() {
+        // Initialiser les modals
+        deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
+        createTaskModal = new bootstrap.Modal(document.getElementById('createTaskModal'));
+        editTaskModal = new bootstrap.Modal(document.getElementById('editTaskModal'));
+        descriptionModal = new bootstrap.Modal(document.getElementById('descriptionModal'));
+        uploadFileModal = new bootstrap.Modal(document.getElementById('uploadFileModal'));
+        activityModal = new bootstrap.Modal(document.getElementById('activityModal'));
+        
+        // Initialiser les gestionnaires de fichiers
+        window.createFileManager = new FileManager('create');
+        window.editFileManager = new FileManager('edit');
+        initProjectFileManager();
+        
+        // Initialiser Select2
+        $('.modal').on('shown.bs.modal', function() {
+            $(this).find('.select2-modern').select2({
+                dropdownParent: $(this),
+                width: '100%'
+            });
+        });
+        
+        // Form submissions
+        $('#createTaskForm').on('submit', createTask);
+        $('#editTaskForm').on('submit', updateTask);
+        $('#uploadFileForm').on('submit', uploadProjectFiles);
+        
+        // Reset forms when modals are hidden
+        $('#createTaskModal').on('hidden.bs.modal', function() {
+            $('#createTaskForm')[0].reset();
+            if (window.createFileManager) {
+                window.createFileManager.reset();
+            }
+        });
+        
+        $('#editTaskModal').on('hidden.bs.modal', function() {
+            $('#editTaskForm')[0].reset();
+            if (window.editFileManager) {
+                window.editFileManager.reset();
+                window.editFileManager.existingFiles = [];
+                $('#existingFilesList').empty();
+                $('#filesCount').text('0');
+            }
+            window.currentTaskId = null;
+        });
+        
+        $('#uploadFileModal').on('hidden.bs.modal', function() {
+            $('#uploadFileForm')[0].reset();
+            if (projectFileManager) {
+                projectFileManager.reset();
+            }
+        });
+        
+        $('#activityModal').on('hidden.bs.modal', function() {
+            $('#activityModal .modal-body .activity-detail-content').empty();
+        });
+    });
+
+    // ============================================
     // Exposer les fonctions globalement
+    // ============================================
     window.openCreateTaskModal = openCreateTaskModal;
     window.openEditTaskModal = openEditTaskModal;
     window.viewTask = viewTask;
@@ -2471,10 +3124,18 @@
     window.confirmDelete = confirmDelete;
     window.updateStatus = updateStatus;
     window.submitStatusUpdate = submitStatusUpdate;
+    window.openDescriptionModal = openDescriptionModal;
+    window.openUploadFileModal = openUploadFileModal;
+    window.deleteProjectFile = deleteProjectFile;
+    window.showAllFiles = showAllFiles;
+    window.showActivityDetails = showActivityDetails;
+    window.showAllActivities = showAllActivities;
+    window.toggleRawData = toggleRawData;
     window.getInitials = getInitials;
     window.getAvatarColor = getAvatarColor;
     window.getActivityColor = getActivityColor;
     window.getActivityIcon = getActivityIcon;
+    window.timeAgo = timeAgo;
 </script>
 
 @endsection

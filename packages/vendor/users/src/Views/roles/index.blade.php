@@ -381,9 +381,8 @@
     let currentFilters = {};
     let allRoles = [];
     let allPermissions = [];
-    let itemToDelete = null;
-    let deleteType = null;
-    let currentEditRoleId = null;
+    let roleToDelete = null;
+    let permissionToDelete = null;
 
     // ==================== INITIALISATION ====================
     document.addEventListener('DOMContentLoaded', function() {
@@ -391,69 +390,7 @@
         loadRoles();
         loadPermissions();
         setupEventListeners();
-        fixModals(); // Nouvelle fonction pour corriger les modals
     });
-
-    // ==================== FIX MODALS ====================
-    const fixModals = () => {
-        // Forcer la suppression des attributs aria-hidden au chargement
-        document.querySelectorAll('[aria-hidden="true"]').forEach(el => {
-            el.removeAttribute('aria-hidden');
-        });
-
-        // Intercepter l'ouverture de toutes les modals Bootstrap
-        const modals = ['createRoleModal', 'editRoleModal', 'createPermissionModal', 'deleteConfirmationModal'];
-        
-        modals.forEach(modalId => {
-            const modalElement = document.getElementById(modalId);
-            if (!modalElement) return;
-
-            // Remplacer le gestionnaire d'ouverture de Bootstrap
-            modalElement.addEventListener('show.bs.modal', function(e) {
-                e.stopPropagation();
-                // Empêcher Bootstrap d'ajouter aria-hidden
-                this.removeAttribute('aria-hidden');
-            });
-
-            modalElement.addEventListener('shown.bs.modal', function() {
-                // Nettoyer tous les aria-hidden
-                document.querySelectorAll('[aria-hidden="true"]').forEach(el => {
-                    el.removeAttribute('aria-hidden');
-                });
-                
-                // Mettre le focus sur le premier champ
-                const firstInput = this.querySelector('input:not([disabled]), select:not([disabled]), textarea:not([disabled])');
-                if (firstInput) {
-                    setTimeout(() => firstInput.focus(), 100);
-                }
-            });
-
-            modalElement.addEventListener('hidden.bs.modal', function() {
-                // Nettoyer après fermeture
-                document.body.classList.remove('modal-open');
-                document.body.style.overflow = '';
-                document.body.style.paddingRight = '';
-                
-                // Supprimer tous les backdrops
-                document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
-                
-                // Nettoyer les aria-hidden
-                document.querySelectorAll('[aria-hidden="true"]').forEach(el => {
-                    el.removeAttribute('aria-hidden');
-                });
-            });
-        });
-
-        // Nettoyage périodique
-        setInterval(() => {
-            document.querySelectorAll('[aria-hidden="true"]').forEach(el => {
-                // Ne pas enlever des modals ouvertes
-                if (!el.classList.contains('show')) {
-                    el.removeAttribute('aria-hidden');
-                }
-            });
-        }, 500);
-    };
 
     // ==================== AJAX SETUP ====================
     const setupAjax = () => {
@@ -469,7 +406,7 @@
 
     // ==================== RÔLES ====================
 
-    // Charger les rôles
+    // Load roles
     const loadRoles = (page = 1, filters = {}) => {
         showLoading();
         
@@ -502,7 +439,7 @@
         });
     };
 
-    // Afficher les rôles
+    // Render roles
     const renderRoles = (roles) => {
         const tbody = document.getElementById('rolesTableBody');
         tbody.innerHTML = '';
@@ -522,11 +459,11 @@
             const permissionsCount = role.permissions ? role.permissions.length : 0;
             const permissionsList = role.permissions ? 
                 role.permissions.slice(0, 3).map(p => 
-                    `<span class="permission-badge" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</span>`
+                    `<span class="permission-badge">${p.name}</span>`
                 ).join('') : '';
             
             const morePermissions = permissionsCount > 3 ? 
-                `<span class="permission-badge more" title="${role.permissions.slice(3).map(p => escapeHtml(p.name)).join(', ')}">+${permissionsCount - 3}</span>` : '';
+                `<span class="permission-badge more">+${permissionsCount - 3}</span>` : '';
             
             row.innerHTML = `
                 <td><span class="badge-id">#${role.id}</span></td>
@@ -536,15 +473,15 @@
                             <i class="fas fa-shield-alt"></i>
                         </div>
                         <div>
-                            <div class="role-name-text">${escapeHtml(role.name)}</div>
-                            <small class="text-muted">${escapeHtml(role.guard_name || 'web')}</small>
+                            <div class="role-name-text">${role.name}</div>
+                            <small class="text-muted">${role.guard_name || 'web'}</small>
                         </div>
                     </div>
                 </td>
                 <td>
                     <span class="guard-badge ${role.guard_name === 'api' ? 'guard-api' : 'guard-web'}">
                         <i class="fas fa-${role.guard_name === 'api' ? 'cloud' : 'globe'} me-1"></i>
-                        ${escapeHtml(role.guard_name || 'web')}
+                        ${role.guard_name || 'web'}
                     </span>
                 </td>
                 <td>
@@ -570,7 +507,7 @@
                             <i class="fas fa-copy"></i>
                         </button>
                         <button class="action-btn-modern delete-btn-modern" title="Supprimer" 
-                                onclick="showDeleteConfirmation('role', ${role.id}, '${escapeHtml(role.name)}')">
+                                onclick="showDeleteConfirmation(${role.id})">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -585,7 +522,7 @@
         document.getElementById('paginationContainer').style.display = 'flex';
     };
 
-    // Créer un rôle
+    // Create role
     const createRole = (e) => {
         e.preventDefault();
         
@@ -597,19 +534,28 @@
             return;
         }
         
+        // Show processing animation
+        submitBtn.classList.add('btn-processing');
+        submitBtn.innerHTML = `
+            <span class="btn-text" style="display: none;">
+                <i class="fas fa-save me-2"></i>Créer le rôle
+            </span>
+            <div class="spinner-border spinner-border-sm text-light" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+            Création en cours...
+        `;
+        submitBtn.disabled = true;
+        
         const formData = new FormData(form);
         
-        // Récupérer les permissions sélectionnées
+        // Collect selected permissions
         const selectedPermissions = Array.from(document.querySelectorAll('#permissionsContainer .permission-input:checked'))
             .map(cb => cb.value);
         
         selectedPermissions.forEach(permId => {
             formData.append('permissions[]', permId);
         });
-        
-        // Désactiver le bouton
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Création...';
-        submitBtn.disabled = true;
         
         $.ajax({
             url: '{{ route("roles.store") }}',
@@ -618,19 +564,42 @@
             processData: false,
             contentType: false,
             success: function(response) {
+                // Reset button state
+                submitBtn.classList.remove('btn-processing');
+                submitBtn.innerHTML = `
+                    <span class="btn-text">
+                        <i class="fas fa-save me-2"></i>Créer le rôle
+                    </span>
+                `;
+                submitBtn.disabled = false;
+                
                 if (response.success) {
-                    showAlert('success', response.message || 'Rôle créé avec succès !');
-                    
+                    // Close modal
                     const modal = bootstrap.Modal.getInstance(document.getElementById('createRoleModal'));
                     modal.hide();
                     
+                    // Reset form
                     form.reset();
+                    
+                    // Reload roles
                     loadRoles(1, currentFilters);
+                    
+                    // Show success message
+                    showAlert('success', 'Rôle créé avec succès !');
                 } else {
                     showAlert('danger', response.message || 'Erreur lors de la création');
                 }
             },
             error: function(xhr) {
+                // Reset button state
+                submitBtn.classList.remove('btn-processing');
+                submitBtn.innerHTML = `
+                    <span class="btn-text">
+                        <i class="fas fa-save me-2"></i>Créer le rôle
+                    </span>
+                `;
+                submitBtn.disabled = false;
+                
                 if (xhr.status === 422) {
                     const errors = xhr.responseJSON.errors;
                     let errorMessage = 'Erreurs de validation:<br>';
@@ -641,63 +610,30 @@
                 } else {
                     showAlert('danger', xhr.responseJSON?.message || 'Erreur lors de la création');
                 }
-            },
-            complete: function() {
-                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Créer le rôle';
-                submitBtn.disabled = false;
             }
         });
     };
 
-    // Ouvrir la modal d'édition
+    // Open edit modal
     const openEditModal = (roleId) => {
-        currentEditRoleId = roleId;
+        const role = allRoles.find(r => r.id === roleId);
         
-        const modalElement = document.getElementById('editRoleModal');
-        const modal = new bootstrap.Modal(modalElement);
+        if (!role) {
+            showAlert('danger', 'Rôle non trouvé');
+            return;
+        }
         
-        // Forcer la suppression de aria-hidden avant ouverture
-        modalElement.removeAttribute('aria-hidden');
-        document.querySelectorAll('[aria-hidden="true"]').forEach(el => {
-            el.removeAttribute('aria-hidden');
-        });
+        document.getElementById('editRoleId').value = role.id;
+        document.getElementById('editRoleName').value = role.name;
+        document.getElementById('editRoleGuard').value = role.guard_name || 'web';
         
-        modal.show();
+        const selectedPermissions = role.permissions ? role.permissions.map(p => p.id) : [];
+        renderPermissionsCheckboxes('editPermissionsContainer', selectedPermissions);
         
-        document.getElementById('editPermissionsContainer').innerHTML = '<div class="text-center text-muted py-3"><i class="fas fa-spinner fa-spin me-2"></i>Chargement des permissions...</div>';
-        
-        // Charger les détails du rôle
-        $.ajax({
-            url: `/roles/${roleId}`,
-            type: 'GET',
-            success: function(response) {
-                if (response.success) {
-                    const role = response.data;
-                    
-                    document.getElementById('editRoleId').value = role.id;
-                    document.getElementById('editRoleName').value = role.name;
-                    document.getElementById('editRoleGuard').value = role.guard_name || 'web';
-                    
-                    const selectedPermissions = role.permissions ? role.permissions.map(p => p.id) : [];
-                    renderPermissionsCheckboxes('editPermissionsContainer', selectedPermissions);
-                    
-                    // Focus sur le premier champ après chargement
-                    setTimeout(() => {
-                        document.getElementById('editRoleName').focus();
-                    }, 200);
-                } else {
-                    showAlert('danger', 'Erreur lors du chargement du rôle');
-                    modal.hide();
-                }
-            },
-            error: function(xhr) {
-                showAlert('danger', 'Erreur lors du chargement du rôle');
-                modal.hide();
-            }
-        });
+        new bootstrap.Modal(document.getElementById('editRoleModal')).show();
     };
 
-    // Mettre à jour un rôle
+    // Update role
     const updateRole = (e) => {
         e.preventDefault();
         
@@ -710,8 +646,22 @@
             return;
         }
         
+        // Show processing animation
+        submitBtn.classList.add('btn-processing');
+        submitBtn.innerHTML = `
+            <span class="btn-text" style="display: none;">
+                <i class="fas fa-save me-2"></i>Mettre à jour
+            </span>
+            <div class="spinner-border spinner-border-sm text-light" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+            Mise à jour...
+        `;
+        submitBtn.disabled = true;
+        
         const formData = new FormData(form);
         
+        // Collect selected permissions
         const selectedPermissions = Array.from(document.querySelectorAll('#editPermissionsContainer .permission-input:checked'))
             .map(cb => cb.value);
         
@@ -721,9 +671,6 @@
         
         formData.append('_method', 'PUT');
         
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mise à jour...';
-        submitBtn.disabled = true;
-        
         $.ajax({
             url: `/roles/${roleId}`,
             type: 'POST',
@@ -731,18 +678,39 @@
             processData: false,
             contentType: false,
             success: function(response) {
+                // Reset button state
+                submitBtn.classList.remove('btn-processing');
+                submitBtn.innerHTML = `
+                    <span class="btn-text">
+                        <i class="fas fa-save me-2"></i>Mettre à jour
+                    </span>
+                `;
+                submitBtn.disabled = false;
+                
                 if (response.success) {
-                    showAlert('success', response.message || 'Rôle mis à jour avec succès !');
-                    
+                    // Close modal
                     const modal = bootstrap.Modal.getInstance(document.getElementById('editRoleModal'));
                     modal.hide();
                     
+                    // Reload roles
                     loadRoles(currentPage, currentFilters);
+                    
+                    // Show success message
+                    showAlert('success', 'Rôle mis à jour avec succès !');
                 } else {
                     showAlert('danger', response.message || 'Erreur lors de la mise à jour');
                 }
             },
             error: function(xhr) {
+                // Reset button state
+                submitBtn.classList.remove('btn-processing');
+                submitBtn.innerHTML = `
+                    <span class="btn-text">
+                        <i class="fas fa-save me-2"></i>Mettre à jour
+                    </span>
+                `;
+                submitBtn.disabled = false;
+                
                 if (xhr.status === 422) {
                     const errors = xhr.responseJSON.errors;
                     let errorMessage = 'Erreurs de validation:<br>';
@@ -753,59 +721,39 @@
                 } else {
                     showAlert('danger', xhr.responseJSON?.message || 'Erreur lors de la mise à jour');
                 }
-            },
-            complete: function() {
-                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Mettre à jour';
-                submitBtn.disabled = false;
             }
         });
     };
 
-    // Dupliquer un rôle
+    // Duplicate role
     const duplicateRole = (roleId) => {
         const role = allRoles.find(r => r.id === roleId);
         
         if (!role) {
-            showError('Rôle non trouvé');
+            showAlert('danger', 'Rôle non trouvé');
             return;
         }
         
-        document.getElementById('createRoleForm').reset();
         document.getElementById('roleName').value = `${role.name}_copy`;
         document.getElementById('roleGuard').value = role.guard_name || 'web';
         
-        const modalElement = document.getElementById('createRoleModal');
-        const modal = new bootstrap.Modal(modalElement);
-        
-        modalElement.removeAttribute('aria-hidden');
-        modal.show();
-        
         const selectedPermissions = role.permissions ? role.permissions.map(p => p.id) : [];
+        renderPermissionsCheckboxes('permissionsContainer', selectedPermissions);
         
-        setTimeout(() => {
-            renderPermissionsCheckboxes('permissionsContainer', selectedPermissions);
-            document.getElementById('roleName').focus();
-        }, 500);
+        new bootstrap.Modal(document.getElementById('createRoleModal')).show();
     };
 
     // ==================== PERMISSIONS ====================
 
-    // Charger les permissions
+    // Load permissions
     const loadPermissions = () => {
         $.ajax({
             url: '{{ route("permissions.index") }}',
             type: 'GET',
-            data: { ajax: true, all: true },
+            data: { ajax: true },
             success: function(response) {
                 if (response.success) {
-                    if (response.data && typeof response.data === 'object' && !Array.isArray(response.data)) {
-                        allPermissions = [];
-                        Object.values(response.data).forEach(group => {
-                            allPermissions = allPermissions.concat(group);
-                        });
-                    } else {
-                        allPermissions = response.data || [];
-                    }
+                    allPermissions = response.data || [];
                     renderPermissions(allPermissions);
                     renderPermissionsCheckboxes('permissionsContainer');
                 } else {
@@ -819,7 +767,7 @@
         });
     };
 
-    // Afficher les permissions
+    // Render permissions
     const renderPermissions = (permissions) => {
         const tbody = document.getElementById('permissionsTableBody');
         if (!tbody) return;
@@ -838,6 +786,7 @@
             return;
         }
         
+        // Group permissions by group
         const groupedPermissions = permissions.reduce((acc, permission) => {
             const group = permission.group || 'Autres';
             if (!acc[group]) acc[group] = [];
@@ -845,39 +794,41 @@
             return acc;
         }, {});
         
+        // Sort groups
         const sortedGroups = Object.keys(groupedPermissions).sort();
         
         sortedGroups.forEach(group => {
+            // Add group header
             const groupHeader = document.createElement('tr');
             groupHeader.className = 'group-header';
             groupHeader.innerHTML = `
                 <td colspan="6">
                     <div class="group-title">
                         <i class="fas fa-folder-open me-2"></i>
-                        ${escapeHtml(group)} (${groupedPermissions[group].length})
+                        ${group}
                     </div>
                 </td>
             `;
             tbody.appendChild(groupHeader);
             
+            // Add permissions for this group
             groupedPermissions[group].forEach((permission) => {
                 const row = document.createElement('tr');
-                row.id = `permission-row-${permission.id}`;
                 row.innerHTML = `
                     <td><span class="badge-id">#${permission.id}</span></td>
                     <td>
                         <div class="permission-name">
                             <i class="fas fa-key permission-icon"></i>
-                            ${escapeHtml(permission.name)}
+                            ${permission.name}
                         </div>
                     </td>
                     <td>
                         <span class="guard-badge ${permission.guard_name === 'api' ? 'guard-api' : 'guard-web'}">
-                            ${escapeHtml(permission.guard_name || 'web')}
+                            ${permission.guard_name || 'web'}
                         </span>
                     </td>
                     <td>
-                        <span class="group-badge">${escapeHtml(group)}</span>
+                        <span class="group-badge">${group}</span>
                     </td>
                     <td>
                         <div class="date-info">
@@ -888,7 +839,7 @@
                     <td>
                         <div class="role-actions-modern">
                             <button class="action-btn-modern delete-btn-modern" title="Supprimer" 
-                                    onclick="showDeleteConfirmation('permission', ${permission.id}, '${escapeHtml(permission.name)}')">
+                                    onclick="showPermissionDeleteConfirmation(${permission.id}, '${permission.name}')">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -899,7 +850,7 @@
         });
     };
 
-    // Afficher les checkboxes des permissions
+    // Render permissions checkboxes
     const renderPermissionsCheckboxes = (containerId, selectedPermissions = []) => {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -909,6 +860,7 @@
             return;
         }
         
+        // Group permissions
         const groupedPermissions = allPermissions.reduce((acc, permission) => {
             const group = permission.group || 'Autres';
             if (!acc[group]) acc[group] = [];
@@ -917,18 +869,19 @@
         }, {});
         
         let html = '';
+        
+        // Sort groups
         const sortedGroups = Object.keys(groupedPermissions).sort();
         
         sortedGroups.forEach(group => {
-            const groupId = `${containerId}_${group.replace(/[^a-zA-Z0-9]/g, '_')}`;
             html += `
                 <div class="permission-group">
-                    <div class="permission-group-header" onclick="toggleGroup('${groupId}')">
-                        <i class="fas fa-chevron-right me-2 group-icon"></i>
-                        <strong>${escapeHtml(group)}</strong>
+                    <div class="permission-group-header" onclick="toggleGroup('${containerId}_${group}')">
+                        <i class="fas fa-chevron-right me-2"></i>
+                        <strong>${group}</strong>
                         <span class="group-count">(${groupedPermissions[group].length})</span>
                     </div>
-                    <div class="permission-group-body" id="${groupId}">
+                    <div class="permission-group-body" id="${containerId}_${group}">
             `;
             
             groupedPermissions[group].forEach(permission => {
@@ -939,7 +892,7 @@
                                name="permissions[]" value="${permission.id}" 
                                id="perm_${containerId}_${permission.id}" ${checked}>
                         <label class="form-check-label" for="perm_${containerId}_${permission.id}">
-                            ${escapeHtml(permission.name)}
+                            ${permission.name}
                         </label>
                     </div>
                 `;
@@ -949,45 +902,24 @@
         });
         
         container.innerHTML = html;
-        
-        // Ouvrir les groupes qui ont des permissions sélectionnées
-        setTimeout(() => {
-            sortedGroups.forEach(group => {
-                const groupId = `${containerId}_${group.replace(/[^a-zA-Z0-9]/g, '_')}`;
-                const groupElement = document.getElementById(groupId);
-                if (groupElement) {
-                    const hasChecked = Array.from(groupElement.querySelectorAll('.permission-input:checked')).length > 0;
-                    if (hasChecked) {
-                        groupElement.style.display = 'block';
-                        const header = groupElement.previousElementSibling;
-                        const icon = header.querySelector('.group-icon');
-                        if (icon) {
-                            icon.className = 'fas fa-chevron-down me-2 group-icon';
-                        }
-                    }
-                }
-            });
-        }, 100);
     };
 
-    // Basculer l'affichage d'un groupe
+    // Toggle permission group
     const toggleGroup = (groupId) => {
         const group = document.getElementById(groupId);
-        if (!group) return;
-        
         const header = group.previousElementSibling;
-        const icon = header.querySelector('.group-icon');
+        const icon = header.querySelector('i');
         
         if (group.style.display === 'none' || !group.style.display) {
             group.style.display = 'block';
-            if (icon) icon.className = 'fas fa-chevron-down me-2 group-icon';
+            icon.className = 'fas fa-chevron-down me-2';
         } else {
             group.style.display = 'none';
-            if (icon) icon.className = 'fas fa-chevron-right me-2 group-icon';
+            icon.className = 'fas fa-chevron-right me-2';
         }
     };
 
-    // Créer une permission
+    // Create permission
     const createPermission = (e) => {
         e.preventDefault();
         
@@ -999,10 +931,20 @@
             return;
         }
         
-        const formData = new FormData(form);
-        
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Création...';
+        // Show processing animation
+        submitBtn.classList.add('btn-processing');
+        submitBtn.innerHTML = `
+            <span class="btn-text" style="display: none;">
+                <i class="fas fa-save me-2"></i>Créer
+            </span>
+            <div class="spinner-border spinner-border-sm text-light" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+            Création...
+        `;
         submitBtn.disabled = true;
+        
+        const formData = new FormData(form);
         
         $.ajax({
             url: '{{ route("permissions.store") }}',
@@ -1011,19 +953,42 @@
             processData: false,
             contentType: false,
             success: function(response) {
+                // Reset button state
+                submitBtn.classList.remove('btn-processing');
+                submitBtn.innerHTML = `
+                    <span class="btn-text">
+                        <i class="fas fa-save me-2"></i>Créer
+                    </span>
+                `;
+                submitBtn.disabled = false;
+                
                 if (response.success) {
-                    showAlert('success', response.message || 'Permission créée avec succès !');
-                    
+                    // Close modal
                     const modal = bootstrap.Modal.getInstance(document.getElementById('createPermissionModal'));
                     modal.hide();
                     
+                    // Reset form
                     form.reset();
+                    
+                    // Reload permissions
                     loadPermissions();
+                    
+                    // Show success message
+                    showAlert('success', 'Permission créée avec succès !');
                 } else {
                     showAlert('danger', response.message || 'Erreur lors de la création');
                 }
             },
             error: function(xhr) {
+                // Reset button state
+                submitBtn.classList.remove('btn-processing');
+                submitBtn.innerHTML = `
+                    <span class="btn-text">
+                        <i class="fas fa-save me-2"></i>Créer
+                    </span>
+                `;
+                submitBtn.disabled = false;
+                
                 if (xhr.status === 422) {
                     const errors = xhr.responseJSON.errors;
                     let errorMessage = 'Erreurs de validation:<br>';
@@ -1034,101 +999,253 @@
                 } else {
                     showAlert('danger', xhr.responseJSON?.message || 'Erreur lors de la création');
                 }
-            },
-            complete: function() {
-                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Créer';
-                submitBtn.disabled = false;
             }
         });
     };
 
-    // ==================== SUPPRESSION ====================
+    // ==================== SUPPRESSION RÔLE ====================
 
-    // Afficher la confirmation de suppression
-    const showDeleteConfirmation = (type, id, name) => {
-        itemToDelete = { id, name };
-        deleteType = type;
+    // Show delete confirmation for role
+    const showDeleteConfirmation = (roleId) => {
+        const role = allRoles.find(r => r.id === roleId);
         
-        const modalElement = document.getElementById('deleteConfirmationModal');
-        const modal = new bootstrap.Modal(modalElement);
-        
-        modalElement.removeAttribute('aria-hidden');
-        
-        const modalTitle = document.querySelector('#deleteConfirmationModal .modal-title-modern');
-        if (modalTitle) {
-            modalTitle.innerHTML = type === 'role' 
-                ? '<i class="fas fa-exclamation-triangle me-2"></i>Confirmer la suppression du rôle'
-                : '<i class="fas fa-exclamation-triangle me-2"></i>Confirmer la suppression de la permission';
+        if (!role) {
+            showAlert('danger', 'Rôle non trouvé');
+            return;
         }
         
+        roleToDelete = role;
+        
         document.getElementById('deleteItemInfo').innerHTML = `
-            <div class="alert alert-warning">
-                <i class="fas fa-info-circle me-2"></i>
-                Êtes-vous sûr de vouloir supprimer ${type === 'role' ? 'le rôle' : 'la permission'} 
-                <strong>"${escapeHtml(name)}"</strong> ?
+            <div class="user-info">
+                <div class="user-info-avatar">
+                    <i class="fas fa-shield-alt fa-2x"></i>
+                </div>
+                <div>
+                    <div class="user-info-name">${role.name}</div>
+                    <div class="user-info-email">Guard: ${role.guard_name || 'web'}</div>
+                    <div class="user-info-roles">Permissions: ${role.permissions ? role.permissions.length : 0}</div>
+                </div>
+            </div>
+            <div class="row small text-muted mt-3">
+                <div class="col-6">
+                    <div><strong>ID:</strong> ${role.id}</div>
+                    <div><strong>Créé le:</strong> ${new Date(role.created_at).toLocaleDateString()}</div>
+                </div>
+                <div class="col-6">
+                    <div><strong>Dernière modification:</strong> ${new Date(role.updated_at).toLocaleDateString()}</div>
+                    <div><strong>Utilisateurs:</strong> ${role.users_count || 0}</div>
+                </div>
             </div>
         `;
         
-        modal.show();
+        // Reset delete button state
+        const deleteBtn = document.getElementById('confirmDeleteBtn');
+        deleteBtn.innerHTML = `
+            <span class="btn-text">
+                <i class="fas fa-trash me-2"></i>Supprimer définitivement
+            </span>
+        `;
+        deleteBtn.disabled = false;
+        deleteBtn.onclick = deleteRole;
         
-        setTimeout(() => {
-            document.querySelector('#deleteConfirmationModal .btn-danger').focus();
-        }, 200);
+        // Show modal
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+        deleteModal.show();
     };
 
-    // Supprimer un élément
-    const deleteItem = () => {
-        if (!itemToDelete || !deleteType) return;
+    // Delete role
+    const deleteRole = () => {
+        if (!roleToDelete) {
+            showAlert('danger', 'Aucun rôle à supprimer');
+            return;
+        }
         
-        const url = deleteType === 'role' 
-            ? `{{ url('roles') }}/${itemToDelete.id}`
-            : `{{ url('permissions') }}/${itemToDelete.id}`;
-        
+        const roleId = roleToDelete.id;
         const deleteBtn = document.getElementById('confirmDeleteBtn');
-        const originalText = deleteBtn.innerHTML;
         
-        deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Suppression...';
+        // Show processing animation
+        deleteBtn.innerHTML = `
+            <span class="btn-text" style="display: none;">
+                <i class="fas fa-trash me-2"></i>Supprimer définitivement
+            </span>
+            <div class="spinner-border spinner-border-sm text-light" role="status">
+                <span class="visually-hidden">Suppression...</span>
+            </div>
+            Suppression en cours...
+        `;
         deleteBtn.disabled = true;
         
+        // Add deleting animation to table row
+        const row = document.getElementById(`role-row-${roleId}`);
+        if (row) {
+            row.classList.add('deleting-row');
+        }
+        
         $.ajax({
-            url: url,
+            url: `/roles/${roleId}`,
             type: 'DELETE',
             success: function(response) {
+                // Hide modal
+                const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmationModal'));
+                deleteModal.hide();
+                
                 if (response.success) {
-                    showAlert('success', response.message || 'Suppression effectuée avec succès !');
+                    // Remove role from array
+                    allRoles = allRoles.filter(r => r.id !== roleId);
                     
-                    if (deleteType === 'role') {
-                        loadRoles(currentPage, currentFilters);
+                    // Show success message
+                    showAlert('success', response.message || 'Rôle supprimé avec succès !');
+                    
+                    // Remove row after animation
+                    if (row) {
+                        setTimeout(() => {
+                            row.remove();
+                            
+                            // Check if table is now empty
+                            const tbody = document.getElementById('rolesTableBody');
+                            if (tbody.children.length === 0) {
+                                document.getElementById('emptyState').style.display = 'block';
+                                document.getElementById('tableContainer').style.display = 'none';
+                                document.getElementById('paginationContainer').style.display = 'none';
+                            }
+                        }, 300);
                     } else {
-                        loadPermissions();
+                        // Reload table
+                        setTimeout(() => {
+                            loadRoles(currentPage, currentFilters);
+                        }, 500);
                     }
-                    
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmationModal'));
-                    modal.hide();
                 } else {
+                    if (row) row.classList.remove('deleting-row');
                     showAlert('danger', response.message || 'Erreur lors de la suppression');
                 }
             },
             error: function(xhr) {
-                let errorMessage = 'Erreur lors de la suppression';
-                if (xhr.responseJSON?.message) {
-                    errorMessage = xhr.responseJSON.message;
-                } else if (xhr.responseJSON?.error) {
-                    errorMessage = xhr.responseJSON.error;
+                // Hide modal
+                const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmationModal'));
+                deleteModal.hide();
+                
+                // Remove deleting animation
+                if (row) {
+                    row.classList.remove('deleting-row');
                 }
-                showAlert('danger', errorMessage);
-                console.error(xhr);
+                
+                if (xhr.status === 404) {
+                    showAlert('danger', 'Rôle non trouvé.');
+                    loadRoles(currentPage, currentFilters);
+                } else {
+                    showAlert('danger', xhr.responseJSON?.message || 'Erreur lors de la suppression');
+                }
             },
             complete: function() {
-                deleteBtn.innerHTML = originalText;
-                deleteBtn.disabled = false;
+                roleToDelete = null;
+            }
+        });
+    };
+
+    // ==================== SUPPRESSION PERMISSION ====================
+
+    // Show delete confirmation for permission
+    const showPermissionDeleteConfirmation = (permissionId, permissionName) => {
+        permissionToDelete = { id: permissionId, name: permissionName };
+        
+        document.getElementById('deleteItemInfo').innerHTML = `
+            <div class="alert alert-warning">
+                <i class="fas fa-info-circle me-2"></i>
+                Êtes-vous sûr de vouloir supprimer la permission 
+                <strong>"${permissionName}"</strong> ?
+            </div>
+        `;
+        
+        // Reset delete button state
+        const deleteBtn = document.getElementById('confirmDeleteBtn');
+        deleteBtn.innerHTML = `
+            <span class="btn-text">
+                <i class="fas fa-trash me-2"></i>Supprimer définitivement
+            </span>
+        `;
+        deleteBtn.disabled = false;
+        deleteBtn.onclick = deletePermission;
+        
+        // Show modal
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+        deleteModal.show();
+    };
+
+    // Delete permission
+    const deletePermission = () => {
+        if (!permissionToDelete) {
+            showAlert('danger', 'Aucune permission à supprimer');
+            return;
+        }
+        
+        const permissionId = permissionToDelete.id;
+        const deleteBtn = document.getElementById('confirmDeleteBtn');
+        
+        // Show processing animation
+        deleteBtn.innerHTML = `
+            <span class="btn-text" style="display: none;">
+                <i class="fas fa-trash me-2"></i>Supprimer définitivement
+            </span>
+            <div class="spinner-border spinner-border-sm text-light" role="status">
+                <span class="visually-hidden">Suppression...</span>
+            </div>
+            Suppression en cours...
+        `;
+        deleteBtn.disabled = true;
+        
+        // Add deleting animation to table row
+        const row = document.getElementById(`permission-row-${permissionId}`);
+        if (row) {
+            row.classList.add('deleting-row');
+        }
+        
+        $.ajax({
+            url: `/permissions/${permissionId}`,
+            type: 'DELETE',
+            success: function(response) {
+                // Hide modal
+                const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmationModal'));
+                deleteModal.hide();
+                
+                if (response.success) {
+                    // Show success message
+                    showAlert('success', response.message || 'Permission supprimée avec succès !');
+                    
+                    // Reload permissions
+                    loadPermissions();
+                } else {
+                    if (row) row.classList.remove('deleting-row');
+                    showAlert('danger', response.message || 'Erreur lors de la suppression');
+                }
+            },
+            error: function(xhr) {
+                // Hide modal
+                const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmationModal'));
+                deleteModal.hide();
+                
+                // Remove deleting animation
+                if (row) {
+                    row.classList.remove('deleting-row');
+                }
+                
+                if (xhr.status === 404) {
+                    showAlert('danger', 'Permission non trouvée.');
+                    loadPermissions();
+                } else {
+                    showAlert('danger', xhr.responseJSON?.message || 'Erreur lors de la suppression');
+                }
+            },
+            complete: function() {
+                permissionToDelete = null;
             }
         });
     };
 
     // ==================== PAGINATION ====================
 
-    // Afficher la pagination
+    // Render pagination
     const renderPagination = (response) => {
         const pagination = document.getElementById('pagination');
         const paginationInfo = document.getElementById('paginationInfo');
@@ -1141,6 +1258,7 @@
         
         let paginationHtml = '';
         
+        // Previous button
         if (response.prev_page_url) {
             paginationHtml += `
                 <li class="page-item">
@@ -1157,6 +1275,7 @@
             `;
         }
         
+        // Page numbers
         const maxPages = 5;
         let startPage = Math.max(1, response.current_page - Math.floor(maxPages / 2));
         let endPage = Math.min(response.last_page, startPage + maxPages - 1);
@@ -1181,6 +1300,7 @@
             }
         }
         
+        // Next button
         if (response.next_page_url) {
             paginationHtml += `
                 <li class="page-item">
@@ -1200,7 +1320,7 @@
         pagination.innerHTML = paginationHtml;
     };
 
-    // Changer de page
+    // Change page
     const changePage = (page) => {
         currentPage = page;
         loadRoles(page, currentFilters);
@@ -1208,15 +1328,7 @@
 
     // ==================== UTILITAIRES ====================
 
-    // Échapper le HTML
-    const escapeHtml = (text) => {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    };
-
-    // Afficher le chargement
+    // Show loading state
     const showLoading = () => {
         document.getElementById('loadingSpinner').style.display = 'flex';
         document.getElementById('tableContainer').style.display = 'none';
@@ -1224,50 +1336,31 @@
         document.getElementById('paginationContainer').style.display = 'none';
     };
 
-    // Cacher le chargement
+    // Hide loading state
     const hideLoading = () => {
         document.getElementById('loadingSpinner').style.display = 'none';
     };
 
-    // Afficher une alerte
+    // Show alert
     const showAlert = (type, message) => {
-        const alertContainer = document.getElementById('alertContainer') || createAlertContainer();
+        const existingAlert = document.querySelector('.alert-custom-modern');
+        if (existingAlert) existingAlert.remove();
         
         const alert = document.createElement('div');
-        alert.className = `alert alert-${type} alert-dismissible fade show`;
-        alert.setAttribute('role', 'alert');
+        alert.className = `alert alert-${type} alert-custom-modern alert-dismissible fade show`;
         alert.innerHTML = `
             ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
         
-        alertContainer.appendChild(alert);
+        document.body.appendChild(alert);
         
         setTimeout(() => {
-            if (alert.parentNode) {
-                alert.classList.remove('show');
-                setTimeout(() => alert.remove(), 300);
-            }
+            if (alert.parentNode) alert.remove();
         }, 5000);
     };
 
-    // Créer le conteneur d'alertes
-    const createAlertContainer = () => {
-        const container = document.createElement('div');
-        container.id = 'alertContainer';
-        container.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            min-width: 300px;
-            max-width: 500px;
-        `;
-        document.body.appendChild(container);
-        return container;
-    };
-
-    // Afficher une erreur
+    // Show error
     const showError = (message) => {
         showAlert('danger', message);
     };
@@ -1275,7 +1368,7 @@
     // ==================== EVENT LISTENERS ====================
 
     const setupEventListeners = () => {
-        // Recherche avec debounce
+        // Search input with debounce
         const searchInput = document.getElementById('searchInput');
         let searchTimeout;
         
@@ -1288,31 +1381,88 @@
             });
         }
         
-        // Formulaire de création de rôle
+        // Create role form
         const createRoleForm = document.getElementById('createRoleForm');
         if (createRoleForm) {
             createRoleForm.addEventListener('submit', createRole);
         }
         
-        // Formulaire d'édition de rôle
+        // Edit role form
         const editRoleForm = document.getElementById('editRoleForm');
         if (editRoleForm) {
             editRoleForm.addEventListener('submit', updateRole);
         }
         
-        // Formulaire de création de permission
+        // Create permission form
         const createPermissionForm = document.getElementById('createPermissionForm');
         if (createPermissionForm) {
             createPermissionForm.addEventListener('submit', createPermission);
         }
         
-        // Bouton de confirmation de suppression
-        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-        if (confirmDeleteBtn) {
-            confirmDeleteBtn.addEventListener('click', deleteItem);
+        // Reset delete modal when hidden
+        const deleteModal = document.getElementById('deleteConfirmationModal');
+        if (deleteModal) {
+            deleteModal.addEventListener('hidden.bs.modal', function() {
+                roleToDelete = null;
+                permissionToDelete = null;
+                const deleteBtn = document.getElementById('confirmDeleteBtn');
+                deleteBtn.innerHTML = `
+                    <span class="btn-text">
+                        <i class="fas fa-trash me-2"></i>Supprimer définitivement
+                    </span>
+                `;
+                deleteBtn.disabled = false;
+            });
         }
         
-        // Toggle des filtres
+        // Reset create role modal when hidden
+        const createRoleModal = document.getElementById('createRoleModal');
+        if (createRoleModal) {
+            createRoleModal.addEventListener('hidden.bs.modal', function() {
+                document.getElementById('createRoleForm').reset();
+                const submitBtn = document.getElementById('submitRoleBtn');
+                submitBtn.classList.remove('btn-processing');
+                submitBtn.innerHTML = `
+                    <span class="btn-text">
+                        <i class="fas fa-save me-2"></i>Créer le rôle
+                    </span>
+                `;
+                submitBtn.disabled = false;
+            });
+        }
+        
+        // Reset edit role modal when hidden
+        const editRoleModal = document.getElementById('editRoleModal');
+        if (editRoleModal) {
+            editRoleModal.addEventListener('hidden.bs.modal', function() {
+                const submitBtn = document.getElementById('updateRoleBtn');
+                submitBtn.classList.remove('btn-processing');
+                submitBtn.innerHTML = `
+                    <span class="btn-text">
+                        <i class="fas fa-save me-2"></i>Mettre à jour
+                    </span>
+                `;
+                submitBtn.disabled = false;
+            });
+        }
+        
+        // Reset create permission modal when hidden
+        const createPermissionModal = document.getElementById('createPermissionModal');
+        if (createPermissionModal) {
+            createPermissionModal.addEventListener('hidden.bs.modal', function() {
+                document.getElementById('createPermissionForm').reset();
+                const submitBtn = document.getElementById('submitPermissionBtn');
+                submitBtn.classList.remove('btn-processing');
+                submitBtn.innerHTML = `
+                    <span class="btn-text">
+                        <i class="fas fa-save me-2"></i>Créer
+                    </span>
+                `;
+                submitBtn.disabled = false;
+            });
+        }
+        
+        // Toggle filter section
         const toggleFilterBtn = document.getElementById('toggleFilterBtn');
         const filterSection = document.getElementById('filterSection');
         
@@ -1326,7 +1476,7 @@
             });
         }
         
-        // Appliquer les filtres
+        // Apply filters
         const applyFiltersBtn = document.getElementById('applyFiltersBtn');
         if (applyFiltersBtn) {
             applyFiltersBtn.addEventListener('click', () => {
@@ -1339,7 +1489,7 @@
             });
         }
         
-        // Effacer les filtres
+        // Clear filters
         const clearFiltersBtn = document.getElementById('clearFiltersBtn');
         if (clearFiltersBtn) {
             clearFiltersBtn.addEventListener('click', () => {
@@ -1352,7 +1502,40 @@
         }
     };
 </script>
-    
+    // Ajoutez ceci APRÈS l'inclusion de Bootstrap
+<script>
+    // DÉSACTIVER COMPLÈTEMENT ARIA-HIDDEN
+    (function() {
+        // Supprimer aria-hidden de tous les éléments au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('[aria-hidden="true"]').forEach(el => {
+                el.removeAttribute('aria-hidden');
+            });
+        });
+
+        // Observer les changements dans le DOM
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'aria-hidden') {
+                    mutation.target.removeAttribute('aria-hidden');
+                }
+            });
+        });
+
+        observer.observe(document.body, {
+            attributes: true,
+            subtree: true,
+            attributeFilter: ['aria-hidden']
+        });
+
+        // Nettoyage toutes les 100ms
+        setInterval(function() {
+            document.querySelectorAll('[aria-hidden="true"]').forEach(el => {
+                el.removeAttribute('aria-hidden');
+            });
+        }, 100);
+    })();
+</script>
     <style>
         /* Styles spécifiques pour les rôles et permissions */
         .role-name-modern {
@@ -1706,6 +1889,36 @@
 [aria-hidden="true"]:focus,
 [aria-hidden="true"] *:focus {
     outline: none !important;
+}
+/* SOLUTION DÉFINITIVE POUR ARIA-HIDDEN */
+.modal {
+    pointer-events: auto !important;
+    visibility: visible !important;
+}
+
+.modal[aria-hidden="true"] {
+    display: none !important;
+    pointer-events: none !important;
+}
+
+.modal-backdrop {
+    display: none !important;
+}
+
+.modal-open {
+    overflow: auto !important;
+    padding-right: 0 !important;
+}
+
+/* Forcer l'affichage des modals */
+.modal.show {
+    display: block !important;
+    background: rgba(0,0,0,0.5);
+}
+
+/* Cacher proprement les modals fermées */
+.modal:not(.show) {
+    display: none !important;
 }
     </style>
 @endsection
