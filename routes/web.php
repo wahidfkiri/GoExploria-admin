@@ -15,6 +15,7 @@ use App\Http\Controllers\Auth\AjaxAuthController;
 use App\Http\Controllers\TemplateScraperController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -215,3 +216,16 @@ Route::get('/search', function () {
     return null;
 })->name('search');
 
+
+Route::get('/test-email', function () {
+
+    $to = "wahidfkiri5@gmail.com";
+
+    Mail::raw('Ceci est un email de test envoyé depuis Laravel avec SMTP GoDaddy.', function ($message) use ($to) {
+        $message->to($to)
+                ->subject('Test SMTP GoDaddy Laravel')
+                ->from('info@goexploriabusiness.com', 'GoExploria Business');
+    });
+
+    return "Email envoyé avec succès";
+});

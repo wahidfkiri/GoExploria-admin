@@ -48,7 +48,8 @@
             "Vendor\\Users\\": "packages/vendor/users/src",
             "Vendor\\Theme\\": "packages/vendor/theme/src",
             "Vendor\\Template\\": "packages/vendor/template/src",
-            "Vendor\\Project\\": "packages/vendor/project/src"
+            "Vendor\\Project\\": "packages/vendor/project/src",
+            "Vendor\\Ecommerce\\": "packages/vendor/ecommerce/src"
         }
     },
     "autoload-dev": {
