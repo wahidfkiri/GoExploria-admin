@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Vendor\Ecommerce\Controllers\ProductController;
 use Vendor\Ecommerce\Controllers\PaymentController;
+use Vendor\Ecommerce\Controllers\Admin\PaymentGatewayController;
+use Vendor\Ecommerce\Controllers\InvoiceController;
+use Vendor\Ecommerce\Controllers\Payment\PaymentController AS OnlinePaymentController;
 
 Auth::routes();
 Route::middleware(['auth', 'web'])->group(function () {
@@ -32,4 +35,35 @@ Route::prefix('payments')->group(function () {
     Route::post('/{payment}/send-receipt', [PaymentController::class, 'sendReceipt'])->name('payments.send-receipt');
     Route::get('/payments/statistics', [PaymentController::class, 'statistics'])->name('payments.statistics');
 });
+
+// Payment routes
+Route::prefix('payments')->name('payments.')->group(function () {
+    Route::post('checkout', [OnlinePaymentController::class, 'checkout'])->name('checkout');
+    Route::get('success', [OnlinePaymentController::class, 'success'])->name('success');
+    Route::get('cancel', [OnlinePaymentController::class, 'cancel'])->name('cancel');
+    Route::get('failed', [OnlinePaymentController::class, 'failed'])->name('failed');
+    Route::get('gateways', [OnlinePaymentController::class, 'getGateways'])->name('gateways');
+});
+
+// Webhooks (pas de CSRF)
+Route::post('webhook/paypal', [OnlinePaymentController::class, 'webhook'])->name('payments.webhook.paypal');
+Route::post('webhook/stripe', [OnlinePaymentController::class, 'webhook'])->name('payments.webhook.stripe');
+
+// Dans routes/web.php
+Route::prefix('admin/payment')->name('admin.payment.')->group(function () {
+    Route::get('gateways', [PaymentGatewayController::class, 'index'])->name('gateways');
+    Route::get('get-config', [PaymentGatewayController::class, 'getConfig'])->name('get-config');
+    Route::post('save-config', [PaymentGatewayController::class, 'saveConfig'])->name('save-config');
+    Route::post('test/stripe', [PaymentGatewayController::class, 'testStripe'])->name('test-stripe');
+    Route::post('test/paypal', [PaymentGatewayController::class, 'testPayPal'])->name('test-paypal');
+    Route::post('test/{gateway}', [PaymentGatewayController::class, 'testConnection'])->name('test');
+});
+
+
+// routes/web.php
+Route::resource('invoices', InvoiceController::class);
+Route::post('invoices/{invoice}/send', [InvoiceController::class, 'sendEmail'])->name('invoices.send');
+Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
+Route::post('invoices/{invoice}/mark-paid', [InvoiceController::class, 'markAsPaid'])->name('invoices.mark-paid');
+Route::get('invoices/statistics/data', [InvoiceController::class, 'statistics'])->name('invoices.statistics');
 });

@@ -4,39 +4,104 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 
 class Customer extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id',
-        'name',
+        'etablissement_id',
+        'type',
+        'civilite',
+        'prenom',
+        'nom',
         'email',
-        'phone',
-        'country',
-        'address',
-        'city',
-        'state',
-        'postal_code',
+        'telephone',
+        'telephone_secondaire',
+        'entreprise_nom',
+        'siret',
+        'no_tva',
+        'adresse',
+        'complement_adresse',
+        'code_postal',
+        'ville',
+        'pays',
+        'mode_reglement_prefere',
+        'delai_paiement_jours',
+        'notes',
+        'total_commandes',
+        'chiffre_affaires_total',
+        'solde_compte'
     ];
 
-    /**
-     * Relation avec l'utilisateur
-     */
-    public function user(): BelongsTo
+    protected $casts = [
+        'total_commandes' => 'integer',
+        'chiffre_affaires_total' => 'decimal:2',
+        'solde_compte' => 'decimal:2',
+        'delai_paiement_jours' => 'integer'
+    ];
+
+    public function etablissement()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Etablissement::class);
     }
 
-    /**
-     * Relation avec les sites web
-     */
-    public function websites()
+    public function contacts()
     {
-        return $this->hasMany(Website::class);
+        return $this->hasMany(ContactClient::class, 'client_id');
+    }
+
+    public function projets()
+    {
+        return $this->hasMany(Project::class, 'client_id');
+    }
+
+    public function factures()
+    {
+        return $this->hasMany(Invoice::class, 'client_id');
+    }
+
+    public function devis()
+    {
+        return $this->hasMany(Quote::class, 'client_id');
+    }
+
+    public function paiements()
+    {
+        return $this->hasMany(Payment::class, 'client_id');
+    }
+
+    public function contrats()
+    {
+        return $this->hasMany(Contract::class, 'client_id');
+    }
+
+    public function getNomCompletAttribute()
+    {
+        if ($this->type === 'entreprise') {
+            return $this->entreprise_nom;
+        }
+        return trim($this->prenom . ' ' . $this->nom);
+    }
+
+    public function getAdresseCompleteAttribute()
+    {
+        $parts = [];
+        if ($this->adresse) $parts[] = $this->adresse;
+        if ($this->complement_adresse) $parts[] = $this->complement_adresse;
+        $ville = trim($this->code_postal . ' ' . $this->ville);
+        if ($ville) $parts[] = $ville;
+        if ($this->pays) $parts[] = $this->pays;
+        
+        return implode("\n", $parts);
+    }
+
+    public function updateChiffreAffaires()
+    {
+        $this->chiffre_affaires_total = $this->factures()
+            ->where('status', 'payee')
+            ->sum('total');
+        $this->save();
     }
 }

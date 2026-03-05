@@ -55,4 +55,24 @@ return [
         'api_key' => env('ALPHAVANTAGE_API_KEY'),
     ],
 
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    ],
+
+    'paypal' => [
+        'client_id' => env('PAYPAL_CLIENT_ID'),
+        'client_secret' => env('PAYPAL_CLIENT_SECRET'),
+        'webhook_id' => env('PAYPAL_WEBHOOK_ID'),
+        'mode' => env('PAYPAL_MODE', 'sandbox'),
+    ],
+
+    'bank' => [
+        'account_holder' => env('BANK_ACCOUNT_HOLDER'),
+        'bank_name' => env('BANK_NAME'),
+        'iban' => env('BANK_IBAN'),
+        'bic' => env('BANK_BIC'),
+    ],
+
 ];

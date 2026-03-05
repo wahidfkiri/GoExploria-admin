@@ -155,14 +155,117 @@
         </li>
       </ul>
     </li>
-    
-      <a href="#" class="menu-item -none">
+    <li class="has-submenu">
+    <a href="#" class="menu-link">
         <span class="menu-icon">
-          <i class="fas fa-newspaper"></i>
+            <i class="fas fa-shopping-cart"></i>
         </span>
-        <span class="menu-text">Articles</span>
-      </a>
-    </li>
+        <span class="menu-text">Ecommerce</span>
+        <span class="menu-arrow">
+            <i class="fas fa-chevron-down"></i>
+        </span>
+    </a>
+    <ul class="submenu">
+        <!-- Produits -->
+        <li>
+            <a href="{{ route('products.index') }}" class="submenu-item">
+                <i class="fas fa-box submenu-icon"></i>
+                <span class="submenu-text ms-2">Produits</span>
+                @php
+                    $productsCount = \App\Models\Product::count();
+                @endphp
+                @if($productsCount > 0)
+                    <span class="submenu-badge">{{ $productsCount }}</span>
+                @endif
+            </a>
+        </li>
+
+
+        <!-- Paiements -->
+        <li>
+            <a href="{{ route('payments.index') }}" class="submenu-item">
+                <i class="fas fa-credit-card submenu-icon"></i>
+                <span class="submenu-text ms-2">Paiements</span>
+                @php
+                    $pendingPayments = \App\Models\Payment::where('status', 'en_attente')->count();
+                @endphp
+                @if($pendingPayments > 0)
+                    <span class="submenu-badge bg-warning">{{ $pendingPayments }}</span>
+                @endif
+            </a>
+        </li>
+
+        <!-- Transactions -->
+        <li>
+            <a href="{{ url('transactions.index') }}" class="submenu-item">
+                <i class="fas fa-history submenu-icon"></i>
+                <span class="submenu-text ms-2">Transactions</span>
+            </a>
+        </li>
+
+        <!-- Factures -->
+        <li>
+            <a href="{{ url('invoices.index') }}" class="submenu-item">
+                <i class="fas fa-file-invoice submenu-icon"></i>
+                <span class="submenu-text ms-2">Factures</span>
+                @php
+                    $unpaidInvoices = \App\Models\Invoice::whereIn('status', ['en_attente', 'partiellement_payee'])
+                        ->count();
+                @endphp
+                @if($unpaidInvoices > 0)
+                    <span class="submenu-badge bg-danger">{{ $unpaidInvoices }}</span>
+                @endif
+            </a>
+        </li>
+
+        <!-- Devis -->
+        <li>
+            <a href="{{ url('quotes.index') }}" class="submenu-item">
+                <i class="fas fa-file-signature submenu-icon"></i>
+                <span class="submenu-text ms-2">Devis</span>
+            </a>
+        </li>
+
+        <!-- Clients -->
+        <li>
+            <a href="{{ url('customers.index') }}" class="submenu-item">
+                <i class="fas fa-users submenu-icon"></i>
+                <span class="submenu-text ms-2">Clients</span>
+                @php
+                    $customersCount = \App\Models\Customer::count();
+                @endphp
+                <span class="submenu-badge">{{ $customersCount }}</span>
+            </a>
+        </li>
+
+        <!-- Séparateur -->
+        <li class="submenu-divider"></li>
+
+        <!-- Configuration Paiements -->
+        <li>
+            <a href="{{ route('admin.payment.gateways') }}" class="submenu-item">
+                <i class="fas fa-cog submenu-icon"></i>
+                <span class="submenu-text ms-2">Configuration paiements</span>
+            </a>
+        </li>
+
+        <!-- Paramètres ecommerce -->
+        <li>
+            <a href="{{ url('ecommerce/settings') }}" class="submenu-item">
+                <i class="fas fa-sliders-h submenu-icon"></i>
+                <span class="submenu-text ms-2">Paramètres</span>
+            </a>
+        </li>
+
+        <!-- Statistiques -->
+        <li>
+            <a href="{{ url('ecommerce/stats') }}" class="submenu-item">
+                <i class="fas fa-chart-line submenu-icon"></i> 
+                <span class="submenu-text ms-2">Statistiques</span>
+            </a>
+        </li>
+    </ul>
+</li>
     <li class="has-submenu">
       <a href="#" class="menu-link">
         <span class="menu-icon">
