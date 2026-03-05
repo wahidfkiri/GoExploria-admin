@@ -6,13 +6,16 @@
         <!-- Page Header -->
         <div class="page-header">
             <h1 class="page-title">
-                <span class="page-title-icon"><i class="fas fa-plus-circle"></i></span>
-                Créer un nouveau produit/service
+                <span class="page-title-icon"><i class="fas fa-edit"></i></span>
+                Modifier : {{ $product->name }}
             </h1>
             
             <div class="page-actions">
                 <a href="{{ route('products.index') }}" class="btn btn-outline-secondary me-2">
                     <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+                </a>
+                <a href="{{ route('products.show', $product->id) }}" class="btn btn-outline-info me-2">
+                    <i class="fas fa-eye me-2"></i>Voir détails
                 </a>
                 <button type="button" class="btn btn-outline-primary" id="saveDraftBtn">
                     <i class="fas fa-save me-2"></i>Enregistrer brouillon
@@ -41,8 +44,9 @@
         </div>
 
         <!-- Main Form -->
-        <form id="productForm" enctype="multipart/form-data">
+        <form id="productForm" enctype="multipart/form-data" method="POST" action="{{ route('products.update', $product->id) }}">
             @csrf
+            @method('PUT')
             
             <!-- Step 1: Type & Category -->
             <div class="form-step active" id="step1-content">
@@ -59,7 +63,7 @@
                                 <label class="form-label-modern required">Type principal</label>
                                 <div class="type-selector-grid">
                                     <!-- Produit physique -->
-                                    <div class="type-card" data-type="produit_physique">
+                                    <div class="type-card {{ $product->main_type == 'produit_physique' ? 'selected' : '' }}" data-type="produit_physique">
                                         <div class="type-icon" style="background: linear-gradient(135deg, #45b7d1, #3a9bb8);">
                                             <i class="fas fa-cube"></i>
                                         </div>
@@ -68,7 +72,7 @@
                                     </div>
                                     
                                     <!-- Produit numérique -->
-                                    <div class="type-card" data-type="produit_numerique">
+                                    <div class="type-card {{ $product->main_type == 'produit_numerique' ? 'selected' : '' }}" data-type="produit_numerique">
                                         <div class="type-icon" style="background: linear-gradient(135deg, #96ceb4, #7dba9a);">
                                             <i class="fas fa-file-download"></i>
                                         </div>
@@ -77,7 +81,7 @@
                                     </div>
                                     
                                     <!-- Service -->
-                                    <div class="type-card" data-type="service">
+                                    <div class="type-card {{ $product->main_type == 'service' ? 'selected' : '' }}" data-type="service">
                                         <div class="type-icon" style="background: linear-gradient(135deg, #feca57, #ffb347);">
                                             <i class="fas fa-cogs"></i>
                                         </div>
@@ -86,7 +90,7 @@
                                     </div>
                                     
                                     <!-- Prestation -->
-                                    <div class="type-card" data-type="prestation">
+                                    <div class="type-card {{ $product->main_type == 'prestation' ? 'selected' : '' }}" data-type="prestation">
                                         <div class="type-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5253);">
                                             <i class="fas fa-briefcase"></i>
                                         </div>
@@ -95,7 +99,7 @@
                                     </div>
                                     
                                     <!-- Forfait -->
-                                    <div class="type-card" data-type="forfait">
+                                    <div class="type-card {{ $product->main_type == 'forfait' ? 'selected' : '' }}" data-type="forfait">
                                         <div class="type-icon" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
                                             <i class="fas fa-gift"></i>
                                         </div>
@@ -104,7 +108,7 @@
                                     </div>
                                     
                                     <!-- Abonnement -->
-                                    <div class="type-card" data-type="abonnement">
+                                    <div class="type-card {{ $product->main_type == 'abonnement' ? 'selected' : '' }}" data-type="abonnement">
                                         <div class="type-icon" style="background: linear-gradient(135deg, #1abc9c, #16a085);">
                                             <i class="fas fa-sync-alt"></i>
                                         </div>
@@ -113,7 +117,7 @@
                                     </div>
                                     
                                     <!-- Licence -->
-                                    <div class="type-card" data-type="licence">
+                                    <div class="type-card {{ $product->main_type == 'licence' ? 'selected' : '' }}" data-type="licence">
                                         <div class="type-icon" style="background: linear-gradient(135deg, #34495e, #2c3e50);">
                                             <i class="fas fa-certificate"></i>
                                         </div>
@@ -122,7 +126,7 @@
                                     </div>
                                     
                                     <!-- Hébergement -->
-                                    <div class="type-card" data-type="hebergement">
+                                    <div class="type-card {{ $product->main_type == 'hebergement' ? 'selected' : '' }}" data-type="hebergement">
                                         <div class="type-icon" style="background: linear-gradient(135deg, #e67e22, #d35400);">
                                             <i class="fas fa-server"></i>
                                         </div>
@@ -131,7 +135,7 @@
                                     </div>
                                     
                                     <!-- Maintenance -->
-                                    <div class="type-card" data-type="maintenance">
+                                    <div class="type-card {{ $product->main_type == 'maintenance' ? 'selected' : '' }}" data-type="maintenance">
                                         <div class="type-icon" style="background: linear-gradient(135deg, #95a5a6, #7f8c8d);">
                                             <i class="fas fa-wrench"></i>
                                         </div>
@@ -140,7 +144,7 @@
                                     </div>
                                     
                                     <!-- Formation -->
-                                    <div class="type-card" data-type="formation">
+                                    <div class="type-card {{ $product->main_type == 'formation' ? 'selected' : '' }}" data-type="formation">
                                         <div class="type-icon" style="background: linear-gradient(135deg, #f1c40f, #f39c12);">
                                             <i class="fas fa-chalkboard-teacher"></i>
                                         </div>
@@ -148,7 +152,7 @@
                                         <div class="type-desc">Cours, ateliers</div>
                                     </div>
                                 </div>
-                                <input type="hidden" name="main_type" id="main_type" required>
+                                <input type="hidden" name="main_type" id="main_type" value="{{ $product->main_type }}" required>
                                 <div class="invalid-feedback" id="type-error">Veuillez sélectionner un type</div>
                             </div>
                             
@@ -157,7 +161,9 @@
                                 <select class="form-select-modern" name="product_family_id" id="product_family_id">
                                     <option value="">Sélectionner une famille</option>
                                     @foreach($families as $family)
-                                        <option value="{{ $family->id }}">{{ $family->name }}</option>
+                                        <option value="{{ $family->id }}" {{ $product->product_family_id == $family->id ? 'selected' : '' }}>
+                                            {{ $family->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -167,7 +173,9 @@
                                 <select class="form-select-modern" name="product_category_id" id="product_category_id">
                                     <option value="">Sélectionner une catégorie</option>
                                     @foreach($categories as $category)
-                                        <option value="{{ $category->id }}" data-family="{{ $category->product_family_id }}">
+                                        <option value="{{ $category->id }}" 
+                                            data-family="{{ $category->product_family_id }}"
+                                            {{ $product->product_category_id == $category->id ? 'selected' : '' }}>
                                             {{ $category->name }}
                                         </option>
                                     @endforeach
@@ -199,7 +207,7 @@
                                 <div class="mb-3">
                                     <label class="form-label-modern required">Nom du produit/service</label>
                                     <input type="text" class="form-control-modern" name="name" id="name" 
-                                           placeholder="Ex: Création site web, Pack office, etc." required>
+                                           value="{{ old('name', $product->name) }}" required>
                                     <div class="invalid-feedback">Le nom est requis</div>
                                 </div>
                             </div>
@@ -208,7 +216,7 @@
                                 <div class="mb-3">
                                     <label class="form-label-modern">Référence interne</label>
                                     <input type="text" class="form-control-modern" name="reference" id="reference" 
-                                           placeholder="Généré automatiquement">
+                                           value="{{ old('reference', $product->reference) }}">
                                     <small class="text-muted">Laissez vide pour génération auto</small>
                                 </div>
                             </div>
@@ -217,7 +225,7 @@
                                 <div class="mb-3">
                                     <label class="form-label-modern">SKU / Code barre</label>
                                     <input type="text" class="form-control-modern" name="sku" id="sku" 
-                                           placeholder="SKU-12345">
+                                           value="{{ old('sku', $product->sku) }}">
                                 </div>
                             </div>
                             
@@ -225,7 +233,7 @@
                                 <div class="mb-3">
                                     <label class="form-label-modern">Code barre (UPC/EAN)</label>
                                     <input type="text" class="form-control-modern" name="barcode" id="barcode" 
-                                           placeholder="123456789012">
+                                           value="{{ old('barcode', $product->barcode) }}">
                                 </div>
                             </div>
                             
@@ -233,7 +241,7 @@
                                 <div class="mb-3">
                                     <label class="form-label-modern">Description courte</label>
                                     <textarea class="form-control-modern" name="short_description" id="short_description" 
-                                              rows="2" placeholder="Brève description (max 255 caractères)"></textarea>
+                                              rows="2">{{ old('short_description', $product->short_description) }}</textarea>
                                 </div>
                             </div>
                             
@@ -241,7 +249,7 @@
                                 <div class="mb-3">
                                     <label class="form-label-modern">Description longue</label>
                                     <textarea class="form-control-modern" name="long_description" id="long_description" 
-                                              rows="10" placeholder="Description détaillée..."></textarea>
+                                              rows="10">{{ old('long_description', $product->long_description) }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -275,7 +283,8 @@
                                     <div class="mb-3">
                                         <label class="form-label-modern required">Prix de vente TTC</label>
                                         <div class="input-group">
-                                            <input type="number" step="0.01" class="form-control-modern" name="price_ttc" id="price_ttc" required>
+                                            <input type="number" step="0.01" class="form-control-modern" name="price_ttc" id="price_ttc" 
+                                                   value="{{ old('price_ttc', $product->price_ttc) }}" required>
                                             <span class="input-group-text">€</span>
                                         </div>
                                     </div>
@@ -285,7 +294,8 @@
                                     <div class="mb-3">
                                         <label class="form-label-modern">Prix de vente HT</label>
                                         <div class="input-group">
-                                            <input type="number" step="0.01" class="form-control-modern" name="price_ht" id="price_ht" readonly>
+                                            <input type="number" step="0.01" class="form-control-modern" name="price_ht" id="price_ht" 
+                                                   value="{{ old('price_ht', $product->price_ht) }}" readonly>
                                             <span class="input-group-text">€</span>
                                         </div>
                                     </div>
@@ -295,10 +305,10 @@
                                     <div class="mb-3">
                                         <label class="form-label-modern">Taux TVA</label>
                                         <select class="form-select-modern" name="tax_rate" id="tax_rate">
-                                            <option value="20.00">TVA 20%</option>
-                                            <option value="10.00">TVA 10%</option>
-                                            <option value="5.50">TVA 5.5%</option>
-                                            <option value="0.00">TVA 0%</option>
+                                            <option value="20.00" {{ $product->tax_rate == 20.00 ? 'selected' : '' }}>TVA 20%</option>
+                                            <option value="10.00" {{ $product->tax_rate == 10.00 ? 'selected' : '' }}>TVA 10%</option>
+                                            <option value="5.50" {{ $product->tax_rate == 5.50 ? 'selected' : '' }}>TVA 5.5%</option>
+                                            <option value="0.00" {{ $product->tax_rate == 0.00 ? 'selected' : '' }}>TVA 0%</option>
                                         </select>
                                     </div>
                                 </div>
@@ -309,13 +319,13 @@
                                     <div class="mb-3">
                                         <label class="form-label-modern">Unité de facturation</label>
                                         <select class="form-select-modern" name="billing_unit" id="billing_unit">
-                                            <option value="unite">À l'unité</option>
-                                            <option value="heure">À l'heure</option>
-                                            <option value="jour">Par jour</option>
-                                            <option value="mois">Par mois</option>
-                                            <option value="an">Par an</option>
-                                            <option value="forfait">Forfait</option>
-                                            <option value="projet">Par projet</option>
+                                            <option value="unite" {{ $product->billing_unit == 'unite' ? 'selected' : '' }}>À l'unité</option>
+                                            <option value="heure" {{ $product->billing_unit == 'heure' ? 'selected' : '' }}>À l'heure</option>
+                                            <option value="jour" {{ $product->billing_unit == 'jour' ? 'selected' : '' }}>Par jour</option>
+                                            <option value="mois" {{ $product->billing_unit == 'mois' ? 'selected' : '' }}>Par mois</option>
+                                            <option value="an" {{ $product->billing_unit == 'an' ? 'selected' : '' }}>Par an</option>
+                                            <option value="forfait" {{ $product->billing_unit == 'forfait' ? 'selected' : '' }}>Forfait</option>
+                                            <option value="projet" {{ $product->billing_unit == 'projet' ? 'selected' : '' }}>Par projet</option>
                                         </select>
                                     </div>
                                 </div>
@@ -324,7 +334,8 @@
                                     <div class="mb-3">
                                         <label class="form-label-modern">Prix d'achat HT (coût)</label>
                                         <div class="input-group">
-                                            <input type="number" step="0.01" class="form-control-modern" name="purchase_price_ht" id="purchase_price_ht">
+                                            <input type="number" step="0.01" class="form-control-modern" name="purchase_price_ht" id="purchase_price_ht" 
+                                                   value="{{ old('purchase_price_ht', $product->purchase_price_ht) }}">
                                             <span class="input-group-text">€</span>
                                         </div>
                                         <small class="text-muted">Pour calculer la marge</small>
@@ -334,16 +345,16 @@
                         </div>
 
                         <!-- Physical product fields -->
-                        <div class="physical-fields" style="display: none;">
+                        <div class="physical-fields" style="{{ in_array($product->main_type, ['produit_physique', 'produit_numerique']) ? '' : 'display: none;' }}">
                             <h4 class="section-subtitle">Gestion de stock</h4>
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="mb-3">
                                         <label class="form-label-modern">Gestion du stock</label>
                                         <select class="form-select-modern" name="stock_management" id="stock_management">
-                                            <option value="oui">Oui</option>
-                                            <option value="non">Non</option>
-                                            <option value="sur_commande">Sur commande</option>
+                                            <option value="oui" {{ $product->stock_management == 'oui' ? 'selected' : '' }}>Oui</option>
+                                            <option value="non" {{ $product->stock_management == 'non' ? 'selected' : '' }}>Non</option>
+                                            <option value="sur_commande" {{ $product->stock_management == 'sur_commande' ? 'selected' : '' }}>Sur commande</option>
                                         </select>
                                     </div>
                                 </div>
@@ -351,14 +362,16 @@
                                 <div class="col-md-3">
                                     <div class="mb-3">
                                         <label class="form-label-modern">Stock actuel</label>
-                                        <input type="number" class="form-control-modern" name="current_stock" id="current_stock" value="0">
+                                        <input type="number" class="form-control-modern" name="current_stock" id="current_stock" 
+                                               value="{{ old('current_stock', $product->current_stock ?? 0) }}">
                                     </div>
                                 </div>
                                 
                                 <div class="col-md-3">
                                     <div class="mb-3">
                                         <label class="form-label-modern">Stock minimum</label>
-                                        <input type="number" class="form-control-modern" name="minimum_stock" id="minimum_stock" value="0">
+                                        <input type="number" class="form-control-modern" name="minimum_stock" id="minimum_stock" 
+                                               value="{{ old('minimum_stock', $product->minimum_stock ?? 0) }}">
                                     </div>
                                 </div>
                                 
@@ -366,27 +379,29 @@
                                     <div class="mb-3">
                                         <label class="form-label-modern">Emplacement</label>
                                         <input type="text" class="form-control-modern" name="stock_location" id="stock_location" 
-                                               placeholder="Aisle 1, Row 2">
+                                               value="{{ old('stock_location', $product->stock_location) }}">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Service fields -->
-                        <div class="service-fields" style="display: none;">
+                        <div class="service-fields" style="{{ in_array($product->main_type, ['service', 'prestation']) ? '' : 'display: none;' }}">
                             <h4 class="section-subtitle">Paramètres du service</h4>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label-modern">Durée estimée (minutes)</label>
-                                        <input type="number" class="form-control-modern" name="estimated_duration_minutes" id="estimated_duration_minutes">
+                                        <input type="number" class="form-control-modern" name="estimated_duration_minutes" id="estimated_duration_minutes" 
+                                               value="{{ old('estimated_duration_minutes', $product->estimated_duration_minutes) }}">
                                     </div>
                                 </div>
                                 
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <div class="form-check-modern mt-4">
-                                            <input type="checkbox" class="form-check-input" name="requires_appointment" id="requires_appointment" value="1">
+                                            <input type="checkbox" class="form-check-input" name="requires_appointment" id="requires_appointment" value="1"
+                                                {{ $product->requires_appointment ? 'checked' : '' }}>
                                             <label class="form-check-label" for="requires_appointment">
                                                 Nécessite un rendez-vous
                                             </label>
@@ -397,17 +412,17 @@
                         </div>
 
                         <!-- Subscription fields -->
-                        <div class="subscription-fields" style="display: none;">
+                        <div class="subscription-fields" style="{{ $product->main_type == 'abonnement' ? '' : 'display: none;' }}">
                             <h4 class="section-subtitle">Paramètres d'abonnement</h4>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label-modern">Période de facturation</label>
                                         <select class="form-select-modern" name="billing_period" id="billing_period">
-                                            <option value="mensuel">Mensuel</option>
-                                            <option value="trimestriel">Trimestriel</option>
-                                            <option value="semestriel">Semestriel</option>
-                                            <option value="annuel">Annuel</option>
+                                            <option value="mensuel" {{ $product->billing_period == 'mensuel' ? 'selected' : '' }}>Mensuel</option>
+                                            <option value="trimestriel" {{ $product->billing_period == 'trimestriel' ? 'selected' : '' }}>Trimestriel</option>
+                                            <option value="semestriel" {{ $product->billing_period == 'semestriel' ? 'selected' : '' }}>Semestriel</option>
+                                            <option value="annuel" {{ $product->billing_period == 'annuel' ? 'selected' : '' }}>Annuel</option>
                                         </select>
                                     </div>
                                 </div>
@@ -415,7 +430,8 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <div class="form-check-modern mt-4">
-                                            <input type="checkbox" class="form-check-input" name="has_commitment" id="has_commitment" value="1">
+                                            <input type="checkbox" class="form-check-input" name="has_commitment" id="has_commitment" value="1"
+                                                {{ $product->has_commitment ? 'checked' : '' }}>
                                             <label class="form-check-label" for="has_commitment">
                                                 Avec engagement
                                             </label>
@@ -426,7 +442,9 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label-modern">Durée engagement (mois)</label>
-                                        <input type="number" class="form-control-modern" name="commitment_months" id="commitment_months" value="12" disabled>
+                                        <input type="number" class="form-control-modern" name="commitment_months" id="commitment_months" 
+                                               value="{{ old('commitment_months', $product->commitment_months ?? 12) }}" 
+                                               {{ $product->has_commitment ? '' : 'disabled' }}>
                                     </div>
                                 </div>
                             </div>
@@ -441,14 +459,57 @@
                                 </button>
                             </h4>
                             
-                            <div id="variants-container"></div>
+                            <div id="variants-container">
+                                @foreach($product->variants as $index => $variant)
+                                <div class="variant-item card mt-3" data-variant-id="{{ $variant->id }}">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input type="text" class="form-control-modern" placeholder="Nom (ex: Rouge, XL)" 
+                                                       name="variants[{{ $index }}][name]" value="{{ $variant->name }}" required>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="text" class="form-control-modern" placeholder="SKU" 
+                                                       name="variants[{{ $index }}][sku]" value="{{ $variant->sku }}">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="number" step="0.01" class="form-control-modern" placeholder="Prix +" 
+                                                       name="variants[{{ $index }}][price_adjustment]" value="{{ $variant->price_adjustment }}">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="number" class="form-control-modern" placeholder="Stock" 
+                                                       name="variants[{{ $index }}][stock]" value="{{ $variant->stock }}">
+                                            </div>
+                                            <div class="col-md-2">
+                                                @if($variant->image)
+                                                <div class="variant-image-preview">
+                                                    <img src="{{ asset('storage/' . $variant->image) }}" alt="Variant" width="50">
+                                                    <input type="file" class="form-control-modern mt-1" name="variants[{{ $index }}][new_image]" accept="image/*">
+                                                    <input type="hidden" name="variants[{{ $index }}][existing_image]" value="{{ $variant->image }}">
+                                                </div>
+                                                @else
+                                                <input type="file" class="form-control-modern" name="variants[{{ $index }}][image]" accept="image/*">
+                                                @endif
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button type="button" class="btn btn-danger btn-sm remove-variant" data-variant-id="{{ $variant->id }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="variants[{{ $index }}][id]" value="{{ $variant->id }}">
+                                        <input type="hidden" name="variants[{{ $index }}][attributes]" value='{{ json_encode($variant->attributes) }}'>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
                             
                             <div class="variant-template d-none">
                                 <div class="variant-item card mt-3">
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <input type="text" class="form-control-modern" placeholder="Nom (ex: Rouge, XL)" name="variants[INDEX][name]">
+                                                <input type="text" class="form-control-modern" placeholder="Nom (ex: Rouge, XL)" name="variants[INDEX][name]" required>
                                             </div>
                                             <div class="col-md-2">
                                                 <input type="text" class="form-control-modern" placeholder="SKU" name="variants[INDEX][sku]">
@@ -502,18 +563,19 @@
                                     <label class="form-label-modern">Image principale</label>
                                     <div class="image-upload-area" id="mainImageArea">
                                         <input type="file" class="image-upload-input" name="main_image" id="main_image" accept="image/*">
-                                        <div class="image-upload-placeholder">
+                                        <div class="image-upload-placeholder" style="{{ $product->main_image ? 'display: none;' : '' }}">
                                             <i class="fas fa-cloud-upload-alt fa-3x mb-2"></i>
                                             <p>Cliquez ou glissez une image</p>
                                             <small class="text-muted">JPG, PNG, GIF max 2MB</small>
                                         </div>
-                                        <div class="image-preview" style="display: none;">
-                                            <img src="" alt="Preview">
+                                        <div class="image-preview" style="{{ $product->main_image ? 'display: block;' : 'display: none;' }}">
+                                            <img src="{{ $product->main_image ? asset('storage/' . $product->main_image) : '' }}" alt="Preview">
                                             <button type="button" class="btn btn-sm btn-danger remove-image">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         </div>
                                     </div>
+                                    <input type="hidden" name="existing_main_image" value="{{ $product->main_image }}">
                                 </div>
                             </div>
                             
@@ -526,8 +588,20 @@
                                             <i class="fas fa-images fa-3x mb-2"></i>
                                             <p>Cliquez pour ajouter plusieurs images</p>
                                         </div>
-                                        <div class="gallery-preview" id="galleryPreview"></div>
+                                        <div class="gallery-preview" id="galleryPreview">
+                                            @if($product->gallery_images)
+                                                @foreach(json_decode($product->gallery_images) as $image)
+                                                <div class="gallery-thumb">
+                                                    <img src="{{ asset('storage/' . $image) }}" alt="Gallery">
+                                                    <button type="button" class="btn btn-sm btn-danger remove-gallery-image" data-image="{{ $image }}">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                                @endforeach
+                                            @endif
+                                        </div>
                                     </div>
+                                    <input type="hidden" name="existing_gallery_images" id="existing_gallery_images" value="{{ $product->gallery_images }}">
                                 </div>
                             </div>
                         </div>
@@ -539,7 +613,7 @@
                                 <div class="mb-3">
                                     <label class="form-label-modern">Meta titre</label>
                                     <input type="text" class="form-control-modern" name="meta_title" id="meta_title" 
-                                           placeholder="Titre pour les moteurs de recherche">
+                                           value="{{ old('meta_title', $product->meta_title) }}">
                                     <small class="text-muted">Laissez vide pour utiliser le nom du produit</small>
                                 </div>
                             </div>
@@ -548,7 +622,7 @@
                                 <div class="mb-3">
                                     <label class="form-label-modern">Slug (URL)</label>
                                     <input type="text" class="form-control-modern" name="slug" id="slug" 
-                                           placeholder="nom-du-produit">
+                                           value="{{ old('slug', $product->slug) }}">
                                 </div>
                             </div>
                             
@@ -556,9 +630,9 @@
                                 <div class="mb-3">
                                     <label class="form-label-modern">Meta description</label>
                                     <textarea class="form-control-modern" name="meta_description" id="meta_description" 
-                                              rows="3" placeholder="Description pour les moteurs de recherche (max 160 caractères)"></textarea>
+                                              rows="3">{{ old('meta_description', $product->meta_description) }}</textarea>
                                     <div class="char-counter">
-                                        <span id="meta_desc_count">0</span>/160
+                                        <span id="meta_desc_count">{{ strlen($product->meta_description ?? '') }}</span>/160
                                     </div>
                                 </div>
                             </div>
@@ -567,7 +641,7 @@
                                 <div class="mb-3">
                                     <label class="form-label-modern">Mots-clés (séparés par des virgules)</label>
                                     <input type="text" class="form-control-modern" name="meta_keywords" id="meta_keywords" 
-                                           placeholder="mot-clé1, mot-clé2, mot-clé3">
+                                           value="{{ old('meta_keywords', $product->meta_keywords) }}">
                                 </div>
                             </div>
                         </div>
@@ -579,7 +653,8 @@
                                     <label class="switch-label">
                                         <span class="switch-text">Disponible à la vente</span>
                                         <div class="custom-switch">
-                                            <input type="checkbox" name="is_available_for_sale" id="is_available_for_sale" value="1" checked>
+                                            <input type="checkbox" name="is_available_for_sale" id="is_available_for_sale" value="1" 
+                                                {{ $product->is_available_for_sale ? 'checked' : '' }}>
                                             <span class="switch-slider"></span>
                                         </div>
                                     </label>
@@ -591,7 +666,8 @@
                                     <label class="switch-label">
                                         <span class="switch-text">Visible sur le site</span>
                                         <div class="custom-switch">
-                                            <input type="checkbox" name="is_public" id="is_public" value="1" checked>
+                                            <input type="checkbox" name="is_public" id="is_public" value="1" 
+                                                {{ $product->is_public ? 'checked' : '' }}>
                                             <span class="switch-slider"></span>
                                         </div>
                                     </label>
@@ -603,7 +679,8 @@
                                     <label class="switch-label">
                                         <span class="switch-text">Produit taxable</span>
                                         <div class="custom-switch">
-                                            <input type="checkbox" name="is_taxable" id="is_taxable" value="1" checked>
+                                            <input type="checkbox" name="is_taxable" id="is_taxable" value="1" 
+                                                {{ $product->is_taxable ? 'checked' : '' }}>
                                             <span class="switch-slider"></span>
                                         </div>
                                     </label>
@@ -614,7 +691,8 @@
                                 <div class="status-switch">
                                     <label class="switch-label">
                                         <span class="switch-text">Commission (%)</span>
-                                        <input type="number" step="0.1" class="form-control-modern form-control-sm" name="commission_percentage" id="commission_percentage" value="0">
+                                        <input type="number" step="0.1" class="form-control-modern form-control-sm" name="commission_percentage" id="commission_percentage" 
+                                               value="{{ old('commission_percentage', $product->commission_percentage ?? 0) }}">
                                     </label>
                                 </div>
                             </div>
@@ -626,7 +704,7 @@
                             <i class="fas fa-arrow-left me-2"></i>Étape précédente
                         </button>
                         <button type="submit" class="btn btn-success" id="submitBtn">
-                            <i class="fas fa-check-circle me-2"></i>Créer le produit/service
+                            <i class="fas fa-save me-2"></i>Mettre à jour
                         </button>
                     </div>
                 </div>
@@ -644,21 +722,41 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Guide de création</h5>
+                    <h5 class="modal-title">Guide d'édition</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <h6><i class="fas fa-tag text-primary me-2"></i>Type de produit</h6>
-                    <p>Sélectionnez le type qui correspond le mieux à ce que vous vendez.</p>
+                    <h6><i class="fas fa-edit text-primary me-2"></i>Modification</h6>
+                    <p>Vous êtes en train de modifier "{{ $product->name }}". Toutes les modifications seront enregistrées.</p>
                     
-                    <h6><i class="fas fa-euro-sign text-success me-2"></i>Prix et TVA</h6>
-                    <p>Le prix TTC est calculé automatiquement à partir du prix HT et de la TVA.</p>
-                    
-                    <h6><i class="fas fa-pen-fancy text-info me-2"></i>Éditeur WYSIWYG</h6>
+                    <h6><i class="fas fa-pen-fancy text-success me-2"></i>Éditeur WYSIWYG</h6>
                     <p>Utilisez l'éditeur pour formater votre description longue avec du texte enrichi.</p>
                     
-                    <h6><i class="fas fa-cubes text-warning me-2"></i>Variantes</h6>
-                    <p>Utilisez les variantes pour les produits avec plusieurs options (tailles, couleurs).</p>
+                    <h6><i class="fas fa-code-branch text-info me-2"></i>Variantes</h6>
+                    <p>Vous pouvez ajouter, modifier ou supprimer des variantes existantes.</p>
+                    
+                    <h6><i class="fas fa-image text-warning me-2"></i>Images</h6>
+                    <p>Les nouvelles images remplaceront les anciennes. Vous pouvez supprimer les images de galerie individuellement.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETE VARIANT MODAL -->
+    <div class="modal fade" id="deleteVariantModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmer la suppression</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Êtes-vous sûr de vouloir supprimer cette variante ?</p>
+                    <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Cette action est irréversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteVariant">Supprimer</button>
                 </div>
             </div>
         </div>
@@ -889,18 +987,18 @@
                 hasCommitment.addEventListener('change', function() {
                     commitmentMonths.disabled = !this.checked;
                     if (this.checked) {
-                        commitmentMonths.value = 12;
-                    } else {
-                        commitmentMonths.value = '';
+                        commitmentMonths.value = commitmentMonths.value || 12;
                     }
                 });
             }
 
             // Variants management
-            let variantIndex = 0;
+            let variantIndex = {{ count($product->variants) }};
             const addVariantBtn = document.getElementById('addVariantBtn');
             const variantsContainer = document.getElementById('variants-container');
             const variantTemplate = document.querySelector('.variant-template');
+            const deleteVariantModal = new bootstrap.Modal(document.getElementById('deleteVariantModal'));
+            let variantToDelete = null;
 
             if (addVariantBtn && variantsContainer && variantTemplate) {
                 addVariantBtn.addEventListener('click', function() {
@@ -918,6 +1016,37 @@
                     
                     variantsContainer.appendChild(variantItem);
                     variantIndex++;
+                });
+            }
+
+            // Handle existing variant removal
+            document.querySelectorAll('.remove-variant').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const variantId = this.dataset.variantId;
+                    if (variantId) {
+                        variantToDelete = this.closest('.variant-item');
+                        deleteVariantModal.show();
+                    } else {
+                        this.closest('.variant-item').remove();
+                    }
+                });
+            });
+
+            const confirmDeleteVariant = document.getElementById('confirmDeleteVariant');
+            if (confirmDeleteVariant) {
+                confirmDeleteVariant.addEventListener('click', function() {
+                    if (variantToDelete) {
+                        // Add a hidden input to mark this variant for deletion
+                        const variantId = variantToDelete.dataset.variantId;
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'deleted_variants[]';
+                        input.value = variantId;
+                        document.getElementById('productForm').appendChild(input);
+                        
+                        variantToDelete.remove();
+                        deleteVariantModal.hide();
+                    }
                 });
             }
 
@@ -949,6 +1078,12 @@
                         mainImageInput.value = '';
                         imagePreview.style.display = 'none';
                         imagePlaceholder.style.display = 'block';
+                        // Mark main image for deletion
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'delete_main_image';
+                        input.value = '1';
+                        document.getElementById('productForm').appendChild(input);
                     });
                 }
             }
@@ -959,7 +1094,6 @@
 
             if (galleryInput && galleryPreview) {
                 galleryInput.addEventListener('change', function(e) {
-                    galleryPreview.innerHTML = '';
                     Array.from(e.target.files).forEach(file => {
                         const reader = new FileReader();
                         reader.onload = function(e) {
@@ -973,13 +1107,28 @@
                 });
             }
 
+            // Remove gallery images
+            document.querySelectorAll('.remove-gallery-image').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const imagePath = this.dataset.image;
+                    this.closest('.gallery-thumb').remove();
+                    
+                    // Add to deleted gallery images
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'deleted_gallery_images[]';
+                    input.value = imagePath;
+                    document.getElementById('productForm').appendChild(input);
+                });
+            });
+
             // Slug generation
             const nameInput = document.getElementById('name');
             const slugInput = document.getElementById('slug');
 
             if (nameInput && slugInput) {
                 nameInput.addEventListener('input', function() {
-                    if (!slugInput.value) {
+                    if (!slugInput.value || slugInput.value === '{{ $product->slug }}') {
                         slugInput.value = this.value
                             .toLowerCase()
                             .replace(/[^\w\s-]/g, '')
@@ -1018,7 +1167,7 @@
                     
                     // Show loading
                     const originalText = submitBtn.innerHTML;
-                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Création en cours...';
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mise à jour en cours...';
                     submitBtn.disabled = true;
                     
                     // Create FormData
@@ -1026,7 +1175,7 @@
                     
                     // Send AJAX request
                     $.ajax({
-                        url: '{{ route("products.store") }}',
+                        url: '{{ route("products.update", $product->id) }}',
                         type: 'POST',
                         data: formData,
                         processData: false,
@@ -1036,16 +1185,16 @@
                         },
                         success: function(response) {
                             if (response.success) {
-                                showAlert('success', 'Produit créé avec succès !');
+                                showAlert('success', 'Produit mis à jour avec succès !');
                                 setTimeout(() => {
                                     window.location.href = '{{ route("products.index") }}';
                                 }, 1500);
                             } else {
-                                showAlert('danger', response.message || 'Erreur lors de la création');
+                                showAlert('danger', response.message || 'Erreur lors de la mise à jour');
                             }
                         },
                         error: function(xhr) {
-                            let message = 'Erreur lors de la création';
+                            let message = 'Erreur lors de la mise à jour';
                             if (xhr.responseJSON && xhr.responseJSON.errors) {
                                 message = Object.values(xhr.responseJSON.errors).flat().join('<br>');
                             }
@@ -1067,7 +1216,7 @@
                     formData.append('status', 'brouillon');
                     
                     $.ajax({
-                        url: '{{ route("products.store") }}',
+                        url: '{{ route("products.update", $product->id) }}',
                         type: 'POST',
                         data: formData,
                         processData: false,
@@ -1110,6 +1259,7 @@
             if (familySelect && categorySelect) {
                 familySelect.addEventListener('change', function() {
                     const familyId = this.value;
+                    const currentCategory = '{{ $product->product_category_id }}';
                     
                     Array.from(categorySelect.options).forEach(option => {
                         if (option.value === '') return;
@@ -1120,7 +1270,11 @@
                         }
                     });
                     
-                    categorySelect.value = '';
+                    // If current category is not visible, reset selection
+                    const selectedOption = Array.from(categorySelect.options).find(o => o.value == currentCategory);
+                    if (selectedOption && selectedOption.style.display === 'none') {
+                        categorySelect.value = '';
+                    }
                 });
             }
         });
@@ -1321,6 +1475,7 @@
         }
 
         .gallery-thumb {
+            position: relative;
             width: 80px;
             height: 80px;
             border-radius: 8px;
@@ -1331,6 +1486,28 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        .gallery-thumb .remove-gallery-image {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ef476f;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+
+        .gallery-thumb .remove-gallery-image:hover {
+            background: #d4335f;
         }
 
         /* Status switches */
@@ -1441,6 +1618,21 @@
             background: #f8f9fa !important;
         }
 
+        /* Variant image preview */
+        .variant-image-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .variant-image-preview img {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 2px;
+        }
+
+        /* Alert */
         .alert-custom-modern {
             position: fixed;
             top: 20px;

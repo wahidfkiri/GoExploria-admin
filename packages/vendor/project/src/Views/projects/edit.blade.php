@@ -102,11 +102,11 @@
                                     data-bs-toggle="tooltip"
                                     title="Modifiez le statut pour refléter l'avancement du projet">
                                 <option value="">Sélectionner un statut</option>
-                                @foreach($statuses as $value => $label)
-                                    <option value="{{ $value }}" {{ old('status', $project->status) == $value ? 'selected' :'selected' : '' }}>
-                                        {{ $label }}
-                                    </option>
-                                @endforeach
+                               @foreach($statuses as $value => $label)
+    <option value="{{ $value }}" {{ old('status', $project->status) == $value ? 'selected' : '' }}>
+        {{ $label }}
+    </option>
+@endforeach
                             </select>
                             @error('status')
                                 <div class="invalid-feedback-modern">{{ $message }}</div>

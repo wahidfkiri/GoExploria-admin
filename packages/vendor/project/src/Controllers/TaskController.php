@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Vendor\Project\Mail\TaskCreated;
+use Illuminate\Support\Facades\Mail;
 
 class TaskController extends Controller
 {
@@ -413,165 +415,205 @@ class TaskController extends Controller
     /**
      * Store a newly created task in storage.
      */
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'details' => 'nullable|string',
-            'project_id' => 'required|exists:projects,id',
-            'user_id' => 'required|exists:users,id',
-            'country' => 'nullable|string|max:100',
-            'location' => 'nullable|string|max:255',
-            'contract_number' => 'nullable|string|max:255',
-            'contact_name' => 'nullable|string|max:255',
-            'due_date' => 'nullable|date',
-            'delivery_date' => 'nullable|date|after_or_equal:due_date',
-            'estimated_hours' => 'nullable|integer|min:0',
-            'hourly_rate' => 'nullable|numeric|min:0',
-            'status' => 'required|in:pending,in_progress,test,integrated,delivered,approved,cancelled',
-            'test_date' => 'nullable|date',
-            'test_details' => 'nullable|string',
-            'integration_date' => 'nullable|date',
-            'push_prod_date' => 'nullable|date',
-            'module_url' => 'nullable|url|max:255',
-            'priority' => 'nullable|in:low,medium,high,urgent',
-            'tags' => 'nullable|string',
-        ], [
-            'name.required' => 'Le nom de la tâche est obligatoire',
-            'project_id.required' => 'Le projet est obligatoire',
-            'user_id.required' => 'L\'utilisateur assigné est obligatoire',
-            'delivery_date.after_or_equal' => 'La date de livraison doit être postérieure à la date d\'échéance',
-            'module_url.url' => 'L\'URL du module doit être une URL valide',
-        ]);
+    /**
+ * Store a newly created task in storage.
+ */
+public function store(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'details' => 'nullable|string',
+        'project_id' => 'required|exists:projects,id',
+        'user_id' => 'required|exists:users,id',
+        'country' => 'nullable|string|max:100',
+        'location' => 'nullable|string|max:255',
+        'contract_number' => 'nullable|string|max:255',
+        'contact_name' => 'nullable|string|max:255',
+        'due_date' => 'nullable|date',
+        'delivery_date' => 'nullable|date|after_or_equal:due_date',
+        'estimated_hours' => 'nullable|integer|min:0',
+        'hourly_rate' => 'nullable|numeric|min:0',
+        'status' => 'required|in:pending,in_progress,test,integrated,delivered,approved,cancelled',
+        'test_date' => 'nullable|date',
+        'test_details' => 'nullable|string',
+        'integration_date' => 'nullable|date',
+        'push_prod_date' => 'nullable|date',
+        'module_url' => 'nullable|url|max:255',
+        'priority' => 'nullable|in:low,medium,high,urgent',
+        'tags' => 'nullable|string',
+    ], [
+        'name.required' => 'Le nom de la tâche est obligatoire',
+        'project_id.required' => 'Le projet est obligatoire',
+        'user_id.required' => 'L\'utilisateur assigné est obligatoire',
+        'delivery_date.after_or_equal' => 'La date de livraison doit être postérieure à la date d\'échéance',
+        'module_url.url' => 'L\'URL du module doit être une URL valide',
+    ]);
 
-        if ($validator->fails()) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-            return redirect()->back()->withErrors($validator)->withInput();
+    if ($validator->fails()) {
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
+    
+    try {
+        DB::beginTransaction();
+        
+        $project = Project::findOrFail($request->project_id);
+        
+        $estimatedCost = null;
+        if ($request->estimated_hours && $request->hourly_rate) {
+            $estimatedCost = $request->estimated_hours * $request->hourly_rate;
         }
         
+        $metadata = [
+            'priority' => $request->priority ?? 'medium',
+            'tags' => $request->tags ? explode(',', $request->tags) : [],
+            'created_by' => Auth::user()->name,
+            'created_at' => now()->toDateTimeString(),
+        ];
+        
+        $task = Task::create([
+            'name' => $request->name,
+            'details' => $request->details,
+            'project_id' => $request->project_id,
+            'etablissement_id' => $project->etablissement_id,
+            'user_id' => $request->user_id,
+            'created_by' => Auth::id(),
+            'country' => $request->country,
+            'location' => $request->location,
+            'contract_number' => $request->contract_number,
+            'contact_name' => $request->contact_name,
+            'due_date' => $request->due_date,
+            'delivery_date' => $request->delivery_date,
+            'estimated_hours' => $request->estimated_hours,
+            'hourly_rate' => $request->hourly_rate,
+            'estimated_cost' => $estimatedCost,
+            'status' => $request->status,
+            'test_date' => $request->test_date,
+            'test_details' => $request->test_details,
+            'integration_date' => $request->integration_date,
+            'push_prod_date' => $request->push_prod_date,
+            'module_url' => $request->module_url,
+            'is_active' => true,
+            'metadata' => json_encode($metadata),
+            'files_count' => 0,
+        ]);
+
+        if ($request->hasFile('files')) {
+            $uploadedCount = 0;
+            
+            foreach ($request->file('files') as $file) {
+                try {
+                    $fileName = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+                    $filePath = $file->storeAs('tasks/' . $task->id, $fileName, 'public');
+
+                    TaskFile::create([
+                        'task_id' => $task->id,
+                        'user_id' => Auth::id(),
+                        'file_name' => $fileName,
+                        'original_name' => $file->getClientOriginalName(),
+                        'file_path' => $filePath,
+                        'file_size' => $file->getSize(),
+                        'mime_type' => $file->getMimeType(),
+                        'file_extension' => $file->getClientOriginalExtension(),
+                        'storage_disk' => 'public',
+                        'description' => null,
+                        'is_public' => true,
+                        'is_temporary' => false,
+                        'expires_at' => null,
+                        'custom_properties' => json_encode([
+                            'uploaded_at' => now()->toDateTimeString(),
+                            'uploaded_by' => Auth::user()->name,
+                            'uploaded_by_email' => Auth::user()->email,
+                            'ip_address' => $request->ip(),
+                        ]),
+                    ]);
+                    
+                    $uploadedCount++;
+                    
+                } catch (\Exception $e) {
+                    \Log::error('Error uploading file during task creation: ' . $e->getMessage());
+                }
+            }
+            
+            if ($uploadedCount > 0) {
+                $task->files_count = $uploadedCount;
+                $task->save();
+            }
+        }
+
+        // ============================================
+        // ENVOI D'EMAIL À L'UTILISATEUR ASSIGNÉ
+        // ============================================
         try {
-            DB::beginTransaction();
+            // Récupérer l'utilisateur assigné
+            $assignedUser = User::find($request->user_id);
             
-            $project = Project::findOrFail($request->project_id);
-            
-            $estimatedCost = null;
-            if ($request->estimated_hours && $request->hourly_rate) {
-                $estimatedCost = $request->estimated_hours * $request->hourly_rate;
-            }
-            
-            $metadata = [
-                'priority' => $request->priority ?? 'medium',
-                'tags' => $request->tags ? explode(',', $request->tags) : [],
-                'created_by' => Auth::user()->name,
-                'created_at' => now()->toDateTimeString(),
-            ];
-            
-            $task = Task::create([
-                'name' => $request->name,
-                'details' => $request->details,
-                'project_id' => $request->project_id,
-                'etablissement_id' => $project->etablissement_id,
-                'user_id' => $request->user_id,
-                'created_by' => Auth::id(),
-                'country' => $request->country,
-                'location' => $request->location,
-                'contract_number' => $request->contract_number,
-                'contact_name' => $request->contact_name,
-                'due_date' => $request->due_date,
-                'delivery_date' => $request->delivery_date,
-                'estimated_hours' => $request->estimated_hours,
-                'hourly_rate' => $request->hourly_rate,
-                'estimated_cost' => $estimatedCost,
-                'status' => $request->status,
-                'test_date' => $request->test_date,
-                'test_details' => $request->test_details,
-                'integration_date' => $request->integration_date,
-                'push_prod_date' => $request->push_prod_date,
-                'module_url' => $request->module_url,
-                'is_active' => true,
-                'metadata' => json_encode($metadata),
-                'files_count' => 0,
-            ]);
-
-            if ($request->hasFile('files')) {
-                $uploadedCount = 0;
+            // Vérifier si l'utilisateur existe et a un email
+            if ($assignedUser && $assignedUser->email) {
+                // Envoyer l'email
+                Mail::to($assignedUser->email)->send(new TaskCreated($task));
                 
-                foreach ($request->file('files') as $file) {
-                    try {
-                        $fileName = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
-                        $filePath = $file->storeAs('tasks/' . $task->id, $fileName, 'public');
-
-                        TaskFile::create([
-                            'task_id' => $task->id,
-                            'user_id' => Auth::id(),
-                            'file_name' => $fileName,
-                            'original_name' => $file->getClientOriginalName(),
-                            'file_path' => $filePath,
-                            'file_size' => $file->getSize(),
-                            'mime_type' => $file->getMimeType(),
-                            'file_extension' => $file->getClientOriginalExtension(),
-                            'storage_disk' => 'public',
-                            'description' => null,
-                            'is_public' => true,
-                            'is_temporary' => false,
-                            'expires_at' => null,
-                            'custom_properties' => json_encode([
-                                'uploaded_at' => now()->toDateTimeString(),
-                                'uploaded_by' => Auth::user()->name,
-                                'uploaded_by_email' => Auth::user()->email,
-                                'ip_address' => $request->ip(),
-                            ]),
-                        ]);
-                        
-                        $uploadedCount++;
-                        
-                    } catch (\Exception $e) {
-                        \Log::error('Error uploading file during task creation: ' . $e->getMessage());
-                    }
-                }
-                
-                if ($uploadedCount > 0) {
-                    $task->files_count = $uploadedCount;
-                    $task->save();
-                }
-            }
-            
-            DB::commit();
-            
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Tâche créée avec succès' . ($task->files_count > 0 ? ' (' . $task->files_count . ' fichier(s))' : ''),
-                    'data' => $task,
-                    'redirect' => route('tasks.show', $task->id)
+                \Log::info('Email sent to assigned user', [
+                    'task_id' => $task->id,
+                    'user_id' => $assignedUser->id,
+                    'user_email' => $assignedUser->email,
+                    'user_name' => $assignedUser->name
+                ]);
+            } else {
+                \Log::warning('Assigned user has no email', [
+                    'task_id' => $task->id,
+                    'user_id' => $request->user_id
                 ]);
             }
             
-            return redirect()->route('tasks.show', $task->id)
-                ->with('success', 'Tâche créée avec succès');
-                
         } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::error('Error creating task: ' . $e->getMessage());
-            
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Erreur lors de la création de la tâche',
-                    'error' => config('app.debug') ? $e->getMessage() : null
-                ], 500);
-            }
-            
-            return redirect()->back()
-                ->with('error', 'Erreur lors de la création de la tâche')
-                ->withInput();
+            // Ne pas bloquer la création de la tâche si l'email échoue
+            \Log::error('Failed to send email to assigned user', [
+                'task_id' => $task->id,
+                'user_id' => $request->user_id,
+                'error' => $e->getMessage()
+            ]);
         }
+        // ============================================
+        // FIN DE L'ENVOI D'EMAIL
+        // ============================================
+        
+        DB::commit();
+        
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tâche créée avec succès' . ($task->files_count > 0 ? ' (' . $task->files_count . ' fichier(s))' : ''),
+                'data' => $task,
+                'redirect' => route('tasks.show', $task->id)
+            ]);
+        }
+        
+        return redirect()->route('tasks.show', $task->id)
+            ->with('success', 'Tâche créée avec succès');
+            
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error('Error creating task: ' . $e->getMessage());
+        
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la création de la tâche',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
+        }
+        
+        return redirect()->back()
+            ->with('error', 'Erreur lors de la création de la tâche')
+            ->withInput();
     }
+}
 
     /**
      * Display the specified task.

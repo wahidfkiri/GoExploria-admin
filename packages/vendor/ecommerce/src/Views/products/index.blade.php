@@ -507,7 +507,7 @@
                                     onclick="viewProduct(${product.id})">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <a href="/products/${product.id}/edit"
+                            <a href="/ecommerce/products/${product.id}/edit"
                                class="action-btn-modern edit-btn-modern" title="Modifier">
                                 <i class="fas fa-edit"></i>
                             </a>
@@ -879,7 +879,7 @@
             
             // Send DELETE request
             $.ajax({
-                url: `/products/${productId}`,
+                url: `/ecommerce/products/${productId}`,
                 type: 'DELETE',
                 dataType: 'json',
                 success: function(response) {

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -187,6 +188,84 @@ class ProductController extends Controller
         ]);
     }
 
+
+    /**
+ * Display the specified product.
+ *
+ * @param  int  $id
+ * @return \Illuminate\Http\Response
+ */
+public function show($id)
+{
+    try {
+        // Récupérer le produit avec ses relations
+        $product = Product::with([
+            'category', 
+            'family', 
+            'variants',
+            'etablissement'
+        ])
+        ->findOrFail($id);
+
+        // Incrémenter le compteur de vues
+        $product->increment('views_count');
+
+        // Récupérer les produits associés (même catégorie ou famille)
+        $relatedProducts = Product::where('etablissement_id', auth()->user()->etablissement_id)
+            ->where('id', '!=', $product->id)
+            ->where(function($query) use ($product) {
+                $query->where('product_category_id', $product->product_category_id)
+                      ->orWhere('product_family_id', $product->product_family_id);
+            })
+            ->where('is_available_for_sale', true)
+            ->where('is_public', true)
+            ->limit(4)
+            ->get();
+
+        // Statistiques supplémentaires
+        $stats = [
+            'total_invoices' => $product->invoiceLines()->count(),
+            'total_quotes' => $product->quoteLines()->count(),
+            'revenue' => $product->invoiceLines()
+                ->join('invoices', 'invoice_lines.invoice_id', '=', 'invoices.id')
+                ->where('invoices.status', 'payee')
+                ->sum(DB::raw('invoice_lines.quantity * invoice_lines.unit_price')),
+            'last_sold' => $product->invoiceLines()
+                ->with('invoice')
+                ->whereHas('invoice', function($q) {
+                    $q->where('status', 'payee');
+                })
+                ->latest()
+                ->first(),
+        ];
+
+        // Vérifier si le produit a des dépendances
+        $hasDependencies = ($product->invoiceLines()->count() > 0 || $product->quoteLines()->count() > 0);
+
+        return view('ecommerce::products.show', compact(
+            'product', 
+            'relatedProducts', 
+            'stats', 
+            'hasDependencies'
+        ));
+
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        // Log l'erreur
+        \Log::warning('Tentative d\'accès à un produit inexistant: ' . $e->getMessage());
+        
+        // Rediriger avec un message d'erreur
+        return redirect()->route('products.index')
+            ->with('error', 'Le produit demandé n\'existe pas.');
+            
+    } catch (\Exception $e) {
+        // Log l'erreur
+        \Log::error('Erreur dans ProductController@show: ' . $e->getMessage());
+        
+        // Rediriger avec un message d'erreur
+        return redirect()->route('products.index')
+            ->with('error', 'Une erreur est survenue lors du chargement du produit.');
+    }
+}
     
     /**
      * Display the create form for products/services.
@@ -384,6 +463,207 @@ class ProductController extends Controller
         ], 500);
     }
 }
+   
+   public function edit($id)
+{
+    try {
+        $product = Product::with(['category', 'family', 'variants'])
+            ->findOrFail($id);
+
+        $families = ProductFamily::where('is_active', true)
+            ->orderBy('order')
+            ->orderBy('name')
+            ->get();
+
+        $categories = ProductCategory::with('family')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        $taxes = Tax::where('is_active', true)
+            ->orderBy('rate')
+            ->get();
+
+        if ($taxes->isEmpty()) {
+            $taxes = collect([
+                (object)['id' => 1, 'name' => 'TVA 20%', 'rate' => 20.00, 'is_default' => true],
+                (object)['id' => 2, 'name' => 'TVA 10%', 'rate' => 10.00, 'is_default' => false],
+                (object)['id' => 3, 'name' => 'TVA 5.5%', 'rate' => 5.50, 'is_default' => false],
+                (object)['id' => 4, 'name' => 'TVA 0%', 'rate' => 0.00, 'is_default' => false],
+            ]);
+        }
+
+        return view('ecommerce::products.edit', compact('product', 'families', 'categories', 'taxes'));
+
+    } catch (\Exception $e) {
+        \Log::error('Erreur dans ProductController@edit: ' . $e->getMessage());
+        return redirect()->route('products.index')
+            ->with('error', 'Produit non trouvé ou accès non autorisé.');
+    }
+}
+
+
+public function update(Request $request, $id)
+{
+    try {
+        $product = Product::where('etablissement_id', auth()->user()->etablissement_id)
+            ->findOrFail($id);
+
+        $validated = $request->validate([
+            'main_type' => 'required|string',
+            'name' => 'required|string|max:255',
+            'reference' => 'nullable|string|max:50|unique:products,reference,' . $id,
+            'sku' => 'nullable|string|max:50',
+            'barcode' => 'nullable|string|max:50',
+            'product_family_id' => 'nullable|exists:product_families,id',
+            'product_category_id' => 'nullable|exists:product_categories,id',
+            'short_description' => 'nullable|string|max:255',
+            'long_description' => 'nullable|string',
+            'price_ttc' => 'required|numeric|min:0',
+            'tax_rate' => 'required|numeric|min:0|max:100',
+            'billing_unit' => 'required|string',
+            'purchase_price_ht' => 'nullable|numeric|min:0',
+            'estimated_duration_minutes' => 'nullable|integer|min:0',
+            'requires_appointment' => 'boolean',
+            'billing_period' => 'nullable|required_if:main_type,abonnement',
+            'has_commitment' => 'boolean',
+            'commitment_months' => 'nullable|required_if:has_commitment,1|integer|min:1',
+            'stock_management' => 'nullable|in:oui,non,sur_commande',
+            'current_stock' => 'nullable|integer|min:0',
+            'minimum_stock' => 'nullable|integer|min:0',
+            'maximum_stock' => 'nullable|integer|min:0',
+            'stock_location' => 'nullable|string|max:100',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:160',
+            'meta_keywords' => 'nullable|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:products,slug,' . $id,
+            'is_available_for_sale' => 'boolean',
+            'is_public' => 'boolean',
+            'is_taxable' => 'boolean',
+            'commission_percentage' => 'nullable|numeric|min:0|max:100',
+        ]);
+
+        // Calculer le prix HT
+        $validated['price_ht'] = $validated['price_ttc'] / (1 + $validated['tax_rate'] / 100);
+        $validated['price_ht'] = round($validated['price_ht'], 2);
+
+        // Gérer les booléens
+        $validated['requires_appointment'] = $request->has('requires_appointment');
+        $validated['has_commitment'] = $request->has('has_commitment');
+        $validated['is_available_for_sale'] = $request->has('is_available_for_sale');
+        $validated['is_public'] = $request->has('is_public');
+        $validated['is_taxable'] = $request->has('is_taxable');
+
+        // Gérer l'image principale
+        if ($request->hasFile('main_image')) {
+            // Supprimer l'ancienne image
+            if ($product->main_image) {
+                Storage::disk('public')->delete($product->main_image);
+            }
+            $path = $request->file('main_image')->store('products/main', 'public');
+            $validated['main_image'] = $path;
+        } elseif ($request->has('delete_main_image')) {
+            // Supprimer l'image sans en ajouter une nouvelle
+            if ($product->main_image) {
+                Storage::disk('public')->delete($product->main_image);
+            }
+            $validated['main_image'] = null;
+        }
+
+        // Gérer les images de galerie
+        $existingGallery = $product->gallery_images ? json_decode($product->gallery_images, true) : [];
+        $deletedGallery = $request->input('deleted_gallery_images', []);
+        
+        // Supprimer les images marquées pour suppression
+        foreach ($deletedGallery as $image) {
+            Storage::disk('public')->delete($image);
+            $existingGallery = array_diff($existingGallery, [$image]);
+        }
+
+        // Ajouter les nouvelles images
+        if ($request->hasFile('gallery_images')) {
+            foreach ($request->file('gallery_images') as $image) {
+                $existingGallery[] = $image->store('products/gallery', 'public');
+            }
+        }
+
+        $validated['gallery_images'] = json_encode($existingGallery);
+
+        // Mettre à jour le produit
+        $product->update($validated);
+
+        // Gérer les variantes
+        $this->handleVariants($request, $product);
+
+        // Log l'activité
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Produit mis à jour avec succès !',
+            'data' => $product
+        ]);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'errors' => $e->errors()
+        ], 422);
+    } catch (\Exception $e) {
+        \Log::error('Erreur mise à jour produit: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Une erreur est survenue: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+private function handleVariants($request, $product)
+{
+    // Supprimer les variantes marquées pour suppression
+    if ($request->has('deleted_variants')) {
+        ProductVariant::whereIn('id', $request->deleted_variants)->delete();
+    }
+
+    // Mettre à jour ou créer les variantes
+    if ($request->has('variants')) {
+        foreach ($request->variants as $index => $variantData) {
+            if (empty($variantData['name'])) continue;
+
+            $variantToSave = [
+                'name' => $variantData['name'],
+                'sku' => $variantData['sku'] ?? null,
+                'price_adjustment' => $variantData['price_adjustment'] ?? 0,
+                'stock' => $variantData['stock'] ?? 0,
+                'attributes' => $variantData['attributes'] ?? ['generated' => true],
+            ];
+
+            // Gérer l'image de la variante
+            if (isset($variantData['new_image']) && $variantData['new_image'] instanceof UploadedFile) {
+                // Supprimer l'ancienne image si elle existe
+                if (isset($variantData['existing_image'])) {
+                    Storage::disk('public')->delete($variantData['existing_image']);
+                }
+                $variantToSave['image'] = $variantData['new_image']->store('products/variants', 'public');
+            } elseif (isset($variantData['image']) && $variantData['image'] instanceof UploadedFile) {
+                $variantToSave['image'] = $variantData['image']->store('products/variants', 'public');
+            } elseif (isset($variantData['existing_image'])) {
+                $variantToSave['image'] = $variantData['existing_image'];
+            }
+
+            if (isset($variantData['id'])) {
+                // Mettre à jour une variante existante
+                $variant = ProductVariant::find($variantData['id']);
+                if ($variant) {
+                    $variant->update($variantToSave);
+                }
+            } else {
+                // Créer une nouvelle variante
+                $variantToSave['product_id'] = $product->id;
+                $product->variants()->create($variantToSave);
+            }
+        }
+    }
+}
 
  /**
      * Generate a unique reference.
@@ -470,6 +750,271 @@ class ProductController extends Controller
         }
     }
     
+    public function uploadImage(Request $request)
+{
+    try {
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('products/editor', 'public');
+            
+            return response()->json([
+                'success' => true,
+                'url' => asset('storage/' . $path)
+            ]);
+        }
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Aucun fichier reçu'
+        ], 400);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+
+/**
+ * Remove the specified product from storage.
+ *
+ * @param  int  $id
+ * @return \Illuminate\Http\Response
+ */
+public function destroy($id)
+{
+    try {
+        // Récupérer le produit avec ses relations
+        $product = Product::with(['variants', 'invoiceLines', 'quoteLines'])
+            ->findOrFail($id);
+
+        // Vérifier si le produit est utilisé dans des factures
+        $invoicesCount = $product->invoiceLines()->count();
+        if ($invoicesCount > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ce produit ne peut pas être supprimé car il est utilisé dans ' . $invoicesCount . ' facture(s).'
+            ], 400);
+        }
+
+        // Vérifier si le produit est utilisé dans des devis
+        $quotesCount = $product->quoteLines()->count();
+        if ($quotesCount > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ce produit ne peut pas être supprimé car il est utilisé dans ' . $quotesCount . ' devis.'
+            ], 400);
+        }
+
+        // Vérifier si le produit est utilisé dans des contrats
+        if (method_exists($product, 'contracts') && $product->contracts()->count() > 0) {
+            $contractsCount = $product->contracts()->count();
+            return response()->json([
+                'success' => false,
+                'message' => 'Ce produit ne peut pas être supprimé car il est lié à ' . $contractsCount . ' contrat(s).'
+            ], 400);
+        }
+
+        // Vérifier si le produit a des dépendances dans d'autres modules
+        $dependencies = $this->checkDependencies($product);
+        if (!empty($dependencies)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ce produit a des dépendances actives.',
+                'dependencies' => $dependencies
+            ], 400);
+        }
+
+        // Supprimer les images associées
+        $this->deleteProductImages($product);
+
+        // Supprimer les variantes et leurs images
+        $this->deleteProductVariants($product);
+
+        // Soft delete ou hard delete selon votre besoin
+        $product->delete(); // Soft delete
+        // $product->forceDelete(); // Hard delete
+
+
+        // Réponse selon le type de requête
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Produit supprimé avec succès !',
+                'data' => [
+                    'id' => $product->id,
+                    'name' => $product->name
+                ]
+            ]);
+        }
+
+        return redirect()->route('products.index')
+            ->with('success', 'Produit supprimé avec succès !');
+
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Produit non trouvé.'
+            ], 404);
+        }
+        return redirect()->route('products.index')
+            ->with('error', 'Produit non trouvé.');
+
+    } catch (\Exception $e) {
+        \Log::error('Erreur lors de la suppression du produit: ' . $e->getMessage());
+        
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Une erreur est survenue lors de la suppression: ' . $e->getMessage()
+            ], 500);
+        }
+        
+        return redirect()->route('products.index')
+            ->with('error', 'Une erreur est survenue lors de la suppression.');
+    }
+}
+
+/**
+ * Delete product images
+ */
+private function deleteProductImages($product)
+{
+    try {
+        // Supprimer l'image principale
+        if ($product->main_image) {
+            Storage::disk('public')->delete($product->main_image);
+        }
+
+        // Supprimer les images de la galerie
+        if ($product->gallery_images) {
+            $gallery = json_decode($product->gallery_images, true);
+            if (is_array($gallery)) {
+                foreach ($gallery as $image) {
+                    Storage::disk('public')->delete($image);
+                }
+            }
+        }
+    } catch (\Exception $e) {
+        \Log::warning('Erreur lors de la suppression des images: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Delete product variants and their images
+ */
+private function deleteProductVariants($product)
+{
+    try {
+        foreach ($product->variants as $variant) {
+            // Supprimer l'image de la variante
+            if ($variant->image) {
+                Storage::disk('public')->delete($variant->image);
+            }
+            
+            // Supprimer la variante (sera supprimée automatiquement si cascade)
+            if (!$product->variants()->getQuery()->getModel()->getConnection()->getSchemaBuilder()->hasColumn('product_variants', 'deleted_at')) {
+                $variant->delete();
+            }
+        }
+    } catch (\Exception $e) {
+        \Log::warning('Erreur lors de la suppression des variantes: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Check for other dependencies
+ */
+private function checkDependencies($product)
+{
+    $dependencies = [];
+
+    // Vérifier dans les paniers/commandes en cours
+    if (method_exists($product, 'carts')) {
+        $cartsCount = $product->carts()->where('status', 'active')->count();
+        if ($cartsCount > 0) {
+            $dependencies['carts'] = $cartsCount;
+        }
+    }
+
+    // Vérifier dans les listes de souhaits
+    if (method_exists($product, 'wishlists')) {
+        $wishlistsCount = $product->wishlists()->count();
+        if ($wishlistsCount > 0) {
+            $dependencies['wishlists'] = $wishlistsCount;
+        }
+    }
+
+    // Vérifier dans les programmes de fidélité
+    if (method_exists($product, 'loyaltyPoints')) {
+        $loyaltyCount = $product->loyaltyPoints()->count();
+        if ($loyaltyCount > 0) {
+            $dependencies['loyalty'] = $loyaltyCount;
+        }
+    }
+
+    return $dependencies;
+}
+
+/**
+ * Force delete a product (hard delete)
+ */
+public function forceDestroy($id)
+{
+    try {
+        $product = Product::withTrashed()
+            ->findOrFail($id);
+
+        // Supprimer définitivement les images
+        $this->deleteProductImages($product);
+        $this->deleteProductVariants($product);
+
+        // Suppression définitive
+        $product->forceDelete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Produit supprimé définitivement !'
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+/**
+ * Restore a soft-deleted product
+ */
+public function restore($id)
+{
+    try {
+        $product = Product::withTrashed()
+            ->where('etablissement_id', auth()->user()->etablissement_id)
+            ->findOrFail($id);
+
+        $product->restore();
+
+        // Restaurer les variantes
+        if (method_exists($product, 'variants')) {
+            $product->variants()->withTrashed()->restore();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Produit restauré avec succès !'
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur: ' . $e->getMessage()
+        ], 500);
+    }
+}
     public function export($format, Request $request)
     {
         // Logic for exporting products in different formats

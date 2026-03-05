@@ -466,118 +466,160 @@ class ProjectController extends Controller
     /**
      * Store a newly created project in storage.
      */
-    public function store(Request $request)
-    {
-        // Validation
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'client_id' => 'nullable|exists:etablissements,id',
-            'user_id' => 'required|exists:users,id',
-            'contract_number' => 'nullable|string|max:255',
-            'contact_name' => 'nullable|string|max:255',
-            'contact_phone' => 'nullable|string|max:20',
-            'contact_email' => 'nullable|email|max:255',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-            'status' => 'required|in:planning,in_progress,on_hold,completed,cancelled',
-            'estimated_hours' => 'nullable|integer|min:0|max:999999',
-            'hourly_rate' => 'nullable|numeric|min:0|max:999999.99',
-            'estimated_budget' => 'nullable|numeric|min:0|max:9999999.99',
-            'is_active' => 'boolean',
-            'tags' => 'nullable|string',
-            'priority' => 'nullable|in:low,medium,high,urgent',
-        ], [
-            'name.required' => 'Le nom du projet est obligatoire',
-            'user_id.required' => 'Le responsable est obligatoire',
-            'end_date.after_or_equal' => 'La date de fin doit être postérieure à la date de début',
-            'estimated_hours.max' => 'Le nombre d\'heures estimées est trop élevé',
-            'estimated_budget.max' => 'Le budget estimé est trop élevé',
-        ]);
+    /**
+ * Store a newly created project in storage.
+ */
+public function store(Request $request)
+{
+    // Validation
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'client_id' => 'nullable|exists:etablissements,id',
+        'user_id' => 'required|exists:users,id',
+        'contract_number' => 'nullable|string|max:255',
+        'contact_name' => 'nullable|string|max:255',
+        'contact_phone' => 'nullable|string|max:20',
+        'contact_email' => 'nullable|email|max:255',
+        'start_date' => 'nullable|date',
+        'end_date' => 'nullable|date|after_or_equal:start_date',
+        'status' => 'required|in:planning,in_progress,on_hold,completed,cancelled',
+        'estimated_hours' => 'nullable|integer|min:0|max:999999',
+        'hourly_rate' => 'nullable|numeric|min:0|max:999999.99',
+        'estimated_budget' => 'nullable|numeric|min:0|max:9999999.99',
+        'is_active' => 'boolean',
+        'tags' => 'nullable|string',
+        'priority' => 'nullable|in:low,medium,high,urgent',
+    ], [
+        'name.required' => 'Le nom du projet est obligatoire',
+        'user_id.required' => 'Le responsable est obligatoire',
+        'end_date.after_or_equal' => 'La date de fin doit être postérieure à la date de début',
+        'estimated_hours.max' => 'Le nombre d\'heures estimées est trop élevé',
+        'estimated_budget.max' => 'Le budget estimé est trop élevé',
+    ]);
 
-        if ($validator->fails()) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-            return redirect()->back()->withErrors($validator)->withInput();
+    if ($validator->fails()) {
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
+    
+    try {
+        DB::beginTransaction();
+        
+        // Calculer le budget si non fourni mais heures et taux fournis
+        $estimatedBudget = $request->estimated_budget;
+        if (!$estimatedBudget && $request->estimated_hours && $request->hourly_rate) {
+            $estimatedBudget = $request->estimated_hours * $request->hourly_rate;
         }
         
+        $etablissement = Etablissement::first();
+        
+        // Créer le projet
+        $project = Project::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'etablissement_id' => $etablissement->id,
+            'client_id' => $request->client_id,
+            'user_id' => $request->user_id,
+            'contract_number' => $request->contract_number,
+            'contact_name' => $request->contact_name,
+            'contact_phone' => $request->contact_phone,
+            'contact_email' => $request->contact_email,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'status' => $request->status,
+            'estimated_hours' => $request->estimated_hours,
+            'hourly_rate' => $request->hourly_rate,
+            'estimated_budget' => $estimatedBudget,
+            'is_active' => $request->has('is_active'),
+            'metadata' => json_encode([
+                'tags' => $request->tags ? explode(',', $request->tags) : [],
+                'priority' => $request->priority ?? 'medium',
+                'created_by' => Auth::user()->name,
+                'created_at' => now()->toDateTimeString(),
+            ]),
+        ]);
+
+        // ============================================
+        // ENVOI D'EMAIL AU RESPONSABLE DU PROJET
+        // ============================================
         try {
-            DB::beginTransaction();
+            // Récupérer l'utilisateur responsable
+            $responsibleUser = User::find($request->user_id);
             
-            // Calculer le budget si non fourni mais heures et taux fournis
-            $estimatedBudget = $request->estimated_budget;
-            if (!$estimatedBudget && $request->estimated_hours && $request->hourly_rate) {
-                $estimatedBudget = $request->estimated_hours * $request->hourly_rate;
-            }
-            $etablissement = Etablissement::where('user_id', $request->user_id)->first();
-            // Créer le projet
-            $project = Project::create([
-                'name' => $request->name,
-                'description' => $request->description,
-                'etablissement_id' => 2,
-                'client_id' => $request->client_id,
-                'user_id' => $request->user_id,
-                'contract_number' => $request->contract_number,
-                'contact_name' => $request->contact_name,
-                'contact_phone' => $request->contact_phone,
-                'contact_email' => $request->contact_email,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'status' => $request->status,
-                'estimated_hours' => $request->estimated_hours,
-                'hourly_rate' => $request->hourly_rate,
-                'estimated_budget' => $estimatedBudget,
-                'is_active' => $request->has('is_active'),
-                'metadata' => json_encode([
-                    'tags' => $request->tags ? explode(',', $request->tags) : [],
-                    'priority' => $request->priority ?? 'medium',
-                    'created_by' => Auth::user()->name,
-                    'created_at' => now()->toDateTimeString(),
-                ]),
-            ]);
-            
-            // Log l'activité
-            // activity()
-            //     ->performedOn($project)
-            //     ->causedBy(Auth::user())
-            //     ->withProperties(['name' => $project->name])
-            //     ->log('Projet créé');
-            
-            DB::commit();
-            
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Projet créé avec succès',
-                    'data' => $project,
-                    'redirect' => route('projects.show', $project->id)
+            // Vérifier si l'utilisateur existe et a un email
+            if ($responsibleUser && $responsibleUser->email) {
+                // Envoyer l'email
+                Mail::to($responsibleUser->email)->send(new \Vendor\Project\Mail\ProjectCreated($project));
+                
+                \Log::info('Email sent to project responsible', [
+                    'project_id' => $project->id,
+                    'user_id' => $responsibleUser->id,
+                    'user_email' => $responsibleUser->email,
+                    'user_name' => $responsibleUser->name
+                ]);
+            } else {
+                \Log::warning('Project responsible has no email', [
+                    'project_id' => $project->id,
+                    'user_id' => $request->user_id
                 ]);
             }
             
-            return redirect()->route('projects.show', $project->id)
-                ->with('success', 'Projet créé avec succès');
-                
         } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::error('Error creating project: ' . $e->getMessage());
-            
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Erreur lors de la création du projet',
-                    'error' => config('app.debug') ? $e->getMessage() : null
-                ], 500);
-            }
-            
-            return redirect()->back()
-                ->with('error', 'Erreur lors de la création du projet')
-                ->withInput();
+            // Ne pas bloquer la création du projet si l'email échoue
+            \Log::error('Failed to send email to project responsible', [
+                'project_id' => $project->id,
+                'user_id' => $request->user_id,
+                'error' => $e->getMessage()
+            ]);
         }
+        // ============================================
+        // FIN DE L'ENVOI D'EMAIL
+        // ============================================
+        
+        // Log l'activité
+        // activity()
+        //     ->performedOn($project)
+        //     ->causedBy(Auth::user())
+        //     ->withProperties(['name' => $project->name])
+        //     ->log('Projet créé');
+        
+        DB::commit();
+        
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Projet créé avec succès',
+                'data' => $project,
+                'redirect' => route('projects.show', $project->id)
+            ]);
+        }
+        
+        return redirect()->route('projects.show', $project->id)
+            ->with('success', 'Projet créé avec succès');
+            
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error('Error creating project: ' . $e->getMessage());
+        
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la création du projet',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
+        }
+        
+        return redirect()->back()
+            ->with('error', 'Erreur lors de la création du projet')
+            ->withInput();
     }
+}
 
     /**
      * Display the specified project.
