@@ -205,6 +205,14 @@
 
         <!-- Clients -->
         <li>
+            <a href="{{ url('orders.index') }}" class="submenu-item">
+                <i class="fas fa-shopping-cart submenu-icon"></i>
+                <span class="submenu-text ms-2">Commandes</span>
+                <span class="submenu-badge">0</span>
+            </a>
+        </li>
+        <!-- Clients -->
+        <li>
             <a href="{{ url('customers.index') }}" class="submenu-item">
                 <i class="fas fa-users submenu-icon"></i>
                 <span class="submenu-text ms-2">Clients</span>
