@@ -203,29 +203,6 @@
             </a>
         </li>
 
-        <!-- Factures -->
-        <li>
-            <a href="{{ url('invoices.index') }}" class="submenu-item">
-                <i class="fas fa-file-invoice submenu-icon"></i>
-                <span class="submenu-text ms-2">Factures</span>
-                @php
-                    $unpaidInvoices = \App\Models\Invoice::whereIn('status', ['en_attente', 'partiellement_payee'])
-                        ->count();
-                @endphp
-                @if($unpaidInvoices > 0)
-                    <span class="submenu-badge bg-danger">{{ $unpaidInvoices }}</span>
-                @endif
-            </a>
-        </li>
-
-        <!-- Devis -->
-        <li>
-            <a href="{{ url('quotes.index') }}" class="submenu-item">
-                <i class="fas fa-file-signature submenu-icon"></i>
-                <span class="submenu-text ms-2">Devis</span>
-            </a>
-        </li>
-
         <!-- Clients -->
         <li>
             <a href="{{ url('customers.index') }}" class="submenu-item">
@@ -249,13 +226,6 @@
             </a>
         </li>
 
-        <!-- Paramètres ecommerce -->
-        <li>
-            <a href="{{ url('ecommerce/settings') }}" class="submenu-item">
-                <i class="fas fa-sliders-h submenu-icon"></i>
-                <span class="submenu-text ms-2">Paramètres</span>
-            </a>
-        </li>
 
         <!-- Statistiques -->
         <li>
@@ -266,6 +236,51 @@
         </li>
     </ul>
 </li>
+
+    <li class="has-submenu">
+    <a href="#" class="menu-link">
+        <span class="menu-icon">
+            <i class="fas fa-file-invoice"></i>
+        </span>
+        <span class="menu-text"> Facturation</span>
+        <span class="menu-arrow">
+            <i class="fas fa-chevron-down"></i>
+        </span>
+    </a>
+    <ul class="submenu">
+      
+
+        <!-- Factures -->
+        <li>
+            <a href="{{ route('invoices.index') }}" class="submenu-item">
+                <i class="fas fa-file-invoice submenu-icon"></i>
+                <span class="submenu-text ms-2">Factures</span>
+                @php
+                    $unpaidInvoices = \App\Models\Invoice::whereIn('status', ['en_attente', 'partiellement_payee'])
+                        ->count();
+                @endphp
+                @if($unpaidInvoices > 0)
+                    <span class="submenu-badge bg-danger">{{ $unpaidInvoices }}</span>
+                @endif
+            </a>
+        </li>
+
+        <!-- Devis -->
+        <li>
+            <a href="{{ url('quotes.index') }}" class="submenu-item">
+                <i class="fas fa-file-signature submenu-icon"></i>
+                <span class="submenu-text ms-2">Devis</span>
+            </a>
+        </li>
+        <!-- Paramètres ecommerce -->
+        <li>
+            <a href="{{ url('ecommerce/settings') }}" class="submenu-item">
+                <i class="fas fa-sliders-h submenu-icon"></i>
+                <span class="submenu-text ms-2">Paramètres</span>
+            </a>
+        </li>
+    </ul>
+  </li>
     <li class="has-submenu">
       <a href="#" class="menu-link">
         <span class="menu-icon">
