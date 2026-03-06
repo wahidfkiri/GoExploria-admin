@@ -92,6 +92,11 @@ class Invoice extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function taxes()
+    {
+        return $this->belongsToMany(Tax::class, 'invoice_tax')->withPivot('amount', 'rate');
+    }
+
     public function getIsPaidAttribute()
     {
         return $this->remaining_amount <= 0;

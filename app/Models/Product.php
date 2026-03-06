@@ -117,6 +117,11 @@ class Product extends Model
         return $this->hasMany(QuoteLine::class);
     }
 
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class, 'tax_rate', 'rate');
+    }
+
     public function getCurrentPriceAttribute()
     {
         return $this->price_ttc;
