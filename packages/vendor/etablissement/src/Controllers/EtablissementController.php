@@ -11,6 +11,8 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Vendor\Etablissement\Mail\WelcomeEtablissementMail;
 
 class EtablissementController extends Controller
 {
@@ -257,66 +259,14 @@ public function store(Request $request)
     }
 }
 
-/**
- * Envoyer un email de bienvenue avec les identifiants
- */
-private function sendWelcomeEmail(User $user, string $password, Etablissement $etablissement): void
+
+private function sendWelcomeEmail($user, $password, $etablissement)
 {
-    try {
-        // CONFIGURATION SMTP DIRECTE DANS LE CODE
-        config([
-            'mail.mailers.smtp' => [
-                'transport' => 'smtp',
-                'host' => 'smtp.nextstep-it.com',
-                'port' => 465,
-                'encryption' => 'tls',
-                'username' => 'contact@turkiavocats.com',
-                'password' => '6NsNs23Nu', // SANS ESPACES !
-                'timeout' => null,
-            ],
-            'mail.from' => [
-                'address' => 'contact@turkiavocats.com',
-                'name' => 'GoExploria',
-            ],
-        ]);
-
-        // Données pour l'email
-        $emailData = [
-            'name' => $user->name,
-            'email' => $user->email,
-            'password' => $password,
-            'etablissement_name' => $etablissement->name,
-            'login_url' => route('login'),
-            'dashboard_url' => route('login'),
-            'support_email' => 'wahidfkiri5@gmail.com',
-            'site_name' => config('app.name', 'GoExploria'),
-        ];
-
-        Log::info('Tentative d\'envoi email', [
-            'from' => config('mail.from'),
-            'to' => $user->email,
-        ]);
-
-        // Envoyer l'email avec configuration explicite
-        $mailer = app('mailer');
-        
-        $mailer->alwaysFrom('wahidfkiri5@gmail.com', 'GoExploria');
-        $mailer->alwaysReplyTo('wahidfkiri5@gmail.com', 'Support GoExploria');
-        
-        $mailer->to($user->email)->send(
-            new \App\Mail\WelcomeEmail($emailData)
-        );
-
-        Log::info('✅ Email envoyé avec succès', ['user_id' => $user->id]);
-
-    } catch (\Exception $e) {
-        Log::error('❌ Erreur envoi email', [
-            'user_id' => $user->id,
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-        ]);
-    }
+    Mail::to($user->email)
+        ->send(new WelcomeEtablissementMail($user, $password, $etablissement));
 }
+
+
 
 
     /**
