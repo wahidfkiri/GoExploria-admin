@@ -151,7 +151,7 @@ public function store(Request $request)
                 'website' => 'nullable|url|max:255',
                 'ville_search' => 'nullable|string|max:255',
                 'ville' => 'required|string|max:255',
-                'region_id' => 'required|exists:regions,id',
+                // 'region_id' => 'required|exists:regions,id',
                 'province_id' => 'required|exists:provinces,id',
                 'country_id' => 'required|exists:countries,id',
                 'adresse' => 'required|string',
@@ -191,7 +191,7 @@ public function store(Request $request)
                 'email_contact' => $validated['email_contact'] ?? null,
                 'website'       => $validated['website'] ?? null,
                 'is_active'     => $request->boolean('is_active'),
-                'region_id'     => $validated['region_id'],
+                // 'region_id'     => $validated['region_id'],
                 'province_id'   => $validated['province_id'],
                 'country_id'    => $validated['country_id'],
             ]);
