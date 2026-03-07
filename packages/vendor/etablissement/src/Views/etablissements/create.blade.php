@@ -93,7 +93,7 @@
                             <label for="website" class="form-label-modern">Site Web</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-globe"></i></span>
-                            <input type="url" class="form-control-modern" id="website" name="website" 
+                            <input type="text" class="form-control-modern" id="website" name="website" 
                                    placeholder="Ex: https://www.mon-etablissement.com">
                         </div>
                         </div>
