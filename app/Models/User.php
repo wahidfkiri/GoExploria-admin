@@ -35,11 +35,11 @@ class User extends Authenticatable
         'avatar',
         'email_verified_at',
         'remember_token',
-        'preferences',
-        'notification_settings',
-        'google2fa_secret',
-        'last_login_at',
-        'last_login_ip',
+        // 'preferences',
+        // 'notification_settings',
+        // 'google2fa_secret',
+        // 'last_login_at',
+        // 'last_login_ip',
     ];
 
     /**
@@ -50,7 +50,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'google2fa_secret',
+        // 'google2fa_secret',
     ];
 
     /**
@@ -66,9 +66,9 @@ class User extends Authenticatable
             'is_active' => 'boolean',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
-            'last_login_at' => 'datetime',
-            'preferences' => 'array',
-            'notification_settings' => 'array',
+            // 'last_login_at' => 'datetime',
+            // 'preferences' => 'array',
+            // 'notification_settings' => 'array',
         ];
     }
 
@@ -77,8 +77,8 @@ class User extends Authenticatable
      */
     protected $attributes = [
         'is_active' => true,
-        'preferences' => '{"theme":"light","language":"fr","timezone":"Europe/Paris","compact_mode":false,"animations":true}',
-        'notification_settings' => '{"email_new_projects":true,"email_task_updates":true,"email_mentions":true,"email_weekly_reports":false,"in_app_sound":true,"in_app_badges":true,"in_app_desktop":false}',
+        // 'preferences' => '{"theme":"light","language":"fr","timezone":"Europe/Paris","compact_mode":false,"animations":true}',
+        // 'notification_settings' => '{"email_new_projects":true,"email_task_updates":true,"email_mentions":true,"email_weekly_reports":false,"in_app_sound":true,"in_app_badges":true,"in_app_desktop":false}',
     ];
 
     /**
