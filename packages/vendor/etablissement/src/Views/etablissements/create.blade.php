@@ -139,19 +139,6 @@
                             <input type="text" class="form-control-modern" id="zip_code" name="zip_code" 
                                    placeholder="Ex: 75001, 69002..." required>
                         </div>
-
-                        <h3 class="step-title"><i calss="fas fa-map-marked-alt"></i> Position sur la map </h3>
-                        <div class="col-md-6 mb-3">
-                            <label for="zip_code" class="form-label-modern">Latitude</label>
-                            <input type="text" class="form-control-modern" id="latitude" name="latitude" 
-                                   placeholder="Ex: 46.8139" required>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="zip_code" class="form-label-modern">Longitude</label>
-                            <input type="text" class="form-control-modern" id="longitude" name="longitude" 
-                                   placeholder="Ex: -71.2080" required>
-                        </div>
                     </div>
                     
                     <div class="step-actions">
