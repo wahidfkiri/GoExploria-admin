@@ -53,6 +53,7 @@ Route::resource('projects', ProjectController::class);
             Route::put('/', [TaskController::class, 'update'])->name('update');
             Route::delete('/', [TaskController::class, 'destroy'])->name('destroy');
             
+        Route::get('/files/{file}/download', [TaskController::class, 'downloadFile'])->name('download');
             // Actions spécifiques
             Route::patch('/toggle-status', [TaskController::class, 'toggleStatus'])->name('toggle-status');
             Route::post('/duplicate', [TaskController::class, 'duplicate'])->name('duplicate');
