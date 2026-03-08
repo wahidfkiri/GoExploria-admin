@@ -1281,11 +1281,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 <div class="top-bar-icons">
                     <!-- Mon compte -->
-                    <a href="{{route('register')}}" class="top-bar-icon">
+                    <a href="https://app.goexploriabusiness.com/register" class="top-bar-icon">
                         <i class="fas fa-user-plus"></i>
                         <span>S'inscrire</span>
                     </a>
-                    <a href="{{route('login')}}" class="top-bar-icon">
+                    <a href="https://app.goexploriabusiness.com/login" class="top-bar-icon">
                         <i class="fas fa-user"></i>
                         <span>Mon compte</span>
                     </a>
