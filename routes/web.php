@@ -32,6 +32,10 @@ Route::post('/chat/clear-history', [ChatController::class, 'clearHistory'])->nam
 // Page de login
 Route::get('/', [HomeV2Controller::class, 'index'])->name('home-v2');
 
+Route::get('welcome-2', function () {
+    return view('welcome');
+});
+
 // Nouvelle page d'accueil V2
 Route::get('/home-v2', [HomeV2Controller::class, 'index'])->name('home-v2');
 
