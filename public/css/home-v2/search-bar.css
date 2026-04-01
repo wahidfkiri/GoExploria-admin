@@ -1,0 +1,562 @@
+/* ============================================
+   SEARCH BAR V2 - Barre horizontale complète
+   Styles personnalisés pour éviter les conflits
+   ============================================ */
+
+/* Container principal de la barre horizontale */
+.search-bar-v2 {
+    background: rgba(10, 22, 40, 0.95);
+    padding: 12px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 50;
+}
+
+.search-bar-v2-container {
+    max-width: 2000px;
+    margin: 0 auto;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+/* Section Destinations (Globe + Texte + Liens) */
+.search-bar-v2-destinations {
+    display: flex;
+    align-items: center; 
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.search-bar-v2-globe-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.search-bar-v2-destinations-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.search-bar-v2-destinations-title:hover {
+    color: #d4af37;
+}
+
+.search-bar-v2-destinations-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+.search-bar-v2-destinations-link {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.search-bar-v2-destinations-link:hover {
+    color: #d4af37;
+}
+
+.search-bar-v2-separator {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 13px;
+    user-select: none;
+}
+
+/* Barre de recherche au centre */
+.search-bar-v2-search {
+    flex: 1;
+    max-width: 500px;
+}
+
+.search-bar-v2-input-wrapper {
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.search-bar-v2-input-wrapper:focus-within {
+    background: #ffffff;
+    box-shadow: 0 6px 25px rgba(212, 175, 55, 0.3);
+}
+
+.search-bar-v2-search-icon {
+    color: #0a1628;
+    flex-shrink: 0;
+}
+
+.search-bar-v2-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: #0a1628;
+    font-weight: 500;
+}
+
+.search-bar-v2-input::placeholder {
+    color: rgba(10, 22, 40, 0.5);
+    font-style: italic;
+}
+
+.search-bar-v2-clear-btn {
+    background: none;
+    border: none;
+    color: rgba(10, 22, 40, 0.4);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.search-bar-v2-clear-btn.visible {
+    display: flex;
+}
+
+.search-bar-v2-clear-btn:hover {
+    background: rgba(10, 22, 40, 0.1);
+    color: #0a1628;
+}
+
+/* Logo Plan-n-go à droite */
+.search-bar-v2-brand {
+    flex-shrink: 0;
+}
+
+.search-bar-v2-logo {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Dropdown des résultats */
+.search-bar-v2-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+}
+
+.search-bar-v2-results.visible {
+    max-height: 600px;
+    opacity: 1;
+    visibility: visible;
+    overflow-y: auto;
+}
+
+/* Header des résultats */
+.search-bar-v2-results-header {
+    padding: 16px 24px 12px;
+    border-bottom: 1px solid rgba(10, 22, 40, 0.1);
+}
+
+.search-bar-v2-results-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(10, 22, 40, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+/* Liste des résultats */
+.search-bar-v2-results-list {
+    list-style: none;
+    margin: 0;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.search-bar-v2-result-item {
+    padding: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(10, 22, 40, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+}
+
+.search-bar-v2-result-item:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: #d4af37;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.search-bar-v2-result-item.highlighted {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: #d4af37;
+}
+
+/* Image de destination */
+.search-bar-v2-result-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.search-bar-v2-result-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Contenu de destination */
+.search-bar-v2-result-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.search-bar-v2-result-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0a1628;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.search-bar-v2-result-type {
+    font-size: 11px;
+    font-weight: 500;
+    color: #d4af37;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.search-bar-v2-result-description {
+    font-size: 12px;
+    color: rgba(10, 22, 40, 0.6);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Flèche de navigation */
+.search-bar-v2-result-arrow {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+}
+
+.search-bar-v2-result-arrow svg {
+    width: 100%;
+    height: 100%;
+    stroke: #0a1628;
+}
+
+.search-bar-v2-result-item:hover .search-bar-v2-result-arrow {
+    opacity: 1;
+    transform: translateX(4px);
+}
+
+/* Badge de catégorie */
+.search-bar-v2-result-badge {
+    padding: 3px 8px;
+    background: rgba(212, 175, 55, 0.15);
+    color: #d4af37;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+}
+
+/* Bouton "Voir tous les résultats" */
+.search-bar-v2-view-all {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(10, 22, 40, 0.1);
+    text-align: center;
+}
+
+.search-bar-v2-view-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #d4af37 0%, #f0c14b 100%);
+    color: #0a1628;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.search-bar-v2-view-all-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+}
+
+.search-bar-v2-view-all-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.search-bar-v2-view-all-btn:hover svg {
+    transform: translateX(4px);
+}
+
+/* Message "Aucun résultat" */
+.search-bar-v2-no-results {
+    padding: 40px 24px;
+    text-align: center;
+}
+
+.search-bar-v2-no-results-icon {
+    color: rgba(10, 22, 40, 0.3);
+    margin-bottom: 16px;
+}
+
+.search-bar-v2-no-results-text {
+    font-size: 15px;
+    color: rgba(10, 22, 40, 0.6);
+    margin: 0 0 8px 0;
+}
+
+.search-bar-v2-no-results-suggestion {
+    font-size: 13px;
+    color: rgba(10, 22, 40, 0.4);
+    margin: 0;
+}
+
+/* Scrollbar personnalisée */
+.search-bar-v2-results::-webkit-scrollbar {
+    width: 6px;
+}
+
+.search-bar-v2-results::-webkit-scrollbar-track {
+    background: rgba(10, 22, 40, 0.05);
+}
+
+.search-bar-v2-results::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.5);
+    border-radius: 3px;
+}
+
+.search-bar-v2-results::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 175, 55, 0.7);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+/* Tablette */
+@media (max-width: 1024px) {
+    .search-bar-v2-container {
+        padding: 0 30px;
+        gap: 20px;
+    }
+
+    .search-bar-v2-destinations-title {
+        font-size: 14px;
+    }
+
+    .search-bar-v2-destinations-link {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    .search-bar-v2-results-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .search-bar-v2-result-image {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .search-bar-v2 {
+        padding: 12px 0;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+    }
+
+    .search-bar-v2-container {
+        padding: 0 15px;
+        gap: 10px;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Ligne 1: Globe + DESTINATIONS + liens */
+    .search-bar-v2-globe {
+        display: none;
+    }
+
+    .search-bar-v2-destinations {
+        order: 1;
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 0 5px;
+    }
+
+    .search-bar-v2-destinations-title {
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .search-bar-v2-destinations-title::before {
+        content: '';
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='2' y1='12' x2='22' y2='12'/%3E%3Cpath d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/%3E%3C/svg%3E");
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+
+    .search-bar-v2-destinations-links {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .search-bar-v2-destinations-link {
+        font-size: 10px;
+        padding: 4px 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+    }
+
+    .search-bar-v2-separator {
+        font-size: 10px;
+    }
+
+    /* Ligne 2: Barre de recherche */
+    .search-bar-v2-search {
+        order: 2;
+        width: 100%;
+        max-width: none;
+        padding: 0 5px;
+    }
+
+    .search-bar-v2-input-wrapper {
+        padding: 10px 16px;
+    }
+
+    .search-bar-v2-input {
+        font-size: 14px;
+    }
+
+    /* Ligne 3: Logo Plan-n-go centré */
+    .search-bar-v2-brand {
+        order: 3;
+        text-align: center;
+        padding: 0 5px;
+        margin-top: 8px;
+    }
+
+    .search-bar-v2-logo {
+        height: 40px;
+    }
+
+    .search-bar-v2-results-list {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .search-bar-v2-result-item {
+        padding: 8px;
+    }
+
+    .search-bar-v2-result-image {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* Très petit mobile */
+@media (max-width: 480px) {
+    .search-bar-v2-container {
+        padding: 0 15px;
+    }
+
+    .search-bar-v2-globe-icon {
+        width: 35px;
+        height: 35px;
+    }
+
+    .search-bar-v2-destinations-title {
+        font-size: 12px;
+    }
+
+    .search-bar-v2-destinations-link {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+
+    .search-bar-v2-logo {
+        height: 30px;
+    }
+}

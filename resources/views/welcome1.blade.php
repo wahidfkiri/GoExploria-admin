@@ -735,8 +735,14 @@
                 <div class="col-lg-4 mb-4">
                     <h4 style="color: white; font-size: 1.3rem; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid var(--accent-color); display: inline-block;">Contactez-nous</h4>
                     <ul style="list-style: none; padding: 0;">
-                        <li style="margin-bottom: 12px;"><i class="fas fa-phone me-2"></i> (418) 525-7748</li>
-                        <li style="margin-bottom: 12px;"><i class="fas fa-envelope me-2"></i> infogoexploria@gmail.com</li>
+                        <li style="margin-bottom: 12px;">
+                            <i class="fas fa-phone me-2"></i> 
+                            <a href="tel:4185257748" style="color: white; text-decoration: none;">(418) 525-7748</a>
+                        </li>
+                        <li style="margin-bottom: 12px;">
+                            <i class="fas fa-envelope me-2"></i> 
+                            <a href="mailto:infogoexploria@gmail.com" style="color: white; text-decoration: none;">infogoexploria@gmail.com</a>
+                        </li>
                         <li style="margin-bottom: 12px;"><i class="fas fa-map-marker-alt me-2"></i> Québec, Canada</li>
                     </ul>
                     <div class="mt-4">

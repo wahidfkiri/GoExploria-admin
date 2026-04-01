@@ -7,7 +7,10 @@ use App\Http\Controllers\{
     OpenAIController,
     AuthController,
     GeminiController,
-    HomeController
+    HomeController,
+    HomeV2Controller,
+    LandingPageController,
+    DestinationPageController
 };
 
 use App\Http\Controllers\Auth\SocialAuthController;
@@ -27,22 +30,47 @@ Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
 Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
 Route::post('/chat/clear-history', [ChatController::class, 'clearHistory'])->name('chat.clear-history');
 // Page de login
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [HomeV2Controller::class, 'index'])->name('home-v2');
+
+// Nouvelle page d'accueil V2
+Route::get('/home-v2', [HomeV2Controller::class, 'index'])->name('home-v2');
+
+// Routes pour les pages de destinations
+Route::prefix('destinations')->name('destinations.')->group(function () {
+    Route::get('/', [DestinationPageController::class, 'index'])->name('index');
+    Route::get('/continent/{slug}', [DestinationPageController::class, 'continent'])->name('continent');
+    Route::get('/pays/{slug}', [DestinationPageController::class, 'country'])->name('country');
+    Route::get('/province/{slug}', [DestinationPageController::class, 'province'])->name('province');
+    Route::get('/region/{slug}', [DestinationPageController::class, 'region'])->name('region');
+    Route::get('/ville/{slug}', [DestinationPageController::class, 'ville'])->name('ville');
+    Route::get('/secteur/{slug}', [DestinationPageController::class, 'secteur'])->name('secteur');
 });
-Route::get('/welcome', function () {
-    return view('welcome1');
+
+// Landing Pages Routes
+Route::prefix('landing')->name('landing.')->group(function () {
+    Route::get('/experiences-quebec', [LandingPageController::class, 'experiencesQuebec'])->name('experiences-quebec');
+    Route::get('/experiences-canada', [LandingPageController::class, 'experiencesCanada'])->name('experiences-canada');
+    Route::get('/experiences-regional', [LandingPageController::class, 'experiencesRegional'])->name('experiences-regional');
+    Route::get('/transport-aerien', [LandingPageController::class, 'transportAerien'])->name('transport-aerien');
+    Route::get('/transport-terrestre', [LandingPageController::class, 'transportTerrestre'])->name('transport-terrestre');
+    Route::get('/transport-maritime', [LandingPageController::class, 'transportMaritime'])->name('transport-maritime');
+    Route::get('/hotels', [LandingPageController::class, 'hotels'])->name('hotels');
+    Route::get('/auberges', [LandingPageController::class, 'auberges'])->name('auberges');
+    Route::get('/locations', [LandingPageController::class, 'locations'])->name('locations');
+    Route::get('/assurances', [LandingPageController::class, 'assurances'])->name('assurances');
+    Route::get('/guides', [LandingPageController::class, 'guides'])->name('guides');
+    Route::get('/urgences', [LandingPageController::class, 'urgences'])->name('urgences');
+    Route::get('/promotions', [LandingPageController::class, 'promotions'])->name('promotions');
+    Route::get('/explorer', [LandingPageController::class, 'explorer'])->name('explorer');
+    Route::get('/destinations', [LandingPageController::class, 'destinations'])->name('destinations');
+    Route::get('/certifications', [LandingPageController::class, 'certifications'])->name('certifications');
 });
-Route::get('/test', function () {
-    return view('test');
-});
+
 // Page de login
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-// Route pour le dashboard (à protéger)
-Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard')->middleware('auth');
 
 // Route pour le dashboard (à protéger)
 Route::get('/home', function () {
@@ -67,9 +95,11 @@ Route::post('/logout', function () {
 
 
 // Éditeur (protégé)
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','web','user.active'])->group(function () {
 
 
+// Route pour le dashboard (à protéger)
+Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
     
     // Profil utilisateur
@@ -142,6 +172,33 @@ Route::prefix('api')->group(function () {
             'version' => '1.0.0',
             'timestamp' => now()
         ]);
+    });
+    
+    // Routes API Destinations (publiques)
+    Route::prefix('v1/destinations')->group(function () {
+        Route::get('/continents', [App\Http\Controllers\Api\DestinationController::class, 'continents']);
+        Route::get('/continents/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'continent']);
+        Route::get('/countries', [App\Http\Controllers\Api\DestinationController::class, 'countries']);
+        Route::get('/countries/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'country']);
+        Route::get('/provinces', [App\Http\Controllers\Api\DestinationController::class, 'provinces']);
+        Route::get('/provinces/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'province']);
+        Route::get('/regions', [App\Http\Controllers\Api\DestinationController::class, 'regions']);
+        Route::get('/regions/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'region']);
+        Route::get('/villes', [App\Http\Controllers\Api\DestinationController::class, 'villes']);
+        Route::get('/villes/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'ville']);
+        Route::get('/secteurs', [App\Http\Controllers\Api\DestinationController::class, 'secteurs']);
+        Route::get('/secteurs/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'secteur']);
+        Route::get('/search', [App\Http\Controllers\Api\DestinationController::class, 'search']);
+        Route::get('/hierarchy/{type}/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'hierarchy']);
+    });
+    
+    // Routes API Map Points (publiques)
+    Route::prefix('v1/map-points')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\MapPointController::class, 'index']);
+        Route::get('/{id}', [App\Http\Controllers\Api\MapPointController::class, 'show']);
+        Route::get('/search', [App\Http\Controllers\Api\MapPointController::class, 'search']);
+        Route::get('/categories', [App\Http\Controllers\Api\MapPointController::class, 'categories']);
+        Route::get('/villes', [App\Http\Controllers\Api\MapPointController::class, 'villes']);
     });
     
     // Routes démo (limitées)

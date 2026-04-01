@@ -6,6 +6,7 @@
     <!-- <div class="logo-sub">Plateforme Builder Web</div> -->
   </div>
   <ul class="sidebar-menu">
+    @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin'))
     <li>
       <a href="{{route('dashboard')}}" class="menu-item active">
         <span class="menu-icon">
@@ -131,6 +132,15 @@
         <span class="menu-text">Templates</span>
       </a>
     </li> 
+    <li>
+      <a href="{{route('plugins.index')}}" class="menu-item">
+        <span class="menu-icon">
+          <i class="fas fa-bars"></i>
+        </span>
+        <span class="menu-text">Applications</span>
+      </a>
+    </li>
+    @endif
     <!-- <li class="menu-title">Contenu</li> -->
     <li class="has-submenu">
       <a href="#" class="menu-link">
@@ -145,16 +155,25 @@
       <ul class="submenu">
         <li>
           <a href="{{ route('projects.index') }}" class="submenu-item">
-            <span class="submenu-text">Gestion des projets</span>
+             <i class="fas fa-cube submenu-icon"></i>
+            <span class="submenu-text ms-2">Gestion des projets</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('tasks.index') }}" class="submenu-item">
+             <i class="fas fa-tasks submenu-icon"></i>
+            <span class="submenu-text ms-2">Liste des taches</span>
           </a>
         </li>
         <li>
           <a href="{{ route('projects.calendar') }}" class="submenu-item">
-            <span class="submenu-text">Calendrier des projets</span>
+             <i class="fas fa-calendar-alt submenu-icon"></i>
+            <span class="submenu-text ms-2">Calendrier des projets</span>
           </a>
         </li>
       </ul>
     </li>
+    @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin'))
     <li class="has-submenu">
     <a href="#" class="menu-link">
         <span class="menu-icon">
@@ -338,6 +357,7 @@
         </li>
       </ul>
     </li>
+    @endif
     <li>
       <a class="menu-item" href="{{route('logout')}}" onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">

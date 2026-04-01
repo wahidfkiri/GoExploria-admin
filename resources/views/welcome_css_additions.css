@@ -1,0 +1,114 @@
+/* CSS pour les nouveaux menus de la top bar */
+
+/* Mega menu link simple pour Devises */
+.mega-menu-link-simple {
+    display: block;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    margin-bottom: 5px;
+}
+
+.mega-menu-link-simple:hover {
+    background: #3498db;
+    color: white;
+    transform: translateX(5px);
+}
+
+.mega-menu-link-simple i {
+    width: 20px;
+    text-align: center;
+}
+
+/* Mega menu Devises */
+.mega-menu-devises {
+    min-width: 200px !important;
+    padding: 15px !important;
+    grid-template-columns: 1fr !important;
+}
+
+/* Mega menu Inscription */
+.mega-menu-inscription {
+    width: 600px !important;
+    padding: 25px !important;
+}
+
+.inscription-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.inscription-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    text-align: center;
+}
+
+.inscription-item:hover {
+    background: #3498db;
+    color: white;
+    border-color: #2980b9;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+}
+
+.inscription-item i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.inscription-item span {
+    line-height: 1.3;
+}
+
+/* Mega menu Langue */
+.mega-menu-langue {
+    min-width: 400px !important;
+    padding: 30px !important;
+}
+
+/* Mega menu Panier */
+.mega-menu-panier {
+    min-width: 350px !important;
+    padding: 40px !important;
+}
+
+/* Mega menu Favoris */
+.mega-menu-favoris {
+    min-width: 350px !important;
+    padding: 40px !important;
+}
+
+/* Ajustements pour les boutons de la top bar */
+.item-btns .btn {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+}
+
+/* Animation pour les mega menus */
+.mega-menu-container:hover .mega-menu-devises,
+.mega-menu-container:hover .mega-menu-inscription,
+.mega-menu-container:hover .mega-menu-langue,
+.mega-menu-container:hover .mega-menu-panier,
+.mega-menu-container:hover .mega-menu-favoris {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}

@@ -1,0 +1,386 @@
+/**
+ * Destinations Vedette V2 - Styles personnalisés
+ * Bloc Destinations vedette - Layout horizontal scrollable
+ */
+
+.destinations-vedette-v2-section {
+    width: 100%;
+    padding: 60px 0;
+    background: #f8f9fa;
+    position: relative;
+}
+
+.destinations-vedette-v2-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+/* ===== HEADER - Titre et Bouton sur même ligne ===== */
+.destinations-vedette-v2-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.destinations-vedette-v2-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: 0.5px;
+    margin: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ===== BOUTON EN SAVOIR - Compact et aligné ===== */
+.destinations-vedette-v2-more-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: #d32f2f;
+    border: none;
+    border-radius: 40px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 12px rgba(211, 47, 47, 0.3);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.destinations-vedette-v2-more-btn:hover {
+    background: #b71c1c;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(211, 47, 47, 0.4);
+}
+
+.destinations-vedette-v2-plus-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #ffffff;
+    color: #d32f2f;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* ===== SCROLL HORIZONTAL ===== */
+.destinations-vedette-v2-scroll-wrapper {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.destinations-vedette-v2-scroll-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    padding-bottom: 15px;
+    scrollbar-width: thin;
+    scrollbar-color: #d32f2f #f0f0f0;
+}
+
+.destinations-vedette-v2-scroll-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.destinations-vedette-v2-scroll-container::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+.destinations-vedette-v2-scroll-container::-webkit-scrollbar-thumb {
+    background: #d32f2f;
+    border-radius: 4px;
+}
+
+.destinations-vedette-v2-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #b71c1c;
+}
+
+/* ===== CARTE DESTINATION - Largeur fixe pour scroll ===== */
+.destinations-vedette-v2-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+    max-width: 320px;
+    flex-shrink: 0;
+}
+
+.destinations-vedette-v2-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== IMAGE CARTE ===== */
+.destinations-vedette-v2-card-image {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+}
+
+.destinations-vedette-v2-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.destinations-vedette-v2-card:hover .destinations-vedette-v2-card-image img {
+    transform: scale(1.08);
+}
+
+/* ===== CONTENU CARTE ===== */
+.destinations-vedette-v2-card-content {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.destinations-vedette-v2-card-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.destinations-vedette-v2-card-description {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: #666666;
+    line-height: 1.5;
+    margin: 0;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ===== FOOTER CARTE ===== */
+.destinations-vedette-v2-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.destinations-vedette-v2-card-location {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #333333;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.destinations-vedette-v2-card-location::before {
+    content: '📍';
+    font-size: 13px;
+}
+
+.destinations-vedette-v2-card-rating {
+    font-size: 12px;
+    line-height: 1;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablettes */
+@media (max-width: 1024px) {
+    .destinations-vedette-v2-section {
+        padding: 40px 0;
+    }
+
+    .destinations-vedette-v2-container {
+        padding: 0 20px;
+    }
+
+    .destinations-vedette-v2-header {
+        gap: 15px;
+    }
+
+    .destinations-vedette-v2-title {
+        font-size: 18px;
+    }
+
+    .destinations-vedette-v2-more-btn {
+        font-size: 12px;
+        padding: 6px 16px;
+    }
+
+    .destinations-vedette-v2-plus-icon {
+        width: 22px;
+        height: 22px;
+        font-size: 17px;
+    }
+
+    .destinations-vedette-v2-card {
+        min-width: 260px;
+        max-width: 260px;
+    }
+
+    .destinations-vedette-v2-card-image {
+        height: 170px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .destinations-vedette-v2-section {
+        padding: 30px 0;
+    }
+
+    .destinations-vedette-v2-container {
+        padding: 0 15px;
+    }
+
+    .destinations-vedette-v2-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .destinations-vedette-v2-title {
+        font-size: 16px;
+        width: 100%;
+        white-space: normal;
+        line-height: 1.3;
+    }
+
+    .destinations-vedette-v2-more-btn {
+        font-size: 12px;
+        padding: 7px 16px;
+        align-self: flex-start;
+    }
+
+    .destinations-vedette-v2-plus-icon {
+        width: 20px;
+        height: 20px;
+        font-size: 16px;
+    }
+
+    .destinations-vedette-v2-scroll-container {
+        gap: 15px;
+        padding-bottom: 12px;
+    }
+
+    .destinations-vedette-v2-card {
+        min-width: 280px;
+        max-width: 280px;
+    }
+
+    .destinations-vedette-v2-card-image {
+        height: 180px;
+    }
+
+    .destinations-vedette-v2-card-content {
+        padding: 16px;
+    }
+
+    .destinations-vedette-v2-card-title {
+        font-size: 15px;
+    }
+
+    .destinations-vedette-v2-card-description {
+        font-size: 12px;
+    }
+
+    .destinations-vedette-v2-card-footer {
+        padding-top: 8px;
+    }
+
+    .destinations-vedette-v2-card-location {
+        font-size: 11px;
+    }
+
+    .destinations-vedette-v2-card-rating {
+        font-size: 11px;
+    }
+}
+
+/* Très petit mobile */
+@media (max-width: 480px) {
+    .destinations-vedette-v2-section {
+        padding: 25px 0;
+    }
+
+    .destinations-vedette-v2-container {
+        padding: 0 12px;
+    }
+
+    .destinations-vedette-v2-title {
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .destinations-vedette-v2-more-btn {
+        font-size: 11px;
+        padding: 6px 14px;
+    }
+
+    .destinations-vedette-v2-plus-icon {
+        width: 18px;
+        height: 18px;
+        font-size: 14px;
+    }
+
+    .destinations-vedette-v2-scroll-container {
+        gap: 12px;
+    }
+
+    .destinations-vedette-v2-card {
+        min-width: 260px;
+        max-width: 260px;
+    }
+
+    .destinations-vedette-v2-card-image {
+        height: 160px;
+    }
+
+    .destinations-vedette-v2-card-content {
+        padding: 14px;
+    }
+
+    .destinations-vedette-v2-card-title {
+        font-size: 14px;
+    }
+
+    .destinations-vedette-v2-card-description {
+        font-size: 11px;
+    }
+}

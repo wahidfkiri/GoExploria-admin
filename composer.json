@@ -37,23 +37,11 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/",
-            "Vendor\\Editor\\": "packages/vendor/editor/src",
-            "Vendor\\Gemini\\": "packages/vendor/gemini/src",
-            "Vendor\\Customer\\": "packages/vendor/customer/src",
-            "Vendor\\Website\\": "packages/vendor/website/src",
-            "Vendor\\Destination\\": "packages/vendor/destination/src",
-            "Vendor\\Administration\\": "packages/vendor/administration/src",
-            "Vendor\\GeoMap\\": "packages/vendor/geo-map/src",
-            "Vendor\\Activitie\\": "packages/vendor/activitie/src",
-            "Vendor\\Etablissement\\": "packages/vendor/etablissement/src",
-            "Vendor\\Setting\\": "packages/vendor/setting/src",
-            "Vendor\\Users\\": "packages/vendor/users/src",
-            "Vendor\\Theme\\": "packages/vendor/theme/src",
-            "Vendor\\Template\\": "packages/vendor/template/src",
-            "Vendor\\Project\\": "packages/vendor/project/src",
-            "Vendor\\Ecommerce\\": "packages/vendor/ecommerce/src"
-        }
+            "Database\\Seeders\\": "database/seeders/"
+        },
+        "files": [
+            "app/Helpers/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

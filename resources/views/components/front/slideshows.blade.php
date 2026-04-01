@@ -2,7 +2,7 @@
 <style>
     /* Styles personnalisés pour le carousel GalleryCarousel */
     .galleryCarousel-section {
-        margin: 30px 0;
+        margin: 60px 40px 0 40px;
         padding: 20px 0;
     }
     
@@ -360,6 +360,18 @@
             width: 55px;
             height: 55px;
             font-size: 20px;
+        }
+    }
+    
+    @media (max-width: 1024px) {
+        .galleryCarousel-section {
+            margin: 60px 20px 0 20px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .galleryCarousel-section {
+            margin: 60px 0 0 0;
         }
     }
     

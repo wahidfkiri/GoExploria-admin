@@ -86,7 +86,9 @@
                     <div class="modal-quick-contact">
                         <div class="quick-contact-item">
                             <i class="fas fa-phone-alt"></i>
-                            <span>(418) 525-7748</span>
+                            <a href="tel:4185257748" style="color: inherit; text-decoration: none;">
+                                <span>(418) 525-7748</span>
+                            </a>
                         </div>
                         <div class="quick-contact-item">
                             <i class="fas fa-clock"></i>
