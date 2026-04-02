@@ -274,22 +274,8 @@ Route::get('/health', function () {
 
 
 
-
-
-Route::get('/search', function () {
-    return null;
-})->name('search');
-
-
-Route::get('/test-email', function () {
-
-    $to = "wahidfkiri5@gmail.com";
-
-    Mail::raw('Ceci est un email de test envoyé depuis Laravel avec SMTP GoDaddy.', function ($message) use ($to) {
-        $message->to($to)
-                ->subject('Test SMTP GoDaddy Laravel')
-                ->from('info@goexploriabusiness.com', 'GoExploria Business');
-    });
-
-    return "Email envoyé avec succès";
+Route::prefix('pages')->name('pages.')->group(function () {
+    Route::get('/video-player', function() {
+        return view('home-v2.pages.video-player');
+    })->name('video-player');
 });

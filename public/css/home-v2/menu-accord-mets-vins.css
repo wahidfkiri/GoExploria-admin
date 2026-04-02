@@ -5,7 +5,6 @@
 
 /* Section principale */
 .menu-accord-section {
-    background: #1a1a1a;
     padding: 0;
     margin: 60px 0;
     position: relative;
@@ -13,8 +12,9 @@
 }
 
 .menu-accord-container {
-    max-width: 100%;
+    max-width: 1600px;
     margin: 0 auto;
+    width: 100%;
 }
 
 /* ============================================
@@ -46,6 +46,7 @@
     z-index: 2;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 40px;
     width: 100%;
 }
@@ -595,7 +596,7 @@
     .menu-accord-restaurant-large {
         height: 300px;
     }
-    
+
     .menu-accord-drink,
     .menu-accord-cooking,
     .menu-accord-chef,
@@ -615,5 +616,221 @@
     .menu-accord-wine-bottle-item {
         width: 70px;
         height: 200px;
+    }
+}
+
+/* ============================================
+   NEW STYLES (ADDED FOR MOCKUP ACCURACY)
+   ============================================ */
+
+.menu-accord-video-overlay {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: white;
+    font-size: 50px;
+    font-weight: 300;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.menu-accord-resto-cards-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 30px;
+    background: #fff;
+    -webkit-overflow-scrolling: touch;
+}
+
+.menu-accord-resto-card {
+    flex: 0 0 250px;
+    background: #fff;
+    border: 1px solid #ebebeb;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.menu-accord-resto-card-image-wrap {
+    position: relative;
+    height: 150px;
+}
+
+.menu-accord-resto-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.menu-accord-resto-card-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #e63946;
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.menu-accord-resto-card-body {
+    padding: 15px;
+}
+
+.menu-accord-resto-card-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.menu-accord-resto-card-desc {
+    font-size: 12px;
+    color: #777;
+    line-height: 1.4;
+    margin: 0 0 15px 0;
+    height: 50px;
+    overflow: hidden;
+}
+
+.menu-accord-resto-card-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #555;
+    align-items: center;
+}
+
+.menu-accord-cellar-salmon-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 500px;
+    background: #000;
+}
+
+.menu-accord-cellar-item {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-accord-cellar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.menu-accord-salmon-item {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+}
+
+.menu-accord-salmon-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.menu-accord-salmon-overlay-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-accord-salmon-wine {
+    height: 80%;
+    object-fit: contain;
+    margin-right: -40px;
+    z-index: 2;
+    transform: rotate(5deg);
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+}
+
+.menu-accord-bistro-logo-stamp {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border: 3px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.menu-accord-bistro-st-malo {
+    font-weight: bold;
+    font-size: 40px;
+    letter-spacing: 0px;
+}
+
+.menu-accord-dark-cards-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: #1a1a1a;
+}
+
+/* ============================================
+   RESPONSIVE LAYOUT FOR NEW BLOCKS
+   ============================================ */
+@media (max-width: 1024px) {
+    .menu-accord-dark-cards-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .menu-accord-cellar-salmon-row {
+        height: 400px;
+    }
+
+    .menu-accord-bistro-logo-stamp {
+        width: 150px;
+        height: 150px;
+        font-size: 24px;
+    }
+
+    .menu-accord-bistro-st-malo {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-accord-cellar-salmon-row {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .menu-accord-cellar-item {
+        height: 300px;
+    }
+
+    .menu-accord-salmon-item {
+        height: 300px;
+    }
+
+    .menu-accord-dark-cards-row {
+        grid-template-columns: 1fr;
+    }
+
+    .menu-accord-video-overlay {
+        font-size: 30px;
     }
 }

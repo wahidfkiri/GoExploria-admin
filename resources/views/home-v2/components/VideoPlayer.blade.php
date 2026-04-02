@@ -1,8 +1,14 @@
 {{-- Video Player Component - Galerie Multimédia Premium --}}
 <section class="video-player-v2-section">
     <div class="video-player-v2-container">
-        {{-- Header avec titre et icônes --}}
+        {{-- Header avec logo center top et boutons modifiés --}}
         <div class="video-player-v2-header">
+            {{-- Logo au centre --}}
+            <div class="video-player-v2-logo">
+                <img src="{{ asset('GO-EXPLORIA-MY-TUBE.png') }}" alt="Go Exploria" class="video-player-v2-brand-logo">
+            </div>
+
+            {{-- Titre original à gauche --}}
             <div class="video-player-v2-header-left">
                 <div class="video-player-v2-play-circle">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -11,28 +17,19 @@
                 </div>
                 <h1 class="video-player-v2-main-title">CRÉEZ DE VOTRE CHAÎNE VIDÉO GO EXPLORIA MYTUBE / DIFFUSION INTERNATIONAL ICI</h1>
             </div>
+
+            {{-- Boutons à droite --}}
             <div class="video-player-v2-header-right">
-                <button class="video-player-v2-icon-btn" title="Grille">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="14" width="7" height="7"></rect>
-                        <rect x="3" y="14" width="7" height="7"></rect>
+                <a href="" class="video-player-v2-upload-btn" id="uploadVideoBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
                     </svg>
-                </button>
-                <button class="video-player-v2-icon-btn" title="Images">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                        <polyline points="21 15 16 10 5 21"></polyline>
-                    </svg>
-                </button>
-                <button class="video-player-v2-icon-btn" title="Vidéos">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
-                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-                    </svg>
-                </button>
+                    <span>Upload</span>
+                </a>
+                <a href="{{route('pages.video-player')}}" class="events-vedette-v2-more-btn">
+                En savoir
+                <span class="events-vedette-v2-plus-icon">+</span>
+                </a>
             </div>
         </div>
 
