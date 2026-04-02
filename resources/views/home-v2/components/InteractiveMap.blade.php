@@ -14,7 +14,7 @@
                         <span class="interactive-map-v2-title-cta">CALL-TO-ACTION</span>
                     </h1>
                     <p class="interactive-map-v2-subtitle">Explorez nos lieux d'intérêt business et tourisme sur la carte</p>
-                    <a href="#" class="interactive-map-v2-link">VOIR LES INFO GÉOVIDÉOSMAKER ICI</a>
+                    <a href="{{url('map')}}" class="interactive-map-v2-link">VOIR LES INFO GÉOVIDÉOSMAKER ICI</a>
                 </div>
                 
                 {{-- Contenu écran gauche --}}
