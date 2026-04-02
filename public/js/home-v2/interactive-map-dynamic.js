@@ -32,6 +32,7 @@ class InteractiveMapV2Dynamic {
         this.closeDetailsScreen = document.getElementById('closeDetailsScreen');
         this.closeDetailsBtn = document.getElementById('closeDetailsBtn');
         this.itineraryBtn = document.getElementById('itineraryBtn');
+        this.hoverThumbnail = document.getElementById('hoverThumbnail'); // Ajoutez cette ligne
         
         this.init();
     }
