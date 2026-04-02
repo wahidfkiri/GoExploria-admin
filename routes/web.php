@@ -35,6 +35,9 @@ Route::get('/', [HomeV2Controller::class, 'index'])->name('home-v2');
 Route::get('welcome-2', function () {
     return view('welcome');
 });
+Route::get('/map', function () {
+    return view('home-v2.map');
+})->name('home-v2.map');
 
 // Nouvelle page d'accueil V2
 Route::get('/home-v2', [HomeV2Controller::class, 'index'])->name('home-v2');

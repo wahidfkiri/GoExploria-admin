@@ -24,39 +24,38 @@ class MapPointService
      * Récupérer tous les points actifs
      */
     public function getMapPoints(array $filters = [], bool $withRelations = false): Collection
-    {
-        $cacheKey = 'map_points.all.' . md5(json_encode($filters)) . '.' . ($withRelations ? 'with_relations' : 'simple');
-        
-        return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($filters, $withRelations) {
-            $query = MapPoint::active();
-            
-            // Filtres
-            if (isset($filters['category'])) {
-                $query->byCategory($filters['category']);
-            }
-            
-            if (isset($filters['featured'])) {
-                $query->featured();
-            }
-            
-            if (isset($filters['bounds'])) {
-                $query->inBounds($filters['bounds']['sw'], $filters['bounds']['ne']);
-            }
-            
-            if (isset($filters['ville'])) {
-                $query->where('ville', $filters['ville']);
-            }
-            
-            // Relations
-            if ($withRelations) {
-                $query->with(['images', 'videos', 'details', 'etablissement']);
-            }
-            
-            return $query->orderBy('is_featured', 'desc')
-                        ->orderBy('views', 'desc')
-                        ->get();
-        });
+{
+    $query = MapPoint::active();
+    
+    if (isset($filters['category'])) {
+        $query->byCategory($filters['category']);
     }
+    
+    if (isset($filters['featured'])) {
+        $query->featured();
+    }
+    
+    if (isset($filters['bounds'])) {
+        $query->inBounds($filters['bounds']['sw'], $filters['bounds']['ne']);
+    }
+    
+    if (isset($filters['ville'])) {
+        $query->where('ville', $filters['ville']);
+    }
+    
+    if ($withRelations) {
+        $query->with(['images', 'videos', 'details', 'etablissement']);
+    }
+    
+    // Debug — voir la requête SQL générée
+    \Log::info('MAP QUERY SQL: ' . $query->toSql());
+    \Log::info('MAP QUERY BINDINGS: ', $query->getBindings());
+    \Log::info('MAP QUERY COUNT: ' . $query->count());
+    
+    return $query->orderBy('is_featured', 'desc')
+                ->orderBy('views', 'desc')
+                ->get();
+}
 
     /**
      * Récupérer un point par ID

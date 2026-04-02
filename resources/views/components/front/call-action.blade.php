@@ -742,6 +742,7 @@ document.addEventListener('DOMContentLoaded', function() {
     openModalBtn.innerHTML = '<i class="fas fa-envelope me-1"></i> Contact';
     openModalBtn.style.position = 'fixed';
     openModalBtn.style.bottom = '20px';
+    openModalBtn.style.backgroundColor = '#3498db';
     openModalBtn.style.left = '20px';
     openModalBtn.style.zIndex = '9998';
     openModalBtn.style.padding = '10px 20px';

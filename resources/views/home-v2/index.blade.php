@@ -55,6 +55,9 @@
     {{-- Modal vidéo réutilisable pour toute la plateforme --}}
     @include('components.VideoModal')
     
+    @include('components.front.call-action')
+    @include('chat.index')
+    @include('home-v2.components.ButtonTop')
     @include('home-v2.components.Footer')
     
     <script src="{{ asset('js/home-v2/carousel.js') }}"></script>

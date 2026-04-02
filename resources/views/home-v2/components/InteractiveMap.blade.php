@@ -24,44 +24,47 @@
                     <div id="interactiveMap" class="interactive-map-v2-map"></div>
                     
                     {{-- Popup au hover sur marqueur --}}
-                    <div class="interactive-map-v2-hover-popup" id="hoverPopup" style="display: none;">
-                        <div class="interactive-map-v2-hover-video">
-                            <img src="" alt="Video" class="interactive-map-v2-hover-thumbnail" id="hoverThumbnail">
-                            <button class="interactive-map-v2-hover-play" data-action="play">
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="white">
-                                    <path d="M8 5v14l11-7z"/>
-                                </svg>
-                            </button>
-                            <div class="interactive-map-v2-hover-badge">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
-                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                                </svg>
-                                YouTube
-                            </div>
-                        </div>
-                        <div class="interactive-map-v2-hover-info">
-                            <p class="interactive-map-v2-hover-description" id="hoverDescription"></p>
-                            <div class="interactive-map-v2-hover-actions">
-                                <button class="interactive-map-v2-hover-btn details" data-action="details">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                                    </svg>
-                                    Voir détails
-                                </button>
-                                <button class="interactive-map-v2-hover-btn location" data-action="location">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                                    </svg>
-                                    Voir
-                                </button>
-                                <button class="interactive-map-v2-hover-btn youtube" data-action="youtube">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
-                                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+<div class="interactive-map-v2-hover-popup" id="hoverPopup" style="display: none;">
+    <div class="interactive-map-v2-hover-video">
+        <iframe
+            id="hoverIframe"
+            width="100%"
+            height="160"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&mute=1"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+        ></iframe>
+        <div class="interactive-map-v2-hover-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+            YouTube
+        </div>
+    </div>
+    <div class="interactive-map-v2-hover-info">
+        <p class="interactive-map-v2-hover-description" id="hoverDescription"></p>
+        <div class="interactive-map-v2-hover-actions">
+            <button class="interactive-map-v2-hover-btn details" data-action="details">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                </svg>
+                Voir détails
+            </button>
+            <button class="interactive-map-v2-hover-btn location" data-action="location">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                Voir
+            </button>
+            <button class="interactive-map-v2-hover-btn youtube" data-action="youtube">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
 
                     {{-- Légende des activités sur la carte --}}
                     <div class="interactive-map-v2-legend">
