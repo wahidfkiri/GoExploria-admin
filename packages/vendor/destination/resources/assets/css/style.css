@@ -1,0 +1,568 @@
+        /* ============================================
+           STYLE TOURISM MODERN - DESIGN BLEU/CYAN
+        ============================================ */
+       
+      
+
+        /* Layout deux colonnes */
+        .two-columns-layout {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .col-left {
+            flex: 8;
+            min-width: 0;
+        }
+
+        .col-right {
+            flex: 4;
+            min-width: 0;
+        }
+
+        /* ============================================
+           SLIDER VIDEOS SECTION
+        ============================================ */
+        .videos-slider-section {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .slider-header {
+            padding: 28px 32px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+            color: white;
+        }
+
+        .slider-header h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .slider-header p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 24px;
+            max-width: 80%;
+        }
+
+        .btn-explore {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 12px 28px;
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-explore:hover {
+            background: white;
+            color: #1e3a5f;
+            transform: translateY(-2px);
+        }
+
+        .video-slider-container {
+            padding: 30px 32px 40px;
+        }
+
+        .video-slider {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 10px 5px 20px;
+        }
+
+        .video-slider::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .video-slider::-webkit-scrollbar-track {
+            background: #e0e0e0;
+            border-radius: 10px;
+        }
+
+        .video-slider::-webkit-scrollbar-thumb {
+            background: #1e3a5f;
+            border-radius: 10px;
+        }
+
+        .video-card {
+            flex: 0 0 340px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .video-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.25);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .video-thumbnail::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 56px;
+            height: 56px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1e3a5f;
+            font-size: 22px;
+            transition: all 0.3s ease;
+        }
+
+        .video-card:hover .play-icon {
+            transform: translate(-50%, -50%) scale(1.15);
+        }
+
+        .video-info {
+            padding: 20px;
+        }
+
+        .video-info h4 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+
+        .video-info p {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        /* ============================================
+           MAP CARD - STYLE TOURISM (BLEU/CYAN)
+        ============================================ */
+        .map-card-modern {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .map-header {
+            padding: 24px 28px;
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: white;
+        }
+
+        .map-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .map-header p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 8px;
+        }
+
+        .map-filters {
+            padding: 20px 28px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .filter-group select {
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2,132,199,0.1);
+        }
+
+        .btn-locate {
+            background: #0284c7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-locate:hover {
+            background: #0369a1;
+            transform: translateY(-2px);
+        }
+
+        .results-count {
+            margin-left: auto;
+            font-size: 13px;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .results-count span {
+            color: #0284c7;
+            font-weight: 800;
+        }
+
+        .map-wrapper {
+            height: 450px;
+        }
+
+        #interactiveMap {
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Marqueurs personnalisés avec images en cercle */
+        .custom-marker {
+            background: transparent;
+        }
+
+        .marker-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #0284c7;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .marker-circle:hover {
+            transform: scale(1.1);
+            border-color: #0ea5e9;
+        }
+
+        .marker-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .marker-circle i {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: white;
+            font-size: 20px;
+        }
+
+        .destinations-list {
+            padding: 20px 28px;
+            max-height: 350px;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+
+        .destinations-list h4 {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .destination-item {
+            display: flex;
+            gap: 15px;
+            padding: 14px;
+            border-radius: 16px;
+            background: white;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .destination-item:hover {
+            border-color: #0284c7;
+            transform: translateX(8px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .destination-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .destination-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .destination-icon i {
+            font-size: 24px;
+            color: #0284c7;
+        }
+
+        .destination-details {
+            flex: 1;
+        }
+
+        .destination-details h5 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #1e293b;
+        }
+
+        .destination-details p {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* ============================================
+           HISTORIQUE SECTION
+        ============================================ */
+        .historique-section {
+            background: white;
+            border-radius: 28px;
+            padding: 32px;
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.08);
+        }
+
+        .historique-section h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .historique-section h3 i {
+            color: #0284c7;
+        }
+
+        .historique-content {
+            color: #475569;
+            line-height: 1.8;
+        }
+
+        .historique-content p {
+            margin-bottom: 18px;
+        }
+
+        /* ============================================
+           SLIDER PUBLICITAIRE MULTI-VIDEOS
+        ============================================ */
+        .ads-slider-section {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .ads-header {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .ads-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .swiper {
+            width: 100%;
+            padding: 24px;
+        }
+
+        .ad-slide {
+            background: #f8fafc;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .ad-slide:hover {
+            transform: translateY(-5px);
+        }
+
+        .ad-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .ad-play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .ad-slide:hover .ad-play-overlay {
+            opacity: 1;
+        }
+
+        .ad-content {
+            padding: 20px;
+        }
+
+        .ad-content h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+
+        .ad-content p {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 15px;
+        }
+
+        .ad-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0284c7;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .ad-link:hover {
+            gap: 12px;
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: #0284c7;
+            background: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .swiper-button-next:after,
+        .swiper-button-prev:after {
+            font-size: 18px;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: #0284c7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .two-columns-layout {
+                flex-direction: column;
+            }
+            .main-content {
+                padding: 20px;
+            }
+            .slider-header p {
+                max-width: 100%;
+            }
+            .video-card {
+                flex: 0 0 260px;
+            }
+            .map-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .results-count {
+                margin-left: 0;
+                text-align: center;
+            }
+            .map-wrapper {
+                height: 350px;
+            }
+        }

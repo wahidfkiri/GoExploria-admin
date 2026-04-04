@@ -152,6 +152,45 @@
                     </div>
                 </div>
 
+                {{-- NOUVEAU : 6 Boutons Icônes FontAwesome Rapides --}}
+                <div class="search-bar-v2-quick-links">
+                    <div class="quick-link-item info-trigger" id="infoTrigger">
+                        <div class="icon-circle icon-standard">
+                            <i class="fas fa-info"></i>
+                        </div>
+                    </div>
+                    
+                    <a href="{{ url('/deals') }}" class="quick-link-item">
+                        <div class="icon-circle icon-standard">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url('/offres') }}" class="quick-link-item">
+                        <div class="icon-circle icon-standard">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url('/nouvelles') }}" class="quick-link-item">
+                        <div class="icon-circle icon-standard">
+                            <i class="fas fa-newspaper"></i>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url('/must-see') }}" class="quick-link-item">
+                        <div class="icon-circle icon-standard">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url('/aventures') }}" class="quick-link-item">
+                        <div class="icon-circle icon-standard">
+                            <i class="fas fa-binoculars"></i>
+                        </div>
+                    </a>
+                </div>
+
                 {{-- Logo Plan-n-go --}}
                 <div class="search-bar-v2-brand">
                     <img src="{{ asset('plan-n-go.png') }}" alt="PLAN-N-GO" class="search-bar-v2-logo">
@@ -159,12 +198,74 @@
             </div>
         </div>
         
-        <button class="hero-scroll-btn" aria-label="Défiler vers le bas">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 5v14"></path>
-                <path d="m19 12-7 7-7-7"></path>
-            </svg>
-        </button>
     </div>
-
 </section>
+
+{{-- INFO MEGA MENU - Hors de tout overflow parent pour un positionnement correct --}}
+@include('home-v2.components.InfoMegaMenu')
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const infoBtn = document.getElementById('infoTrigger');
+    const megaMenu = document.getElementById('infoMegaMenuV2');
+    if (!infoBtn || !megaMenu) return;
+
+    // Fonction pour positionner le menu dynamiquement sous le bouton sur desktop
+    function positionMegaMenu() {
+        if (window.innerWidth > 1025 && megaMenu.classList.contains('active')) {
+            const rect = infoBtn.getBoundingClientRect();
+            megaMenu.style.top = (rect.bottom + 15) + 'px';
+        } else {
+            megaMenu.style.top = ''; // Laisse CSS gérer sur mobile
+        }
+    }
+
+    // Toggle au clic
+    infoBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const isOpen = megaMenu.classList.contains('active');
+        megaMenu.classList.toggle('active', !isOpen);
+        infoBtn.classList.toggle('active', !isOpen);
+        if (!isOpen) positionMegaMenu();
+    });
+
+    // Gestion du survol dynamique sur desktop (avec pont temporel pour l'écart de 15px)
+    let hoverTimeout;
+    const handleMouseLeave = () => {
+        if (window.innerWidth > 1025) {
+            hoverTimeout = setTimeout(() => {
+                if (!megaMenu.matches(':hover') && !infoBtn.matches(':hover')) {
+                    megaMenu.classList.remove('active');
+                    infoBtn.classList.remove('active');
+                }
+            }, 250); // Espace de tolérance pour traverser le gap de 15px
+        }
+    };
+
+    const handleMouseEnter = () => {
+        if (window.innerWidth > 1025) {
+            clearTimeout(hoverTimeout);
+            megaMenu.classList.add('active');
+            infoBtn.classList.add('active');
+            positionMegaMenu();
+        }
+    };
+
+    infoBtn.addEventListener('mouseenter', handleMouseEnter);
+    infoBtn.addEventListener('mouseleave', handleMouseLeave);
+    megaMenu.addEventListener('mouseenter', handleMouseEnter);
+    megaMenu.addEventListener('mouseleave', handleMouseLeave);
+
+    // Fermer si clic ailleurs (fonctionne car clics en dehors, incluant la marge vide au dessus sur mobile)
+    document.addEventListener('click', function(e) {
+        if (!infoBtn.contains(e.target) && !megaMenu.contains(e.target)) {
+            megaMenu.classList.remove('active');
+            infoBtn.classList.remove('active');
+        }
+    });
+
+    window.addEventListener('resize', positionMegaMenu);
+    window.addEventListener('scroll', positionMegaMenu);
+});
+</script>

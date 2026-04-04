@@ -2,13 +2,22 @@
 <section class="restaurants-vedette-v2-section">
     <div class="restaurants-vedette-v2-container">
         {{-- Header avec titre et bouton sur même ligne --}}
+        {{-- Header avec filtre à gauche, titre au centre et bouton à droite --}}
         <div class="restaurants-vedette-v2-header">
-            <h2 class="restaurants-vedette-v2-title">RESTAURANTS VEDETTES....AJOUTER LES AUTRE THÉMATIQUE VEDETTE AUX BESOINS</h2>
+            <h2 class="restaurants-vedette-v2-title">RESTAURANTS VEDETTES</h2>
             
-            <button class="restaurants-vedette-v2-more-btn">
-                En savoir
-                <span class="restaurants-vedette-v2-plus-icon">+</span>
-            </button>
+            <div class="restaurants-vedette-v2-header-controls">
+                <div class="restaurants-vedette-v2-filters">
+                    <span class="filter-label">Filtre par région :</span>
+                    <button class="restaurants-vedette-v2-filter-btn active" data-filter="all">Tout</button>
+                    <button class="restaurants-vedette-v2-filter-btn" data-filter="montreal">Montréal</button>
+                    <button class="restaurants-vedette-v2-filter-btn" data-filter="quebec">Québec</button>
+                </div>
+
+                <button class="restaurants-vedette-v2-more-btn">
+                    En savoir <span class="restaurants-vedette-v2-plus-icon">+</span>
+                </button>
+            </div>
         </div>
 
         {{-- Scroll horizontal des restaurants --}}

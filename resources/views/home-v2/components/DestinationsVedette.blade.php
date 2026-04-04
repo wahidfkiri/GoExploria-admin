@@ -1,14 +1,25 @@
 {{-- Destinations Vedette Component - Destinations vedette --}}
 <section class="destinations-vedette-v2-section">
     <div class="destinations-vedette-v2-container">
-        {{-- Header avec titre et bouton sur même ligne --}}
-        <div class="destinations-vedette-v2-header">
-            <h2 class="destinations-vedette-v2-title">DESTINATIONS VEDETTES</h2>
+        {{-- BLOC DESIGN BOSSE --}}
+        <div class="design-bosse-block">
+            <h2 class="design-bosse-title">DESTINATIONS VEDETTES</h2>
             
-            <button class="destinations-vedette-v2-more-btn">
-                En savoir
-                <span class="destinations-vedette-v2-plus-icon">+</span>
-            </button>
+            <div class="design-bosse-controls">
+                <div class="destinations-vedette-v2-filters">
+                    <span class="design-bosse-label">
+                        <span class="bosse-picto">🌍</span> Filtre par région :
+                    </span>
+                    <button class="destinations-vedette-v2-filter-btn active" data-filter="all">Toutes</button>
+                    <button class="destinations-vedette-v2-filter-btn" data-filter="nature">Plein air</button>
+                    <button class="destinations-vedette-v2-filter-btn" data-filter="culture">Culture</button>
+                    <button class="destinations-vedette-v2-filter-btn" data-filter="aventure">Aventure</button>
+                </div>
+
+                <a href="#" class="design-bosse-more-btn">
+                    En savoir plus <span class="destinations-vedette-v2-plus-icon">+</span>
+                </a>
+            </div>
         </div>
 
         {{-- Scroll horizontal des destinations --}}

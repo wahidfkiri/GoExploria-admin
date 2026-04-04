@@ -1,836 +1,171 @@
 /* ============================================
-   MENU ACCORD METS VINS - Styles personnalisés
-   Bloc avec header, grille d'images, plats et vins
+   ACCORDS METS & VINS V4 - High Performance Business Layout
+   Layout: Gauche (Text + Video Slider + Image Slider) | Droite (6 Cards Grid) | Footer (Carousel Slider)
    ============================================ */
 
-/* Section principale */
-.menu-accord-section {
-    padding: 0;
-    margin: 60px 0;
+.mets-vins-v4-section {
+    padding: 80px 0;
+    margin: 60px 40px;
+    background: #0f172a;
+    border-radius: 48px;
     position: relative;
     overflow: hidden;
-}
-
-.menu-accord-container {
-    max-width: 1600px;
-    margin: 0 auto;
-    width: 100%;
-}
-
-/* ============================================
-   HEADER avec image de fond
-   ============================================ */
-.menu-accord-header {
-    position: relative;
-    height: 180px;
-    background: url('/menu-accord/header-bg.jpg') center/cover no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 60px;
-    overflow: hidden;
-}
-
-.menu-accord-header-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 1;
-}
-
-.menu-accord-header-content {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 40px;
-    width: 100%;
-}
-
-.menu-accord-subtitle {
-    font-size: 18px;
-    font-weight: 700;
     color: #ffffff;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin: 0;
-    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.menu-accord-title {
+.mets-vins-v4-container {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.mets-vins-v4-main-content {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 60px;
+    align-items: stretch; /* Les colonnes auront la même hauteur */
+}
+
+/* --- Colonne GAUCHE : Text + Duo Sliders --- */
+.mets-vins-v4-left-col {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin: 0;
-    flex: 1;
+    gap: 30px;
+    height: 100%;
 }
 
-.menu-accord-title-delicious {
-    font-family: 'Brush Script MT', cursive;
-    font-size: 72px;
-    font-weight: 400;
-    color: #ffffff;
-    line-height: 1;
-    margin-bottom: -10px;
-}
-
-.menu-accord-title-menu {
-    font-family: 'Brush Script MT', cursive;
-    font-size: 72px;
-    font-weight: 400;
+.mets-vins-v4-badge {
+    display: inline-flex;
+    padding: 8px 20px;
+    background: rgba(212, 175, 55, 0.1);
     color: #d4af37;
-    line-height: 1;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    width: fit-content;
 }
 
-.menu-accord-badge {
-    position: absolute;
-    left: 50%;
-    bottom: -20px;
-    transform: translateX(-50%);
-    background: #d4af37;
-    padding: 8px 40px;
-    clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
-    z-index: 3;
+.mets-vins-v4-title {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.1;
 }
 
-.menu-accord-badge-text {
+.mets-vins-v4-title span { color: #d4af37; display: block; }
+
+.mets-vins-v4-desc {
     font-size: 16px;
-    font-weight: 700;
-    color: #1a1a1a;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    color: #94a3b8;
+    line-height: 1.6;
 }
 
-.menu-accord-resto {
-    font-size: 18px;
-    font-weight: 700;
-    color: #ffffff;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    white-space: nowrap;
-}
-
-/* ============================================
-   GRILLE D'IMAGES
-   ============================================ */
-.menu-accord-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    background: #000000;
-}
-
-.menu-accord-item {
+/* Sliders */
+.mets-vins-v4-slider-box {
     position: relative;
+    flex: 1; /* Remplit l'espace restant pour s'aligner à droite */
+    min-height: 340px; /* Hauteur augmentée pour équilibrer la grille des 6 produits */
+    border-radius: 24px;
     overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-.menu-accord-restaurant-large {
-    grid-row: span 1;
-    height: 520px;
+.mets-vins-v4-slider-box video, 
+.mets-vins-v4-slider-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+    transition: opacity 1s ease-in-out;
 }
 
-.menu-accord-column-right {
+/* --- Colonne DROITE : 6 Cartes de Produits (2 par ligne) --- */
+.mets-vins-v4-right-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 0;
+    gap: 25px;
 }
 
-.menu-accord-drink,
-.menu-accord-cooking,
-.menu-accord-chef,
-.menu-accord-dessert {
-    height: 260px;
-}
-
-.menu-accord-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-}
-
-.menu-accord-item:hover .menu-accord-image {
-    transform: scale(1.05);
-}
-
-/* ============================================
-   SECTION PLATS ET BOISSONS
-   ============================================ */
-.menu-accord-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    background: #1a1a1a;
-}
-
-/* Plat (Schnitzel) */
-.menu-accord-dish {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 0;
-    background: #1a1a1a;
-    border-right: 1px solid #333;
-}
-
-.menu-accord-dish-image {
-    position: relative;
-    overflow: hidden;
-}
-
-.menu-accord-dish-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.menu-accord-dish-content {
-    padding: 40px;
+.mets-vins-v4-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 20px;
+    transition: 0.3s;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    position: relative;
 }
 
-.menu-accord-dish-name {
-    font-size: 28px;
-    font-weight: 700;
-    color: #d4af37;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin: 0 0 20px 0;
-    position: relative;
+.mets-vins-v4-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: #d4af37;
+    transform: translateY(-8px);
 }
 
-.menu-accord-dish-name::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: -10px;
-    width: 60px;
-    height: 3px;
-    background: #d4af37;
-}
-
-.menu-accord-dish-description {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #ffffff;
-    margin: 0 0 12px 0;
-}
-
-.menu-accord-dish-description-en {
-    font-size: 13px;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.7);
-    font-style: italic;
-    margin: 0 0 20px 0;
-}
-
-/* Boisson (Riesling) */
-.menu-accord-beverage {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 0;
-    background: #1a1a1a;
-}
-
-.menu-accord-beverage-content {
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.menu-accord-beverage-category {
-    font-size: 24px;
-    font-weight: 700;
-    color: #d4af37;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin: 0 0 10px 0;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.menu-accord-beverage-icon {
-    font-size: 32px;
-}
-
-.menu-accord-beverage-subtitle {
-    font-size: 16px;
-    font-weight: 400;
-    color: rgba(212, 175, 55, 0.8);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.menu-accord-beverage-divider {
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, #d4af37 0%, transparent 100%);
-    margin: 0 0 20px 0;
-}
-
-.menu-accord-beverage-name {
-    font-size: 22px;
-    font-weight: 700;
-    color: #ffffff;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin: 0 0 16px 0;
-}
-
-.menu-accord-beverage-description {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #ffffff;
-    margin: 0 0 12px 0;
-}
-
-.menu-accord-beverage-description-en {
-    font-size: 13px;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.7);
-    font-style: italic;
-    margin: 0 0 20px 0;
-}
-
-.menu-accord-beverage-image {
-    position: relative;
-    background: #0a0a0a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 30px;
-}
-
-.menu-accord-wine-bottle {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 10px 30px rgba(212, 175, 55, 0.3));
-}
-
-/* Prix */
-.menu-accord-price {
-    display: inline-block;
-    font-size: 24px;
-    font-weight: 700;
-    color: #d4af37;
-    background: rgba(212, 175, 55, 0.1);
-    padding: 8px 20px;
-    border-radius: 4px;
-    border: 2px solid #d4af37;
-}
-
-/* ============================================
-   SECTION BOUTEILLES DE VIN EN BAS
-   ============================================ */
-.menu-accord-wine-bottles {
-    position: relative;
-    height: 400px;
-    background: url('/menu-accord/wine-bottles-bg.jpg') center/cover no-repeat;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
+.card-thumb {
+    height: 140px;
+    border-radius: 16px;
     overflow: hidden;
-    margin-top: 0;
+    margin-bottom: 15px;
 }
 
-.menu-accord-wine-bottles-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
-    z-index: 1;
-}
+.card-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
-.menu-accord-wine-bottles-content {
+.card-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.card-info { font-size: 13px; color: #94a3b8; line-height: 1.4; flex: 1; }
+.card-price { font-size: 20px; font-weight: 800; color: #d4af37; margin-top: 15px; }
+
+/* --- FOOTER : Product Carousel --- */
+.mets-vins-v4-footer {
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.05);
     position: relative;
-    z-index: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    width: 100%;
-    padding: 40px;
 }
 
-.menu-accord-wine-bottle-item {
-    flex: 0 0 auto;
-    width: 120px;
-    height: 320px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.menu-accord-bottle-image {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.7));
-    transition: all 0.4s ease;
-}
-
-.menu-accord-wine-bottle-item:hover .menu-accord-bottle-image {
-    transform: translateY(-15px) scale(1.1);
-    filter: drop-shadow(0 12px 30px rgba(212, 175, 55, 0.5));
-}
-
-/* ============================================
-   RESPONSIVE - TABLETTE
-   ============================================ */
-@media (max-width: 1024px) {
-    .menu-accord-header {
-        height: 150px;
-        padding: 0 40px;
-    }
-
-    .menu-accord-header-content {
-        gap: 30px;
-    }
-
-    .menu-accord-subtitle {
-        font-size: 16px;
-    }
-
-    .menu-accord-title-delicious,
-    .menu-accord-title-menu {
-        font-size: 56px;
-    }
-
-    .menu-accord-resto {
-        font-size: 16px;
-    }
-
-    .menu-accord-dish,
-    .menu-accord-beverage {
-        grid-template-columns: 250px 1fr;
-    }
-
-    .menu-accord-dish-content,
-    .menu-accord-beverage-content {
-        padding: 30px;
-    }
-
-    .menu-accord-wine-bottles {
-        height: 350px;
-    }
-
-    .menu-accord-wine-bottles-content {
-        gap: 25px;
-        padding: 30px;
-    }
-
-    .menu-accord-wine-bottle-item {
-        width: 100px;
-        height: 280px;
-    }
-}
-
-/* ============================================
-   RESPONSIVE - MOBILE
-   ============================================ */
-@media (max-width: 768px) {
-    .menu-accord-section {
-        margin: 40px 0;
-    }
-
-    /* Header mobile */
-    .menu-accord-header {
-        height: auto;
-        padding: 30px 20px;
-    }
-
-    .menu-accord-header-content {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-    }
-
-    .menu-accord-subtitle {
-        font-size: 14px;
-        order: 1;
-    }
-
-    .menu-accord-title {
-        order: 2;
-    }
-
-    .menu-accord-title-delicious,
-    .menu-accord-title-menu {
-        font-size: 42px;
-    }
-
-    .menu-accord-badge {
-        position: relative;
-        left: 0;
-        bottom: 0;
-        transform: none;
-        order: 3;
-        margin-top: 10px;
-    }
-
-    .menu-accord-badge-text {
-        font-size: 12px;
-    }
-
-    .menu-accord-resto {
-        font-size: 14px;
-        order: 4;
-    }
-
-    /* Grille mobile - tout en vertical */
-    .menu-accord-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .menu-accord-restaurant-large {
-        height: 300px;
-    }
-
-    .menu-accord-column-right {
-        grid-template-rows: auto;
-        grid-template-columns: 1fr;
-    }
-
-    .menu-accord-drink,
-    .menu-accord-cooking,
-    .menu-accord-chef {
-        height: 250px;
-    }
-
-    /* Plats et boissons en vertical */
-    .menu-accord-details {
-        grid-template-columns: 1fr;
-    }
-
-    .menu-accord-dish,
-    .menu-accord-beverage {
-        grid-template-columns: 1fr;
-        border-right: none;
-        border-bottom: 1px solid #333;
-    }
-
-    .menu-accord-dish-image,
-    .menu-accord-beverage-image {
-        height: 250px;
-    }
-
-    .menu-accord-dish-content,
-    .menu-accord-beverage-content {
-        padding: 25px 20px;
-    }
-
-    .menu-accord-dish-name {
-        font-size: 22px;
-    }
-
-    .menu-accord-beverage-category {
-        font-size: 20px;
-    }
-
-    .menu-accord-beverage-name {
-        font-size: 18px;
-    }
-
-    .menu-accord-dish-description,
-    .menu-accord-beverage-description {
-        font-size: 13px;
-    }
-
-    .menu-accord-dish-description-en,
-    .menu-accord-beverage-description-en {
-        font-size: 12px;
-    }
-
-    .menu-accord-price {
-        font-size: 20px;
-        padding: 6px 16px;
-    }
-
-    /* Bouteilles de vin mobile */
-    .menu-accord-wine-bottles {
-        height: 300px;
-    }
-
-    .menu-accord-wine-bottles-content {
-        gap: 15px;
-        padding: 20px 15px;
-        overflow-x: auto;
-        justify-content: flex-start;
-        align-items: center;
-    }
-
-    .menu-accord-wine-bottle-item {
-        width: 80px;
-        height: 240px;
-        flex-shrink: 0;
-    }
-}
-
-/* ============================================
-   RESPONSIVE - TRÈS PETIT MOBILE
-   ============================================ */
-@media (max-width: 480px) {
-    .menu-accord-header {
-        padding: 20px 15px;
-    }
-
-    .menu-accord-title-delicious,
-    .menu-accord-title-menu {
-        font-size: 36px;
-    }
-
-    .menu-accord-restaurant-large {
-        height: 300px;
-    }
-
-    .menu-accord-drink,
-    .menu-accord-cooking,
-    .menu-accord-chef,
-    .menu-accord-dessert {
-        height: 150px;
-    }
-
-    .menu-accord-dish-content,
-    .menu-accord-beverage-content {
-        padding: 20px 15px;
-    }
-
-    .menu-accord-wine-bottles {
-        height: 250px;
-    }
-
-    .menu-accord-wine-bottle-item {
-        width: 70px;
-        height: 200px;
-    }
-}
-
-/* ============================================
-   NEW STYLES (ADDED FOR MOCKUP ACCURACY)
-   ============================================ */
-
-.menu-accord-video-overlay {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    color: white;
-    font-size: 50px;
-    font-weight: 300;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    z-index: 10;
-}
-
-.menu-accord-resto-cards-container {
+.footer-carousel-track {
     display: flex;
     overflow-x: auto;
-    gap: 20px;
-    padding: 30px;
-    background: #fff;
-    -webkit-overflow-scrolling: touch;
+    gap: 30px;
+    padding-bottom: 20px;
+    scrollbar-width: none;
 }
 
-.menu-accord-resto-card {
-    flex: 0 0 250px;
-    background: #fff;
-    border: 1px solid #ebebeb;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
+.footer-carousel-track::-webkit-scrollbar { display: none; }
 
-.menu-accord-resto-card-image-wrap {
-    position: relative;
-    height: 150px;
-}
-
-.menu-accord-resto-card-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.menu-accord-resto-card-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #e63946;
-    color: #fff;
-    font-size: 10px;
-    font-weight: bold;
-    padding: 4px 8px;
-    border-radius: 4px;
-    text-transform: uppercase;
-}
-
-.menu-accord-resto-card-body {
+.footer-card {
+    min-width: 320px;
+    background: #1e293b;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
     padding: 15px;
+    gap: 15px;
+    border: 1px solid rgba(255,255,255,0.03);
 }
 
-.menu-accord-resto-card-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0 0 10px 0;
-    color: #333;
-}
-
-.menu-accord-resto-card-desc {
-    font-size: 12px;
-    color: #777;
-    line-height: 1.4;
-    margin: 0 0 15px 0;
-    height: 50px;
-    overflow: hidden;
-}
-
-.menu-accord-resto-card-footer {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: #555;
-    align-items: center;
-}
-
-.menu-accord-cellar-salmon-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    height: 500px;
-    background: #000;
-}
-
-.menu-accord-cellar-item {
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.menu-accord-cellar-img {
-    width: 100%;
-    height: 100%;
+.footer-card img {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
     object-fit: cover;
 }
 
-.menu-accord-salmon-item {
-    position: relative;
-    overflow: hidden;
-    background: #fff;
-}
+.footer-card h4 { font-size: 15px; margin-bottom: 4px; }
+.footer-card p { font-size: 12px; color: #d4af37; font-weight: 700; }
 
-.menu-accord-salmon-bg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.menu-accord-salmon-overlay-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.menu-accord-salmon-wine {
-    height: 80%;
-    object-fit: contain;
-    margin-right: -40px;
-    z-index: 2;
-    transform: rotate(5deg);
-    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
-}
-
-.menu-accord-bistro-logo-stamp {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    border: 3px solid rgba(255, 255, 255, 0.7);
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 32px;
-    font-weight: 300;
-    letter-spacing: 2px;
-    z-index: 1;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(4px);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.menu-accord-bistro-st-malo {
-    font-weight: bold;
-    font-size: 40px;
-    letter-spacing: 0px;
-}
-
-.menu-accord-dark-cards-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    background: #1a1a1a;
-}
-
-/* ============================================
-   RESPONSIVE LAYOUT FOR NEW BLOCKS
-   ============================================ */
-@media (max-width: 1024px) {
-    .menu-accord-dark-cards-row {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .menu-accord-cellar-salmon-row {
-        height: 400px;
-    }
-
-    .menu-accord-bistro-logo-stamp {
-        width: 150px;
-        height: 150px;
-        font-size: 24px;
-    }
-
-    .menu-accord-bistro-st-malo {
-        font-size: 28px;
-    }
+/* Responsive */
+@media (max-width: 1100px) {
+    .mets-vins-v4-main-content { grid-template-columns: 1fr; }
+    .mets-vins-v4-left-col { order: 1; }
+    .mets-vins-v4-right-grid { order: 2; }
 }
 
 @media (max-width: 768px) {
-    .menu-accord-cellar-salmon-row {
-        grid-template-columns: 1fr;
-        height: auto;
-    }
-
-    .menu-accord-cellar-item {
-        height: 300px;
-    }
-
-    .menu-accord-salmon-item {
-        height: 300px;
-    }
-
-    .menu-accord-dark-cards-row {
-        grid-template-columns: 1fr;
-    }
-
-    .menu-accord-video-overlay {
-        font-size: 30px;
-    }
+    .mets-vins-v4-section { margin: 30px 10px; border-radius: 24px; padding: 50px 0; }
+    .mets-vins-v4-container { padding: 0 20px; }
+    .mets-vins-v4-right-grid { grid-template-columns: 1fr; }
+    .mets-vins-v4-title { font-size: 32px; }
 }

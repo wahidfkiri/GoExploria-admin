@@ -1,307 +1,118 @@
-<?php
+<?php 
 
 namespace Vendor\Destination\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Destination;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+use App\Models\Country;
+use App\Models\Province;
+use App\Models\Slider;
+use App\Models\MapPoint;
+
 
 class DestinationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
-    {
-        // Récupérer les paramètres de recherche et de filtrage
-        $search = $request->input('search', '');
-        $status = $request->input('status', '');
-        $perPage = $request->input('per_page', 10);
-
-        // Construire la requête
-        $query = Destination::query();
-
-        // Appliquer les filtres
-        if (!empty($search)) {
-            $query->search($search);
-        }
-
-        if (!empty($status)) {
-            if ($status === 'active') {
-                $query->where('is_active', true);
-            } elseif ($status === 'inactive') {
-                $query->where('is_active', false);
-            } 
-            elseif ($status === 'deleted') {
-                $query->onlyTrashed();
-            }
-        }
-
-        // Trier par date de création
-        $query->orderBy('created_at', 'desc');
-
-        // Si c'est une requête AJAX, retourner JSON
-        if ($request->ajax()) {
-            $destinations = $query->paginate($perPage);
-            
-            return response()->json([
-                'success' => true,
-                'data' => $destinations->items(),
-                'current_page' => $destinations->currentPage(),
-                'last_page' => $destinations->lastPage(),
-                'per_page' => $destinations->perPage(),
-                'total' => $destinations->total(),
-                'next_page_url' => $destinations->nextPageUrl(),
-                'prev_page_url' => $destinations->previousPageUrl(),
-            ]);
-        }
-
-        // Pour les requêtes non-AJAX, retourner la vue
-        $destinations = $query->paginate($perPage);
-        return view('destination::index', compact('destinations', 'search', 'status'));
+    public function countrie(Request $request, $code)
+{
+    $country = Country::where('code', $code)->firstOrFail();
+    $provinces = $country->provinces()->get();
+    
+    $sliders = Slider::active()
+        ->videos()
+        ->ordered()
+        ->get();
+    
+    // Récupérer les points de la carte pour ce pays
+    // Soit par la relation directe, soit par les provinces du pays
+    $mapPoints = collect(); // Collection vide par défaut
+    
+    // Méthode 1: Si MapPoint a une relation avec Province
+    if (method_exists(MapPoint::class, 'province')) {
+        $provinceIds = $provinces->pluck('id')->toArray();
+        $mapPoints = MapPoint::active()
+            ->whereHas('province', function($query) use ($provinceIds) {
+                $query->whereIn('id', $provinceIds);
+            })
+            ->with(['images', 'videos'])
+            ->get();
+    } 
+    // Méthode 2: Si MapPoint a une relation directe avec Country
+    elseif (method_exists(MapPoint::class, 'country')) {
+        $mapPoints = MapPoint::active()
+            ->where('country_id', $country->id)
+            ->with(['images', 'videos'])
+            ->get();
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        // Validation
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
-            'description' => 'nullable|string',
-            'is_active' => 'boolean',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
+    // Méthode 3: Récupérer par coordonnées géographiques (dans les limites du pays)
+    else {
+        // Définir les limites approximatives du pays
+        $bounds = $this->getCountryBounds($country);
+        if ($bounds) {
+            $mapPoints = MapPoint::active()
+                ->whereBetween('latitude', [$bounds['min_lat'], $bounds['max_lat']])
+                ->whereBetween('longitude', [$bounds['min_lng'], $bounds['max_lng']])
+                ->with(['images', 'videos'])
+                ->get();
         }
-
-        // Traitement de l'image
-      //  $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('destinations', 'public');
-        }
-
-        // Création de la destination
-        $destination = Destination::create([
-            'name' => $request->name,
-            'image' => $imagePath,
-            'description' => $request->description,
-            'is_active' => $request->boolean('is_active', true),
-            'slug' => Str::slug($request->name),
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Destination créée avec succès !',
-            'data' => $destination
-        ]);
     }
+    
+    // Transformer les données pour JavaScript
+    $places = $mapPoints->map(function($point) {
+        return [
+            'id' => $point->id,
+            'name' => $point->title,
+            'lat' => (float)$point->latitude,
+            'lng' => (float)$point->longitude,
+            'category' => $point->category,
+            'province' => $point->province ?? $point->ville ?? '',
+            'city' => $point->ville,
+            'desc' => $point->description,
+            'videoId' => $point->youtube_id,
+            'image' => $point->thumbnail,
+            'adresse' => $point->adresse,
+            'details_url' => $point->details_url,
+            'has_details_page' => $point->has_details_page
+        ];
+    });
+    
+    return view('destination::index', compact('country', 'provinces', 'sliders', 'places'));
+}
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
+/**
+ * Obtenir les limites géographiques approximatives d'un pays
+ */
+private function getCountryBounds($country)
+{
+    // Définir les limites pour chaque pays (vous pouvez les stocker en DB ou config)
+    $bounds = [
+        'CAN' => [ // Canada
+            'min_lat' => 41.6766,
+            'max_lat' => 83.1106,
+            'min_lng' => -141.0027,
+            'max_lng' => -52.3232
+        ],
+        'USA' => [ // États-Unis
+            'min_lat' => 24.3963,
+            'max_lat' => 49.3844,
+            'min_lng' => -124.8489,
+            'max_lng' => -66.8854
+        ],
+        'FRA' => [ // France
+            'min_lat' => 41.333,
+            'max_lat' => 51.124,
+            'min_lng' => -5.142,
+            'max_lng' => 9.562
+        ],
+        // Ajoutez d'autres pays selon vos besoins
+    ];
+    
+    return $bounds[$country->code] ?? null;
+}
+
+    public function province(Request $request, $code)
     {
-        $destination = Destination::findOrFail($id);
-        
-        if (request()->ajax()) {
-            return response()->json([
-                'success' => true,
-                'data' => $destination
-            ]);
-        }
-
-        return view('destinations.show', compact('destination'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        $destination = Destination::withTrashed()->findOrFail($id);
-
-        // Validation
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif',
-            'description' => 'nullable|string',
-            'is_active' => 'boolean',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        // Traitement de l'image
-        if ($request->hasFile('image')) {
-            // Supprimer l'ancienne image si elle existe
-            if ($destination->image && Storage::disk('public')->exists($destination->image)) {
-                Storage::disk('public')->delete($destination->image);
-            }
-            
-            $imagePath = $request->file('image')->store('destinations', 'public');
-            $destination->image = $imagePath;
-        }
-
-        // Mise à jour
-        $destination->name = $request->name;
-        $destination->description = $request->description;
-        $destination->is_active = $request->boolean('is_active', true);
-        
-        // Regénérer le slug si le nom a changé
-        if ($destination->isDirty('name')) {
-            $destination->slug = Str::slug($request->name);
-        }
-
-        $destination->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Destination mise à jour avec succès !',
-            'data' => $destination
-        ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        $destination = Destination::findOrFail($id);
-        
-        // Supprimer l'image si elle existe
-        if ($destination->image && Storage::disk('public')->exists($destination->image)) {
-            Storage::disk('public')->delete($destination->image);
-        }
-        
-        $destination->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Destination supprimée avec succès !'
-        ]);
-    }
-
-    /**
-     * Restore the specified soft deleted resource.
-     */
-    public function restore($id)
-    {
-        $destination = Destination::onlyTrashed()->findOrFail($id);
-        $destination->restore();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Destination restaurée avec succès !'
-        ]);
-    }
-
-    /**
-     * Force delete the specified resource.
-     */
-    public function forceDelete($id)
-    {
-        $destination = Destination::onlyTrashed()->findOrFail($id);
-        
-        // Supprimer l'image si elle existe
-        if ($destination->image && Storage::disk('public')->exists($destination->image)) {
-            Storage::disk('public')->delete($destination->image);
-        }
-        
-        $destination->forceDelete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Destination définitivement supprimée !'
-        ]);
-    }
-
-    /**
-     * Toggle active status.
-     */
-    public function toggleStatus($id)
-    {
-        $destination = Destination::findOrFail($id);
-        $destination->is_active = !$destination->is_active;
-        $destination->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Statut modifié avec succès !',
-            'is_active' => $destination->is_active
-        ]);
-    }
-
-    /**
-     * Get statistics for destinations.
-     */
-    public function statistics()
-    {
-        $total = Destination::count();
-        $active = Destination::where('is_active', true)->count();
-        $inactive = Destination::where('is_active', false)->count();
-        $deleted = Destination::onlyTrashed()->count();
-        
-        $thisMonth = Destination::whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->count();
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'total' => $total,
-                'active' => $active,
-                'inactive' => $inactive,
-                'deleted' => $deleted,
-                'this_month' => $thisMonth,
-            ]
-        ]);
-    }
-
-    public function getActiveDestinations(Request $request)
-    {
-        try {
-            // Récupérer les destinations actives
-            $destinations = Destination::where('is_active', true)
-                ->orderBy('name')
-                ->get(['id', 'name', 'image', 'is_active']);
-            
-            // Formater les données pour le frontend
-            $formattedDestinations = $destinations->map(function ($destination) {
-                return [
-                    'id' => $destination->id,
-                    'title' => $destination->name,
-                    'image' => $destination->image ? asset('storage/' . $destination->image) : 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80',
-                    'link' => route('destination.show', $destination->id),
-                    'is_active' => $destination->is_active
-                ];
-            });
-            
-            return response()->json([
-                'success' => true,
-                'data' => $formattedDestinations,
-                'count' => $destinations->count()
-            ]);
-            
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Erreur lors du chargement des destinations',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        $province = Province::where('code', $code)->firstOrFail();
+        $regions = $province->regions()->get();
+        return view('destination::index', compact('province', 'regions'));
     }
 }

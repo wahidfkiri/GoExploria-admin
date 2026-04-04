@@ -9,16 +9,21 @@ class Navigation {
         this.navMenu = document.querySelector('.nav-center');
         this.header = document.querySelector('.header-v2');
         this.scrollBtn = document.querySelector('.hero-scroll-btn');
+        this.mobileSearchTrigger = document.getElementById('mobileSearchTrigger');
         this.isMenuOpen = false;
+        this.isSearchOpen = false;
         this.lastScrollY = window.scrollY;
         
         this.init();
     }
     
     init() {
-        // Toggle menu mobile
-        if (this.menuToggle) {
-            this.menuToggle.addEventListener('click', () => this.toggleMenu());
+        // Toggle recherche mobile
+        if (this.mobileSearchTrigger) {
+            this.mobileSearchTrigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.toggleMobileSearch();
+            });
         }
         
         // Smooth scroll pour les liens d'ancrage
@@ -78,12 +83,31 @@ class Navigation {
         
         if (this.isMenuOpen) {
             if (navCenter) navCenter.classList.add('active');
-            this.menuToggle.classList.add('active');
+            if (this.menuToggle) this.menuToggle.classList.add('active');
             document.body.style.overflow = 'hidden';
+            
+            // Fermer la recherche si le menu s'ouvre
+            if (this.isSearchOpen) this.toggleMobileSearch();
         } else {
             if (navCenter) navCenter.classList.remove('active');
-            this.menuToggle.classList.remove('active');
+            if (this.menuToggle) this.menuToggle.classList.remove('active');
             document.body.style.overflow = '';
+        }
+    }
+
+    toggleMobileSearch() {
+        this.isSearchOpen = !this.isSearchOpen;
+        const searchBar = document.querySelector('.hero-v2 .search-bar-v2');
+        
+        if (this.isSearchOpen) {
+            if (searchBar) searchBar.classList.add('active');
+            if (this.mobileSearchTrigger) this.mobileSearchTrigger.classList.add('active');
+            
+            // Fermer le menu si la recherche s'ouvre
+            if (this.isMenuOpen) this.toggleMenu();
+        } else {
+            if (searchBar) searchBar.classList.remove('active');
+            if (this.mobileSearchTrigger) this.mobileSearchTrigger.classList.remove('active');
         }
     }
     

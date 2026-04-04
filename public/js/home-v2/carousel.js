@@ -155,7 +155,10 @@ class VideoCarousel {
     }
     
     playCurrentVideo() {
-        const video = this.slides[this.currentSlide].querySelector('video');
+        const slide = this.slides[this.currentSlide];
+        const video = slide.querySelector('video');
+        const iframe = slide.querySelector('iframe');
+        
         if (video) {
             if (video.readyState < 2) {
                 video.load();
@@ -163,18 +166,37 @@ class VideoCarousel {
             
             video.play().catch(err => {
                 console.log('Erreur de lecture vidéo:', err);
-                const overlay = this.slides[this.currentSlide].querySelector('.video-overlay');
-                if (overlay) {
-                    overlay.style.backgroundColor = 'var(--navy-dark)';
-                }
             });
+        }
+        
+        if (iframe) {
+            // Pour YouTube/Vimeo : On force le rechargement avec autoplay=1 pour s'assurer que ça démarre
+            let src = iframe.src;
+            if (src.includes('autoplay=0')) {
+                src = src.replace('autoplay=0', 'autoplay=1');
+            } else if (!src.includes('autoplay=')) {
+                src += (src.includes('?') ? '&' : '?') + 'autoplay=1';
+            }
+            iframe.src = src;
         }
     }
     
     pauseCurrentVideo() {
-        const video = this.slides[this.currentSlide].querySelector('video');
+        const slide = this.slides[this.currentSlide];
+        const video = slide.querySelector('video');
+        const iframe = slide.querySelector('iframe');
+        
         if (video) {
             video.pause();
+        }
+        
+        if (iframe) {
+            // Arrêter la vidéo en mettant autoplay=0
+            let src = iframe.src;
+            if (src.includes('autoplay=1')) {
+                src = src.replace('autoplay=1', 'autoplay=0');
+            }
+            iframe.src = src;
         }
     }
     

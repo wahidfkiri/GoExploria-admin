@@ -1,316 +1,162 @@
-{{-- Menu Accord Mets Vins Component --}}
-<section class="menu-accord-section">
-    <div class="menu-accord-container">
-        {{-- Header avec image de fond --}}
-        <div class="menu-accord-header" style="background-image: url('{{ asset('images/trek-the-sahara-desert-adobe-stock-3761.jpg') }}');">
-            <div class="menu-accord-header-overlay"></div>
-            <div class="menu-accord-header-content">
-                <h2 class="menu-accord-subtitle">ACCORD METS VINS</h2>
-                <h1 class="menu-accord-title">
-                    <span class="menu-accord-title-delicious">Delicious</span>
-                    <span class="menu-accord-title-menu">Menu</span>
-                </h1>
-                <div class="menu-accord-badge">
-                    <span class="menu-accord-badge-text">TASTY & FRESH</span>
+{{-- Accords Mets & Vins Section V4 - High Performance Business Layout --}}
+<section class="mets-vins-v4-section" id="menu-accord-section">
+    <div class="mets-vins-v4-container">
+        
+        <div class="mets-vins-v4-main-content">
+            
+            <!-- --- Colonne GAUCHE : Text + Video Slider + Image Slider --- -->
+            <div class="mets-vins-v4-left-col">
+                <div class="mets-vins-v4-header-text">
+                    <span class="mets-vins-v4-badge">Expérience Sensorielle</span>
+                    <h1 class="mets-vins-v4-title">Accord Parfait <span>Mets & Vins</span></h1>
+                    <p class="mets-vins-v4-desc">Une symphonie de saveurs où chaque plat raconte une histoire, sublimée par une sélection viticole d'exception. L'expertise GoExploria au service de vos papilles.</p>
                 </div>
-                <div class="menu-accord-resto">RESTO GRIFFITI</div>
-            </div>
-        </div>
 
-        {{-- Grille principale : 2 grandes images 50/50 --}}
-        <div class="menu-accord-grid">
-            <div class="menu-accord-item" style="position: relative; overflow: hidden; height: 100%; min-height: 400px;">
-                <div id="videoCarouselCustom" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%;">
-                    @php
-                        $videos = [
-                            'hero-video-1.mp4.mp4',
-                            'hero-video-2.mp4.mp4',
-                            'hero-video-3.mp4.mp4',
-                            'hero-video-4.mp4',
-                            'hero-video-5.mp4'
-                        ];
+                <!-- Slider Vidéo (YouTube) -->
+                <div class="mets-vins-v4-slider-box" id="mvVideoSliderV4">
+                    @php 
+                        $ytVideos = [
+                            'https://www.youtube.com/embed/S_8SNDjGAnA?autoplay=1&mute=1&controls=0&loop=1&playlist=S_8SNDjGAnA',
+                            'https://www.youtube.com/embed/Z05W5A9WcMo?autoplay=0&mute=1&controls=0&loop=1&playlist=Z05W5A9WcMo',
+                            'https://www.youtube.com/embed/8-9-HnE-lU4?autoplay=0&mute=1&controls=0&loop=1&playlist=8-9-HnE-lU4'
+                        ]; 
                     @endphp
-                    @foreach($videos as $index => $vid)
-                        <video class="video-slide-item" src="{{ asset('home2/videos/' . $vid) }}" 
-                               style="position: absolute; top:0; left:0; width:100%; height:100%; object-fit: cover; opacity: {{ $index === 0 ? '1' : '0' }}; transition: opacity 0.8s ease-in-out; pointer-events: none;"
-                               muted playsinline {{ $index === 0 ? 'autoplay' : '' }}></video>
+                    @foreach($ytVideos as $i => $url)
+                        <iframe src="{{ $url }}" 
+                                frameborder="0" 
+                                allow="autoplay; encrypted-media" 
+                                style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; opacity: {{ $i === 0 ? '1' : '0' }}; z-index: {{ $i === 0 ? '2' : '1' }}; pointer-events: none;" 
+                                class="mv-v4-video-item"></iframe>
                     @endforeach
-                    <div class="menu-accord-video-overlay" style="z-index: 10; pointer-events: none;">video</div>
-                    
-                    <button id="video-prev-btn" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px 15px; cursor: pointer; z-index: 20; border-radius: 4px; font-size: 18px;">&#10094;</button>
-                    <button id="video-next-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px 15px; cursor: pointer; z-index: 20; border-radius: 4px; font-size: 18px;">&#10095;</button>
+                    <div style="position: absolute; bottom: 15px; left: 20px; z-index: 10; font-size: 11px; font-weight: 800; text-transform: uppercase; color: #d4af37; background: rgba(0,0,0,0.7); padding: 4px 12px; border-radius: 4px; backdrop-filter: blur(4px);">Inspiration Gastronomique</div>
                 </div>
 
-                <!-- Script d'initialisation pour le slider Vidéo -->
-                <script>
-                    (function() {
-                        const carouselContainer = document.getElementById('videoCarouselCustom');
-                        if (carouselContainer) {
-                            const videos = carouselContainer.querySelectorAll('.video-slide-item');
-                            const prev = document.getElementById('video-prev-btn');
-                            const next = document.getElementById('video-next-btn');
-                            let currentIndex = 0;
-
-                            function showSlide(index) {
-                                if (!videos || videos.length === 0) return;
-                                
-                                // Éteindre la vidéo en cours
-                                videos[currentIndex].style.opacity = '0';
-                                videos[currentIndex].pause();
-                                videos[currentIndex].currentTime = 0;
-                                
-                                currentIndex = (index + videos.length) % videos.length;
-                                
-                                // Allumer la nouvelle vidéo
-                                videos[currentIndex].style.opacity = '1';
-                                let playPromise = videos[currentIndex].play();
-                                if (playPromise !== undefined) {
-                                    playPromise.catch(_ => {});
-                                }
-                            }
-
-                            function nextSlide() { showSlide(currentIndex + 1); }
-                            function prevSlide() { showSlide(currentIndex - 1); }
-
-                            if (next) next.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); nextSlide(); });
-                            if (prev) prev.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); prevSlide(); });
-
-                            // Passage automatique à la suivante dès que la vidéo se termine (beaucoup plus naturel qu'un timer fixe)
-                            videos.forEach(video => {
-                                video.addEventListener('ended', nextSlide);
-                            });
-                        }
-                    })();
-                </script>
+                <!-- Slider Images (DYNAMIQUE) -->
+                <div class="mets-vins-v4-slider-box" id="mvImageSliderV4">
+                    @php 
+                        $sliderImgs = [
+                            'magret-canard.jpg',
+                            'accord-m-v.jpg',
+                            'cave.jpg',
+                            'restaurant-fruits-de-mer-accord-vin.jpg',
+                            'Conseils-pour-debuter-cave-a-vin.jpg',
+                            'cave-de-degustation-des-vins.png'
+                        ]; 
+                    @endphp
+                    @foreach($sliderImgs as $i => $img)
+                        <img src="{{ asset('home2/aventure-accords-met-vin/' . $img) }}" 
+                             style="opacity: {{ $i === 0 ? '1' : '0' }}; z-index: {{ $i === 0 ? '2' : '1' }}; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out;" 
+                             class="mv-v4-img-item" alt="Galerie {{ $i }}">
+                    @endforeach
+                    <div style="position: absolute; bottom: 15px; left: 20px; z-index: 10; font-size: 11px; font-weight: 800; text-transform: uppercase; color: #ffffff; background: rgba(0,0,0,0.7); padding: 4px 12px; border-radius: 4px; backdrop-filter: blur(4px);">Galerie Gastronomique</div>
+                </div>
             </div>
-            <div class="menu-accord-item">
-                <img src="{{ asset('images/half-veggie-scaled.jpg') }}" alt="Meat and Wine" class="menu-accord-image">
+
+            <!-- --- Colonne DROITE : 6 Cartes de Produits (2 par ligne) --- -->
+            <div class="mets-vins-v4-right-grid">
+                @php
+                    $v4Products = [
+                        ['title' => 'SCHNITZEL PREMIUM', 'price' => '£11.00', 'img' => 'magret-canard.jpg', 'desc' => 'Finesse et croustillant. Une pièce de viande sélectionnée.'],
+                        ['title' => 'RIESLING GREY SLATE', 'price' => '£44.00', 'img' => 'accord_mets_vin.jpg', 'desc' => 'L\'élégance du schiste gris. Un vin blanc sec et noble.'],
+                        ['title' => 'MAGRET DE CANARD', 'price' => '£28.00', 'img' => 'magret-canard.jpg', 'desc' => 'Cuisiné rosé, servi avec son jus réduit aux baies.'],
+                        ['title' => 'CRUS D\'EXCEPTION', 'price' => 'Sur Devis', 'img' => 'cave.jpg', 'desc' => 'Accédez à notre sélection de vins de garde rares.'],
+                        ['title' => 'PLATEAU DÉGUSTATION', 'price' => '£35.00', 'img' => 'accord-m-v.jpg', 'desc' => 'Une sélection de mets variés pour un voyage gustatif.'],
+                        ['title' => 'CONSEILS CAVE', 'price' => 'Gratuit', 'img' => 'Conseils-pour-debuter-cave-a-vin.jpg', 'desc' => 'Laissez-vous guider par nos experts sommeliers.']
+                    ];
+                @endphp
+                @foreach($v4Products as $p)
+                <article class="mets-vins-v4-card">
+                    <div class="card-thumb">
+                        <img src="{{ asset('home2/aventure-accords-met-vin/' . $p['img']) }}" alt="{{ $p['title'] }}">
+                    </div>
+                    <h3 class="card-title">{{ $p['title'] }}</h3>
+                    <p class="card-info">{{ $p['desc'] }}</p>
+                    <div class="card-price">{{ $p['price'] }}</div>
+                </article>
+                @endforeach
             </div>
         </div>
 
-        {{-- Section 4 blocs : Image | Schnitzel | Getränke | Image --}}
-        <div class="menu-accord-details">
-            <div class="menu-accord-dish" style="grid-template-columns: 1fr 1fr;">
-                <div class="menu-accord-dish-image" style="position: relative; overflow: hidden; height: 100%; min-height: 250px;">
-                    <div id="burgerCarouselCustom" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
-                        @php
-                            $carouselImages = [
-                                'Capture d’écran 2026-03-31 175818.png',
-                                'Conseils-pour-debuter-cave-a-vin.jpg',
-                                'accord-m-v.jpg',
-                                'accord_mets_vin.jpg',
-                                'aoc-cahors-rouge-domaine-de-lantenet-sans-sulfites-2016-biologique.jpg',
-                                'cave-de-degustation-des-vins.png',
-                                'cave.jpg',
-                                'clos-la-coutale-aoc-cahors-2021.jpg',
-                                'magret-canard.jpg',
-                                'restaurant-fruits-de-mer-accord-vin.jpg'
-                            ];
-                        @endphp
-                        @foreach($carouselImages as $index => $img)
-                            <div class="custom-slide-item" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: {{ $index === 0 ? '1' : '0' }}; transition: opacity 0.8s ease-in-out; pointer-events: {{ $index === 0 ? 'auto' : 'none' }};">
-                                <img src="{{ asset('home2/aventure-accords-met-vin/' . $img) }}" style="object-fit: cover; width: 100%; height: 100%;" alt="Carousel Image {{ $index }}">
-                            </div>
-                        @endforeach
-                        
-                        <button id="custom-prev-btn" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px 15px; cursor: pointer; z-index: 20; border-radius: 4px; font-size: 18px;">&#10094;</button>
-                        <button id="custom-next-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px 15px; cursor: pointer; z-index: 20; border-radius: 4px; font-size: 18px;">&#10095;</button>
+        <!-- --- FOOTER : Product Carousel Slider --- -->
+        <div class="mets-vins-v4-footer">
+            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 30px; text-align: center;">Découvrez nos Tables Partenaires</h3>
+            <div class="footer-carousel-track" id="mvFooterCarouselV4">
+                @php
+                    $v4FooterProds = [
+                        ['name' => 'Le Saint-Amour', 'price' => 'Gastronomique', 'img' => 'restaurant-fruits-de-mer-accord-vin.jpg'],
+                        ['name' => 'Joe Beef', 'price' => 'Bistro Convivial', 'img' => 'accord-m-v.jpg'],
+                        ['name' => 'Toqué!', 'price' => 'Haute Cuisine', 'img' => 'cave-de-degustation-des-vins.png'],
+                        ['name' => 'Aux Anciens Canadiens', 'price' => 'Traditionnel', 'img' => 'accord_mets_vin.jpg'],
+                        ['name' => 'Le Mousse', 'price' => 'Cuisine Moderne', 'img' => 'accord-m-v.jpg'],
+                        ['name' => 'Resto Graffiti', 'price' => 'Signature', 'img' => 'magret-canard.jpg']
+                    ];
+                @endphp
+                @foreach($v4FooterProds as $f)
+                <div class="footer-card">
+                    <img src="{{ asset('home2/aventure-accords-met-vin/' . $f['img']) }}" alt="{{ $f['name'] }}">
+                    <div>
+                        <h4>{{ $f['name'] }}</h4>
+                        <p>{{ $f['price'] }}</p>
                     </div>
                 </div>
-
-                <!-- Initialisation script for Custom Slider -->
-                <script>
-                    (function() {
-                        const carouselContainer = document.getElementById('burgerCarouselCustom');
-                        if (carouselContainer) {
-                            const items = carouselContainer.querySelectorAll('.custom-slide-item');
-                            const prev = document.getElementById('custom-prev-btn');
-                            const next = document.getElementById('custom-next-btn');
-                            let currentIndex = 0;
-                            let intervalId;
-
-                            function showSlide(index) {
-                                if (!items || items.length === 0) return;
-                                items[currentIndex].style.opacity = '0';
-                                items[currentIndex].style.pointerEvents = 'none';
-                                
-                                currentIndex = (index + items.length) % items.length;
-                                
-                                items[currentIndex].style.opacity = '1';
-                                items[currentIndex].style.pointerEvents = 'auto';
-                            }
-
-                            function nextSlide() { showSlide(currentIndex + 1); }
-                            function prevSlide() { showSlide(currentIndex - 1); }
-
-                            if (next) next.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); nextSlide(); clearInterval(intervalId); startAuto(); });
-                            if (prev) prev.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); prevSlide(); clearInterval(intervalId); startAuto(); });
-
-                            function startAuto() {
-                                intervalId = setInterval(nextSlide, 3500);
-                            }
-                            startAuto();
-                        }
-                    })();
-                </script>
-
-                <div class="menu-accord-dish-content">
-                    <h3 class="menu-accord-dish-name">SCHNITZEL</h3>
-                    <p class="menu-accord-dish-description">
-                        Ein dünnes, geklopftes Fleischkotelett, typischerweise Kalb, Schwein oder Huhn, das paniert und in der Pfanne gebraten wird, bis es goldbraun und knusprig ist
-                    </p>
-                    <p class="menu-accord-dish-description-en">
-                        Thin, pounded cutlet of meat, typically veal, pork, or chicken, that is breaded and pan-fried until golden and crispy
-                    </p>
-                    <div><span class="menu-accord-price">£11.00</span></div>
-                </div>
+                @endforeach
             </div>
-
-            <div class="menu-accord-beverage" style="grid-template-columns: 1fr 1fr;">
-                <div class="menu-accord-beverage-content">
-                    <h3 class="menu-accord-beverage-category">
-                        <span class="menu-accord-beverage-icon">🍷</span>
-                        GETRÄNKE
-                        <span class="menu-accord-beverage-subtitle">(BEVERAGE)</span>
-                    </h3>
-                    <div class="menu-accord-beverage-divider"></div>
-                    <h4 class="menu-accord-beverage-name">RIESLING GREY SLATE</h4>
-                    <p class="menu-accord-beverage-description">
-                        Ein köstlicher, vollmundiger Wein mit leuchtenden und klaren Früchten
-                    </p>
-                    <p class="menu-accord-beverage-description-en">
-                        It is seasoned with a blend of spices, including herbs like marjoram and spices like peppercorn vinegar
-                    </p>
-                    <div><span class="menu-accord-price">£44.00</span></div>
-                </div>
-                <div class="menu-accord-beverage-image" style="position: relative; overflow: hidden; height: 100%; min-height: 250px;">
-                    <div id="pizzaCarouselCustom" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
-                        {{-- On réutilise la même variable $carouselImages initialisée plus haut --}}
-                        @foreach($carouselImages as $index => $img)
-                            <div class="pizza-slide-item" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: {{ $index === 0 ? '1' : '0' }}; transition: opacity 0.8s ease-in-out; pointer-events: {{ $index === 0 ? 'auto' : 'none' }};">
-                                <img src="{{ asset('home2/aventure-accords-met-vin/' . $img) }}" style="object-fit: cover; width: 100%; height: 100%;" alt="Carousel Image {{ $index }}">
-                            </div>
-                        @endforeach
-                        
-                        <button id="pizza-prev-btn" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px 15px; cursor: pointer; z-index: 20; border-radius: 4px; font-size: 18px;">&#10094;</button>
-                        <button id="pizza-next-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px 15px; cursor: pointer; z-index: 20; border-radius: 4px; font-size: 18px;">&#10095;</button>
-                    </div>
-                </div>
-
-                <!-- Script d'initialisation pour le deuxième slider -->
-                <script>
-                    (function() {
-                        const carouselContainer = document.getElementById('pizzaCarouselCustom');
-                        if (carouselContainer) {
-                            const items = carouselContainer.querySelectorAll('.pizza-slide-item');
-                            const prev = document.getElementById('pizza-prev-btn');
-                            const next = document.getElementById('pizza-next-btn');
-                            let currentIndex = 0;
-                            let intervalId;
-
-                            function showSlide(index) {
-                                if (!items || items.length === 0) return;
-                                items[currentIndex].style.opacity = '0';
-                                items[currentIndex].style.pointerEvents = 'none';
-                                
-                                currentIndex = (index + items.length) % items.length;
-                                
-                                items[currentIndex].style.opacity = '1';
-                                items[currentIndex].style.pointerEvents = 'auto';
-                            }
-
-                            function nextSlide() { showSlide(currentIndex + 1); }
-                            function prevSlide() { showSlide(currentIndex - 1); }
-
-                            if (next) next.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); nextSlide(); clearInterval(intervalId); startAuto(); });
-                            if (prev) prev.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); prevSlide(); clearInterval(intervalId); startAuto(); });
-
-                            function startAuto() {
-                                intervalId = setInterval(nextSlide, 3500);
-                            }
-                            // Retardateur de 1 seconde pour désynchroniser les animations des deux sliders
-                            setTimeout(startAuto, 1000);
-                        }
-                    })();
-                </script>
-            </div>
-        </div>
-
-        {{-- Section Restaurants Carousel (5 items visibles) --}}
-        <div class="menu-accord-resto-cards-container">
-            @php
-                $restaurants = [
-                    ['name' => 'Le Saint-Amour', 'type' => 'GASTRONOMIQUE', 'desc' => 'Cuisine française raffinée dans un cadre romantique avec jardin intérieur.', 'city' => 'Québec', 'stars' => 5],
-                    ['name' => 'Joe Beef', 'type' => 'BISTRO', 'desc' => 'Bistro montréalais emblématique, cuisine du marché et ambiance conviviale.', 'city' => 'Montréal', 'stars' => 4],
-                    ['name' => 'Toqué!', 'type' => 'FINE DINING', 'desc' => 'Restaurant gastronomique de renommée internationale, produits du Québec.', 'city' => 'Montréal', 'stars' => 5],
-                    ['name' => 'Aux Anciens Canadiens', 'type' => 'TRADITIONNEL', 'desc' => 'Cuisine traditionnelle québécoise dans une maison historique de 1675.', 'city' => 'Québec', 'stars' => 4],
-                    ['name' => 'Le Mousse', 'type' => 'MODERNE', 'desc' => 'Cuisine créative et innovante, menu dégustation avec accords mets et vins.', 'city' => 'Montréal', 'stars' => 5],
-                ];
-            @endphp
-            @foreach($restaurants as $resto)
-            <div class="menu-accord-resto-card">
-                <div class="menu-accord-resto-card-image-wrap">
-                    <img src="{{ asset('images/9093d02c-620a-4939-a877-2f9bbc03f2ca-1280x854.jpg') }}" alt="Resto" class="menu-accord-resto-card-img">
-                    <span class="menu-accord-resto-card-badge">{{ $resto['type'] }}</span>
-                </div>
-                <div class="menu-accord-resto-card-body">
-                    <h4 class="menu-accord-resto-card-title">{{ $resto['name'] }}</h4>
-                    <p class="menu-accord-resto-card-desc">{{ $resto['desc'] }}</p>
-                    <div class="menu-accord-resto-card-footer">
-                        <span class="menu-accord-resto-card-city">📍 {{ $resto['city'] }}</span>
-                        <span class="menu-accord-resto-card-stars">
-                            @for($i=0; $i<$resto['stars']; $i++) ⭐ @endfor
-                        </span>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-        </div>
-
-        {{-- Section Cellar & Salmon (50/50) --}}
-        <div class="menu-accord-cellar-salmon-row">
-            <div class="menu-accord-cellar-item" style="background-image: url('{{ asset('images/trek-the-sahara-desert-adobe-stock-3761.jpg') }}');">
-                <!-- Using placeholder for cellar, you can replace with real image -->
-                <img src="{{ asset('images/trek-the-sahara-desert-adobe-stock-3761.jpg') }}" alt="Wine Cellar" class="menu-accord-cellar-img" style="filter: brightness(0.6);">
-            </div>
-            <div class="menu-accord-salmon-item">
-                <img src="{{ asset('images/half-veggie-scaled.jpg') }}" alt="Salmon Dish" class="menu-accord-salmon-bg">
-                <div class="menu-accord-salmon-overlay-content">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPxj8qeWmZqaiio3JOzD4UrDIyuwDDETRwjw&s" alt="Wine Bottle" class="menu-accord-salmon-wine">
-                    <div class="menu-accord-bistro-logo-stamp">
-                        <div>BISTRO</div>
-                        <div class="menu-accord-bistro-st-malo">ST-MALO</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Section 4 Dark Cards (Schnitzel/Getranke/Schnitzel/Getranke) --}}
-        <div class="menu-accord-dark-cards-row">
-            @for($j=0; $j<2; $j++)
-            <div class="menu-accord-dish-content" style="border-right: 1px solid #333; background: #1a1a1a;">
-                <h3 class="menu-accord-dish-name">SCHNITZEL</h3>
-                <p class="menu-accord-dish-description">
-                    Ein dünnes, geklopftes Fleischkotelett, typischerweise Kalb, Schwein oder Huhn, das paniert...
-                </p>
-                <p class="menu-accord-dish-description-en">
-                    Thin, pounded cutlet of meat, typically veal, pork, or chicken, that is breaded...
-                </p>
-                <div><span class="menu-accord-price">£11.00</span></div>
-            </div>
-            <div class="menu-accord-beverage-content" style="border-right: 1px solid #333; background: #1a1a1a;">
-                <h3 class="menu-accord-beverage-category">
-                    <span class="menu-accord-beverage-icon">🍷</span> GETRÄNKE
-                </h3>
-                <div class="menu-accord-beverage-divider"></div>
-                <h4 class="menu-accord-beverage-name">RIESLING GREY SLATE</h4>
-                <p class="menu-accord-beverage-description">
-                    Ein köstlicher, vollmundiger Wein mit leuchtenden und klaren Früchten
-                </p>
-                <div><span class="menu-accord-price">£44.00</span></div>
-            </div>
-            @endfor
         </div>
 
     </div>
 </section>
+
+<script>
+    (function() {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Slider Automatique Vidéo (YouTube iframes)
+            const videoIframes = document.querySelectorAll('.mv-v4-video-item');
+            let vIdx = 0;
+            if(videoIframes.length > 0) {
+                setInterval(() => {
+                    videoIframes[vIdx].style.opacity = '0';
+                    videoIframes[vIdx].style.zIndex = '1';
+                    vIdx = (vIdx + 1) % videoIframes.length;
+                    videoIframes[vIdx].style.opacity = '1';
+                    videoIframes[vIdx].style.zIndex = '2';
+                }, 6000); // 6 secondes par vidéo YouTube
+            }
+
+            // Slider Automatique Images (FIXED LOGIC)
+            const imgItems = document.querySelectorAll('.mv-v4-img-item');
+            let iIdx = 0;
+            if(imgItems.length > 1) { // On ne lance l'intervalle que s'il y a plus d'une image
+                setInterval(() => {
+                    imgItems[iIdx].style.opacity = '0';
+                    imgItems[iIdx].style.zIndex = '1';
+                    iIdx = (iIdx + 1) % imgItems.length;
+                    imgItems[iIdx].style.opacity = '1';
+                    imgItems[iIdx].style.zIndex = '2';
+                }, 4000); // 4 secondes par image
+            }
+
+            // Animation Smooth pour le Carousel Footer
+            const track = document.getElementById('mvFooterCarouselV4');
+            if(track) {
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                track.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    startX = e.pageX - track.offsetLeft;
+                    scrollLeft = track.scrollLeft;
+                });
+                track.addEventListener('mouseleave', () => { isDown = false; });
+                track.addEventListener('mouseup', () => { isDown = false; });
+                track.addEventListener('mousemove', (e) => {
+                    if(!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - track.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    track.scrollLeft = scrollLeft - walk;
+                });
+            }
+        });
+    })();
+</script>

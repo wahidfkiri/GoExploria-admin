@@ -25,14 +25,13 @@ class InteractiveMapV2Dynamic {
         this.locateBtn = document.getElementById('locateBtn');
         this.resultsCount = document.getElementById('resultsCount');
         this.hoverPopup = document.getElementById('hoverPopup');
-        this.hoverIframe = document.getElementById('hoverIframe');
+        this.hoverThumbnail = document.getElementById('hoverThumbnail');
         this.hoverDescription = document.getElementById('hoverDescription');
         this.destinationsList = document.getElementById('destinationsList');
         this.detailsScreen = document.getElementById('detailsScreen');
         this.closeDetailsScreen = document.getElementById('closeDetailsScreen');
         this.closeDetailsBtn = document.getElementById('closeDetailsBtn');
         this.itineraryBtn = document.getElementById('itineraryBtn');
-        this.hoverThumbnail = document.getElementById('hoverThumbnail'); // Ajoutez cette ligne
         
         this.init();
     }
@@ -183,21 +182,21 @@ class InteractiveMapV2Dynamic {
         }
     }
     
-      initMap() {
-    this.map = L.map('interactiveMap', {
-        zoomControl: true,
-        scrollWheelZoom: true
-    }).setView([46.8139, -71.2080], 3); // 3 au lieu de 6
-    
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 18
-    }).addTo(this.map);
-
-    this.map.on('moveend', () => {
-        this.loadPointsInView();
-    });
-}
+    initMap() {
+        // Centrer sur le Québec par défaut
+        this.map = L.map('interactiveMap').setView([46.8139, -71.2080], 8);
+        
+        // Ajouter le layer OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 18
+        }).addTo(this.map);
+        
+        // Événement de déplacement de la carte
+        this.map.on('moveend', () => {
+            this.loadPointsInView();
+        });
+    }
     
     async loadPointsInView() {
         const bounds = this.map.getBounds();
@@ -256,10 +255,9 @@ class InteractiveMapV2Dynamic {
             }).addTo(this.map);
             
             // Hover sur marqueur
-marker.on('mouseover', (e) => {
-    // Passer place uniquement, la position sera calculée depuis les coordonnées lat/lng
-    this.showHoverPopup(place);
-});
+            marker.on('mouseover', (e) => {
+                this.showHoverPopup(place, e.originalEvent.clientX, e.originalEvent.clientY);
+            });
             
             marker.on('mouseout', () => {
                 this.hideHoverPopup();
@@ -274,12 +272,10 @@ marker.on('mouseover', (e) => {
         });
         
         // Ajuster la vue pour afficher tous les marqueurs
-       if (this.markers.length > 0) {
-    const group = L.featureGroup(this.markers.map(m => m.marker));
-    this.map.fitBounds(group.getBounds().pad(0.2), {
-        maxZoom: 3  // 3 au lieu de 6
-    });
-}
+        if (this.markers.length > 0) {
+            const group = L.featureGroup(this.markers.map(m => m.marker));
+            this.map.fitBounds(group.getBounds().pad(0.1));
+        }
     }
     
     renderDestinationCards() {
@@ -366,93 +362,70 @@ marker.on('mouseover', (e) => {
         });
     }
     
-showHoverPopup(place, x, y) {
-    if (!this.hoverPopup) return;
-
-    this.currentPlace = place;
-
-    // Mettre à jour l'iframe YouTube
-    const videoId = place.mainVideo || place.videos?.[0]?.youtube_id || 'dQw4w9WgXcQ';
-    if (this.hoverIframe) {
-        this.hoverIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=1`;
+    showHoverPopup(place, x, y) {
+        if (!this.hoverPopup) return;
+        
+        this.currentPlace = place;
+        
+        // Image ou vidéo thumbnail
+        const thumbnailUrl = place.videoThumbnail || 
+                            place.mainImage || 
+                            (place.mainVideo ? `https://img.youtube.com/vi/${place.mainVideo}/mqdefault.jpg` : '');
+        
+        // Mettre à jour le contenu
+        if (thumbnailUrl) {
+            this.hoverThumbnail.src = thumbnailUrl;
+            this.hoverThumbnail.style.display = 'block';
+        } else {
+            this.hoverThumbnail.style.display = 'none';
+        }
+        this.hoverDescription.textContent = place.description || 'Aucune description disponible';
+        
+        // Positionner le popup
+        this.hoverPopup.style.display = 'block';
+        this.hoverPopup.style.left = '140px';
+        this.hoverPopup.style.top = '120px';
+        
+        // Événements des boutons
+        const playBtn = this.hoverPopup.querySelector('[data-action="play"]');
+        const detailsBtn = this.hoverPopup.querySelector('[data-action="details"]');
+        const locationBtn = this.hoverPopup.querySelector('[data-action="location"]');
+        const youtubeBtn = this.hoverPopup.querySelector('[data-action="youtube"]');
+        
+        if (playBtn) {
+            playBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (place.mainVideo || place.videos.length > 0) {
+                    this.playVideoInPopup(place);
+                }
+            };
+        }
+        
+        if (detailsBtn) {
+            detailsBtn.onclick = () => {
+                this.showDetails(place);
+                this.apiService.incrementView(place.id);
+            };
+        }
+        
+        if (locationBtn) {
+            locationBtn.onclick = () => this.centerOnPlace(place);
+        }
+        
+        if (youtubeBtn) {
+            youtubeBtn.onclick = () => this.openYouTube(place);
+        }
     }
-
-    // Description
-    this.hoverDescription.textContent = place.description || 'Aucune description disponible';
-
-    // Afficher d'abord pour mesurer la hauteur
-    this.hoverPopup.style.visibility = 'hidden';
-    this.hoverPopup.style.display = 'block';
-
-    const popupWidth = this.hoverPopup.offsetWidth || 280;
-    const popupHeight = this.hoverPopup.offsetHeight || 320;
-
-    // Récupérer la position du conteneur map
-    const mapContainer = this.map.getContainer();
-    const mapRect = mapContainer.getBoundingClientRect();
-
-    // Convertir la position du marqueur en coordonnées pixel dans la map
-    const markerPoint = this.map.latLngToContainerPoint([place.lat, place.lng]);
-
-    // Positionner au-dessus du marqueur, centré horizontalement
-    let left = markerPoint.x - (popupWidth / 2);
-    let top = markerPoint.y - popupHeight - 20; // 20px au-dessus de l'icône
-
-    // Garde-fous — rester dans les limites de la map
-    const mapWidth = mapContainer.offsetWidth;
-    const mapHeight = mapContainer.offsetHeight;
-
-    // Débordement à droite
-    if (left + popupWidth > mapWidth) {
-        left = mapWidth - popupWidth - 10;
-    }
-    // Débordement à gauche
-    if (left < 10) {
-        left = 10;
-    }
-    // Débordement en haut — afficher en dessous si pas de place
-    if (top < 10) {
-        top = markerPoint.y + 40; // en dessous du marqueur
-    }
-
-    this.hoverPopup.style.left = `${left}px`;
-    this.hoverPopup.style.top = `${top}px`;
-    this.hoverPopup.style.visibility = 'visible';
-
-    // Événements des boutons
-    const detailsBtn = this.hoverPopup.querySelector('[data-action="details"]');
-    const locationBtn = this.hoverPopup.querySelector('[data-action="location"]');
-    const youtubeBtn = this.hoverPopup.querySelector('[data-action="youtube"]');
-
-    if (detailsBtn) {
-        detailsBtn.onclick = () => {
-            this.showDetails(place);
-            this.apiService.incrementView(place.id);
-        };
-    }
-
-    if (locationBtn) {
-        locationBtn.onclick = () => this.centerOnPlace(place);
-    }
-
-    if (youtubeBtn) {
-        youtubeBtn.onclick = () => this.openYouTube(place);
-    }
-}
     
     hideHoverPopup() {
-    if (this.hoverPopup) {
-        setTimeout(() => {
-            if (!this.hoverPopup.matches(':hover')) {
-                this.hoverPopup.style.display = 'none';
-                // Stopper la vidéo en vidant le src
-                if (this.hoverIframe) {
-                    this.hoverIframe.src = '';
+        if (this.hoverPopup) {
+            setTimeout(() => {
+                if (!this.hoverPopup.matches(':hover')) {
+                    this.hoverPopup.style.display = 'none';
                 }
-            }
-        }, 200);
+            }, 200);
+        }
     }
-}
     
     getCategoryName(category) {
         const names = {

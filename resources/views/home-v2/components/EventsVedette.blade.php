@@ -1,32 +1,26 @@
 {{-- Events Vedette Component - Événements vedette au Québec --}}
 <section class="events-vedette-v2-section">
     <div class="events-vedette-v2-container">
-        {{-- Header avec titre, filtres et bouton sur même ligne --}}
-        <div class="events-vedette-v2-header">
-            <h2 class="events-vedette-v2-title">ÉVÉNEMENTS VEDETTE AU QUÉBEC</h2>
+        {{-- BLOC DESIGN BOSSE --}}
+        <div class="design-bosse-block">
+            <h2 class="design-bosse-title">ÉVÉNEMENTS VEDETTE AU QUÉBEC</h2>
             
-            <div class="events-vedette-v2-filters">
-                <button class="events-vedette-v2-filter-btn active" data-filter="all">
-                    Toutes les vidéos
-                </button>
-                <button class="events-vedette-v2-filter-btn" data-filter="nature">
-                    Nature
-                </button>
-                <button class="events-vedette-v2-filter-btn" data-filter="culture">
-                    Culture
-                </button>
-                <button class="events-vedette-v2-filter-btn" data-filter="gastronomie">
-                    Gastronomie
-                </button>
-                <button class="events-vedette-v2-filter-btn" data-filter="aventures">
-                    Aventures
-                </button>
+            <div class="design-bosse-controls">
+                <div class="events-vedette-v2-filters">
+                    <span class="design-bosse-label">
+                        <span class="bosse-picto">📍</span> Régions Canadiennes :
+                    </span>
+                    <button class="events-vedette-v2-filter-btn active" data-filter="all">Tout le Québec</button>
+                    <button class="events-vedette-v2-filter-btn" data-filter="montreal">Montréal</button>
+                    <button class="events-vedette-v2-filter-btn" data-filter="quebec">Québec</button>
+                    <button class="events-vedette-v2-filter-btn" data-filter="nature">Gaspésie</button>
+                    <button class="events-vedette-v2-filter-btn" data-filter="culture">Saguenay</button>
+                </div>
+
+                <a href="#" class="design-bosse-more-btn">
+                    En savoir plus <span class="events-vedette-v2-plus-icon">+</span>
+                </a>
             </div>
-            
-            <button class="events-vedette-v2-more-btn">
-                En savoir
-                <span class="events-vedette-v2-plus-icon">+</span>
-            </button>
         </div>
 
         {{-- Scroll horizontal des événements --}}

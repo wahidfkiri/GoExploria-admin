@@ -160,37 +160,33 @@ class VideosDropdownMenu {
             }
         });
         
-        // Empêcher la fermeture du dropdown au clic à l'intérieur
-        const dropdown = document.getElementById('videosDropdown');
-        if (dropdown) {
-            dropdown.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-        }
+        // NE PAS stopPropagation ici, ça bloquait la fermeture du dropdown
     }
     
     openVideoPlayer(video) {
+        // FERMER LE DROPDOWN IMMÉDIATEMENT avant d'ouvrir le lecteur
+        const dropdown = document.getElementById('videosDropdown');
+        if (dropdown) {
+            dropdown.classList.remove('active');
+        }
+
         console.log('[VideosDropdown] Tentative d\'ouverture de la vidéo:', video);
         console.log('[VideosDropdown] VideoModalInstance disponible:', !!window.VideoModalInstance);
-        
+
         // Utiliser l'instance globale de VideoModal
         if (window.VideoModalInstance) {
-            // Créer un objet vidéo compatible avec VideoModal
             const videoData = {
-                id: video.youtubeId || 'dQw4w9WgXcQ', // ID YouTube
+                id: video.youtubeId || 'dQw4w9WgXcQ',
                 title: video.title,
                 category: video.category,
                 date: video.date,
                 description: video.description,
                 thumbnail: video.thumbnail
             };
-            
-            // Ouvrir la modal avec la vidéo
             window.VideoModalInstance.open(videoData);
-            
             console.log('[VideosDropdown] Modal ouverte avec succès');
         } else {
-            console.error('[VideosDropdown] VideoModal instance NON disponible - Vérifiez que video-modal.js est chargé avant videos-dropdown.js');
+            console.error('[VideosDropdown] VideoModal instance NON disponible');
         }
     }
 }

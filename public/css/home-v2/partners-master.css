@@ -1,0 +1,267 @@
+/**
+ * Partners Master User Go Exploria - Design System Bosse (RESPONSIVE MASTER)
+ */
+
+.partners-master-block {
+    overflow: hidden;
+    position: relative;
+    padding: 60px 40px !important;
+}
+
+/* Badges Header row - Repensé pour mobile */
+.partners-badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pm-status-badge {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.pm-status-badge.partners { background: #f0f0f0; color: #333; }
+.pm-status-badge.master { background: #1a3a8f; color: #fff; }
+.pm-status-badge.user { background: #2d5cc2; color: #fff; }
+.pm-status-badge.go { background: #d32f2f; color: #fff; }
+.pm-status-badge.exploria { background: #0a1628; color: #fff; }
+
+/* Contenu Principal */
+.pm-main-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+/* Feature Cards */
+.pm-feature-item {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 25px;
+    padding: 25px;
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #eee;
+    transition: all 0.3s ease;
+}
+
+.pm-feature-item:hover {
+    transform: translateX(10px);
+    border-color: #d32f2f;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.pm-icon-box {
+    width: 60px;
+    height: 60px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1a3a8f;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.pm-info h4 {
+    font-size: 19px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #1a3a8f;
+}
+
+.pm-info p {
+    font-size: 15px;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Dashboard Box */
+.pm-dashboard-box {
+    background: linear-gradient(135deg, #0a1628 0%, #1a3a8f 100%);
+    border-radius: 24px;
+    padding: 40px;
+    color: #fff;
+    box-shadow: 0 20px 45px rgba(10, 22, 40, 0.25);
+    height: fit-content;
+}
+
+.pm-dash-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
+
+.pm-dash-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-unit {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px 15px;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-unit .v { display: block; font-size: 28px; font-weight: 900; margin-bottom: 5px; }
+.stat-unit .l { font-size: 11px; opacity: 0.7; font-weight: 700; text-transform: uppercase; line-height: 1.3; }
+
+.pm-dash-btn {
+    width: 100%;
+    padding: 18px;
+    border-radius: 12px;
+    border: none;
+    background: #fff;
+    color: #1a3a8f;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Avantages List */
+.pm-advantages-box {
+    margin-top: 40px;
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 20px;
+}
+
+.pm-adv-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.pm-adv-list li {
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 15px;
+    color: #444;
+}
+
+.pm-adv-list li:last-child { border-bottom: none; }
+.pm-adv-list i { color: #2d5cc2; font-size: 18px; }
+
+/* Showcase Logos */
+.pm-logos-showcase {
+    margin-top: 60px;
+    text-align: center;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 50px;
+}
+
+.pm-logos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.pm-logo-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 25px 15px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 16px;
+    font-weight: 700;
+    color: #333;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.pm-logo-unit i { font-size: 28px; color: #1a3a8f; margin-bottom: 5px; }
+
+/* ===== MEDIA QUERIES - RESPONSIVITÉ TOTALE ===== */
+
+/* Tablettes (Paysage/Portrait) */
+@media (max-width: 1024px) {
+    .pm-main-grid {
+        grid-template-columns: 1fr;
+        gap: 50px;
+    }
+    
+    .pm-logos-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Mobile Large (768px) */
+@media (max-width: 768px) {
+    .partners-master-block {
+        padding: 40px 20px !important;
+    }
+
+    .design-bosse-title {
+        font-size: 24px !important;
+    }
+
+    .design-bosse-controls {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .partners-badge-row {
+        gap: 6px;
+    }
+
+    .pm-status-badge {
+        padding: 5px 10px;
+        font-size: 9px;
+    }
+
+    .pm-feature-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 30px 20px;
+    }
+
+    .pm-logos-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+/* Petits Mobiles (480px) */
+@media (max-width: 480px) {
+    .design-bosse-title {
+        font-size: 20px !important;
+    }
+
+    .pm-dash-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .pm-logo-unit {
+        padding: 20px 10px;
+        font-size: 12px;
+    }
+
+    .pm-logo-unit i { font-size: 24px; }
+    
+    .stat-unit .v { font-size: 24px; }
+}

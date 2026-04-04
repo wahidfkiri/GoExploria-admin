@@ -122,9 +122,32 @@ class VideoModal {
 
         this.currentVideoIndex = index;
 
-        // Charger la vidéo YouTube
+        // Charger le média (Vidéo YouTube ou Image)
         if (this.modalPlayer) {
-            this.modalPlayer.src = `https://www.youtube.com/embed/${video.id}?autoplay=1`;
+            this.modalPlayer.parentElement.innerHTML = ''; // Nettoyer le conteneur
+            const container = this.modalPlayer.parentElement || document.getElementById('videoModalPlayerContainer');
+            
+            if (video.type === 'image') {
+                const img = document.createElement('img');
+                img.src = video.id; // Dans ce cas, l'id est l'URL de l'image
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'contain';
+                img.id = 'videoModalPlayer'; // On garde l'ID pour la reférence futur
+                container.appendChild(img);
+                this.modalPlayer = img;
+            } else {
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${video.id}?autoplay=1`;
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.style.border = 'none';
+                iframe.allow = 'autoplay; encrypted-media';
+                iframe.allowFullscreen = true;
+                iframe.id = 'videoModalPlayer';
+                container.appendChild(iframe);
+                this.modalPlayer = iframe;
+            }
         }
 
         // Mettre à jour les informations
