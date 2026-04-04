@@ -16,9 +16,7 @@
                 <div class="mets-vins-v4-slider-box" id="mvVideoSliderV4">
                     @php 
                         $ytVideos = [
-                            'https://www.youtube.com/embed/S_8SNDjGAnA?autoplay=1&mute=1&controls=0&loop=1&playlist=S_8SNDjGAnA',
-                            'https://www.youtube.com/embed/Z05W5A9WcMo?autoplay=0&mute=1&controls=0&loop=1&playlist=Z05W5A9WcMo',
-                            'https://www.youtube.com/embed/8-9-HnE-lU4?autoplay=0&mute=1&controls=0&loop=1&playlist=8-9-HnE-lU4'
+                            'https://www.youtube.com/embed/xPPLbEFbCAo?autoplay=1&mute=1&controls=0&loop=1&playlist=xPPLbEFbCAo',
                         ]; 
                     @endphp
                     @foreach($ytVideos as $i => $url)
