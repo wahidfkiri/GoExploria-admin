@@ -23,7 +23,57 @@
                     </li>
                 </ol>
             </nav>
-        </div>   
+        </div>  
+
+        
+        <!-- CARTE FULL WIDTH EN DEHORS DU two-columns-layout -->
+        <div class="map-fullwidth-section" id="carte-interactive">
+            <div class="map-card-modern">
+                <div class="map-header">
+                    <h2><i class="fas fa-map-marked-alt"></i> Explorez le {{ $country->name }}</h2>
+                    <p>Restaurants, Musées, Hôtels et Activités</p>
+                </div>
+                <div class="map-filters">
+                    <div class="filter-group">
+                        <label><i class="fas fa-map-marker-alt"></i> Province :</label>
+                        <select id="regionFilter">
+                            <option value="">Toutes les provinces</option>
+                            @foreach($provinces as $province)
+                                <option value="{{ $province->name }}" data-lat="{{ $province->latitude }}" data-lng="{{ $province->longitude }}">
+                                    {{ $province->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-tag"></i> Catégorie :</label>
+                        <select id="categoryFilter">
+                            <option value="">Toutes</option>
+                            <option value="restaurant">🍽️ Restaurants</option>
+                            <option value="museum">🏛️ Musées</option>
+                            <option value="hotel">🏨 Hôtels</option>
+                            <option value="activity">🎯 Activités</option>
+                        </select>
+                    </div>
+                    <button class="btn-locate" id="locateBtn">
+                        <i class="fas fa-location-dot"></i> Me localiser
+                    </button>
+                    <button class="btn-reset" id="resetViewBtn">
+                        <i class="fas fa-globe-americas"></i> Vue pays
+                    </button>
+                    <div class="results-count">
+                        <i class="fas fa-map-pin"></i> <span id="resultsCount">0</span> lieux
+                    </div>
+                </div>
+                <div class="map-wrapper">
+                    <div id="interactiveMap"></div>
+                </div>
+                <div class="destinations-list">
+                    <h4><i class="fas fa-compass"></i> LIEUX À DÉCOUVRIR</h4>
+                    <div id="destinationsList"></div>
+                </div>
+            </div>
+        </div> 
         
         <div class="two-columns-layout">
             <!-- COLONNE GAUCHE -->
@@ -255,54 +305,6 @@
             </div>
         </div>
 
-        <!-- CARTE FULL WIDTH EN DEHORS DU two-columns-layout -->
-        <div class="map-fullwidth-section" id="carte-interactive">
-            <div class="map-card-modern">
-                <div class="map-header">
-                    <h2><i class="fas fa-map-marked-alt"></i> Explorez le {{ $country->name }}</h2>
-                    <p>Restaurants, Musées, Hôtels et Activités</p>
-                </div>
-                <div class="map-filters">
-                    <div class="filter-group">
-                        <label><i class="fas fa-map-marker-alt"></i> Province :</label>
-                        <select id="regionFilter">
-                            <option value="">Toutes les provinces</option>
-                            @foreach($provinces as $province)
-                                <option value="{{ $province->name }}" data-lat="{{ $province->latitude }}" data-lng="{{ $province->longitude }}">
-                                    {{ $province->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label><i class="fas fa-tag"></i> Catégorie :</label>
-                        <select id="categoryFilter">
-                            <option value="">Toutes</option>
-                            <option value="restaurant">🍽️ Restaurants</option>
-                            <option value="museum">🏛️ Musées</option>
-                            <option value="hotel">🏨 Hôtels</option>
-                            <option value="activity">🎯 Activités</option>
-                        </select>
-                    </div>
-                    <button class="btn-locate" id="locateBtn">
-                        <i class="fas fa-location-dot"></i> Me localiser
-                    </button>
-                    <button class="btn-reset" id="resetViewBtn">
-                        <i class="fas fa-globe-americas"></i> Vue pays
-                    </button>
-                    <div class="results-count">
-                        <i class="fas fa-map-pin"></i> <span id="resultsCount">0</span> lieux
-                    </div>
-                </div>
-                <div class="map-wrapper">
-                    <div id="interactiveMap"></div>
-                </div>
-                <div class="destinations-list">
-                    <h4><i class="fas fa-compass"></i> LIEUX À DÉCOUVRIR</h4>
-                    <div id="destinationsList"></div>
-                </div>
-            </div>
-        </div>
     </div>
 
 <style>
