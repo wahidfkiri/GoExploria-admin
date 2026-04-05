@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-search.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/search-bar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/videos-dropdown.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/home-v2/interactive-map.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('css/home-v2/interactive-map.css') }}"> -->
     <link rel="stylesheet" href="{{ asset('css/home-v2/viewing-carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/viewing-carousel-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/video-modal.css') }}">
@@ -54,7 +54,7 @@
     
     <main class="main-content">
         @include('home-v2.components.Hero')
-        @include('home-v2.components.InteractiveMap')
+        @include('geo-map::index')
         @include('home-v2.components.VideoPlayer')
         @include('home-v2.components.EventsVedette')
         @include('home-v2.components.DestinationsVedette')
@@ -96,8 +96,8 @@
     <script src="{{ asset('js/home-v2/destinations-search.js') }}"></script>
     <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
     {{-- Charger le service API pour la carte interactive --}}
-    <script src="{{ asset('js/home-v2/map-api-service.js') }}"></script>
-    <script src="{{ asset('js/home-v2/interactive-map-dynamic.js') }}"></script>
+    <!-- <script src="{{ asset('js/home-v2/map-api-service.js') }}"></script>
+    <script src="{{ asset('js/home-v2/interactive-map-dynamic.js') }}"></script> -->
     {{-- Charger video-modal.js EN PREMIER car les autres composants en dépendent --}}
     <script src="{{ asset('js/video-modal.js') }}"></script>
     <script src="{{ asset('js/home-v2/viewing-carousel.js') }}"></script>

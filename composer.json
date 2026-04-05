@@ -38,6 +38,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
+            "Vendor\\GeoMap\\": "packages/vendor/geo-map/src/",
             "Vendor\\Theme\\": "packages/vendor/Theme/src/",
             "Vendor\\Destination\\": "packages/vendor/Destination/src/"
         },
