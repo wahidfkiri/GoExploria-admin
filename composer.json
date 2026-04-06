@@ -41,7 +41,7 @@
             "Vendor\\GeoMap\\": "packages/vendor/geo-map/src/",
             "Vendor\\Theme\\": "packages/vendor/Theme/src/",
             "Vendor\\Destination\\": "packages/vendor/Destination/src/",
-            "Vendor\\Cms\\": "packages/vendor/Cms/src/"
+            "Vendor\\Cms\\": "packages/vendor/cms/src/"
         },
         "files": [
             "app/Helpers/helpers.php"
