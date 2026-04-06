@@ -973,14 +973,6 @@ class InteractiveMap {
             { value: 'lake', label: 'Lac', icon: 'fas fa-water', color: '#0bc5ea' }
         ];
     }
-
-    openGalleryImage(url) {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:3000;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
-    overlay.innerHTML = `<img src="${url}" style="max-width:90vw;max-height:90vh;border-radius:8px;object-fit:contain;">`;
-    overlay.addEventListener('click', () => overlay.remove());
-    document.body.appendChild(overlay);
-}
     
     async init() {
         try {
@@ -1271,6 +1263,17 @@ class InteractiveMap {
     `;
 }
     
+    showPlaceModal(place) {
+        const modal = document.getElementById('place-modal');
+        const modalContent = document.getElementById('modal-content');
+        
+        if (!modal || !modalContent) return;
+        
+        modalContent.innerHTML = this.createModalContent(place);
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+    
     createModalContent(place) {
     let youtubeId = place.youtube_id;
     if (youtubeId && youtubeId.includes('?')) {
@@ -1510,7 +1513,6 @@ class InteractiveMap {
             </div>
         </div>
     `;
-
 }
     
     getDirections(place) {
