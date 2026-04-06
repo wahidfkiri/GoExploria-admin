@@ -66,7 +66,61 @@ class CDNController extends Controller
     }
     
     /**
-     * Upload de fichier
+     * Sanitize filename to be safe for storage
+     */
+    protected function sanitizeFilename($filename)
+    {
+        // Remove any path information
+        $filename = basename($filename);
+        
+        // Remove any NULL bytes
+        $filename = str_replace(chr(0), '', $filename);
+        
+        // Replace spaces and special characters with underscore
+        $filename = preg_replace('/[^a-zA-Z0-9._-]/', '_', $filename);
+        
+        // Remove multiple consecutive underscores
+        $filename = preg_replace('/_+/', '_', $filename);
+        
+        // Remove leading/trailing dots and underscores
+        $filename = trim($filename, '._');
+        
+        // Ensure filename is not empty
+        if (empty($filename)) {
+            $filename = 'file_' . time();
+        }
+        
+        return $filename;
+    }
+    
+    /**
+     * Check if file exists and generate unique name if needed
+     */
+    protected function getUniqueFilename($path, $filename, $preserveOriginal = true)
+    {
+        if (!$preserveOriginal) {
+            // Generate random unique name
+            $extension = pathinfo($filename, PATHINFO_EXTENSION);
+            return Str::random(40) . '.' . $extension;
+        }
+        
+        $fullPath = trim($path . '/' . $filename, '/');
+        $counter = 1;
+        $originalFilename = $filename;
+        $nameWithoutExt = pathinfo($filename, PATHINFO_FILENAME);
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        
+        while (Storage::disk('cdn')->exists($fullPath)) {
+            $filename = $nameWithoutExt . '_' . $counter . (!empty($extension) ? '.' . $extension : '');
+            $fullPath = trim($path . '/' . $filename, '/');
+            $counter++;
+        }
+        
+        return $filename;
+    }
+    
+    /**
+     * Upload de fichier - preserves original filenames
      */
     public function upload(Request $request)
     {
@@ -92,6 +146,7 @@ class CDNController extends Controller
             'has_file' => $request->hasFile('file'),
             'path' => $request->input('path', ''),
             'visibility' => $request->input('visibility', 'public'),
+            'preserve_filename' => $request->input('preserve_filename', true),
             'ip' => $request->ip(),
             'user_agent' => $request->userAgent()
         ]);
@@ -101,7 +156,8 @@ class CDNController extends Controller
             $validator = validator($request->all(), [
                 'file' => 'required|file|max:1002400', // 100MB max
                 'path' => 'nullable|string|max:255',
-                'visibility' => 'nullable|in:public,private'
+                'visibility' => 'nullable|in:public,private',
+                'preserve_filename' => 'nullable|boolean'
             ]);
             
             if ($validator->fails()) {
@@ -121,6 +177,7 @@ class CDNController extends Controller
             $file = $request->file('file');
             $path = $request->input('path', '');
             $visibility = $request->input('visibility', 'public');
+            $preserveFilename = $request->input('preserve_filename', true);
             
             $originalName = $file->getClientOriginalName();
             $originalExtension = $file->getClientOriginalExtension();
@@ -133,18 +190,30 @@ class CDNController extends Controller
                 'extension' => $originalExtension,
                 'size' => $fileSize,
                 'mime' => $fileMime,
-                'temp_path' => $file->getPathname()
+                'temp_path' => $file->getPathname(),
+                'preserve_filename' => $preserveFilename
             ]);
             
-            // Générer un nom unique
-            $filename = Str::random(40) . '.' . $originalExtension;
+            // Generate filename based on preserve flag
+            if ($preserveFilename) {
+                // Sanitize original filename
+                $filename = $this->sanitizeFilename($originalName);
+                // Check for duplicates and generate unique name if needed
+                $filename = $this->getUniqueFilename($path, $filename, true);
+            } else {
+                // Generate random unique name (backward compatibility)
+                $filename = Str::random(40) . '.' . $originalExtension;
+            }
+            
             $fullPath = trim($path . '/' . $filename, '/');
             
             Log::channel('cdn_upload')->info('Storing file', [
                 'request_id' => $requestId,
                 'full_path' => $fullPath,
                 'filename' => $filename,
-                'visibility' => $visibility
+                'original_name' => $originalName,
+                'visibility' => $visibility,
+                'preserved' => $preserveFilename
             ]);
             
             // Stocker le fichier
@@ -161,7 +230,9 @@ class CDNController extends Controller
                     'url' => $fileUrl,
                     'size' => $fileSize,
                     'duration_ms' => $duration,
-                    'original_name' => $originalName
+                    'original_name' => $originalName,
+                    'stored_name' => $filename,
+                    'preserved' => $preserveFilename
                 ]);
                 
                 return response()->json([
@@ -173,6 +244,7 @@ class CDNController extends Controller
                     'mime_type' => $fileMime,
                     'filename' => $filename,
                     'original_name' => $originalName,
+                    'preserved' => $preserveFilename,
                     'duration_ms' => $duration
                 ], 201);
             }
@@ -207,7 +279,7 @@ class CDNController extends Controller
     }
     
     /**
-     * Upload multiple
+     * Upload multiple files - preserves original filenames
      */
     public function uploadMultiple(Request $request)
     {
@@ -232,13 +304,15 @@ class CDNController extends Controller
             'request_id' => $requestId,
             'files_count' => count($request->file('files', [])),
             'path' => $request->input('path', ''),
+            'preserve_filename' => $request->input('preserve_filename', true),
             'ip' => $request->ip()
         ]);
         
         try {
             $validator = validator($request->all(), [
                 'files.*' => 'required|file|max:102400',
-                'path' => 'nullable|string'
+                'path' => 'nullable|string',
+                'preserve_filename' => 'nullable|boolean'
             ]);
             
             if ($validator->fails()) {
@@ -258,11 +332,23 @@ class CDNController extends Controller
             $uploaded = [];
             $errors = [];
             $totalSize = 0;
+            $preserveFilename = $request->input('preserve_filename', true);
             
             foreach ($request->file('files') as $index => $file) {
                 try {
-                    $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
-                    $path = $request->input('path', '');
+                    $originalName = $file->getClientOriginalName();
+                    
+                    if ($preserveFilename) {
+                        // Sanitize original filename
+                        $filename = $this->sanitizeFilename($originalName);
+                        $path = $request->input('path', '');
+                        // Check for duplicates
+                        $filename = $this->getUniqueFilename($path, $filename, true);
+                    } else {
+                        // Generate random unique name
+                        $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
+                    }
+                    
                     $fullPath = trim($path . '/' . $filename, '/');
                     
                     $fileSize = $file->getSize();
@@ -271,9 +357,11 @@ class CDNController extends Controller
                     Log::channel('cdn_upload')->debug('Processing file in multiple upload', [
                         'request_id' => $requestId,
                         'index' => $index,
-                        'original_name' => $file->getClientOriginalName(),
+                        'original_name' => $originalName,
+                        'stored_name' => $filename,
                         'size' => $fileSize,
-                        'target_path' => $fullPath
+                        'target_path' => $fullPath,
+                        'preserved' => $preserveFilename
                     ]);
                     
                     Storage::disk('cdn')->put($fullPath, file_get_contents($file));
@@ -281,9 +369,11 @@ class CDNController extends Controller
                     $uploaded[] = [
                         'path' => $fullPath,
                         'url' => Storage::disk('cdn')->url($fullPath),
-                        'original_name' => $file->getClientOriginalName(),
+                        'original_name' => $originalName,
+                        'filename' => $filename,
                         'size' => $fileSize,
-                        'mime_type' => $file->getMimeType()
+                        'mime_type' => $file->getMimeType(),
+                        'preserved' => $preserveFilename
                     ];
                     
                 } catch (\Exception $e) {
@@ -309,7 +399,8 @@ class CDNController extends Controller
                 'uploaded_count' => count($uploaded),
                 'failed_count' => count($errors),
                 'total_size' => $totalSize,
-                'duration_ms' => $duration
+                'duration_ms' => $duration,
+                'preserved' => $preserveFilename
             ]);
             
             return response()->json([
@@ -320,6 +411,7 @@ class CDNController extends Controller
                 'failed_count' => count($errors),
                 'uploaded' => $uploaded,
                 'errors' => $errors,
+                'preserved' => $preserveFilename,
                 'duration_ms' => $duration
             ], count($errors) > 0 ? 207 : 200); // 207 Multi-Status
             
@@ -529,7 +621,8 @@ class CDNController extends Controller
                     'url' => Storage::disk('cdn')->url($file),
                     'size' => Storage::disk('cdn')->size($file),
                     'last_modified' => Storage::disk('cdn')->lastModified($file),
-                    'mime_type' => Storage::disk('cdn')->mimeType($file)
+                    'mime_type' => Storage::disk('cdn')->mimeType($file),
+                    'filename' => basename($file)
                 ];
             }, $files);
             
