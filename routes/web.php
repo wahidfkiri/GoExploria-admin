@@ -279,3 +279,5 @@ Route::prefix('pages')->name('pages.')->group(function () {
         return view('home-v2.pages.video-player');
     })->name('video-player');
 });
+
+
