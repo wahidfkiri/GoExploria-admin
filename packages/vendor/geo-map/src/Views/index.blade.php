@@ -1305,19 +1305,20 @@ class InteractiveMap {
         </div>
     ` : '';
 
-   // In createModalContent, replace the galleryHtml images map:
-const MEDIA_BASE = 'https://admin.goexploriabusiness.com/storage/';
-
-const galleryHtml = (place.images && place.images.length > 0) ? `
+   const galleryHtml = (place.images && place.images.length > 0) ? `
     <div style="margin-bottom:30px;">
         <h4 style="color:#333; margin-bottom:15px; font-size:1.1rem;">
             <i class="fas fa-images" style="color:#4299e1;"></i> Galerie photos
         </h4>
         <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:10px;">
             ${place.images.map((img) => {
-                const fullUrl  = MEDIA_BASE + (img.url       || '').replace(/^\/?(storage\/)?/, '');
-                const thumbUrl = img.thumbnail 
-                    ? MEDIA_BASE + img.thumbnail.replace(/^\/?(storage\/)?/, '')
+                const fullUrl = (img.url || '').startsWith('http')
+                    ? img.url
+                    : MEDIA_BASE + (img.url || '').replace(/^\/?(storage\/)?/, '');
+                const thumbUrl = img.thumbnail
+                    ? (img.thumbnail.startsWith('http')
+                        ? img.thumbnail
+                        : MEDIA_BASE + img.thumbnail.replace(/^\/?(storage\/)?/, ''))
                     : fullUrl;
                 return `
                     <div onclick="window.mapApp.openGalleryImage('${fullUrl}')"
