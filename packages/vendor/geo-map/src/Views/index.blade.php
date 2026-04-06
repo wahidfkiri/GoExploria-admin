@@ -1510,6 +1510,7 @@ class InteractiveMap {
             </div>
         </div>
     `;
+    
 }
     
     getDirections(place) {
