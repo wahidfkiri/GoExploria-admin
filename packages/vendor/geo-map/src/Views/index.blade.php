@@ -1305,42 +1305,18 @@ class InteractiveMap {
         </div>
     ` : '';
 
-   const fixUrl = (url) => (url || '').replace(
-    'https://goexploriabusiness.com', 
-    'https://admin.goexploriabusiness.com'
-);
-
-const fullUrl  = fixUrl(img.url);
-const thumbUrl = fixUrl(img.thumbnail) || fullUrl;
-
-const galleryHtml = (place.images && place.images.length > 0) ? `
+   const galleryHtml = (place.images && place.images.length > 0) ? `
     <div style="margin-bottom:30px;">
-        <h4 style="color:#333; margin-bottom:15px; font-size:1.1rem;">
-            <i class="fas fa-images" style="color:#4299e1;"></i> Galerie photos
-        </h4>
-        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:10px;">
-            ${place.images.map((img) => {
-                const fixUrl  = (url) => (url || '').replace(
-                    'https://goexploriabusiness.com',
-                    'https://admin.goexploriabusiness.com'
-                );
-                const fullUrl  = fixUrl(img.url);
-                const thumbUrl = fixUrl(img.thumbnail) || fullUrl;
-                return `
-                    <div onclick="window.mapApp.openGalleryImage('${fullUrl}')"
-                         style="aspect-ratio:1; border-radius:10px; overflow:hidden; cursor:pointer; background:#f0f0f0; position:relative;">
-                        <img src="${thumbUrl}" alt="${this.escapeHtml(img.caption || '')}"
-                             style="width:100%; height:100%; object-fit:cover; transition:transform .3s ease;"
-                             onmouseover="this.style.transform='scale(1.05)'"
-                             onmouseout="this.style.transform='scale(1)'"
-                             loading="lazy">
-                        ${img.caption ? `
-                            <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.55); color:white; font-size:10px; padding:4px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                                ${this.escapeHtml(img.caption)}
-                            </div>` : ''}
-                    </div>`;
-            }).join('')}
-        </div>
+        ...
+        ${place.images.map((img) => {
+            const fixUrl  = (url) => (url || '').replace(
+                'https://goexploriabusiness.com',
+                'https://admin.goexploriabusiness.com'
+            );
+            const fullUrl  = fixUrl(img.url);
+            const thumbUrl = fixUrl(img.thumbnail) || fullUrl;
+            return `...`;
+        }).join('')}
     </div>
 ` : '';
 
