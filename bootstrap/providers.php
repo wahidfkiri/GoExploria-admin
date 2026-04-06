@@ -8,4 +8,5 @@ return [
     Vendor\Destination\DestinationServiceProvider::class,
     Vendor\GeoMap\GeoMapServiceProvider::class,
     Vendor\Cms\CmsServiceProvider::class,
+    Vendor\Cms\Providers\CmsViewServiceProvider::class,
 ];
