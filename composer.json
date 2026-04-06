@@ -40,7 +40,8 @@
             "Database\\Seeders\\": "database/seeders/",
             "Vendor\\GeoMap\\": "packages/vendor/geo-map/src/",
             "Vendor\\Theme\\": "packages/vendor/Theme/src/",
-            "Vendor\\Destination\\": "packages/vendor/Destination/src/"
+            "Vendor\\Destination\\": "packages/vendor/Destination/src/",
+            "Vendor\\Cms\\": "packages/vendor/Cms/src/"
         },
         "files": [
             "app/Helpers/helpers.php"

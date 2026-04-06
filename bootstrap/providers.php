@@ -7,4 +7,5 @@ return [
     Vendor\Theme\ThemeServiceProvider::class,
     Vendor\Destination\DestinationServiceProvider::class,
     Vendor\GeoMap\GeoMapServiceProvider::class,
+    Vendor\Cms\CmsServiceProvider::class,
 ];
