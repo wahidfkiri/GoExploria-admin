@@ -50,6 +50,7 @@ class WebThemeController extends Controller
             $previewTheme = Theme::where('slug', $previewThemeSlug)->first();
             
             if ($previewTheme) {
+                return NULL;
                 $this->previewMode = true;
                 // Stocker en session pour les pages suivantes
                 session([
@@ -59,7 +60,6 @@ class WebThemeController extends Controller
                 ]);
                 $theme = $previewTheme;
             } else {
-                return NULL;
                 $theme = $this->getThemeToUse();
             }
         } 
