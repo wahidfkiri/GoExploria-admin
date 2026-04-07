@@ -65,7 +65,7 @@ class WebThemeController extends Controller
         // Vérifier la session
         elseif (session()->has('theme_preview_mode') && session('theme_preview_mode') === true) {
             $this->previewMode = true;
-           return $previewThemeId = session('preview_theme_id');
+            $previewThemeId = session('preview_theme_id');
             if ($previewThemeId) {
                 $previewTheme = Theme::find($previewThemeId);
                 if ($previewTheme) {
