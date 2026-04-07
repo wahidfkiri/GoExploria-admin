@@ -59,6 +59,7 @@ class WebThemeController extends Controller
                 ]);
                 $theme = $previewTheme;
             } else {
+                return NULL;
                 $theme = $this->getThemeToUse();
             }
         } 
@@ -80,7 +81,6 @@ class WebThemeController extends Controller
             }
         } 
         else {
-            return NULL;
             $theme = $this->getThemeToUse();
         }
         
