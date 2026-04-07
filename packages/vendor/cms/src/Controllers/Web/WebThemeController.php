@@ -38,9 +38,8 @@ class WebThemeController extends Controller
      */
     public function home(Request $request, $etablissementId)
     {
-        return null;
         // Récupérer l'établissement
-        $etablissement = Etablissement::findOrFail($etablissementId);
+       return $etablissement = Etablissement::findOrFail($etablissementId);
         $this->etablissement = $etablissement;
         
         // Vérifier le paramètre preview_theme dans l'URL (GET)
