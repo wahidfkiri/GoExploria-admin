@@ -240,7 +240,7 @@ public function asset($etablissementId, $themeId, $path)
         $theme = Theme::findOrFail($themeId);
         
         // Nouveau chemin avec l'ID de l'établissement
-        $fullPath = storage_path("app/public/cms/themes/{$etablissementId}/{$theme->slug}/assets/{$path}");
+        $fullPath = storage_path("app/public/cms/themes/{$theme->slug}/assets/{$path}");
         $fullPath = str_replace('\\', '/', $fullPath);
         
         if (!File::exists($fullPath)) {
@@ -613,7 +613,7 @@ protected function getThemePath($theme)
     $slug = $theme->slug;
     
     // Nouveau chemin: storage/app/public/cms/themes/{etablissementId}/{slug}/
-    $path = storage_path("app/public/cms/themes/{$etablissementId}/{$slug}");
+    $path = storage_path("app/public/cms/themes/{$slug}");
     
     return rtrim($path, '/');
 }
