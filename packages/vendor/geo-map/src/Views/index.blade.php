@@ -862,7 +862,7 @@
                 <i class="fas fa-map-marked-alt"></i> Explorer
             </span>
             <h2 class="section-title-map">ACTIVEZ VOS EXPACES DESTINATIONS</h2>
-            <p class="section-subtitle-map">Découvrez nos lieux d'intérêt business et tourisme sur la carte</p>
+            <!-- <p class="section-subtitle-map">Découvrez nos lieux d'intérêt business et tourisme sur la carte</p> -->
         </div>
         
         <div class="col-lg-12">
