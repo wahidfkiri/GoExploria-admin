@@ -47,7 +47,7 @@ class WebThemeController extends Controller
         
         if ($previewThemeSlug) {
             // Chercher le thème par slug (sans condition d'établissement)
-          return  $previewTheme = Theme::where('slug', $previewThemeSlug)->first();
+            $previewTheme = Theme::where('slug', $previewThemeSlug)->first();
             
             if ($previewTheme) {
                 $this->previewMode = true;
@@ -80,7 +80,7 @@ class WebThemeController extends Controller
             }
         } 
         else {
-            $theme = $this->getThemeToUse();
+          return  $theme = $this->getThemeToUse();
         }
         
         if (!$theme) {
