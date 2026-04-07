@@ -38,6 +38,7 @@ class WebThemeController extends Controller
      */
     public function home(Request $request, $etablissementId)
     {
+        return null;
         // Récupérer l'établissement
         $etablissement = Etablissement::findOrFail($etablissementId);
         $this->etablissement = $etablissement;
@@ -50,7 +51,6 @@ class WebThemeController extends Controller
             $previewTheme = Theme::where('slug', $previewThemeSlug)->first();
             
             if ($previewTheme) {
-                return NULL;
                 $this->previewMode = true;
                 // Stocker en session pour les pages suivantes
                 session([
