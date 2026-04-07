@@ -395,6 +395,7 @@ html {
     height: 100%;
     opacity: 0;
     transition: opacity 1.5s ease-in-out;
+    overflow: hidden;
 }
 
 .video-slide.active {
@@ -406,6 +407,23 @@ html {
     height: 100%;
     object-fit: cover;
     object-position: center center;
+}
+
+/* YouTube/Vimeo iframes : object-fit ne fonctionne pas sur iframe,
+   on utilise la technique 16:9 de couverture absolue               */
+iframe.video-background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* Couvre le conteneur quel que soit son ratio */
+    width: 100vw;
+    height: 56.25vw;     /* 16:9 de la largeur viewport */
+    min-height: 100%;    /* jamais plus court que le conteneur */
+    min-width: 177.78vh; /* 16:9 de la hauteur viewport */
+    transform: translate(-50%, -50%);
+    border: none;
+    pointer-events: none;
+    object-fit: unset;
 }
 
 /* Video overlay désactivé pour afficher les vraies vidéos sans transparence

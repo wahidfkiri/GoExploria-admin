@@ -15,10 +15,11 @@
 .search-bar-v2-container {
     max-width: 2000px;
     margin: 0 auto;
-    padding: 0 10px;
+    padding: 0 16px;
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 20px;
+    overflow: hidden;
 }
 
 /* Section Destinations (Globe + Texte + Liens) */
@@ -145,15 +146,65 @@
     color: #0a1628;
 }
 
-/* Logo Plan-n-go à droite */
-.search-bar-v2-brand {
+/* Boutons icônes rapides */
+.search-bar-v2-quick-links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     flex-shrink: 0;
 }
 
+.quick-link-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.icon-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.icon-standard {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+}
+
+.icon-standard:hover {
+    background: rgba(212, 175, 55, 0.18);
+    border-color: rgba(212, 175, 55, 0.5);
+    color: #d4af37;
+}
+
+.quick-link-item.active .icon-standard,
+.quick-link-item.info-trigger.active .icon-standard {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: #d4af37;
+    color: #d4af37;
+}
+
+/* Logo Plan-n-go à droite */
+.search-bar-v2-brand {
+    flex-shrink: 0;
+    line-height: 0;
+}
+
 .search-bar-v2-logo {
-    height: 45px;
+    height: 40px;
     width: auto;
+    max-width: 120px;
     object-fit: contain;
+    display: block;
 }
 
 /* Dropdown des résultats */
@@ -404,9 +455,11 @@
 /* Tablette */
 @media (max-width: 1024px) {
     .search-bar-v2-container {
-        padding: 0 30px;
-        gap: 20px;
+        padding: 0 20px;
+        gap: 14px;
     }
+    .icon-circle { width: 32px; height: 32px; font-size: 12px; }
+    .search-bar-v2-logo { height: 36px; max-width: 100px; }
 
     .search-bar-v2-destinations-title {
         font-size: 14px;
@@ -508,16 +561,27 @@
         font-size: 14px;
     }
 
-    /* Ligne 3: Logo Plan-n-go centré */
-    .search-bar-v2-brand {
+    /* Quick-links : ligne centrée sous la recherche */
+    .search-bar-v2-quick-links {
         order: 3;
+        justify-content: center;
+        width: 100%;
+        padding: 0 5px;
+    }
+    .icon-circle { width: 36px; height: 36px; }
+
+    /* Ligne 4: Logo Plan-n-go centré */
+    .search-bar-v2-brand {
+        order: 4;
         text-align: center;
         padding: 0 5px;
-        margin-top: 8px;
+        margin-top: 4px;
     }
 
     .search-bar-v2-logo {
-        height: 40px;
+        height: 36px;
+        max-width: 110px;
+        margin: 0 auto;
     }
 
     .search-bar-v2-results-list {

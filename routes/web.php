@@ -278,4 +278,8 @@ Route::prefix('pages')->name('pages.')->group(function () {
     Route::get('/video-player', function() {
         return view('home-v2.pages.video-player');
     })->name('video-player');
+
+    Route::get('/accord-mets-vins', function() {
+        return view('home-v2.pages.accord-mets-vins');
+    })->name('accord-mets-vins');
 });

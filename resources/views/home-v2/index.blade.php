@@ -34,7 +34,6 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/events-vedette.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-vedette.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/restaurants-vedette.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/home-v2/menu-accord-mets-vins.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/page-6-packages.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/page-3-infos.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/page-5-tourism.css') }}">
@@ -46,6 +45,8 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/agency-section.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/partners-master.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/real-estate.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/restaurant-header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/resa-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/footer.css') }}">
 </head>
 <body>
@@ -58,8 +59,8 @@
         @include('home-v2.components.VideoPlayer')
         @include('home-v2.components.EventsVedette')
         @include('home-v2.components.DestinationsVedette')
-        @include('home-v2.components.RestaurantsVedette')
-        @include('home-v2.components.MenuAccordMetsVins')
+        {{-- Entête standard restaurant — autonome, hors template --}}
+        @include('home-v2.components.RestaurantHeader')
         @include('home-v2.components.TravelPackages')
         @include('home-v2.components.TravelInfos')
         @include('home-v2.components.TourismSection')
@@ -71,6 +72,9 @@
         @include('home-v2.components.WebServices')
     </main>
     
+    {{-- Modal réservation global Table & Vin --}}
+    @include('home-v2.components.ResaModal')
+
     {{-- Modal vidéo réutilisable pour toute la plateforme --}}
     @include('components.VideoModal')
     

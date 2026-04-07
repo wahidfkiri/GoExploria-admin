@@ -1,0 +1,2138 @@
+/* ============================================================
+   RESTAURANT SERVICE BLOCK — Standard Template
+   GoExploria · Accord Mets & Vins
+   ============================================================ */
+
+/* ---- Forcer Montserrat sur tout le bloc (écrase Bootstrap / héritage navigateur) ---- */
+.resto-service-block,
+.resto-service-block *,
+.resto-service-block *::before,
+.resto-service-block *::after {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* ---- Wrapper global de la section ---- */
+.resto-service-block {
+    width: calc(100% - 64px);
+    max-width: 1600px;
+    margin: 32px auto;
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+}
+
+.resto-header-block {
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+    background: #ede8df;
+    position: relative;
+    overflow: hidden;
+}
+
+.resto-header-block::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230a1628' fill-opacity='0.025'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ============================================================
+   ZONE PRINCIPALE : logo gauche | centre | logo droit
+   ============================================================ */
+.resto-header-main {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 160px 1fr 160px;
+    align-items: center;
+    gap: 20px;
+    padding: 28px 32px 22px;
+    min-height: 140px;
+}
+
+/* ---- Logo gauche : restaurant ---- */
+.resto-header-logo-left,
+.resto-header-logo-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.resto-header-logo-left .logo-wrapper,
+.resto-header-logo-right .logo-wrapper {
+    width: 115px;
+    height: 115px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.75);
+    border: 3px solid rgba(10, 22, 40, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+}
+
+.resto-header-logo-left .logo-wrapper:hover,
+.resto-header-logo-right .logo-wrapper:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 28px rgba(0,0,0,0.4);
+}
+
+.resto-header-logo-left .logo-wrapper img,
+.resto-header-logo-right .logo-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    padding: 0;
+}
+
+.resto-logo-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(10,22,40,0.65);
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* ---- Colonne centre ---- */
+.resto-header-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+}
+
+.resto-header-title {
+    font-size: clamp(18px, 2.4vw, 28px);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #0a1628;
+    line-height: 1.2;
+    text-shadow: none;
+    margin: 0;
+}
+
+.resto-header-subtitle {
+    font-size: clamp(11px, 1.1vw, 14px);
+    font-weight: 500;
+    color: rgba(10,22,40,0.68);
+    line-height: 1.55;
+    max-width: 520px;
+    margin: 0;
+    text-shadow: none;
+}
+
+/* ---- Onglets catégories ---- */
+.resto-header-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.resto-tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 10px;
+    background: rgba(10,22,40,0.12);
+    color: #0a1628;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    transition: background 0.25s ease, color 0.25s ease;
+    margin-right: 2px;
+}
+
+.resto-tab-btn.active .resto-tab-count {
+    background: rgba(255,255,255,0.3);
+    color: #ffffff;
+}
+
+.resto-tab-btn {
+    padding: 6px 18px;
+    border-radius: 20px;
+    border: 2px solid rgba(10,22,40,0.28);
+    background: rgba(255,255,255,0.55);
+    color: #0a1628;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.resto-tab-btn:hover {
+    background: rgba(255,255,255,0.9);
+    border-color: rgba(10,22,40,0.55);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.resto-tab-btn.active {
+    background: #c0392b;
+    border-color: #c0392b;
+    color: #ffffff;
+    box-shadow: 0 3px 14px rgba(192,57,43,0.5);
+}
+
+/* ============================================================
+   DROPDOWN ÉVÉNEMENTS
+   ============================================================ */
+.resto-events-dropdown {
+    position: relative;
+    display: inline-flex;
+}
+
+.resto-events-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: linear-gradient(135deg, rgba(242,101,34,0.12), rgba(242,101,34,0.06));
+    border-color: rgba(242,101,34,0.5);
+    color: #c0392b;
+}
+
+.resto-events-btn:hover {
+    background: linear-gradient(135deg, rgba(242,101,34,0.22), rgba(242,101,34,0.1));
+    border-color: #f26522;
+    color: #c0392b;
+}
+
+.resto-events-dropdown.open .resto-events-btn {
+    background: linear-gradient(135deg, rgba(242,101,34,0.22), rgba(242,101,34,0.1));
+    border-color: #f26522;
+}
+
+.resto-events-chevron {
+    font-size: 10px !important;
+    transition: transform 0.25s ease;
+}
+
+.resto-events-dropdown.open .resto-events-chevron {
+    transform: rotate(180deg);
+}
+
+/* Menu déroulant */
+.resto-events-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 220px;
+    background: #ffffff;
+    border: 1px solid rgba(10,22,40,0.12);
+    border-radius: 10px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+    z-index: 200;
+    animation: eventsMenuIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.resto-events-dropdown.open .resto-events-menu {
+    display: block;
+}
+
+@keyframes eventsMenuIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(-6px) scale(0.96); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+.resto-events-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    color: #0a1628;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.18s ease, color 0.18s ease;
+    border-bottom: 1px solid rgba(10,22,40,0.06);
+}
+
+.resto-events-item:last-child {
+    border-bottom: none;
+}
+
+.resto-events-item i {
+    width: 16px;
+    text-align: center;
+    color: #f26522;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.resto-events-item:hover {
+    background: rgba(242,101,34,0.07);
+    color: #c0392b;
+}
+
+.resto-events-item:hover i {
+    color: #c0392b;
+}
+
+/* ---- Bouton autonome Plans Go Next Level ---- */
+.resto-plans-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    background: linear-gradient(135deg, rgba(212,175,55,0.18), rgba(212,175,55,0.08));
+    border: 1.5px solid rgba(212,175,55,0.6);
+    border-radius: 6px;
+    color: #d4af37;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+}
+
+.resto-plans-btn:hover {
+    background: linear-gradient(135deg, rgba(212,175,55,0.35), rgba(212,175,55,0.15));
+    border-color: #d4af37;
+    color: #f0c93a;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(212,175,55,0.3);
+}
+
+.resto-plans-btn i {
+    font-size: 12px;
+}
+
+/* ============================================================
+   BARRE DE DESTINATIONS (bas du banner)
+   ============================================================ */
+.resto-header-destinations-bar {
+    position: relative;
+    z-index: 1;
+    background: rgba(10, 22, 40, 0.07);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 32px;
+    border-top: 1px solid rgba(10,22,40,0.12);
+}
+
+/* Ligne 1 : icône destinations + breadcrumb */
+.resto-dest-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* Ligne 2 : CTAs + Plans + Langue */
+.resto-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    width: 100%;
+    flex-wrap: wrap;
+    padding-top: 8px;
+    border-top: 1px solid rgba(10,22,40,0.1);
+}
+
+.resto-dest-icon-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(242, 101, 34, 0.2);
+    border: 1px solid rgba(242, 101, 34, 0.45);
+    border-radius: 6px;
+    padding: 6px 12px;
+    flex-shrink: 0;
+}
+
+.resto-dest-icon-box img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+.resto-dest-icon-box span {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #f26522;
+}
+
+.resto-dest-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.resto-dest-link {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #0a1628;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+}
+
+.resto-dest-link:hover,
+.resto-dest-link.active {
+    color: #f26522;
+}
+
+.resto-dest-link.active {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.resto-dest-sep {
+    color: rgba(10,22,40,0.35);
+    font-size: 14px;
+    font-weight: 300;
+}
+
+/* ---- CTAs droite ---- */
+.resto-header-ctas {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.resto-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 20px;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.resto-cta-btn.primary {
+    background: #c0392b;
+    color: #ffffff;
+    box-shadow: 0 3px 12px rgba(192,57,43,0.4);
+}
+
+.resto-cta-btn.primary:hover {
+    background: #a93226;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(192,57,43,0.6);
+}
+
+.resto-cta-btn.secondary {
+    background: rgba(10,22,40,0.06);
+    color: #0a1628;
+    border: 2px solid rgba(10,22,40,0.3);
+}
+
+.resto-cta-btn.secondary:hover {
+    background: rgba(10,22,40,0.12);
+    border-color: rgba(10,22,40,0.55);
+    transform: translateY(-1px);
+}
+
+.resto-cta-btn .cta-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+/* ---- Ligne déco animée ---- */
+.resto-header-shimmer {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #c0392b, #f26522, #d4af37, #f26522, #c0392b);
+    background-size: 300% 100%;
+    animation: resto-shimmer 3s linear infinite;
+}
+
+@keyframes resto-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ============================================================
+   SECTION MÉDIA — Carousel + Vidéo
+   ============================================================ */
+.resto-media-strip {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 0;
+    background: #0e1a2e;
+    position: relative;
+}
+
+/* ---- Carousel photos ---- */
+.resto-carousel {
+    position: relative;
+    overflow: hidden;
+    height: 320px;
+    background: #000;
+}
+
+.resto-carousel-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+}
+
+.resto-carousel-slide {
+    flex: 0 0 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.resto-carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.resto-carousel-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 16px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.75));
+    color: rgba(255,255,255,0.9);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.resto-carousel-caption i {
+    color: #f26522;
+    margin-right: 6px;
+}
+
+.resto-carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    color: #ffffff;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 5;
+    font-size: 13px;
+}
+
+.resto-carousel-btn:hover {
+    background: rgba(242,101,34,0.8);
+    border-color: #f26522;
+}
+
+.resto-carousel-btn.prev { left: 12px; }
+.resto-carousel-btn.next { right: 12px; }
+
+.resto-carousel-dots {
+    position: absolute;
+    bottom: 42px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 7px;
+    z-index: 5;
+}
+
+.resto-carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    padding: 0;
+}
+
+.resto-carousel-dot.active {
+    background: #f26522;
+    transform: scale(1.3);
+}
+
+/* ---- Vidéo featured ---- */
+.resto-video-featured {
+    display: flex;
+    flex-direction: column;
+    background: #0a1628;
+    border-left: 1px solid rgba(255,255,255,0.08);
+}
+
+.resto-video-thumb {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.resto-video-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.resto-video-thumb:hover img {
+    transform: scale(1.05);
+}
+
+.resto-video-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.38);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.resto-video-thumb:hover .resto-video-overlay {
+    background: rgba(0,0,0,0.55);
+}
+
+.resto-video-play-circle {
+    width: 54px;
+    height: 54px;
+    background: rgba(242,101,34,0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 8px rgba(242,101,34,0.25);
+    transition: all 0.3s ease;
+}
+
+.resto-video-thumb:hover .resto-video-play-circle {
+    background: #f26522;
+    box-shadow: 0 0 0 12px rgba(242,101,34,0.2);
+    transform: scale(1.1);
+}
+
+.resto-video-play-circle i {
+    color: #ffffff;
+    font-size: 18px;
+    margin-left: 3px;
+}
+
+.resto-video-info {
+    flex: 1;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+}
+
+.resto-video-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #f26522;
+}
+
+.resto-video-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.3;
+    margin: 0;
+}
+
+.resto-video-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.resto-video-watch-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #e84c10, #f26522);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    align-self: flex-start;
+    margin-top: 4px;
+}
+
+.resto-video-watch-btn:hover {
+    background: linear-gradient(135deg, #d44010, #e55a1a);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(242,101,34,0.45);
+}
+
+/* ---- Lightbox vidéo ---- */
+.resto-video-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+}
+
+.resto-video-lightbox.active {
+    display: flex;
+}
+
+.resto-video-lightbox-inner {
+    position: relative;
+    width: 90vw;
+    max-width: 960px;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+}
+
+.resto-video-lightbox-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background 0.2s ease;
+}
+
+.resto-video-lightbox-close:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.resto-video-iframe-wrap {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+}
+
+.resto-video-iframe-wrap iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ---- Responsive media strip ---- */
+@media (max-width: 900px) {
+    .resto-media-strip {
+        grid-template-columns: 1fr;
+    }
+    .resto-carousel {
+        height: 240px;
+    }
+    .resto-video-featured {
+        flex-direction: row;
+        height: 120px;
+        border-left: none;
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .resto-video-thumb {
+        width: 180px;
+        height: 120px;
+        flex-shrink: 0;
+    }
+}
+
+@media (max-width: 560px) {
+    .resto-video-featured {
+        flex-direction: column;
+        height: auto;
+    }
+    .resto-video-thumb {
+        width: 100%;
+        height: 160px;
+    }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+    .resto-header-main {
+        grid-template-columns: 120px 1fr 120px;
+        padding: 20px 20px 16px;
+    }
+
+    .resto-header-logo-left .logo-wrapper,
+    .resto-header-logo-right .logo-wrapper {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* ---- Bloc sans marge sur mobile ---- */
+    .resto-service-block {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .resto-header-main {
+        grid-template-columns: 1fr;
+        padding: 16px 14px 14px;
+        gap: 12px;
+        min-height: auto;
+    }
+
+    .resto-header-logo-left { order: 2; flex-direction: row; justify-content: center; }
+    .resto-header-center    { order: 1; }
+    .resto-header-logo-right{ order: 3; flex-direction: row; justify-content: center; }
+
+    .resto-header-logo-left .logo-wrapper,
+    .resto-header-logo-right .logo-wrapper {
+        width: 64px;
+        height: 64px;
+    }
+
+    .resto-header-destinations-bar {
+        padding: 10px 14px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .resto-dest-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .resto-dest-breadcrumb {
+        display: none;
+    }
+
+    /* ---- Ligne actions : colonne sur mobile ---- */
+    .resto-actions-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding-top: 8px;
+        justify-content: flex-start;
+    }
+
+    .resto-header-ctas {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .resto-cta-btn {
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    .resto-plans-btn,
+    .resto-events-nav-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* ---- Sélecteur de langue pleine largeur ---- */
+    .resto-lang-switcher {
+        width: 100%;
+    }
+
+    .resto-lang-select {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .resto-header-tabs {
+        gap: 5px;
+    }
+
+    .resto-tab-btn {
+        font-size: 10px;
+        padding: 5px 10px;
+    }
+
+    .resto-cta-btn {
+        font-size: 11px;
+        padding: 8px 12px;
+    }
+
+    .resto-header-title {
+        font-size: 15px;
+        letter-spacing: 1px;
+    }
+
+    .resto-header-subtitle {
+        font-size: 11px;
+    }
+
+    /* ---- Événements : 1 colonne ---- */
+    .resto-events-grid {
+        grid-template-columns: 1fr;
+        padding: 16px 12px;
+    }
+
+    .resto-events-header {
+        padding: 24px 14px 18px;
+    }
+
+    .resto-events-types-bar {
+        padding: 12px 12px;
+        gap: 6px;
+    }
+
+    .resto-event-type-btn {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+
+    /* ---- Plans : 1 colonne compact ---- */
+    .resto-plans-inner {
+        padding: 40px 14px 32px;
+    }
+
+    .resto-plans-grid {
+        gap: 14px;
+    }
+
+    .resto-plan-header {
+        padding: 30px 18px 16px;
+    }
+
+    .resto-plan-features {
+        padding: 16px 18px;
+    }
+
+    .resto-plan-cta {
+        margin: 0 18px 18px;
+    }
+
+    .resto-plans-footer {
+        flex-direction: column;
+        gap: 14px;
+        align-items: center;
+    }
+}
+
+/* ============================================================
+   ZONE CONTENU : filtre actif + grille de cartes
+   ============================================================ */
+.resto-content-area {
+    background: #f5f5f5;
+    padding: 32px;
+}
+
+.resto-content-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ---- Barre de filtre actif ---- */
+.resto-filter-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.resto-filter-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+}
+
+.resto-filter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f26522;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 14px;
+    border-radius: 20px;
+}
+
+.resto-filter-badge.dest {
+    background: #0a1628;
+}
+
+.resto-filter-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    margin-left: auto;
+}
+
+/* ---- Grille de cartes ---- */
+.resto-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    min-height: 200px;
+    width: 100%;
+}
+
+/* ---- Carte restaurant ---- */
+.resto-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.resto-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 32px rgba(0,0,0,0.14);
+}
+
+.resto-card.hidden {
+    display: none;
+}
+
+.resto-card-img {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.resto-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.resto-card:hover .resto-card-img img {
+    transform: scale(1.05);
+}
+
+.resto-card-badges {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.resto-badge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    color: #fff;
+    background: #c0392b;
+}
+
+.resto-badge.cat-entrees      { background: #27ae60; }
+.resto-badge.cat-mets         { background: #2980b9; }
+.resto-badge.cat-desserts     { background: #8e44ad; }
+.resto-badge.cat-vins         { background: #c0392b; }
+.resto-badge.cat-toutes       { background: #f26522; }
+
+.resto-card-rating {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+    background: rgba(0,0,0,0.65);
+    color: #ffd700;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+}
+
+.resto-price-overlay {
+    position: absolute;
+    bottom: 10px;
+    left: 12px;
+    background: #c0392b;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 900;
+    padding: 4px 14px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.resto-card-subcategory {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #999;
+}
+
+/* ---- Corps de la carte ---- */
+.resto-card-body {
+    padding: 18px 18px 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.resto-card-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0a1628;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.resto-card-dest {
+    font-size: 11px;
+    font-weight: 600;
+    color: #f26522;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.resto-card-desc {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+}
+
+.resto-card-accord {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #7d3c98;
+    background: #f5eef8;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+/* ---- Footer carte ---- */
+.resto-card-footer {
+    padding: 12px 18px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #f0f0f0;
+    gap: 10px;
+}
+
+.resto-card-price {
+    font-size: 13px;
+    font-weight: 800;
+    color: #0a1628;
+}
+
+.resto-card-reserve-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #c0392b;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.resto-card-reserve-btn:hover {
+    background: #a93226;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(192,57,43,0.45);
+}
+
+/* ---- Message aucun résultat ---- */
+.resto-no-results {
+    display: none;
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.resto-no-results i {
+    display: block;
+    font-size: 40px;
+    margin-bottom: 12px;
+    color: #ddd;
+}
+
+/* ============================================================
+   LANGUAGE SWITCHER
+   ============================================================ */
+.resto-lang-switcher {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.resto-lang-switcher > i {
+    color: rgba(10,22,40,0.5);
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.resto-lang-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: rgba(255,255,255,0.65);
+    border: 1.5px solid rgba(10,22,40,0.22);
+    border-radius: 6px;
+    color: #0a1628;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 28px 6px 10px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(10,22,40,0.45)'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 9px center;
+}
+
+.resto-lang-select:hover {
+    border-color: rgba(242,101,34,0.7);
+    background-color: rgba(255,255,255,0.85);
+}
+
+.resto-lang-select:focus {
+    border-color: #f26522;
+    box-shadow: 0 0 0 2px rgba(242,101,34,0.2);
+}
+
+.resto-lang-select option {
+    background: #ffffff;
+    color: #0a1628;
+    font-size: 13px;
+}
+
+.resto-lang-btn-REMOVED {
+    background: transparent;
+    border: none;
+    padding: 4px 7px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.resto-lang-btn-REMOVED:hover {
+    color: #ffffff;
+    background: rgba(255,255,255,0.1);
+}
+
+.resto-lang-sep-REMOVED {
+    color: rgba(255,255,255,0.2);
+    font-size: 12px;
+    font-weight: 300;
+    pointer-events: none;
+}
+
+/* ============================================================
+   BOUTON ÉVÉNEMENTS (barre actions)
+   ============================================================ */
+.resto-events-nav-btn {
+    background: linear-gradient(135deg, rgba(192,57,43,0.12), rgba(192,57,43,0.06));
+    color: #c0392b;
+    border: 1.5px solid rgba(192,57,43,0.45) !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.resto-events-nav-btn:hover {
+    background: linear-gradient(135deg, rgba(192,57,43,0.22), rgba(192,57,43,0.1));
+    border-color: #c0392b !important;
+    color: #a93226;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(192,57,43,0.25);
+}
+
+/* ============================================================
+   SECTION ÉVÉNEMENTS
+   ============================================================ */
+.resto-events-section {
+    background: #f7f4f0;
+    font-family: 'Montserrat', sans-serif;
+    padding: 0 0 48px;
+}
+
+/* ---- En-tête de section ---- */
+.resto-events-header {
+    text-align: center;
+    padding: 48px 32px 32px;
+    background: linear-gradient(180deg, #ede8df 0%, #f7f4f0 100%);
+    border-bottom: 1px solid rgba(10,22,40,0.08);
+}
+
+.resto-events-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #c0392b;
+    margin-bottom: 12px;
+}
+
+.resto-events-eyebrow i {
+    font-size: 13px;
+}
+
+.resto-events-title {
+    font-size: clamp(20px, 2.5vw, 30px);
+    font-weight: 900;
+    color: #0a1628;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.resto-events-lead {
+    font-size: 14px;
+    color: rgba(10,22,40,0.6);
+    margin: 0;
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.55;
+}
+
+/* ---- Barre de types ---- */
+.resto-events-types-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    background: #ffffff;
+    border-bottom: 2px solid rgba(10,22,40,0.07);
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.resto-events-types-bar::-webkit-scrollbar { display: none; }
+
+.resto-event-type-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 18px;
+    border-radius: 22px;
+    border: 1.5px solid rgba(10,22,40,0.2);
+    background: transparent;
+    color: #0a1628;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    flex-shrink: 0;
+}
+
+.resto-type-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 10px;
+    background: rgba(10,22,40,0.1);
+    color: #0a1628;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    transition: background 0.22s ease, color 0.22s ease;
+    flex-shrink: 0;
+}
+
+.resto-event-type-btn.active .resto-type-count {
+    background: rgba(255,255,255,0.28);
+    color: #ffffff;
+}
+
+.resto-event-type-btn i {
+    font-size: 12px;
+    color: #f26522;
+    transition: color 0.22s ease;
+}
+
+.resto-event-type-btn:hover {
+    border-color: #c0392b;
+    color: #c0392b;
+    background: rgba(192,57,43,0.06);
+    transform: translateY(-1px);
+}
+
+.resto-event-type-btn:hover i {
+    color: #c0392b;
+}
+
+.resto-event-type-btn.active {
+    background: #c0392b;
+    border-color: #c0392b;
+    color: #ffffff;
+    box-shadow: 0 3px 12px rgba(192,57,43,0.38);
+}
+
+.resto-event-type-btn.active i {
+    color: #ffffff;
+}
+
+/* ---- Grille cartes ---- */
+.resto-events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ---- Carte événement ---- */
+.resto-event-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.resto-event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.13);
+}
+
+.resto-event-card.hidden {
+    display: none;
+}
+
+.resto-event-card-img {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.resto-event-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.resto-event-card:hover .resto-event-card-img img {
+    transform: scale(1.05);
+}
+
+.resto-event-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #c0392b;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.resto-event-card-body {
+    padding: 18px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.resto-event-card-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #0a1628;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.resto-event-card-desc {
+    font-size: 12px;
+    color: rgba(10,22,40,0.6);
+    margin: 0;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.resto-event-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    gap: 10px;
+}
+
+.resto-event-card-price {
+    font-size: 15px;
+    font-weight: 900;
+    color: #c0392b;
+}
+
+.resto-event-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    flex-shrink: 0;
+}
+
+.resto-event-card-cta:hover {
+    background: linear-gradient(135deg, #a93226, #c0392b);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(192,57,43,0.4);
+}
+
+/* ---- Aucun résultat ---- */
+.resto-events-no-results {
+    display: none;
+    grid-column: 1 / -1;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 60px 20px;
+    color: rgba(10,22,40,0.4);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.resto-events-no-results i {
+    font-size: 40px;
+    color: rgba(10,22,40,0.2);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .resto-events-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        padding: 24px 16px;
+    }
+    .resto-events-header {
+        padding: 32px 20px 24px;
+    }
+    .resto-events-types-bar {
+        padding: 16px 16px;
+    }
+}
+
+/* ============================================================
+   SECTION PLANS GO NEXT LEVEL
+   ============================================================ */
+.resto-plans-section {
+    background: linear-gradient(180deg, #0a1628 0%, #111d35 100%);
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Topbar orange GoExploria */
+.resto-plans-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 10px 32px;
+    background: linear-gradient(90deg, #e84c10, #f26522 50%, #f9a52c);
+    flex-wrap: wrap;
+}
+
+.resto-plans-topbar-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.resto-plans-topbar-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.92);
+}
+
+/* Inner content */
+.resto-plans-inner {
+    max-width: 1340px;
+    margin: 0 auto;
+    padding: 72px 40px 64px;
+}
+
+/* Heading */
+.resto-plans-heading {
+    text-align: center;
+    margin-bottom: 52px;
+}
+
+.resto-plans-eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #f26522;
+    margin-bottom: 12px;
+}
+
+.resto-plans-title {
+    font-size: clamp(26px, 3vw, 42px);
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0 0 16px;
+    line-height: 1.15;
+}
+
+.resto-plans-highlight {
+    color: #f26522;
+}
+
+.resto-plans-lead {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.7;
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* Grid des plans */
+.resto-plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-bottom: 48px;
+}
+
+/* Carte plan */
+.resto-plan-card {
+    background: #0f1d33;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.resto-plan-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+
+.resto-plan-card.featured {
+    background: linear-gradient(160deg, #1a2f50, #0f1d33);
+    border-color: #f26522;
+    box-shadow: 0 0 40px rgba(242,101,34,0.2);
+    transform: translateY(-8px);
+}
+
+.resto-plan-card.featured:hover {
+    transform: translateY(-14px);
+}
+
+/* Badge recommandé */
+.resto-plan-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #e84c10, #f26522);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 4px 20px;
+    border-radius: 0 0 10px 10px;
+    white-space: nowrap;
+}
+
+/* Header de la carte */
+.resto-plan-header {
+    padding: 40px 28px 24px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.resto-plan-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 14px;
+    background: rgba(242,101,34,0.12);
+    border: 1px solid rgba(242,101,34,0.3);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #f26522;
+}
+
+.resto-plan-card.featured .resto-plan-icon {
+    background: rgba(242,101,34,0.22);
+    border-color: #f26522;
+}
+
+.resto-plan-name {
+    font-size: 18px;
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.resto-plan-price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 3px;
+    margin-bottom: 10px;
+}
+
+.resto-plan-amount {
+    font-size: 44px;
+    font-weight: 900;
+    color: #f26522;
+    line-height: 1;
+}
+
+.resto-plan-currency {
+    font-size: 22px;
+    font-weight: 700;
+    color: #f26522;
+}
+
+.resto-plan-period {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+}
+
+.resto-plan-tagline {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Liste features */
+.resto-plan-features {
+    list-style: none;
+    margin: 0;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.resto-plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+}
+
+.resto-plan-features li i.fa-check {
+    color: #27ae60;
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+.resto-plan-feat-no {
+    opacity: 0.38;
+}
+
+.resto-plan-feat-no i.fa-times {
+    color: #e74c3c;
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+/* CTA bouton plan */
+.resto-plan-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 28px 28px;
+    padding: 13px 20px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.resto-plan-cta.starter {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: #ffffff;
+}
+
+.resto-plan-cta.starter:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.35);
+}
+
+.resto-plan-cta.pro {
+    background: linear-gradient(135deg, #e84c10, #f26522);
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(242,101,34,0.4);
+}
+
+.resto-plan-cta.pro:hover {
+    background: linear-gradient(135deg, #d44010, #e55a1a);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px rgba(242,101,34,0.55);
+}
+
+.resto-plan-cta.premium {
+    background: rgba(212,175,55,0.12);
+    border: 1px solid rgba(212,175,55,0.4);
+    color: #d4af37;
+}
+
+.resto-plan-cta.premium:hover {
+    background: rgba(212,175,55,0.22);
+    border-color: #d4af37;
+    transform: translateY(-1px);
+}
+
+/* Footer de la section plans */
+.resto-plans-footer {
+    text-align: center;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.resto-plans-footer p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.38);
+    margin: 0;
+}
+
+.resto-plans-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: transparent;
+    border: 1px solid rgba(242,101,34,0.4);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #f26522;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.resto-plans-contact:hover {
+    background: rgba(242,101,34,0.1);
+    border-color: #f26522;
+    transform: scale(1.02);
+}
+
+/* ---- Responsive Plans ---- */
+@media (max-width: 1024px) {
+    .resto-plans-grid { grid-template-columns: repeat(2, 1fr); }
+    .resto-plan-card.featured { transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+    .resto-plans-grid { grid-template-columns: 1fr; }
+    .resto-plans-inner { padding: 48px 20px 40px; }
+    .resto-lang-switcher { margin-left: 8px; }
+}
+
+/* ============================================================
+   SECTION RÉSERVATION (ancre cible)
+   ============================================================ */
+.resto-reservation-section {
+    background: #0a1628;
+    padding: 48px 32px;
+    text-align: center;
+}
+
+.resto-reservation-section h3 {
+    font-size: 22px;
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0 0 10px;
+}
+
+.resto-reservation-section p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin: 0 0 28px;
+}
+
+.resto-reservation-form {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.resto-reservation-form select,
+.resto-reservation-form input[type="date"],
+.resto-reservation-form input[type="number"] {
+    padding: 12px 16px;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
+    color: #ffffff;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    flex: 1;
+    min-width: 140px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.resto-reservation-form select option {
+    background: #0a1628;
+    color: #ffffff;
+}
+
+.resto-reservation-form select:focus,
+.resto-reservation-form input:focus {
+    border-color: #f26522;
+}
+
+.resto-reservation-submit {
+    padding: 12px 28px;
+    background: #c0392b;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.resto-reservation-submit:hover {
+    background: #a93226;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(192,57,43,0.5);
+}
+
+/* ============================================================
+   RESPONSIVE — contenu
+   ============================================================ */
+@media (max-width: 1280px) {
+    .resto-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .resto-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .resto-content-area {
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .resto-cards-grid {
+        grid-template-columns: 1fr;
+    }
+    .resto-content-area {
+        padding: 20px 16px;
+    }
+    .resto-reservation-section {
+        padding: 36px 16px;
+    }
+    .resto-reservation-form {
+        flex-direction: column;
+    }
+}
