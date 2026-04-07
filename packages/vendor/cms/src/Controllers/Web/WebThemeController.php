@@ -39,7 +39,7 @@ class WebThemeController extends Controller
     public function home(Request $request, $etablissementId)
     {
         // Récupérer l'établissement
-       return $etablissement = Etablissement::findOrFail($etablissementId);
+        $etablissement = Etablissement::findOrFail($etablissementId);
         $this->etablissement = $etablissement;
         
         // Vérifier le paramètre preview_theme dans l'URL (GET)
@@ -47,7 +47,7 @@ class WebThemeController extends Controller
         
         if ($previewThemeSlug) {
             // Chercher le thème par slug (sans condition d'établissement)
-            $previewTheme = Theme::where('slug', $previewThemeSlug)->first();
+          return  $previewTheme = Theme::where('slug', $previewThemeSlug)->first();
             
             if ($previewTheme) {
                 $this->previewMode = true;
