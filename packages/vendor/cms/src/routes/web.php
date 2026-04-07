@@ -10,9 +10,6 @@ use Vendor\Cms\Controllers\Web\WebThemeController;
 |--------------------------------------------------------------------------
 */
 Route::middleware(['web'])->group(function () {
-    Route::get('/test-cms', function () {
-        return 'Le CMS est opérationnel !';
-    });
     // Redirection de la racine vers le premier établissement
     // Route::get('/', function () {
     //     $etablissement = \App\Models\Etablissement::first();

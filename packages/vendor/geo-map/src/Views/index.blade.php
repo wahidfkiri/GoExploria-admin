@@ -62,12 +62,31 @@
             color: transparent;
             line-height: 1.2;
         }
+        .section-title-map {
+                font-size: clamp(18px, 2.4vw, 28px);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #0a1628;
+    line-height: 1.2;
+    text-shadow: none;
+    margin: 0;
+        }
 
         .section-subtitle {
             font-size: 1.2rem;
             color: var(--gray);
             max-width: 700px;
             margin: 0 auto;
+        }
+        .section-subtitle-map {
+            font-size: clamp(11px, 1.1vw, 14px);
+    font-weight: 500;
+    color: rgba(10, 22, 40, 0.68);
+    line-height: 1.55;
+    max-width: 520px;
+    margin: 0;
+    text-shadow: none;
         }
 
         .business-tourism-section {
@@ -842,8 +861,8 @@
             <span class="section-tag">
                 <i class="fas fa-map-marked-alt"></i> Explorer
             </span>
-            <h2 class="section-title">Notre Carte Interactive</h2>
-            <p class="section-subtitle">Découvrez nos lieux d'intérêt business et tourisme sur la carte</p>
+            <h2 class="section-title-map">ACTIVEZ VOS EXPACES DESTINATIONS</h2>
+            <p class="section-subtitle-map">Découvrez nos lieux d'intérêt business et tourisme sur la carte</p>
         </div>
         
         <div class="col-lg-12">
