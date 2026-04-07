@@ -80,6 +80,7 @@ class WebThemeController extends Controller
             }
         } 
         else {
+            return NULL;
             $theme = $this->getThemeToUse();
         }
         
