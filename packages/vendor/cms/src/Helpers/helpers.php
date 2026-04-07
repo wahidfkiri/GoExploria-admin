@@ -118,11 +118,11 @@ if (!function_exists('getThemeStoragePath')) {
         
         if ($theme->isCdnStorage()) {
             // For CDN, return the virtual path
-            return "cms/themes/{$etablissementId}/{$theme->slug}";
+            return "cms/themes/{$theme->slug}";
         }
         
         // Local storage path
-        return storage_path("app/public/cms/themes/{$etablissementId}/{$theme->slug}");
+        return storage_path("app/public/cms/themes/{$theme->slug}");
     }
 }
 
@@ -145,11 +145,11 @@ if (!function_exists('theme_asset')) {
         // Check if theme uses CDN storage
          if ($theme->isCdnStorage()) {
             $cdnUrl = rtrim(env('THEME_CDN_URL', 'https://goexploriabusiness.com'), '/');
-            return "{$cdnUrl}/storage/theme/cms/themes/{$etablissement->id}/{$theme->slug}/assets/" . ltrim($path, '/');
+            return "{$cdnUrl}/storage/theme/cms/themes/{$theme->slug}/assets/" . ltrim($path, '/');
         }
         
         // Local storage URL
-        return url("/storage/cms/themes/{$etablissement->id}/{$theme->slug}/assets/" . ltrim($path, '/'));
+        return url("/storage/cms/themes/{$theme->slug}/assets/" . ltrim($path, '/'));
     }
 }
 
@@ -171,11 +171,11 @@ if (!function_exists('theme_path')) {
         
         if ($theme->isCdnStorage()) {
             // For CDN, return the virtual path (no physical file)
-            return "cms/themes/{$etablissement->id}/{$theme->slug}/" . ltrim($path, '/');
+            return "cms/themes/{$theme->slug}/" . ltrim($path, '/');
         }
         
         // Local storage path
-        return storage_path("app/public/cms/themes/{$etablissement->id}/{$theme->slug}/" . ltrim($path, '/'));
+        return storage_path("app/public/cms/themes/{$theme->slug}/" . ltrim($path, '/'));
     }
 }
 
@@ -197,8 +197,8 @@ if (!function_exists('render_theme_view')) {
         }
         
         $themePath = $theme->isCdnStorage() 
-            ? "cms/themes/{$etablissement->id}/{$theme->slug}"
-            : storage_path("app/public/cms/themes/{$etablissement->id}/{$theme->slug}");
+            ? "cms/themes/{$theme->slug}"
+            : storage_path("app/public/cms/themes/{$theme->slug}");
         
         $viewPath = str_replace('.', '/', $view);
         
@@ -537,11 +537,11 @@ if (!function_exists('get_theme_file_content')) {
         
         if ($theme->isCdnStorage()) {
             $cdnService = app(\App\Services\CDNService::class);
-            $fullPath = "cms/themes/{$etablissement->id}/{$theme->slug}/" . ltrim($relativePath, '/');
+            $fullPath = "cms/themes/{$theme->slug}/" . ltrim($relativePath, '/');
             return $cdnService->getFile($fullPath);
         }
         
-        $fullPath = storage_path("app/public/cms/themes/{$etablissement->id}/{$theme->slug}/" . ltrim($relativePath, '/'));
+        $fullPath = storage_path("app/public/cms/themes/{$theme->slug}/" . ltrim($relativePath, '/'));
         if (file_exists($fullPath)) {
             return file_get_contents($fullPath);
         }
