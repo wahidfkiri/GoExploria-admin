@@ -140,9 +140,9 @@ if (!function_exists('theme_asset')) {
         $etablissement = getCurrentEtablissement();
         $theme = getCurrentTheme();
         
-        if (!$etablissement || !$theme) {
-            return asset($path);
-        }
+        // if (!$etablissement || !$theme) {
+        //     return asset($path);
+        // }
         
         // Check if theme uses CDN storage
          if ($theme->isCdnStorage()) {
