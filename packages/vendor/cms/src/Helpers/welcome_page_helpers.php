@@ -471,7 +471,6 @@ if (!function_exists('get_slider_items')) {
         // Récupérer les items du slider depuis les settings (groupe 'slider')
         $sliderSettings = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
             ->where('group', 'slider')
-            ->orderBy('order', 'asc')
             ->limit($limit)
             ->get();
         
