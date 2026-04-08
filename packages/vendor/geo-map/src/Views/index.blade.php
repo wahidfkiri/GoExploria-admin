@@ -242,7 +242,7 @@
 </style>
 
 <!-- HTML -->
-<div class="container mt-5 mb-5" id="plans-daffichage-mondial" id="carte-interactive">
+<div class="container mt-5 mb-5" id="carte-interactive">
     <div class="row">
         <div class="design-bosse-block" style="margin-bottom:-30px !important;">
             <h2 class="design-bosse-title">ACTIVEZ VOS EXPACES DESTINATIONS</h2>
