@@ -448,9 +448,11 @@ if (!function_exists('get_social_settings_form')) {
 
 // ==================== SLIDER HELPERS ====================
 
+// ==================== SLIDER HELPERS (sans Media) ====================
+
 if (!function_exists('get_slider_items')) {
     /**
-     * Get slider items (images/videos) for the current establishment.
+     * Get slider items (images/videos) for the current establishment from settings table.
      * 
      * @param int|null $etablissementId
      * @param int $limit
@@ -466,39 +468,46 @@ if (!function_exists('get_slider_items')) {
             return collect([]);
         }
         
-        // Récupérer les médias du slider depuis les settings
-        $sliderItems = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
+        // Récupérer les items du slider depuis les settings (groupe 'slider')
+        $sliderSettings = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
             ->where('group', 'slider')
-            // ->orderBy('order', 'asc')
+            ->orderBy('order', 'asc')
             ->limit($limit)
             ->get();
         
-        if ($sliderItems->isEmpty()) {
-            // Fallback: récupérer les médias récents
-            return \Vendor\Cms\Models\Media::where('etablissement_id', $etablissement->id)
-                ->whereIn('type', ['image', 'video'])
-                ->orderBy('created_at', 'desc')
-                ->limit($limit)
-                ->get();
-        }
-        
         $items = collect();
-        foreach ($sliderItems as $setting) {
+        
+        foreach ($sliderSettings as $setting) {
             $value = json_decode($setting->value, true);
-            if ($value && isset($value['media_id'])) {
-                $media = \Vendor\Cms\Models\Media::find($value['media_id']);
-                if ($media) {
-                    $items->push((object)[
-                        'media' => $media,
-                        'title' => $value['title'] ?? '',
-                        'subtitle' => $value['subtitle'] ?? '',
-                        'button_text' => $value['button_text'] ?? '',
-                        'button_link' => $value['button_link'] ?? '',
-                        'order' => $setting->order ?? 0,
-                    ]);
+            
+            if ($value && isset($value['type'])) {
+                // Construire l'URL complète pour l'image/vidéo
+                $mediaUrl = $value['url'] ?? '';
+                
+                // Si c'est un chemin local, construire l'URL Storage
+                if ($mediaUrl && !filter_var($mediaUrl, FILTER_VALIDATE_URL)) {
+                    $mediaUrl = \Storage::disk('public')->url($mediaUrl);
                 }
+                
+                $items->push((object)[
+                    'id' => $setting->id,
+                    'type' => $value['type'] ?? 'image', // 'image' ou 'video'
+                    'url' => $mediaUrl,
+                    'title' => $value['title'] ?? '',
+                    'subtitle' => $value['subtitle'] ?? '',
+                    'button_text' => $value['button_text'] ?? '',
+                    'button_link' => $value['button_link'] ?? '',
+                    'order' => $setting->order ?? 0,
+                    'is_active' => $value['is_active'] ?? true,
+                    'video_html' => $value['video_html'] ?? null, // Pour les vidéos embed (YouTube, Vimeo)
+                ]);
             }
         }
+        
+        // Filtrer les items inactifs
+        $items = $items->filter(function($item) {
+            return $item->is_active === true;
+        });
         
         return $items;
     }
@@ -528,6 +537,7 @@ if (!function_exists('get_slider_html')) {
             'height' => '85vh',
             'min_height' => '550px',
             'overlay_opacity' => 0.65,
+            'overlay_color' => 'rgba(0,0,0,0.5)',
         ];
         
         $options = array_merge($defaultOptions, $options);
@@ -539,37 +549,51 @@ if (!function_exists('get_slider_html')) {
         $html .= '<div class="swiper-wrapper">';
         
         foreach ($items as $item) {
-            $media = $item->media;
-            $isVideo = $media->isVideo();
-            
             $html .= '<div class="swiper-slide">';
             
-            if ($isVideo) {
-                $html .= '<video class="slide-media" autoplay muted loop playsinline>';
-                $html .= '<source src="' . $media->url . '" type="' . $media->mime_type . '">';
-                $html .= '</video>';
+            if ($item->type === 'video') {
+                // Pour les vidéos uploadées localement
+                if ($item->url && !str_contains($item->url, 'youtube') && !str_contains($item->url, 'vimeo')) {
+                    $html .= '<video class="slide-media" autoplay muted loop playsinline>';
+                    $html .= '<source src="' . e($item->url) . '" type="video/mp4">';
+                    $html .= '</video>';
+                } 
+                // Pour les vidéos embed (YouTube, Vimeo)
+                elseif ($item->video_html) {
+                    $html .= '<div class="video-embed">';
+                    $html .= $item->video_html;
+                    $html .= '</div>';
+                }
+                // Fallback: image
+                else {
+                    $html .= '<img src="' . e($item->url) . '" class="slide-media" alt="' . e($item->title) . '">';
+                }
             } else {
-                $html .= '<img src="' . $media->url . '" class="slide-media" alt="' . e($item->title) . '">';
+                $html .= '<img src="' . e($item->url) . '" class="slide-media" alt="' . e($item->title) . '">';
             }
             
-            $html .= '<div class="slide-overlay" style="background: linear-gradient(135deg, rgba(0,0,0,' . $options['overlay_opacity'] . ') 0%, rgba(0,0,0,' . ($options['overlay_opacity'] + 0.1) . ') 100%);">';
-            $html .= '<div class="hero-content">';
-            
-            if ($item->title) {
-                $html .= '<h2>' . e($item->title) . '</h2>';
-            }
-            if ($item->subtitle) {
-                $html .= '<p>' . e($item->subtitle) . '</p>';
-            }
-            
-            if ($item->button_text && $item->button_link) {
-                $html .= '<div class="btn-group">';
-                $html .= '<a href="' . e($item->button_link) . '" class="btn-primary">' . e($item->button_text) . '</a>';
+            // Overlay avec contenu textuel
+            if ($item->title || $item->subtitle || $item->button_text) {
+                $html .= '<div class="slide-overlay" style="background: linear-gradient(135deg, ' . $options['overlay_color'] . ' 0%, rgba(0,0,0,' . ($options['overlay_opacity'] + 0.1) . ') 100%);">';
+                $html .= '<div class="hero-content">';
+                
+                if ($item->title) {
+                    $html .= '<h2>' . e($item->title) . '</h2>';
+                }
+                if ($item->subtitle) {
+                    $html .= '<p>' . e($item->subtitle) . '</p>';
+                }
+                
+                if ($item->button_text && $item->button_link) {
+                    $html .= '<div class="btn-group">';
+                    $html .= '<a href="' . e($item->button_link) . '" class="btn-primary">' . e($item->button_text) . '</a>';
+                    $html .= '</div>';
+                }
+                
+                $html .= '</div>';
                 $html .= '</div>';
             }
             
-            $html .= '</div>';
-            $html .= '</div>';
             $html .= '</div>';
         }
         
@@ -588,14 +612,16 @@ if (!function_exists('get_slider_html')) {
         
         // JavaScript pour initialiser Swiper
         $html .= '<script>
-            document.addEventListener("DOMContentLoaded", function() {
-                new Swiper(".' . $sliderId . '", {
-                    loop: ' . ($options['loop'] ? 'true' : 'false') . ',
-                    autoplay: { delay: ' . $options['autoplay_delay'] . ', disableOnInteraction: false },
-                    pagination: { el: ".swiper-pagination", clickable: true },
-                    navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }
+            if (typeof Swiper !== "undefined") {
+                document.addEventListener("DOMContentLoaded", function() {
+                    new Swiper(".' . $sliderId . '", {
+                        loop: ' . ($options['loop'] ? 'true' : 'false') . ',
+                        autoplay: { delay: ' . $options['autoplay_delay'] . ', disableOnInteraction: false },
+                        pagination: { el: ".swiper-pagination", clickable: true },
+                        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }
+                    });
                 });
-            });
+            }
         </script>';
         
         return $html;
@@ -613,6 +639,220 @@ if (!function_exists('has_slider')) {
     {
         $items = get_slider_items($etablissementId);
         return !$items->isEmpty();
+    }
+}
+
+if (!function_exists('add_slider_item')) {
+    /**
+     * Add an item to the slider.
+     *
+     * @param string $type 'image' or 'video'
+     * @param string $url URL or storage path
+     * @param array $data
+     * @param int|null $etablissementId
+     * @return \Vendor\Cms\Models\Setting|null
+     */
+    function add_slider_item($type, $url, $data = [], $etablissementId = null)
+    {
+        $etablissement = $etablissementId 
+            ? \App\Models\Etablissement::find($etablissementId)
+            : getCurrentEtablissement();
+        
+        if (!$etablissement) {
+            return null;
+        }
+        
+        // Compter le nombre d'items existants pour l'ordre
+        $count = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
+            ->where('group', 'slider')
+            ->count();
+        
+        $value = json_encode([
+            'type' => $type,
+            'url' => $url,
+            'title' => $data['title'] ?? '',
+            'subtitle' => $data['subtitle'] ?? '',
+            'button_text' => $data['button_text'] ?? '',
+            'button_link' => $data['button_link'] ?? '',
+            'video_html' => $data['video_html'] ?? null,
+            'is_active' => $data['is_active'] ?? true,
+        ]);
+        
+        return \Vendor\Cms\Models\Setting::create([
+            'etablissement_id' => $etablissement->id,
+            'group' => 'slider',
+            'key' => 'slider_item_' . ($count + 1),
+            'value' => $value,
+            'type' => 'json',
+            'order' => $count + 1,
+        ]);
+    }
+}
+
+if (!function_exists('update_slider_item')) {
+    /**
+     * Update a slider item.
+     *
+     * @param int $itemId
+     * @param array $data
+     * @param int|null $etablissementId
+     * @return bool
+     */
+    function update_slider_item($itemId, $data, $etablissementId = null)
+    {
+        $etablissement = $etablissementId 
+            ? \App\Models\Etablissement::find($etablissementId)
+            : getCurrentEtablissement();
+        
+        if (!$etablissement) {
+            return false;
+        }
+        
+        $setting = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
+            ->where('group', 'slider')
+            ->where('id', $itemId)
+            ->first();
+        
+        if (!$setting) {
+            return false;
+        }
+        
+        $currentValue = json_decode($setting->value, true);
+        $newValue = array_merge($currentValue, $data);
+        
+        return $setting->update([
+            'value' => json_encode($newValue)
+        ]);
+    }
+}
+
+if (!function_exists('remove_slider_item')) {
+    /**
+     * Remove an item from the slider.
+     *
+     * @param int $itemId
+     * @param int|null $etablissementId
+     * @return bool
+     */
+    function remove_slider_item($itemId, $etablissementId = null)
+    {
+        $etablissement = $etablissementId 
+            ? \App\Models\Etablissement::find($etablissementId)
+            : getCurrentEtablissement();
+        
+        if (!$etablissement) {
+            return false;
+        }
+        
+        return \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
+            ->where('group', 'slider')
+            ->where('id', $itemId)
+            ->delete();
+    }
+}
+
+if (!function_exists('update_slider_order')) {
+    /**
+     * Update slider items order.
+     *
+     * @param array $order (['item_id' => order_number])
+     * @param int|null $etablissementId
+     * @return bool
+     */
+    function update_slider_order($order, $etablissementId = null)
+    {
+        $etablissement = $etablissementId 
+            ? \App\Models\Etablissement::find($etablissementId)
+            : getCurrentEtablissement();
+        
+        if (!$etabolissement) {
+            return false;
+        }
+        
+        foreach ($order as $itemId => $orderNumber) {
+            \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
+                ->where('group', 'slider')
+                ->where('id', $itemId)
+                ->update(['order' => $orderNumber]);
+        }
+        
+        return true;
+    }
+}
+
+if (!function_exists('get_slider_settings_form')) {
+    /**
+     * Generate HTML form for slider settings.
+     *
+     * @param int|null $etablissementId
+     * @return string
+     */
+    function get_slider_settings_form($etablissementId = null)
+    {
+        $items = get_slider_items($etablissementId);
+        
+        $html = '<div class="slider-settings-form">';
+        $html .= '<div class="slider-items-list">';
+        
+        foreach ($items as $item) {
+            $html .= '<div class="slider-item" data-id="' . $item->id . '">';
+            $html .= '<div class="slider-item-preview">';
+            
+            if ($item->type === 'video') {
+                $html .= '<video src="' . e($item->url) . '" style="width: 100px; height: 60px; object-fit: cover;"></video>';
+            } else {
+                $html .= '<img src="' . e($item->url) . '" style="width: 100px; height: 60px; object-fit: cover;">';
+            }
+            
+            $html .= '</div>';
+            $html .= '<div class="slider-item-info">';
+            $html .= '<h4>' . e($item->title) . '</h4>';
+            $html .= '<p>' . e($item->subtitle) . '</p>';
+            $html .= '</div>';
+            $html .= '<div class="slider-item-actions">';
+            $html .= '<button type="button" class="btn-edit" data-id="' . $item->id . '">Modifier</button>';
+            $html .= '<button type="button" class="btn-delete" data-id="' . $item->id . '">Supprimer</button>';
+            $html .= '<span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>';
+            $html .= '</div>';
+            $html .= '</div>';
+        }
+        
+        $html .= '</div>';
+        
+        $html .= '<div class="slider-add-form">';
+        $html .= '<h3>Ajouter un slide</h3>';
+        $html .= '<div class="form-group">';
+        $html .= '<label>Type</label>';
+        $html .= '<select name="type" class="slider-type">';
+        $html .= '<option value="image">Image</option>';
+        $html .= '<option value="video">Vidéo</option>';
+        $html .= '</select>';
+        $html .= '</div>';
+        $html .= '<div class="form-group">';
+        $html .= '<label>URL du fichier (ou chemin Storage)</label>';
+        $html .= '<input type="text" name="url" class="slider-url" placeholder="/uploads/slide1.jpg ou https://...">';
+        $html .= '</div>';
+        $html .= '<div class="form-group">';
+        $html .= '<label>Titre</label>';
+        $html .= '<input type="text" name="title" class="slider-title">';
+        $html .= '</div>';
+        $html .= '<div class="form-group">';
+        $html .= '<label>Sous-titre</label>';
+        $html .= '<input type="text" name="subtitle" class="slider-subtitle">';
+        $html .= '</div>';
+        $html .= '<div class="form-group">';
+        $html .= '<label>Texte du bouton</label>';
+        $html .= '<input type="text" name="button_text" class="slider-button-text">';
+        $html .= '</div>';
+        $html .= '<div class="form-group">';
+        $html .= '<label>Lien du bouton</label>';
+        $html .= '<input type="text" name="button_link" class="slider-button-link">';
+        $html .= '</div>';
+        $html .= '<button type="button" class="btn-add-slide">Ajouter</button>';
+        $html .= '</div>';
+        $html .= '</div>';
+        
+        return $html;
     }
 }
 
