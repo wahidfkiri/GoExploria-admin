@@ -451,13 +451,6 @@ if (!function_exists('get_social_settings_form')) {
 // ==================== SLIDER HELPERS (sans Media) ====================
 
 if (!function_exists('get_slider_items')) {
-    /**
-     * Get slider items (images/videos) for the current establishment from settings table.
-     * 
-     * @param int|null $etablissementId
-     * @param int $limit
-     * @return \Illuminate\Support\Collection
-     */
     function get_slider_items($etablissementId = null, $limit = 10)
     {
         $etablissement = $etablissementId 
@@ -468,38 +461,37 @@ if (!function_exists('get_slider_items')) {
             return collect([]);
         }
         
-        // Récupérer les items du slider depuis les settings (groupe 'slider')
         $sliderSettings = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
             ->where('group', 'slider')
+            ->orderBy('order', 'asc')
             ->limit($limit)
             ->get();
         
         $items = collect();
         
         foreach ($sliderSettings as $setting) {
-            // 🔥 CORRECTION : Gérer le cas où value est déjà un tableau ou une chaîne JSON
             $value = null;
             
             if (is_string($setting->value)) {
-                // Si c'est une chaîne, décoder le JSON
                 $value = json_decode($setting->value, true);
-                
-                // Si json_decode a échoué, essayer de nettoyer la chaîne
                 if ($value === null && !empty($setting->value)) {
-                    // Nettoyer les caractères invisibles
                     $cleanValue = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $setting->value);
                     $value = json_decode($cleanValue, true);
                 }
             } elseif (is_array($setting->value)) {
-                // Si c'est déjà un tableau, l'utiliser directement
                 $value = $setting->value;
             }
             
             if ($value && isset($value['type'])) {
-                // Construire l'URL complète pour l'image/vidéo
                 $mediaUrl = $value['url'] ?? '';
                 
-                // Si c'est un chemin local, construire l'URL Storage
+                // Construire l'URL pour le poster de la vidéo
+                $posterUrl = $value['poster_url'] ?? '';
+                if ($posterUrl && !filter_var($posterUrl, FILTER_VALIDATE_URL) && !str_starts_with($posterUrl, 'http')) {
+                    $posterUrl = \Storage::disk('public')->url($posterUrl);
+                }
+                
+                // Construire l'URL complète
                 if ($mediaUrl && !filter_var($mediaUrl, FILTER_VALIDATE_URL) && !str_starts_with($mediaUrl, 'http')) {
                     $mediaUrl = \Storage::disk('public')->url($mediaUrl);
                 }
@@ -508,6 +500,7 @@ if (!function_exists('get_slider_items')) {
                     'id' => $setting->id,
                     'type' => $value['type'] ?? 'image',
                     'url' => $mediaUrl,
+                    'poster_url' => $posterUrl,  // 🔥 Ajout du poster pour les vidéos
                     'title' => $value['title'] ?? '',
                     'subtitle' => $value['subtitle'] ?? '',
                     'button_text' => $value['button_text'] ?? '',
@@ -519,7 +512,6 @@ if (!function_exists('get_slider_items')) {
             }
         }
         
-        // Filtrer les items inactifs
         $items = $items->filter(function($item) {
             return $item->is_active === true;
         });
@@ -553,6 +545,9 @@ if (!function_exists('get_slider_html')) {
             'min_height' => '550px',
             'overlay_opacity' => 0.65,
             'overlay_color' => 'rgba(0,0,0,0.5)',
+            'video_autoplay' => true,
+            'video_muted' => true,
+            'video_loop' => true,
         ];
         
         $options = array_merge($defaultOptions, $options);
@@ -563,31 +558,70 @@ if (!function_exists('get_slider_html')) {
         $html .= '<div class="swiper ' . $sliderId . '">';
         $html .= '<div class="swiper-wrapper">';
         
-        foreach ($items as $item) {
-            $html .= '<div class="swiper-slide">';
+        foreach ($items as $index => $item) {
+            $html .= '<div class="swiper-slide" data-type="' . $item->type . '" data-index="' . $index . '">';
             
+            // 🔥 GESTION DES VIDÉOS
             if ($item->type === 'video') {
-                // Pour les vidéos uploadées localement
-                if ($item->url && !str_contains($item->url, 'youtube') && !str_contains($item->url, 'vimeo')) {
-                    $html .= '<video class="slide-media" autoplay muted loop playsinline>';
-                    $html .= '<source src="' . e($item->url) . '" type="video/mp4">';
+                // Cas 1: Vidéo YouTube embed
+                if (str_contains($item->url, 'youtube.com') || str_contains($item->url, 'youtu.be')) {
+                    // Extraire l'ID YouTube
+                    $videoId = '';
+                    if (preg_match('/(?:youtube\\.com\\/(?:[^\\/]+\\/.+\\/|(?:v|e(?:mbed)?)\\/|.*[?&]v=)|youtu\\.be\\/)([^"&?\\s]{11})/', $item->url, $matches)) {
+                        $videoId = $matches[1];
+                    }
+                    $html .= '<div class="video-wrapper-youtube">';
+                    $html .= '<iframe 
+                        src="https://www.youtube.com/embed/' . $videoId . '?autoplay=' . ($options['video_autoplay'] ? '1' : '0') . '&mute=' . ($options['video_muted'] ? '1' : '0') . '&loop=' . ($options['video_loop'] ? '1' : '0') . '&controls=1&rel=0&showinfo=0&modestbranding=1&playsinline=1" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen
+                        class="slide-video-iframe"></iframe>';
+                    $html .= '</div>';
+                }
+                // Cas 2: Vidéo Vimeo embed
+                elseif (str_contains($item->url, 'vimeo.com')) {
+                    $html .= '<div class="video-wrapper-vimeo">';
+                    $html .= '<iframe 
+                        src="' . $item->url . '?autoplay=' . ($options['video_autoplay'] ? '1' : '0') . '&muted=' . ($options['video_muted'] ? '1' : '0') . '&loop=' . ($options['video_loop'] ? '1' : '0') . '&byline=0&portrait=0&title=0" 
+                        frameborder="0" 
+                        allow="autoplay; fullscreen; picture-in-picture" 
+                        allowfullscreen
+                        class="slide-video-iframe"></iframe>';
+                    $html .= '</div>';
+                }
+                // Cas 3: Vidéo HTML5 locale ou externe
+                elseif ($item->url && !empty($item->url)) {
+                    $videoUrl = $item->url;
+                    $posterUrl = $item->poster_url ?? '';
+                    
+                    $html .= '<video class="slide-video" 
+                        ' . ($options['video_autoplay'] ? 'autoplay' : '') . '
+                        ' . ($options['video_muted'] ? 'muted' : '') . '
+                        ' . ($options['video_loop'] ? 'loop' : '') . '
+                        playsinline
+                        ' . ($posterUrl ? 'poster="' . e($posterUrl) . '"' : '') . '>';
+                    $html .= '<source src="' . e($videoUrl) . '" type="video/mp4">';
+                    $html .= 'Votre navigateur ne supporte pas la vidéo.';
                     $html .= '</video>';
-                } 
-                // Pour les vidéos embed (YouTube, Vimeo)
+                }
+                // Cas 4: Vidéo embed HTML personnalisé
                 elseif ($item->video_html) {
-                    $html .= '<div class="video-embed">';
+                    $html .= '<div class="video-wrapper-embed">';
                     $html .= $item->video_html;
                     $html .= '</div>';
                 }
-                // Fallback: image
+                // Fallback: afficher une image si pas de vidéo valide
                 else {
                     $html .= '<img src="' . e($item->url) . '" class="slide-media" alt="' . e($item->title) . '">';
                 }
-            } else {
-                $html .= '<img src="' . e($item->url) . '" class="slide-media" alt="' . e($item->title) . '">';
+            } 
+            // 🔥 GESTION DES IMAGES
+            else {
+                $html .= '<img src="' . e($item->url) . '" class="slide-media" alt="' . e($item->title) . '" loading="lazy">';
             }
             
-            // Overlay avec contenu textuel
+            // Overlay avec contenu textuel (commun aux images et vidéos)
             if ($item->title || $item->subtitle || $item->button_text) {
                 $html .= '<div class="slide-overlay" style="background: linear-gradient(135deg, ' . $options['overlay_color'] . ' 0%, rgba(0,0,0,' . ($options['overlay_opacity'] + 0.1) . ') 100%);">';
                 $html .= '<div class="hero-content">';
@@ -625,19 +659,109 @@ if (!function_exists('get_slider_html')) {
         $html .= '</div>';
         $html .= '</div>';
         
-        // JavaScript pour initialiser Swiper
+        // JavaScript pour initialiser Swiper et gérer les vidéos
         $html .= '<script>
             if (typeof Swiper !== "undefined") {
                 document.addEventListener("DOMContentLoaded", function() {
-                    new Swiper(".' . $sliderId . '", {
+                    const swiper = new Swiper(".' . $sliderId . '", {
                         loop: ' . ($options['loop'] ? 'true' : 'false') . ',
                         autoplay: { delay: ' . $options['autoplay_delay'] . ', disableOnInteraction: false },
                         pagination: { el: ".swiper-pagination", clickable: true },
-                        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }
+                        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+                        on: {
+                            slideChangeTransitionStart: function() {
+                                // Pause toutes les vidéos quand on change de slide
+                                const videos = document.querySelectorAll(".' . $sliderId . ' video");
+                                videos.forEach(video => {
+                                    video.pause();
+                                });
+                            },
+                            slideChangeTransitionEnd: function() {
+                                // Lecture auto de la vidéo sur le slide actif
+                                const activeSlide = document.querySelector(".' . $sliderId . ' .swiper-slide-active");
+                                const video = activeSlide ? activeSlide.querySelector("video") : null;
+                                if (video && ' . ($options['video_autoplay'] ? 'true' : 'false') . ') {
+                                    video.play();
+                                }
+                            }
+                        }
                     });
                 });
             }
         </script>';
+        
+        // Styles CSS pour les vidéos
+        $html .= '<style>
+            .hero-slider .swiper-slide {
+                position: relative;
+                overflow: hidden;
+            }
+            .hero-slider .slide-media,
+            .hero-slider .slide-video,
+            .hero-slider .video-wrapper-youtube,
+            .hero-slider .video-wrapper-vimeo,
+            .hero-slider .video-wrapper-embed {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .hero-slider .slide-video-iframe,
+            .hero-slider .video-wrapper-embed iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: 0;
+                object-fit: cover;
+            }
+            .hero-slider .video-wrapper-youtube,
+            .hero-slider .video-wrapper-vimeo,
+            .hero-slider .video-wrapper-embed {
+                background: #000;
+            }
+            .hero-slider .slide-overlay {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                color: white;
+                z-index: 10;
+            }
+            .hero-slider .hero-content {
+                max-width: 800px;
+                padding: 0 20px;
+            }
+            .hero-slider .hero-content h2 {
+                font-size: 3rem;
+                font-weight: 800;
+                margin-bottom: 20px;
+                text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            }
+            .hero-slider .hero-content p {
+                font-size: 1.2rem;
+                margin-bottom: 32px;
+            }
+            .hero-slider .btn-group {
+                display: flex;
+                gap: 16px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            @media (max-width: 768px) {
+                .hero-slider .hero-content h2 {
+                    font-size: 1.8rem;
+                }
+                .hero-slider .hero-content p {
+                    font-size: 1rem;
+                }
+            }
+        </style>';
         
         return $html;
     }
