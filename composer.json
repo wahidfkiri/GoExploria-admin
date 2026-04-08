@@ -39,7 +39,8 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "Vendor\\Theme\\": "packages/vendor/Theme/src/",
-            "Vendor\\Destination\\": "packages/vendor/Destination/src/"
+            "Vendor\\Destination\\": "packages/vendor/Destination/src/",
+            "Vendor\\HomeV2\\": "packages/vendor/home-v2/src/"
         },
         "files": [
             "app/Helpers/helpers.php"

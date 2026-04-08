@@ -31,10 +31,30 @@ $restoConfig = [
    data-cat : valeur utilisée par le filtre JS
 ---------------------------------------------------------------- */
 $restoCats = [
-    ['key' => 'toutes',         'label' => 'Toutes les formules'],
-    ['key' => 'entrees',        'label' => 'Entrées & Salades'],
-    ['key' => 'mets-principaux','label' => 'Plats principaux'],
-    ['key' => 'desserts',       'label' => 'Desserts'],
+    [
+        'key'   => 'toutes',
+        'label' => 'Toutes les formules',
+        'title' => 'AMBIANCE RESTO — ACCORD METS ET VIN',
+        'desc'  => "Entrées · Mets principaux · Desserts · Vins — Découvrez les meilleures tables du Québec sublimées par des accords vins d'exception.",
+    ],
+    [
+        'key'   => 'entrees',
+        'label' => 'Entrées & Salades',
+        'title' => 'AMBIANCE RESTO — Entrées & Salades',
+        'desc'  => "Burrata, tartares, carpaccio, feuilletés, escargots… Nos entrées gastronomiques et leurs accords vins soigneusement sélectionnés pour éveiller vos papilles.",
+    ],
+    [
+        'key'   => 'mets-principaux',
+        'label' => 'Plats principaux',
+        'title' => 'AMBIANCE RESTO — Plats principaux',
+        'desc'  => "Pâtes artisanales, risottos crémeux, viandes tendres et poissons nobles — des mets d'exception sublimés par les meilleurs crus de notre cave.",
+    ],
+    [
+        'key'   => 'desserts',
+        'label' => 'Desserts',
+        'title' => 'AMBIANCE RESTO — Desserts',
+        'desc'  => "Crème brûlée à la vanille, tiramisus maison et créations sucrées de nos pâtissiers — finissez en beauté avec nos desserts et leurs doux accords mignardises.",
+    ],
 ];
 
 /* ----------------------------------------------------------------
@@ -51,24 +71,300 @@ $restoDests = [
 ];
 
 /* ----------------------------------------------------------------
-   CAROUSEL PHOTOS (mockable)
+   SLIDESHOW MULTI-CARTE — Ambiance Resto & Accord Mets & Vins
 ---------------------------------------------------------------- */
-$carouselSlides = [
-    ['img' => 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&h=420&fit=crop', 'caption' => 'Ambiance & Gastronomie'],
-    ['img' => 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1200&h=420&fit=crop', 'caption' => 'Sélection de Vins'],
-    ['img' => 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&h=420&fit=crop', 'caption' => 'Cuisine Raffinée'],
-    ['img' => 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=1200&h=420&fit=crop', 'caption' => "Accord Mets & Vins"],
-    ['img' => 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=1200&h=420&fit=crop', 'caption' => "Moments d'exception"],
+$restoSlides = [
+    [
+        'main' => [
+            'src'   => 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&h=500&fit=crop',
+            'video' => 'UhR5XQ-FfRo',
+            'title' => 'Ambiance & Gastronomie',
+            'desc'  => 'Une atmosphère unique au cœur de Montréal',
+            'badge' => 'new',
+        ],
+        'grid' => [
+            [
+                'src'   => 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=500&h=300&fit=crop',
+                'video' => 'UhR5XQ-FfRo',
+                'title' => 'Sélection de Vins',
+                'desc'  => '200+ références soigneusement choisies',
+                'badge' => 'popular',
+            ],
+            [
+                'src'   => 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&h=300&fit=crop',
+                'video' => 'UhR5XQ-FfRo',
+                'title' => 'Cuisine Raffinée',
+                'desc'  => 'Gastronomie italienne dans toute sa splendeur',
+                'badge' => 'hot',
+            ],
+            [
+                'src'   => 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=500&h=300&fit=crop',
+                'video' => 'UhR5XQ-FfRo',
+                'title' => 'Accord Mets & Vins',
+                'desc'  => "L'art de sublimer chaque plat par le vin idéal",
+                'badge' => 'trending',
+            ],
+            [
+                'src'   => 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=500&h=300&fit=crop',
+                'video' => 'UhR5XQ-FfRo',
+                'title' => "Moments d'exception",
+                'desc'  => 'Tables privées et événements sur mesure',
+                'badge' => 'popular',
+            ],
+        ],
+    ],
+    [
+        'main' => [
+            'src'   => asset('home2/aventure-accords-met-vin/cave-de-degustation-des-vins.png'),
+            'video' => 'xPPLbEFbCAo',
+            'title' => "Cave de Dégustation",
+            'desc'  => 'Plus de 200 références, un univers d\'exception',
+            'badge' => 'trending',
+        ],
+        'grid' => [
+            [
+                'src'   => asset('home2/aventure-accords-met-vin/magret-canard.jpg'),
+                'video' => 'xPPLbEFbCAo',
+                'title' => 'Magret de Canard',
+                'desc'  => 'Accord emblématique avec un Cahors Grand Cru',
+                'badge' => 'hot',
+            ],
+            [
+                'src'   => asset('home2/aventure-accords-met-vin/restaurant-fruits-de-mer-accord-vin.jpg'),
+                'video' => 'xPPLbEFbCAo',
+                'title' => 'Fruits de Mer & Vins Blancs',
+                'desc'  => 'Plateau de fruits de mer & Chablis Premier Cru',
+                'badge' => 'popular',
+            ],
+            [
+                'src'   => asset('home2/aventure-accords-met-vin/accord_mets_vin.jpg'),
+                'video' => 'xPPLbEFbCAo',
+                'title' => 'Accord Parfait',
+                'desc'  => "L'harmonie parfaite entre le mets et le vin",
+                'badge' => 'new',
+            ],
+            [
+                'src'   => asset('home2/aventure-accords-met-vin/cave.jpg'),
+                'video' => 'xPPLbEFbCAo',
+                'title' => 'Dégustations Privées',
+                'desc'  => 'Événements exclusifs dans notre cave privée',
+                'badge' => 'trending',
+            ],
+        ],
+    ],
 ];
 
 /* ----------------------------------------------------------------
-   VIDÉO FEATURED (mockable)
+   SLIDESHOW — Occasions Spéciales
 ---------------------------------------------------------------- */
-$restoVideo = [
-    'thumbnail'  => 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=640&h=360&fit=crop',
-    'youtube_id' => 'UhR5XQ-FfRo',
-    'title'      => "L'art de l'accord parfait",
-    'subtitle'   => 'Découvrez notre ambiance en vidéo',
+$occasionSlides = [
+    [
+        'main' => [
+            'src'   => 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=900&h=500&fit=crop',
+            'video' => 'UhR5XQ-FfRo',
+            'title' => 'Gala Saint-Sylvestre',
+            'desc'  => 'Soirée de gala, champagne minuit et menu gastronomique',
+            'badge' => 'new',
+        ],
+        'grid' => [
+            [
+                'src'   => 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&h=300&fit=crop',
+                'video' => 'UhR5XQ-FfRo',
+                'title' => 'Fête des Mères',
+                'desc'  => 'Menu 4 services avec accord vins, bouquet offert',
+                'badge' => 'popular',
+            ],
+            [
+                'src'   => 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=300&fit=crop',
+                'video' => 'UhR5XQ-FfRo',
+                'title' => 'Anniversaire VIP',
+                'desc'  => 'Table décorée, champagne et menu surprise',
+                'badge' => 'hot',
+            ],
+            [
+                'src'   => 'https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=500&h=300&fit=crop',
+                'video' => 'UhR5XQ-FfRo',
+                'title' => 'Réveillon de Noël',
+                'desc'  => 'Menu 5 services, musique live et vins millésimés',
+                'badge' => 'trending',
+            ],
+            [
+                'src'   => 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&h=300&fit=crop',
+                'video' => 'UhR5XQ-FfRo',
+                'title' => 'Brunch Famille',
+                'desc'  => 'Buffet gastronomique pour toute la famille',
+                'badge' => 'popular',
+            ],
+        ],
+    ],
+    [
+        'main' => [
+            'src'   => 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=900&h=500&fit=crop',
+            'video' => 'UhR5XQ-FfRo',
+            'title' => 'Forfait Duo Romantique',
+            'desc'  => 'Table privée, bouquet, rosé & mets 5 services',
+            'badge' => 'trending',
+        ],
+        'grid' => [
+            [
+                'src'   => 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500&h=300&fit=crop',
+                'video' => 'UhR5XQ-FfRo',
+                'title' => 'Gala Caritatif',
+                'desc'  => 'Dîner gala avec encan et menu gastronomique',
+                'badge' => 'hot',
+            ],
+            [
+                'src'   => 'https://images.unsplash.com/photo-1544025162-d76694265947?w=500&h=300&fit=crop',
+                'video' => 'UhR5XQ-FfRo',
+                'title' => 'Fête des Pères BBQ',
+                'desc'  => 'Grillades premium et bières artisanales du Québec',
+                'badge' => 'popular',
+            ],
+            [
+                'src'   => 'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=500&h=300&fit=crop',
+                'video' => 'UhR5XQ-FfRo',
+                'title' => "St. Patrick's Dinner",
+                'desc'  => "Corned beef, Guinness et whisky irlandais",
+                'badge' => 'new',
+            ],
+            [
+                'src'   => 'https://images.unsplash.com/photo-1547592180-85f173990554?w=500&h=300&fit=crop',
+                'video' => 'UhR5XQ-FfRo',
+                'title' => 'Brunch de Pâques',
+                'desc'  => 'Buffet familial avec chasse aux œufs et menu pascal',
+                'badge' => 'trending',
+            ],
+        ],
+    ],
+];
+
+/* ----------------------------------------------------------------
+   SLIDESHOWS — Accord Mets & Vins (menu items, toutes les 8 items)
+---------------------------------------------------------------- */
+$accordSlideshows = [
+    [
+        [
+            'main' => [
+                'src'   => 'https://images.unsplash.com/photo-1580822184713-fc5400e7fe10?w=900&h=500&fit=crop',
+                'video' => 'xPPLbEFbCAo',
+                'title' => 'Carpaccio de Filet Mignon',
+                'desc'  => 'Aïoli maison, parmesan, câpres et huile de roquette',
+                'badge' => 'new',
+            ],
+            'grid' => [
+                [
+                    'src'   => 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&h=300&fit=crop',
+                    'video' => 'xPPLbEFbCAo',
+                    'title' => 'Burrata & Tapenade',
+                    'desc'  => 'Accord Chablis · Blanc sec',
+                    'badge' => 'popular',
+                ],
+                [
+                    'src'   => 'https://images.unsplash.com/photo-1547592180-85f173990554?w=500&h=300&fit=crop',
+                    'video' => 'xPPLbEFbCAo',
+                    'title' => "Soupe à l'Oignon",
+                    'desc'  => 'Gratinée au migneron de Charlevoix',
+                    'badge' => 'hot',
+                ],
+                [
+                    'src'   => 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&h=300&fit=crop',
+                    'video' => 'xPPLbEFbCAo',
+                    'title' => 'Feuilleté Crevettes & Pétoncles',
+                    'desc'  => 'Accord Chablis · Blanc de Blancs',
+                    'badge' => 'trending',
+                ],
+                [
+                    'src'   => 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=500&h=300&fit=crop',
+                    'video' => 'xPPLbEFbCAo',
+                    'title' => 'Sélection de Vins Blancs',
+                    'desc'  => 'Sauvignon, Chablis, Soave — accords entrées',
+                    'badge' => 'popular',
+                ],
+            ],
+        ],
+    ],
+    [
+        [
+            'main' => [
+                'src'   => 'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=900&h=500&fit=crop',
+                'video' => 'xPPLbEFbCAo',
+                'title' => 'Risotto Graffiti',
+                'desc'  => 'Flanc de porc croustillant, champignons et parmesan',
+                'badge' => 'hot',
+            ],
+            'grid' => [
+                [
+                    'src'   => 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&h=300&fit=crop',
+                    'video' => 'xPPLbEFbCAo',
+                    'title' => 'Raviolis Champignons Sauvages',
+                    'desc'  => 'Accord Pinot Noir · Bourgogne',
+                    'badge' => 'trending',
+                ],
+                [
+                    'src'   => 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&h=300&fit=crop',
+                    'video' => 'xPPLbEFbCAo',
+                    'title' => 'Linguine Fruits de Mer',
+                    'desc'  => 'Accord Muscadet · Blanc de Blancs',
+                    'badge' => 'popular',
+                ],
+                [
+                    'src'   => 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=500&h=300&fit=crop',
+                    'video' => 'xPPLbEFbCAo',
+                    'title' => 'Chianti Classico Riserva',
+                    'desc'  => 'Pâtes · Lasagne · Veau parmigiana',
+                    'badge' => 'hot',
+                ],
+                [
+                    'src'   => 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=500&h=300&fit=crop',
+                    'video' => 'xPPLbEFbCAo',
+                    'title' => 'Lasagne Maison',
+                    'desc'  => 'Accord Chianti Classico · Sangiovese',
+                    'badge' => 'new',
+                ],
+            ],
+        ],
+    ],
+    [
+        [
+            'main' => [
+                'src'   => 'https://images.unsplash.com/photo-1558030006-450675393462?w=900&h=500&fit=crop',
+                'video' => 'xPPLbEFbCAo',
+                'title' => 'Filet Mignon Sauce Porto',
+                'desc'  => 'Risotto champignons sauvages et huile de truffes',
+                'badge' => 'trending',
+            ],
+            'grid' => [
+                [
+                    'src'   => 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&h=300&fit=crop',
+                    'video' => 'xPPLbEFbCAo',
+                    'title' => 'Joue de Bœuf Braisée',
+                    'desc'  => 'Accord Pomerol · Merlot',
+                    'badge' => 'popular',
+                ],
+                [
+                    'src'   => 'https://images.unsplash.com/photo-1476978913421-dad2ebd01d17?w=500&h=300&fit=crop',
+                    'video' => 'xPPLbEFbCAo',
+                    'title' => 'Ris de Veau Poêlés',
+                    'desc'  => 'Accord Meursault · Bourgogne Blanc',
+                    'badge' => 'hot',
+                ],
+                [
+                    'src'   => 'https://images.unsplash.com/photo-1560679659-c9c8b18f6edd?w=500&h=300&fit=crop',
+                    'video' => 'xPPLbEFbCAo',
+                    'title' => 'Saint-Émilion Grand Cru',
+                    'desc'  => 'Filet mignon sauce porto · Gibier',
+                    'badge' => 'trending',
+                ],
+                [
+                    'src'   => asset('home2/aventure-accords-met-vin/magret-canard.jpg'),
+                    'video' => 'xPPLbEFbCAo',
+                    'title' => 'Magret de Canard',
+                    'desc'  => 'Accord Cahors · Malbec',
+                    'badge' => 'new',
+                ],
+            ],
+        ],
+    ],
 ];
 
 /* ----------------------------------------------------------------
@@ -345,21 +641,28 @@ $menuItems = [
 
         <div class="resto-header-main">
 
-            {{-- Logo gauche : Restaurant --}}
+            {{-- Logo gauche : Restaurant (bouton compact) --}}
             <div class="resto-header-logo-left">
                 <a href="{{ $restoConfig['logo_restaurant']['href'] }}"
-                   class="logo-wrapper"
-                   title="{{ $restoConfig['logo_restaurant']['label'] }}">
-                    <img src="{{ $restoConfig['logo_restaurant']['src'] }}"
-                         alt="{{ $restoConfig['logo_restaurant']['alt'] }}">
+                   class="resto-accord-btn"
+                   title="{{ $restoConfig['logo_restaurant']['label'] }}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <div class="logo-wrapper">
+                        <img src="{{ $restoConfig['logo_restaurant']['src'] }}"
+                             alt="{{ $restoConfig['logo_restaurant']['alt'] }}">
+                    </div>
+                    <span class="resto-accord-btn-label">{{ $restoConfig['logo_restaurant']['label'] }}</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
                 </a>
-                <span class="resto-logo-label">{{ $restoConfig['logo_restaurant']['label'] }}</span>
             </div>
 
             {{-- Centre : H1, H2, onglets catégories --}}
             <div class="resto-header-center">
-                <h1 class="resto-header-title">{{ $restoConfig['title'] }}</h1>
-                <p class="resto-header-subtitle">{{ $restoConfig['subtitle'] }}</p>
+                <h1 class="resto-header-title" id="restoHeaderTitle">{{ $restoConfig['title'] }}</h1>
+                <p class="resto-header-subtitle" id="restoHeaderSubtitle">{{ $restoConfig['subtitle'] }}</p>
 
                 <div class="resto-header-tabs" id="restoHeaderTabs" role="tablist">
                     @foreach($restoCats as $i => $cat)
@@ -370,6 +673,8 @@ $menuItems = [
                         @endphp
                         <button class="resto-tab-btn {{ $i === 0 ? 'active' : '' }}"
                                 data-cat="{{ $cat['key'] }}"
+                                data-title="{{ $cat['title'] }}"
+                                data-desc="{{ $cat['desc'] }}"
                                 role="tab"
                                 aria-selected="{{ $i === 0 ? 'true' : 'false' }}">
                             <span class="resto-tab-count">{{ $catItemCount }}</span>
@@ -380,15 +685,22 @@ $menuItems = [
                 </div>
             </div>
 
-            {{-- Logo droit : Accord Mets & Vins --}}
+            {{-- Logo droit : Accord Mets & Vins (bouton, nouvel onglet) --}}
             <div class="resto-header-logo-right">
                 <a href="{{ $restoConfig['logo_accord']['href'] }}"
-                   class="logo-wrapper"
-                   title="{{ $restoConfig['logo_accord']['label'] }}">
-                    <img src="{{ $restoConfig['logo_accord']['src'] }}"
-                         alt="{{ $restoConfig['logo_accord']['alt'] }}">
+                   class="resto-accord-btn"
+                   title="{{ $restoConfig['logo_accord']['label'] }}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <div class="logo-wrapper">
+                        <img src="{{ $restoConfig['logo_accord']['src'] }}"
+                             alt="{{ $restoConfig['logo_accord']['alt'] }}">
+                    </div>
+                    <span class="resto-accord-btn-label">{{ $restoConfig['logo_accord']['label'] }}</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
                 </a>
-                <span class="resto-logo-label">{{ $restoConfig['logo_accord']['label'] }}</span>
             </div>
 
         </div>
@@ -453,73 +765,13 @@ $menuItems = [
     </div>
 
     {{-- ============================================================
-         SECTION MÉDIA : Carousel photos + Vidéo featured
+         SECTION MÉDIA : Slideshow Multi-carte Ambiance Resto
          ============================================================ --}}
     <div class="resto-media-strip">
-
-        {{-- Carousel photos --}}
-        <div class="resto-carousel">
-            <div class="resto-carousel-track" id="restoCarouselTrack">
-                @foreach($carouselSlides as $slide)
-                <div class="resto-carousel-slide">
-                    <img src="{{ $slide['img'] }}" alt="{{ $slide['caption'] }}" loading="lazy">
-                    <div class="resto-carousel-caption">
-                        <i class="fas fa-camera"></i> {{ $slide['caption'] }}
-                    </div>
-                </div>
-                @endforeach
-            </div>
-            <button class="resto-carousel-btn prev" id="restoCarouselPrev" aria-label="Précédent">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="resto-carousel-btn next" id="restoCarouselNext" aria-label="Suivant">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-            <div class="resto-carousel-dots" id="restoCarouselDots">
-                @foreach($carouselSlides as $i => $slide)
-                <button class="resto-carousel-dot {{ $i === 0 ? 'active' : '' }}"
-                        data-index="{{ $i }}" aria-label="Photo {{ $i + 1 }}"></button>
-                @endforeach
-            </div>
-        </div>
-
-        {{-- Vidéo featured --}}
-        <div class="resto-video-featured">
-            <div class="resto-video-thumb" id="restoVideoThumb"
-                 onclick="restoOpenVideo('{{ $restoVideo['youtube_id'] }}')">
-                <img src="{{ $restoVideo['thumbnail'] }}" alt="{{ $restoVideo['title'] }}" loading="lazy">
-                <div class="resto-video-overlay">
-                    <div class="resto-video-play-circle">
-                        <i class="fas fa-play"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="resto-video-info">
-                <span class="resto-video-tag"><i class="fas fa-film"></i> Vidéo</span>
-                <h4 class="resto-video-title">{{ $restoVideo['title'] }}</h4>
-                <p class="resto-video-sub">{{ $restoVideo['subtitle'] }}</p>
-                <button class="resto-video-watch-btn"
-                        onclick="restoOpenVideo('{{ $restoVideo['youtube_id'] }}')"
-                        type="button">
-                    <i class="fas fa-play-circle"></i> Visionner
-                </button>
-            </div>
-        </div>
-
-        {{-- Lightbox vidéo --}}
-        <div class="resto-video-lightbox" id="restoVideoLightbox" onclick="restoCloseVideo()">
-            <div class="resto-video-lightbox-inner" onclick="event.stopPropagation()">
-                <button class="resto-video-lightbox-close" onclick="restoCloseVideo()" aria-label="Fermer">
-                    <i class="fas fa-times"></i>
-                </button>
-                <div class="resto-video-iframe-wrap">
-                    <iframe id="restoVideoIframe" src="" frameborder="0"
-                            allow="autoplay; encrypted-media; fullscreen"
-                            allowfullscreen></iframe>
-                </div>
-            </div>
-        </div>
-
+        @include('home-v2.components.MediaSlideshow', [
+            'slideshowId' => 'restoMedia',
+            'slides'      => $restoSlides,
+        ])
     </div>
 
     {{-- ============================================================
@@ -539,6 +791,7 @@ $menuItems = [
         {{-- Grille de cartes --}}
         <div class="resto-cards-grid" id="resto-cards-grid">
 
+            @php $accordSlideIndex = 0; @endphp
             @foreach($menuItems as $item)
             <article class="resto-card"
                      data-dest="all amerique-nord canada quebec region-quebec"
@@ -577,6 +830,18 @@ $menuItems = [
                 </div>
 
             </article>
+            @if($loop->iteration % 8 === 0 && !$loop->last)
+            @php
+                $slideshowSet = $accordSlideshows[$accordSlideIndex % count($accordSlideshows)][0];
+                $accordSlideIndex++;
+            @endphp
+            <div class="resto-cards-grid-break">
+                @include('home-v2.components.MediaSlideshow', [
+                    'slideshowId' => 'accordMedia' . $loop->iteration,
+                    'slides'      => [$slideshowSet],
+                ])
+            </div>
+            @endif
             @endforeach
 
             <div class="resto-no-results" id="restoNoResults">
@@ -593,11 +858,59 @@ $menuItems = [
          ============================================================ --}}
     <section class="resto-events-section" id="resto-events">
 
-        <div class="resto-events-header">
-            <span class="resto-events-eyebrow"><i class="fas fa-calendar-days"></i> Événements &amp; Célébrations</span>
-            <h2 class="resto-events-title">Occasions Spéciales &amp; Forfaits</h2>
-            <p class="resto-events-lead">Choisissez votre type d'événement pour découvrir nos forfaits exclusifs.</p>
+        {{-- En-tête standard de section --}}
+        <div class="resto-section-std-header">
+            <div class="resto-section-logo-left">
+                <a href="{{ $restoConfig['logo_restaurant']['href'] }}"
+                   class="resto-accord-btn resto-accord-btn--sm"
+                   title="{{ $restoConfig['logo_restaurant']['label'] }}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <div class="logo-wrapper-xs">
+                        <img src="{{ $restoConfig['logo_restaurant']['src'] }}"
+                             alt="{{ $restoConfig['logo_restaurant']['alt'] }}">
+                    </div>
+                    <span class="resto-accord-btn-label">{{ $restoConfig['logo_restaurant']['label'] }}</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
+            </div>
+            <div class="resto-section-center">
+                <span class="resto-section-eyebrow">
+                    <i class="fas fa-calendar-days"></i> Événements &amp; Célébrations
+                </span>
+                <h2 class="resto-section-title">AMBIANCE RESTO — Occasions Spéciales</h2>
+                <p class="resto-section-desc">
+                    Mariages, anniversaires, réveillons, levées de fonds &amp; plus —
+                    organisez vos moments d'exception dans un cadre gastronomique unique
+                    avec nos forfaits clés en main.
+                </p>
+            </div>
+            <div class="resto-section-logo-right">
+                <a href="{{ $restoConfig['logo_accord']['href'] }}"
+                   class="resto-accord-btn resto-accord-btn--sm"
+                   title="{{ $restoConfig['logo_accord']['label'] }}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <div class="logo-wrapper-xs">
+                        <img src="{{ $restoConfig['logo_accord']['src'] }}"
+                             alt="{{ $restoConfig['logo_accord']['alt'] }}">
+                    </div>
+                    <span class="resto-accord-btn-label">{{ $restoConfig['logo_accord']['label'] }}</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
+            </div>
+            <div class="resto-section-std-shimmer"></div>
         </div>
+
+        {{-- Slideshow Occasions Spéciales --}}
+        @include('home-v2.components.MediaSlideshow', [
+            'slideshowId' => 'occasionsMedia',
+            'slides'      => $occasionSlides,
+        ])
 
         {{-- Onglets types d'événement --}}
         <div class="resto-events-types-bar" id="restoEventsTypesBar">
@@ -654,27 +967,49 @@ $menuItems = [
          PLANS GO NEXT LEVEL — GoExploria restaurant plans
          ============================================================ --}}
     <section class="resto-plans-section" id="resto-plans">
-        <div class="resto-plans-topbar">
-            <span class="resto-plans-topbar-badge">
-                <i class="fas fa-rocket"></i> GoExploria
-            </span>
-            <span class="resto-plans-topbar-text">
-                Propulsez votre restaurant vers de nouveaux sommets
-            </span>
+
+        {{-- En-tête standard Plans --}}
+        <div class="resto-section-std-header">
+            <div class="resto-section-logo-left">
+                <a href="{{ $restoConfig['logo_restaurant']['href'] }}"
+                   class="resto-accord-btn resto-accord-btn--sm"
+                   title="{{ $restoConfig['logo_restaurant']['label'] }}"
+                   target="_blank" rel="noopener noreferrer">
+                    <div class="logo-wrapper-xs">
+                        <img src="{{ $restoConfig['logo_restaurant']['src'] }}"
+                             alt="{{ $restoConfig['logo_restaurant']['alt'] }}">
+                    </div>
+                    <span class="resto-accord-btn-label">{{ $restoConfig['logo_restaurant']['label'] }}</span>
+                    <span class="resto-accord-btn-cta"><i class="fas fa-external-link-alt"></i> Visiter</span>
+                </a>
+            </div>
+            <div class="resto-section-center">
+                <span class="resto-section-eyebrow">
+                    <i class="fas fa-rocket"></i> GoExploria — Nos Formules
+                </span>
+                <h2 class="resto-section-title">PLANS GO NEXT LEVEL</h2>
+                <p class="resto-section-desc">
+                    Sites web sur mesure pour restaurants — du template prêt à l'emploi jusqu'au site premium
+                    avec réservation en ligne, carte digitale et CRM intégré.
+                </p>
+            </div>
+            <div class="resto-section-logo-right">
+                <a href="{{ $restoConfig['logo_accord']['href'] }}"
+                   class="resto-accord-btn resto-accord-btn--sm"
+                   title="{{ $restoConfig['logo_accord']['label'] }}"
+                   target="_blank" rel="noopener noreferrer">
+                    <div class="logo-wrapper-xs">
+                        <img src="{{ $restoConfig['logo_accord']['src'] }}"
+                             alt="{{ $restoConfig['logo_accord']['alt'] }}">
+                    </div>
+                    <span class="resto-accord-btn-label">{{ $restoConfig['logo_accord']['label'] }}</span>
+                    <span class="resto-accord-btn-cta"><i class="fas fa-external-link-alt"></i> Visiter</span>
+                </a>
+            </div>
+            <div class="resto-section-std-shimmer"></div>
         </div>
 
         <div class="resto-plans-inner">
-
-            <div class="resto-plans-heading">
-                <span class="resto-plans-eyebrow">Nos Formules</span>
-                <h3 class="resto-plans-title">
-                    Plans <span class="resto-plans-highlight">Go Next Level</span>
-                </h3>
-                <p class="resto-plans-lead">
-                    GoExploria conçoit des sites web sur mesure pour les restaurants — du template prêt à l'emploi
-                    jusqu'au site premium 100% personnalisé, avec réservation en ligne, carte digitale et CRM intégré.
-                </p>
-            </div>
 
             <div class="resto-plans-grid">
 
@@ -836,6 +1171,12 @@ $menuItems = [
 
                 if (badgeCat) badgeCat.textContent = btn.textContent.trim();
 
+                /* Mise à jour du titre et de la description de l'en-tête */
+                var hTitle = document.getElementById('restoHeaderTitle');
+                var hDesc  = document.getElementById('restoHeaderSubtitle');
+                if (hTitle) hTitle.textContent = btn.getAttribute('data-title') || '';
+                if (hDesc)  hDesc.textContent  = btn.getAttribute('data-desc')  || '';
+
                 applyFilters();
 
                 /* Scroll doux vers les cartes */
@@ -877,75 +1218,6 @@ $menuItems = [
 
         /* ---- Init : compter les cartes visibles au chargement ---- */
         applyFilters();
-    });
-
-    /* ================================================================
-       CAROUSEL PHOTOS
-       ================================================================ */
-    (function () {
-        var track  = document.getElementById('restoCarouselTrack');
-        var prev   = document.getElementById('restoCarouselPrev');
-        var next   = document.getElementById('restoCarouselNext');
-        var dots   = document.querySelectorAll('#restoCarouselDots .resto-carousel-dot');
-        if (!track) return;
-
-        var total   = track.children.length;
-        var current = 0;
-        var timer;
-
-        function goTo(index) {
-            current = (index + total) % total;
-            track.style.transform = 'translateX(-' + (current * 100) + '%)';
-            dots.forEach(function (d, i) {
-                d.classList.toggle('active', i === current);
-            });
-        }
-
-        function startAuto() {
-            timer = setInterval(function () { goTo(current + 1); }, 4500);
-        }
-
-        function resetAuto() {
-            clearInterval(timer);
-            startAuto();
-        }
-
-        if (prev) prev.addEventListener('click', function () { goTo(current - 1); resetAuto(); });
-        if (next) next.addEventListener('click', function () { goTo(current + 1); resetAuto(); });
-
-        dots.forEach(function (d) {
-            d.addEventListener('click', function () {
-                goTo(parseInt(d.getAttribute('data-index')));
-                resetAuto();
-            });
-        });
-
-        startAuto();
-    })();
-
-    /* ================================================================
-       VIDÉO LIGHTBOX
-       ================================================================ */
-    function restoOpenVideo(youtubeId) {
-        var lb     = document.getElementById('restoVideoLightbox');
-        var iframe = document.getElementById('restoVideoIframe');
-        if (!lb || !iframe) return;
-        iframe.src = 'https://www.youtube.com/embed/' + youtubeId + '?autoplay=1&rel=0';
-        lb.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function restoCloseVideo() {
-        var lb     = document.getElementById('restoVideoLightbox');
-        var iframe = document.getElementById('restoVideoIframe');
-        if (lb) lb.classList.remove('active');
-        if (iframe) iframe.src = '';
-        document.body.style.overflow = '';
-    }
-
-    /* Fermer avec Escape */
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') restoCloseVideo();
     });
 
     /* ================================================================

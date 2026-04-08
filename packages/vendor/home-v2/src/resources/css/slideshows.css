@@ -1,0 +1,421 @@
+/* ============================================
+   SLIDESHOWS V2 - Carousel de galerie vidéo
+   ============================================ */
+
+/* Section principale */
+.slideshows-v2-section {
+    margin: 0 40px 0 40px;
+    padding: 20px 0;
+    background-color: transparent;
+}
+
+.slideshows-v2-container {
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    margin-bottom: 20px;
+    height: 450px;
+    border-radius: 12px;
+}
+
+.slideshows-v2-track {
+    display: flex;
+    transition: transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    height: 100%;
+}
+
+.slideshows-v2-slide {
+    display: flex;
+    flex: 0 0 100%;
+    height: 100%;
+}
+
+.slideshows-v2-column {
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.slideshows-v2-column:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.slideshows-v2-half {
+    width: 50%;
+}
+
+/* Styles pour les carreaux */
+.slideshows-v2-main-tile {
+    position: relative;
+    height: 100%;
+}
+
+.slideshows-v2-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    height: 100%;
+    gap: 1px;
+    background-color: #f0f0f0;
+}
+
+.slideshows-v2-tile {
+    position: relative;
+    overflow: hidden;
+    background-color: white;
+}
+
+/* Styles pour les images */
+.slideshows-v2-tile img,
+.slideshows-v2-main-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.slideshows-v2-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    padding: 15px 20px 15px;
+    color: white;
+    transform: translateY(0);
+    transition: transform 0.4s ease;
+}
+
+.slideshows-v2-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 5;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.slideshows-v2-badge-new {
+    background: linear-gradient(135deg, #ff4757, #ff3838);
+}
+
+.slideshows-v2-badge-hot {
+    background: linear-gradient(135deg, #ff9f1a, #ff7f00);
+}
+
+.slideshows-v2-badge-trending {
+    background: linear-gradient(135deg, #2ed573, #1dd1a1);
+}
+
+.slideshows-v2-badge-popular {
+    background: linear-gradient(135deg, #1e90ff, #3742fa);
+}
+
+.slideshows-v2-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.slideshows-v2-description {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    line-height: 1.3;
+}
+
+.slideshows-v2-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    width: 65px;
+    height: 65px;
+    background: rgba(0, 0, 0, 0.85);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.slideshows-v2-item:hover .slideshows-v2-play-btn {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.slideshows-v2-play-btn:hover {
+    background: rgba(200, 0, 0, 0.95);
+    transform: translate(-50%, -50%) scale(1.1);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.slideshows-v2-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.slideshows-v2-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(74, 111, 165, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.slideshows-v2-dots {
+    display: flex;
+    gap: 10px;
+}
+
+.slideshows-v2-dot-active {
+    background: #4a6fa5;
+    transform: scale(1.3);
+    box-shadow: 0 0 10px rgba(74, 111, 165, 0.5);
+}
+
+.slideshows-v2-nav-btn {
+    background: white;
+    border: 2px solid #e1e8f0;
+    color: #4a6fa5;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+.slideshows-v2-nav-btn:hover {
+    background: #4a6fa5;
+    color: white;
+    border-color: #4a6fa5;
+    transform: scale(1.1);
+    box-shadow: 0 5px 12px rgba(74, 111, 165, 0.3);
+}
+
+/* Modal (Popup) Styles */
+.slideshows-v2-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.slideshows-v2-modal-active {
+    display: flex;
+    opacity: 1;
+}
+
+.slideshows-v2-modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 900px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    transition: transform 0.4s ease;
+}
+
+.slideshows-v2-modal-active .slideshows-v2-modal-content {
+    transform: scale(1);
+}
+
+.slideshows-v2-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e1e8f0;
+}
+
+.slideshows-v2-modal-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.slideshows-v2-close-modal {
+    background: none;
+    border: none;
+    color: #718096;
+    font-size: 28px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    line-height: 1;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.slideshows-v2-close-modal:hover {
+    background-color: #f1f5f9;
+    color: #e53e3e;
+}
+
+.slideshows-v2-video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    background: #000;
+}
+
+.slideshows-v2-video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.slideshows-v2-item:hover img {
+    transform: scale(1.08);
+}
+
+.slideshows-v2-item:hover .slideshows-v2-overlay {
+    transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .slideshows-v2-section {
+        margin: 0 20px 0 20px;
+    }
+
+    .slideshows-v2-container {
+        height: 380px;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+    }
+
+    .slideshows-v2-slide {
+        flex-direction: column;
+    }
+
+    .slideshows-v2-half {
+        width: 100%;
+        height: 50%;
+    }
+
+    .slideshows-v2-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .slideshows-v2-section {
+        margin: 0;
+    }
+
+    .slideshows-v2-container {
+        height: 350px;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+    }
+
+    .slideshows-v2-slide {
+        flex-direction: column;
+    }
+
+    .slideshows-v2-half {
+        width: 100%;
+        height: 50%;
+    }
+
+    .slideshows-v2-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
+
+    .slideshows-v2-title {
+        font-size: 1rem;
+    }
+
+    .slideshows-v2-play-btn {
+        width: 55px;
+        height: 55px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .slideshows-v2-container {
+        height: 300px;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+    }
+
+    .slideshows-v2-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
+
+    .slideshows-v2-title {
+        font-size: 0.9rem;
+    }
+
+    .slideshows-v2-badge {
+        font-size: 0.65rem;
+        padding: 4px 10px;
+        top: 8px;
+        left: 8px;
+    }
+
+    .slideshows-v2-description {
+        font-size: 0.7rem;
+    }
+
+    .slideshows-v2-play-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+
+    .slideshows-v2-nav-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+}

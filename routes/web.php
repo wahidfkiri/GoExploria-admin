@@ -8,10 +8,10 @@ use App\Http\Controllers\{
     AuthController,
     GeminiController,
     HomeController,
-    HomeV2Controller,
     LandingPageController,
     DestinationPageController
 };
+use Vendor\HomeV2\Http\Controllers\HomeV2Controller;
 
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Auth\AjaxAuthController;

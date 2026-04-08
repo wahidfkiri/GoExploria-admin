@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 use RoachPHP\Roach;
 use RoachPHP\Spider\Configuration\Overrides;
 
-class TemplateScraperService
+class ScrapeTestService
 {
     protected string $assetsBasePath = 'templates/assets';
     protected string $templateAssetsFolder;

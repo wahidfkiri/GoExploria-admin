@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="{{ asset('css/video-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/slideshows.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/video-player.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/media-slideshow.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/events-vedette.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-vedette.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/restaurants-vedette.css') }}">

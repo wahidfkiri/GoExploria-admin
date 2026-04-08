@@ -1,0 +1,21 @@
+{
+    "name": "vendor/home-v2",
+    "description": "GoExploria Home V2 — Blocs de la page d'accueil (composants Blade, CSS, vues)",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Vendor\\HomeV2\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Vendor\\HomeV2\\HomeV2ServiceProvider"
+            ]
+        }
+    }
+}

@@ -1,0 +1,147 @@
+/* page-3-infos.css */
+/* Main Section */
+.travel-section {
+    font-family: 'Inter', sans-serif;
+    margin: 60px 40px 100px 40px;
+    padding: 0;
+    background: transparent;
+    position: relative;
+    z-index: 10;
+}
+
+.travel-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+}
+
+/* Columns */
+.travel-alerts { flex: 1 1 55%; min-width: 320px; }
+.travel-bullets { flex: 1 1 35%; min-width: 320px; }
+
+/* Headers */
+.info-section-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+.info-section-icon {
+    width: 60px; height: 60px;
+    background: linear-gradient(135deg, #0066CC, #00CC99);
+    border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1.6rem;
+    box-shadow: 0 10px 25px rgba(0, 102, 204, 0.2);
+}
+.info-section-title { font-family: 'Poppins', sans-serif; font-size: 2.2rem; font-weight: 700; color: #1a1a1a; margin: 0; }
+.info-section-sub { font-size: 1.05rem; color: #666666; margin: 5px 0 0 0; font-weight: 500; }
+
+/* Alert Cards */
+.alert-card {
+    background: #ffffff; border-radius: 20px; padding: 30px; margin-bottom: 20px;
+    border: 1px solid #e1e8f0; display: flex; align-items: flex-start; gap: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+}
+.alert-card:hover { transform: translateY(-6px); border-color: #3399FF; box-shadow: 0 15px 35px rgba(0, 102, 204, 0.08); }
+
+.alert-icon {
+    width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+}
+.alert-orange { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
+.alert-blue { background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; }
+.alert-red { background: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
+.alert-green { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
+
+.alert-content { flex: 1; }
+.alert-title { font-weight: 700; font-size: 1.25rem; margin: 0 0 10px 0; color: #1a1a1a; }
+.alert-desc { font-size: 1rem; color: #555555; margin: 0 0 20px 0; line-height: 1.6; }
+.alert-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 0.9rem; color: #888888; font-weight: 500;}
+.meta-item { display: flex; align-items: center; gap: 6px; }
+.meta-item i { color: #00CC99; }
+
+/* Flights Bullets */
+.bullets-grid { display: flex; flex-direction: column; gap: 20px; }
+.bullet-item {
+    background: #ffffff; border-radius: 20px; padding: 25px; display: flex; align-items: center; gap: 20px;
+    border: 1px solid #e1e8f0; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+}
+.bullet-item:hover { border-color: #00CC99; transform: translateX(8px); box-shadow: 0 10px 25px rgba(0, 204, 153, 0.1);}
+.plane-icon {
+    width: 55px; height: 55px; background: #f8fafc; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #0066CC; border: 1px solid #e1e8f0;
+}
+.plane-details { flex: 1; }
+.plane-route { font-weight: 700; font-size: 1.25rem; color: #1a1a1a; margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px; }
+.plane-route i { font-size: 1rem; color: #00CC99; }
+.plane-status { font-size: 1rem; color: #555555; margin: 0; display: flex; align-items: center; justify-content: space-between; }
+
+.status-badge { background: #dcfce7; color: #166534; padding: 5px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; }
+.status-warning { background: #fef08a; color: #854d0e; }
+.status-danger { background: #fee2e2; color: #b91c1c; }
+
+.flight-time { font-size: 0.9rem; color: #888888; display: flex; align-items: center; gap: 6px; margin-top: 10px; font-weight: 500;}
+.flight-time i { color: #0066CC; }
+.weather-badge {
+    display: inline-flex; align-items: center; gap: 8px; background: #f8fafc; border: 1px solid #e1e8f0;
+    padding: 8px 15px; border-radius: 50px; font-size: 0.85rem; color: #555555; margin-top: 12px; font-weight: 500;
+}
+.weather-badge i { color: #0066CC; }
+
+/* Link out */
+.btn-outline-primary {
+    display: inline-flex; align-items: center; gap: 10px; background: #ffffff; padding: 16px 30px;
+    border-radius: 50px; font-weight: 700; color: #0066CC; border: 2px solid #e1e8f0; font-size: 1.05rem;
+    transition: all 0.3s ease; text-decoration: none; cursor: pointer;
+}
+.btn-outline-primary:hover { border-color: #0066CC; background: #f8fafc; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 102, 204, 0.1); }
+
+@media (max-width: 1024px) {
+    .travel-section { margin: 60px 20px 0 20px; }
+}
+
+@media (max-width: 768px) {
+    .travel-section { 
+        padding: 0; 
+        margin: 40px 0; 
+    }
+    .travel-container { 
+        flex-direction: column; 
+        gap: 30px; 
+    }
+    .travel-alerts, .travel-bullets { 
+        width: 100%; 
+        padding: 0 15px; 
+    }
+    .info-section-header { 
+        margin-bottom: 25px; 
+        padding: 0 5px;
+    }
+    .info-section-title { font-size: 1.8rem; }
+    
+    .alert-card { 
+        padding: 20px; 
+        flex-direction: column; 
+        gap: 15px;
+        border-radius: 15px;
+    }
+    .bullet-item { 
+        padding: 20px; 
+        flex-direction: column; 
+        text-align: center;
+        border-radius: 15px;
+    }
+    .plane-status { 
+        flex-direction: column; 
+        gap: 10px; 
+        align-items: center; 
+    }
+    .plane-route { justify-content: center; font-size: 1.15rem; }
+    .flight-time { justify-content: center; }
+}
+
+@media (max-width: 480px) {
+    .info-section-title { font-size: 1.5rem; }
+    .alert-title { font-size: 1.1rem; }
+}

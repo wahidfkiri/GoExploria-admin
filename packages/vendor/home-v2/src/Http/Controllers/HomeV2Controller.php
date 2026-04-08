@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Vendor\HomeV2\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Slider;
-use Illuminate\Http\Request;
 
 class HomeV2Controller extends Controller
 {
@@ -12,7 +12,6 @@ class HomeV2Controller extends Controller
      */
     public function index()
     {
-        // Récupérer les sliders vidéo actifs pour le Hero
         $sliders = Slider::active()
             ->videos()
             ->ordered()
