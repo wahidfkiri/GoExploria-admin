@@ -471,26 +471,43 @@ if (!function_exists('get_slider_items')) {
         // Récupérer les items du slider depuis les settings (groupe 'slider')
         $sliderSettings = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
             ->where('group', 'slider')
+            ->orderBy('order', 'asc')
             ->limit($limit)
             ->get();
         
         $items = collect();
         
         foreach ($sliderSettings as $setting) {
-            $value = json_decode($setting->value, true);
+            // 🔥 CORRECTION : Gérer le cas où value est déjà un tableau ou une chaîne JSON
+            $value = null;
+            
+            if (is_string($setting->value)) {
+                // Si c'est une chaîne, décoder le JSON
+                $value = json_decode($setting->value, true);
+                
+                // Si json_decode a échoué, essayer de nettoyer la chaîne
+                if ($value === null && !empty($setting->value)) {
+                    // Nettoyer les caractères invisibles
+                    $cleanValue = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $setting->value);
+                    $value = json_decode($cleanValue, true);
+                }
+            } elseif (is_array($setting->value)) {
+                // Si c'est déjà un tableau, l'utiliser directement
+                $value = $setting->value;
+            }
             
             if ($value && isset($value['type'])) {
                 // Construire l'URL complète pour l'image/vidéo
                 $mediaUrl = $value['url'] ?? '';
                 
                 // Si c'est un chemin local, construire l'URL Storage
-                if ($mediaUrl && !filter_var($mediaUrl, FILTER_VALIDATE_URL)) {
+                if ($mediaUrl && !filter_var($mediaUrl, FILTER_VALIDATE_URL) && !str_starts_with($mediaUrl, 'http')) {
                     $mediaUrl = \Storage::disk('public')->url($mediaUrl);
                 }
                 
                 $items->push((object)[
                     'id' => $setting->id,
-                    'type' => $value['type'] ?? 'image', // 'image' ou 'video'
+                    'type' => $value['type'] ?? 'image',
                     'url' => $mediaUrl,
                     'title' => $value['title'] ?? '',
                     'subtitle' => $value['subtitle'] ?? '',
@@ -498,7 +515,7 @@ if (!function_exists('get_slider_items')) {
                     'button_link' => $value['button_link'] ?? '',
                     'order' => $setting->order ?? 0,
                     'is_active' => $value['is_active'] ?? true,
-                    'video_html' => $value['video_html'] ?? null, // Pour les vidéos embed (YouTube, Vimeo)
+                    'video_html' => $value['video_html'] ?? null,
                 ]);
             }
         }
