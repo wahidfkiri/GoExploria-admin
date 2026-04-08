@@ -14,4 +14,6 @@ Route::prefix('cms')->middleware(['web'])->group(function () {
         Route::post('/newsletter/subscribe', [PublicPageController::class, 'subscribeApi'])->name('newsletter.subscribe');
         Route::post('/contact', [PublicPageController::class, 'contactApi'])->name('contact');
     });
+
+    Route::post('/subscribe', [PublicPageController::class, 'subscribeApi'])->name('cms.newsletter.subscribe');
 });
