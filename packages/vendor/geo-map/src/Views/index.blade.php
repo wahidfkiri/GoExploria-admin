@@ -242,7 +242,7 @@
 </style>
 
 <!-- HTML -->
-<div class="container mt-5 mb-5" id="plans-daffichage-mondial">
+<div class="container mt-5 mb-5" id="plans-daffichage-mondial" id="carte-interactive">
     <div class="row">
         <div class="design-bosse-block" style="margin-bottom:-30px !important;">
             <h2 class="design-bosse-title">ACTIVEZ VOS EXPACES DESTINATIONS</h2>
@@ -254,7 +254,7 @@
                     <button class="destinations-vedette-v2-filter-btn" data-filter="qb">Alberta</button>
                     <button class="destinations-vedette-v2-filter-btn" data-filter="on">Ontario</button>
                 </div>
-                <a href="#" class="design-bosse-more-btn">En savoir plus <span class="destinations-vedette-v2-plus-icon">+</span></a>
+                <a href="{{url('map')}}" class="design-bosse-more-btn">En savoir plus <span class="destinations-vedette-v2-plus-icon">+</span></a>
             </div>
         </div>
 
