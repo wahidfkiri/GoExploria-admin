@@ -62,6 +62,7 @@ if (!function_exists('getCurrentTheme')) {
         $etablissement = getCurrentEtablissement();
         
         if (!$etablissement) {
+            \Log::warning('getCurrentTheme: No etablissement found');
             return null;
         }
         
@@ -85,22 +86,45 @@ if (!function_exists('getCurrentTheme')) {
             }
         }
         
-        // Thème actif pour l'établissement via la relation many-to-many
-        $activeTheme = $etablissement->themes()
-            ->wherePivot('is_active', true)
-            ->first();
-        
-        // Fallback: premier thème lié à l'établissement
-        if (!$activeTheme) {
-            $activeTheme = $etablissement->themes()->first();
+        // 🔥 CORRECTION : Utiliser la relation themes() de l'établissement
+        try {
+            // Récupérer le thème actif via la relation many-to-many
+            $activeTheme = $etablissement->themes()
+                ->wherePivot('is_active', true)
+                ->first();
+            
+            // Fallback: premier thème lié à l'établissement
+            if (!$activeTheme) {
+                $activeTheme = $etablissement->themes()->first();
+            }
+            
+            // Fallback ultime: n'importe quel thème (sans condition d'établissement)
+            if (!$activeTheme) {
+                $activeTheme = \Vendor\Cms\Models\Theme::first();
+                if ($activeTheme) {
+                    \Log::info('getCurrentTheme: Using fallback theme without etablissement link', [
+                        'theme_id' => $activeTheme->id,
+                        'theme_name' => $activeTheme->name,
+                        'etablissement_id' => $etablissement->id
+                    ]);
+                }
+            }
+            
+        } catch (\Exception $e) {
+            \Log::error('getCurrentTheme error: ' . $e->getMessage());
+            $activeTheme = \Vendor\Cms\Models\Theme::first();
         }
         
-        // Fallback ultime: thème par défaut global
-        // if (!$activeTheme) {
-        //     $activeTheme = \Vendor\Cms\Models\Theme::where('is_default', true)->first();
-        // }
-
-        return NULL;
+        if (!$activeTheme) {
+            \Log::warning('getCurrentTheme: No theme found at all for etablissement: ' . $etablissement->id);
+        } else {
+            \Log::info('getCurrentTheme: Theme found', [
+                'theme_id' => $activeTheme->id,
+                'theme_name' => $activeTheme->name,
+                'storage_type' => $activeTheme->storage_type,
+                'is_cdn' => $activeTheme->isCdnStorage()
+            ]);
+        }
         
         return $activeTheme;
     }
