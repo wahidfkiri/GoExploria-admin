@@ -463,7 +463,6 @@ if (!function_exists('get_slider_items')) {
         
         $sliderSettings = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
             ->where('group', 'slider')
-            ->orderBy('order', 'asc')
             ->limit($limit)
             ->get();
         
