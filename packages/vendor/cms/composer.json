@@ -8,7 +8,8 @@
             "Vendor\\Cms\\": "src/"
         },
          "files": [
-            "src/Helpers/helpers.php"
+            "src/Helpers/helpers.php",
+            "src/Helpers/welcome_page_helpers.php"
         ]
     },
     "require": {

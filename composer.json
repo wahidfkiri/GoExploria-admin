@@ -41,11 +41,13 @@
             "Vendor\\GeoMap\\": "packages/vendor/geo-map/src/",
             "Vendor\\Theme\\": "packages/vendor/theme/src/",
             "Vendor\\Destination\\": "packages/vendor/destination/src/",
-            "Vendor\\Cms\\": "packages/vendor/cms/src"
+            "Vendor\\Cms\\": "packages/vendor/cms/src",
+            "Vendor\\MailMarketing\\": "packages/vendor/mail-marketing/src/"
         },
         "files": [
             "app/Helpers/helpers.php",
-            "packages/vendor/cms/src/Helpers/helpers.php"
+            "packages/vendor/cms/src/Helpers/helpers.php",
+            "packages/vendor/cms/src/Helpers/welcome_page_helpers.php"
         ]
     },
     "autoload-dev": {
