@@ -1,3 +1,5 @@
+<?php
+
 if (!function_exists('get_social_links')) {
     /**
      * Get all social media links for the current establishment.
