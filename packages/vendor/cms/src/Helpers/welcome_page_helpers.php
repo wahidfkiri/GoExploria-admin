@@ -469,7 +469,7 @@ if (!function_exists('get_slider_items')) {
         // Récupérer les médias du slider depuis les settings
         $sliderItems = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
             ->where('group', 'slider')
-            ->orderBy('order', 'asc')
+            // ->orderBy('order', 'asc')
             ->limit($limit)
             ->get();
         
