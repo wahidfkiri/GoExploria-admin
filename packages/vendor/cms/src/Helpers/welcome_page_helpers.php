@@ -560,61 +560,24 @@ if (!function_exists('get_slider_html')) {
         foreach ($items as $index => $item) {
             $html .= '<div class="swiper-slide" data-type="' . $item->type . '" data-index="' . $index . '">';
             
-            // 🔥 GESTION DES VIDÉOS
-            if ($item->type === 'video') {
-                // Cas 1: Vidéo YouTube embed
-                if (str_contains($item->url, 'youtube.com') || str_contains($item->url, 'youtu.be')) {
-                    // Extraire l'ID YouTube
-                    $videoId = '';
-                    if (preg_match('/(?:youtube\\.com\\/(?:[^\\/]+\\/.+\\/|(?:v|e(?:mbed)?)\\/|.*[?&]v=)|youtu\\.be\\/)([^"&?\\s]{11})/', $item->url, $matches)) {
-                        $videoId = $matches[1];
-                    }
-                    $html .= '<div class="video-wrapper-youtube">';
-                    $html .= '<iframe 
-                        src="https://www.youtube.com/embed/' . $videoId . '?autoplay=' . ($options['video_autoplay'] ? '1' : '0') . '&mute=' . ($options['video_muted'] ? '1' : '0') . '&loop=' . ($options['video_loop'] ? '1' : '0') . '&controls=1&rel=0&showinfo=0&modestbranding=1&playsinline=1" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        allowfullscreen
-                        class="slide-video-iframe"></iframe>';
-                    $html .= '</div>';
-                }
-                // Cas 2: Vidéo Vimeo embed
-                elseif (str_contains($item->url, 'vimeo.com')) {
-                    $html .= '<div class="video-wrapper-vimeo">';
-                    $html .= '<iframe 
-                        src="' . $item->url . '?autoplay=' . ($options['video_autoplay'] ? '1' : '0') . '&muted=' . ($options['video_muted'] ? '1' : '0') . '&loop=' . ($options['video_loop'] ? '1' : '0') . '&byline=0&portrait=0&title=0" 
-                        frameborder="0" 
-                        allow="autoplay; fullscreen; picture-in-picture" 
-                        allowfullscreen
-                        class="slide-video-iframe"></iframe>';
-                    $html .= '</div>';
-                }
-                // Cas 3: Vidéo HTML5 locale ou externe
-                elseif ($item->url && !empty($item->url)) {
-                    $videoUrl = $item->url;
-                    $posterUrl = $item->poster_url ?? '';
-                    
-                    $html .= '<video class="slide-video" 
-                        ' . ($options['video_autoplay'] ? 'autoplay' : '') . '
-                        ' . ($options['video_muted'] ? 'muted' : '') . '
-                        ' . ($options['video_loop'] ? 'loop' : '') . '
-                        playsinline
-                        ' . ($posterUrl ? 'poster="' . e($posterUrl) . '"' : '') . '>';
-                    $html .= '<source src="' . e($videoUrl) . '" type="video/mp4">';
-                    $html .= 'Votre navigateur ne supporte pas la vidéo.';
-                    $html .= '</video>';
-                }
-                // Cas 4: Vidéo embed HTML personnalisé
-                elseif ($item->video_html) {
-                    $html .= '<div class="video-wrapper-embed">';
-                    $html .= $item->video_html;
-                    $html .= '</div>';
-                }
-                // Fallback: afficher une image si pas de vidéo valide
-                else {
-                    $html .= '<img src="' . e($item->url) . '" class="slide-media" alt="' . e($item->title) . '">';
-                }
-            } 
+            // GESTION DES VIDÉOS
+if ($item->type === 'video') {
+    // Vérifier si c'est une vidéo locale ou externe
+    $videoUrl = $item->url;
+    
+    // Poster image (thumbnail)
+    $posterUrl = $item->poster_url ?? '';
+    
+    $html .= '<video class="slide-video" 
+        ' . ($options['video_autoplay'] ? 'autoplay' : '') . '
+        ' . ($options['video_muted'] ? 'muted' : '') . '
+        ' . ($options['video_loop'] ? 'loop' : '') . '
+        playsinline
+        ' . ($posterUrl ? 'poster="' . e($posterUrl) . '"' : '') . '>';
+    $html .= '<source src="' . e($videoUrl) . '" type="video/mp4">';
+    $html .= 'Votre navigateur ne supporte pas la vidéo.';
+    $html .= '</video>';
+} 
             // 🔥 GESTION DES IMAGES
             else {
                 $html .= '<img src="' . e($item->url) . '" class="slide-media" alt="' . e($item->title) . '" loading="lazy">';

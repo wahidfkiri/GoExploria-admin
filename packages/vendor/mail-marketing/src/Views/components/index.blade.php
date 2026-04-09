@@ -1,1031 +1,709 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Go Exploria Mail Marketing</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('vendor/mail-marketing/css/style.css') }}">
 
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<section class="mm">
+<div class="mm-inner">
 
-:root {
-  --ink:     #0b0f1a;
-  --ink-2:   #3a3f52;
-  --ink-3:   #7a809a;
-  --surface: #f7f8fc;
-  --white:   #ffffff;
-  --accent-o: #f5a623;
-  --accent-b: #1a3a8f;
-  --accent-b2: #2d5cc2;
-  --radius-lg: 24px;
-  --radius-md: 14px;
-  --radius-sm: 8px;
-}
-
-body { font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--ink); }
-
-/* ── Section wrapper ── */
-.mm-section {
-  padding: 80px 24px 100px;
-  background: var(--surface);
-  overflow: hidden;
-}
-
-.mm-inner { max-width: 1240px; margin: 0 auto; }
-
-/* ── Header ── */
-.mm-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 32px;
-  margin-bottom: 64px;
-  flex-wrap: wrap;
-}
-
-.mm-header-left { max-width: 600px; }
-
-.mm-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #fff7e6, #fef0cc);
-  border: 1px solid #f5c96880;
-  color: #b87512;
-  font-family: 'Syne', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 6px 16px;
-  border-radius: 40px;
-  margin-bottom: 22px;
-}
-.mm-eyebrow-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--accent-o);
-  animation: dotPulse 1.8s ease-in-out infinite;
-}
-@keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
-
-.mm-title {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(32px, 5vw, 56px);
-  font-weight: 800;
-  color: var(--ink);
-  line-height: 1.08;
-  letter-spacing: -1.5px;
-  margin-bottom: 18px;
-}
-.mm-title span {
-  background: linear-gradient(135deg, var(--accent-b2), var(--accent-o));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-
-.mm-subtitle {
-  font-size: 16px;
-  line-height: 1.7;
-  color: var(--ink-3);
-  max-width: 500px;
-}
-
-.mm-cta-group { display: flex; gap: 12px; flex-wrap: wrap; }
-
-.mm-btn-primary {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: var(--ink);
-  color: white;
-  font-family: 'Syne', sans-serif;
-  font-size: 14px; font-weight: 700;
-  padding: 14px 28px; border-radius: 50px;
-  text-decoration: none; transition: all .25s;
-  border: none; cursor: pointer;
-  letter-spacing: .3px;
-}
-.mm-btn-primary:hover { background: var(--accent-b); transform: translateY(-2px); }
-
-.mm-btn-outline {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: transparent;
-  color: var(--ink);
-  font-family: 'Syne', sans-serif;
-  font-size: 14px; font-weight: 700;
-  padding: 14px 28px; border-radius: 50px;
-  text-decoration: none; transition: all .25s;
-  border: 1.5px solid rgba(11,15,26,.15); cursor: pointer;
-  letter-spacing: .3px;
-}
-.mm-btn-outline:hover { border-color: var(--accent-b); color: var(--accent-b); }
-
-/* ── Stats row ── */
-.mm-stats {
-  display: flex;
-  gap: 0;
-  background: white;
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(11,15,26,.07);
-  overflow: hidden;
-  margin-bottom: 64px;
-  box-shadow: 0 2px 20px rgba(11,15,26,.04);
-}
-.mm-stat {
-  flex: 1;
-  padding: 28px 32px;
-  border-right: 1px solid rgba(11,15,26,.07);
-  position: relative;
-}
-.mm-stat:last-child { border-right: none; }
-.mm-stat-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 36px; font-weight: 800;
-  color: var(--ink);
-  letter-spacing: -1px;
-  line-height: 1;
-  margin-bottom: 6px;
-}
-.mm-stat-num span { color: var(--accent-o); }
-.mm-stat-label { font-size: 13px; color: var(--ink-3); font-weight: 400; }
-
-/* ── Category filter tabs ── */
-.mm-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 40px;
-  flex-wrap: wrap;
-}
-.mm-tab {
-  padding: 9px 20px;
-  border-radius: 40px;
-  font-size: 13px;
-  font-weight: 500;
-  background: white;
-  border: 1.5px solid rgba(11,15,26,.1);
-  color: var(--ink-2);
-  cursor: pointer;
-  transition: all .2s;
-  font-family: 'DM Sans', sans-serif;
-}
-.mm-tab:hover { border-color: var(--accent-b); color: var(--accent-b); }
-.mm-tab.active {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: white;
-}
-
-/* ── Card grid ── */
-.mm-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-bottom: 80px;
-}
-
-/* ── Email card ── */
-.mail-card-v2 {
-  background: white;
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(11,15,26,.07);
-  overflow: hidden;
-  transition: all .3s cubic-bezier(.2,0,0,1);
-  cursor: pointer;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-.mail-card-v2:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 24px 48px rgba(11,15,26,.10);
-  border-color: rgba(11,15,26,.12);
-}
-
-/* Card illustration area */
-.mc-visual {
-  height: 200px;
-  position: relative;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-/* SVG Illustration backgrounds */
-.mc-visual-inner {
-  width: 100%; height: 100%;
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-}
-
-/* Card body */
-.mc-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
-
-.mc-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 40px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 14px;
-  width: fit-content;
-}
-
-.mc-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 10px;
-  line-height: 1.3;
-}
-
-.mc-desc {
-  font-size: 13.5px;
-  color: var(--ink-3);
-  line-height: 1.6;
-  flex: 1;
-  margin-bottom: 20px;
-}
-
-.mc-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 16px;
-  border-top: 1px solid rgba(11,15,26,.06);
-}
-
-.mc-kpi {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink-2);
-}
-.mc-kpi-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-}
-
-.mc-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: gap .2s;
-}
-.mc-link:hover { gap: 10px; }
-
-/* Card colour themes */
-.theme-orange .mc-visual-inner { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); }
-.theme-blue   .mc-visual-inner { background: linear-gradient(135deg, #e8eeff 0%, #c9d8ff 100%); }
-.theme-teal   .mc-visual-inner { background: linear-gradient(135deg, #e0f7f4 0%, #b2ebf2 100%); }
-.theme-rose   .mc-visual-inner { background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%); }
-.theme-green  .mc-visual-inner { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); }
-.theme-purple .mc-visual-inner { background: linear-gradient(135deg, #ede7f6 0%, #d1c4e9 100%); }
-
-.theme-orange .mc-badge { background:#fff3e0; color:#c77a00; }
-.theme-blue   .mc-badge { background:#e8eeff; color:#1a3a8f; }
-.theme-teal   .mc-badge { background:#e0f7f4; color:#00695c; }
-.theme-rose   .mc-badge { background:#fce4ec; color:#c2185b; }
-.theme-green  .mc-badge { background:#e8f5e9; color:#2e7d32; }
-.theme-purple .mc-badge { background:#ede7f6; color:#4527a0; }
-
-.theme-orange .mc-kpi-dot { background:#f5a623; }
-.theme-blue   .mc-kpi-dot { background:#2d5cc2; }
-.theme-teal   .mc-kpi-dot { background:#00897b; }
-.theme-rose   .mc-kpi-dot { background:#e91e63; }
-.theme-green  .mc-kpi-dot { background:#43a047; }
-.theme-purple .mc-kpi-dot { background:#7e57c2; }
-
-.theme-orange .mc-link { color:#c77a00; }
-.theme-blue   .mc-link { color:#1a3a8f; }
-.theme-teal   .mc-link { color:#00695c; }
-.theme-rose   .mc-link { color:#c2185b; }
-.theme-green  .mc-link { color:#2e7d32; }
-.theme-purple .mc-link { color:#4527a0; }
-
-/* ── Featured wide card ── */
-.mail-card-wide {
-  grid-column: span 2;
-  background: var(--ink);
-  border-radius: var(--radius-lg);
-  border: none;
-  overflow: hidden;
-  display: flex;
-  transition: all .3s;
-  cursor: pointer;
-  position: relative;
-}
-.mail-card-wide:hover { transform: translateY(-6px); box-shadow: 0 24px 48px rgba(11,15,26,.25); }
-.mc-wide-body {
-  padding: 40px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-  z-index: 2;
-}
-.mc-wide-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.2);
-  color: rgba(255,255,255,.85);
-  padding: 5px 14px; border-radius: 40px;
-  font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
-  text-transform: uppercase; margin-bottom: 20px; width: fit-content;
-}
-.mc-wide-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 28px; font-weight: 800; color: white;
-  line-height: 1.2; letter-spacing: -.5px; margin-bottom: 14px;
-}
-.mc-wide-desc { font-size: 14px; color: rgba(255,255,255,.65); line-height: 1.6; margin-bottom: 28px; max-width: 380px; }
-.mc-wide-link {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: white; color: var(--ink);
-  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
-  padding: 12px 24px; border-radius: 50px;
-  text-decoration: none; transition: all .2s; width: fit-content;
-}
-.mc-wide-link:hover { background: var(--accent-o); }
-
-.mc-wide-visual {
-  width: 280px; flex-shrink: 0;
-  position: relative; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-}
-.mc-wide-visual::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(45,92,194,.5), rgba(245,166,35,.3));
-}
-
-/* ── Process strip ── */
-.mm-process {
-  display: flex;
-  align-items: flex-start;
-  gap: 0;
-  background: white;
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(11,15,26,.07);
-  overflow: hidden;
-  margin-bottom: 80px;
-}
-.mm-step {
-  flex: 1;
-  padding: 32px 28px;
-  border-right: 1px solid rgba(11,15,26,.07);
-  position: relative;
-  transition: background .2s;
-}
-.mm-step:last-child { border-right: none; }
-.mm-step:hover { background: #fafbff; }
-.mm-step-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 11px; font-weight: 700;
-  color: var(--ink-3); letter-spacing: 2px;
-  text-transform: uppercase; margin-bottom: 14px;
-}
-.mm-step-icon {
-  width: 44px; height: 44px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; margin-bottom: 14px;
-}
-.mm-step-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 15px; font-weight: 700; color: var(--ink);
-  margin-bottom: 8px;
-}
-.mm-step-desc { font-size: 13px; color: var(--ink-3); line-height: 1.55; }
-.mm-step-arrow {
-  position: absolute;
-  right: -12px; top: 50%;
-  transform: translateY(-50%);
-  width: 24px; height: 24px;
-  background: var(--surface);
-  border: 1px solid rgba(11,15,26,.08);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; color: var(--ink-3);
-  z-index: 10;
-}
-
-/* ── Clients marquee ── */
-.mm-marquee-wrap {
-  overflow: hidden;
-  margin-bottom: 80px;
-  position: relative;
-}
-.mm-marquee-label {
-  text-align: center;
-  font-size: 12px; font-weight: 600;
-  color: var(--ink-3); letter-spacing: 2px;
-  text-transform: uppercase; margin-bottom: 24px;
-}
-.mm-marquee-track {
-  display: flex; gap: 16px;
-  animation: marquee 28s linear infinite;
-  width: max-content;
-}
-.mm-marquee-track:hover { animation-play-state: paused; }
-@keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-.mm-logo-pill {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: white;
-  border: 1px solid rgba(11,15,26,.08);
-  border-radius: 50px;
-  padding: 10px 22px;
-  font-size: 13px; font-weight: 500;
-  color: var(--ink-2);
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: all .2s;
-}
-.mm-logo-pill i { font-size: 15px; color: var(--accent-b2); }
-.mm-logo-pill:hover { border-color: var(--accent-b); color: var(--accent-b); }
-
-/* ── Bottom CTA ── */
-.mm-bottom-cta {
-  background: linear-gradient(135deg, var(--accent-b) 0%, #1e4fd8 40%, #0f2f8f 100%);
-  border-radius: var(--radius-lg);
-  padding: 60px 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-  overflow: hidden;
-  position: relative;
-}
-.mm-bottom-cta::before {
-  content: '';
-  position: absolute;
-  width: 400px; height: 400px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.04);
-  top: -100px; right: -80px;
-  pointer-events: none;
-}
-.mm-bottom-cta::after {
-  content: '';
-  position: absolute;
-  width: 200px; height: 200px;
-  border-radius: 50%;
-  background: rgba(245,166,35,.12);
-  bottom: -60px; left: 40px;
-  pointer-events: none;
-}
-.mm-cta-text { position: relative; z-index: 2; }
-.mm-cta-text h3 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(22px, 3vw, 32px);
-  font-weight: 800; color: white;
-  line-height: 1.15; margin-bottom: 12px;
-  letter-spacing: -.5px;
-}
-.mm-cta-text p { font-size: 15px; color: rgba(255,255,255,.65); max-width: 420px; }
-.mm-cta-actions {
-  display: flex; gap: 12px; align-items: center;
-  position: relative; z-index: 2; flex-shrink: 0; flex-wrap: wrap;
-}
-.mm-cta-btn-white {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: white; color: var(--accent-b);
-  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
-  padding: 14px 28px; border-radius: 50px;
-  text-decoration: none; transition: all .25s; border: none; cursor: pointer;
-}
-.mm-cta-btn-white:hover { background: var(--accent-o); color: white; }
-.mm-cta-btn-ghost {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: rgba(255,255,255,.1); color: white;
-  border: 1.5px solid rgba(255,255,255,.25);
-  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
-  padding: 14px 28px; border-radius: 50px;
-  text-decoration: none; transition: all .25s; cursor: pointer;
-}
-.mm-cta-btn-ghost:hover { background: rgba(255,255,255,.2); }
-
-/* ── Responsive ── */
-@media (max-width: 1024px) {
-  .mm-grid { grid-template-columns: repeat(2, 1fr); }
-  .mail-card-wide { grid-column: span 2; }
-  .mm-process { flex-direction: column; }
-  .mm-step { border-right: none; border-bottom: 1px solid rgba(11,15,26,.07); }
-  .mm-step:last-child { border-bottom: none; }
-  .mm-step-arrow { display: none; }
-}
-@media (max-width: 720px) {
-  .mm-grid { grid-template-columns: 1fr; }
-  .mail-card-wide { grid-column: span 1; flex-direction: column; }
-  .mc-wide-visual { width: 100%; height: 180px; }
-  .mm-stats { flex-direction: column; }
-  .mm-stat { border-right: none; border-bottom: 1px solid rgba(11,15,26,.07); }
-  .mm-bottom-cta { flex-direction: column; padding: 40px 28px; }
-  .mm-header { flex-direction: column; align-items: flex-start; }
-}
-</style>
-
-<section class="mm-section">
-  <div class="mm-inner">
-
-    <!-- Header -->
-    <div class="mm-header">
-      <div class="mm-header-left">
-        <div class="mm-eyebrow">
-          <span class="mm-eyebrow-dot"></span>
-          Email Marketing Platform
-        </div>
-        <h1 class="mm-title">
-          Transformez chaque<br>email en <span>opportunité</span>
-        </h1>
-        <p class="mm-subtitle">
-          Créez, automatisez et analysez vos campagnes d'emailing. Atteignez vos clients au bon moment avec le bon message — dans chaque secteur.
-        </p>
-      </div>
-      <div class="mm-cta-group">
-        <a href="#" class="mm-btn-primary">
-          <i class="fas fa-rocket" style="font-size:13px;"></i>
-          Démarrer gratuit
-        </a>
-        <a href="#" class="mm-btn-outline">
-          <i class="fas fa-play-circle" style="font-size:13px;"></i>
-          Voir la démo
-        </a>
-      </div>
-    </div>
-
-    <!-- Stats -->
-    <div class="mm-stats">
-      <div class="mm-stat">
-        <div class="mm-stat-num">98<span>%</span></div>
-        <div class="mm-stat-label">Taux de délivrabilité</div>
-      </div>
-      <div class="mm-stat">
-        <div class="mm-stat-num">4.2<span>×</span></div>
-        <div class="mm-stat-label">ROI moyen par campagne</div>
-      </div>
-      <div class="mm-stat">
-        <div class="mm-stat-num">12<span>k+</span></div>
-        <div class="mm-stat-label">Campagnes envoyées</div>
-      </div>
-      <div class="mm-stat">
-        <div class="mm-stat-num">38<span>%</span></div>
-        <div class="mm-stat-label">Taux d'ouverture moyen</div>
-      </div>
-    </div>
-
-    <!-- Filter tabs -->
-    <div class="mm-tabs">
-      <button class="mm-tab active">Tous les secteurs</button>
-      <button class="mm-tab">Retail & E-commerce</button>
-      <button class="mm-tab">Immobilier</button>
-      <button class="mm-tab">Tourisme & Voyages</button>
-      <button class="mm-tab">Événementiel</button>
-      <button class="mm-tab">B2B & Corporate</button>
-    </div>
-
-    <!-- Card grid -->
-    <div class="mm-grid">
-
-      <!-- Wide featured card — Automation -->
-      <div class="mail-card-wide">
-        <div class="mc-wide-body">
-          <div>
-            <div class="mc-wide-badge">
-              <i class="fas fa-bolt" style="font-size:10px;"></i> AUTOMATION IA
-            </div>
-            <div class="mc-wide-title">Séquences email<br>100% automatisées</div>
-            <p class="mc-wide-desc">Configurez une fois, convertissez indéfiniment. Notre moteur IA personnalise chaque envoi selon le comportement de vos contacts.</p>
-          </div>
-          <div style="display:flex;gap:24px;margin-bottom:28px;">
-            <div>
-              <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white;line-height:1;">+47%</div>
-              <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:3px;">Conversions</div>
-            </div>
-            <div style="width:1px;background:rgba(255,255,255,.1);"></div>
-            <div>
-              <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white;line-height:1;">-60%</div>
-              <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:3px;">Temps de travail</div>
-            </div>
-            <div style="width:1px;background:rgba(255,255,255,.1);"></div>
-            <div>
-              <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#f5a623;line-height:1;">4.2×</div>
-              <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:3px;">ROI moyen</div>
-            </div>
-          </div>
-          <a href="#" class="mc-wide-link">
-            Découvrir l'automation <i class="fas fa-arrow-right" style="font-size:12px;"></i>
-          </a>
-        </div>
-        <div class="mc-wide-visual">
-          <!-- Automation illustration -->
-          <svg width="260" height="320" viewBox="0 0 260 320" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1;">
-            <!-- Email flow nodes -->
-            <rect x="70" y="20" width="120" height="52" rx="12" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.25)" stroke-width="1"/>
-            <circle cx="94" cy="46" r="10" fill="#f5a623" opacity=".9"/>
-            <text x="110" y="42" fill="white" font-size="11" font-family="sans-serif" opacity=".9">Trigger</text>
-            <text x="110" y="56" fill="rgba(255,255,255,.55)" font-size="10" font-family="sans-serif">Nouvel abonné</text>
-            <!-- Arrow -->
-            <line x1="130" y1="72" x2="130" y2="96" stroke="rgba(255,255,255,.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
-            <polygon points="130,100 125,92 135,92" fill="rgba(255,255,255,.35)"/>
-            <!-- Email 1 -->
-            <rect x="60" y="104" width="140" height="52" rx="12" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
-            <rect x="76" y="118" width="24" height="18" rx="4" fill="#2d5cc2" opacity=".9"/>
-            <text x="76" y="130" fill="white" font-size="9" font-family="sans-serif" text-anchor="middle" dx="12">E1</text>
-            <text x="108" y="127" fill="white" font-size="11" font-family="sans-serif" opacity=".85">Email Bienvenue</text>
-            <text x="108" y="141" fill="rgba(255,255,255,.45)" font-size="10" font-family="sans-serif">J+0 · Taux ouv. 61%</text>
-            <!-- Arrow -->
-            <line x1="130" y1="156" x2="130" y2="180" stroke="rgba(255,255,255,.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
-            <polygon points="130,184 125,176 135,176" fill="rgba(255,255,255,.35)"/>
-            <!-- Email 2 -->
-            <rect x="60" y="188" width="140" height="52" rx="12" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
-            <rect x="76" y="202" width="24" height="18" rx="4" fill="#f5a623" opacity=".9"/>
-            <text x="76" y="214" fill="white" font-size="9" font-family="sans-serif" text-anchor="middle" dx="12">E2</text>
-            <text x="108" y="211" fill="white" font-size="11" font-family="sans-serif" opacity=".85">Offre exclusive</text>
-            <text x="108" y="225" fill="rgba(255,255,255,.45)" font-size="10" font-family="sans-serif">J+3 · Taux clic 28%</text>
-            <!-- Arrow -->
-            <line x1="130" y1="240" x2="130" y2="264" stroke="rgba(255,255,255,.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
-            <polygon points="130,268 125,260 135,260" fill="rgba(255,255,255,.35)"/>
-            <!-- Conversion -->
-            <rect x="75" y="272" width="110" height="36" rx="18" fill="#f5a623"/>
-            <text x="130" y="295" fill="white" font-size="12" font-family="sans-serif" font-weight="700" text-anchor="middle">Conversion</text>
-          </svg>
-        </div>
-      </div>
-
-      <!-- Card 1 - Produits & Infos -->
-      <div class="mail-card-v2 theme-orange">
-        <div class="mc-visual">
-          <div class="mc-visual-inner">
-            <svg width="220" height="180" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Newsletter mockup -->
-              <rect x="30" y="15" width="160" height="150" rx="10" fill="white" opacity=".8"/>
-              <rect x="30" y="15" width="160" height="32" rx="10" fill="#f5a623" opacity=".9"/>
-              <rect x="30" y="37" width="160" height="10" fill="#f5a623" opacity=".9"/>
-              <text x="110" y="36" fill="white" font-size="11" font-weight="700" font-family="sans-serif" text-anchor="middle">NEWSLETTER</text>
-              <rect x="44" y="60" width="70" height="45" rx="6" fill="#fff3e0"/>
-              <text x="79" y="86" fill="#c77a00" font-size="18" font-family="sans-serif" text-anchor="middle">🏷️</text>
-              <rect x="124" y="60" width="52" height="8" rx="4" fill="#f5a623" opacity=".5"/>
-              <rect x="124" y="74" width="40" height="6" rx="3" fill="#e0e0e0"/>
-              <rect x="124" y="86" width="46" height="6" rx="3" fill="#e0e0e0"/>
-              <rect x="44" y="116" width="132" height="6" rx="3" fill="#e0e0e0" opacity=".6"/>
-              <rect x="44" y="128" width="100" height="6" rx="3" fill="#e0e0e0" opacity=".4"/>
-              <rect x="74" y="145" width="72" height="14" rx="7" fill="#f5a623"/>
-              <text x="110" y="156" fill="white" font-size="9" font-family="sans-serif" text-anchor="middle">Découvrir</text>
-            </svg>
-          </div>
-        </div>
-        <div class="mc-body">
-          <div class="mc-badge">
-            <i class="fas fa-tags" style="font-size:9px;"></i> Informations
-          </div>
-          <div class="mc-title">Emails Produits & Newsletters</div>
-          <p class="mc-desc">Promotions exclusives, nouveautés produits et newsletters informatives pour fidéliser et convertir votre audience.</p>
-          <div class="mc-footer">
-            <div class="mc-kpi">
-              <span class="mc-kpi-dot"></span>
-              Ouverture 42%
-            </div>
-            <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px;"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 2 - Immobilier -->
-      <div class="mail-card-v2 theme-blue">
-        <div class="mc-visual">
-          <div class="mc-visual-inner">
-            <svg width="220" height="180" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Immobilier email mockup -->
-              <rect x="25" y="10" width="170" height="155" rx="10" fill="white" opacity=".75"/>
-              <rect x="25" y="10" width="170" height="28" rx="10" fill="#1a3a8f"/>
-              <rect x="25" y="28" width="170" height="10" fill="#1a3a8f"/>
-              <text x="110" y="28" fill="white" font-size="10" font-weight="700" font-family="sans-serif" text-anchor="middle">IMMO CONSEIL</text>
-              <!-- Building icon -->
-              <rect x="65" y="48" width="90" height="60" rx="5" fill="#e8eeff"/>
-              <rect x="78" y="65" width="18" height="25" rx="2" fill="#2d5cc2" opacity=".7"/>
-              <rect x="102" y="55" width="18" height="35" rx="2" fill="#1a3a8f" opacity=".8"/>
-              <rect x="126" y="62" width="18" height="28" rx="2" fill="#2d5cc2" opacity=".7"/>
-              <rect x="65" y="105" width="90" height="5" rx="2" fill="#2d5cc2" opacity=".3"/>
-              <!-- Tags -->
-              <rect x="35" y="122" width="60" height="16" rx="8" fill="#e8eeff"/>
-              <text x="65" y="133" fill="#1a3a8f" font-size="9" font-family="sans-serif" text-anchor="middle" font-weight="600">Nouveau bien</text>
-              <rect x="104" y="122" width="50" height="16" rx="8" fill="#e8eeff"/>
-              <text x="129" y="133" fill="#1a3a8f" font-size="9" font-family="sans-serif" text-anchor="middle">350 000 €</text>
-              <rect x="62" y="148" width="96" height="12" rx="6" fill="#1a3a8f"/>
-              <text x="110" y="157" fill="white" font-size="9" font-family="sans-serif" text-anchor="middle">Voir l'annonce</text>
-            </svg>
-          </div>
-        </div>
-        <div class="mc-body">
-          <div class="mc-badge">
-            <i class="fas fa-building" style="font-size:9px;"></i> Immobilier
-          </div>
-          <div class="mc-title">Emails Immobiliers</div>
-          <p class="mc-desc">Annonces exclusives, alertes prix, visites virtuelles et conseils pour investisseurs et acquéreurs.</p>
-          <div class="mc-footer">
-            <div class="mc-kpi">
-              <span class="mc-kpi-dot"></span>
-              Conversion 18%
-            </div>
-            <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px;"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 3 - Voyages -->
-      <div class="mail-card-v2 theme-teal">
-        <div class="mc-visual">
-          <div class="mc-visual-inner">
-            <svg width="220" height="180" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Travel card mockup -->
-              <rect x="30" y="12" width="160" height="155" rx="10" fill="white" opacity=".75"/>
-              <!-- Sky gradient area -->
-              <rect x="30" y="12" width="160" height="75" rx="10" fill="#00897b" opacity=".15"/>
-              <rect x="30" y="77" width="160" height="10" fill="#00897b" opacity=".15"/>
-              <!-- Plane icon -->
-              <circle cx="110" cy="50" r="28" fill="#e0f7f4"/>
-              <text x="110" y="58" font-size="26" text-anchor="middle" font-family="sans-serif">✈️</text>
-              <!-- Destination -->
-              <text x="110" y="108" fill="#00695c" font-size="13" font-weight="700" font-family="sans-serif" text-anchor="middle">Paris → Montréal</text>
-              <rect x="75" y="116" width="70" height="14" rx="7" fill="#e0f7f4"/>
-              <text x="110" y="126" fill="#00838f" font-size="9" font-family="sans-serif" text-anchor="middle" font-weight="600">Last minute · -42%</text>
-              <rect x="50" y="140" width="52" height="10" rx="5" fill="#e0e0e0" opacity=".5"/>
-              <rect x="112" y="140" width="52" height="10" rx="5" fill="#e0e0e0" opacity=".5"/>
-              <rect x="65" y="158" width="90" height="12" rx="6" fill="#00897b"/>
-              <text x="110" y="167" fill="white" font-size="9" font-family="sans-serif" text-anchor="middle">Réserver maintenant</text>
-            </svg>
-          </div>
-        </div>
-        <div class="mc-body">
-          <div class="mc-badge">
-            <i class="fas fa-plane-departure" style="font-size:9px;"></i> Voyages
-          </div>
-          <div class="mc-title">Emails Voyages & Tourisme</div>
-          <p class="mc-desc">Offres last minute, itinéraires personnalisés, bons plans destinations et inspirations saisonnières.</p>
-          <div class="mc-footer">
-            <div class="mc-kpi">
-              <span class="mc-kpi-dot"></span>
-              Engagement 35%
-            </div>
-            <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px;"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 4 - Événementiel -->
-      <div class="mail-card-v2 theme-rose">
-        <div class="mc-visual">
-          <div class="mc-visual-inner">
-            <svg width="220" height="180" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Invitation card mockup -->
-              <rect x="35" y="15" width="150" height="150" rx="12" fill="white" opacity=".8"/>
-              <rect x="35" y="15" width="150" height="48" rx="12" fill="#fce4ec"/>
-              <rect x="35" y="53" width="150" height="10" fill="#fce4ec"/>
-              <text x="110" y="36" fill="#c2185b" font-size="10" font-weight="700" font-family="sans-serif" text-anchor="middle" letter-spacing="1">INVITATION</text>
-              <text x="110" y="52" fill="#c2185b" font-size="9" font-family="sans-serif" text-anchor="middle">Événement Exclusif</text>
-              <!-- Calendar icon -->
-              <rect x="80" y="72" width="60" height="52" rx="8" fill="#fce4ec" opacity=".6"/>
-              <rect x="80" y="72" width="60" height="16" rx="8" fill="#e91e63" opacity=".8"/>
-              <text x="110" y="84" fill="white" font-size="9" font-family="sans-serif" text-anchor="middle" font-weight="700">JUIN 2025</text>
-              <text x="110" y="112" fill="#c2185b" font-size="22" font-weight="800" font-family="sans-serif" text-anchor="middle">28</text>
-              <rect x="50" y="136" width="120" height="6" rx="3" fill="#e0e0e0" opacity=".6"/>
-              <rect x="65" y="148" width="90" height="14" rx="7" fill="#e91e63"/>
-              <text x="110" y="158" fill="white" font-size="9" font-family="sans-serif" text-anchor="middle">Confirmer ma présence</text>
-            </svg>
-          </div>
-        </div>
-        <div class="mc-body">
-          <div class="mc-badge">
-            <i class="fas fa-calendar-alt" style="font-size:9px;"></i> Événementiel
-          </div>
-          <div class="mc-title">Emails Événementiels</div>
-          <p class="mc-desc">Invitations, rappels, billetterie et feedback post-événement pour maximiser votre impact et votre taux de participation.</p>
-          <div class="mc-footer">
-            <div class="mc-kpi">
-              <span class="mc-kpi-dot"></span>
-              Participation 28%
-            </div>
-            <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px;"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 5 - E-commerce -->
-      <div class="mail-card-v2 theme-green">
-        <div class="mc-visual">
-          <div class="mc-visual-inner">
-            <svg width="220" height="180" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Cart recovery mockup -->
-              <rect x="28" y="12" width="164" height="155" rx="10" fill="white" opacity=".75"/>
-              <!-- Header -->
-              <rect x="28" y="12" width="164" height="30" rx="10" fill="#43a047" opacity=".15"/>
-              <rect x="28" y="32" width="164" height="10" fill="#43a047" opacity=".15"/>
-              <text x="110" y="30" fill="#2e7d32" font-size="10" font-weight="700" font-family="sans-serif" text-anchor="middle">PANIER ABANDONNÉ</text>
-              <!-- Product items -->
-              <rect x="38" y="52" width="55" height="48" rx="8" fill="#e8f5e9"/>
-              <text x="65" y="80" font-size="22" text-anchor="middle" font-family="sans-serif">👟</text>
-              <rect x="102" y="56" width="80" height="8" rx="4" fill="#2e7d32" opacity=".6"/>
-              <rect x="102" y="70" width="56" height="6" rx="3" fill="#e0e0e0"/>
-              <text x="102" y="94" fill="#43a047" font-size="14" font-weight="700" font-family="sans-serif">89,00 €</text>
-              <rect x="28" y="110" width="164" height="1" fill="#e0e0e0"/>
-              <!-- Timer badge -->
-              <rect x="54" y="120" width="112" height="18" rx="9" fill="#fff8e1" stroke="#f9a825" stroke-width="1"/>
-              <text x="110" y="132" fill="#f57f17" font-size="10" font-family="sans-serif" text-anchor="middle" font-weight="600">⏱ Expire dans 2h 34min</text>
-              <!-- CTA -->
-              <rect x="48" y="146" width="124" height="14" rx="7" fill="#43a047"/>
-              <text x="110" y="156" fill="white" font-size="9" font-family="sans-serif" text-anchor="middle">Finaliser mon achat</text>
-            </svg>
-          </div>
-        </div>
-        <div class="mc-body">
-          <div class="mc-badge">
-            <i class="fas fa-shopping-cart" style="font-size:9px;"></i> E-commerce
-          </div>
-          <div class="mc-title">Emails E-commerce & Retail</div>
-          <p class="mc-desc">Abandons panier, ventes flash, recommandations produits intelligentes et programmes de fidélité automatisés.</p>
-          <div class="mc-footer">
-            <div class="mc-kpi">
-              <span class="mc-kpi-dot"></span>
-              Récupération 23%
-            </div>
-            <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px;"></i></a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 6 - B2B -->
-      <div class="mail-card-v2 theme-purple">
-        <div class="mc-visual">
-          <div class="mc-visual-inner">
-            <svg width="220" height="180" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- B2B email mockup -->
-              <rect x="25" y="10" width="170" height="158" rx="10" fill="white" opacity=".75"/>
-              <!-- Top bar -->
-              <rect x="25" y="10" width="170" height="32" rx="10" fill="#4527a0" opacity=".85"/>
-              <rect x="25" y="32" width="170" height="10" fill="#4527a0" opacity=".85"/>
-              <text x="110" y="29" fill="white" font-size="10" font-weight="700" font-family="sans-serif" text-anchor="middle">RAPPORT TRIMESTRIEL</text>
-              <!-- Graph bars -->
-              <rect x="42" y="90" width="18" height="50" rx="4" fill="#7e57c2" opacity=".4"/>
-              <rect x="68" y="74" width="18" height="66" rx="4" fill="#7e57c2" opacity=".6"/>
-              <rect x="94" y="56" width="18" height="84" rx="4" fill="#7e57c2" opacity=".8"/>
-              <rect x="120" y="44" width="18" height="96" rx="4" fill="#4527a0"/>
-              <rect x="146" y="60" width="18" height="80" rx="4" fill="#7e57c2" opacity=".7"/>
-              <!-- Baseline -->
-              <rect x="38" y="140" width="140" height="1.5" rx="1" fill="#7e57c2" opacity=".25"/>
-              <!-- KPI badges -->
-              <rect x="35" y="150" width="44" height="12" rx="6" fill="#ede7f6"/>
-              <text x="57" y="159" fill="#4527a0" font-size="8" font-family="sans-serif" text-anchor="middle" font-weight="600">+31% ROI</text>
-              <rect x="86" y="150" width="50" height="12" rx="6" fill="#ede7f6"/>
-              <text x="111" y="159" fill="#4527a0" font-size="8" font-family="sans-serif" text-anchor="middle" font-weight="600">128 leads</text>
-              <rect x="144" y="150" width="48" height="12" rx="6" fill="#ede7f6"/>
-              <text x="168" y="159" fill="#4527a0" font-size="8" font-family="sans-serif" text-anchor="middle" font-weight="600">Q4 2024</text>
-            </svg>
-          </div>
-        </div>
-        <div class="mc-body">
-          <div class="mc-badge">
-            <i class="fas fa-briefcase" style="font-size:9px;"></i> B2B & Pro
-          </div>
-          <div class="mc-title">Emails B2B & Professionnels</div>
-          <p class="mc-desc">Newsletters corporate, études de cas, rapports analytiques et contenus premium pour décideurs et équipes.</p>
-          <div class="mc-footer">
-            <div class="mc-kpi">
-              <span class="mc-kpi-dot"></span>
-              Clic B2B 31%
-            </div>
-            <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px;"></i></a>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /grid -->
-
-    <!-- Process steps -->
-    <div class="mm-process">
-      <div class="mm-step">
-        <div class="mm-step-num">Étape 01</div>
-        <div class="mm-step-icon" style="background:#fff3e0;">
-          <span style="font-size:20px;">🎯</span>
-        </div>
-        <div class="mm-step-title">Définissez votre audience</div>
-        <p class="mm-step-desc">Segmentez vos contacts selon leur comportement, secteur et historique d'engagement.</p>
-        <div class="mm-step-arrow">›</div>
-      </div>
-      <div class="mm-step">
-        <div class="mm-step-num">Étape 02</div>
-        <div class="mm-step-icon" style="background:#e8eeff;">
-          <span style="font-size:20px;">✏️</span>
-        </div>
-        <div class="mm-step-title">Créez votre campagne</div>
-        <p class="mm-step-desc">Utilisez nos templates professionnels ou créez votre design sur mesure en glisser-déposer.</p>
-        <div class="mm-step-arrow">›</div>
-      </div>
-      <div class="mm-step">
-        <div class="mm-step-num">Étape 03</div>
-        <div class="mm-step-icon" style="background:#e0f7f4;">
-          <span style="font-size:20px;">🤖</span>
-        </div>
-        <div class="mm-step-title">Automatisez l'envoi</div>
-        <p class="mm-step-desc">Planifiez ou déclenchez selon les actions de vos contacts. L'IA optimise le timing.</p>
-        <div class="mm-step-arrow">›</div>
-      </div>
-      <div class="mm-step">
-        <div class="mm-step-num">Étape 04</div>
-        <div class="mm-step-icon" style="background:#e8f5e9;">
-          <span style="font-size:20px;">📊</span>
-        </div>
-        <div class="mm-step-title">Analysez & optimisez</div>
-        <p class="mm-step-desc">Tableaux de bord temps réel, A/B testing automatique et recommandations intelligentes.</p>
-      </div>
-    </div>
-
-    <!-- Clients marquee -->
-    <div class="mm-marquee-wrap">
-      <p class="mm-marquee-label">Ils optimisent leurs campagnes avec Go Exploria</p>
-      <div class="mm-marquee-track" id="marqueeTrack">
-        <div class="mm-logo-pill"><i class="fas fa-store"></i> Retail Plus</div>
-        <div class="mm-logo-pill"><i class="fas fa-home"></i> Immo Conseil</div>
-        <div class="mm-logo-pill"><i class="fas fa-globe"></i> World Travel</div>
-        <div class="mm-logo-pill"><i class="fas fa-champagne-glasses"></i> Event Factory</div>
-        <div class="mm-logo-pill"><i class="fas fa-box"></i> Shop Express</div>
-        <div class="mm-logo-pill"><i class="fas fa-handshake"></i> B2B Connect</div>
-        <div class="mm-logo-pill"><i class="fas fa-plane"></i> Air Voyages</div>
-        <div class="mm-logo-pill"><i class="fas fa-hotel"></i> Séjours Pro</div>
-        <div class="mm-logo-pill"><i class="fas fa-chart-line"></i> GrowthLabs</div>
-        <div class="mm-logo-pill"><i class="fas fa-building"></i> Bâti Invest</div>
-        <!-- Duplicate for seamless loop -->
-        <div class="mm-logo-pill"><i class="fas fa-store"></i> Retail Plus</div>
-        <div class="mm-logo-pill"><i class="fas fa-home"></i> Immo Conseil</div>
-        <div class="mm-logo-pill"><i class="fas fa-globe"></i> World Travel</div>
-        <div class="mm-logo-pill"><i class="fas fa-champagne-glasses"></i> Event Factory</div>
-        <div class="mm-logo-pill"><i class="fas fa-box"></i> Shop Express</div>
-        <div class="mm-logo-pill"><i class="fas fa-handshake"></i> B2B Connect</div>
-        <div class="mm-logo-pill"><i class="fas fa-plane"></i> Air Voyages</div>
-        <div class="mm-logo-pill"><i class="fas fa-hotel"></i> Séjours Pro</div>
-        <div class="mm-logo-pill"><i class="fas fa-chart-line"></i> GrowthLabs</div>
-        <div class="mm-logo-pill"><i class="fas fa-building"></i> Bâti Invest</div>
-      </div>
-    </div>
-
-    <!-- Bottom CTA -->
-    <div class="mm-bottom-cta">
-      <div class="mm-cta-text">
-        <h3>Prêt à booster vos campagnes email ?</h3>
-        <p>Rejoignez plus de 1 200 entreprises qui utilisent Go Exploria pour transformer leur communication email en moteur de croissance.</p>
-      </div>
-      <div class="mm-cta-actions">
-        <a href="#" class="mm-cta-btn-white">
-          <i class="fas fa-rocket" style="font-size:13px;"></i>
-          Démarrer gratuitement
-        </a>
-        <a href="#" class="mm-cta-btn-ghost">
-          <i class="fas fa-phone" style="font-size:13px;"></i>
-          Parler à un expert
-        </a>
-      </div>
-    </div>
-
+<!-- HEADER -->
+<div class="mm-header">
+  <div>
+    <div class="mm-eyebrow"><span class="mm-eyebrow-dot"></span>Email Marketing Platform</div>
+    <h1 class="mm-title">Transformez chaque email<br>en <em>opportunité réelle</em></h1>
+    <p class="mm-sub">Créez, automatisez et analysez vos campagnes. Atteignez vos clients au bon moment avec le bon message — dans chaque secteur.</p>
   </div>
+  <div class="mm-actions">
+    <a href="#" class="btn-dark"><i class="fas fa-plus" style="font-size:12px"></i>En savor plus</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="mm-stats">
+  <div class="mm-stat"><div class="mm-stat-n">98<sup>%</sup></div><div class="mm-stat-l">Délivrabilité garantie</div></div>
+  <div class="mm-stat"><div class="mm-stat-n">4.2<sup>×</sup></div><div class="mm-stat-l">ROI moyen par campagne</div></div>
+  <div class="mm-stat"><div class="mm-stat-n">12<sup>k+</sup></div><div class="mm-stat-l">Campagnes envoyées</div></div>
+  <div class="mm-stat"><div class="mm-stat-n">38<sup>%</sup></div><div class="mm-stat-l">Taux d'ouverture moyen</div></div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="mm-filter-bar">
+  <span class="mm-filter-label">Secteur :</span>
+  <button class="mm-tab active" data-filter="all">Tous les secteurs <span class="mm-count" id="cnt-all">8</span></button>
+  <button class="mm-tab" data-filter="retail">Retail & E-commerce <span class="mm-count">2</span></button>
+  <button class="mm-tab" data-filter="immo">Immobilier <span class="mm-count">1</span></button>
+  <button class="mm-tab" data-filter="travel">Tourisme & Voyages <span class="mm-count">1</span></button>
+  <button class="mm-tab" data-filter="event">Événementiel <span class="mm-count">1</span></button>
+  <button class="mm-tab" data-filter="b2b">B2B & Corporate <span class="mm-count">1</span></button>
+  <button class="mm-tab" data-filter="auto">Automation IA <span class="mm-count">1</span></button>
+  <button class="mm-tab" data-filter="info">Newsletters <span class="mm-count">1</span></button>
+</div>
+
+<!-- CARD GRID -->
+<div class="mm-grid" id="cardGrid">
+
+  <!-- ══ CARD 1 – Automation IA (wide, dark) ══ -->
+  <div class="mcard mcard-wide th-dark" data-cat="auto">
+    <div class="mc-vis">
+      <div class="mc-vis-tag" style="color:rgba(255,255,255,.85)"><i class="fas fa-bolt" style="color:#f5a623;font-size:10px"></i>AUTOMATION IA</div>
+      <!-- Rich SVG: email flow + AI brain -->
+      <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg" width="760" height="220" preserveAspectRatio="xMidYMid slice">
+        <!-- BG dots grid -->
+        <defs>
+          <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(255,255,255,.07)"/></pattern>
+          <linearGradient id="gline" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f5a623"/><stop offset="100%" stop-color="#2d5cc2"/></linearGradient>
+          <linearGradient id="gbrain" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2d5cc2" stop-opacity=".9"/><stop offset="100%" stop-color="#7c4dff" stop-opacity=".9"/></linearGradient>
+        </defs>
+        <rect width="760" height="220" fill="url(#grid)"/>
+        <!-- Left: trigger node -->
+        <rect x="30" y="80" width="110" height="56" rx="14" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
+        <rect x="30" y="80" width="4" height="56" rx="2" fill="url(#gline)"/>
+        <text x="52" y="108" fill="rgba(255,255,255,.5)" font-size="9" font-family="sans-serif" letter-spacing="1">TRIGGER</text>
+        <text x="52" y="122" fill="white" font-size="11" font-family="sans-serif" font-weight="700">Inscription</text>
+        <!-- Arrow 1 -->
+        <path d="M140 108 L180 108" stroke="url(#gline)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <polygon points="180,104 188,108 180,112" fill="#f5a623"/>
+        <!-- Email node 1 -->
+        <rect x="188" y="76" width="130" height="64" rx="14" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
+        <circle cx="208" cy="108" r="12" fill="#f5a623" opacity=".9"/>
+        <text x="208" y="113" fill="white" font-size="10" font-family="sans-serif" text-anchor="middle" font-weight="700">E1</text>
+        <text x="228" y="100" fill="rgba(255,255,255,.5)" font-size="9" font-family="sans-serif">J+0 · Bienvenue</text>
+        <text x="228" y="115" fill="white" font-size="11" font-family="sans-serif" font-weight="600">Taux ouv.</text>
+        <text x="228" y="128" fill="#f5a623" font-size="13" font-family="sans-serif" font-weight="800">61%</text>
+        <!-- Arrow 2 -->
+        <path d="M318 108 L358 108" stroke="url(#gline)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <polygon points="358,104 366,108 358,112" fill="#f5a623"/>
+        <!-- AI Brain center node -->
+        <rect x="366" y="60" width="100" height="100" rx="20" fill="url(#gbrain)" stroke="rgba(255,255,255,.22)" stroke-width="1.5"/>
+        <text x="416" y="98" fill="white" font-size="26" text-anchor="middle" font-family="sans-serif">🧠</text>
+        <text x="416" y="116" fill="rgba(255,255,255,.7)" font-size="9" font-family="sans-serif" text-anchor="middle" font-weight="700" letter-spacing="1">IA DECIDE</text>
+        <text x="416" y="130" fill="white" font-size="10" font-family="sans-serif" text-anchor="middle" font-weight="600">Personnalise</text>
+        <!-- Arrow 3 -->
+        <path d="M466 108 L506 108" stroke="url(#gline)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <polygon points="506,104 514,108 506,112" fill="#2d5cc2"/>
+        <!-- Split nodes -->
+        <path d="M514 108 L540 78" stroke="rgba(255,255,255,.25)" stroke-width="1.2" stroke-dasharray="3,3"/>
+        <path d="M514 108 L540 138" stroke="rgba(255,255,255,.25)" stroke-width="1.2" stroke-dasharray="3,3"/>
+        <!-- Node A -->
+        <rect x="540" y="56" width="110" height="44" rx="12" fill="rgba(245,166,35,.18)" stroke="rgba(245,166,35,.4)" stroke-width="1"/>
+        <text x="556" y="76" fill="rgba(255,255,255,.5)" font-size="9" font-family="sans-serif">Engagé →</text>
+        <text x="556" y="90" fill="white" font-size="11" font-family="sans-serif" font-weight="700">Offre Upsell</text>
+        <!-- Node B -->
+        <rect x="540" y="118" width="110" height="44" rx="12" fill="rgba(45,92,194,.25)" stroke="rgba(45,92,194,.5)" stroke-width="1"/>
+        <text x="556" y="138" fill="rgba(255,255,255,.5)" font-size="9" font-family="sans-serif">Inactif →</text>
+        <text x="556" y="152" fill="white" font-size="11" font-family="sans-serif" font-weight="700">Réactivation</text>
+        <!-- Conversion -->
+        <path d="M650 78 L690 108" stroke="rgba(255,255,255,.2)" stroke-width="1.2" stroke-dasharray="3,3"/>
+        <path d="M650 140 L690 108" stroke="rgba(255,255,255,.2)" stroke-width="1.2" stroke-dasharray="3,3"/>
+        <rect x="690" y="87" width="60" height="42" rx="21" fill="#f5a623"/>
+        <text x="720" y="112" fill="white" font-size="11" font-family="sans-serif" text-anchor="middle" font-weight="800">+47%</text>
+        <!-- Labels bottom -->
+        <text x="416" y="190" fill="rgba(255,255,255,.3)" font-size="10" font-family="sans-serif" text-anchor="middle">Séquence automatisée · Déclenchée par comportement · Optimisation en temps réel</text>
+      </svg>
+    </div>
+    <div class="mc-body">
+      <div class="mc-badge"><i class="fas fa-bolt" style="font-size:9px;color:#f5a623"></i>Automation IA</div>
+      <div class="mc-title" style="color:#fff">Séquences email 100% automatisées</div>
+      <p class="mc-desc">Configurez une fois, convertissez indéfiniment. Notre moteur IA analyse chaque comportement et personnalise en temps réel le contenu, le timing et la fréquence de chaque envoi.</p>
+      <div class="mc-pills">
+        <span class="mc-pill"><i class="fas fa-brain" style="font-size:10px;color:#7c4dff"></i>Optimisation IA</span>
+        <span class="mc-pill"><i class="fas fa-clock" style="font-size:10px;color:#f5a623"></i>Timing intelligent</span>
+        <span class="mc-pill"><i class="fas fa-code-branch" style="font-size:10px;color:#2d5cc2"></i>Segmentation auto</span>
+        <span class="mc-pill"><i class="fas fa-chart-line" style="font-size:10px;color:#2fb34a"></i>A/B test continu</span>
+      </div>
+      <div class="mc-footer">
+        <div class="mc-kpi">
+          <div class="mc-kpi-ring">47</div>
+          <div class="mc-kpi-info"><span class="mc-kpi-val">+47% conversions</span><span class="mc-kpi-key">vs campagnes manuelles</span></div>
+        </div>
+        <a href="#" class="mc-link">Voir l'automation <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CARD 2 – Retail Panier abandonné ══ -->
+  <div class="mcard th-g" data-cat="retail">
+    <div class="mc-vis">
+      <div class="mc-vis-tag" style="color:var(--g600)"><i class="fas fa-shopping-cart" style="font-size:9px;color:var(--g400)"></i>E-COMMERCE</div>
+      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" width="380" height="220" preserveAspectRatio="xMidYMid slice">
+        <defs><linearGradient id="gg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#edfaf0"/><stop offset="100%" stop-color="#b2e8bc"/></linearGradient></defs>
+        <!-- Phone mockup -->
+        <rect x="110" y="10" width="160" height="200" rx="22" fill="white" opacity=".95"/>
+        <rect x="110" y="10" width="160" height="200" rx="22" stroke="rgba(47,179,74,.2)" stroke-width="1.5" fill="none"/>
+        <!-- Status bar -->
+        <rect x="110" y="10" width="160" height="38" rx="22" fill="var(--g400)" opacity=".9"/>
+        <rect x="110" y="38" width="160" height="10" fill="var(--g400)" opacity=".9"/>
+        <text x="190" y="32" fill="white" font-size="10" font-weight="700" font-family="sans-serif" text-anchor="middle" letter-spacing=".5">PANIER ABANDONNÉ</text>
+        <!-- Product row -->
+        <rect x="124" y="60" width="48" height="48" rx="10" fill="#edfaf0"/>
+        <text x="148" y="90" font-size="26" text-anchor="middle" font-family="sans-serif">👟</text>
+        <text x="183" y="76" fill="var(--ink)" font-size="11" font-weight="700" font-family="sans-serif">Nike Air Max</text>
+        <text x="183" y="90" fill="var(--ink3)" font-size="10" font-family="sans-serif">Taille 42 · Blanc</text>
+        <text x="183" y="104" fill="var(--g600)" font-size="13" font-weight="800" font-family="sans-serif">89,00 €</text>
+        <!-- Timer -->
+        <rect x="120" y="120" width="140" height="24" rx="12" fill="#fff3cd" stroke="#ffc107" stroke-width="1"/>
+        <text x="190" y="136" fill="#856404" font-size="10" font-family="sans-serif" text-anchor="middle" font-weight="600">⏱ Expire dans 2h 14min</text>
+        <!-- Coupon -->
+        <rect x="120" y="152" width="140" height="20" rx="10" fill="#edfaf0" stroke="var(--g400)" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="190" y="166" fill="var(--g600)" font-size="10" font-family="sans-serif" text-anchor="middle" font-weight="700">🎁 CODE: REVIENS10</text>
+        <!-- CTA -->
+        <rect x="124" y="182" width="132" height="20" rx="10" fill="var(--g400)"/>
+        <text x="190" y="196" fill="white" font-size="10" font-family="sans-serif" text-anchor="middle" font-weight="700">Finaliser mon achat →</text>
+        <!-- Floating badge -->
+        <rect x="218" y="50" width="68" height="28" rx="14" fill="var(--g400)"/>
+        <text x="252" y="68" fill="white" font-size="12" font-family="sans-serif" text-anchor="middle" font-weight="800">-10%</text>
+        <!-- Stars decoration -->
+        <text x="50" y="90" font-size="18" font-family="sans-serif" opacity=".4">✦</text>
+        <text x="310" y="60" font-size="12" font-family="sans-serif" opacity=".3">✦</text>
+        <text x="320" y="160" font-size="16" font-family="sans-serif" opacity=".25">✦</text>
+      </svg>
+    </div>
+    <div class="mc-body">
+      <div class="mc-badge"><i class="fas fa-shopping-cart" style="font-size:9px"></i>E-commerce</div>
+      <div class="mc-title">Récupération de paniers abandonnés</div>
+      <p class="mc-desc">Relancez automatiquement vos visiteurs avec des offres personnalisées, coupon de réduction et urgence intégrée pour maximiser vos ventes.</p>
+      <div class="mc-pills">
+        <span class="mc-pill">🎁 Coupon auto</span>
+        <span class="mc-pill">⏱ Countdown timer</span>
+        <span class="mc-pill">📱 Mobile-first</span>
+      </div>
+      <div class="mc-footer">
+        <div class="mc-kpi">
+          <div class="mc-kpi-ring">23</div>
+          <div class="mc-kpi-info"><span class="mc-kpi-val">23% récupération</span><span class="mc-kpi-key">Taux de conversion</span></div>
+        </div>
+        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CARD 3 – Newsletter Produits ══ -->
+  <div class="mcard th-o" data-cat="info">
+    <div class="mc-vis">
+      <div class="mc-vis-tag" style="color:var(--o600)"><i class="fas fa-newspaper" style="font-size:9px;color:var(--o400)"></i>NEWSLETTER</div>
+      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" width="380" height="220" preserveAspectRatio="xMidYMid slice">
+        <!-- Email client mockup landscape -->
+        <rect x="30" y="15" width="320" height="190" rx="16" fill="white" opacity=".92"/>
+        <rect x="30" y="15" width="320" height="190" rx="16" stroke="rgba(245,166,35,.2)" stroke-width="1.5" fill="none"/>
+        <!-- Header band -->
+        <rect x="30" y="15" width="320" height="44" rx="16" fill="#08091a"/>
+        <rect x="30" y="45" width="320" height="14" fill="#08091a"/>
+        <!-- Logo + date -->
+        <circle cx="55" cy="37" r="10" fill="var(--o400)"/>
+        <text x="55" y="42" fill="white" font-size="11" text-anchor="middle" font-family="sans-serif" font-weight="800">G</text>
+        <text x="74" y="34" fill="white" font-size="11" font-family="sans-serif" font-weight="700">EXPLORIA</text>
+        <text x="74" y="46" fill="rgba(255,255,255,.45)" font-size="9" font-family="sans-serif">Newsletter · Novembre 2025</text>
+        <!-- Hero text area -->
+        <text x="46" y="84" fill="var(--ink)" font-size="13" font-family="sans-serif" font-weight="800">Les tendances du mois 🔥</text>
+        <!-- 3 product mini-cards in a row -->
+        <rect x="40" y="95" width="85" height="80" rx="10" fill="#fff8ed"/>
+        <text x="82" y="130" font-size="28" text-anchor="middle" font-family="sans-serif">🎧</text>
+        <text x="82" y="147" fill="var(--ink2)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="600">Casque Pro</text>
+        <text x="82" y="159" fill="var(--o600)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="800">129 €</text>
+        <rect x="135" y="95" width="85" height="80" rx="10" fill="#fff8ed"/>
+        <text x="177" y="130" font-size="28" text-anchor="middle" font-family="sans-serif">📸</text>
+        <text x="177" y="147" fill="var(--ink2)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="600">Appareil</text>
+        <text x="177" y="159" fill="var(--o600)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="800">449 €</text>
+        <rect x="230" y="95" width="85" height="80" rx="10" fill="#fff3cd"/>
+        <rect x="252" y="98" width="40" height="14" rx="7" fill="var(--o400)"/>
+        <text x="272" y="109" fill="white" font-size="8" text-anchor="middle" font-family="sans-serif" font-weight="800">-20%</text>
+        <text x="272" y="130" font-size="28" text-anchor="middle" font-family="sans-serif">⌚</text>
+        <text x="272" y="147" fill="var(--ink2)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="600">Montre</text>
+        <text x="272" y="159" fill="var(--o600)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="800">199 €</text>
+        <!-- CTA bottom -->
+        <rect x="125" y="185" width="130" height="16" rx="8" fill="var(--o400)"/>
+        <text x="190" y="197" fill="white" font-size="9" font-family="sans-serif" text-anchor="middle" font-weight="700">Voir toutes les offres</text>
+        <!-- Open rate bubble -->
+        <rect x="280" y="18" width="58" height="28" rx="14" fill="rgba(245,166,35,.15)" stroke="var(--o200)" stroke-width="1"/>
+        <text x="309" y="36" fill="var(--o600)" font-size="12" text-anchor="middle" font-family="sans-serif" font-weight="800">42%</text>
+      </svg>
+    </div>
+    <div class="mc-body">
+      <div class="mc-badge"><i class="fas fa-tags" style="font-size:9px"></i>Newsletter</div>
+      <div class="mc-title">Emails Produits & Newsletters</div>
+      <p class="mc-desc">Promotions exclusives, nouveautés produits et newsletters thématiques pour fidéliser et inspirer votre audience à chaque envoi.</p>
+      <div class="mc-pills">
+        <span class="mc-pill">🎨 Templates éditoriaux</span>
+        <span class="mc-pill">📊 Analytics détaillés</span>
+      </div>
+      <div class="mc-footer">
+        <div class="mc-kpi">
+          <div class="mc-kpi-ring">42</div>
+          <div class="mc-kpi-info"><span class="mc-kpi-val">42% ouverture</span><span class="mc-kpi-key">Taux moyen constaté</span></div>
+        </div>
+        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CARD 4 – Immobilier ══ -->
+  <div class="mcard th-b" data-cat="immo">
+    <div class="mc-vis">
+      <div class="mc-vis-tag" style="color:var(--b600)"><i class="fas fa-building" style="font-size:9px;color:var(--b400)"></i>IMMOBILIER</div>
+      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" width="380" height="220" preserveAspectRatio="xMidYMid slice">
+        <defs><linearGradient id="skygrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#e8f0fe"/><stop offset="100%" stop-color="#c9d5fb"/></linearGradient></defs>
+        <!-- Email frame -->
+        <rect x="25" y="12" width="330" height="196" rx="16" fill="white" opacity=".92"/>
+        <rect x="25" y="12" width="330" height="196" rx="16" stroke="rgba(45,92,194,.18)" stroke-width="1.5" fill="none"/>
+        <!-- Top header dark -->
+        <rect x="25" y="12" width="330" height="46" rx="16" fill="var(--b600)"/>
+        <rect x="25" y="44" width="330" height="14" fill="var(--b600)"/>
+        <text x="50" y="34" fill="white" font-size="12" font-family="sans-serif" font-weight="800">IMMO CONSEIL</text>
+        <text x="50" y="48" fill="rgba(255,255,255,.5)" font-size="9" font-family="sans-serif">Alerte · Nouveau bien disponible</text>
+        <rect x="298" y="22" width="46" height="18" rx="9" fill="rgba(255,255,255,.15)"/>
+        <text x="321" y="34" fill="white" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">URGENT</text>
+        <!-- Property image area -->
+        <rect x="35" y="68" width="150" height="106" rx="12" fill="url(#skygrad)"/>
+        <!-- Building illustration -->
+        <rect x="55" y="110" width="30" height="50" rx="3" fill="var(--b400)" opacity=".5"/>
+        <rect x="90" y="95" width="35" height="65" rx="3" fill="var(--b600)" opacity=".7"/>
+        <rect x="130" y="105" width="28" height="55" rx="3" fill="var(--b400)" opacity=".6"/>
+        <!-- Windows -->
+        <rect x="60" y="115" width="8" height="8" rx="2" fill="white" opacity=".7"/>
+        <rect x="72" y="115" width="8" height="8" rx="2" fill="white" opacity=".7"/>
+        <rect x="60" y="127" width="8" height="8" rx="2" fill="var(--o400)" opacity=".8"/>
+        <rect x="72" y="127" width="8" height="8" rx="2" fill="white" opacity=".7"/>
+        <rect x="96" y="102" width="9" height="9" rx="2" fill="white" opacity=".7"/>
+        <rect x="109" y="102" width="9" height="9" rx="2" fill="white" opacity=".4"/>
+        <rect x="96" y="116" width="9" height="9" rx="2" fill="white" opacity=".6"/>
+        <rect x="109" y="116" width="9" height="9" rx="2" fill="var(--o400)" opacity=".8"/>
+        <!-- Ground -->
+        <rect x="35" y="162" width="150" height="12" rx="0" fill="var(--b200)" opacity=".5"/>
+        <!-- Price tag -->
+        <rect x="38" y="70" width="72" height="22" rx="11" fill="var(--b600)"/>
+        <text x="74" y="85" fill="white" font-size="11" text-anchor="middle" font-family="sans-serif" font-weight="800">350 000 €</text>
+        <!-- Details panel right -->
+        <text x="200" y="86" fill="var(--ink)" font-size="13" font-family="sans-serif" font-weight="800">Appartement T4</text>
+        <text x="200" y="100" fill="var(--ink3)" font-size="10" font-family="sans-serif">Paris 11e · 92 m²</text>
+        <!-- Tags row -->
+        <rect x="200" y="110" width="40" height="16" rx="8" fill="var(--b50)"/>
+        <text x="220" y="122" fill="var(--b600)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">4 pièces</text>
+        <rect x="246" y="110" width="44" height="16" rx="8" fill="var(--b50)"/>
+        <text x="268" y="122" fill="var(--b600)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Terrasse</text>
+        <rect x="296" y="110" width="44" height="16" rx="8" fill="var(--b50)"/>
+        <text x="318" y="122" fill="var(--b600)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Parking</text>
+        <!-- Info lines -->
+        <rect x="200" y="135" width="140" height="5" rx="3" fill="var(--light-gray)" opacity=".5"/>
+        <rect x="200" y="145" width="100" height="5" rx="3" fill="var(--light-gray)" opacity=".35"/>
+        <!-- Mini map -->
+        <rect x="200" y="158" width="60" height="36" rx="8" fill="#edf0ff"/>
+        <circle cx="230" cy="176" r="10" fill="var(--b200)" stroke="var(--b400)" stroke-width="1.5"/>
+        <circle cx="230" cy="176" r="4" fill="var(--b600)"/>
+        <!-- CTAs -->
+        <rect x="270" y="158" width="68" height="16" rx="8" fill="var(--b600)"/>
+        <text x="304" y="169" fill="white" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Voir bien →</text>
+        <rect x="270" y="178" width="68" height="16" rx="8" fill="var(--b50)" stroke="var(--b200)" stroke-width="1"/>
+        <text x="304" y="189" fill="var(--b600)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Visite virtuelle</text>
+      </svg>
+    </div>
+    <div class="mc-body">
+      <div class="mc-badge"><i class="fas fa-building" style="font-size:9px"></i>Immobilier</div>
+      <div class="mc-title">Alertes & Annonces Immobilières</div>
+      <p class="mc-desc">Alertes prix personnalisées, fiches biens détaillées avec carte interactive, visites virtuelles et comparatifs de marché pour vos prospects.</p>
+      <div class="mc-pills">
+        <span class="mc-pill">🗺️ Carte interactive</span>
+        <span class="mc-pill">🎥 Visite virtuelle</span>
+        <span class="mc-pill">📈 Tendances prix</span>
+      </div>
+      <div class="mc-footer">
+        <div class="mc-kpi">
+          <div class="mc-kpi-ring">18</div>
+          <div class="mc-kpi-info"><span class="mc-kpi-val">18% conversion</span><span class="mc-kpi-key">Prises de contact</span></div>
+        </div>
+        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CARD 5 – Voyages ══ -->
+  <div class="mcard th-t" data-cat="travel">
+    <div class="mc-vis">
+      <div class="mc-vis-tag" style="color:var(--t600)"><i class="fas fa-plane-departure" style="font-size:9px;color:var(--t400)"></i>TOURISME</div>
+      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" width="380" height="220" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="sky2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#b3e5fc"/><stop offset="100%" stop-color="#e5f8f4"/></linearGradient>
+          <clipPath id="cp1"><rect x="25" y="12" width="330" height="196" rx="16"/></clipPath>
+        </defs>
+        <!-- Card frame -->
+        <rect x="25" y="12" width="330" height="196" rx="16" fill="white" opacity=".9"/>
+        <rect x="25" y="12" width="330" height="196" rx="16" stroke="rgba(0,184,156,.2)" stroke-width="1.5" fill="none"/>
+        <!-- Sky hero zone -->
+        <rect x="25" y="12" width="330" height="120" rx="16" fill="url(#sky2)" clip-path="url(#cp1)"/>
+        <rect x="25" y="112" width="330" height="20" fill="url(#sky2)" clip-path="url(#cp1)"/>
+        <!-- Clouds -->
+        <ellipse cx="80" cy="45" rx="35" ry="16" fill="white" opacity=".7"/>
+        <ellipse cx="100" cy="40" rx="25" ry="14" fill="white" opacity=".6"/>
+        <ellipse cx="280" cy="55" rx="28" ry="12" fill="white" opacity=".6"/>
+        <ellipse cx="300" cy="50" rx="20" ry="10" fill="white" opacity=".55"/>
+        <!-- Plane path dashed -->
+        <path d="M60 100 Q190 40 320 70" stroke="rgba(0,184,156,.4)" stroke-width="1.5" stroke-dasharray="6,4" fill="none"/>
+        <!-- Plane -->
+        <text x="195" y="58" font-size="26" text-anchor="middle" font-family="sans-serif" transform="rotate(-20,195,58)">✈️</text>
+        <!-- City markers -->
+        <circle cx="70" cy="100" r="6" fill="var(--t400)"/><circle cx="70" cy="100" r="3" fill="white"/>
+        <text x="70" y="116" fill="var(--ink2)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Paris</text>
+        <circle cx="316" cy="72" r="6" fill="var(--o400)"/><circle cx="316" cy="72" r="3" fill="white"/>
+        <text x="316" y="88" fill="var(--ink2)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Bali</text>
+        <!-- Header title -->
+        <rect x="25" y="12" width="330" height="34" rx="16" fill="var(--t600)" opacity=".85"/>
+        <rect x="25" y="36" width="330" height="10" fill="var(--t600)" opacity=".85"/>
+        <text x="55" y="31" fill="white" font-size="11" font-family="sans-serif" font-weight="800" letter-spacing=".5">OFFRE LAST MINUTE 🌴</text>
+        <!-- Bottom info row -->
+        <rect x="35" y="138" width="145" height="60" rx="10" fill="#e5f8f4"/>
+        <text x="107" y="156" fill="var(--t600)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="700">Paris → Bali</text>
+        <text x="107" y="170" fill="var(--ink3)" font-size="9" text-anchor="middle" font-family="sans-serif">Aller-retour · 10 nuits</text>
+        <text x="107" y="186" fill="var(--t600)" font-size="16" text-anchor="middle" font-family="sans-serif" font-weight="800">899 €</text>
+        <!-- Discount badge -->
+        <rect x="152" y="140" width="40" height="20" rx="10" fill="var(--r400)"/>
+        <text x="172" y="154" fill="white" font-size="11" text-anchor="middle" font-family="sans-serif" font-weight="800">-42%</text>
+        <!-- Amenities -->
+        <rect x="190" y="138" width="155" height="60" rx="10" fill="#f0fffe"/>
+        <text x="268" y="154" fill="var(--ink2)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Inclus dans l'offre :</text>
+        <text x="200" y="166" fill="var(--ink3)" font-size="9" font-family="sans-serif">✓ Vol direct</text>
+        <text x="200" y="177" fill="var(--ink3)" font-size="9" font-family="sans-serif">✓ Hôtel 4★ all inclusive</text>
+        <text x="200" y="188" fill="var(--ink3)" font-size="9" font-family="sans-serif">✓ Transferts offerts</text>
+        <!-- CTA -->
+        <rect x="80" y="206" width="220" height="0" rx="0" fill="none"/>
+      </svg>
+    </div>
+    <div class="mc-body">
+      <div class="mc-badge"><i class="fas fa-plane" style="font-size:9px"></i>Tourisme</div>
+      <div class="mc-title">Emails Voyages & Offres Last Minute</div>
+      <p class="mc-desc">Offres personnalisées selon les destinations favorites, itinéraires sur mesure, alertes prix et inspirations saisonnières avec visuel immersif.</p>
+      <div class="mc-pills">
+        <span class="mc-pill">🌍 Destinations ciblées</span>
+        <span class="mc-pill">🔔 Alertes prix</span>
+        <span class="mc-pill">🗓️ Calendrier dispo</span>
+      </div>
+      <div class="mc-footer">
+        <div class="mc-kpi">
+          <div class="mc-kpi-ring">35</div>
+          <div class="mc-kpi-info"><span class="mc-kpi-val">35% engagement</span><span class="mc-kpi-key">Clics sur offres</span></div>
+        </div>
+        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CARD 6 – Événementiel ══ -->
+  <div class="mcard th-r" data-cat="event">
+    <div class="mc-vis">
+      <div class="mc-vis-tag" style="color:var(--r600)"><i class="fas fa-calendar-star" style="font-size:9px;color:var(--r400)"></i>ÉVÉNEMENTIEL</div>
+      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" width="380" height="220" preserveAspectRatio="xMidYMid slice">
+        <defs><linearGradient id="rgrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#feeef4"/><stop offset="100%" stop-color="#fac6db"/></linearGradient></defs>
+        <!-- Invitation card styled -->
+        <rect x="55" y="10" width="270" height="200" rx="18" fill="white" opacity=".95"/>
+        <rect x="55" y="10" width="270" height="200" rx="18" stroke="rgba(232,65,122,.2)" stroke-width="1.5" fill="none"/>
+        <!-- Gold/rose top bar -->
+        <rect x="55" y="10" width="270" height="50" rx="18" fill="var(--r400)" opacity=".9"/>
+        <rect x="55" y="46" width="270" height="14" fill="var(--r400)" opacity=".9"/>
+        <!-- Confetti deco on header -->
+        <circle cx="80" cy="28" r="4" fill="var(--o400)" opacity=".8"/>
+        <circle cx="300" cy="22" r="3" fill="white" opacity=".6"/>
+        <circle cx="315" cy="36" r="5" fill="var(--o200)" opacity=".7"/>
+        <rect x="88" y="16" width="6" height="6" rx="1" fill="white" opacity=".5" transform="rotate(20,88,16)"/>
+        <rect x="275" y="30" width="5" height="5" rx="1" fill="var(--o300)" opacity=".6" transform="rotate(35,275,30)"/>
+        <text x="190" y="32" fill="white" font-size="11" font-family="sans-serif" text-anchor="middle" font-weight="800" letter-spacing="1.5">✉ VOUS ÊTES INVITÉ</text>
+        <text x="190" y="48" fill="rgba(255,255,255,.7)" font-size="9" font-family="sans-serif" text-anchor="middle">Événement exclusif · Accès limité</text>
+        <!-- Calendar widget -->
+        <rect x="80" y="72" width="72" height="72" rx="14" fill="#feeef4" stroke="var(--r200)" stroke-width="1"/>
+        <rect x="80" y="72" width="72" height="22" rx="14" fill="var(--r400)" stroke="none"/>
+        <rect x="80" y="84" width="72" height="10" fill="var(--r400)"/>
+        <text x="116" y="88" fill="white" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">JUIN 2025</text>
+        <text x="116" y="124" fill="var(--r400)" font-size="30" text-anchor="middle" font-family="sans-serif" font-weight="800">28</text>
+        <!-- Location + time -->
+        <text x="168" y="84" fill="var(--ink2)" font-size="11" font-family="sans-serif" font-weight="700">Gala Annuel 2025</text>
+        <text x="168" y="98" fill="var(--ink3)" font-size="9" font-family="sans-serif">📍 Hôtel Le Meurice, Paris</text>
+        <text x="168" y="111" fill="var(--ink3)" font-size="9" font-family="sans-serif">🕖 19h00 · Cocktail dînatoire</text>
+        <!-- Divider -->
+        <line x1="72" y1="152" x2="308" y2="152" stroke="var(--r100)" stroke-width="1" stroke-dasharray="6,4"/>
+        <!-- RSVP badges -->
+        <rect x="72" y="160" width="72" height="20" rx="10" fill="var(--r400)"/>
+        <text x="108" y="174" fill="white" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="700">Je confirme ✓</text>
+        <rect x="152" y="160" width="72" height="20" rx="10" fill="#feeef4" stroke="var(--r200)" stroke-width="1"/>
+        <text x="188" y="174" fill="var(--r400)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="700">Je décline</text>
+        <!-- QR code mini -->
+        <rect x="240" y="158" width="32" height="32" rx="6" fill="var(--ink)" opacity=".07"/>
+        <text x="256" y="178" font-size="18" text-anchor="middle" font-family="sans-serif" opacity=".25">▦</text>
+        <!-- Floating badges -->
+        <rect x="64" y="14" width="0" height="0" fill="none"/>
+        <text x="20" y="70" font-size="22" font-family="sans-serif" opacity=".2">✦</text>
+        <text x="340" y="160" font-size="16" font-family="sans-serif" opacity=".2">✦</text>
+        <text x="340" y="50" font-size="12" font-family="sans-serif" opacity=".18">✦</text>
+      </svg>
+    </div>
+    <div class="mc-body">
+      <div class="mc-badge"><i class="fas fa-calendar-alt" style="font-size:9px"></i>Événementiel</div>
+      <div class="mc-title">Invitations & Gestion d'Événements</div>
+      <p class="mc-desc">Invitations élégantes, rappels automatiques, gestion RSVP intégrée, QR code d'accès et feedback post-événement pour maximiser votre impact.</p>
+      <div class="mc-pills">
+        <span class="mc-pill">🎫 RSVP en ligne</span>
+        <span class="mc-pill">📲 QR code accès</span>
+        <span class="mc-pill">⚡ Rappels auto</span>
+      </div>
+      <div class="mc-footer">
+        <div class="mc-kpi">
+          <div class="mc-kpi-ring">28</div>
+          <div class="mc-kpi-info"><span class="mc-kpi-val">28% participation</span><span class="mc-kpi-key">Taux RSVP confirmé</span></div>
+        </div>
+        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CARD 7 – B2B Corporate (wide) ══ -->
+  <div class="mcard mcard-wide th-p" data-cat="b2b">
+    <div class="mc-vis" style="height:260px">
+      <div class="mc-vis-tag" style="color:var(--p600)"><i class="fas fa-briefcase" style="font-size:9px;color:var(--p400)"></i>B2B & CORPORATE</div>
+      <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" width="760" height="260" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="pgrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f2eeff"/><stop offset="100%" stop-color="#d0c1f8"/></linearGradient>
+          <linearGradient id="pbar" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#7c4dff"/><stop offset="100%" stop-color="#4a20cc"/></linearGradient>
+        </defs>
+        <!-- Left: Rapport email mockup -->
+        <rect x="25" y="15" width="320" height="230" rx="16" fill="white" opacity=".92"/>
+        <rect x="25" y="15" width="320" height="230" rx="16" stroke="rgba(124,77,255,.18)" stroke-width="1.5" fill="none"/>
+        <!-- Header -->
+        <rect x="25" y="15" width="320" height="42" rx="16" fill="#08091a"/>
+        <rect x="25" y="45" width="320" height="12" fill="#08091a"/>
+        <circle cx="47" cy="36" r="9" fill="var(--p400)"/>
+        <text x="47" y="41" fill="white" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">G</text>
+        <text x="65" y="33" fill="white" font-size="11" font-family="sans-serif" font-weight="700">RAPPORT Q4 2024</text>
+        <text x="65" y="46" fill="rgba(255,255,255,.4)" font-size="8.5" font-family="sans-serif">Analyse de performance · Confidentiel</text>
+        <!-- KPI row -->
+        <rect x="35" y="68" width="68" height="44" rx="10" fill="var(--p50)"/>
+        <text x="69" y="87" fill="var(--p400)" font-size="16" text-anchor="middle" font-family="sans-serif" font-weight="800">+31%</text>
+        <text x="69" y="100" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">ROI Campagnes</text>
+        <rect x="113" y="68" width="68" height="44" rx="10" fill="var(--g50)"/>
+        <text x="147" y="87" fill="var(--g600)" font-size="16" text-anchor="middle" font-family="sans-serif" font-weight="800">128</text>
+        <text x="147" y="100" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Leads qualifiés</text>
+        <rect x="191" y="68" width="68" height="44" rx="10" fill="var(--o50)"/>
+        <text x="225" y="87" fill="var(--o600)" font-size="16" text-anchor="middle" font-family="sans-serif" font-weight="800">4.7★</text>
+        <text x="225" y="100" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Satisfaction</text>
+        <rect x="269" y="68" width="65" height="44" rx="10" fill="var(--b50)"/>
+        <text x="301" y="87" fill="var(--b600)" font-size="14" text-anchor="middle" font-family="sans-serif" font-weight="800">41%↑</text>
+        <text x="301" y="100" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Engagement</text>
+        <!-- Bar chart -->
+        <text x="35" y="130" fill="var(--ink2)" font-size="10" font-family="sans-serif" font-weight="700">Performance mensuelle</text>
+        <!-- Chart bars -->
+        <rect x="42" y="175" width="24" height="30" rx="5" fill="var(--p200)"/>
+        <rect x="74" y="158" width="24" height="47" rx="5" fill="var(--p300)" opacity=".7"/>
+        <rect x="106" y="145" width="24" height="60" rx="5" fill="var(--p400)"/>
+        <rect x="138" y="138" width="24" height="67" rx="5" fill="var(--p400)" opacity=".9"/>
+        <rect x="170" y="148" width="24" height="57" rx="5" fill="var(--p400)" opacity=".75"/>
+        <rect x="202" y="133" width="24" height="72" rx="5" fill="url(#pbar)"/>
+        <rect x="234" y="140" width="24" height="65" rx="5" fill="url(#pbar)" opacity=".85"/>
+        <rect x="266" y="128" width="24" height="77" rx="5" fill="url(#pbar)"/>
+        <rect x="298" y="135" width="24" height="70" rx="5" fill="url(#pbar)" opacity=".9"/>
+        <!-- Baseline -->
+        <rect x="35" y="205" width="300" height="1" rx="1" fill="var(--p100)" opacity=".8"/>
+        <!-- Month labels -->
+        <text x="54" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Avr</text>
+        <text x="86" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Mai</text>
+        <text x="118" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Jun</text>
+        <text x="150" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Jul</text>
+        <text x="182" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Aoû</text>
+        <text x="214" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Sep</text>
+        <text x="246" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Oct</text>
+        <text x="278" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Nov</text>
+        <text x="310" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Dec</text>
+        <!-- Trend line -->
+        <polyline points="54,195 86,178 118,163 150,155 182,165 214,148 246,155 278,142 310,150" stroke="var(--o400)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>
+        <circle cx="278" cy="142" r="4" fill="var(--o400)"/>
+        <circle cx="310" cy="150" r="4" fill="var(--o400)"/>
+        <!-- Annotation -->
+        <rect x="245" y="128" width="56" height="14" rx="7" fill="var(--o400)" opacity=".15"/>
+        <text x="273" y="139" fill="var(--o600)" font-size="8.5" text-anchor="middle" font-family="sans-serif" font-weight="700">Meilleur mois</text>
+
+        <!-- Right panel: LinkedIn-style email preview -->
+        <rect x="370" y="15" width="370" height="230" rx="16" fill="white" opacity=".88"/>
+        <rect x="370" y="15" width="370" height="230" rx="16" stroke="rgba(124,77,255,.15)" stroke-width="1.5" fill="none"/>
+        <!-- Profile header -->
+        <circle cx="400" cy="50" r="22" fill="var(--p50)" stroke="var(--p200)" stroke-width="1.5"/>
+        <text x="400" y="56" fill="var(--p600)" font-size="16" text-anchor="middle" font-family="sans-serif" font-weight="800">ML</text>
+        <text x="432" y="40" fill="var(--ink)" font-size="12" font-family="sans-serif" font-weight="700">Marie Laurent</text>
+        <text x="432" y="53" fill="var(--ink3)" font-size="10" font-family="sans-serif">DG · Acme Corp</text>
+        <text x="432" y="66" fill="var(--ink3)" font-size="9" font-family="sans-serif">📅 Ouvert le 14/11 · 09:14</text>
+        <!-- Content preview -->
+        <rect x="383" y="80" width="344" height="1" fill="var(--p100)" opacity=".6"/>
+        <text x="383" y="100" fill="var(--ink)" font-size="11.5" font-family="sans-serif" font-weight="700">Rapport d'analyse : Vos performances Q4</text>
+        <rect x="383" y="108" width="310" height="6" rx="3" fill="var(--p50)"/>
+        <rect x="383" y="119" width="260" height="6" rx="3" fill="var(--p50)"/>
+        <rect x="383" y="130" width="290" height="6" rx="3" fill="var(--p50)"/>
+        <!-- Featured insight box -->
+        <rect x="383" y="148" width="344" height="50" rx="10" fill="var(--p50)" stroke="var(--p200)" stroke-width="1"/>
+        <rect x="383" y="148" width="4" height="50" rx="2" fill="var(--p400)"/>
+        <text x="397" y="166" fill="var(--p600)" font-size="10" font-family="sans-serif" font-weight="700">💡 Insight clé du trimestre</text>
+        <text x="397" y="180" fill="var(--ink3)" font-size="9.5" font-family="sans-serif">Vos emails B2B ont généré 128 leads qualifiés,</text>
+        <text x="397" y="192" fill="var(--ink3)" font-size="9.5" font-family="sans-serif">soit +31% vs T3 2024.</text>
+        <!-- CTA row -->
+        <rect x="383" y="208" width="140" height="22" rx="11" fill="url(#pbar)"/>
+        <text x="453" y="223" fill="white" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="700">Voir rapport complet</text>
+        <rect x="533" y="208" width="110" height="22" rx="11" fill="var(--p50)" stroke="var(--p200)" stroke-width="1"/>
+        <text x="588" y="223" fill="var(--p600)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="700">Partager l'équipe</text>
+      </svg>
+    </div>
+    <div class="mc-body">
+      <div class="mc-badge"><i class="fas fa-briefcase" style="font-size:9px"></i>B2B & Corporate</div>
+      <div class="mc-title">Emails B2B, Rapports & Lead Nurturing</div>
+      <p class="mc-desc">Newsletters corporate, rapports analytiques personnalisés, études de cas interactives, webinaires et séquences de nurturing longues durée pour décideurs et équipes commerciales.</p>
+      <div class="mc-pills">
+        <span class="mc-pill">📊 Rapports auto</span>
+        <span class="mc-pill">🤝 Lead nurturing</span>
+        <span class="mc-pill">🎙️ Webinaire intégré</span>
+        <span class="mc-pill">🔐 Contenu premium</span>
+      </div>
+      <div class="mc-footer">
+        <div class="mc-kpi">
+          <div class="mc-kpi-ring">31</div>
+          <div class="mc-kpi-info"><span class="mc-kpi-val">31% taux de clic</span><span class="mc-kpi-key">Audience décideurs</span></div>
+        </div>
+        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CARD 8 – Retail Ventes Flash ══ -->
+  <div class="mcard th-g" data-cat="retail">
+    <div class="mc-vis">
+      <div class="mc-vis-tag" style="color:var(--g600)"><i class="fas fa-bolt" style="font-size:9px;color:var(--g400)"></i>VENTE FLASH</div>
+      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" width="380" height="220" preserveAspectRatio="xMidYMid slice">
+        <defs><linearGradient id="flash" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#edfaf0"/><stop offset="100%" stop-color="#b2e8bc"/></linearGradient></defs>
+        <!-- Dark promo email look -->
+        <rect x="30" y="10" width="320" height="200" rx="16" fill="#08091a" opacity=".96"/>
+        <rect x="30" y="10" width="320" height="200" rx="16" stroke="rgba(47,179,74,.3)" stroke-width="1.5" fill="none"/>
+        <!-- Header -->
+        <rect x="30" y="10" width="320" height="48" rx="16" fill="var(--g400)"/>
+        <rect x="30" y="44" width="320" height="14" fill="var(--g400)"/>
+        <text x="190" y="28" fill="white" font-size="14" font-family="sans-serif" font-weight="800" text-anchor="middle" letter-spacing="1">⚡ VENTE FLASH</text>
+        <text x="190" y="46" fill="rgba(255,255,255,.7)" font-size="10" font-family="sans-serif" text-anchor="middle">Offres disponibles uniquement aujourd'hui</text>
+        <!-- Countdown display -->
+        <rect x="70" y="68" width="55" height="46" rx="10" fill="rgba(255,255,255,.07)" stroke="rgba(47,179,74,.3)" stroke-width="1"/>
+        <text x="97" y="92" fill="white" font-size="20" text-anchor="middle" font-family="sans-serif" font-weight="800">04</text>
+        <text x="97" y="106" fill="var(--g400)" font-size="8" text-anchor="middle" font-family="sans-serif">HEURES</text>
+        <text x="136" y="95" fill="var(--g400)" font-size="18" font-family="sans-serif" font-weight="800" text-anchor="middle">:</text>
+        <rect x="148" y="68" width="55" height="46" rx="10" fill="rgba(255,255,255,.07)" stroke="rgba(47,179,74,.3)" stroke-width="1"/>
+        <text x="175" y="92" fill="white" font-size="20" text-anchor="middle" font-family="sans-serif" font-weight="800">27</text>
+        <text x="175" y="106" fill="var(--g400)" font-size="8" text-anchor="middle" font-family="sans-serif">MINUTES</text>
+        <text x="214" y="95" fill="var(--g400)" font-size="18" font-family="sans-serif" font-weight="800" text-anchor="middle">:</text>
+        <rect x="226" y="68" width="55" height="46" rx="10" fill="rgba(255,255,255,.07)" stroke="rgba(47,179,74,.3)" stroke-width="1"/>
+        <text x="253" y="92" fill="white" font-size="20" text-anchor="middle" font-family="sans-serif" font-weight="800">43</text>
+        <text x="253" y="106" fill="var(--g400)" font-size="8" text-anchor="middle" font-family="sans-serif">SECONDES</text>
+        <!-- Products row -->
+        <rect x="40" y="124" width="85" height="58" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(47,179,74,.2)" stroke-width="1"/>
+        <text x="82" y="148" font-size="22" text-anchor="middle" font-family="sans-serif">👗</text>
+        <text x="82" y="162" fill="rgba(255,255,255,.8)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="600">Robe</text>
+        <text x="82" y="174" fill="var(--g400)" font-size="11" text-anchor="middle" font-family="sans-serif" font-weight="800">49 €</text>
+        <rect x="138" y="124" width="85" height="58" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(47,179,74,.2)" stroke-width="1"/>
+        <text x="180" y="148" font-size="22" text-anchor="middle" font-family="sans-serif">👜</text>
+        <text x="180" y="162" fill="rgba(255,255,255,.8)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="600">Sac</text>
+        <text x="180" y="174" fill="var(--g400)" font-size="11" text-anchor="middle" font-family="sans-serif" font-weight="800">89 €</text>
+        <rect x="236" y="124" width="85" height="58" rx="10" fill="rgba(255,255,255,.08)" stroke="rgba(47,179,74,.35)" stroke-width="1.5"/>
+        <text x="278" y="144" font-size="22" text-anchor="middle" font-family="sans-serif">⌚</text>
+        <text x="278" y="158" fill="rgba(255,255,255,.8)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="600">Montre</text>
+        <rect x="250" y="162" width="56" height="14" rx="7" fill="var(--g400)"/>
+        <text x="278" y="173" fill="white" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">129 € → 79 €</text>
+        <!-- Sold out progress -->
+        <text x="40" y="194" fill="rgba(255,255,255,.4)" font-size="9" font-family="sans-serif">Stock restant :</text>
+        <rect x="116" y="187" width="130" height="6" rx="3" fill="rgba(255,255,255,.1)"/>
+        <rect x="116" y="187" width="38" height="6" rx="3" fill="var(--r400)"/>
+        <text x="252" y="195" fill="var(--r400)" font-size="9" font-family="sans-serif" font-weight="700">29%</text>
+      </svg>
+    </div>
+    <div class="mc-body">
+      <div class="mc-badge"><i class="fas fa-fire" style="font-size:9px"></i>E-commerce</div>
+      <div class="mc-title">Ventes Flash & Promotions Urgentes</div>
+      <p class="mc-desc">Emails sombres et percutants avec countdown en temps réel, barre de stock restant et offres à durée limitée pour créer l'urgence d'achat.</p>
+      <div class="mc-pills">
+        <span class="mc-pill">⏱ Countdown live</span>
+        <span class="mc-pill">📉 Barre de stock</span>
+        <span class="mc-pill">🌑 Dark email design</span>
+      </div>
+      <div class="mc-footer">
+        <div class="mc-kpi">
+          <div class="mc-kpi-ring">41</div>
+          <div class="mc-kpi-info"><span class="mc-kpi-val">41% clics</span><span class="mc-kpi-key">Taux urgence activée</span></div>
+        </div>
+        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div class="mm-empty" id="emptyState">
+    <i class="fas fa-inbox"></i>
+    <p>Aucun template disponible pour ce filtre.</p>
+  </div>
+
+</div><!-- /mm-grid -->
+
+<!-- PROCESS STRIP -->
+<div class="mm-process">
+  <div class="mm-step">
+    <div class="mm-step-n">Étape 01</div>
+    <div class="mm-step-ico" style="background:#fff8ed">🎯</div>
+    <div class="mm-step-t">Définissez votre audience</div>
+    <p class="mm-step-d">Segmentez selon le comportement, le secteur et l'historique d'engagement.</p>
+    <div class="mm-step-arr">›</div>
+  </div>
+  <div class="mm-step">
+    <div class="mm-step-n">Étape 02</div>
+    <div class="mm-step-ico" style="background:#edf0ff">✏️</div>
+    <div class="mm-step-t">Créez votre campagne</div>
+    <p class="mm-step-d">Templates professionnels ou design sur mesure via notre éditeur drag & drop.</p>
+    <div class="mm-step-arr">›</div>
+  </div>
+  <div class="mm-step">
+    <div class="mm-step-n">Étape 03</div>
+    <div class="mm-step-ico" style="background:#e5f8f4">🤖</div>
+    <div class="mm-step-t">Automatisez l'envoi</div>
+    <p class="mm-step-d">Déclenchez selon les actions. L'IA optimise le timing en continu.</p>
+    <div class="mm-step-arr">›</div>
+  </div>
+  <div class="mm-step">
+    <div class="mm-step-n">Étape 04</div>
+    <div class="mm-step-ico" style="background:#edfaf0">📊</div>
+    <div class="mm-step-t">Analysez & optimisez</div>
+    <p class="mm-step-d">Dashboard temps réel, A/B test automatique et recommandations IA.</p>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="mm-mq-wrap">
+  <p class="mm-mq-label">Ils optimisent leurs campagnes avec Go Exploria</p>
+  <div class="mm-mq-track">
+    <div class="mm-logo-pill"><i class="fas fa-store"></i>Retail Plus</div>
+    <div class="mm-logo-pill"><i class="fas fa-home"></i>Immo Conseil</div>
+    <div class="mm-logo-pill"><i class="fas fa-globe"></i>World Travel</div>
+    <div class="mm-logo-pill"><i class="fas fa-champagne-glasses"></i>Event Factory</div>
+    <div class="mm-logo-pill"><i class="fas fa-box"></i>Shop Express</div>
+    <div class="mm-logo-pill"><i class="fas fa-handshake"></i>B2B Connect</div>
+    <div class="mm-logo-pill"><i class="fas fa-plane"></i>Air Voyages</div>
+    <div class="mm-logo-pill"><i class="fas fa-hotel"></i>Séjours Pro</div>
+    <div class="mm-logo-pill"><i class="fas fa-chart-line"></i>GrowthLabs</div>
+    <div class="mm-logo-pill"><i class="fas fa-building"></i>Bâti Invest</div>
+    <div class="mm-logo-pill"><i class="fas fa-store"></i>Retail Plus</div>
+    <div class="mm-logo-pill"><i class="fas fa-home"></i>Immo Conseil</div>
+    <div class="mm-logo-pill"><i class="fas fa-globe"></i>World Travel</div>
+    <div class="mm-logo-pill"><i class="fas fa-champagne-glasses"></i>Event Factory</div>
+    <div class="mm-logo-pill"><i class="fas fa-box"></i>Shop Express</div>
+    <div class="mm-logo-pill"><i class="fas fa-handshake"></i>B2B Connect</div>
+    <div class="mm-logo-pill"><i class="fas fa-plane"></i>Air Voyages</div>
+    <div class="mm-logo-pill"><i class="fas fa-hotel"></i>Séjours Pro</div>
+    <div class="mm-logo-pill"><i class="fas fa-chart-line"></i>GrowthLabs</div>
+    <div class="mm-logo-pill"><i class="fas fa-building"></i>Bâti Invest</div>
+  </div>
+</div>
+
+<!-- BOTTOM CTA -->
+<div class="mm-cta">
+  <div class="mm-cta-text">
+    <h3>Prêt à booster vos campagnes email ?</h3>
+    <p>Rejoignez plus de 1 200 entreprises qui utilisent Go Exploria pour transformer leur communication email en moteur de croissance réel.</p>
+  </div>
+  <div class="mm-cta-btns">
+    <a href="#" class="btn-white"><i class="fas fa-rocket" style="font-size:12px"></i>Démarrer gratuitement</a>
+    <a href="#" class="btn-ghost-w"><i class="fas fa-phone" style="font-size:12px"></i>Parler à un expert</a>
+  </div>
+</div>
+
+</div><!-- /mm-inner -->
 </section>
-
-<script>
-// Tab filter interaction
-document.querySelectorAll('.mm-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.mm-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-  });
-});
-
-// Card hover ripple subtle lift
-document.querySelectorAll('.mail-card-v2, .mail-card-wide').forEach(card => {
-  card.addEventListener('mouseenter', () => card.style.willChange = 'transform');
-  card.addEventListener('mouseleave', () => card.style.willChange = 'auto');
-});
-
-// Staggered entrance animation
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.style.opacity = '1';
-      e.target.style.transform = 'translateY(0)';
-      observer.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.mail-card-v2, .mail-card-wide, .mm-stat, .mm-step').forEach((el, i) => {
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(28px)';
-  el.style.transition = `opacity .5s ease ${i * 0.07}s, transform .5s ease ${i * 0.07}s`;
-  observer.observe(el);
-});
-</script>
-</html>
+<script src="{{ asset('vendor/mail-marketing/js/main.js') }}"></script>

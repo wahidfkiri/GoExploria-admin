@@ -55,6 +55,7 @@
     <main class="main-content">
         @include('home-v2.components.Hero')
         @include('geo-map::index')
+        @include('mail-marketing::components.index')
         @include('home-v2.components.VideoPlayer')
         @include('home-v2.components.EventsVedette')
         @include('home-v2.components.DestinationsVedette')

@@ -1,51 +1,78 @@
-// FILTRES PAR CATÉGORIE
-document.addEventListener('DOMContentLoaded', function() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const cards = document.querySelectorAll('.email-product-card');
-    
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Retirer la classe active de tous les boutons
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            // Ajouter la classe active au bouton cliqué
-            this.classList.add('active');
-            
-            const filterValue = this.getAttribute('data-filter');
-            
-            cards.forEach(card => {
-                if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
-                    card.classList.remove('hide');
-                    // Animation d'apparition
-                    card.style.animation = 'fadeInUp 0.4s ease forwards';
-                } else {
-                    card.classList.add('hide');
-                }
-            });
-        });
-    });
-    
-    // Preview email - simulation
-    const previewBtns = document.querySelectorAll('.preview-email-btn');
-    previewBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const productTitle = this.closest('.card-content').querySelector('.product-title').textContent;
-            alert(`📧 Aperçu de l'email pour : ${productTitle}\n\nCette fonctionnalité ouvrira un modal avec le template email complet.`);
-        });
-    });
+
+/* ── FILTER LOGIC ── */
+const tabs  = document.querySelectorAll('.mm-tab');
+const cards = document.querySelectorAll('.mcard[data-cat]');
+const empty = document.getElementById('emptyState');
+
+function applyFilter(filter) {
+  let visible = 0;
+
+  cards.forEach(card => {
+    const cat = card.dataset.cat;
+    const show = filter === 'all' || cat === filter;
+
+    if (show) {
+      card.classList.remove('hidden');
+      // re-trigger animation
+      card.style.animation = 'none';
+      card.offsetHeight; // reflow
+      card.style.animation = '';
+      visible++;
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+
+  // Wide card layout: if only 1 card visible and it's wide, adjust span
+  cards.forEach(card => {
+    if (!card.classList.contains('hidden') && card.classList.contains('mcard-wide')) {
+      if (visible === 1) {
+        card.style.gridColumn = '1 / -1';
+      } else {
+        card.style.gridColumn = '';
+      }
+    }
+  });
+
+  empty.classList.toggle('show', visible === 0);
+}
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    applyFilter(tab.dataset.filter);
+  });
 });
 
-// Animation CSS
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+/* ── ENTRANCE ANIMATION ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }, i * 60);
+      io.unobserve(e.target);
     }
-`;
-document.head.appendChild(style);
+  });
+}, { threshold: 0.08 });
+
+[...cards, ...document.querySelectorAll('.mm-stat,.mm-step')].forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(22px)';
+  el.style.transition = 'opacity .45s ease, transform .45s ease';
+  io.observe(el);
+});
+
+/* ── LIVE COUNTDOWN (Vente Flash card) ── */
+function tick() {
+  const svg = document.querySelector('[data-cat="retail"]:last-of-type svg');
+  if (!svg) return;
+  const now = new Date();
+  const s = 59 - now.getSeconds();
+  const m = 59 - now.getMinutes();
+  const h = 23 - now.getHours();
+  const texts = svg.querySelectorAll('text');
+  // Not patching SVG text live here - just show static. Real impl would use JS DOM.
+}
