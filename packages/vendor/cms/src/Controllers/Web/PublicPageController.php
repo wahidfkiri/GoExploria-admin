@@ -62,9 +62,12 @@ class PublicPageController extends Controller
         
         // Sinon, prendre le thème actif
         if (!$this->activeTheme) {
-            $this->activeTheme = Theme::where('etablissement_id', $this->etablissement->id)
-                ->where('is_active', true)
-                ->first();
+            $this->activeTheme = \DB::connection('cms')->table('cms_themes')
+            ->join('cms_etablissements', 'cms_themes.etablissement_id', '=', 'cms_etablissements.id')
+            ->where('cms_etablissements.id', $this->etablissement->id)
+            ->where('cms_themes.is_active', true)
+            ->select('cms_themes.*')
+            ->first();
         }
         
         // Log pour débogage
