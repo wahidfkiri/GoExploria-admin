@@ -73,7 +73,7 @@ Route::middleware(['web'])->group(function () {
     ->name('cms.theme.asset');
     
 // Routes API
-Route::prefix('cms')->middleware(['web'])->group(function () {
+Route::prefix('api/cms')->middleware(['web'])->group(function () {
     
     Route::prefix('company/{etablissementId}')->name('cms.api.')->group(function () {
         Route::get('/pages', [PublicPageController::class, 'getPagesApi'])->name('pages');
