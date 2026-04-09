@@ -1,709 +1,863 @@
-<link rel="stylesheet" href="{{ asset('vendor/mail-marketing/css/style.css') }}">
+{{-- slider-tab.blade.php --}}
+<div class="tab-pane fade" id="v-pills-slider" role="tabpanel">
+    <div class="tab-content-header">
+        <h3 class="tab-title">
+            <i class="fas fa-sliders-h me-2" style="color: #45b7d1;"></i>
+            Gestion du Slider
+        </h3>
+        <button class="btn btn-primary btn-sm" id="addSlideBtn">
+            <i class="fas fa-plus me-1"></i>Ajouter un slide
+        </button>
+    </div>
 
-<section class="mm">
-<div class="mm-inner">
+    <div class="slider-stats mb-4">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-mini-card">
+                    <div class="stat-mini-value" id="totalSlides">0</div>
+                    <div class="stat-mini-label">Total slides</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-mini-card">
+                    <div class="stat-mini-value" id="activeSlides">0</div>
+                    <div class="stat-mini-label">Slides actifs</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-mini-card">
+                    <div class="stat-mini-value" id="imageSlides">0</div>
+                    <div class="stat-mini-label">Images</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-mini-card">
+                    <div class="stat-mini-value" id="videoSlides">0</div>
+                    <div class="stat-mini-label">Vidéos</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- HEADER -->
-<div class="mm-header">
-  <div>
-    <div class="mm-eyebrow"><span class="mm-eyebrow-dot"></span>Email Marketing Platform</div>
-    <h1 class="mm-title">Transformez chaque email<br>en <em>opportunité réelle</em></h1>
-    <p class="mm-sub">Créez, automatisez et analysez vos campagnes. Atteignez vos clients au bon moment avec le bon message — dans chaque secteur.</p>
-  </div>
-  <div class="mm-actions">
-    <a href="#" class="btn-dark"><i class="fas fa-plus" style="font-size:12px"></i>En savor plus</a>
-  </div>
+    <div class="slider-filters mb-3">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-secondary active" data-filter="all">Tous</button>
+            <button type="button" class="btn btn-outline-secondary" data-filter="image">Images</button>
+            <button type="button" class="btn btn-outline-secondary" data-filter="video">Vidéos</button>
+            <button type="button" class="btn btn-outline-secondary" data-filter="active">Actifs</button>
+            <button type="button" class="btn btn-outline-secondary" data-filter="inactive">Inactifs</button>
+        </div>
+        <div class="float-end">
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="refreshSliderBtn">
+                <i class="fas fa-sync-alt me-1"></i>Rafraîchir
+            </button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="width: 40px"><i class="fas fa-grip-vertical"></i></th>
+                    <th style="width: 100px">Aperçu</th>
+                    <th>Titre</th>
+                    <th>Sous-titre</th>
+                    <th style="width: 80px">Type</th>
+                    <th style="width: 80px">Statut</th>
+                    <th style="width: 100px">Bouton</th>
+                    <th style="width: 120px">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="sliderTableBody">
+                <tr>
+                    <td colspan="8" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                        <p class="mt-2">Chargement des slides...</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<!-- STATS -->
-<div class="mm-stats">
-  <div class="mm-stat"><div class="mm-stat-n">98<sup>%</sup></div><div class="mm-stat-l">Délivrabilité garantie</div></div>
-  <div class="mm-stat"><div class="mm-stat-n">4.2<sup>×</sup></div><div class="mm-stat-l">ROI moyen par campagne</div></div>
-  <div class="mm-stat"><div class="mm-stat-n">12<sup>k+</sup></div><div class="mm-stat-l">Campagnes envoyées</div></div>
-  <div class="mm-stat"><div class="mm-stat-n">38<sup>%</sup></div><div class="mm-stat-l">Taux d'ouverture moyen</div></div>
+<!-- Add/Edit Slide Modal -->
+<div class="modal fade" id="slideModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="slideModalTitle">
+                    <i class="fas fa-plus-circle me-2"></i>Ajouter un slide
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="slideForm" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="slide_id" id="slideId">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Type de média</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="type" id="typeImage" value="image" checked>
+                                    <label class="btn btn-outline-primary" for="typeImage">
+                                        <i class="fas fa-image me-1"></i> Image
+                                    </label>
+                                    <input type="radio" class="btn-check" name="type" id="typeVideo" value="video">
+                                    <label class="btn btn-outline-primary" for="typeVideo">
+                                        <i class="fas fa-video me-1"></i> Vidéo
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Source</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="source" id="sourceUpload" value="upload" checked>
+                                    <label class="btn btn-outline-secondary" for="sourceUpload">
+                                        <i class="fas fa-upload me-1"></i> Upload
+                                    </label>
+                                    <input type="radio" class="btn-check" name="source" id="sourceMedia" value="media">
+                                    <label class="btn btn-outline-secondary" for="sourceMedia">
+                                        <i class="fas fa-images me-1"></i> Médiathèque
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload section -->
+                    <div id="uploadSection" class="mb-3">
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt fa-3x"></i>
+                            </div>
+                            <h4>Glissez votre fichier ici</h4>
+                            <p>ou cliquez pour sélectionner</p>
+                            <input type="file" name="media_file" id="mediaFileInput" accept="image/*,video/mp4,video/webm,video/ogg" hidden>
+                            <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('mediaFileInput').click()">
+                                Sélectionner un fichier
+                            </button>
+                        </div>
+                        <div id="filePreview" class="mt-3" style="display: none;">
+                            <div class="preview-container text-center">
+                                <img id="imagePreview" src="" style="max-width: 100%; max-height: 200px; display: none; border-radius: 8px;">
+                                <video id="videoPreview" controls style="max-width: 100%; max-height: 200px; display: none;"></video>
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-sm btn-danger" id="removeFileBtn">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Media library section -->
+                    <div id="mediaSection" class="mb-3" style="display: none;">
+                        <label class="form-label">Sélectionner depuis la médiathèque</label>
+                        <div class="media-selector">
+                            <div class="media-grid" id="mediaGrid">
+                                <div class="text-center py-3">
+                                    <div class="spinner-border spinner-border-sm"></div> Chargement...
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-primary mt-2 w-100" id="openMediaLibraryBtn">
+                                <i class="fas fa-folder-open"></i> Parcourir la médiathèque
+                            </button>
+                        </div>
+                        <input type="hidden" name="media_id" id="selectedMediaId">
+                        <div id="selectedMediaPreview" class="mt-3" style="display: none;">
+                            <div class="alert alert-info">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <span id="selectedMediaName"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label">Titre</label>
+                                <input type="text" class="form-control" name="title" id="slideTitle" placeholder="Titre du slide">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label">Sous-titre</label>
+                                <textarea class="form-control" name="subtitle" id="slideSubtitle" rows="2" placeholder="Sous-titre ou description"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Texte du bouton</label>
+                                <input type="text" class="form-control" name="button_text" id="slideButtonText" placeholder="Ex: En savoir plus">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Lien du bouton</label>
+                                <input type="text" class="form-control" name="button_link" id="slideButtonLink" placeholder="/page ou https://...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary" id="saveSlideBtn">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
-<!-- FILTER BAR -->
-<div class="mm-filter-bar">
-  <span class="mm-filter-label">Secteur :</span>
-  <button class="mm-tab active" data-filter="all">Tous les secteurs <span class="mm-count" id="cnt-all">8</span></button>
-  <button class="mm-tab" data-filter="retail">Retail & E-commerce <span class="mm-count">2</span></button>
-  <button class="mm-tab" data-filter="immo">Immobilier <span class="mm-count">1</span></button>
-  <button class="mm-tab" data-filter="travel">Tourisme & Voyages <span class="mm-count">1</span></button>
-  <button class="mm-tab" data-filter="event">Événementiel <span class="mm-count">1</span></button>
-  <button class="mm-tab" data-filter="b2b">B2B & Corporate <span class="mm-count">1</span></button>
-  <button class="mm-tab" data-filter="auto">Automation IA <span class="mm-count">1</span></button>
-  <button class="mm-tab" data-filter="info">Newsletters <span class="mm-count">1</span></button>
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteSlideModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="delete-icon">
+                    <i class="fas fa-exclamation-triangle fa-3x text-danger"></i>
+                </div>
+                <h4>Supprimer le slide</h4>
+                <p class="text-muted">Êtes-vous sûr de vouloir supprimer ce slide ?<br>Cette action est irréversible.</p>
+                <div class="mt-4">
+                    <button class="btn btn-secondary me-2" data-bs-dismiss="modal">Annuler</button>
+                    <button class="btn btn-danger" id="confirmDeleteSlideBtn">Supprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- CARD GRID -->
-<div class="mm-grid" id="cardGrid">
+<style>
+.slider-stats .stat-mini-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
 
-  <!-- ══ CARD 1 – Automation IA (wide, dark) ══ -->
-  <div class="mcard mcard-wide th-dark" data-cat="auto">
-    <div class="mc-vis">
-      <div class="mc-vis-tag" style="color:rgba(255,255,255,.85)"><i class="fas fa-bolt" style="color:#f5a623;font-size:10px"></i>AUTOMATION IA</div>
-      <!-- Rich SVG: email flow + AI brain -->
-      <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg" width="760" height="220" preserveAspectRatio="xMidYMid slice">
-        <!-- BG dots grid -->
-        <defs>
-          <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(255,255,255,.07)"/></pattern>
-          <linearGradient id="gline" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f5a623"/><stop offset="100%" stop-color="#2d5cc2"/></linearGradient>
-          <linearGradient id="gbrain" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2d5cc2" stop-opacity=".9"/><stop offset="100%" stop-color="#7c4dff" stop-opacity=".9"/></linearGradient>
-        </defs>
-        <rect width="760" height="220" fill="url(#grid)"/>
-        <!-- Left: trigger node -->
-        <rect x="30" y="80" width="110" height="56" rx="14" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
-        <rect x="30" y="80" width="4" height="56" rx="2" fill="url(#gline)"/>
-        <text x="52" y="108" fill="rgba(255,255,255,.5)" font-size="9" font-family="sans-serif" letter-spacing="1">TRIGGER</text>
-        <text x="52" y="122" fill="white" font-size="11" font-family="sans-serif" font-weight="700">Inscription</text>
-        <!-- Arrow 1 -->
-        <path d="M140 108 L180 108" stroke="url(#gline)" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <polygon points="180,104 188,108 180,112" fill="#f5a623"/>
-        <!-- Email node 1 -->
-        <rect x="188" y="76" width="130" height="64" rx="14" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
-        <circle cx="208" cy="108" r="12" fill="#f5a623" opacity=".9"/>
-        <text x="208" y="113" fill="white" font-size="10" font-family="sans-serif" text-anchor="middle" font-weight="700">E1</text>
-        <text x="228" y="100" fill="rgba(255,255,255,.5)" font-size="9" font-family="sans-serif">J+0 · Bienvenue</text>
-        <text x="228" y="115" fill="white" font-size="11" font-family="sans-serif" font-weight="600">Taux ouv.</text>
-        <text x="228" y="128" fill="#f5a623" font-size="13" font-family="sans-serif" font-weight="800">61%</text>
-        <!-- Arrow 2 -->
-        <path d="M318 108 L358 108" stroke="url(#gline)" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <polygon points="358,104 366,108 358,112" fill="#f5a623"/>
-        <!-- AI Brain center node -->
-        <rect x="366" y="60" width="100" height="100" rx="20" fill="url(#gbrain)" stroke="rgba(255,255,255,.22)" stroke-width="1.5"/>
-        <text x="416" y="98" fill="white" font-size="26" text-anchor="middle" font-family="sans-serif">🧠</text>
-        <text x="416" y="116" fill="rgba(255,255,255,.7)" font-size="9" font-family="sans-serif" text-anchor="middle" font-weight="700" letter-spacing="1">IA DECIDE</text>
-        <text x="416" y="130" fill="white" font-size="10" font-family="sans-serif" text-anchor="middle" font-weight="600">Personnalise</text>
-        <!-- Arrow 3 -->
-        <path d="M466 108 L506 108" stroke="url(#gline)" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <polygon points="506,104 514,108 506,112" fill="#2d5cc2"/>
-        <!-- Split nodes -->
-        <path d="M514 108 L540 78" stroke="rgba(255,255,255,.25)" stroke-width="1.2" stroke-dasharray="3,3"/>
-        <path d="M514 108 L540 138" stroke="rgba(255,255,255,.25)" stroke-width="1.2" stroke-dasharray="3,3"/>
-        <!-- Node A -->
-        <rect x="540" y="56" width="110" height="44" rx="12" fill="rgba(245,166,35,.18)" stroke="rgba(245,166,35,.4)" stroke-width="1"/>
-        <text x="556" y="76" fill="rgba(255,255,255,.5)" font-size="9" font-family="sans-serif">Engagé →</text>
-        <text x="556" y="90" fill="white" font-size="11" font-family="sans-serif" font-weight="700">Offre Upsell</text>
-        <!-- Node B -->
-        <rect x="540" y="118" width="110" height="44" rx="12" fill="rgba(45,92,194,.25)" stroke="rgba(45,92,194,.5)" stroke-width="1"/>
-        <text x="556" y="138" fill="rgba(255,255,255,.5)" font-size="9" font-family="sans-serif">Inactif →</text>
-        <text x="556" y="152" fill="white" font-size="11" font-family="sans-serif" font-weight="700">Réactivation</text>
-        <!-- Conversion -->
-        <path d="M650 78 L690 108" stroke="rgba(255,255,255,.2)" stroke-width="1.2" stroke-dasharray="3,3"/>
-        <path d="M650 140 L690 108" stroke="rgba(255,255,255,.2)" stroke-width="1.2" stroke-dasharray="3,3"/>
-        <rect x="690" y="87" width="60" height="42" rx="21" fill="#f5a623"/>
-        <text x="720" y="112" fill="white" font-size="11" font-family="sans-serif" text-anchor="middle" font-weight="800">+47%</text>
-        <!-- Labels bottom -->
-        <text x="416" y="190" fill="rgba(255,255,255,.3)" font-size="10" font-family="sans-serif" text-anchor="middle">Séquence automatisée · Déclenchée par comportement · Optimisation en temps réel</text>
-      </svg>
-    </div>
-    <div class="mc-body">
-      <div class="mc-badge"><i class="fas fa-bolt" style="font-size:9px;color:#f5a623"></i>Automation IA</div>
-      <div class="mc-title" style="color:#fff">Séquences email 100% automatisées</div>
-      <p class="mc-desc">Configurez une fois, convertissez indéfiniment. Notre moteur IA analyse chaque comportement et personnalise en temps réel le contenu, le timing et la fréquence de chaque envoi.</p>
-      <div class="mc-pills">
-        <span class="mc-pill"><i class="fas fa-brain" style="font-size:10px;color:#7c4dff"></i>Optimisation IA</span>
-        <span class="mc-pill"><i class="fas fa-clock" style="font-size:10px;color:#f5a623"></i>Timing intelligent</span>
-        <span class="mc-pill"><i class="fas fa-code-branch" style="font-size:10px;color:#2d5cc2"></i>Segmentation auto</span>
-        <span class="mc-pill"><i class="fas fa-chart-line" style="font-size:10px;color:#2fb34a"></i>A/B test continu</span>
-      </div>
-      <div class="mc-footer">
-        <div class="mc-kpi">
-          <div class="mc-kpi-ring">47</div>
-          <div class="mc-kpi-info"><span class="mc-kpi-val">+47% conversions</span><span class="mc-kpi-key">vs campagnes manuelles</span></div>
-        </div>
-        <a href="#" class="mc-link">Voir l'automation <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
-      </div>
-    </div>
-  </div>
+.slider-stats .stat-mini-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
 
-  <!-- ══ CARD 2 – Retail Panier abandonné ══ -->
-  <div class="mcard th-g" data-cat="retail">
-    <div class="mc-vis">
-      <div class="mc-vis-tag" style="color:var(--g600)"><i class="fas fa-shopping-cart" style="font-size:9px;color:var(--g400)"></i>E-COMMERCE</div>
-      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" width="380" height="220" preserveAspectRatio="xMidYMid slice">
-        <defs><linearGradient id="gg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#edfaf0"/><stop offset="100%" stop-color="#b2e8bc"/></linearGradient></defs>
-        <!-- Phone mockup -->
-        <rect x="110" y="10" width="160" height="200" rx="22" fill="white" opacity=".95"/>
-        <rect x="110" y="10" width="160" height="200" rx="22" stroke="rgba(47,179,74,.2)" stroke-width="1.5" fill="none"/>
-        <!-- Status bar -->
-        <rect x="110" y="10" width="160" height="38" rx="22" fill="var(--g400)" opacity=".9"/>
-        <rect x="110" y="38" width="160" height="10" fill="var(--g400)" opacity=".9"/>
-        <text x="190" y="32" fill="white" font-size="10" font-weight="700" font-family="sans-serif" text-anchor="middle" letter-spacing=".5">PANIER ABANDONNÉ</text>
-        <!-- Product row -->
-        <rect x="124" y="60" width="48" height="48" rx="10" fill="#edfaf0"/>
-        <text x="148" y="90" font-size="26" text-anchor="middle" font-family="sans-serif">👟</text>
-        <text x="183" y="76" fill="var(--ink)" font-size="11" font-weight="700" font-family="sans-serif">Nike Air Max</text>
-        <text x="183" y="90" fill="var(--ink3)" font-size="10" font-family="sans-serif">Taille 42 · Blanc</text>
-        <text x="183" y="104" fill="var(--g600)" font-size="13" font-weight="800" font-family="sans-serif">89,00 €</text>
-        <!-- Timer -->
-        <rect x="120" y="120" width="140" height="24" rx="12" fill="#fff3cd" stroke="#ffc107" stroke-width="1"/>
-        <text x="190" y="136" fill="#856404" font-size="10" font-family="sans-serif" text-anchor="middle" font-weight="600">⏱ Expire dans 2h 14min</text>
-        <!-- Coupon -->
-        <rect x="120" y="152" width="140" height="20" rx="10" fill="#edfaf0" stroke="var(--g400)" stroke-width="1" stroke-dasharray="4,3"/>
-        <text x="190" y="166" fill="var(--g600)" font-size="10" font-family="sans-serif" text-anchor="middle" font-weight="700">🎁 CODE: REVIENS10</text>
-        <!-- CTA -->
-        <rect x="124" y="182" width="132" height="20" rx="10" fill="var(--g400)"/>
-        <text x="190" y="196" fill="white" font-size="10" font-family="sans-serif" text-anchor="middle" font-weight="700">Finaliser mon achat →</text>
-        <!-- Floating badge -->
-        <rect x="218" y="50" width="68" height="28" rx="14" fill="var(--g400)"/>
-        <text x="252" y="68" fill="white" font-size="12" font-family="sans-serif" text-anchor="middle" font-weight="800">-10%</text>
-        <!-- Stars decoration -->
-        <text x="50" y="90" font-size="18" font-family="sans-serif" opacity=".4">✦</text>
-        <text x="310" y="60" font-size="12" font-family="sans-serif" opacity=".3">✦</text>
-        <text x="320" y="160" font-size="16" font-family="sans-serif" opacity=".25">✦</text>
-      </svg>
-    </div>
-    <div class="mc-body">
-      <div class="mc-badge"><i class="fas fa-shopping-cart" style="font-size:9px"></i>E-commerce</div>
-      <div class="mc-title">Récupération de paniers abandonnés</div>
-      <p class="mc-desc">Relancez automatiquement vos visiteurs avec des offres personnalisées, coupon de réduction et urgence intégrée pour maximiser vos ventes.</p>
-      <div class="mc-pills">
-        <span class="mc-pill">🎁 Coupon auto</span>
-        <span class="mc-pill">⏱ Countdown timer</span>
-        <span class="mc-pill">📱 Mobile-first</span>
-      </div>
-      <div class="mc-footer">
-        <div class="mc-kpi">
-          <div class="mc-kpi-ring">23</div>
-          <div class="mc-kpi-info"><span class="mc-kpi-val">23% récupération</span><span class="mc-kpi-key">Taux de conversion</span></div>
-        </div>
-        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
-      </div>
-    </div>
-  </div>
+.slider-filters .btn-group {
+    margin-bottom: 20px;
+}
 
-  <!-- ══ CARD 3 – Newsletter Produits ══ -->
-  <div class="mcard th-o" data-cat="info">
-    <div class="mc-vis">
-      <div class="mc-vis-tag" style="color:var(--o600)"><i class="fas fa-newspaper" style="font-size:9px;color:var(--o400)"></i>NEWSLETTER</div>
-      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" width="380" height="220" preserveAspectRatio="xMidYMid slice">
-        <!-- Email client mockup landscape -->
-        <rect x="30" y="15" width="320" height="190" rx="16" fill="white" opacity=".92"/>
-        <rect x="30" y="15" width="320" height="190" rx="16" stroke="rgba(245,166,35,.2)" stroke-width="1.5" fill="none"/>
-        <!-- Header band -->
-        <rect x="30" y="15" width="320" height="44" rx="16" fill="#08091a"/>
-        <rect x="30" y="45" width="320" height="14" fill="#08091a"/>
-        <!-- Logo + date -->
-        <circle cx="55" cy="37" r="10" fill="var(--o400)"/>
-        <text x="55" y="42" fill="white" font-size="11" text-anchor="middle" font-family="sans-serif" font-weight="800">G</text>
-        <text x="74" y="34" fill="white" font-size="11" font-family="sans-serif" font-weight="700">EXPLORIA</text>
-        <text x="74" y="46" fill="rgba(255,255,255,.45)" font-size="9" font-family="sans-serif">Newsletter · Novembre 2025</text>
-        <!-- Hero text area -->
-        <text x="46" y="84" fill="var(--ink)" font-size="13" font-family="sans-serif" font-weight="800">Les tendances du mois 🔥</text>
-        <!-- 3 product mini-cards in a row -->
-        <rect x="40" y="95" width="85" height="80" rx="10" fill="#fff8ed"/>
-        <text x="82" y="130" font-size="28" text-anchor="middle" font-family="sans-serif">🎧</text>
-        <text x="82" y="147" fill="var(--ink2)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="600">Casque Pro</text>
-        <text x="82" y="159" fill="var(--o600)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="800">129 €</text>
-        <rect x="135" y="95" width="85" height="80" rx="10" fill="#fff8ed"/>
-        <text x="177" y="130" font-size="28" text-anchor="middle" font-family="sans-serif">📸</text>
-        <text x="177" y="147" fill="var(--ink2)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="600">Appareil</text>
-        <text x="177" y="159" fill="var(--o600)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="800">449 €</text>
-        <rect x="230" y="95" width="85" height="80" rx="10" fill="#fff3cd"/>
-        <rect x="252" y="98" width="40" height="14" rx="7" fill="var(--o400)"/>
-        <text x="272" y="109" fill="white" font-size="8" text-anchor="middle" font-family="sans-serif" font-weight="800">-20%</text>
-        <text x="272" y="130" font-size="28" text-anchor="middle" font-family="sans-serif">⌚</text>
-        <text x="272" y="147" fill="var(--ink2)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="600">Montre</text>
-        <text x="272" y="159" fill="var(--o600)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="800">199 €</text>
-        <!-- CTA bottom -->
-        <rect x="125" y="185" width="130" height="16" rx="8" fill="var(--o400)"/>
-        <text x="190" y="197" fill="white" font-size="9" font-family="sans-serif" text-anchor="middle" font-weight="700">Voir toutes les offres</text>
-        <!-- Open rate bubble -->
-        <rect x="280" y="18" width="58" height="28" rx="14" fill="rgba(245,166,35,.15)" stroke="var(--o200)" stroke-width="1"/>
-        <text x="309" y="36" fill="var(--o600)" font-size="12" text-anchor="middle" font-family="sans-serif" font-weight="800">42%</text>
-      </svg>
-    </div>
-    <div class="mc-body">
-      <div class="mc-badge"><i class="fas fa-tags" style="font-size:9px"></i>Newsletter</div>
-      <div class="mc-title">Emails Produits & Newsletters</div>
-      <p class="mc-desc">Promotions exclusives, nouveautés produits et newsletters thématiques pour fidéliser et inspirer votre audience à chaque envoi.</p>
-      <div class="mc-pills">
-        <span class="mc-pill">🎨 Templates éditoriaux</span>
-        <span class="mc-pill">📊 Analytics détaillés</span>
-      </div>
-      <div class="mc-footer">
-        <div class="mc-kpi">
-          <div class="mc-kpi-ring">42</div>
-          <div class="mc-kpi-info"><span class="mc-kpi-val">42% ouverture</span><span class="mc-kpi-key">Taux moyen constaté</span></div>
-        </div>
-        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
-      </div>
-    </div>
-  </div>
+.slider-filters .btn {
+    border-radius: 20px;
+    padding: 6px 16px;
+}
 
-  <!-- ══ CARD 4 – Immobilier ══ -->
-  <div class="mcard th-b" data-cat="immo">
-    <div class="mc-vis">
-      <div class="mc-vis-tag" style="color:var(--b600)"><i class="fas fa-building" style="font-size:9px;color:var(--b400)"></i>IMMOBILIER</div>
-      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" width="380" height="220" preserveAspectRatio="xMidYMid slice">
-        <defs><linearGradient id="skygrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#e8f0fe"/><stop offset="100%" stop-color="#c9d5fb"/></linearGradient></defs>
-        <!-- Email frame -->
-        <rect x="25" y="12" width="330" height="196" rx="16" fill="white" opacity=".92"/>
-        <rect x="25" y="12" width="330" height="196" rx="16" stroke="rgba(45,92,194,.18)" stroke-width="1.5" fill="none"/>
-        <!-- Top header dark -->
-        <rect x="25" y="12" width="330" height="46" rx="16" fill="var(--b600)"/>
-        <rect x="25" y="44" width="330" height="14" fill="var(--b600)"/>
-        <text x="50" y="34" fill="white" font-size="12" font-family="sans-serif" font-weight="800">IMMO CONSEIL</text>
-        <text x="50" y="48" fill="rgba(255,255,255,.5)" font-size="9" font-family="sans-serif">Alerte · Nouveau bien disponible</text>
-        <rect x="298" y="22" width="46" height="18" rx="9" fill="rgba(255,255,255,.15)"/>
-        <text x="321" y="34" fill="white" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">URGENT</text>
-        <!-- Property image area -->
-        <rect x="35" y="68" width="150" height="106" rx="12" fill="url(#skygrad)"/>
-        <!-- Building illustration -->
-        <rect x="55" y="110" width="30" height="50" rx="3" fill="var(--b400)" opacity=".5"/>
-        <rect x="90" y="95" width="35" height="65" rx="3" fill="var(--b600)" opacity=".7"/>
-        <rect x="130" y="105" width="28" height="55" rx="3" fill="var(--b400)" opacity=".6"/>
-        <!-- Windows -->
-        <rect x="60" y="115" width="8" height="8" rx="2" fill="white" opacity=".7"/>
-        <rect x="72" y="115" width="8" height="8" rx="2" fill="white" opacity=".7"/>
-        <rect x="60" y="127" width="8" height="8" rx="2" fill="var(--o400)" opacity=".8"/>
-        <rect x="72" y="127" width="8" height="8" rx="2" fill="white" opacity=".7"/>
-        <rect x="96" y="102" width="9" height="9" rx="2" fill="white" opacity=".7"/>
-        <rect x="109" y="102" width="9" height="9" rx="2" fill="white" opacity=".4"/>
-        <rect x="96" y="116" width="9" height="9" rx="2" fill="white" opacity=".6"/>
-        <rect x="109" y="116" width="9" height="9" rx="2" fill="var(--o400)" opacity=".8"/>
-        <!-- Ground -->
-        <rect x="35" y="162" width="150" height="12" rx="0" fill="var(--b200)" opacity=".5"/>
-        <!-- Price tag -->
-        <rect x="38" y="70" width="72" height="22" rx="11" fill="var(--b600)"/>
-        <text x="74" y="85" fill="white" font-size="11" text-anchor="middle" font-family="sans-serif" font-weight="800">350 000 €</text>
-        <!-- Details panel right -->
-        <text x="200" y="86" fill="var(--ink)" font-size="13" font-family="sans-serif" font-weight="800">Appartement T4</text>
-        <text x="200" y="100" fill="var(--ink3)" font-size="10" font-family="sans-serif">Paris 11e · 92 m²</text>
-        <!-- Tags row -->
-        <rect x="200" y="110" width="40" height="16" rx="8" fill="var(--b50)"/>
-        <text x="220" y="122" fill="var(--b600)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">4 pièces</text>
-        <rect x="246" y="110" width="44" height="16" rx="8" fill="var(--b50)"/>
-        <text x="268" y="122" fill="var(--b600)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Terrasse</text>
-        <rect x="296" y="110" width="44" height="16" rx="8" fill="var(--b50)"/>
-        <text x="318" y="122" fill="var(--b600)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Parking</text>
-        <!-- Info lines -->
-        <rect x="200" y="135" width="140" height="5" rx="3" fill="var(--light-gray)" opacity=".5"/>
-        <rect x="200" y="145" width="100" height="5" rx="3" fill="var(--light-gray)" opacity=".35"/>
-        <!-- Mini map -->
-        <rect x="200" y="158" width="60" height="36" rx="8" fill="#edf0ff"/>
-        <circle cx="230" cy="176" r="10" fill="var(--b200)" stroke="var(--b400)" stroke-width="1.5"/>
-        <circle cx="230" cy="176" r="4" fill="var(--b600)"/>
-        <!-- CTAs -->
-        <rect x="270" y="158" width="68" height="16" rx="8" fill="var(--b600)"/>
-        <text x="304" y="169" fill="white" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Voir bien →</text>
-        <rect x="270" y="178" width="68" height="16" rx="8" fill="var(--b50)" stroke="var(--b200)" stroke-width="1"/>
-        <text x="304" y="189" fill="var(--b600)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Visite virtuelle</text>
-      </svg>
-    </div>
-    <div class="mc-body">
-      <div class="mc-badge"><i class="fas fa-building" style="font-size:9px"></i>Immobilier</div>
-      <div class="mc-title">Alertes & Annonces Immobilières</div>
-      <p class="mc-desc">Alertes prix personnalisées, fiches biens détaillées avec carte interactive, visites virtuelles et comparatifs de marché pour vos prospects.</p>
-      <div class="mc-pills">
-        <span class="mc-pill">🗺️ Carte interactive</span>
-        <span class="mc-pill">🎥 Visite virtuelle</span>
-        <span class="mc-pill">📈 Tendances prix</span>
-      </div>
-      <div class="mc-footer">
-        <div class="mc-kpi">
-          <div class="mc-kpi-ring">18</div>
-          <div class="mc-kpi-info"><span class="mc-kpi-val">18% conversion</span><span class="mc-kpi-key">Prises de contact</span></div>
-        </div>
-        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
-      </div>
-    </div>
-  </div>
+.table th {
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+    font-weight: 600;
+    padding: 12px;
+}
 
-  <!-- ══ CARD 5 – Voyages ══ -->
-  <div class="mcard th-t" data-cat="travel">
-    <div class="mc-vis">
-      <div class="mc-vis-tag" style="color:var(--t600)"><i class="fas fa-plane-departure" style="font-size:9px;color:var(--t400)"></i>TOURISME</div>
-      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" width="380" height="220" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id="sky2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#b3e5fc"/><stop offset="100%" stop-color="#e5f8f4"/></linearGradient>
-          <clipPath id="cp1"><rect x="25" y="12" width="330" height="196" rx="16"/></clipPath>
-        </defs>
-        <!-- Card frame -->
-        <rect x="25" y="12" width="330" height="196" rx="16" fill="white" opacity=".9"/>
-        <rect x="25" y="12" width="330" height="196" rx="16" stroke="rgba(0,184,156,.2)" stroke-width="1.5" fill="none"/>
-        <!-- Sky hero zone -->
-        <rect x="25" y="12" width="330" height="120" rx="16" fill="url(#sky2)" clip-path="url(#cp1)"/>
-        <rect x="25" y="112" width="330" height="20" fill="url(#sky2)" clip-path="url(#cp1)"/>
-        <!-- Clouds -->
-        <ellipse cx="80" cy="45" rx="35" ry="16" fill="white" opacity=".7"/>
-        <ellipse cx="100" cy="40" rx="25" ry="14" fill="white" opacity=".6"/>
-        <ellipse cx="280" cy="55" rx="28" ry="12" fill="white" opacity=".6"/>
-        <ellipse cx="300" cy="50" rx="20" ry="10" fill="white" opacity=".55"/>
-        <!-- Plane path dashed -->
-        <path d="M60 100 Q190 40 320 70" stroke="rgba(0,184,156,.4)" stroke-width="1.5" stroke-dasharray="6,4" fill="none"/>
-        <!-- Plane -->
-        <text x="195" y="58" font-size="26" text-anchor="middle" font-family="sans-serif" transform="rotate(-20,195,58)">✈️</text>
-        <!-- City markers -->
-        <circle cx="70" cy="100" r="6" fill="var(--t400)"/><circle cx="70" cy="100" r="3" fill="white"/>
-        <text x="70" y="116" fill="var(--ink2)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Paris</text>
-        <circle cx="316" cy="72" r="6" fill="var(--o400)"/><circle cx="316" cy="72" r="3" fill="white"/>
-        <text x="316" y="88" fill="var(--ink2)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Bali</text>
-        <!-- Header title -->
-        <rect x="25" y="12" width="330" height="34" rx="16" fill="var(--t600)" opacity=".85"/>
-        <rect x="25" y="36" width="330" height="10" fill="var(--t600)" opacity=".85"/>
-        <text x="55" y="31" fill="white" font-size="11" font-family="sans-serif" font-weight="800" letter-spacing=".5">OFFRE LAST MINUTE 🌴</text>
-        <!-- Bottom info row -->
-        <rect x="35" y="138" width="145" height="60" rx="10" fill="#e5f8f4"/>
-        <text x="107" y="156" fill="var(--t600)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="700">Paris → Bali</text>
-        <text x="107" y="170" fill="var(--ink3)" font-size="9" text-anchor="middle" font-family="sans-serif">Aller-retour · 10 nuits</text>
-        <text x="107" y="186" fill="var(--t600)" font-size="16" text-anchor="middle" font-family="sans-serif" font-weight="800">899 €</text>
-        <!-- Discount badge -->
-        <rect x="152" y="140" width="40" height="20" rx="10" fill="var(--r400)"/>
-        <text x="172" y="154" fill="white" font-size="11" text-anchor="middle" font-family="sans-serif" font-weight="800">-42%</text>
-        <!-- Amenities -->
-        <rect x="190" y="138" width="155" height="60" rx="10" fill="#f0fffe"/>
-        <text x="268" y="154" fill="var(--ink2)" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">Inclus dans l'offre :</text>
-        <text x="200" y="166" fill="var(--ink3)" font-size="9" font-family="sans-serif">✓ Vol direct</text>
-        <text x="200" y="177" fill="var(--ink3)" font-size="9" font-family="sans-serif">✓ Hôtel 4★ all inclusive</text>
-        <text x="200" y="188" fill="var(--ink3)" font-size="9" font-family="sans-serif">✓ Transferts offerts</text>
-        <!-- CTA -->
-        <rect x="80" y="206" width="220" height="0" rx="0" fill="none"/>
-      </svg>
-    </div>
-    <div class="mc-body">
-      <div class="mc-badge"><i class="fas fa-plane" style="font-size:9px"></i>Tourisme</div>
-      <div class="mc-title">Emails Voyages & Offres Last Minute</div>
-      <p class="mc-desc">Offres personnalisées selon les destinations favorites, itinéraires sur mesure, alertes prix et inspirations saisonnières avec visuel immersif.</p>
-      <div class="mc-pills">
-        <span class="mc-pill">🌍 Destinations ciblées</span>
-        <span class="mc-pill">🔔 Alertes prix</span>
-        <span class="mc-pill">🗓️ Calendrier dispo</span>
-      </div>
-      <div class="mc-footer">
-        <div class="mc-kpi">
-          <div class="mc-kpi-ring">35</div>
-          <div class="mc-kpi-info"><span class="mc-kpi-val">35% engagement</span><span class="mc-kpi-key">Clics sur offres</span></div>
-        </div>
-        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
-      </div>
-    </div>
-  </div>
+.table td {
+    vertical-align: middle;
+    padding: 12px;
+}
 
-  <!-- ══ CARD 6 – Événementiel ══ -->
-  <div class="mcard th-r" data-cat="event">
-    <div class="mc-vis">
-      <div class="mc-vis-tag" style="color:var(--r600)"><i class="fas fa-calendar-star" style="font-size:9px;color:var(--r400)"></i>ÉVÉNEMENTIEL</div>
-      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" width="380" height="220" preserveAspectRatio="xMidYMid slice">
-        <defs><linearGradient id="rgrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#feeef4"/><stop offset="100%" stop-color="#fac6db"/></linearGradient></defs>
-        <!-- Invitation card styled -->
-        <rect x="55" y="10" width="270" height="200" rx="18" fill="white" opacity=".95"/>
-        <rect x="55" y="10" width="270" height="200" rx="18" stroke="rgba(232,65,122,.2)" stroke-width="1.5" fill="none"/>
-        <!-- Gold/rose top bar -->
-        <rect x="55" y="10" width="270" height="50" rx="18" fill="var(--r400)" opacity=".9"/>
-        <rect x="55" y="46" width="270" height="14" fill="var(--r400)" opacity=".9"/>
-        <!-- Confetti deco on header -->
-        <circle cx="80" cy="28" r="4" fill="var(--o400)" opacity=".8"/>
-        <circle cx="300" cy="22" r="3" fill="white" opacity=".6"/>
-        <circle cx="315" cy="36" r="5" fill="var(--o200)" opacity=".7"/>
-        <rect x="88" y="16" width="6" height="6" rx="1" fill="white" opacity=".5" transform="rotate(20,88,16)"/>
-        <rect x="275" y="30" width="5" height="5" rx="1" fill="var(--o300)" opacity=".6" transform="rotate(35,275,30)"/>
-        <text x="190" y="32" fill="white" font-size="11" font-family="sans-serif" text-anchor="middle" font-weight="800" letter-spacing="1.5">✉ VOUS ÊTES INVITÉ</text>
-        <text x="190" y="48" fill="rgba(255,255,255,.7)" font-size="9" font-family="sans-serif" text-anchor="middle">Événement exclusif · Accès limité</text>
-        <!-- Calendar widget -->
-        <rect x="80" y="72" width="72" height="72" rx="14" fill="#feeef4" stroke="var(--r200)" stroke-width="1"/>
-        <rect x="80" y="72" width="72" height="22" rx="14" fill="var(--r400)" stroke="none"/>
-        <rect x="80" y="84" width="72" height="10" fill="var(--r400)"/>
-        <text x="116" y="88" fill="white" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">JUIN 2025</text>
-        <text x="116" y="124" fill="var(--r400)" font-size="30" text-anchor="middle" font-family="sans-serif" font-weight="800">28</text>
-        <!-- Location + time -->
-        <text x="168" y="84" fill="var(--ink2)" font-size="11" font-family="sans-serif" font-weight="700">Gala Annuel 2025</text>
-        <text x="168" y="98" fill="var(--ink3)" font-size="9" font-family="sans-serif">📍 Hôtel Le Meurice, Paris</text>
-        <text x="168" y="111" fill="var(--ink3)" font-size="9" font-family="sans-serif">🕖 19h00 · Cocktail dînatoire</text>
-        <!-- Divider -->
-        <line x1="72" y1="152" x2="308" y2="152" stroke="var(--r100)" stroke-width="1" stroke-dasharray="6,4"/>
-        <!-- RSVP badges -->
-        <rect x="72" y="160" width="72" height="20" rx="10" fill="var(--r400)"/>
-        <text x="108" y="174" fill="white" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="700">Je confirme ✓</text>
-        <rect x="152" y="160" width="72" height="20" rx="10" fill="#feeef4" stroke="var(--r200)" stroke-width="1"/>
-        <text x="188" y="174" fill="var(--r400)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="700">Je décline</text>
-        <!-- QR code mini -->
-        <rect x="240" y="158" width="32" height="32" rx="6" fill="var(--ink)" opacity=".07"/>
-        <text x="256" y="178" font-size="18" text-anchor="middle" font-family="sans-serif" opacity=".25">▦</text>
-        <!-- Floating badges -->
-        <rect x="64" y="14" width="0" height="0" fill="none"/>
-        <text x="20" y="70" font-size="22" font-family="sans-serif" opacity=".2">✦</text>
-        <text x="340" y="160" font-size="16" font-family="sans-serif" opacity=".2">✦</text>
-        <text x="340" y="50" font-size="12" font-family="sans-serif" opacity=".18">✦</text>
-      </svg>
-    </div>
-    <div class="mc-body">
-      <div class="mc-badge"><i class="fas fa-calendar-alt" style="font-size:9px"></i>Événementiel</div>
-      <div class="mc-title">Invitations & Gestion d'Événements</div>
-      <p class="mc-desc">Invitations élégantes, rappels automatiques, gestion RSVP intégrée, QR code d'accès et feedback post-événement pour maximiser votre impact.</p>
-      <div class="mc-pills">
-        <span class="mc-pill">🎫 RSVP en ligne</span>
-        <span class="mc-pill">📲 QR code accès</span>
-        <span class="mc-pill">⚡ Rappels auto</span>
-      </div>
-      <div class="mc-footer">
-        <div class="mc-kpi">
-          <div class="mc-kpi-ring">28</div>
-          <div class="mc-kpi-info"><span class="mc-kpi-val">28% participation</span><span class="mc-kpi-key">Taux RSVP confirmé</span></div>
-        </div>
-        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
-      </div>
-    </div>
-  </div>
+.slider-preview {
+    width: 80px;
+    height: 50px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-  <!-- ══ CARD 7 – B2B Corporate (wide) ══ -->
-  <div class="mcard mcard-wide th-p" data-cat="b2b">
-    <div class="mc-vis" style="height:260px">
-      <div class="mc-vis-tag" style="color:var(--p600)"><i class="fas fa-briefcase" style="font-size:9px;color:var(--p400)"></i>B2B & CORPORATE</div>
-      <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" width="760" height="260" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id="pgrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f2eeff"/><stop offset="100%" stop-color="#d0c1f8"/></linearGradient>
-          <linearGradient id="pbar" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#7c4dff"/><stop offset="100%" stop-color="#4a20cc"/></linearGradient>
-        </defs>
-        <!-- Left: Rapport email mockup -->
-        <rect x="25" y="15" width="320" height="230" rx="16" fill="white" opacity=".92"/>
-        <rect x="25" y="15" width="320" height="230" rx="16" stroke="rgba(124,77,255,.18)" stroke-width="1.5" fill="none"/>
-        <!-- Header -->
-        <rect x="25" y="15" width="320" height="42" rx="16" fill="#08091a"/>
-        <rect x="25" y="45" width="320" height="12" fill="#08091a"/>
-        <circle cx="47" cy="36" r="9" fill="var(--p400)"/>
-        <text x="47" y="41" fill="white" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">G</text>
-        <text x="65" y="33" fill="white" font-size="11" font-family="sans-serif" font-weight="700">RAPPORT Q4 2024</text>
-        <text x="65" y="46" fill="rgba(255,255,255,.4)" font-size="8.5" font-family="sans-serif">Analyse de performance · Confidentiel</text>
-        <!-- KPI row -->
-        <rect x="35" y="68" width="68" height="44" rx="10" fill="var(--p50)"/>
-        <text x="69" y="87" fill="var(--p400)" font-size="16" text-anchor="middle" font-family="sans-serif" font-weight="800">+31%</text>
-        <text x="69" y="100" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">ROI Campagnes</text>
-        <rect x="113" y="68" width="68" height="44" rx="10" fill="var(--g50)"/>
-        <text x="147" y="87" fill="var(--g600)" font-size="16" text-anchor="middle" font-family="sans-serif" font-weight="800">128</text>
-        <text x="147" y="100" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Leads qualifiés</text>
-        <rect x="191" y="68" width="68" height="44" rx="10" fill="var(--o50)"/>
-        <text x="225" y="87" fill="var(--o600)" font-size="16" text-anchor="middle" font-family="sans-serif" font-weight="800">4.7★</text>
-        <text x="225" y="100" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Satisfaction</text>
-        <rect x="269" y="68" width="65" height="44" rx="10" fill="var(--b50)"/>
-        <text x="301" y="87" fill="var(--b600)" font-size="14" text-anchor="middle" font-family="sans-serif" font-weight="800">41%↑</text>
-        <text x="301" y="100" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Engagement</text>
-        <!-- Bar chart -->
-        <text x="35" y="130" fill="var(--ink2)" font-size="10" font-family="sans-serif" font-weight="700">Performance mensuelle</text>
-        <!-- Chart bars -->
-        <rect x="42" y="175" width="24" height="30" rx="5" fill="var(--p200)"/>
-        <rect x="74" y="158" width="24" height="47" rx="5" fill="var(--p300)" opacity=".7"/>
-        <rect x="106" y="145" width="24" height="60" rx="5" fill="var(--p400)"/>
-        <rect x="138" y="138" width="24" height="67" rx="5" fill="var(--p400)" opacity=".9"/>
-        <rect x="170" y="148" width="24" height="57" rx="5" fill="var(--p400)" opacity=".75"/>
-        <rect x="202" y="133" width="24" height="72" rx="5" fill="url(#pbar)"/>
-        <rect x="234" y="140" width="24" height="65" rx="5" fill="url(#pbar)" opacity=".85"/>
-        <rect x="266" y="128" width="24" height="77" rx="5" fill="url(#pbar)"/>
-        <rect x="298" y="135" width="24" height="70" rx="5" fill="url(#pbar)" opacity=".9"/>
-        <!-- Baseline -->
-        <rect x="35" y="205" width="300" height="1" rx="1" fill="var(--p100)" opacity=".8"/>
-        <!-- Month labels -->
-        <text x="54" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Avr</text>
-        <text x="86" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Mai</text>
-        <text x="118" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Jun</text>
-        <text x="150" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Jul</text>
-        <text x="182" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Aoû</text>
-        <text x="214" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Sep</text>
-        <text x="246" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Oct</text>
-        <text x="278" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Nov</text>
-        <text x="310" y="216" fill="var(--ink3)" font-size="8" text-anchor="middle" font-family="sans-serif">Dec</text>
-        <!-- Trend line -->
-        <polyline points="54,195 86,178 118,163 150,155 182,165 214,148 246,155 278,142 310,150" stroke="var(--o400)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>
-        <circle cx="278" cy="142" r="4" fill="var(--o400)"/>
-        <circle cx="310" cy="150" r="4" fill="var(--o400)"/>
-        <!-- Annotation -->
-        <rect x="245" y="128" width="56" height="14" rx="7" fill="var(--o400)" opacity=".15"/>
-        <text x="273" y="139" fill="var(--o600)" font-size="8.5" text-anchor="middle" font-family="sans-serif" font-weight="700">Meilleur mois</text>
+.slider-preview img,
+.slider-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-        <!-- Right panel: LinkedIn-style email preview -->
-        <rect x="370" y="15" width="370" height="230" rx="16" fill="white" opacity=".88"/>
-        <rect x="370" y="15" width="370" height="230" rx="16" stroke="rgba(124,77,255,.15)" stroke-width="1.5" fill="none"/>
-        <!-- Profile header -->
-        <circle cx="400" cy="50" r="22" fill="var(--p50)" stroke="var(--p200)" stroke-width="1.5"/>
-        <text x="400" y="56" fill="var(--p600)" font-size="16" text-anchor="middle" font-family="sans-serif" font-weight="800">ML</text>
-        <text x="432" y="40" fill="var(--ink)" font-size="12" font-family="sans-serif" font-weight="700">Marie Laurent</text>
-        <text x="432" y="53" fill="var(--ink3)" font-size="10" font-family="sans-serif">DG · Acme Corp</text>
-        <text x="432" y="66" fill="var(--ink3)" font-size="9" font-family="sans-serif">📅 Ouvert le 14/11 · 09:14</text>
-        <!-- Content preview -->
-        <rect x="383" y="80" width="344" height="1" fill="var(--p100)" opacity=".6"/>
-        <text x="383" y="100" fill="var(--ink)" font-size="11.5" font-family="sans-serif" font-weight="700">Rapport d'analyse : Vos performances Q4</text>
-        <rect x="383" y="108" width="310" height="6" rx="3" fill="var(--p50)"/>
-        <rect x="383" y="119" width="260" height="6" rx="3" fill="var(--p50)"/>
-        <rect x="383" y="130" width="290" height="6" rx="3" fill="var(--p50)"/>
-        <!-- Featured insight box -->
-        <rect x="383" y="148" width="344" height="50" rx="10" fill="var(--p50)" stroke="var(--p200)" stroke-width="1"/>
-        <rect x="383" y="148" width="4" height="50" rx="2" fill="var(--p400)"/>
-        <text x="397" y="166" fill="var(--p600)" font-size="10" font-family="sans-serif" font-weight="700">💡 Insight clé du trimestre</text>
-        <text x="397" y="180" fill="var(--ink3)" font-size="9.5" font-family="sans-serif">Vos emails B2B ont généré 128 leads qualifiés,</text>
-        <text x="397" y="192" fill="var(--ink3)" font-size="9.5" font-family="sans-serif">soit +31% vs T3 2024.</text>
-        <!-- CTA row -->
-        <rect x="383" y="208" width="140" height="22" rx="11" fill="url(#pbar)"/>
-        <text x="453" y="223" fill="white" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="700">Voir rapport complet</text>
-        <rect x="533" y="208" width="110" height="22" rx="11" fill="var(--p50)" stroke="var(--p200)" stroke-width="1"/>
-        <text x="588" y="223" fill="var(--p600)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="700">Partager l'équipe</text>
-      </svg>
-    </div>
-    <div class="mc-body">
-      <div class="mc-badge"><i class="fas fa-briefcase" style="font-size:9px"></i>B2B & Corporate</div>
-      <div class="mc-title">Emails B2B, Rapports & Lead Nurturing</div>
-      <p class="mc-desc">Newsletters corporate, rapports analytiques personnalisés, études de cas interactives, webinaires et séquences de nurturing longues durée pour décideurs et équipes commerciales.</p>
-      <div class="mc-pills">
-        <span class="mc-pill">📊 Rapports auto</span>
-        <span class="mc-pill">🤝 Lead nurturing</span>
-        <span class="mc-pill">🎙️ Webinaire intégré</span>
-        <span class="mc-pill">🔐 Contenu premium</span>
-      </div>
-      <div class="mc-footer">
-        <div class="mc-kpi">
-          <div class="mc-kpi-ring">31</div>
-          <div class="mc-kpi-info"><span class="mc-kpi-val">31% taux de clic</span><span class="mc-kpi-key">Audience décideurs</span></div>
-        </div>
-        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
-      </div>
-    </div>
-  </div>
+.type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
 
-  <!-- ══ CARD 8 – Retail Ventes Flash ══ -->
-  <div class="mcard th-g" data-cat="retail">
-    <div class="mc-vis">
-      <div class="mc-vis-tag" style="color:var(--g600)"><i class="fas fa-bolt" style="font-size:9px;color:var(--g400)"></i>VENTE FLASH</div>
-      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" width="380" height="220" preserveAspectRatio="xMidYMid slice">
-        <defs><linearGradient id="flash" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#edfaf0"/><stop offset="100%" stop-color="#b2e8bc"/></linearGradient></defs>
-        <!-- Dark promo email look -->
-        <rect x="30" y="10" width="320" height="200" rx="16" fill="#08091a" opacity=".96"/>
-        <rect x="30" y="10" width="320" height="200" rx="16" stroke="rgba(47,179,74,.3)" stroke-width="1.5" fill="none"/>
-        <!-- Header -->
-        <rect x="30" y="10" width="320" height="48" rx="16" fill="var(--g400)"/>
-        <rect x="30" y="44" width="320" height="14" fill="var(--g400)"/>
-        <text x="190" y="28" fill="white" font-size="14" font-family="sans-serif" font-weight="800" text-anchor="middle" letter-spacing="1">⚡ VENTE FLASH</text>
-        <text x="190" y="46" fill="rgba(255,255,255,.7)" font-size="10" font-family="sans-serif" text-anchor="middle">Offres disponibles uniquement aujourd'hui</text>
-        <!-- Countdown display -->
-        <rect x="70" y="68" width="55" height="46" rx="10" fill="rgba(255,255,255,.07)" stroke="rgba(47,179,74,.3)" stroke-width="1"/>
-        <text x="97" y="92" fill="white" font-size="20" text-anchor="middle" font-family="sans-serif" font-weight="800">04</text>
-        <text x="97" y="106" fill="var(--g400)" font-size="8" text-anchor="middle" font-family="sans-serif">HEURES</text>
-        <text x="136" y="95" fill="var(--g400)" font-size="18" font-family="sans-serif" font-weight="800" text-anchor="middle">:</text>
-        <rect x="148" y="68" width="55" height="46" rx="10" fill="rgba(255,255,255,.07)" stroke="rgba(47,179,74,.3)" stroke-width="1"/>
-        <text x="175" y="92" fill="white" font-size="20" text-anchor="middle" font-family="sans-serif" font-weight="800">27</text>
-        <text x="175" y="106" fill="var(--g400)" font-size="8" text-anchor="middle" font-family="sans-serif">MINUTES</text>
-        <text x="214" y="95" fill="var(--g400)" font-size="18" font-family="sans-serif" font-weight="800" text-anchor="middle">:</text>
-        <rect x="226" y="68" width="55" height="46" rx="10" fill="rgba(255,255,255,.07)" stroke="rgba(47,179,74,.3)" stroke-width="1"/>
-        <text x="253" y="92" fill="white" font-size="20" text-anchor="middle" font-family="sans-serif" font-weight="800">43</text>
-        <text x="253" y="106" fill="var(--g400)" font-size="8" text-anchor="middle" font-family="sans-serif">SECONDES</text>
-        <!-- Products row -->
-        <rect x="40" y="124" width="85" height="58" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(47,179,74,.2)" stroke-width="1"/>
-        <text x="82" y="148" font-size="22" text-anchor="middle" font-family="sans-serif">👗</text>
-        <text x="82" y="162" fill="rgba(255,255,255,.8)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="600">Robe</text>
-        <text x="82" y="174" fill="var(--g400)" font-size="11" text-anchor="middle" font-family="sans-serif" font-weight="800">49 €</text>
-        <rect x="138" y="124" width="85" height="58" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(47,179,74,.2)" stroke-width="1"/>
-        <text x="180" y="148" font-size="22" text-anchor="middle" font-family="sans-serif">👜</text>
-        <text x="180" y="162" fill="rgba(255,255,255,.8)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="600">Sac</text>
-        <text x="180" y="174" fill="var(--g400)" font-size="11" text-anchor="middle" font-family="sans-serif" font-weight="800">89 €</text>
-        <rect x="236" y="124" width="85" height="58" rx="10" fill="rgba(255,255,255,.08)" stroke="rgba(47,179,74,.35)" stroke-width="1.5"/>
-        <text x="278" y="144" font-size="22" text-anchor="middle" font-family="sans-serif">⌚</text>
-        <text x="278" y="158" fill="rgba(255,255,255,.8)" font-size="10" text-anchor="middle" font-family="sans-serif" font-weight="600">Montre</text>
-        <rect x="250" y="162" width="56" height="14" rx="7" fill="var(--g400)"/>
-        <text x="278" y="173" fill="white" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="700">129 € → 79 €</text>
-        <!-- Sold out progress -->
-        <text x="40" y="194" fill="rgba(255,255,255,.4)" font-size="9" font-family="sans-serif">Stock restant :</text>
-        <rect x="116" y="187" width="130" height="6" rx="3" fill="rgba(255,255,255,.1)"/>
-        <rect x="116" y="187" width="38" height="6" rx="3" fill="var(--r400)"/>
-        <text x="252" y="195" fill="var(--r400)" font-size="9" font-family="sans-serif" font-weight="700">29%</text>
-      </svg>
-    </div>
-    <div class="mc-body">
-      <div class="mc-badge"><i class="fas fa-fire" style="font-size:9px"></i>E-commerce</div>
-      <div class="mc-title">Ventes Flash & Promotions Urgentes</div>
-      <p class="mc-desc">Emails sombres et percutants avec countdown en temps réel, barre de stock restant et offres à durée limitée pour créer l'urgence d'achat.</p>
-      <div class="mc-pills">
-        <span class="mc-pill">⏱ Countdown live</span>
-        <span class="mc-pill">📉 Barre de stock</span>
-        <span class="mc-pill">🌑 Dark email design</span>
-      </div>
-      <div class="mc-footer">
-        <div class="mc-kpi">
-          <div class="mc-kpi-ring">41</div>
-          <div class="mc-kpi-info"><span class="mc-kpi-val">41% clics</span><span class="mc-kpi-key">Taux urgence activée</span></div>
-        </div>
-        <a href="#" class="mc-link">Explorer <i class="fas fa-arrow-right" style="font-size:11px"></i></a>
-      </div>
-    </div>
-  </div>
+.type-badge.image {
+    background: #dbeafe;
+    color: #1e40af;
+}
 
-  <!-- Empty state -->
-  <div class="mm-empty" id="emptyState">
-    <i class="fas fa-inbox"></i>
-    <p>Aucun template disponible pour ce filtre.</p>
-  </div>
+.type-badge.video {
+    background: #fee2e2;
+    color: #991b1b;
+}
 
-</div><!-- /mm-grid -->
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
 
-<!-- PROCESS STRIP -->
-<div class="mm-process">
-  <div class="mm-step">
-    <div class="mm-step-n">Étape 01</div>
-    <div class="mm-step-ico" style="background:#fff8ed">🎯</div>
-    <div class="mm-step-t">Définissez votre audience</div>
-    <p class="mm-step-d">Segmentez selon le comportement, le secteur et l'historique d'engagement.</p>
-    <div class="mm-step-arr">›</div>
-  </div>
-  <div class="mm-step">
-    <div class="mm-step-n">Étape 02</div>
-    <div class="mm-step-ico" style="background:#edf0ff">✏️</div>
-    <div class="mm-step-t">Créez votre campagne</div>
-    <p class="mm-step-d">Templates professionnels ou design sur mesure via notre éditeur drag & drop.</p>
-    <div class="mm-step-arr">›</div>
-  </div>
-  <div class="mm-step">
-    <div class="mm-step-n">Étape 03</div>
-    <div class="mm-step-ico" style="background:#e5f8f4">🤖</div>
-    <div class="mm-step-t">Automatisez l'envoi</div>
-    <p class="mm-step-d">Déclenchez selon les actions. L'IA optimise le timing en continu.</p>
-    <div class="mm-step-arr">›</div>
-  </div>
-  <div class="mm-step">
-    <div class="mm-step-n">Étape 04</div>
-    <div class="mm-step-ico" style="background:#edfaf0">📊</div>
-    <div class="mm-step-t">Analysez & optimisez</div>
-    <p class="mm-step-d">Dashboard temps réel, A/B test automatique et recommandations IA.</p>
-  </div>
-</div>
+.status-badge.active {
+    background: #d1fae5;
+    color: #065f46;
+}
 
-<!-- MARQUEE -->
-<div class="mm-mq-wrap">
-  <p class="mm-mq-label">Ils optimisent leurs campagnes avec Go Exploria</p>
-  <div class="mm-mq-track">
-    <div class="mm-logo-pill"><i class="fas fa-store"></i>Retail Plus</div>
-    <div class="mm-logo-pill"><i class="fas fa-home"></i>Immo Conseil</div>
-    <div class="mm-logo-pill"><i class="fas fa-globe"></i>World Travel</div>
-    <div class="mm-logo-pill"><i class="fas fa-champagne-glasses"></i>Event Factory</div>
-    <div class="mm-logo-pill"><i class="fas fa-box"></i>Shop Express</div>
-    <div class="mm-logo-pill"><i class="fas fa-handshake"></i>B2B Connect</div>
-    <div class="mm-logo-pill"><i class="fas fa-plane"></i>Air Voyages</div>
-    <div class="mm-logo-pill"><i class="fas fa-hotel"></i>Séjours Pro</div>
-    <div class="mm-logo-pill"><i class="fas fa-chart-line"></i>GrowthLabs</div>
-    <div class="mm-logo-pill"><i class="fas fa-building"></i>Bâti Invest</div>
-    <div class="mm-logo-pill"><i class="fas fa-store"></i>Retail Plus</div>
-    <div class="mm-logo-pill"><i class="fas fa-home"></i>Immo Conseil</div>
-    <div class="mm-logo-pill"><i class="fas fa-globe"></i>World Travel</div>
-    <div class="mm-logo-pill"><i class="fas fa-champagne-glasses"></i>Event Factory</div>
-    <div class="mm-logo-pill"><i class="fas fa-box"></i>Shop Express</div>
-    <div class="mm-logo-pill"><i class="fas fa-handshake"></i>B2B Connect</div>
-    <div class="mm-logo-pill"><i class="fas fa-plane"></i>Air Voyages</div>
-    <div class="mm-logo-pill"><i class="fas fa-hotel"></i>Séjours Pro</div>
-    <div class="mm-logo-pill"><i class="fas fa-chart-line"></i>GrowthLabs</div>
-    <div class="mm-logo-pill"><i class="fas fa-building"></i>Bâti Invest</div>
-  </div>
-</div>
+.status-badge.inactive {
+    background: #f3f4f6;
+    color: #6b7280;
+}
 
-<!-- BOTTOM CTA -->
-<div class="mm-cta">
-  <div class="mm-cta-text">
-    <h3>Prêt à booster vos campagnes email ?</h3>
-    <p>Rejoignez plus de 1 200 entreprises qui utilisent Go Exploria pour transformer leur communication email en moteur de croissance réel.</p>
-  </div>
-  <div class="mm-cta-btns">
-    <a href="#" class="btn-white"><i class="fas fa-rocket" style="font-size:12px"></i>Démarrer gratuitement</a>
-    <a href="#" class="btn-ghost-w"><i class="fas fa-phone" style="font-size:12px"></i>Parler à un expert</a>
-  </div>
-</div>
+.btn-icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin: 0 2px;
+}
 
-</div><!-- /mm-inner -->
-</section>
-<script src="{{ asset('vendor/mail-marketing/js/main.js') }}"></script>
+.drag-handle-cell {
+    cursor: move;
+    color: #9ca3af;
+    font-size: 18px;
+    text-align: center;
+}
+
+.drag-handle-cell i {
+    cursor: grab;
+}
+
+.drag-handle-cell i:active {
+    cursor: grabbing;
+}
+
+.upload-area {
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+}
+
+.upload-area:hover {
+    border-color: #4361ee;
+    background: #f1f5f9;
+}
+
+.upload-area.drag-over {
+    border-color: #10b981;
+    background: #f0fdf4;
+}
+
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #f9fafb;
+}
+
+.media-item {
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    background: white;
+}
+
+.media-item:hover {
+    transform: scale(1.02);
+}
+
+.media-item.selected {
+    border-color: #4361ee;
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+}
+
+.media-item img,
+.media-item video {
+    width: 100%;
+    height: 60px;
+    object-fit: cover;
+}
+
+.media-item .media-info {
+    padding: 4px;
+    font-size: 0.65rem;
+    text-align: center;
+    background: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.delete-icon {
+    margin-bottom: 20px;
+}
+
+tr.dragging {
+    opacity: 0.5;
+    background: #e5e7eb;
+}
+
+@media (max-width: 768px) {
+    .table {
+        font-size: 0.85rem;
+    }
+    
+    .slider-preview {
+        width: 50px;
+        height: 35px;
+    }
+    
+    .btn-icon {
+        width: 28px;
+        height: 28px;
+    }
+}
+</style>
+
+<script>
+// Initialisation
+let sliderItems = [];
+let deleteId = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadSliders();
+    initEventListeners();
+});
+
+function initEventListeners() {
+    const addBtn = document.getElementById('addSlideBtn');
+    if (addBtn) {
+        addBtn.addEventListener('click', () => {
+            resetForm();
+            document.getElementById('slideModalTitle').innerHTML = '<i class="fas fa-plus-circle me-2"></i>Ajouter un slide';
+            new bootstrap.Modal(document.getElementById('slideModal')).show();
+        });
+    }
+    
+    const refreshBtn = document.getElementById('refreshSliderBtn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => loadSliders());
+    }
+    
+    // Type change
+    document.querySelectorAll('input[name="type"]').forEach(radio => {
+        radio.addEventListener('change', handleTypeChange);
+    });
+    
+    // Source change
+    document.querySelectorAll('input[name="source"]').forEach(radio => {
+        radio.addEventListener('change', handleSourceChange);
+    });
+    
+    // File upload
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('mediaFileInput');
+    
+    if (uploadArea) {
+        uploadArea.addEventListener('click', () => fileInput?.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            if (e.dataTransfer.files.length > 0) {
+                handleFileSelect(e.dataTransfer.files[0]);
+            }
+        });
+    }
+    
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+    }
+    
+    const removeFileBtn = document.getElementById('removeFileBtn');
+    if (removeFileBtn) {
+        removeFileBtn.addEventListener('click', () => clearFilePreview());
+    }
+    
+    const openMediaBtn = document.getElementById('openMediaLibraryBtn');
+    if (openMediaBtn) {
+        openMediaBtn.addEventListener('click', () => loadMediaLibrary());
+    }
+    
+    const slideForm = document.getElementById('slideForm');
+    if (slideForm) {
+        slideForm.addEventListener('submit', saveSlide);
+    }
+    
+    const confirmDeleteBtn = document.getElementById('confirmDeleteSlideBtn');
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', confirmDelete);
+    }
+    
+    // Filter buttons
+    document.querySelectorAll('[data-filter]').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('[data-filter]').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            applyFilter(this.getAttribute('data-filter'));
+        });
+    });
+}
+
+function loadSliders() {
+    const tbody = document.getElementById('sliderTableBody');
+    tbody.innerHTML = '<tr><td colspan="8" class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2">Chargement...</p></td></tr>';
+    
+    fetch(`/admin/cms/${currentEtablissementId}/slider`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.success && result.data) {
+                sliderItems = result.data;
+                renderSliderTable(result.data);
+                updateStats(result.data);
+            } else {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-5"><i class="fas fa-sliders-h fa-3x text-muted mb-3"></i><p>Aucun slide</p><button class="btn btn-primary btn-sm" onclick="document.getElementById(\'addSlideBtn\').click()">Ajouter</button></td></tr>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center py-5 text-danger"><i class="fas fa-exclamation-circle fa-2x"></i><p>Erreur de chargement</p></td></tr>';
+        });
+}
+
+function renderSliderTable(items) {
+    const tbody = document.getElementById('sliderTableBody');
+    const sortedItems = [...items].sort((a, b) => (a.order || 0) - (b.order || 0));
+    
+    if (sortedItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-5"><i class="fas fa-sliders-h fa-3x text-muted mb-3"></i><p>Aucun slide</p><button class="btn btn-primary btn-sm" onclick="document.getElementById(\'addSlideBtn\').click()">Ajouter</button></td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = sortedItems.map((item, index) => `
+        <tr data-id="${item.id}" data-order="${item.order || index + 1}">
+            <td class="drag-handle-cell"><i class="fas fa-grip-vertical"></i></td>
+            <td>
+                <div class="slider-preview">
+                    ${item.type === 'video' 
+                        ? `<video src="${escapeHtml(item.url)}"></video>`
+                        : `<img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.title)}">`
+                    }
+                </div>
+            </td>
+            <td><strong>${escapeHtml(item.title) || '<span class="text-muted">-</span>'}</strong></td>
+            <td><small class="text-muted">${escapeHtml(item.subtitle) || '-'}</small></td>
+            <td><span class="type-badge ${item.type}"><i class="fas fa-${item.type === 'video' ? 'video' : 'image'} me-1"></i>${item.type === 'video' ? 'Vidéo' : 'Image'}</span></td>
+            <td><span class="status-badge ${item.is_active ? 'active' : 'inactive'}"><i class="fas fa-${item.is_active ? 'check-circle' : 'circle'} me-1"></i>${item.is_active ? 'Actif' : 'Inactif'}</span></td>
+            <td>${item.button_text ? `<span class="badge bg-secondary">${escapeHtml(item.button_text)}</span>` : '-'}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary btn-icon edit-slide" data-id="${item.id}" title="Modifier"><i class="fas fa-edit"></i></button>
+                <button class="btn btn-sm btn-outline-secondary btn-icon toggle-active" data-id="${item.id}" title="${item.is_active ? 'Désactiver' : 'Activer'}"><i class="fas fa-${item.is_active ? 'eye-slash' : 'eye'}"></i></button>
+                <button class="btn btn-sm btn-outline-danger btn-icon delete-slide" data-id="${item.id}" title="Supprimer"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+    
+    // Attach events
+    document.querySelectorAll('.edit-slide').forEach(btn => btn.addEventListener('click', () => editSlide(btn.dataset.id)));
+    document.querySelectorAll('.delete-slide').forEach(btn => btn.addEventListener('click', () => { deleteId = btn.dataset.id; new bootstrap.Modal(document.getElementById('deleteSlideModal')).show(); }));
+    document.querySelectorAll('.toggle-active').forEach(btn => btn.addEventListener('click', () => toggleActive(btn.dataset.id)));
+    
+    // Drag and drop
+    initDragAndDrop();
+}
+
+function initDragAndDrop() {
+    const tbody = document.getElementById('sliderTableBody');
+    let dragSrcRow = null;
+    
+    const rows = tbody.querySelectorAll('tr');
+    rows.forEach(row => {
+        row.setAttribute('draggable', 'true');
+        row.addEventListener('dragstart', (e) => { dragSrcRow = row; e.dataTransfer.effectAllowed = 'move'; row.classList.add('dragging'); });
+        row.addEventListener('dragend', () => row.classList.remove('dragging'));
+        row.addEventListener('dragover', (e) => e.preventDefault());
+        row.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (dragSrcRow !== row) {
+                if (Array.from(tbody.children).indexOf(dragSrcRow) < Array.from(tbody.children).indexOf(row)) {
+                    row.parentNode.insertBefore(dragSrcRow, row.nextSibling);
+                } else {
+                    row.parentNode.insertBefore(dragSrcRow, row);
+                }
+                saveNewOrder();
+            }
+        });
+    });
+}
+
+function saveNewOrder() {
+    const rows = document.querySelectorAll('#sliderTableBody tr');
+    const orders = [];
+    rows.forEach((row, index) => { if (row.dataset.id) orders.push({ id: parseInt(row.dataset.id), order: index + 1 }); });
+    
+    fetch(`/admin/cms/${currentEtablissementId}/slider/reorder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+        body: JSON.stringify({ orders: orders })
+    }).then(response => response.json()).then(result => { if (result.success) loadSliders(); });
+}
+
+function updateStats(items) {
+    document.getElementById('totalSlides').textContent = items.length;
+    document.getElementById('activeSlides').textContent = items.filter(i => i.is_active).length;
+    document.getElementById('imageSlides').textContent = items.filter(i => i.type === 'image').length;
+    document.getElementById('videoSlides').textContent = items.filter(i => i.type === 'video').length;
+}
+
+function applyFilter(filter) {
+    const rows = document.querySelectorAll('#sliderTableBody tr');
+    rows.forEach(row => {
+        if (!row.dataset.id) return;
+        const type = row.querySelector('.type-badge')?.classList.contains('image') ? 'image' : 'video';
+        const status = row.querySelector('.status-badge')?.classList.contains('active') ? 'active' : 'inactive';
+        let show = true;
+        if (filter === 'image') show = type === 'image';
+        else if (filter === 'video') show = type === 'video';
+        else if (filter === 'active') show = status === 'active';
+        else if (filter === 'inactive') show = status === 'inactive';
+        row.style.display = show ? '' : 'none';
+    });
+}
+
+function handleTypeChange() {
+    const isVideo = document.querySelector('input[name="type"]:checked').value === 'video';
+    document.getElementById('mediaFileInput').setAttribute('accept', isVideo ? 'video/mp4,video/webm,video/ogg' : 'image/*');
+    clearFilePreview();
+}
+
+function handleSourceChange() {
+    const source = document.querySelector('input[name="source"]:checked').value;
+    document.getElementById('uploadSection').style.display = source === 'upload' ? 'block' : 'none';
+    document.getElementById('mediaSection').style.display = source === 'media' ? 'block' : 'none';
+    if (source === 'media') loadMediaLibrary();
+    else clearFilePreview();
+}
+
+function handleFileSelect(file) {
+    const isVideo = file.type.startsWith('video/');
+    const imgPreview = document.getElementById('imagePreview');
+    const vidPreview = document.getElementById('videoPreview');
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        if (isVideo) { imgPreview.style.display = 'none'; vidPreview.style.display = 'block'; vidPreview.src = e.target.result; }
+        else { vidPreview.style.display = 'none'; imgPreview.style.display = 'block'; imgPreview.src = e.target.result; }
+        document.getElementById('filePreview').style.display = 'block';
+        document.getElementById('uploadArea').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+}
+
+function clearFilePreview() {
+    document.getElementById('filePreview').style.display = 'none';
+    document.getElementById('uploadArea').style.display = 'block';
+    document.getElementById('imagePreview').src = '';
+    document.getElementById('videoPreview').src = '';
+    document.getElementById('mediaFileInput').value = '';
+}
+
+function loadMediaLibrary() {
+    const grid = document.getElementById('mediaGrid');
+    grid.innerHTML = '<div class="text-center py-3"><div class="spinner-border spinner-border-sm"></div> Chargement...</div>';
+    const type = document.querySelector('input[name="type"]:checked').value;
+    
+    fetch(`/admin/cms/${currentEtablissementId}/media?type=${type === 'video' ? 'video' : 'image'}&limit=20`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.success && result.data?.length) {
+                grid.innerHTML = result.data.map(media => `
+                    <div class="media-item" data-id="${media.id}" data-url="${escapeHtml(media.url)}" data-name="${escapeHtml(media.name)}">
+                        ${media.type === 'video' ? `<video src="${escapeHtml(media.url)}"></video>` : `<img src="${escapeHtml(media.url)}">`}
+                        <div class="media-info">${escapeHtml(media.name.substring(0, 15))}</div>
+                    </div>
+                `).join('');
+                grid.querySelectorAll('.media-item').forEach(item => item.addEventListener('click', () => {
+                    grid.querySelectorAll('.media-item').forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+                    document.getElementById('selectedMediaId').value = item.dataset.id;
+                    document.getElementById('selectedMediaName').textContent = item.dataset.name;
+                    document.getElementById('selectedMediaPreview').style.display = 'block';
+                }));
+            } else {
+                grid.innerHTML = '<div class="text-center py-4"><p class="text-muted">Aucun média trouvé</p></div>';
+            }
+        });
+}
+
+function saveSlide(e) {
+    e.preventDefault();
+    const slideId = document.getElementById('slideId').value;
+    const type = document.querySelector('input[name="type"]:checked').value;
+    const source = document.querySelector('input[name="source"]:checked').value;
+    const isEdit = slideId !== '';
+    
+    const formData = new FormData();
+    formData.append('type', type);
+    formData.append('title', document.getElementById('slideTitle').value);
+    formData.append('subtitle', document.getElementById('slideSubtitle').value);
+    formData.append('button_text', document.getElementById('slideButtonText').value);
+    formData.append('button_link', document.getElementById('slideButtonLink').value);
+    
+    if (source === 'upload') {
+        const file = document.getElementById('mediaFileInput').files[0];
+        if (!file && !isEdit) { showToast('Veuillez sélectionner un fichier', 'error'); return; }
+        if (file) formData.append(type === 'video' ? 'video_file' : 'image_file', file);
+    } else {
+        const mediaId = document.getElementById('selectedMediaId').value;
+        if (!mediaId && !isEdit) { showToast('Veuillez sélectionner un média', 'error'); return; }
+        formData.append('media_id', mediaId);
+    }
+    
+    const saveBtn = document.getElementById('saveSlideBtn');
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enregistrement...';
+    
+    const url = isEdit ? `/admin/cms/${currentEtablissementId}/slider/${slideId}` : `/admin/cms/${currentEtablissementId}/slider`;
+    if (isEdit) formData.append('_method', 'PUT');
+    
+    fetch(url, { method: 'POST', headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }, body: formData })
+        .then(response => response.json())
+        .then(result => {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = 'Enregistrer';
+            if (result.success) {
+                bootstrap.Modal.getInstance(document.getElementById('slideModal')).hide();
+                showToast(result.message, 'success');
+                loadSliders();
+                resetForm();
+            } else showToast(result.message || 'Erreur', 'error');
+        })
+        .catch(() => { saveBtn.disabled = false; saveBtn.innerHTML = 'Enregistrer'; showToast('Erreur', 'error'); });
+}
+
+function editSlide(id) {
+    const item = sliderItems.find(i => i.id == id);
+    if (!item) return;
+    
+    document.getElementById('slideId').value = id;
+    document.getElementById('slideModalTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Modifier le slide';
+    document.getElementById(item.type === 'video' ? 'typeVideo' : 'typeImage').checked = true;
+    document.getElementById('slideTitle').value = item.title || '';
+    document.getElementById('slideSubtitle').value = item.subtitle || '';
+    document.getElementById('slideButtonText').value = item.button_text || '';
+    document.getElementById('slideButtonLink').value = item.button_link || '';
+    document.getElementById('sourceUpload').checked = true;
+    handleSourceChange();
+    
+    if (item.url) {
+        const imgPreview = document.getElementById('imagePreview');
+        const vidPreview = document.getElementById('videoPreview');
+        if (item.type === 'video') { imgPreview.style.display = 'none'; vidPreview.style.display = 'block'; vidPreview.src = item.url; }
+        else { vidPreview.style.display = 'none'; imgPreview.style.display = 'block'; imgPreview.src = item.url; }
+        document.getElementById('filePreview').style.display = 'block';
+        document.getElementById('uploadArea').style.display = 'none';
+    }
+    
+    new bootstrap.Modal(document.getElementById('slideModal')).show();
+}
+
+function toggleActive(id) {
+    fetch(`/admin/cms/${currentEtablissementId}/slider/${id}/toggle`, {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+    }).then(response => response.json()).then(result => { if (result.success) { showToast(result.message, 'success'); loadSliders(); } });
+}
+
+function confirmDelete() {
+    if (!deleteId) return;
+    fetch(`/admin/cms/${currentEtablissementId}/slider/${deleteId}`, {
+        method: 'DELETE',
+        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content }
+    }).then(response => response.json()).then(result => {
+        bootstrap.Modal.getInstance(document.getElementById('deleteSlideModal')).hide();
+        if (result.success) { showToast(result.message, 'success'); loadSliders(); }
+        else showToast(result.message || 'Erreur', 'error');
+        deleteId = null;
+    });
+}
+
+function resetForm() {
+    document.getElementById('slideForm').reset();
+    document.getElementById('slideId').value = '';
+    document.getElementById('selectedMediaId').value = '';
+    document.getElementById('selectedMediaPreview').style.display = 'none';
+    clearFilePreview();
+    document.getElementById('sourceUpload').checked = true;
+    handleSourceChange();
+    document.getElementById('typeImage').checked = true;
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+}
+
+function showToast(message, type = 'success') {
+    document.querySelectorAll('.toast-notification').forEach(t => t.remove());
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    toast.innerHTML = `<div class="toast-content"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><span>${escapeHtml(message)}</span></div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 100);
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+// Styles for toast
+if (!document.querySelector('#slider-toast-styles')) {
+    const style = document.createElement('style');
+    style.id = 'slider-toast-styles';
+    style.textContent = `
+        .toast-notification { position: fixed; bottom: 20px; right: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateX(400px); transition: transform 0.3s ease; z-index: 10000; min-width: 280px; }
+        .toast-notification.show { transform: translateX(0); }
+        .toast-content { padding: 16px 20px; display: flex; align-items: center; gap: 12px; border-left: 4px solid; border-radius: 12px; }
+        .toast-notification.success .toast-content { border-left-color: #10b981; }
+        .toast-notification.success i { color: #10b981; }
+        .toast-notification.error .toast-content { border-left-color: #ef4444; }
+        .toast-notification.error i { color: #ef4444; }
+    `;
+    document.head.appendChild(style);
+}
+</script>

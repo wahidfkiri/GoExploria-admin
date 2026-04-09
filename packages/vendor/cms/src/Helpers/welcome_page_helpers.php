@@ -979,7 +979,7 @@ if (!function_exists('get_whatsapp_number')) {
         }
         
         // Chercher dans les settings d'abord
-        $whatsappNumber = $etablissement->getSetting('whatsapp_number', null, 'contact');
+        $whatsappNumber = $etablissement->getSetting('phone', null, 'company');
         
         if (!$whatsappNumber) {
             // Fallback sur le téléphone de l'établissement
