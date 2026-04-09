@@ -1,25 +1,63 @@
 <section class="tourism-section">
+
+    {{-- EN-TÊTE STANDARD --}}
+    <div class="resto-header-block">
+        <div class="resto-header-main">
+            <div class="resto-header-logo-left">
+                <a href="#" class="resto-accord-btn" title="GoExploria">
+                    <div class="logo-wrapper"><img src="{{ asset('logo.png') }}" alt="GoExploria"></div>
+                    <span class="resto-accord-btn-label">GoExploria</span>
+                    <span class="resto-accord-btn-cta"><i class="fas fa-external-link-alt"></i> Visiter</span>
+                </a>
+            </div>
+            <div class="resto-header-center">
+                <h1 class="resto-header-title">EXPLOREZ L'INATTENDU / ACTIVITÉS PLEIN AIR</h1>
+                <p class="resto-header-subtitle">Des aventures immersives à chaque saison — Nature, hiver, découverte</p>
+                <div class="resto-header-tabs">
+                    <button class="resto-tab-btn active"><i class="fas fa-hiking"></i>ESPACE ENTREPRISES</button>
+                    <button class="resto-tab-btn"><i class="fas fa-calendar-alt"></i>ESPACE DESTINATIONS</button>
+                    <button class="resto-tab-btn"><i class="fas fa-snowflake"></i>ESPACE ACTIVITES</button>
+                </div>
+            </div>
+            <div class="resto-header-logo-right">
+                <a href="#" class="resto-accord-btn" title="Écotourisme">
+                    <div class="logo-wrapper tourism-eco-icon"><i class="fas fa-leaf"></i></div>
+                    <span class="resto-accord-btn-label">Écotourisme</span>
+                    <span class="resto-accord-btn-cta"><i class="fas fa-external-link-alt"></i> Découvrir</span>
+                </a>
+            </div>
+        </div>
+        <div class="resto-header-destinations-bar">
+            <div class="resto-dest-row">
+                <div class="resto-dest-icon-box">
+                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
+                    <span>Destinations</span>
+                </div>
+                <div class="resto-dest-breadcrumb">
+                    <a href="#" class="resto-dest-link active">Toutes destinations</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Europe</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Ontario</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Mauricie</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Île d'Orléans</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Vieux-Québec</a>
+                </div>
+            </div>
+            <div class="resto-actions-row">
+                <div class="resto-header-ctas">
+                    <a href="#" class="resto-cta-btn primary"><i class="fas fa-calendar-check"></i> Réservez</a>
+                    <a href="#" class="resto-cta-btn secondary">En savoir <span class="cta-plus">+</span></a>
+                </div>
+            </div>
+        </div>
+        <div class="resto-header-shimmer"></div>
+    </div>
+
     <div class="tourism-container">
-      
-      <!-- HERO / BANDEAU D'ACCUEIL -->
-      <div class="tourism-hero">
-        <div class="tourism-title-block">
-          <h1 class="tourism-main-title">
-            Explorez <span>l'inattendu</span><br>à chaque saison
-          </h1>
-          <p class="tourism-subhead">
-            Des aventures immersives, des expériences uniques. Que vous cherchiez le frisson ou la sérénité, la nature vous attend.
-          </p>
-          <div class="tourism-badge-container">
-            <span class="tourism-badge"><i class="fas fa-mountain"></i> 25+ destinations</span>
-            <span class="tourism-badge"><i class="fas fa-compass"></i> Guides experts</span>
-            <span class="tourism-badge"><i class="fas fa-leaf"></i> Écotourisme</span>
-          </div>
-        </div>
-        <div style="width: 120px; height: 120px; background: #0F1C2D; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 60px; transform: rotate(5deg); box-shadow: 0 15px 35px rgba(15, 28, 45, 0.15);">
-          <i class="fas fa-compass"></i>
-        </div>
-      </div>
 
       <!-- PARTIE 1 : IDÉES AVENTURES -->
       <div>
@@ -28,13 +66,13 @@
             <h3><i class="fas fa-hiking" style="color:#00CC99; margin-right:10px;"></i> Idées aventures</h3>
             <p>Pour les âmes libres et les explorateurs modernes</p>
           </div>
-          <span class="experience-counter">👉 12 expériences</span>
+          <span class="experience-counter"><i class="fas fa-compass"></i> 12 expériences</span>
         </div>
 
         <div class="aventures-grid">
           <!-- Aventure 1 -->
           <div class="aventure-card">
-            <div class="aventure-icon">🌋</div>
+            <div class="aventure-icon"><i class="fas fa-fire-alt"></i></div>
             <h4 class="aventure-title">Réveil des volcans</h4>
             <p class="aventure-desc">
               Ascension du Pico de Fogo au lever du soleil. Traversée de champs de lave noire et baignade dans des sources chaudes naturelles.
@@ -47,7 +85,7 @@
           </div>
           <!-- Aventure 2 -->
           <div class="aventure-card">
-            <div class="aventure-icon">🛶</div>
+            <div class="aventure-icon"><i class="fas fa-water"></i></div>
             <h4 class="aventure-title">Mangroves secrètes</h4>
             <p class="aventure-desc">
               Expédition en kayak à travers les canaux cachés de la mangrove. Observation des singes hurleurs et dauphins roses de l'Amazone.
@@ -60,7 +98,7 @@
           </div>
           <!-- Aventure 3 -->
           <div class="aventure-card">
-            <div class="aventure-icon">🐪</div>
+            <div class="aventure-icon"><i class="fas fa-route"></i></div>
             <h4 class="aventure-title">Caravane berbère</h4>
             <p class="aventure-desc">
               Traversée du désert du Sahara à dos de dromadaire. Nuits à la belle étoile et rencontres avec les nomades du désert.
@@ -85,35 +123,35 @@
 
         <div class="saisons-carousel">
           <div class="saison-card">
-            <span class="saison-emoji">🌸</span>
+            <span class="saison-emoji"><i class="fas fa-seedling"></i></span>
             <div class="saison-name">Printemps</div>
-            <div class="saison-activite">🌿 Randonnée florale</div>
-            <div class="saison-activite">🐝 Observation abeilles</div>
-            <div class="saison-activite">🚴 Vélo en vallée</div>
+            <div class="saison-activite"><i class="fas fa-hiking"></i> Randonnée florale</div>
+            <div class="saison-activite"><i class="fas fa-binoculars"></i> Observation nature</div>
+            <div class="saison-activite"><i class="fas fa-bicycle"></i> Vélo en vallée</div>
             <span class="saison-temp">12°C - 20°C</span>
           </div>
           <div class="saison-card">
-            <span class="saison-emoji">☀️</span>
+            <span class="saison-emoji"><i class="fas fa-sun"></i></span>
             <div class="saison-name">Été</div>
-            <div class="saison-activite">🏊 Plongée corail</div>
-            <div class="saison-activite">🪂 Parapente</div>
-            <div class="saison-activite">⛰️ Via ferrata</div>
+            <div class="saison-activite"><i class="fas fa-swimmer"></i> Plongée corail</div>
+            <div class="saison-activite"><i class="fas fa-parachute-box"></i> Parapente</div>
+            <div class="saison-activite"><i class="fas fa-mountain"></i> Via ferrata</div>
             <span class="saison-temp">25°C - 35°C</span>
           </div>
           <div class="saison-card">
-            <span class="saison-emoji">🍂</span>
+            <span class="saison-emoji"><i class="fas fa-leaf"></i></span>
             <div class="saison-name">Automne</div>
-            <div class="saison-activite">🍄 Cueillette champignons</div>
-            <div class="saison-activite">🎣 Pêche en rivière</div>
-            <div class="saison-activite">📸 Safari photo</div>
+            <div class="saison-activite"><i class="fas fa-seedling"></i> Cueillette</div>
+            <div class="saison-activite"><i class="fas fa-fish"></i> Pêche en rivière</div>
+            <div class="saison-activite"><i class="fas fa-camera"></i> Safari photo</div>
             <span class="saison-temp">8°C - 16°C</span>
           </div>
           <div class="saison-card">
-            <span class="saison-emoji">❄️</span>
+            <span class="saison-emoji"><i class="fas fa-snowflake"></i></span>
             <div class="saison-name">Hiver</div>
-            <div class="saison-activite">⛷️ Ski hors-piste</div>
-            <div class="saison-activite">🛷 Traîneau chiens</div>
-            <div class="saison-activite">🏔️ Raquettes</div>
+            <div class="saison-activite"><i class="fas fa-skiing"></i> Ski hors-piste</div>
+            <div class="saison-activite"><i class="fas fa-dog"></i> Traîneau chiens</div>
+            <div class="saison-activite"><i class="fas fa-mountain"></i> Raquettes</div>
             <span class="saison-temp">-10°C - 2°C</span>
           </div>
         </div>
@@ -132,7 +170,7 @@
         <div class="hiver-grid">
           <!-- Activité 1 -->
           <div class="hiver-activity-card">
-            <span class="activity-icon-big">🛷</span>
+            <span class="activity-icon-big"><i class="fas fa-sleigh"></i></span>
             <h4 class="activity-name">Traîneau à chiens</h4>
             <p class="activity-desc">
               Conduisez votre propre attelage à travers les forêts enneigées de Laponie. Nuit en chalet et aurores boréales.
@@ -141,11 +179,11 @@
               <span>Difficulté</span>
               <span class="difficulty-stars">★★☆☆☆</span>
             </div>
-            <div class="snow-decoration">⏱️ 5 jours • Dès 890€</div>
+            <div class="snow-decoration"><i class="fas fa-clock"></i> 5 jours • Dès 890€</div>
           </div>
           <!-- Activité 2 -->
           <div class="hiver-activity-card">
-            <span class="activity-icon-big">🧊</span>
+            <span class="activity-icon-big"><i class="fas fa-icicles"></i></span>
             <h4 class="activity-name">Plongée sous glace</h4>
             <p class="activity-desc">
               Expérience unique au Québec : plongez sous la surface gelée, visibilité cristalline et paysages féériques.
@@ -154,11 +192,11 @@
               <span>Difficulté</span>
               <span class="difficulty-stars">★★★★☆</span>
             </div>
-            <div class="snow-decoration">⏱️ 2 jours • Encadré</div>
+            <div class="snow-decoration"><i class="fas fa-clock"></i> 2 jours • Encadré</div>
           </div>
           <!-- Activité 3 -->
           <div class="hiver-activity-card">
-            <span class="activity-icon-big">⛷️</span>
+            <span class="activity-icon-big"><i class="fas fa-skiing"></i></span>
             <h4 class="activity-name">Ski extrême</h4>
             <p class="activity-desc">
               Descentes hors-piste dans les Alpes suisses, neige poudreuse, guides de haute montagne et fonds secrets.
@@ -167,11 +205,11 @@
               <span>Difficulté</span>
               <span class="difficulty-stars">★★★★★</span>
             </div>
-            <div class="snow-decoration">⏱️ 4 jours • Niveau confirmé</div>
+            <div class="snow-decoration"><i class="fas fa-clock"></i> 4 jours • Niveau confirmé</div>
           </div>
           <!-- Activité 4 -->
           <div class="hiver-activity-card">
-            <span class="activity-icon-big">🏕️</span>
+            <span class="activity-icon-big"><i class="fas fa-campground"></i></span>
             <h4 class="activity-name">Nuit sur glacier</h4>
             <p class="activity-desc">
               Bivouac en igloo ou tente d'expédition sur le glacier du Jostedal. Immersion totale dans le silence blanc.
@@ -180,11 +218,11 @@
               <span>Difficulté</span>
               <span class="difficulty-stars">★★★☆☆</span>
             </div>
-            <div class="snow-decoration">⏱️ 2 jours • Norvège</div>
+            <div class="snow-decoration"><i class="fas fa-clock"></i> 2 jours • Norvège</div>
           </div>
           <!-- Activité 5 -->
           <div class="hiver-activity-card">
-            <span class="activity-icon-big">✨</span>
+            <span class="activity-icon-big"><i class="fas fa-star"></i></span>
             <h4 class="activity-name">Aurores boréales</h4>
             <p class="activity-desc">
               Expédition en Islande pour traquer les aurores boréales, bain géothermique et nuit en refuge isolé.
@@ -193,11 +231,11 @@
               <span>Difficulté</span>
               <span class="difficulty-stars">★☆☆☆☆</span>
             </div>
-            <div class="snow-decoration">⏱️ 6 jours • Photo</div>
+            <div class="snow-decoration"><i class="fas fa-clock"></i> 6 jours • Photo</div>
           </div>
           <!-- Activité 6 -->
           <div class="hiver-activity-card">
-            <span class="activity-icon-big">🥾</span>
+            <span class="activity-icon-big"><i class="fas fa-hiking"></i></span>
             <h4 class="activity-name">Raquettes nocturnes</h4>
             <p class="activity-desc">
               Randonnée en raquettes à la lumière des lampes frontales, dégustation de fondue savoyarde dans un refuge d'altitude.
@@ -206,13 +244,13 @@
               <span>Difficulté</span>
               <span class="difficulty-stars">★★☆☆☆</span>
             </div>
-            <div class="snow-decoration">⏱️ 1 jour • France</div>
+            <div class="snow-decoration"><i class="fas fa-clock"></i> 1 jour • France</div>
           </div>
         </div>
 
         <div style="display: flex; justify-content: center;">
           <a href="#" class="btn-hiver-cta">
-            ❄️ Réserver une aventure hivernale → 
+            <i class="fas fa-snowflake"></i> Réserver une aventure hivernale
           </a>
         </div>
       </div>

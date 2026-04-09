@@ -13,6 +13,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 50px;
+    margin-top: 40px;
 }
 
 /* Columns */
@@ -144,4 +145,21 @@
 @media (max-width: 480px) {
     .info-section-title { font-size: 1.5rem; }
     .alert-title { font-size: 1.1rem; }
+}
+
+/* Icône compagnie aérienne — logo droit de l'entête */
+.travelinfo-airline-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #00acc1, #00bcd4, #26c6da);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0, 188, 212, 0.35);
+}
+
+.travelinfo-airline-icon i {
+    font-size: 1.5rem;
+    color: #ffffff;
 }

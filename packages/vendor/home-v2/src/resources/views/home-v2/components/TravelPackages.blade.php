@@ -3,7 +3,7 @@
    TravelPackages — données configurables
 ================================================================ */
 $pkgConfig = [
-    'title'    => 'CRÉEZ / AFFICHEZ / VENDEZ VOS ESCAPADES / FORFAITS / VOYAGES',
+    'title'    => 'AFFICHEZ VOS FORFAITS ICI',
     'subtitle' => 'Québec · Canada · Amérique du Nord — Découvrez les plus belles destinations sublimées par l\'expertise GoExploria.',
     'logo_left'  => ['src' => asset('logo.png'),      'alt' => 'GoExploria',       'label' => 'GoExploria',      'href' => '#'],
     'logo_right' => ['src' => asset('plan-n-go.png'), 'alt' => 'Forfaits Voyages', 'label' => 'Forfaits Voyages','href' => '#'],
@@ -16,7 +16,7 @@ $pkgQuebec = [
         'title'    => 'Escapade Montréal & Québec', 'price' => '$1 899',
         'location' => 'Montréal, Québec',
         'desc'     => 'Séjour de 5 jours dans les plus belles villes du Québec. Visites guidées, gastronomie locale et hébergement 4 étoiles inclus.',
-        'features' => ['Culture', 'Gastronomie', 'Histoire'], 'category' => 'culture',
+        'features' => ['Culture', 'Gastronomie', 'Histoire'], 'category' => 'escapades',
     ],
     [
         'img'      => 'https://images.pexels.com/photos/4276490/pexels-photo-4276490.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&dpr=1',
@@ -24,7 +24,7 @@ $pkgQuebec = [
         'title'    => 'Aventure Gaspésie', 'price' => '$2 199',
         'location' => 'Gaspé, Québec',
         'desc'     => 'Parc national Forillon, observation des baleines, randonnée et découverte du Rocher Percé.',
-        'features' => ['Nature', 'Aventure', 'Faune'], 'category' => 'aventure',
+        'features' => ['Nature', 'Aventure', 'Faune'], 'category' => 'escapades',
     ],
     [
         'img'      => 'https://images.pexels.com/photos/848599/pexels-photo-848599.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&dpr=1',
@@ -32,7 +32,7 @@ $pkgQuebec = [
         'title'    => 'Ski & Spa Charlevoix', 'price' => '$2 499',
         'location' => 'Charlevoix, Québec',
         'desc'     => 'Forfait ski dans les Laurentides avec hébergement luxueux et accès au spa nordique.',
-        'features' => ['Sport', 'Bien-être', 'Luxe'], 'category' => 'nature',
+        'features' => ['Sport', 'Bien-être', 'Luxe'], 'category' => 'promotions',
     ],
 ];
 
@@ -43,7 +43,7 @@ $pkgEurope = [
         'title'    => 'Romantique Paris', 'price' => '$2 899',
         'location' => 'Paris, France',
         'desc'     => 'Week-end romantique à Paris avec croisière sur la Seine, dîner gastronomique et visite des monuments emblématiques.',
-        'features' => ['Romantique', 'Culture', 'Gastronomie'], 'category' => 'culture',
+        'features' => ['Romantique', 'Culture', 'Gastronomie'], 'category' => 'voyages',
     ],
     [
         'img'      => 'https://images.pexels.com/photos/1571442/pexels-photo-1571442.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&dpr=1',
@@ -51,7 +51,7 @@ $pkgEurope = [
         'title'    => 'Route des Vins Toscane', 'price' => '$3 299',
         'location' => 'Toscane, Italie',
         'desc'     => 'Circuit œnologique dans les plus beaux domaines viticoles toscans. Dégustations, ateliers et hébergement dans un agriturismo.',
-        'features' => ['Vin', 'Gastronomie', 'Détente'], 'category' => 'culture',
+        'features' => ['Vin', 'Gastronomie', 'Détente'], 'category' => 'voyages',
     ],
     [
         'img'      => 'https://images.pexels.com/photos/1933239/pexels-photo-1933239.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&dpr=1',
@@ -59,7 +59,7 @@ $pkgEurope = [
         'title'    => 'Aurores Boréales Islande', 'price' => '$3 999',
         'location' => 'Reykjavik, Islande',
         'desc'     => 'Chasse aux aurores boréales, bains géothermiques et découverte des paysages lunaires islandais.',
-        'features' => ['Aventure', 'Nordique', 'Photographie'], 'category' => 'aventure',
+        'features' => ['Aventure', 'Nordique', 'Photographie'], 'category' => 'promotions',
     ],
 ];
 @endphp
@@ -102,6 +102,10 @@ $pkgEurope = [
                     <a href="#" class="resto-tab-btn">
                         <i class="fas fa-person-hiking"></i> Espace activité
                     </a>
+
+                      <a href="#" class="resto-tab-btn">
+                        <i class="fas fa-plane"></i> Compagnie aérienne
+                    </a>
                 </div>
             </div>
 
@@ -131,13 +135,15 @@ $pkgEurope = [
                 <div class="resto-dest-breadcrumb">
                     <a href="#" class="resto-dest-link active">Toutes destinations</a>
                     <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Amérique du Nord</a>
+                    <a href="#" class="resto-dest-link">Europe</a>
                     <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Canada</a>
+                    <a href="#" class="resto-dest-link">Ontario</a>
                     <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Québec</a>
+                    <a href="#" class="resto-dest-link">Mauricie</a>
                     <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Région de Québec</a>
+                    <a href="#" class="resto-dest-link">Île d'Orléans</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Vieux-Québec</a>
                 </div>
             </div>
 
@@ -147,14 +153,14 @@ $pkgEurope = [
                         <button class="pkg-filter-btn active" data-filter="all">
                             <i class="fas fa-th-large"></i> Toutes les options
                         </button>
-                        <button class="pkg-filter-btn" data-filter="nature">
-                            <i class="fas fa-mountain"></i> Plein air
+                        <button class="pkg-filter-btn" data-filter="escapades">
+                            <i class="fas fa-route"></i> Escapades
                         </button>
-                        <button class="pkg-filter-btn" data-filter="culture">
-                            <i class="fas fa-palette"></i> Culture
+                        <button class="pkg-filter-btn" data-filter="voyages">
+                            <i class="fas fa-plane"></i> Voyages
                         </button>
-                        <button class="pkg-filter-btn" data-filter="aventure">
-                            <i class="fas fa-person-hiking"></i> Aventure
+                        <button class="pkg-filter-btn" data-filter="promotions">
+                            <i class="fas fa-tag"></i> Promotions
                         </button>
                     </div>
                     <a href="#" class="resto-cta-btn secondary">
@@ -275,7 +281,10 @@ $pkgEurope = [
                     <span class="showcase-badge quebec"><i class="fas fa-maple-leaf"></i> Québec</span>
                     <h4>{{ $pkg['title'] }}</h4>
                     <p>{{ \Illuminate\Support\Str::limit($pkg['desc'], 70) }}</p>
-                    <div class="showcase-price">{{ $pkg['price'] }}<span>/pers.</span></div>
+                    <div class="showcase-item-footer">
+                        <div class="showcase-price">{{ $pkg['price'] }}<span>/pers.</span></div>
+                        <a href="#" class="showcase-details-btn"><i class="fas fa-eye"></i> Voir détails</a>
+                    </div>
                 </div>
                 @endforeach
                 @foreach($pkgEurope as $pkg)
@@ -283,7 +292,10 @@ $pkgEurope = [
                     <span class="showcase-badge europe"><i class="fas fa-globe-europe"></i> Europe</span>
                     <h4>{{ $pkg['title'] }}</h4>
                     <p>{{ \Illuminate\Support\Str::limit($pkg['desc'], 70) }}</p>
-                    <div class="showcase-price">{{ $pkg['price'] }}<span>/pers.</span></div>
+                    <div class="showcase-item-footer">
+                        <div class="showcase-price">{{ $pkg['price'] }}<span>/pers.</span></div>
+                        <a href="#" class="showcase-details-btn"><i class="fas fa-eye"></i> Voir détails</a>
+                    </div>
                 </div>
                 @endforeach
             </div>
@@ -293,6 +305,22 @@ $pkgEurope = [
         <section class="creation-section">
             <div class="creation-card">
                 <div class="creation-info">
+                    <div class="creation-slider" id="creationSlider">
+                        <div class="creation-slide active">
+                            <img src="https://images.pexels.com/photos/2325446/pexels-photo-2325446.jpeg?auto=compress&cs=tinysrgb&w=600&h=360&dpr=1" alt="Destinations">
+                        </div>
+                        <div class="creation-slide">
+                            <img src="https://images.pexels.com/photos/3155666/pexels-photo-3155666.jpeg?auto=compress&cs=tinysrgb&w=600&h=360&dpr=1" alt="Voyages en couple">
+                        </div>
+                        <div class="creation-slide">
+                            <img src="https://images.pexels.com/photos/1371360/pexels-photo-1371360.jpeg?auto=compress&cs=tinysrgb&w=600&h=360&dpr=1" alt="Aventures">
+                        </div>
+                        <div class="creation-slide-dots">
+                            <span class="creation-dot active" data-slide="0"></span>
+                            <span class="creation-dot" data-slide="1"></span>
+                            <span class="creation-dot" data-slide="2"></span>
+                        </div>
+                    </div>
                     <h3>Créez votre forfait personnalisé</h3>
                     <p>Composez le voyage de vos rêves en quelques clics. Sélectionnez vos destinations, activités et hébergements préférés.</p>
                     <ul class="features-list">
@@ -367,6 +395,25 @@ $pkgEurope = [
             e.preventDefault();
             alert('✓ Forfait créé avec succès ! (Mode démonstration)');
         });
+    }
+
+    // Slider section création
+    var slider = document.getElementById('creationSlider');
+    if (slider) {
+        var slides = slider.querySelectorAll('.creation-slide');
+        var dots   = slider.querySelectorAll('.creation-dot');
+        var cur = 0;
+        function goTo(i) {
+            slides[cur].classList.remove('active');
+            dots[cur].classList.remove('active');
+            cur = (i + slides.length) % slides.length;
+            slides[cur].classList.add('active');
+            dots[cur].classList.add('active');
+        }
+        dots.forEach(function (dot) {
+            dot.addEventListener('click', function () { goTo(parseInt(dot.dataset.slide)); });
+        });
+        setInterval(function () { goTo(cur + 1); }, 3500);
     }
 })();
 </script>

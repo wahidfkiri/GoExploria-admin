@@ -1,68 +1,19 @@
-/* page-5-tourism.css - REVISED MODERN FLAT DESIGN */
+/* page-5-tourism.css - LIGHT THEME */
 .tourism-section {
-    font-family: 'Poppins', sans-serif;
-    margin: 80px 40px;
-    padding: 80px 0;
-    background: #0F1C2D; /* NAVY BLUE BACKGROUND FOR WHOLE SECTION */
+    font-family: 'Montserrat', sans-serif;
+    margin: 60px 40px;
+    padding: 0;
+    background: transparent;
     position: relative;
-    border-radius: 40px;
 }
 
 .tourism-container {
     display: flex;
     flex-direction: column;
-    gap: 120px;
+    gap: 70px;
     max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 40px; /* Internal padding to prevent content crowding */
-}
-
-/* Header */
-.tourism-hero {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 40px;
-}
-
-.tourism-main-title {
-    font-size: 3.5rem;
-    font-weight: 800;
-    color: #ffffff; /* WHITE TEXT */
-    line-height: 1.1;
-    margin-bottom: 20px;
-    letter-spacing: -2px;
-}
-
-.tourism-main-title span {
-    color: #3399FF; /* BLUE ACCENT */
-}
-
-.tourism-subhead {
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.7); /* LIGHT GRAY FOR SUBHEAD */
-    max-width: 700px;
-    line-height: 1.6;
-}
-
-.tourism-badge-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 30px;
-}
-
-.tourism-badge {
-    background: rgba(255, 255, 255, 0.05); /* GLASSMORPHISM */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px 22px;
-    border-radius: 50px;
-    font-weight: 600;
-    color: #ffffff;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    margin: 40px auto 0;
+    padding: 0 40px;
 }
 
 /* Block Headers */
@@ -70,340 +21,337 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 40px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 25px;
+    margin-bottom: 32px;
+    border-bottom: 2px solid #e8edf5;
+    padding-bottom: 20px;
 }
 
 .section-header-left h3 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 5px;
+    color: #1a2942;
+    margin-bottom: 4px;
 }
 
 .section-header-left p {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 1.05rem;
+    color: #888888;
+    font-size: 0.95rem;
 }
 
 .experience-counter {
-    background: #f0fdf4;
-    color: #166534;
-    padding: 8px 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e3f2fd;
+    color: #1e88e5;
+    padding: 7px 18px;
     border-radius: 50px;
     font-weight: 700;
-    font-size: 0.85rem;
-    border: 1px solid #dcfce7;
+    font-size: 0.82rem;
+    border: 1px solid #bbdefb;
 }
 
-/* Adventures Grid (Cards like forfaits) */
+/* Adventures Grid */
 .aventures-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+    gap: 24px;
 }
 
 .aventure-card {
-    background: rgba(255, 255, 255, 0.05); /* Slightly lighter light for differentiation */
-    border: 1px solid rgba(255, 255, 255, 0.12); /* More visible border */
-    border-radius: 24px;
-    padding: 40px 30px;
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    background: #ffffff;
+    border: 1px solid #e8edf5;
+    border-top: 4px solid #1e88e5;
+    border-radius: 14px;
+    padding: 30px 24px;
+    transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
-    color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
 }
 
 .aventure-card:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: #3399FF;
-    transform: translateY(-12px);
-    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+    border-top-color: #f26522;
+    transform: translateY(-6px);
+    box-shadow: 0 16px 36px rgba(30,136,229,0.12);
 }
 
 .aventure-icon {
-    width: 65px;
-    height: 65px;
-    background: #f1f5f9;
-    border-radius: 15px;
+    width: 54px;
+    height: 54px;
+    background: #e3f2fd;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
-    margin-bottom: 25px;
-    color: #0066CC;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    color: #1e88e5;
 }
 
 .aventure-title {
-    font-size: 1.6rem;
+    font-size: 1.05rem;
     font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 15px;
+    color: #1a2942;
+    margin-bottom: 10px;
 }
 
 .aventure-desc {
-    color: rgba(255, 255, 255, 0.7);
+    color: #666666;
     line-height: 1.6;
-    margin-bottom: 25px;
+    font-size: 0.88rem;
+    margin-bottom: 20px;
     flex-grow: 1;
 }
 
 .aventure-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid #e8edf5;
 }
 
 .meta-tag {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.6);
+    gap: 5px;
+    font-size: 0.78rem;
+    color: #1e88e5;
     font-weight: 600;
+    background: #e3f2fd;
+    padding: 3px 10px;
+    border-radius: 20px;
 }
 
 /* Saisons Grid */
 .saisons-carousel {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
+    gap: 20px;
 }
 
 .saison-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 24px;
-    padding: 40px 25px;
+    background: #ffffff;
+    border: 1px solid #e8edf5;
+    border-radius: 14px;
+    padding: 28px 20px;
     text-align: center;
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    color: #ffffff;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
 }
 
 .saison-card:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: #00CC99;
-    transform: translateY(-8px);
-    box-shadow: 0 25px 50px rgba(0, 204, 153, 0.2);
+    border-color: #1e88e5;
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(30,136,229,0.12);
 }
 
-.saison-emoji { font-size: 3rem; margin-bottom: 20px; display: block; }
-.saison-name { font-size: 1.5rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; }
+.saison-emoji {
+    width: 52px;
+    height: 52px;
+    background: #e3f2fd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #1e88e5;
+    margin: 0 auto 16px;
+}
+
+.saison-name { font-size: 1rem; font-weight: 700; color: #1a2942; margin-bottom: 14px; }
 
 .saison-activite {
-    font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: #555555;
+    margin-bottom: 7px;
     font-weight: 500;
 }
 
+.saison-activite i { color: #1e88e5; }
+
 .saison-temp {
     display: inline-block;
-    padding: 6px 16px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+    padding: 5px 14px;
+    background: #e3f2fd;
+    color: #1565c0;
     border-radius: 30px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    margin-top: 15px;
+    margin-top: 14px;
 }
 
 /* Hiver Section */
 .hiver-section {
-    background: transparent; /* Remove nested dark background */
+    background: transparent;
     border-radius: 0;
     padding: 0;
-    color: #ffffff;
     position: relative;
-    overflow: visible;
-    border: none;
 }
 
 .hiver-header {
     display: flex;
     align-items: center;
-    gap: 25px;
-    margin-bottom: 50px;
+    gap: 20px;
+    margin-bottom: 32px;
+    border-bottom: 2px solid #e8edf5;
+    padding-bottom: 20px;
 }
 
 .hiver-icon {
-    width: 70px;
-    height: 70px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
+    width: 56px;
+    height: 56px;
+    background: #e3f2fd;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.2rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 1.5rem;
+    color: #1e88e5;
 }
 
-.hiver-title { font-size: 2.5rem; font-weight: 700; margin: 0; }
-.hiver-sub { font-size: 1.2rem; color: rgba(255, 255, 255, 0.6); }
+.hiver-title { font-size: 1.5rem; font-weight: 700; color: #1a2942; margin: 0; }
+.hiver-sub { font-size: 0.9rem; color: #888888; margin-top: 3px; }
 
 .hiver-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+    gap: 24px;
 }
 
 .hiver-activity-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 25px;
-    padding: 35px;
+    background: #ffffff;
+    border: 1px solid #e8edf5;
+    border-top: 4px solid #1e88e5;
+    border-radius: 14px;
+    padding: 28px;
     transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
 }
 
 .hiver-activity-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: #3399FF;
-    transform: translateY(-8px);
+    border-top-color: #f26522;
+    transform: translateY(-6px);
+    box-shadow: 0 16px 36px rgba(30,136,229,0.12);
 }
 
-.activity-icon-big { font-size: 3rem; margin-bottom: 25px; display: block; }
-.activity-name { font-size: 1.6rem; font-weight: 700; margin-bottom: 15px; }
-.activity-desc { color: rgba(255, 255, 255, 0.7); line-height: 1.6; font-size: 0.95rem; margin-bottom: 25px; }
+.activity-icon-big {
+    width: 54px;
+    height: 54px;
+    background: #e3f2fd;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #1e88e5;
+    margin-bottom: 18px;
+}
+
+.activity-name { font-size: 1rem; font-weight: 700; color: #1a2942; margin-bottom: 10px; }
+.activity-desc { color: #666666; line-height: 1.6; font-size: 0.85rem; margin-bottom: 18px; }
 
 .activity-difficulte {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 700;
-    color: #3399FF;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 20px;
+    color: #1e88e5;
+    border-top: 1px solid #e8edf5;
+    padding-top: 16px;
 }
 
-.difficulty-stars { color: #FFCC00; letter-spacing: 2px; }
+.difficulty-stars { color: #f9a52c; letter-spacing: 2px; }
 
 .snow-decoration {
-    display: inline-block;
-    padding: 8px 18px;
-    background: rgba(0, 204, 153, 0.15);
-    color: #00CC99;
-    border-radius: 30px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    margin-top: 15px;
-    border: 1px solid rgba(0, 204, 153, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #e3f2fd;
+    color: #1565c0;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 12px;
 }
 
 .btn-hiver-cta {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    background: #ffffff;
-    color: #0F1C2D;
-    padding: 18px 45px;
+    gap: 10px;
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    color: #ffffff;
+    padding: 14px 36px;
     border-radius: 50px;
-    font-weight: 800;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
     text-decoration: none;
-    margin-top: 50px;
+    margin-top: 40px;
     transition: all 0.3s ease;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    box-shadow: 0 6px 20px rgba(30,136,229,0.3);
 }
 
 .btn-hiver-cta:hover {
-    background: #00CC99;
+    background: linear-gradient(135deg, #f26522, #e84c10);
+    box-shadow: 0 8px 24px rgba(242,101,34,0.35);
+    transform: translateY(-2px);
     color: #ffffff;
-    transform: scale(1.05);
 }
 
 /* Footer Info */
 .stats-footer {
-    padding: 40px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px 0;
+    border-top: 2px solid #e8edf5;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
-.stat-tag { font-weight: 700; color: rgba(255, 255, 255, 0.8); font-size: 1rem; display: flex; align-items: center; gap: 8px; }
-.stat-tag span { color: #00CC99; }
+.stat-tag { font-weight: 700; color: #555555; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+.stat-tag span { color: #1e88e5; }
 
-/* FULL RESPONSIVITY OVERHAUL */
+/* Icône écotourisme — logo droit de l'entête */
+.tourism-eco-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #43a047, #66bb6a);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(67,160,71,0.3);
+}
+
+.tourism-eco-icon i {
+    font-size: 1.4rem;
+    color: #ffffff;
+}
+
+/* RESPONSIVE */
 @media (max-width: 1200px) {
     .aventures-grid, .hiver-grid { grid-template-columns: repeat(2, 1fr); }
     .saisons-carousel { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 1024px) {
-    .tourism-section { margin: 60px 20px; }
+    .tourism-section { margin: 40px 20px; }
 }
 
 @media (max-width: 768px) {
-    .tourism-section { 
-        margin: 40px 0; 
-        padding: 40px 0; 
-        border-radius: 0; 
-    }
-    
-    .tourism-container { 
-        gap: 60px; 
-        padding: 0 15px; 
-    }
-    
-    .tourism-main-title { 
-        font-size: 2.2rem; 
-        text-align: center;
-    }
-    
-    .tourism-hero {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    
-    .section-header { 
-        flex-direction: column; 
-        align-items: center; 
-        text-align: center; 
-        gap: 15px;
-    }
-    
-    /* FORCE FULL WIDTH CARDS */
-    .aventures-grid, .hiver-grid, .saisons-carousel { 
-        grid-template-columns: 1fr !important; 
-        width: 100%;
-        gap: 20px;
-    }
-    
-    .aventure-card, .saison-card, .hiver-activity-card {
-        width: 100% !important;
-        padding: 35px 20px; 
-        border-radius: 20px;
-    }
-    
-    .hiver-header { 
-        flex-direction: column; 
-        text-align: center; 
-    }
-    
-    /* CLEAN MOBILE BUTTON */
-    .btn-hiver-cta {
-        width: 100%;
-        padding: 18px 20px;
-        font-size: 1rem;
-        display: flex;
-        justify-content: center;
-        margin-top: 30px;
-    }
-    
-    .stats-footer { 
-        flex-direction: column; 
-        gap: 30px; 
-        padding: 40px 0;
-    }
-    
-    .stats-left { 
-        flex-direction: column; 
-        gap: 20px; 
-        align-items: center; 
-    }
+    .tourism-section { margin: 30px 0; }
+    .tourism-container { gap: 50px; padding: 0 16px; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .aventures-grid, .hiver-grid, .saisons-carousel { grid-template-columns: 1fr !important; gap: 16px; }
+    .hiver-header { flex-direction: column; align-items: flex-start; }
+    .btn-hiver-cta { width: 100%; justify-content: center; padding: 14px 20px; }
+    .stats-footer { flex-direction: column; gap: 20px; }
 }

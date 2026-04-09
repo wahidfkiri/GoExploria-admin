@@ -1,4 +1,103 @@
 <section class="travel-section">
+
+    {{-- ============================================================
+         EN-TÊTE STANDARD — ALERTE VOYAGES / COMPAGNIES AÉRIENNES
+    ============================================================ --}}
+    <div class="resto-header-block">
+
+        <div class="resto-header-main">
+
+            {{-- Logo gauche : GoExploria --}}
+            <div class="resto-header-logo-left">
+                <a href="#" class="resto-accord-btn" title="GoExploria">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('logo.png') }}" alt="GoExploria">
+                    </div>
+                    <span class="resto-accord-btn-label">GoExploria</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
+            </div>
+
+            {{-- Centre : titre + sous-titre + onglets --}}
+            <div class="resto-header-center">
+                <h1 class="resto-header-title">ALERTE VOYAGES / COMPAGNIES AÉRIENNES</h1>
+                <p class="resto-header-subtitle">Informations en temps réel · Alertes, vols en direct et compagnies aériennes partenaires</p>
+
+                <div class="resto-header-tabs">
+                    <button class="resto-tab-btn active">
+                        <i class="fas fa-exclamation-triangle"></i> Alertes voyage
+                    </button>
+                    <button class="resto-tab-btn">
+                        <i class="fas fa-plane-departure"></i> Vols en direct
+                    </button>
+                    <button class="resto-tab-btn">
+                        <i class="fas fa-plane"></i> Compagnie aérienne
+                    </button>
+                </div>
+            </div>
+
+            {{-- Logo droit : Compagnie Aérienne --}}
+            <div class="resto-header-logo-right">
+                <a href="#" class="resto-accord-btn" title="Compagnie Aérienne">
+                    <div class="logo-wrapper travelinfo-airline-icon">
+                        <i class="fas fa-plane-departure"></i>
+                    </div>
+                    <span class="resto-accord-btn-label">Compagnie Aérienne</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Partenaires
+                    </span>
+                </a>
+            </div>
+
+        </div>
+
+        {{-- Barre Destinations + Filtres --}}
+        <div class="resto-header-destinations-bar">
+
+            <div class="resto-dest-row">
+                <div class="resto-dest-icon-box">
+                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
+                    <span>Destinations</span>
+                </div>
+                  <div class="resto-dest-row">
+                <div class="resto-dest-icon-box">
+                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
+                    <span>Destinations</span>
+                </div>
+                <div class="resto-dest-breadcrumb">
+                    <a href="#" class="resto-dest-link active">Toutes destinations</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Europe</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Ontario</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Mauricie</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Île d'Orléans</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Vieux-Québec</a>
+                </div>
+            </div>
+            </div>
+
+            <div class="resto-actions-row">
+                <div class="resto-header-ctas">
+                    <a href="#" class="resto-cta-btn primary">
+                        <i class="fas fa-calendar-check"></i> Réservez
+                    </a>
+                    <a href="#" class="resto-cta-btn secondary">
+                        En savoir <span class="cta-plus">+</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="resto-header-shimmer"></div>
+    </div>{{-- /.resto-header-block --}}
+
     <div class="travel-container">
         
         <!-- COLONNE GAUCHE : ALERTS VOYAGE -->
@@ -63,7 +162,7 @@
                     <i class="fas fa-plane-departure"></i>
                 </div>
                 <div>
-                    <h2 class="info-section-title">Vols en direct</h2>
+                    <h2 class="info-section-title">COMPAGNIES AÉRIENNES</h2>
                     <p class="info-section-sub">Suivi des départs • 4 vols</p>
                 </div>
             </div>

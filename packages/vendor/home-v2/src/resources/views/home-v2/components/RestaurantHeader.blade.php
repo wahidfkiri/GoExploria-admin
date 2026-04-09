@@ -77,7 +77,7 @@ $restoSlides = [
     [
         'main' => [
             'src'   => 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&h=500&fit=crop',
-            'video' => 'UhR5XQ-FfRo',
+            'video' => 'xPPLbEFbCAo',
             'title' => 'Ambiance & Gastronomie',
             'desc'  => 'Une atmosphère unique au cœur de Montréal',
             'badge' => 'new',
@@ -85,28 +85,28 @@ $restoSlides = [
         'grid' => [
             [
                 'src'   => 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=500&h=300&fit=crop',
-                'video' => 'UhR5XQ-FfRo',
+                'video' => 'xPPLbEFbCAo',
                 'title' => 'Sélection de Vins',
                 'desc'  => '200+ références soigneusement choisies',
                 'badge' => 'popular',
             ],
             [
                 'src'   => 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&h=300&fit=crop',
-                'video' => 'UhR5XQ-FfRo',
+                'video' => 'xPPLbEFbCAo',
                 'title' => 'Cuisine Raffinée',
                 'desc'  => 'Gastronomie italienne dans toute sa splendeur',
                 'badge' => 'hot',
             ],
             [
                 'src'   => 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=500&h=300&fit=crop',
-                'video' => 'UhR5XQ-FfRo',
+                'video' => 'xPPLbEFbCAo',
                 'title' => 'Accord Mets & Vins',
                 'desc'  => "L'art de sublimer chaque plat par le vin idéal",
                 'badge' => 'trending',
             ],
             [
                 'src'   => 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=500&h=300&fit=crop',
-                'video' => 'UhR5XQ-FfRo',
+                'video' => 'xPPLbEFbCAo',
                 'title' => "Moments d'exception",
                 'desc'  => 'Tables privées et événements sur mesure',
                 'badge' => 'popular',
@@ -161,7 +161,7 @@ $occasionSlides = [
     [
         'main' => [
             'src'   => 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=900&h=500&fit=crop',
-            'video' => 'UhR5XQ-FfRo',
+            'video' => 'xPPLbEFbCAo',
             'title' => 'Gala Saint-Sylvestre',
             'desc'  => 'Soirée de gala, champagne minuit et menu gastronomique',
             'badge' => 'new',
@@ -169,28 +169,28 @@ $occasionSlides = [
         'grid' => [
             [
                 'src'   => 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&h=300&fit=crop',
-                'video' => 'UhR5XQ-FfRo',
+                'video' => 'xPPLbEFbCAo',
                 'title' => 'Fête des Mères',
                 'desc'  => 'Menu 4 services avec accord vins, bouquet offert',
                 'badge' => 'popular',
             ],
             [
                 'src'   => 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=300&fit=crop',
-                'video' => 'UhR5XQ-FfRo',
+                'video' => 'xPPLbEFbCAo',
                 'title' => 'Anniversaire VIP',
                 'desc'  => 'Table décorée, champagne et menu surprise',
                 'badge' => 'hot',
             ],
             [
                 'src'   => 'https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=500&h=300&fit=crop',
-                'video' => 'UhR5XQ-FfRo',
+                'video' => 'xPPLbEFbCAo',
                 'title' => 'Réveillon de Noël',
                 'desc'  => 'Menu 5 services, musique live et vins millésimés',
                 'badge' => 'trending',
             ],
             [
                 'src'   => 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&h=300&fit=crop',
-                'video' => 'UhR5XQ-FfRo',
+                'video' => 'xPPLbEFbCAo',
                 'title' => 'Brunch Famille',
                 'desc'  => 'Buffet gastronomique pour toute la famille',
                 'badge' => 'popular',
@@ -200,7 +200,7 @@ $occasionSlides = [
     [
         'main' => [
             'src'   => 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=900&h=500&fit=crop',
-            'video' => 'UhR5XQ-FfRo',
+            'video' => 'xPPLbEFbCAo',
             'title' => 'Forfait Duo Romantique',
             'desc'  => 'Table privée, bouquet, rosé & mets 5 services',
             'badge' => 'trending',
@@ -208,28 +208,28 @@ $occasionSlides = [
         'grid' => [
             [
                 'src'   => 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500&h=300&fit=crop',
-                'video' => 'UhR5XQ-FfRo',
+                'video' => 'xPPLbEFbCAo',
                 'title' => 'Gala Caritatif',
                 'desc'  => 'Dîner gala avec encan et menu gastronomique',
                 'badge' => 'hot',
             ],
             [
                 'src'   => 'https://images.unsplash.com/photo-1544025162-d76694265947?w=500&h=300&fit=crop',
-                'video' => 'UhR5XQ-FfRo',
+                'video' => 'xPPLbEFbCAo',
                 'title' => 'Fête des Pères BBQ',
                 'desc'  => 'Grillades premium et bières artisanales du Québec',
                 'badge' => 'popular',
             ],
             [
                 'src'   => 'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=500&h=300&fit=crop',
-                'video' => 'UhR5XQ-FfRo',
+                'video' => 'xPPLbEFbCAo',
                 'title' => "St. Patrick's Dinner",
                 'desc'  => "Corned beef, Guinness et whisky irlandais",
                 'badge' => 'new',
             ],
             [
                 'src'   => 'https://images.unsplash.com/photo-1547592180-85f173990554?w=500&h=300&fit=crop',
-                'video' => 'UhR5XQ-FfRo',
+                'video' => 'xPPLbEFbCAo',
                 'title' => 'Brunch de Pâques',
                 'desc'  => 'Buffet familial avec chasse aux œufs et menu pascal',
                 'badge' => 'trending',

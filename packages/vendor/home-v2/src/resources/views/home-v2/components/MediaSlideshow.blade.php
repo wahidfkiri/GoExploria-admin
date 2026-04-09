@@ -161,13 +161,41 @@
     });
 
     /* ---- Modal vidéo ---- */
+    var ytFrameId = '{{ $slideshowId }}YtFrame';
+    var ytErrId   = '{{ $slideshowId }}YtErr';
+
+    var ytMsgHandler = function (e) {
+        if (!e.data) return;
+        try {
+            var msg = JSON.parse(e.data);
+            if (msg.event === 'onError') {
+                var errDiv = document.getElementById(ytErrId);
+                var frame  = document.getElementById(ytFrameId);
+                if (errDiv) { errDiv.style.display = 'flex'; }
+                if (frame)  { frame.style.display  = 'none'; }
+            }
+        } catch (_) {}
+    };
+
     function openModal(videoSrc, title) {
         if (!modal || !videoSrc) return;
         if (modalTitle) modalTitle.textContent = title || '';
         if (videoSrc.indexOf('http') === 0) {
             videoEl.innerHTML = '<video src="' + videoSrc + '" controls autoplay style="width:100%;display:block;max-height:520px;background:#000;"></video>';
         } else {
-            videoEl.innerHTML = '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;background:#000;"><iframe src="https://www.youtube.com/embed/' + videoSrc + '?autoplay=1&rel=0" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>';
+            var origin = window.location.origin;
+            videoEl.innerHTML =
+                '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;background:#000;">' +
+                '<iframe id="' + ytFrameId + '"' +
+                ' src="https://www.youtube.com/embed/' + videoSrc + '?autoplay=1&rel=0&enablejsapi=1&origin=' + origin + '"' +
+                ' style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"' +
+                ' allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>' +
+                '<div id="' + ytErrId + '" style="display:none;position:absolute;inset:0;background:#0a1628;flex-direction:column;align-items:center;justify-content:center;gap:14px;">' +
+                '<i class="fas fa-video-slash" style="font-size:3rem;color:#f26522;"></i>' +
+                '<p style="color:#fff;font-family:Montserrat,sans-serif;font-weight:700;margin:0;">Vidéo non disponible</p>' +
+                '<p style="color:rgba(255,255,255,0.6);font-family:Montserrat,sans-serif;font-size:0.8rem;margin:0;">Vidéo introuvable ou non autorisée en intégration</p>' +
+                '</div></div>';
+            window.addEventListener('message', ytMsgHandler);
         }
         modal.classList.add('mss-gallery-modal--active');
         document.body.style.overflow = 'hidden';
@@ -179,6 +207,7 @@
         modal.classList.remove('mss-gallery-modal--active');
         if (videoEl) videoEl.innerHTML = '';
         document.body.style.overflow = '';
+        window.removeEventListener('message', ytMsgHandler);
         startAuto();
     }
 
