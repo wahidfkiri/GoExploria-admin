@@ -72,6 +72,19 @@ Route::middleware(['web'])->group(function () {
     ->where('path', '.*')
     ->name('cms.theme.asset');
     
+// Routes API
+Route::prefix('cms')->middleware(['web'])->group(function () {
+    
+    Route::prefix('company/{etablissementId}')->name('cms.api.')->group(function () {
+        Route::get('/pages', [PublicPageController::class, 'getPagesApi'])->name('pages');
+        Route::get('/pages/{slug}', [PublicPageController::class, 'getPageApi'])->name('page');
+        Route::get('/search', [PublicPageController::class, 'searchApi'])->name('search');
+        Route::post('/newsletter/subscribe', [PublicPageController::class, 'subscribeApi'])->name('newsletter.subscribe');
+        Route::post('/contact', [PublicPageController::class, 'contactApi'])->name('contact');
+    });
+
+    Route::post('/subscribe', [PublicPageController::class, 'subscribeApi'])->name('cms.newsletter.subscribe');
+});
 
 });
 
