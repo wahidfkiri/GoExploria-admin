@@ -1,8 +1,7 @@
-@extends('destination::layouts.app')
+@extends('cms::layouts.app')
 @section('content')
     
     <!-- Conteneur principal avec padding -->
-    <div class="main-container">
         <div class="row">
             
             <!-- Colonne droite - iframe (8 colonnes) -->
@@ -14,5 +13,4 @@
                 </iframe>
             </div>
         </div>
-    </div>
 @endsection
