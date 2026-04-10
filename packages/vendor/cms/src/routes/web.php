@@ -38,10 +38,12 @@ Route::middleware(['web'])->group(function () {
         Route::get('/preview/theme/{id}', [WebThemeController::class, 'publicPreview'])->name('preview.theme');
         Route::get('/preview/theme/{themeId}/page/{pageId}', [WebThemeController::class, 'previewPage'])->name('preview.page');
         Route::get('/preview/theme/{id}/quick', [WebThemeController::class, 'quickPreview'])->name('preview.quick');
+        Route::get('/preview', [WebThemeController::class, 'preview'])->name('preview');
         
         // Routes des thèmes
         Route::get('/themes', [WebThemeController::class, 'index'])->name('themes.index');
         Route::get('/themes/{id}', [WebThemeController::class, 'show'])->name('themes.show');
+
         Route::get('/themes/{id}/download', [WebThemeController::class, 'download'])->name('themes.download');
         
         // API
@@ -65,6 +67,10 @@ Route::middleware(['web'])->group(function () {
         
         // Nettoyer la prévisualisation
         Route::get('/clear-preview', [WebThemeController::class, 'clearPreview'])->name('clear-preview');
+
+        // Route pour l'affichage du thème en iframe (sans layout parent)
+        Route::get('/company/{etablissementId}/preview/iframe/{themeId?}/{slug?}', [App\Http\Controllers\ThemeIframeController::class, 'show'])
+         ->name('cms.company.theme.iframe');
     });
     
     // Route pour les assets des thèmes (en dehors du préfixe company)
@@ -72,6 +78,7 @@ Route::middleware(['web'])->group(function () {
     ->where('path', '.*')
     ->name('cms.theme.asset');
     
+
 // Routes API
 Route::prefix('api/cms')->middleware(['web'])->group(function () {
     
@@ -86,9 +93,49 @@ Route::prefix('api/cms')->middleware(['web'])->group(function () {
     Route::post('/subscribe', [PublicPageController::class, 'subscribeApi'])->name('cms.newsletter.subscribe');
 });
 
+
+// routes/web.php
+Route::get('/theme-iframe/{etablissementId}/{slug?}', function($etablissementId, $slug = 'home') {
+    $etablissement = App\Models\Etablissement::findOrFail($etablissementId);
+    
+    // Récupérer le thème actif
+    $theme = $etablissement->themes()
+        ->wherePivot('is_active', true)
+        ->first();
+    
+    if (!$theme) {
+        return "Aucun thème actif";
+    }
+    
+    // Chemin du thème
+    $themePath = storage_path("app/public/cms/themes/{$theme->slug}");
+    
+    // Récupérer la page
+    $page = Vendor\Cms\Models\Page::where('etablissement_id', $etablissement->id)
+        ->where('slug', $slug)
+        ->where('status', 'published')
+        ->first();
+    
+    // Enregistrer le namespace du thème
+    Illuminate\Support\Facades\View::addNamespace('theme', $themePath);
+    
+    // Rendre le thème
+    return view('theme::layout', [
+        'page' => $page,
+        'content' => $page->content ?? '',
+        'etablissement' => $etablissement,
+        'settings' => [],
+        'menu' => []
+    ]);
+})->name('theme.iframe');
+
+
+
 });
 
 
 
 // Webhook
 Route::post('/webhook/cms/{token}', [PublicPageController::class, 'webhook'])->name('cms.webhook');
+
+

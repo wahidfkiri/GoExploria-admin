@@ -546,4 +546,23 @@ class PublicPageController extends Controller
             ['label' => 'Contact', 'url' => '/company/' . $this->etablissement->id . '/page/contact', 'active' => false],
         ];
     }
+
+    public function subscribeApi(Request $request, $etablissementId)
+    {
+            $etablissement = \App\Models\Etablissement::findOrFail($etablissementId);
+            $this->etablissement = $etablissement;
+            
+            // Valider les données
+            $request->validate([
+                'email' => 'required|email',
+            ]);
+
+            \App\Models\MailSubscriber::create([
+                'etablissement_id' => $this->etablissement->id,
+                'email' => $request->email,
+                'nom' => substr($request->email, 0, strpos($request->email, '@')),
+            ]);
+        // Logique d'abonnement à la newsletter
+        return response()->json(['message' => 'Abonnement réussi']);
+    }
 }

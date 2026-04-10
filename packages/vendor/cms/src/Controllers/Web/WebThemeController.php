@@ -231,6 +231,13 @@ class WebThemeController extends Controller
         return $this->renderTheme($theme, null, true, $demoContent);
     }
 
+    // App\Http\Controllers\PageWithIframeController.php
+    public function preview($etablissementId)
+    {
+        $etablissement = Etablissement::findOrFail($etablissementId);
+        return view('cms::page-with-iframe', compact('etablissement'));
+    }
+
     /**
  * Assets du thème (CSS, JS, images)
  */
