@@ -47,7 +47,8 @@
         "files": [
             "app/Helpers/helpers.php",
             "packages/vendor/cms/src/Helpers/helpers.php",
-            "packages/vendor/cms/src/Helpers/welcome_page_helpers.php"
+            "packages/vendor/cms/src/Helpers/welcome_page_helpers.php",
+            "packages/vendor/cms/src/Helpers/map_points_helpers.php"
         ]
     },
     "autoload-dev": {

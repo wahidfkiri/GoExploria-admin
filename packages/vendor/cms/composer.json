@@ -9,7 +9,8 @@
         },
          "files": [
             "src/Helpers/helpers.php",
-            "src/Helpers/welcome_page_helpers.php"
+            "src/Helpers/welcome_page_helpers.php",
+            "src/Helpers/map_points_helpers.php"
         ]
     },
     "require": {
