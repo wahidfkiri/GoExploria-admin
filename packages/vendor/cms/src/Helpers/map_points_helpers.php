@@ -21,8 +21,7 @@ if (!function_exists('has_map_points')) {
         }
 
         try {
-            return \App\Models\MapPoint::active()
-                ->where('etablissement_id', $etablissement->id)
+            return \App\Models\MapPoint::where('etablissement_id', $etablissement->id)
                 ->exists();
         } catch (\Exception $e) {
             \Log::error('has_map_points error: ' . $e->getMessage());
