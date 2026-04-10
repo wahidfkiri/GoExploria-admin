@@ -1,6 +1,6 @@
 @extends('cms::layouts.app')
 @section('content')
-    
+    <div class="container-fluid" style="padding: 0;margin-top: 100px;">
     <!-- Conteneur principal avec padding -->
         <div class="row">
             
@@ -13,4 +13,5 @@
                 </iframe>
             </div>
         </div>
+    </div>
 @endsection
