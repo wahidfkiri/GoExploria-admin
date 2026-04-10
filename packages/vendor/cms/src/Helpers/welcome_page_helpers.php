@@ -1125,7 +1125,6 @@ if (!function_exists('get_whatsapp_link')) {
     }
 }
 
-<?php
 
 // ==================== MAP POINT HELPERS ====================
 // Add these functions to your welcome_page_helpers.php file
