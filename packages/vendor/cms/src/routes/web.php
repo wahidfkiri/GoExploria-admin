@@ -69,7 +69,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('/clear-preview', [WebThemeController::class, 'clearPreview'])->name('clear-preview');
 
         // Route pour l'affichage du thème en iframe (sans layout parent)
-        Route::get('/company/{etablissementId}/preview/iframe/{themeId?}/{slug?}', [App\Http\Controllers\ThemeIframeController::class, 'show'])
+        Route::get('/preview/iframe/{themeId?}/{slug?}', [App\Http\Controllers\ThemeIframeController::class, 'show'])
          ->name('cms.company.theme.iframe');
     });
     
