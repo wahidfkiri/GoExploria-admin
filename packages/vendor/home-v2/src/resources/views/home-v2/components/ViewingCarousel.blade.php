@@ -1,343 +1,472 @@
-{{-- Viewing Carousel Component - Modal uniquement (bloc visuel masqué) --}}
-<section class="viewing-carousel-v2-section" style="display: none;">
-    {{-- Titre du bloc --}}
-    <div class="viewing-carousel-v2-title-bar">
-        <h2 class="viewing-carousel-v2-main-title">VISIONNEZ TOUTES LES VIDÉOS ICI</h2>
-        <img src="{{ asset('UPLOAD-2026.png') }}" alt="Upload" class="viewing-carousel-v2-title-logo">
-    </div>
+﻿{{-- GoExploria MyTUBE - Lecteur vidéo style YouTube --}}
+@php
+$gxtVideos = [
+    [
+        'id'        => 'xPPLbEFbCAo',
+        'thumb'     => 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=480&h=270&fit=crop',
+        'duration'  => '14:28',
+        'title'     => 'Guide 2026 - Les meilleurs restaurants de Montréal',
+        'channel'   => 'GoExploria Gastronomie',
+        'cat'       => 'gastronomie',
+        'cat_label' => 'Gastronomie',
+        'views'     => '24,1K',
+        'date'      => 'Il y a 3 jours',
+        'desc'      => 'Notre équipe a testé plus de 50 restaurants à Montréal pour vous offrir la sélection ultime 2026. Du bistro intime au grand gastronomique, toutes les adresses incontournables.',
+    ],
+    [
+        'id'        => 'xPPLbEFbCAo',
+        'thumb'     => 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=480&h=270&fit=crop',
+        'duration'  => '18:42',
+        'title'     => 'Vieux-Québec en 4K - Promenade dans le quartier historique',
+        'channel'   => 'GoExploria Destinations',
+        'cat'       => 'destinations',
+        'cat_label' => 'Destinations',
+        'views'     => '41,7K',
+        'date'      => 'Il y a 1 semaine',
+        'desc'      => "Explorez les ruelles pavées, les fortifications et l'architecture coloniale du Vieux-Québec, classé au patrimoine mondial de l'UNESCO.",
+    ],
+    [
+        'id'        => 'xPPLbEFbCAo',
+        'thumb'     => 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=480&h=270&fit=crop',
+        'duration'  => '09:15',
+        'title'     => 'Ski & Montagne - Mont-Tremblant en plein hiver',
+        'channel'   => 'GoExploria Aventure',
+        'cat'       => 'aventure',
+        'cat_label' => 'Aventure',
+        'views'     => '15,3K',
+        'date'      => 'Il y a 2 semaines',
+        'desc'      => "Pistes enneigées, chalets chaleureux et vie nocturne de Mont-Tremblant : tout ce qu'il faut savoir pour un séjour ski parfait.",
+    ],
+    [
+        'id'        => 'xPPLbEFbCAo',
+        'thumb'     => 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=480&h=270&fit=crop',
+        'duration'  => '22:07',
+        'title'     => 'Accord Mets & Vins - Masterclass avec notre sommelier',
+        'channel'   => 'GoExploria Gastronomie',
+        'cat'       => 'gastronomie',
+        'cat_label' => 'Gastronomie',
+        'views'     => '32,9K',
+        'date'      => 'Il y a 4 jours',
+        'desc'      => "Notre sommelier expert vous guide dans l'art des accords mets et vins pour sublimer chaque repas. Découvrez les secrets des meilleurs mariages gastronomiques.",
+    ],
+    [
+        'id'        => 'xPPLbEFbCAo',
+        'thumb'     => 'https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=480&h=270&fit=crop',
+        'duration'  => '11:33',
+        'title'     => 'Gala Saint-Sylvestre 2026 - Soirée de rêve à Montréal',
+        'channel'   => 'GoExploria Événements',
+        'cat'       => 'evenements',
+        'cat_label' => 'Événements',
+        'views'     => '8,4K',
+        'date'      => 'Il y a 5 jours',
+        'desc'      => "Revivez les meilleurs moments du Gala Saint-Sylvestre 2026 : dîner 5 services, champagne à minuit, orchestre live et feux d'artifice sur le fleuve.",
+    ],
+    [
+        'id'        => 'xPPLbEFbCAo',
+        'thumb'     => 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=480&h=270&fit=crop',
+        'duration'  => '07:52',
+        'title'     => 'Festival de Jazz de Montréal - Les moments inoubliables',
+        'channel'   => 'GoExploria Culture',
+        'cat'       => 'culture',
+        'cat_label' => 'Culture',
+        'views'     => '19,6K',
+        'date'      => 'Il y a 3 semaines',
+        'desc'      => "Plongez dans l'atmosphère électrisante du plus grand festival de jazz en Amérique du Nord. Scènes extérieures, concerts intimistes et découvertes musicales.",
+    ],
+    [
+        'id'        => 'xPPLbEFbCAo',
+        'thumb'     => 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=480&h=270&fit=crop',
+        'duration'  => '16:20',
+        'title'     => 'La Cabane à Sucre - Expérience authentique québécoise',
+        'channel'   => 'GoExploria Gastronomie',
+        'cat'       => 'gastronomie',
+        'cat_label' => 'Gastronomie',
+        'views'     => '27,8K',
+        'date'      => 'Il y a 1 mois',
+        'desc'      => "Tire d'érable, œufs dans le sirop, jambon fumé et violoneux... Vivez la véritable expérience de la cabane à sucre québécoise dans toute sa splendeur.",
+    ],
+    [
+        'id'        => 'xPPLbEFbCAo',
+        'thumb'     => 'https://images.unsplash.com/photo-1547592180-85f173990554?w=480&h=270&fit=crop',
+        'duration'  => '20:14',
+        'title'     => 'Road Trip Charlevoix - De Québec à Baie-Saint-Paul',
+        'channel'   => 'GoExploria Destinations',
+        'cat'       => 'destinations',
+        'cat_label' => 'Destinations',
+        'views'     => '38,2K',
+        'date'      => 'Il y a 2 semaines',
+        'desc'      => "Suivez notre road trip le long du fleuve Saint-Laurent, de Québec à Baie-Saint-Paul en passant par les plus beaux villages de Charlevoix.",
+    ],
+    [
+        'id'        => 'xPPLbEFbCAo',
+        'thumb'     => 'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=480&h=270&fit=crop',
+        'duration'  => '13:05',
+        'title'     => 'Observation des Baleines à Tadoussac',
+        'channel'   => 'GoExploria Aventure',
+        'cat'       => 'aventure',
+        'cat_label' => 'Aventure',
+        'views'     => '45,1K',
+        'date'      => 'Il y a 1 mois',
+        'desc'      => "Partez à la rencontre des rorquals, bélugas et orques dans les eaux de Tadoussac. Une expérience inoubliable au confluent du Saguenay et du Saint-Laurent.",
+    ],
+    [
+        'id'        => 'xPPLbEFbCAo',
+        'thumb'     => 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=480&h=270&fit=crop',
+        'duration'  => '05:48',
+        'title'     => 'Carnaval de Québec 2026 - Traditions hivernales incontournables',
+        'channel'   => 'GoExploria Culture',
+        'cat'       => 'culture',
+        'cat_label' => 'Culture',
+        'views'     => '61,4K',
+        'date'      => 'Il y a 2 mois',
+        'desc'      => "Bonhomme Carnaval, sculptures de glace monumentales, courses en canot sur le fleuve gelé... Le Carnaval de Québec comme vous ne l'avez jamais vu.",
+    ],
+    [
+        'id'        => 'xPPLbEFbCAo',
+        'thumb'     => 'https://images.unsplash.com/photo-1544025162-d76694265947?w=480&h=270&fit=crop',
+        'duration'  => '25:00',
+        'title'     => 'Mariage & Réception VIP - Forfait GoExploria Premium',
+        'channel'   => 'GoExploria Événements',
+        'cat'       => 'evenements',
+        'cat_label' => 'Événements',
+        'views'     => '12,7K',
+        'date'      => 'Il y a 6 jours',
+        'desc'      => "Forfaits mariage haut de gamme : salle de réception, traiteur gastronomique, décoration florale et animation musicale sur mesure.",
+    ],
+    [
+        'id'        => 'xPPLbEFbCAo',
+        'thumb'     => 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=480&h=270&fit=crop',
+        'duration'  => '17:38',
+        'title'     => 'Les Îles-de-la-Madeleine - Paradis sauvage du Québec',
+        'channel'   => 'GoExploria Destinations',
+        'cat'       => 'destinations',
+        'cat_label' => 'Destinations',
+        'views'     => '53,9K',
+        'date'      => 'Il y a 3 semaines',
+        'desc'      => "Falaises rouges, plages désertes, fruits de mer frais et vent du large : les Îles-de-la-Madeleine sont le paradis ultime pour les amateurs de nature sauvage.",
+    ],
+];
+@endphp
 
-    {{-- Header de navigation --}}
-    <div class="viewing-carousel-v2-nav-header">
-        {{-- Logo --}}
-        <div class="viewing-carousel-v2-logo">
-            <img src="{{ asset('GO-EXPLORIA-MY-TUBE.png') }}" alt="GO EXPLORIA MYTUBE" class="viewing-carousel-v2-logo-img">
-        </div>
+<section id="goexploria-mytube" class="gxt-section">
 
-        {{-- Navigation 2 lignes --}}
-        <div class="viewing-carousel-v2-nav-wrapper">
-            {{-- LIGNE 1 : Date, liens et réseaux sociaux --}}
-            <div class="viewing-carousel-v2-nav-row-1">
-                <div class="viewing-carousel-v2-nav-row-1-left">
-                    <span class="viewing-carousel-v2-date-badge">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
-                        FRIDAY 27 MARCH 2026
+    {{-- ============================================================
+         ENTÊTE GOEXPLORIA MYTUBE — même layout que RestaurantHeader
+         ============================================================ --}}
+    <div class="resto-header-block">
+
+        <div class="resto-header-main">
+
+            {{-- Logo gauche : GoExploria --}}
+            <div class="resto-header-logo-left">
+                <a href="#" class="resto-accord-btn" title="GoExploria">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('logo.png') }}" alt="GoExploria">
+                    </div>
+                    <span class="resto-accord-btn-label">GoExploria</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
                     </span>
-                    <a href="#" class="viewing-carousel-v2-nav-link">BLOG</a>
-                    <a href="#" class="viewing-carousel-v2-nav-link">SHOP</a>
-                    <a href="#" class="viewing-carousel-v2-nav-link">CONTACT</a>
-                    <a href="#" class="viewing-carousel-v2-nav-link">voir toutes les vidéos</a>
-                </div>
+                </a>
+            </div>
 
-                <div class="viewing-carousel-v2-nav-row-1-right">
-                      <div class="viewing-carousel-v2-social-icons">
-                        <a href="#" class="viewing-carousel-v2-social-icon" aria-label="Facebook">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                            </svg>
-                        </a>
-                        <a href="#" class="viewing-carousel-v2-social-icon" aria-label="Instagram">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="none" stroke="white" stroke-width="2"></path>
-                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="white" stroke-width="2"></line>
-                            </svg>
-                        </a>
-                        <a href="#" class="viewing-carousel-v2-social-icon" aria-label="YouTube">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/>
-                                <polygon points="9.545 15.568 15.818 12 9.545 8.432 9.545 15.568" fill="white"/>
-                            </svg>
-                        </a>
-                        <a href="#" class="viewing-carousel-v2-social-icon" aria-label="Pinterest">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M8 12c0-2.5 2-4.5 4.5-4.5S17 9.5 17 12c0 1.5-.5 2.5-1.5 2.5S14 13.5 14 12" fill="none" stroke="white" stroke-width="2"></path>
-                            </svg>
-                        </a>
+            {{-- Centre : titre + sous-titre + 4 boutons espaces --}}
+            <div class="resto-header-center">
+                <h1 class="resto-header-title">GOEXPLORIA MYTUBE</h1>
+                <p class="resto-header-subtitle">
+                    Films · Documentaires · Plein air · Gastronomie — Explorez le Québec en images avec la chaîne vidéo officielle GoExploria.
+                </p>
+
+                <div class="resto-header-tabs" role="tablist">
+                    <button class="resto-tab-btn active" role="tab" data-espace="all">
+                        <i class="fas fa-th-large"></i> Toutes les options
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-espace="entreprise">
+                        <i class="fas fa-briefcase"></i> Espace entreprise
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-espace="destination">
+                        <i class="fas fa-map-marker-alt"></i> Espace destination
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-espace="activite">
+                        <i class="fas fa-person-hiking"></i> Espace activité
+                    </button>
+                </div>
+            </div>
+
+            {{-- Logo droit : GoExploria MyTube --}}
+            <div class="resto-header-logo-right">
+                <a href="#" class="resto-accord-btn" title="GoExploria MyTube">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('GO-EXPLORIA-MY-TUBE.png') }}" alt="GoExploria MyTube">
                     </div>
+                    <span class="resto-accord-btn-label">GoExploria MyTube</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
+            </div>
+
+        </div>
+
+        {{-- Barre Destinations + Filtres --}}
+        <div class="resto-header-destinations-bar">
+
+            <div class="resto-dest-row">
+                <div class="resto-dest-icon-box">
+                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
+                    <span>Destinations</span>
+                </div>
+                <div class="resto-dest-breadcrumb">
+                    <a href="#" class="resto-dest-link active" data-dest="all">Toutes destinations</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link" data-dest="amerique-nord">Amérique du Nord</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link" data-dest="canada">Canada</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link" data-dest="quebec">Québec</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link" data-dest="region-quebec">Région de Québec</a>
                 </div>
             </div>
 
-            {{-- LIGNE 2 : Menu principal et boutons --}}
-            <div class="viewing-carousel-v2-nav-row-2">
-                <nav class="viewing-carousel-v2-main-menu">
-                    <a href="#" class="viewing-carousel-v2-menu-item">HOME</a>
-                    <a href="#" class="viewing-carousel-v2-menu-item">
-                        NEWS
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </a>
-                    <a href="#" class="viewing-carousel-v2-menu-item">
-                        CATEGORIES
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </a>
-                    <a href="#" class="viewing-carousel-v2-menu-item">
-                        FEATURES
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </a>
-                    <a href="#" class="viewing-carousel-v2-menu-item">
-                        VIDEO
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </a>
-                    <a href="#" class="viewing-carousel-v2-menu-item">
-                        SHOP
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </a>
-                </nav>
+        </div>
 
-                <div class="viewing-carousel-v2-action-buttons">
-                    <button class="viewing-carousel-v2-mode-btn" aria-label="Mode sombre">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    </button>
-                    <button class="viewing-carousel-v2-search-btn" aria-label="Rechercher">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <path d="m21 21-4.35-4.35"></path>
-                        </svg>
-                    </button>
-                    <button class="viewing-carousel-v2-cart-btn" aria-label="Panier">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="9" cy="21" r="1"></circle>
-                            <circle cx="20" cy="21" r="1"></circle>
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                        </svg>
-                        <span class="viewing-carousel-v2-cart-badge">0</span>
-                    </button>
-                    <button class="viewing-carousel-v2-live-btn">
-                        <img src="{{ asset('UPLOAD-2026.png') }}" alt="Upload" class="viewing-carousel-v2-live-logo">
-                    </button>
-                </div>
+    </div>
+
+    {{-- ═══════════════ BARRE DE NAVIGATION ═══════════════ --}}
+    <header class="gxt-header">
+        <div class="gxt-header-brand">
+            <img src="{{ asset('GO-EXPLORIA-MY-TUBE.png') }}" alt="GoExploria MyTUBE" class="gxt-logo">
+        </div>
+        <div class="gxt-search-wrap">
+            <div class="gxt-search-bar">
+                <input type="text" id="gxtSearchInput" placeholder="Rechercher une vidéo GoExploria..." class="gxt-search-input" autocomplete="off">
+                <button class="gxt-search-btn" aria-label="Rechercher">
+                    <i class="fas fa-search"></i>
+                </button>
             </div>
+        </div>
+        <div class="gxt-header-actions">
+            <a href="#" class="gxt-social-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="gxt-social-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="gxt-social-btn gxt-social-yt" title="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+    </header>
+
+    {{-- ═══════════════ FILTRES CATÉGORIES ═══════════════ --}}
+    <div class="gxt-filters-bar">
+        <div class="gxt-filters-inner">
+            <button class="gxt-filter active" data-filter="all">
+                <i class="fas fa-th-large"></i> Tous
+            </button>
+            <button class="gxt-filter" data-filter="destinations">
+                <i class="fas fa-map-marker-alt"></i> Destinations
+            </button>
+            <button class="gxt-filter" data-filter="gastronomie">
+                <i class="fas fa-utensils"></i> Gastronomie
+            </button>
+            <button class="gxt-filter" data-filter="aventure">
+                <i class="fas fa-mountain"></i> Aventure
+            </button>
+            <button class="gxt-filter" data-filter="evenements">
+                <i class="fas fa-star"></i> Événements
+            </button>
+            <button class="gxt-filter" data-filter="culture">
+                <i class="fas fa-theater-masks"></i> Culture
+            </button>
         </div>
     </div>
 
-    {{-- Grille de vidéos avec carousel infini --}}
-    <div class="viewing-carousel-v2-grid">
-        <div class="viewing-carousel-v2-track">
-        {{-- Vidéo 1 --}}
-        <div class="viewing-carousel-v2-card">
-            <div class="viewing-carousel-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="viewing-carousel-v2-thumbnail">
-                <div class="viewing-carousel-v2-overlay">
-                    <button class="viewing-carousel-v2-play-btn">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
-                            <circle cx="12" cy="12" r="12" fill="white" opacity="0.9"/>
-                            <path d="M10 8l6 4-6 4V8z" fill="#1a2942"/>
-                        </svg>
+    {{-- ═══════════════ LECTEUR INLINE (affiché au clic) ═══════════════ --}}
+    <div class="gxt-player-wrap" id="gxtPlayerWrap">
+        <div class="gxt-player-main">
+            <div class="gxt-player-embed">
+                <iframe id="gxtPlayerIframe" src="" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+            </div>
+            <div class="gxt-player-info">
+                <div class="gxt-player-top">
+                    <span class="gxt-player-badge" id="gxtPlayerBadge"></span>
+                    <button class="gxt-close-player" id="gxtClosePlayer" title="Fermer le lecteur">
+                        <i class="fas fa-times"></i>
                     </button>
-                    <div class="viewing-carousel-v2-content">
-                        <span class="viewing-carousel-v2-badge">GENERAL</span>
-                        <h3 class="viewing-carousel-v2-video-title">This is the power of gathering: it inspire...</h3>
-                        <p class="viewing-carousel-v2-date">AUGUST 28, 2022</p>
-                    </div>
+                </div>
+                <h2 class="gxt-player-title" id="gxtPlayerTitle"></h2>
+                <div class="gxt-player-stats">
+                    <span><i class="fas fa-eye"></i> <strong id="gxtPlayerViews"></strong> vues</span>
+                    <span class="gxt-dot">·</span>
+                    <span id="gxtPlayerDate"></span>
+                    <span class="gxt-dot">·</span>
+                    <span id="gxtPlayerChannel"></span>
+                </div>
+                <p class="gxt-player-desc" id="gxtPlayerDesc"></p>
+                <div class="gxt-player-actions">
+                    <a href="#" class="gxt-action-btn"><i class="fas fa-share-alt"></i> Partager</a>
+                    <a href="#" class="gxt-action-btn"><i class="fas fa-heart"></i> Ajouter</a>
                 </div>
             </div>
         </div>
+        <aside class="gxt-player-sidebar">
+            <h3 class="gxt-sidebar-title"><i class="fas fa-list-ul"></i> À suivre</h3>
+            <div class="gxt-sidebar-list" id="gxtSidebarList"></div>
+        </aside>
+    </div>
 
-        {{-- Vidéo 2 --}}
-        <div class="viewing-carousel-v2-card">
-            <div class="viewing-carousel-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="viewing-carousel-v2-thumbnail">
-                <div class="viewing-carousel-v2-overlay">
-                    <button class="viewing-carousel-v2-play-btn">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
-                            <circle cx="12" cy="12" r="12" fill="white" opacity="0.9"/>
-                            <path d="M10 8l6 4-6 4V8z" fill="#1a2942"/>
-                        </svg>
-                    </button>
-                    <div class="viewing-carousel-v2-content">
-                        <span class="viewing-carousel-v2-badge">NEWS</span>
-                        <h3 class="viewing-carousel-v2-video-title">There are big problems that...</h3>
-                        <p class="viewing-carousel-v2-date">APRIL 2, 2022</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    {{-- ═══════════════ BARRE TITRE SECTION ═══════════════ --}}
+    <div class="gxt-content-bar">
+        <h2 class="gxt-content-title">
+            <i class="fas fa-fire"></i>
+            <span id="gxtSectionLabel">Vidéos populaires</span>
+        </h2>
+        <span class="gxt-video-count"><span id="gxtVideoCount">{{ count($gxtVideos) }}</span> vidéos</span>
+    </div>
 
-        {{-- Vidéo 3 --}}
-        <div class="viewing-carousel-v2-card">
-            <div class="viewing-carousel-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="viewing-carousel-v2-thumbnail">
-                <div class="viewing-carousel-v2-overlay">
-                    <button class="viewing-carousel-v2-play-btn">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
-                            <circle cx="12" cy="12" r="12" fill="white" opacity="0.9"/>
-                            <path d="M10 8l6 4-6 4V8z" fill="#1a2942"/>
-                        </svg>
-                    </button>
-                    <div class="viewing-carousel-v2-content">
-                        <span class="viewing-carousel-v2-badge">SPECIAL</span>
-                        <h3 class="viewing-carousel-v2-video-title">We are part of this universe; we are in...</h3>
-                        <p class="viewing-carousel-v2-date">MAY 11, 2022</p>
-                    </div>
+    {{-- ═══════════════ GRILLE VIDÉOS ═══════════════ --}}
+    <div class="gxt-grid" id="gxtGrid">
+        @foreach($gxtVideos as $v)
+        <div class="gxt-card"
+             data-id="{{ $v['id'] }}"
+             data-cat="{{ $v['cat'] }}"
+             data-title="{{ addslashes($v['title']) }}"
+             data-views="{{ $v['views'] }}"
+             data-date="{{ $v['date'] }}"
+             data-desc="{{ addslashes($v['desc']) }}"
+             data-channel="{{ $v['channel'] }}"
+             data-badge="{{ $v['cat_label'] }}"
+             data-thumb="{{ $v['thumb'] }}"
+             role="button" tabindex="0">
+            <div class="gxt-thumb">
+                <img src="{{ $v['thumb'] }}" alt="{{ $v['title'] }}" class="gxt-thumb-img" loading="lazy">
+                <span class="gxt-duration">{{ $v['duration'] }}</span>
+                <div class="gxt-play-overlay">
+                    <div class="gxt-play-icon"><i class="fas fa-play"></i></div>
+                </div>
+                <span class="gxt-cat-pill gxt-cat-{{ $v['cat'] }}">{{ $v['cat_label'] }}</span>
+            </div>
+            <div class="gxt-card-body">
+                <div class="gxt-avatar">
+                    <img src="{{ asset('GO-EXPLORIA-MY-TUBE.png') }}" alt="{{ $v['channel'] }}" class="gxt-avatar-img">
+                </div>
+                <div class="gxt-card-meta">
+                    <h3 class="gxt-card-title">{{ $v['title'] }}</h3>
+                    <p class="gxt-card-channel">{{ $v['channel'] }}</p>
+                    <p class="gxt-card-stats"><i class="fas fa-eye"></i> {{ $v['views'] }} vues · {{ $v['date'] }}</p>
                 </div>
             </div>
         </div>
+        @endforeach
+    </div>
 
-        {{-- Vidéo 4 --}}
-        <div class="viewing-carousel-v2-card">
-            <div class="viewing-carousel-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="viewing-carousel-v2-thumbnail">
-                <div class="viewing-carousel-v2-overlay">
-                    <button class="viewing-carousel-v2-play-btn">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
-                            <circle cx="12" cy="12" r="12" fill="white" opacity="0.9"/>
-                            <path d="M10 8l6 4-6 4V8z" fill="#1a2942"/>
-                        </svg>
-                    </button>
-                    <div class="viewing-carousel-v2-content">
-                        <span class="viewing-carousel-v2-badge">NEWS</span>
-                        <h3 class="viewing-carousel-v2-video-title">What we have once enjoyed we can nev...</h3>
-                        <p class="viewing-carousel-v2-date">JANUARY 1, 2022</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Duplication des 4 vidéos pour carousel infini --}}
-        {{-- Vidéo 1 (copie) --}}
-        <div class="viewing-carousel-v2-card">
-            <div class="viewing-carousel-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="viewing-carousel-v2-thumbnail">
-                <div class="viewing-carousel-v2-overlay">
-                    <button class="viewing-carousel-v2-play-btn">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
-                            <circle cx="12" cy="12" r="12" fill="white" opacity="0.9"/>
-                            <path d="M10 8l6 4-6 4V8z" fill="#1a2942"/>
-                        </svg>
-                    </button>
-                    <div class="viewing-carousel-v2-content">
-                        <span class="viewing-carousel-v2-badge">GENERAL</span>
-                        <h3 class="viewing-carousel-v2-video-title">This is the power of gathering: it inspire...</h3>
-                        <p class="viewing-carousel-v2-date">AUGUST 28, 2022</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Vidéo 2 (copie) --}}
-        <div class="viewing-carousel-v2-card">
-            <div class="viewing-carousel-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="viewing-carousel-v2-thumbnail">
-                <div class="viewing-carousel-v2-overlay">
-                    <button class="viewing-carousel-v2-play-btn">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
-                            <circle cx="12" cy="12" r="12" fill="white" opacity="0.9"/>
-                            <path d="M10 8l6 4-6 4V8z" fill="#1a2942"/>
-                        </svg>
-                    </button>
-                    <div class="viewing-carousel-v2-content">
-                        <span class="viewing-carousel-v2-badge">NEWS</span>
-                        <h3 class="viewing-carousel-v2-video-title">There are big problems that...</h3>
-                        <p class="viewing-carousel-v2-date">APRIL 2, 2022</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Vidéo 3 (copie) --}}
-        <div class="viewing-carousel-v2-card">
-            <div class="viewing-carousel-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="viewing-carousel-v2-thumbnail">
-                <div class="viewing-carousel-v2-overlay">
-                    <button class="viewing-carousel-v2-play-btn">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
-                            <circle cx="12" cy="12" r="12" fill="white" opacity="0.9"/>
-                            <path d="M10 8l6 4-6 4V8z" fill="#1a2942"/>
-                        </svg>
-                    </button>
-                    <div class="viewing-carousel-v2-content">
-                        <span class="viewing-carousel-v2-badge">SPECIAL</span>
-                        <h3 class="viewing-carousel-v2-video-title">We are part of this universe; we are in...</h3>
-                        <p class="viewing-carousel-v2-date">MAY 11, 2022</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Vidéo 4 (copie) --}}
-        <div class="viewing-carousel-v2-card">
-            <div class="viewing-carousel-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="viewing-carousel-v2-thumbnail">
-                <div class="viewing-carousel-v2-overlay">
-                    <button class="viewing-carousel-v2-play-btn">
-                        <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
-                            <circle cx="12" cy="12" r="12" fill="white" opacity="0.9"/>
-                            <path d="M10 8l6 4-6 4V8z" fill="#1a2942"/>
-                        </svg>
-                    </button>
-                    <div class="viewing-carousel-v2-content">
-                        <span class="viewing-carousel-v2-badge">NEWS</span>
-                        <h3 class="viewing-carousel-v2-video-title">What we have once enjoyed we can nev...</h3>
-                        <p class="viewing-carousel-v2-date">JANUARY 1, 2022</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
+    {{-- Message aucun résultat --}}
+    <div class="gxt-no-results" id="gxtNoResults">
+        <i class="fas fa-video-slash"></i>
+        <p>Aucune vidéo trouvée pour cette catégorie.</p>
     </div>
 
 </section>
 
-{{-- Modal de lecture vidéo (en dehors de la section pour ne pas être masquée) --}}
-<div class="viewing-carousel-v2-modal" id="videoModal" style="display: none;">
-    <div class="viewing-carousel-v2-modal-overlay"></div>
-    <div class="viewing-carousel-v2-modal-content">
-        <button class="viewing-carousel-v2-modal-close" id="closeModal">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-        </button>
+{{-- ═══════════════ JS INTERACTIVITÉ ═══════════════ --}}
+<script>
+(function () {
+    var cards       = Array.from(document.querySelectorAll('.gxt-card'));
+    var filters     = document.querySelectorAll('.gxt-filter');
+    var searchInput = document.getElementById('gxtSearchInput');
+    var playerWrap  = document.getElementById('gxtPlayerWrap');
+    var iframe      = document.getElementById('gxtPlayerIframe');
+    var noResults   = document.getElementById('gxtNoResults');
+    var countEl     = document.getElementById('gxtVideoCount');
+    var labelEl     = document.getElementById('gxtSectionLabel');
 
-        <div class="viewing-carousel-v2-modal-body">
-            {{-- Lecteur vidéo principal --}}
-            <div class="viewing-carousel-v2-modal-main">
-                <div class="viewing-carousel-v2-modal-video-wrapper">
-                    <iframe 
-                        id="modalVideoPlayer"
-                        class="viewing-carousel-v2-modal-video"
-                        src=""
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
-                </div>
-                
-                {{-- Informations de la vidéo --}}
-                <div class="viewing-carousel-v2-modal-info">
-                    <div class="viewing-carousel-v2-modal-badge-wrapper">
-                        <span class="viewing-carousel-v2-modal-badge" id="modalBadge">GENERAL</span>
-                    </div>
-                    <h2 class="viewing-carousel-v2-modal-title" id="modalTitle">Titre de la vidéo</h2>
-                    <p class="viewing-carousel-v2-modal-date" id="modalDate">DATE</p>
-                    <p class="viewing-carousel-v2-modal-description" id="modalDescription">Description de la vidéo sélectionnée.</p>
-                </div>
-            </div>
+    var catLabels = { all:'Vidéos populaires', destinations:'Destinations', gastronomie:'Gastronomie', aventure:'Aventure', evenements:'Événements', culture:'Culture' };
 
-            {{-- Playlist à droite --}}
-            <div class="viewing-carousel-v2-modal-playlist">
-                <div class="viewing-carousel-v2-modal-playlist-header">
-                    <h3 class="viewing-carousel-v2-modal-playlist-title">Playlist</h3>
-                </div>
-                <ul class="viewing-carousel-v2-modal-playlist-items" id="modalPlaylistItems">
-                    {{-- Les items seront générés dynamiquement --}}
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+    /* ── Filtrage ─────────────────────────────────────────── */
+    function filterCards(cat, search) {
+        var count = 0;
+        cards.forEach(function (c) {
+            var matchCat    = cat === 'all' || c.getAttribute('data-cat') === cat;
+            var matchSearch = !search || c.getAttribute('data-title').toLowerCase().indexOf(search.toLowerCase()) !== -1;
+            var show = matchCat && matchSearch;
+            c.style.display = show ? '' : 'none';
+            if (show) count++;
+        });
+        countEl.textContent = count;
+        labelEl.textContent = search ? 'Résultats de recherche' : (catLabels[cat] || 'Vidéos');
+        noResults.style.display = count === 0 ? 'flex' : 'none';
+    }
+
+    filters.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            filters.forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            filterCards(btn.getAttribute('data-filter'), searchInput.value.trim());
+        });
+    });
+
+    searchInput.addEventListener('input', function () {
+        var cat = document.querySelector('.gxt-filter.active').getAttribute('data-filter');
+        filterCards(cat, this.value.trim());
+    });
+
+    /* ── Lecture ──────────────────────────────────────────── */
+    function playVideo(card) {
+        var id      = card.getAttribute('data-id');
+        var title   = card.getAttribute('data-title');
+        var views   = card.getAttribute('data-views');
+        var date    = card.getAttribute('data-date');
+        var desc    = card.getAttribute('data-desc');
+        var channel = card.getAttribute('data-channel');
+        var badge   = card.getAttribute('data-badge');
+
+        document.getElementById('gxtPlayerTitle').textContent   = title;
+        document.getElementById('gxtPlayerBadge').textContent   = badge;
+        document.getElementById('gxtPlayerViews').textContent   = views;
+        document.getElementById('gxtPlayerDate').textContent    = date;
+        document.getElementById('gxtPlayerChannel').textContent = channel;
+        document.getElementById('gxtPlayerDesc').textContent    = desc;
+
+        iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0&enablejsapi=1';
+
+        playerWrap.classList.add('gxt-player-active');
+        cards.forEach(function (c) { c.classList.remove('gxt-card--playing'); });
+        card.classList.add('gxt-card--playing');
+
+        populateSidebar(card);
+        playerWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    cards.forEach(function (card) {
+        card.addEventListener('click', function () { playVideo(card); });
+        card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); playVideo(card); } });
+    });
+
+    /* ── Sidebar ──────────────────────────────────────────── */
+    function populateSidebar(current) {
+        var list = document.getElementById('gxtSidebarList');
+        list.innerHTML = '';
+        var visible = cards.filter(function (c) {
+            return c !== current && c.style.display !== 'none';
+        }).slice(0, 9);
+        visible.forEach(function (c) {
+            var item = document.createElement('div');
+            item.className = 'gxt-sidebar-item';
+            item.innerHTML =
+                '<img src="' + c.getAttribute('data-thumb') + '" class="gxt-sidebar-thumb" alt="">' +
+                '<div class="gxt-sidebar-meta">' +
+                    '<p class="gxt-sidebar-item-title">' + c.getAttribute('data-title') + '</p>' +
+                    '<p class="gxt-sidebar-item-channel">' + c.getAttribute('data-channel') + '</p>' +
+                    '<p class="gxt-sidebar-item-stats"><i class="fas fa-eye"></i> ' + c.getAttribute('data-views') + ' · ' + c.getAttribute('data-date') + '</p>' +
+                '</div>';
+            item.addEventListener('click', function () { playVideo(c); });
+            list.appendChild(item);
+        });
+    }
+
+    /* ── Fermer le lecteur ────────────────────────────────── */
+    document.getElementById('gxtClosePlayer').addEventListener('click', function () {
+        iframe.src = '';
+        playerWrap.classList.remove('gxt-player-active');
+        cards.forEach(function (c) { c.classList.remove('gxt-card--playing'); });
+    });
+})();
+</script>

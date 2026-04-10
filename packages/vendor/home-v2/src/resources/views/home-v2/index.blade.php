@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/videos-dropdown.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/interactive-map.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/viewing-carousel.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/home-v2/viewing-carousel-modal.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/tiktok-carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/video-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/slideshows.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/video-player.css') }}">
@@ -58,6 +58,8 @@
         @include('home-v2.components.Hero')
         @include('home-v2.components.InteractiveMap')
         @include('home-v2.components.VideoPlayer')
+        @include('home-v2.components.ViewingCarousel')
+        @include('home-v2.components.TikTokCarousel')
         @include('home-v2.components.EventsVedette')
         @include('home-v2.components.DestinationsVedette')
         {{-- Entête standard restaurant — autonome, hors template --}}

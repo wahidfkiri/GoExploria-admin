@@ -1,0 +1,705 @@
+/* ============================================================
+   GoExploria TIC-TOKK — Grille + Modal style TikTok
+   ============================================================ */
+
+.ttk-section {
+    background: #111;
+    margin: 0;
+    font-family: Montserrat, sans-serif;
+}
+
+/* ── GRILLE 6 COLONNES ─────────────────────────────────────── */
+.ttk-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2px;
+    background: #000;
+    padding: 2px;
+}
+
+/* ── CARD ──────────────────────────────────────────────────── */
+.ttk-card {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    cursor: pointer;
+    background: #1a1a1a;
+}
+
+.ttk-card-inner {
+    position: absolute;
+    inset: 0;
+}
+
+.ttk-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.ttk-card:hover .ttk-card-img {
+    transform: scale(1.06);
+}
+
+/* Texte overlay blanc en haut (certaines cards) */
+.ttk-card-text-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 10px 30px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 100%);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+    white-space: pre-line;
+    z-index: 2;
+}
+
+/* Bas de card : vues */
+.ttk-card-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 28px 8px 8px;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
+    z-index: 2;
+}
+
+.ttk-card-views {
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ttk-card-views i {
+    font-size: 11px;
+}
+
+/* Icône play au hover */
+.ttk-card-hover-play {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 3;
+}
+
+.ttk-card:hover .ttk-card-hover-play {
+    opacity: 1;
+}
+
+.ttk-card-hover-play i {
+    width: 52px;
+    height: 52px;
+    background: rgba(254,44,85,0.88);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 20px;
+    padding-left: 4px;
+    box-shadow: 0 6px 24px rgba(254,44,85,0.5);
+}
+
+/* ── BARRE CTA ─────────────────────────────────────────────── */
+.ttk-cta-bar {
+    display: flex;
+    background: #1a1a2e;
+    border-top: 3px solid #fe2c55;
+}
+
+.ttk-cta-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    gap: 16px;
+    border-right: 1px solid rgba(255,255,255,0.07);
+}
+
+.ttk-cta-item:last-child {
+    border-right: none;
+}
+
+.ttk-cta-label {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.ttk-cta-btn {
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.35);
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.ttk-cta-btn:hover {
+    background: #fe2c55;
+    border-color: #fe2c55;
+    color: #fff;
+}
+
+/* ════════════════════════════════════════════════════════════
+   MODAL TIC-TOKK
+   ════════════════════════════════════════════════════════════ */
+.ttk-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,0.92);
+    display: none;
+    flex-direction: column;
+}
+
+.ttk-modal--open {
+    display: flex;
+}
+
+.ttk-modal-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 16px;
+}
+
+/* ── BARRE SUPÉRIEURE DU MODAL ─────────────────────────────── */
+.ttk-modal-topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    flex-shrink: 0;
+}
+
+.ttk-modal-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.ttk-modal-close:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+.ttk-modal-search {
+    flex: 1;
+    background: rgba(255,255,255,0.08);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    max-width: 400px;
+}
+
+.ttk-modal-search i {
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+}
+
+.ttk-modal-search input {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    font-family: Montserrat, sans-serif;
+    outline: none;
+    width: 100%;
+}
+
+.ttk-modal-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.ttk-nav-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.ttk-nav-btn:hover {
+    background: rgba(255,255,255,0.22);
+}
+
+/* ── CORPS DU MODAL ────────────────────────────────────────── */
+.ttk-modal-body {
+    display: flex;
+    gap: 0;
+    flex: 1;
+    overflow: hidden;
+    padding-bottom: 16px;
+}
+
+/* ── COLONNE VIDÉO (gauche) ────────────────────────────────── */
+.ttk-modal-video {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding-right: 20px;
+}
+
+.ttk-modal-player {
+    width: 340px;
+    aspect-ratio: 9 / 16;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.ttk-modal-player iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* ── PANNEAU INFOS (droite) ────────────────────────────────── */
+.ttk-modal-panel {
+    flex: 1;
+    min-width: 0;
+    background: #fff;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header du panneau */
+.ttk-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+.ttk-panel-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ttk-panel-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #eee;
+}
+
+.ttk-panel-username {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+}
+
+.ttk-tiktok-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.ttk-panel-verified {
+    color: #20d5ec;
+    font-size: 14px;
+}
+
+.ttk-panel-date {
+    color: #999;
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.ttk-panel-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ttk-panel-dots {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 18px;
+    cursor: pointer;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.ttk-panel-dots:hover {
+    background: #f5f5f5;
+}
+
+.ttk-panel-follow {
+    background: #fe2c55;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ttk-panel-follow:hover {
+    background: #d4183a;
+}
+
+/* Contenu scrollable */
+.ttk-modal-panel > *:not(.ttk-panel-header):not(.ttk-panel-tabs):not(.ttk-panel-cta) {
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+.ttk-panel-caption {
+    font-size: 14px;
+    color: #111;
+    line-height: 1.5;
+    padding-top: 12px;
+    padding-bottom: 4px;
+}
+
+.ttk-panel-translate {
+    display: block;
+    color: #fe2c55;
+    font-size: 12px;
+    text-decoration: none;
+    padding-left: 18px;
+    padding-bottom: 10px;
+}
+
+.ttk-panel-sound {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #555;
+    padding-left: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.ttk-panel-sound i {
+    color: #fe2c55;
+}
+
+/* Stats */
+.ttk-panel-stats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 18px;
+    border-bottom: 1px solid #f0f0f0;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.ttk-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #111;
+}
+
+.ttk-stat-btn {
+    background: #f5f5f5;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #111;
+    transition: background 0.2s;
+}
+
+.ttk-stat-btn:hover {
+    background: #ffe0e5;
+}
+
+.ttk-like-btn i { color: #fe2c55; }
+.ttk-liked { animation: ttk-pulse 0.3s ease; }
+.ttk-liked i { color: #fe2c55; filter: drop-shadow(0 0 6px #fe2c55); }
+
+@keyframes ttk-pulse {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.ttk-share-icons {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.ttk-share-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #fff;
+    transition: opacity 0.2s;
+}
+
+.ttk-share-btn:hover { opacity: 0.8; }
+.ttk-share-fb   { background: #1877f2; }
+.ttk-share-wa   { background: #25d366; }
+.ttk-share-tw   { background: #1da1f2; }
+.ttk-share-link { background: #888; }
+.ttk-share-more { background: #555; }
+
+/* Lien */
+.ttk-panel-link-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    background: #f8f8f8;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+.ttk-panel-link-url {
+    flex: 1;
+    font-size: 11px;
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ttk-panel-copy {
+    background: none;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-family: Montserrat, sans-serif;
+}
+
+.ttk-panel-copy:hover {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+/* Onglets */
+.ttk-panel-tabs {
+    display: flex;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+.ttk-ptab {
+    flex: 1;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+    font-family: Montserrat, sans-serif;
+    transition: all 0.2s;
+}
+
+.ttk-ptab.active {
+    color: #111;
+    border-bottom-color: #fe2c55;
+}
+
+/* Commentaires (scrollable) */
+.ttk-panel-comments {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ttk-comment {
+    display: flex;
+    gap: 10px;
+}
+
+.ttk-comment-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #eee;
+}
+
+.ttk-comment-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ttk-comment-user {
+    font-size: 12px;
+    font-weight: 700;
+    color: #111;
+}
+
+.ttk-comment-text {
+    font-size: 13px;
+    color: #333;
+    line-height: 1.4;
+}
+
+.ttk-comment-meta {
+    font-size: 11px;
+    color: #999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ttk-comment-likes {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    color: #555;
+}
+
+.ttk-comment-likes i {
+    color: #fe2c55;
+    font-size: 11px;
+}
+
+/* CTA Se connecter */
+.ttk-panel-cta {
+    padding: 12px 18px;
+    border-top: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+.ttk-panel-cta-btn {
+    width: 100%;
+    background: #fe2c55;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 13px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+    font-family: Montserrat, sans-serif;
+}
+
+.ttk-panel-cta-btn:hover {
+    background: #d4183a;
+}
+
+/* ── RESPONSIVE ────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+    .ttk-grid { grid-template-columns: repeat(4, 1fr); }
+    .ttk-modal-player { width: 280px; }
+}
+
+@media (max-width: 900px) {
+    .ttk-grid { grid-template-columns: repeat(3, 1fr); }
+    .ttk-modal-body { flex-direction: column; overflow-y: auto; }
+    .ttk-modal-video { padding-right: 0; padding-bottom: 16px; justify-content: center; }
+    .ttk-modal-player { width: 260px; }
+    .ttk-modal-panel { border-radius: 12px; min-height: 400px; }
+    .ttk-cta-bar { flex-direction: column; }
+    .ttk-cta-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
+}
+
+@media (max-width: 600px) {
+    .ttk-grid { grid-template-columns: repeat(2, 1fr); }
+    .ttk-modal-inner { padding: 0 8px; }
+    .ttk-modal-player { width: 200px; }
+}
