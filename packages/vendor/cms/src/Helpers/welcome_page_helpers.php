@@ -1125,7 +1125,7 @@ if (!function_exists('get_whatsapp_link')) {
     }
 }
 
-
+<?php
 
 // ==================== MAP POINT HELPERS ====================
 // Add these functions to your welcome_page_helpers.php file
@@ -1148,7 +1148,8 @@ if (!function_exists('has_map_points')) {
         }
 
         try {
-            return \App\Models\MapPoint::where('etablissement_id', $etablissement->id)
+            return \App\Models\MapPoint::active()
+                ->where('etablissement_id', $etablissement->id)
                 ->exists();
         } catch (\Exception $e) {
             \Log::error('has_map_points error: ' . $e->getMessage());
@@ -1339,7 +1340,7 @@ if (!function_exists('get_map_section_html')) {
 
         $html = <<<HTML
 <!-- Leaflet Map Section -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <section class="map-section" aria-label="Carte des points d'intérêt">
     <div class="map-section-inner">
         {$titleHtml}
@@ -1433,7 +1434,7 @@ if (!function_exists('get_map_section_html')) {
 }
 .map-popup-link:hover { opacity: 0.85; }
 </style>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN2GqvE=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
 (function() {
     function initMap() {
