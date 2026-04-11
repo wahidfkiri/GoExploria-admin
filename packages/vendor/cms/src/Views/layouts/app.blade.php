@@ -25,15 +25,16 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-search.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/search-bar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/videos-dropdown.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('css/home-v2/interactive-map.css') }}"> -->
     <link rel="stylesheet" href="{{ asset('css/home-v2/viewing-carousel.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/home-v2/tiktok-carousel.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/viewing-carousel-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/video-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/slideshows.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/video-player.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/home-v2/media-slideshow.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/events-vedette.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-vedette.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/restaurants-vedette.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/menu-accord-mets-vins.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/page-6-packages.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/page-3-infos.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/page-5-tourism.css') }}">
@@ -45,43 +46,19 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/agency-section.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/partners-master.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/real-estate.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/home-v2/restaurant-header.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/home-v2/resa-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/footer.css') }}">
 </head>
 <body>
+    <div class="main-container">
     @include('home-v2.components.VerticalMenu')
     @include('home-v2.components.Header')
-    
-    <main class="main-content">
-        @include('home-v2.components.Hero')
-        @include('geo-map::index')
-        @include('home-v2.components.VideoPlayer')
-        @include('home-v2.components.ViewingCarousel')
-        @include('home-v2.components.TikTokCarousel')
-        @include('home-v2.components.EventsVedette')
-        @include('home-v2.components.DestinationsVedette')
-        {{-- Entête standard restaurant — autonome, hors template --}}
-        @include('home-v2.components.RestaurantHeader')
-        @include('home-v2.components.TravelPackages')
-        @include('home-v2.components.TravelInfos')
-        @include('home-v2.components.TourismSection')
-        @include('home-v2.components.PartnersMaster')
-        @include('home-v2.components.AgencySection')
-        @include('home-v2.components.RealEstateSection')
-        @include('home-v2.components.MultilingualGrid')
-        @include('home-v2.components.NewsSection')
-        @include('home-v2.components.WebServices')
+
+    @yield('content')
     </main>
     
-    {{-- Modal réservation global Table & Vin --}}
-    @include('home-v2.components.ResaModal')
-
     {{-- Modal vidéo réutilisable pour toute la plateforme --}}
     @include('components.VideoModal')
     
-    @include('components.front.call-action')
-    @include('chat.index')
     @include('home-v2.components.ButtonTop')
     @include('home-v2.components.Footer')
     
@@ -102,6 +79,8 @@
     <script src="{{ asset('js/home-v2/destinations-search.js') }}"></script>
     <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
     {{-- Charger le service API pour la carte interactive --}}
+    <!-- <script src="{{ asset('js/home-v2/map-api-service.js') }}"></script>
+    <script src="{{ asset('js/home-v2/interactive-map-dynamic.js') }}"></script> -->
     {{-- Charger video-modal.js EN PREMIER car les autres composants en dépendent --}}
     <script src="{{ asset('js/video-modal.js') }}"></script>
     <script src="{{ asset('js/home-v2/viewing-carousel.js') }}"></script>

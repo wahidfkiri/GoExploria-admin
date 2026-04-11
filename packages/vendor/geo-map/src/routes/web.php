@@ -1,33 +1,24 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Vendor\GeoMap\Controllers\PlaceController;
-use Vendor\GeoMap\Controllers\GeoMapController;
-use Vendor\GeoMap\Controllers\GeoDataController;
+use Vendor\GeoMap\Controllers\MapPointController;
 
 
-
-
-// Page principale
-Route::get('/map', function () {
-    return view('geo-map::map');
+// Routes pour la carte interactive
+Route::prefix('/geo-map')->group(function () {
+    // Points sur la carte
+    Route::get('/', [MapPointController::class, 'preview'])->name('geo-map.index');
+    Route::get('/points', [MapPointController::class, 'index']);
+    Route::get('/points/{id}', [MapPointController::class, 'show']);
+    
+    // Filtres spécifiques
+    Route::get('/points/category/{category}', [MapPointController::class, 'getByCategory']);
+    Route::get('/points/nearby', [MapPointController::class, 'getNearby']);
+    Route::get('/featured', [MapPointController::class, 'getFeatured']);
+    Route::get('/stats', [MapPointController::class, 'getStats']);
+    Route::get('/provinces', [MapPointController::class, 'getProvincesStats']);
 });
 
-// API Routes
-Route::prefix('api')->group(function () {
-    Route::get('/places', [PlaceController::class, 'index']);
-    Route::get('/categories', [PlaceController::class, 'categories']);
-    Route::get('/header-data/{countryCode}', [GeoDataController::class, 'getHeaderData']);
-    Route::get('/provinces/{countryCode}', [GeoDataController::class, 'getProvinces']);
-    Route::get('/regions/{provinceId}', [GeoDataController::class, 'getRegions']);
-});
-
-Route::get('continent/page/{continentId}', function ($continentId) {
-    return view('geo-map::continents.page', compact('continentId'));
-});
-Route::get('/countrie/{countrieCode}', [GeoMapController::class, 'getCountrie'])
-    ->name('geomap.countrie');
-Route::get('/countrie/{countrieCode}/{provinceCode}', [GeoMapController::class, 'getProvince'])
-    ->name('geomap.province');
-Route::get('/country/{countrieCode}', [GeoMapController::class, 'getCountries'])
-    ->name('geomap.countries');
+Route::get('/test-map', function() {
+    return view('geo-map::index');
+})->name('test.map');
