@@ -6,8 +6,8 @@ return [
     App\Providers\TelescopeServiceProvider::class,
     Vendor\Theme\ThemeServiceProvider::class,
     Vendor\Destination\DestinationServiceProvider::class,
+    Vendor\HomeV2\HomeV2ServiceProvider::class,
     Vendor\GeoMap\GeoMapServiceProvider::class,
     Vendor\Cms\CmsServiceProvider::class,
-    Vendor\Cms\Providers\CmsViewServiceProvider::class,
     Vendor\MailMarketing\MailMarketingServiceProvider::class,
 ];

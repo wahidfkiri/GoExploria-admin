@@ -1,0 +1,769 @@
+/* ============================================================
+   GOEXPLORIA — Template Démo Restaurant
+   Frame wrapper · Mini Header · Mini Footer · CTA Banner
+   + Modal Réservation Professionnel (Table & Vin)
+   ============================================================ */
+
+/* ---- Frame principal ---- */
+.goexp-tpl-frame {
+    position: relative;
+    border-left: 2px solid rgba(242,101,34,0.2);
+    border-right: 2px solid rgba(242,101,34,0.2);
+}
+
+/* ---- Barre indicateur template ---- */
+.goexp-tpl-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 11px 32px;
+    background: linear-gradient(90deg, #e84c10, #f26522 50%, #f9a52c);
+    font-family: 'Montserrat', sans-serif;
+    flex-wrap: wrap;
+}
+
+.goexp-tpl-topbar-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,0,0,0.22);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #fff;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.goexp-tpl-topbar-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.92);
+    flex: 1;
+    text-align: center;
+}
+
+.goexp-tpl-topbar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 18px;
+    background: #ffffff;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #e84c10;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.goexp-tpl-topbar-link:hover {
+    background: #fff3ed;
+    transform: scale(1.03);
+}
+
+/* ---- Mini Header Restaurant ---- */
+.goexp-tpl-header {
+    background: #060b18;
+    border-bottom: 1px solid rgba(212,175,55,0.2);
+    padding: 0 40px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+}
+
+.goexp-tpl-header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.goexp-tpl-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+.goexp-tpl-logo-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #8b1a1a, #c0392b);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #d4af37;
+}
+
+.goexp-tpl-logo-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 17px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #ffffff;
+}
+
+.goexp-tpl-logo-name span { color: #d4af37; }
+
+.goexp-tpl-nav {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+    justify-content: center;
+}
+
+.goexp-tpl-nav a {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.goexp-tpl-nav a:hover { color: #d4af37; }
+
+.goexp-tpl-header-reserve {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 22px;
+    background: linear-gradient(135deg, #8b1a1a, #c0392b);
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ---- Header actions (right side) ---- */
+.goexp-tpl-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* ---- Bouton hamburger ---- */
+.goexp-tpl-hamburger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 8px;
+    cursor: pointer;
+    color: #fff;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+.goexp-tpl-hamburger:hover {
+    background: rgba(212,175,55,0.15);
+    border-color: rgba(212,175,55,0.4);
+    color: #d4af37;
+}
+
+.goexp-tpl-header-reserve:hover {
+    background: linear-gradient(135deg, #a31f1f, #d44040);
+    transform: scale(1.03);
+    box-shadow: 0 4px 16px rgba(139,26,26,0.4);
+}
+
+/* ---- Liens CTA dans la nav (Réserver) ---- */
+.goexp-tpl-nav a.goexp-nav-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 10px;
+    transition: all 0.2s ease;
+}
+
+.goexp-tpl-nav a.goexp-nav-cta.wine {
+    background: rgba(139,26,26,0.35);
+    border: 1px solid rgba(192,57,43,0.4);
+}
+
+.goexp-tpl-nav a.goexp-nav-cta.wine:hover {
+    background: rgba(139,26,26,0.7);
+    color: #ffffff;
+    border-color: #c0392b;
+}
+
+.goexp-tpl-nav a.goexp-nav-cta.table {
+    background: rgba(212,175,55,0.15);
+    border: 1px solid rgba(212,175,55,0.35);
+    color: #d4af37;
+}
+
+.goexp-tpl-nav a.goexp-nav-cta.table:hover {
+    background: rgba(212,175,55,0.3);
+    color: #e8c84e;
+    border-color: #d4af37;
+}
+
+/* ---- Bouton "En savoir plus" ---- */
+.goexp-tpl-header-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 18px;
+    background: transparent;
+    border: 1px solid rgba(212,175,55,0.35);
+    border-radius: 6px;
+    color: rgba(212,175,55,0.85);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.goexp-tpl-header-info:hover {
+    background: rgba(212,175,55,0.12);
+    border-color: #d4af37;
+    color: #d4af37;
+    transform: scale(1.03);
+}
+
+.goexp-tpl-header-info i {
+    animation: bounce-down 1.4s ease infinite;
+}
+
+@keyframes bounce-down {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(3px); }
+}
+
+/* ---- Mini Footer Restaurant ---- */
+.goexp-tpl-footer {
+    background: #040812;
+    border-top: 1px solid rgba(212,175,55,0.15);
+    padding: 48px 40px 28px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.goexp-tpl-footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 32px;
+}
+
+.goexp-tpl-footer-brand h4 {
+    font-size: 20px;
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.goexp-tpl-footer-brand h4 span { color: #d4af37; }
+
+.goexp-tpl-footer-brand p {
+    font-size: 12px;
+    color: #475569;
+    line-height: 1.7;
+    max-width: 260px;
+}
+
+.goexp-tpl-footer-col h5 {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #d4af37;
+    margin-bottom: 16px;
+}
+
+.goexp-tpl-footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.goexp-tpl-footer-col ul li {
+    font-size: 12px;
+    color: #475569;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+}
+
+.goexp-tpl-footer-col ul li i {
+    color: #d4af37;
+    font-size: 10px;
+    width: 14px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.goexp-tpl-footer-bottom {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #334155;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* ---- CTA GoExploria ---- */
+.goexp-tpl-cta-banner {
+    background: linear-gradient(90deg, #08101e 0%, #0d1a30 50%, #08101e 100%);
+    border-top: 2px solid rgba(242,101,34,0.35);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.goexp-tpl-cta-banner-text {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.goexp-tpl-cta-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #e84c10, #f9a52c);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.goexp-tpl-cta-copy strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 3px;
+}
+
+.goexp-tpl-cta-copy span {
+    font-size: 12px;
+    color: rgba(255,255,255,0.48);
+    line-height: 1.5;
+}
+
+.goexp-tpl-cta-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.goexp-tpl-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    border: none;
+}
+
+.goexp-tpl-cta-btn.primary {
+    background: linear-gradient(135deg, #e84c10, #f9a52c);
+    color: #ffffff;
+}
+
+.goexp-tpl-cta-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(242,101,34,0.4);
+}
+
+.goexp-tpl-cta-btn.secondary {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: rgba(255,255,255,0.75);
+}
+
+.goexp-tpl-cta-btn.secondary:hover {
+    background: rgba(255,255,255,0.1);
+    color: #ffffff;
+}
+
+/* ============================================================
+   MODAL RÉSERVATION PROFESSIONNEL
+   ============================================================ */
+.goexp-resa-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.goexp-resa-overlay.open { display: flex; }
+
+.goexp-resa-box {
+    background: #ffffff;
+    border: 1px solid rgba(10,22,40,0.1);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 560px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18), 0 0 0 1px rgba(30,136,229,0.1);
+    overflow: hidden;
+    animation: resa-pop-in 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes resa-pop-in {
+    from { transform: scale(0.88) translateY(24px); opacity: 0; }
+    to   { transform: scale(1)    translateY(0);    opacity: 1; }
+}
+
+/* Header modal */
+.goexp-resa-header {
+    padding: 26px 26px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+}
+
+.goexp-resa-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.goexp-resa-icon.table-type {
+    background: rgba(30,136,229,0.1);
+    color: #1e88e5;
+    border: 1.5px solid rgba(30,136,229,0.35);
+}
+
+.goexp-resa-icon.wine-type {
+    background: rgba(30,136,229,0.1);
+    color: #1e88e5;
+    border: 1.5px solid rgba(30,136,229,0.35);
+}
+
+.goexp-resa-titles h3 {
+    font-size: 20px;
+    font-weight: 900;
+    color: #0a1628;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 5px;
+    line-height: 1.1;
+}
+
+.goexp-resa-titles p {
+    font-size: 13px;
+    color: rgba(10,22,40,0.5);
+    line-height: 1.5;
+}
+
+.goexp-resa-close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    background: rgba(10,22,40,0.05);
+    border: 1px solid rgba(10,22,40,0.12);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: rgba(10,22,40,0.45);
+    font-size: 17px;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.goexp-resa-close-btn:hover {
+    background: rgba(30,136,229,0.1);
+    border-color: rgba(30,136,229,0.35);
+    color: #1e88e5;
+}
+
+/* Divider bleu */
+.goexp-resa-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(30,136,229,0.3), transparent);
+    margin: 20px 26px;
+}
+
+/* Formulaire */
+.goexp-resa-form {
+    padding: 0 26px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+.goexp-resa-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.goexp-resa-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.goexp-resa-label {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(10,22,40,0.55);
+}
+
+.goexp-resa-input,
+.goexp-resa-select,
+.goexp-resa-textarea {
+    background: #f8f9fb;
+    border: 1.5px solid rgba(10,22,40,0.15);
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: #0a1628;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.22s ease, background 0.22s ease;
+    width: 100%;
+}
+
+.goexp-resa-input.selection-field {
+    background: rgba(30,136,229,0.05);
+    border-color: rgba(30,136,229,0.25);
+    color: rgba(10,22,40,0.6);
+    font-weight: 700;
+    font-style: italic;
+    cursor: default;
+}
+
+.goexp-resa-input::placeholder { color: rgba(10,22,40,0.3); }
+
+.goexp-resa-select option {
+    background: #ffffff;
+    color: #0a1628;
+}
+
+.goexp-resa-textarea {
+    resize: none;
+    line-height: 1.5;
+}
+
+.goexp-resa-input:focus,
+.goexp-resa-select:focus,
+.goexp-resa-textarea:focus {
+    border-color: #1e88e5;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(30,136,229,0.12);
+}
+
+/* Bouton confirmer */
+.goexp-resa-submit {
+    margin-top: 4px;
+    padding: 14px;
+    background: #1e88e5;
+    border: none;
+    border-radius: 10px;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(30,136,229,0.35);
+    width: 100%;
+}
+
+.goexp-resa-submit:hover {
+    background: #1565c0;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(30,136,229,0.45);
+}
+
+/* État succès */
+.goexp-resa-success {
+    display: none;
+    padding: 16px 26px 30px;
+    text-align: center;
+}
+
+.goexp-resa-success.show { display: block; }
+
+.goexp-resa-success-icon {
+    font-size: 52px;
+    color: #22c55e;
+    margin-bottom: 14px;
+}
+
+.goexp-resa-success h4 {
+    font-size: 20px;
+    font-weight: 900;
+    color: #0a1628;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.goexp-resa-success p {
+    font-size: 13px;
+    color: rgba(10,22,40,0.55);
+    line-height: 1.7;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 960px) {
+    .goexp-tpl-nav { gap: 18px; }
+}
+
+@media (max-width: 860px) {
+    .goexp-tpl-footer-inner { grid-template-columns: 1fr 1fr; gap: 28px; }
+
+    /* Afficher le hamburger, masquer la nav en ligne */
+    .goexp-tpl-hamburger { display: flex; }
+    .goexp-header-info-desktop { display: none; }
+
+    .goexp-tpl-nav-wrap {
+        display: none;
+        position: absolute;
+        top: 66px;
+        left: 0;
+        right: 0;
+        background: #060b18;
+        border-bottom: 2px solid rgba(212,175,55,0.22);
+        z-index: 300;
+        padding: 8px 0 14px;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.4);
+    }
+    .goexp-tpl-nav-wrap.open { display: block; }
+
+    .goexp-tpl-nav {
+        flex-direction: column;
+        gap: 0;
+        align-items: stretch;
+        justify-content: flex-start;
+        padding: 0 20px;
+    }
+    .goexp-tpl-nav li {
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .goexp-tpl-nav li:last-child { border-bottom: none; }
+    .goexp-tpl-nav a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 6px;
+        font-size: 12px;
+        color: rgba(255,255,255,0.78);
+    }
+    .goexp-tpl-nav a:hover { color: #d4af37; }
+    .goexp-nav-cta {
+        margin: 6px 0 2px;
+        border-radius: 7px;
+        padding: 11px 14px !important;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .goexp-tpl-header { padding: 0 16px; }
+    .goexp-tpl-topbar { padding: 10px 16px; }
+    .goexp-tpl-topbar-text { display: none; }
+    .goexp-tpl-footer { padding: 28px 16px; }
+    .goexp-tpl-footer-inner { grid-template-columns: 1fr; gap: 22px; }
+    .goexp-tpl-cta-banner { padding: 20px 16px; flex-direction: column; }
+    .goexp-tpl-cta-actions { width: 100%; justify-content: center; }
+    .goexp-resa-row { grid-template-columns: 1fr; }
+    .goexp-resa-box { border-radius: 16px; }
+    .goexp-resa-header { padding: 20px 20px 0; }
+    .goexp-resa-form { padding: 0 20px 20px; }
+    .goexp-resa-divider { margin: 16px 20px; }
+}

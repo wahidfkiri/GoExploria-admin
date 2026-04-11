@@ -1,4 +1,4 @@
-<!-- resources/views/components/front/slideshows.blade.php -->
+resources/views/components/front/slideshows.blade.php
 <style>
     /* Styles personnalisés pour le carousel GalleryCarousel */
     .galleryCarousel-section {

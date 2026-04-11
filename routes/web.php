@@ -8,10 +8,10 @@ use App\Http\Controllers\{
     AuthController,
     GeminiController,
     HomeController,
-    HomeV2Controller,
     LandingPageController,
     DestinationPageController
 };
+use Vendor\HomeV2\Http\Controllers\HomeV2Controller;
 
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Auth\AjaxAuthController;
@@ -278,6 +278,8 @@ Route::prefix('pages')->name('pages.')->group(function () {
     Route::get('/video-player', function() {
         return view('home-v2.pages.video-player');
     })->name('video-player');
+
+    Route::get('/accord-mets-vins', function() {
+        return view('home-v2.pages.accord-mets-vins');
+    })->name('accord-mets-vins');
 });
-
-

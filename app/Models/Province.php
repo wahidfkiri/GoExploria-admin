@@ -60,7 +60,7 @@ class Province extends Model
     // Relation avec les villes
     public function cities(): HasMany
     {
-        return $this->hasMany(Ville::class);
+        return $this->hasMany(City::class);
     }
 
     // Accessor pour le nom complet

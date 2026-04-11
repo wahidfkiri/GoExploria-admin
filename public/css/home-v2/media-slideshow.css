@@ -1,0 +1,388 @@
+/* ================================================================
+   MediaSlideshow — Multi-carte Gallery Carousel v2.0
+   Namespace : .mss-gallery-*
+   Layout : 1 grande carte gauche + grille 2×2 droite
+   ================================================================ */
+
+/* ================================================================
+   WRAPPER & CONTAINER
+   ================================================================ */
+
+.mss-gallery-wrapper {
+    width: 100%;
+    margin-bottom: 36px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.mss-gallery-container {
+    position: relative;
+    overflow: hidden;
+    height: 450px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.28);
+    background: #0a1628;
+    border: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 20px;
+}
+
+/* === Track (translate horizontal) === */
+.mss-gallery-track {
+    display: flex;
+    height: 100%;
+    transition: transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ================================================================
+   SLIDE : 50% grande carte + 50% grille 2x2
+   ================================================================ */
+
+.mss-gallery-slide {
+    display: flex;
+    flex: 0 0 100%;
+    height: 100%;
+}
+
+.mss-gallery-col {
+    overflow: hidden;
+}
+
+.mss-gallery-col--half {
+    width: 50%;
+}
+
+.mss-gallery-main {
+    position: relative;
+    height: 100%;
+}
+
+.mss-gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    height: 100%;
+    gap: 2px;
+    background-color: rgba(255,255,255,0.05);
+}
+
+.mss-gallery-tile {
+    position: relative;
+    overflow: hidden;
+    background-color: #0a1628;
+}
+
+/* ================================================================
+   ITEMS (grande carte + tuiles grille)
+   ================================================================ */
+
+.mss-gallery-item {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    height: 100%;
+}
+
+.mss-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.55s ease;
+}
+
+.mss-gallery-item:hover img {
+    transform: scale(1.07);
+}
+
+/* Overlay gradient bas */
+.mss-gallery-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.18) 60%, transparent 100%);
+    padding: 14px 16px;
+    color: #ffffff;
+}
+
+/* === Badge === */
+.mss-gallery-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    color: #ffffff;
+    padding: 4px 11px;
+    border-radius: 4px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    z-index: 5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.mss-gallery-badge--new      { background: linear-gradient(135deg, #ff4757, #ff3838); }
+.mss-gallery-badge--hot      { background: linear-gradient(135deg, #f26522, #e84c10); }
+.mss-gallery-badge--trending { background: linear-gradient(135deg, #2ed573, #1dd1a1); }
+.mss-gallery-badge--popular  { background: linear-gradient(135deg, #1e90ff, #3742fa); }
+
+/* === Titre et description === */
+.mss-gallery-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.9);
+    line-height: 1.25;
+}
+
+.mss-gallery-desc {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    opacity: 0.88;
+    line-height: 1.35;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+}
+
+.mss-gallery-main .mss-gallery-title { font-size: 1.25rem; }
+.mss-gallery-main .mss-gallery-desc  { font-size: 0.82rem; }
+
+/* === Bouton play (centré, visible au hover) === */
+.mss-gallery-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.82);
+    width: 62px;
+    height: 62px;
+    background: rgba(0, 0, 0, 0.75);
+    border: 3px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.mss-gallery-item:hover .mss-gallery-play {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.mss-gallery-play:hover {
+    background: rgba(242, 101, 34, 0.92);
+    border-color: #f26522;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* ================================================================
+   NAVIGATION (dots + boutons — sous le carousel)
+   ================================================================ */
+
+.mss-gallery-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.mss-gallery-dots {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.mss-gallery-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.22);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    padding: 0;
+}
+
+.mss-gallery-dot--active {
+    background: #f26522;
+    transform: scale(1.35);
+    box-shadow: 0 0 10px rgba(242,101,34,0.55);
+}
+
+.mss-gallery-nav-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.18);
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+}
+
+.mss-gallery-nav-btn:hover {
+    background: #f26522;
+    border-color: #f26522;
+    transform: scale(1.08);
+    box-shadow: 0 5px 14px rgba(242,101,34,0.38);
+}
+
+/* ================================================================
+   MODAL VIDÉO
+   ================================================================ */
+
+.mss-gallery-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.mss-gallery-modal--active {
+    display: flex;
+}
+
+.mss-gallery-modal-content {
+    background: #1a2942;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 900px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    transform: scale(0.92);
+    transition: transform 0.35s ease;
+    border: 1px solid rgba(255,255,255,0.10);
+}
+
+.mss-gallery-modal--active .mss-gallery-modal-content {
+    transform: scale(1);
+}
+
+.mss-gallery-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 22px;
+    background: #0a1628;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+
+.mss-gallery-modal-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+}
+
+.mss-gallery-modal-close {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 26px;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+    line-height: 1;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.mss-gallery-modal-close:hover {
+    background: rgba(220, 50, 50, 0.20);
+    color: #ff4757;
+}
+
+.mss-gallery-video-container {
+    background: #000;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
+@media (max-width: 1024px) {
+    .mss-gallery-container {
+        height: 380px;
+        border-radius: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .mss-gallery-container {
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .mss-gallery-slide {
+        flex-direction: column;
+    }
+
+    .mss-gallery-col--half {
+        width: 100%;
+        height: auto;
+    }
+
+    .mss-gallery-main {
+        height: 220px;
+    }
+
+    .mss-gallery-grid {
+        height: 220px;
+    }
+
+    .mss-gallery-title  { font-size: 0.9rem; }
+
+    .mss-gallery-play {
+        width: 52px;
+        height: 52px;
+        font-size: 18px;
+    }
+
+    .mss-gallery-nav-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .mss-gallery-main { height: 180px; }
+    .mss-gallery-grid { height: 180px; }
+
+    .mss-gallery-badge {
+        font-size: 0.62rem;
+        padding: 3px 8px;
+    }
+
+    .mss-gallery-title { font-size: 0.82rem; }
+    .mss-gallery-desc  { font-size: 0.7rem; }
+
+    .mss-gallery-play {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
+    }
+}
