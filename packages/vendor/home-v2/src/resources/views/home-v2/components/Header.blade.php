@@ -1,3 +1,6 @@
+{{-- flag-icons CDN --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+
 {{-- Header Component --}}
 <header class="header-v2">
     <!-- <div class="header-top">
@@ -50,13 +53,42 @@
                         <path d="m21 21-4.35-4.35"></path>
                     </svg>
                 </a>
-                <a href="#" class="nav-icon" aria-label="Langue">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
-                </a>
+                {{-- ── Language Switcher ── --}}
+                <div class="lang-switcher" id="langSwitcher">
+                    <button class="lang-btn" id="langBtn" aria-label="Sélectionner la langue" aria-expanded="false">
+                        <span class="fi fi-fr lang-flag" id="langCurrentFlag"></span>
+                        <span class="lang-code" id="langCurrentCode">FR</span>
+                        <svg class="lang-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <ul class="lang-dropdown" id="langDropdown" role="listbox">
+                        <li class="lang-option lang-active" role="option" data-lang="fr" data-flag="fr" data-code="FR">
+                            <span class="fi fi-fr lang-flag"></span>
+                            <span class="lang-name">Fran&ccedil;ais</span>
+                        </li>
+                        <li class="lang-option" role="option" data-lang="en" data-flag="gb" data-code="EN">
+                            <span class="fi fi-gb lang-flag"></span>
+                            <span class="lang-name">English</span>
+                        </li>
+                        <li class="lang-option" role="option" data-lang="es" data-flag="es" data-code="ES">
+                            <span class="fi fi-es lang-flag"></span>
+                            <span class="lang-name">Espa&ntilde;ol</span>
+                        </li>
+                        <li class="lang-option" role="option" data-lang="de" data-flag="de" data-code="DE">
+                            <span class="fi fi-de lang-flag"></span>
+                            <span class="lang-name">Deutsch</span>
+                        </li>
+                        <li class="lang-option" role="option" data-lang="it" data-flag="it" data-code="IT">
+                            <span class="fi fi-it lang-flag"></span>
+                            <span class="lang-name">Italiano</span>
+                        </li>
+                        <li class="lang-option" role="option" data-lang="pt" data-flag="pt" data-code="PT">
+                            <span class="fi fi-pt lang-flag"></span>
+                            <span class="lang-name">Portugu&ecirc;s</span>
+                        </li>
+                    </ul>
+                </div>
                 <a href="{{ route('devis') }}" class="nav-icon" aria-label="Devis">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -117,6 +149,44 @@
             if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
                 closeDropdown();
             }
+        });
+    })();
+
+    // ── Language Switcher ──────────────────────────────────────────
+    (function() {
+        const switcher = document.getElementById('langSwitcher');
+        const btn      = document.getElementById('langBtn');
+        const dropdown = document.getElementById('langDropdown');
+        if (!switcher || !btn || !dropdown) return;
+
+        function open()  { switcher.classList.add('open');    btn.setAttribute('aria-expanded', 'true'); }
+        function close() { switcher.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+        function toggle(){ switcher.classList.contains('open') ? close() : open(); }
+
+        btn.addEventListener('click', function(e) { e.stopPropagation(); toggle(); });
+
+        // Sélection d'une langue
+        dropdown.querySelectorAll('.lang-option').forEach(function(opt) {
+            opt.addEventListener('click', function() {
+                dropdown.querySelectorAll('.lang-option').forEach(o => o.classList.remove('lang-active'));
+                opt.classList.add('lang-active');
+                const flagEl = document.getElementById('langCurrentFlag');
+                flagEl.className = 'fi fi-' + opt.dataset.flag + ' lang-flag';
+                document.getElementById('langCurrentCode').textContent = opt.dataset.code;
+                close();
+                // TODO: connecter à la route de changement de locale Laravel
+                // window.location.href = '/lang/' + opt.dataset.lang;
+            });
+        });
+
+        // Fermer si clic à l'extérieur
+        document.addEventListener('click', function(e) {
+            if (!switcher.contains(e.target)) close();
+        });
+
+        // Fermer sur Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') close();
         });
     })();
 </script>
