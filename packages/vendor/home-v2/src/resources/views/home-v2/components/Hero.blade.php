@@ -172,7 +172,7 @@
                         </div>
                     </a>
                     
-                    <a href="{{ url('/nouvelles') }}" class="quick-link-item">
+                    <!-- <a href="{{ url('/nouvelles') }}" class="quick-link-item">
                         <div class="icon-circle icon-standard">
                             <i class="fas fa-newspaper"></i>
                         </div>
@@ -188,7 +188,7 @@
                         <div class="icon-circle icon-standard">
                             <i class="fas fa-binoculars"></i>
                         </div>
-                    </a>
+                    </a> -->
                 </div>
 
                 {{-- Logo Plan-n-go --}}

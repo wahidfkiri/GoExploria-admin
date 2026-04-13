@@ -36,26 +36,7 @@
                 </a>
             </li>
             
-            {{-- Accordéon Vidéos avec liste des vidéos --}}
-            <li class="vertical-menu-v2-item vertical-menu-v2-mobile-only vertical-menu-v2-accordion">
-                <button class="vertical-menu-v2-link vertical-menu-v2-accordion-trigger" data-accordion="videos">
-                    <span>Nos vidéos</span>
-                    <svg class="vertical-menu-v2-accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                </button>
-                <ul class="vertical-menu-v2-submenu vertical-menu-v2-videos-submenu" id="submenu-videos">
-                    {{-- Les vidéos seront chargées dynamiquement par JavaScript --}}
-                </ul>
-            </li>
-            
-            <li class="vertical-menu-v2-item vertical-menu-v2-mobile-only">
-                <a href="#faq" class="vertical-menu-v2-link">
-                    <span>FAQ</span>
-                </a>
-            </li>
-            
-            {{-- Accordéon Nos Services avec sous-menus --}}
+            {{-- Accordéon Nos Services — miroir exact du mega menu desktop --}}
             <li class="vertical-menu-v2-item vertical-menu-v2-mobile-only vertical-menu-v2-accordion">
                 <button class="vertical-menu-v2-link vertical-menu-v2-accordion-trigger" data-accordion="services">
                     <span>Nos Services</span>
@@ -64,45 +45,61 @@
                     </svg>
                 </button>
                 <ul class="vertical-menu-v2-submenu" id="submenu-services">
-                    <li><a href="#videos" class="vertical-menu-v2-sublink">Videos</a></li>
-                    <li><a href="#forfaits-voyage" class="vertical-menu-v2-sublink">Forfaits Voyage</a></li>
-                    <li><a href="#alertes-voyage" class="vertical-menu-v2-sublink">Alertes Voyage</a></li>
-                    <li><a href="#vols-direct" class="vertical-menu-v2-sublink">Vols en Direct</a></li>
-                    <li><a href="#idees-aventures" class="vertical-menu-v2-sublink">Idées Aventures</a></li>
-                    <li><a href="#activites-4-saisons" class="vertical-menu-v2-sublink">Activités 4 Saisons</a></li>
-                    <li><a href="#activites-hivernales" class="vertical-menu-v2-sublink">Activités Hivernales</a></li>
-                    <li><a href="#pinterest" class="vertical-menu-v2-sublink">Pinterest</a></li>
-                    <li><a href="#temoignage" class="vertical-menu-v2-sublink">Témoignage</a></li>
-                    <li><a href="#agence-conseil" class="vertical-menu-v2-sublink">Agence de Conseil</a></li>
-                    <li><a href="#biens-immobiliers" class="vertical-menu-v2-sublink">Nos Biens Immobiliers</a></li>
-                    <li><a href="#partenaires-master" class="vertical-menu-v2-sublink">Partenaires Master</a></li>
-                    <li><a href="#dernieres-nouvelles" class="vertical-menu-v2-sublink">Dernières Nouvelles</a></li>
-                    <li><a href="#nouvelles-region" class="vertical-menu-v2-sublink">Nouvelles Par Région</a></li>
-                    <li><a href="#lecteur-media" class="vertical-menu-v2-sublink">Lecteur Media Slideshow</a></li>
-                    <li><a href="#vetements-chauds" class="vertical-menu-v2-sublink">Vêtements Chauds</a></li>
-                    <li><a href="#vos-forfaits" class="vertical-menu-v2-sublink">Vos Forfaits</a></li>
-                    <li><a href="#solutions-web" class="vertical-menu-v2-sublink">Solutions Web Professionnelles</a></li>
-                    <li><a href="#excellence-pro" class="vertical-menu-v2-sublink">Excellence Professionnelle</a></li>
+                    <li class="vertical-menu-v2-subcat">Explorer</li>
                     <li><a href="#carte-interactive" class="vertical-menu-v2-sublink">Carte Interactive</a></li>
-                    <li><a href="#fonctionnalites" class="vertical-menu-v2-sublink">Fonctionnalités Complètes</a></li>
+                    <li><a href="#destinations-vedette" class="vertical-menu-v2-sublink">Destinations Vedettes</a></li>
+                    <li><a href="#evenements-vedette" class="vertical-menu-v2-sublink">&Eacute;v&eacute;nements Vedettes</a></li>
+                    <li><a href="#tourisme-business" class="vertical-menu-v2-sublink">Tourisme &amp; Business</a></li>
+                    <li class="vertical-menu-v2-subcat">M&eacute;dias</li>
+                    <li><a href="#goexploria-mytube" class="vertical-menu-v2-sublink">GoExploria MyTube</a></li>
+                    <li><a href="#goexploria-tiktok" class="vertical-menu-v2-sublink">Cha&icirc;ne TikTok</a></li>
+                    <li><a href="#news-section" class="vertical-menu-v2-sublink">Derni&egrave;res Nouvelles</a></li>
+                    <li class="vertical-menu-v2-subcat">Voyages</li>
+                    <li><a href="#forfaits-voyages" class="vertical-menu-v2-sublink">Forfaits Voyages</a></li>
+                    <li><a href="#alertes-voyages" class="vertical-menu-v2-sublink">Alertes &amp; Infos Voyages</a></li>
+                    <li><a href="#resto-service-block" class="vertical-menu-v2-sublink">Restaurant &amp; Table</a></li>
+                    <li class="vertical-menu-v2-subcat">Services Pro</li>
+                    <li><a href="#consulting-section" class="vertical-menu-v2-sublink">Agence de Conseil</a></li>
+                    <li><a href="#partners-master" class="vertical-menu-v2-sublink">Partenaires Master</a></li>
+                    <li><a href="#web-services" class="vertical-menu-v2-sublink">Solutions Web</a></li>
+                    <li><a href="#real-estate-section" class="vertical-menu-v2-sublink">Immobilier</a></li>
+                    <li><a href="#enterprise-multilingual" class="vertical-menu-v2-sublink">Espace Multilingue</a></li>
                 </ul>
             </li>
             
             <li class="vertical-menu-v2-item vertical-menu-v2-mobile-only">
-                <a href="#inscription" class="vertical-menu-v2-link">
+                <a href="{{ route('contact') }}" class="vertical-menu-v2-link">
+                    <span>Contact</span>
+                </a>
+            </li>
+            
+            <li class="vertical-menu-v2-item vertical-menu-v2-mobile-only">
+                <a href="{{ route('inscription') }}" class="vertical-menu-v2-link">
                     <span>Inscription</span>
                 </a>
             </li>
             
             <li class="vertical-menu-v2-item vertical-menu-v2-mobile-only">
-                <a href="#compte" class="vertical-menu-v2-link">
+                <a href="{{ route('mon-compte') }}" class="vertical-menu-v2-link">
                     <span>Mon Compte</span>
                 </a>
             </li>
             
             <li class="vertical-menu-v2-item vertical-menu-v2-mobile-only">
-                <a href="#contact" class="vertical-menu-v2-link">
-                    <span>Contact</span>
+                <a href="{{ route('devis') }}" class="vertical-menu-v2-link">
+                    <span>Devis Gratuit</span>
+                </a>
+            </li>
+            
+            <li class="vertical-menu-v2-item vertical-menu-v2-mobile-only">
+                <a href="{{ route('favoris') }}" class="vertical-menu-v2-link">
+                    <span>Mes Favoris</span>
+                </a>
+            </li>
+            
+            <li class="vertical-menu-v2-item vertical-menu-v2-mobile-only">
+                <a href="{{ route('panier') }}" class="vertical-menu-v2-link">
+                    <span>Mon Panier</span>
                 </a>
             </li>
         </ul>

@@ -244,17 +244,67 @@
 <!-- HTML -->
 <div class="container mt-5 mb-5" id="carte-interactive">
     <div class="row">
-        <div class="design-bosse-block" style="margin-bottom:-30px !important;">
-            <h2 class="design-bosse-title">ACTIVEZ VOS EXPACES DESTINATIONS</h2>
-            <div class="design-bosse-controls">
-                <div class="destinations-vedette-v2-filters">
-                    <span class="design-bosse-label"><span class="bosse-picto">🌍</span> Filtre par région :</span>
-                    <button class="destinations-vedette-v2-filter-btn active" data-filter="all">Toutes</button>
-                    <button class="destinations-vedette-v2-filter-btn" data-filter="qc">Québec</button>
-                    <button class="destinations-vedette-v2-filter-btn" data-filter="qb">Alberta</button>
-                    <button class="destinations-vedette-v2-filter-btn" data-filter="on">Ontario</button>
+        <div class="resto-header-block">
+            <div class="resto-header-main">
+                <div class="resto-header-logo-left">
+                    <a href="#" class="resto-accord-btn" title="GoExploria">
+                        <div class="logo-wrapper">
+                            <img src="{{ asset('logo.png') }}" alt="GoExploria">
+                        </div>
+                        <span class="resto-accord-btn-label">GoExploria</span>
+                        <span class="resto-accord-btn-cta">
+                            <i class="fas fa-external-link-alt"></i> Visiter
+                        </span>
+                    </a>
                 </div>
-                <a href="{{url('map')}}" class="design-bosse-more-btn">En savoir plus <span class="destinations-vedette-v2-plus-icon">+</span></a>
+                <div class="resto-header-center">
+                    <h2 class="resto-header-title">ACTIVEZ VOS ESPACES DESTINATIONS</h2>
+                    <p class="resto-header-subtitle">Découvrez les lieux incontournables sur notre carte interactive et planifiez vos aventures au Canada.</p>
+                    <div class="resto-header-tabs" role="tablist">
+                        <button class="resto-tab-btn active" role="tab" data-espace="all">
+                            <i class="fas fa-globe"></i> Toutes les options
+                        </button>
+                        <button class="resto-tab-btn" role="tab" data-espace="entreprise">
+                            <i class="fas fa-briefcase"></i> Espace entreprise
+                        </button>
+                        <button class="resto-tab-btn" role="tab" data-espace="destination">
+                            <i class="fas fa-map-marker-alt"></i> Espace destination
+                        </button>
+                        <button class="resto-tab-btn" role="tab" data-espace="activite">
+                            <i class="fas fa-person-hiking"></i> Espace activité
+                        </button>
+                    </div>
+                </div>
+                <div class="resto-header-logo-right">
+                    <a href="#" class="resto-accord-btn" title="Plans Web Go">
+                        <div class="logo-wrapper">
+                            <img src="{{ asset('plan-n-go.png') }}" alt="Plans Web Go">
+                        </div>
+                        <span class="resto-accord-btn-label">Plans Web Go</span>
+                        <span class="resto-accord-btn-cta">
+                            <i class="fas fa-external-link-alt"></i> Visiter
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div class="resto-header-destinations-bar">
+                <div class="resto-dest-row">
+                    <div class="resto-dest-icon-box">
+                        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+                        <span>Destinations</span>
+                    </div>
+                    <div class="resto-dest-breadcrumb">
+                        <a href="#" class="resto-dest-link active">Toutes destinations</a>
+                        <span class="resto-dest-sep">/</span>
+                        <a href="#" class="resto-dest-link">Amérique du Nord</a>
+                        <span class="resto-dest-sep">/</span>
+                        <a href="#" class="resto-dest-link">Canada</a>
+                        <span class="resto-dest-sep">/</span>
+                        <a href="#" class="resto-dest-link">Québec</a>
+                        <span class="resto-dest-sep">/</span>
+                        <a href="#" class="resto-dest-link">Région de Québec</a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -836,19 +886,30 @@ class InteractiveMap {
         window.addEventListener('click', e=>{ if(e.target===document.getElementById('place-modal')) this.closeModal(); });
         document.addEventListener('keydown', e=>{ if(e.key==='Escape') this.closeModal(); });
 
-        /* Region buttons */
-        const regionMap = {all:null, qc:'qc', qb:'ab', on:'on'};
-        document.querySelectorAll('.destinations-vedette-v2-filter-btn').forEach(btn=>{
+        /* Espace tab buttons */
+        const espaceMap = {
+            all:         null,
+            entreprise:  ['business'],
+            destination: ['tourism','museum','monument','airport','university'],
+            activite:    ['park','beach','mountain','lake','event','shopping','hotel','hospital']
+        };
+        document.querySelectorAll('.resto-tab-btn[data-espace]').forEach(btn=>{
             btn.addEventListener('click', ()=>{
-                document.querySelectorAll('.destinations-vedette-v2-filter-btn').forEach(b=>b.classList.remove('active'));
+                document.querySelectorAll('.resto-tab-btn[data-espace]').forEach(b=>b.classList.remove('active'));
                 btn.classList.add('active');
-                const code = regionMap[btn.dataset.filter]??null;
-                if (!code) {
-                    this.places.forEach(p=>{ const md=this.markers[p.id]; if(md) md.marker.addTo(this.map); });
-                    this.map.setView([52.0,-85.0],4);
+                const cats = espaceMap[btn.dataset.espace];
+                if (!cats) {
+                    this.selectedCategory = 'all';
+                    this.loadPlaces();
                 } else {
-                    this.places.forEach(p=>{ const md=this.markers[p.id]; if(!md) return; const prov=(p.province_code||p.province||'').toLowerCase(); if(prov.includes(code)) md.marker.addTo(this.map); else md.marker.remove(); });
-                    this.zoomToProvince(code);
+                    this.places.forEach(p=>{
+                        const md=this.markers[p.id]; if(!md) return;
+                        if(cats.includes(p.category)) md.marker.addTo(this.map);
+                        else md.marker.remove();
+                    });
+                    const filtered = this.places.filter(p=>cats.includes(p.category));
+                    const c=document.getElementById('places-list'); if(c){ c.innerHTML=''; filtered.forEach(p=>c.appendChild(this.createPlaceElement(p))); }
+                    const el=document.getElementById('places-count'); if(el) el.textContent=filtered.length;
                 }
             });
         });

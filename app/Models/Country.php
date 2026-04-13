@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use App\Traits\HasPage;
 
 class Country extends Model
 {
     use HasFactory, SoftDeletes, HasPage;
+
+    protected $appends = ['image_url'];
 
     protected $fillable = [
         'name',
@@ -41,6 +44,12 @@ class Country extends Model
         'area' => 'decimal:2',
         'is_active' => 'boolean'
     ];
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image) return null;
+        return Storage::disk('public')->url($this->image);
+    }
 
     // Relation avec le continent
     public function continent(): BelongsTo

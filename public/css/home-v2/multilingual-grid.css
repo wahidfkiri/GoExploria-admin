@@ -1,11 +1,16 @@
 /**
- * Multilingual Enterprise Grid - Design System Bosse
+ * Multilingual Enterprise Grid
  */
 
-.lang-grid-block {
-    overflow: hidden;
-    position: relative;
-    padding: 60px 40px !important;
+.multilingual-v2-section {
+    background: #fff;
+    font-family: Montserrat, sans-serif;
+}
+
+.mlg-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px;
 }
 
 .lang-grid-container {
@@ -160,12 +165,18 @@
     }
 }
 
+@media (max-width: 768px) {
+    .mlg-container {
+        padding: 32px 20px;
+    }
+}
+
 @media (max-width: 600px) {
     .lang-grid-container {
         grid-template-columns: 1fr;
     }
     
-    .lang-grid-block {
-        padding: 40px 20px !important;
+    .mlg-container {
+        padding: 24px 14px;
     }
 }

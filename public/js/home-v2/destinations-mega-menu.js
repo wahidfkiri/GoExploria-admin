@@ -243,7 +243,19 @@ class DestinationsMegaMenu {
         const link = document.createElement('a');
         link.href = this.service.getDestinationUrl({...country, type: 'country'});
         link.className = 'destinations-mega-country-link';
-        link.textContent = country.name;
+        
+        const imageUrl = country.image_url || country.image || this.getDefaultImage('country');
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = country.name;
+        img.className = 'destinations-mega-country-img';
+        img.addEventListener('error', () => { img.src = this.getDefaultImage('country'); });
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = country.name;
+        
+        link.appendChild(img);
+        link.appendChild(nameSpan);
         
         // Mettre à jour le fil d'Ariane au hover sur le pays
         link.addEventListener('mouseenter', () => {

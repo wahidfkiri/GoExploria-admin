@@ -1,17 +1,80 @@
-
 {{-- Dernières Nouvelles Component --}}
-<section class="news-v2-section design-bosse-section" id="news-section">
-    <div class="design-bosse-container">
-        
-        {{-- BLOC DESIGN BOSSE --}}
-        <div class="design-bosse-block news-section-block">
-            <h1 class="design-bosse-title">Dernières Nouvelles</h1>
-            
-            <div class="design-bosse-controls" style="justify-content: center; text-align: center; margin-bottom: 40px;">
-                <p style="font-size: 16px; color: #666; font-weight: 500; max-width: 800px; margin: 0 auto;">
-                    Les articles les plus récents par région
-                </p>
+<section class="news-v2-section" id="news-section">
+
+    {{-- ============================================================
+         ENTÊTE STANDARD — DERNIÈRES NOUVELLES
+         ============================================================ --}}
+    <div class="resto-header-block">
+        <div class="resto-header-main">
+            <div class="resto-header-logo-left">
+                <a href="#" class="resto-accord-btn" title="GoExploria">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('logo.png') }}" alt="GoExploria">
+                    </div>
+                    <span class="resto-accord-btn-label">GoExploria</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
             </div>
+            <div class="resto-header-center">
+                <h1 class="resto-header-title">DERNIÈRES NOUVELLES</h1>
+                <p class="resto-header-subtitle">
+                    Les articles les plus récents par région — Afrique · Europe · Asie · Amériques
+                </p>
+                <div class="resto-header-tabs" role="tablist">
+                    <button class="resto-tab-btn active" role="tab" data-region="all">
+                        <i class="fas fa-globe"></i> Toutes régions
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-region="afrique">
+                        <i class="fas fa-map-marker-alt"></i> Afrique
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-region="europe">
+                        <i class="fas fa-map-marker-alt"></i> Europe
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-region="asie">
+                        <i class="fas fa-map-marker-alt"></i> Asie
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-region="ameriques">
+                        <i class="fas fa-map-marker-alt"></i> Amériques
+                    </button>
+                </div>
+            </div>
+            <div class="resto-header-logo-right">
+                <a href="#" class="resto-accord-btn" title="Plans Web Go">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('plan-n-go.png') }}" alt="Plans Web Go">
+                    </div>
+                    <span class="resto-accord-btn-label">Plans Web Go</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="resto-header-destinations-bar">
+            <div class="resto-dest-row">
+                <div class="resto-dest-icon-box">
+                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
+                    <span>Destinations</span>
+                </div>
+                <div class="resto-dest-breadcrumb">
+                    <a href="#" class="resto-dest-link active">Toutes destinations</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Amérique du Nord</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Canada</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Québec</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ============================================================
+         CONTENU PRINCIPAL
+         ============================================================ --}}
+    <div class="news-container">
 
             {{-- 1. Grille des Articles Récents --}}
             <div class="news-articles-grid">
@@ -19,7 +82,7 @@
                 {{-- Article Afrique --}}
                 <div class="news-article-card">
                     <div class="news-article-image">
-                        <img src="https://images.unsplash.com/photo-1523841589119-91307b22292f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Afrique">
+                        <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Afrique">
                         <span class="news-region-badge">AFRIQUE</span>
                     </div>
                     <div class="news-article-body">
@@ -107,12 +170,5 @@
 
             </div>
 
-        </div>
-    </div>
+    </div>{{-- /news-container --}}
 </section>
-
-<style>
-@media (max-width: 991px) {
-    .desktop-only { display: none !important; }
-}
-</style>

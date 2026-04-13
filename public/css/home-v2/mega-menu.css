@@ -310,6 +310,309 @@
     }
 }
 
+/* ============================================
+   SMM — Services Mega Menu Redesign
+   ============================================ */
+
+/* Override min-height pour le nouveau layout */
+.mega-menu-v2 { min-height: auto !important; }
+
+/* ── Bandeau supérieur ──────────────────────── */
+.smm-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #0a1628 0%, #1a2942 100%);
+    border-bottom: 2px solid rgba(212,175,55,0.25);
+}
+
+.smm-banner-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.smm-banner-logo {
+    width: 42px;
+    height: 42px;
+    background: rgba(212,175,55,0.15);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(212,175,55,0.35);
+    flex-shrink: 0;
+}
+
+.smm-banner-logo svg {
+    width: 22px;
+    height: 22px;
+    stroke: #d4af37;
+}
+
+.smm-banner-text strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.smm-banner-text span {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 400;
+}
+
+.smm-banner-cats {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.smm-banner-cat {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.65);
+    background: rgba(255,255,255,0.07);
+    letter-spacing: 0.3px;
+}
+
+.smm-cat-explorer { border-left: 2px solid #4361ee; }
+.smm-cat-medias   { border-left: 2px solid #e63946; }
+.smm-cat-voyages  { border-left: 2px solid #2dc653; }
+.smm-cat-services { border-left: 2px solid #d4af37; }
+
+/* ── Corps : 4 colonnes ─────────────────────── */
+.smm-body {
+    display: flex;
+    padding: 22px 10px 14px;
+    gap: 0;
+    align-items: flex-start;
+}
+
+.smm-col {
+    flex: 1;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* ── En-tête de catégorie ───────────────────── */
+.smm-col-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 0 10px;
+    margin-bottom: 6px;
+    border-bottom: 1.5px solid #eee;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.smm-col-header svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+}
+
+.smm-col-header.smm-col-explorer { color: #4361ee; border-color: rgba(67,97,238,0.2); }
+.smm-col-header.smm-col-explorer svg { stroke: #4361ee; }
+.smm-col-header.smm-col-medias   { color: #e63946; border-color: rgba(230,57,70,0.2); }
+.smm-col-header.smm-col-medias svg { stroke: #e63946; }
+.smm-col-header.smm-col-voyages  { color: #2dc653; border-color: rgba(45,198,83,0.2); }
+.smm-col-header.smm-col-voyages svg { stroke: #2dc653; }
+.smm-col-header.smm-col-services { color: #c9980a; border-color: rgba(212,175,55,0.25); }
+.smm-col-header.smm-col-services svg { stroke: #c9980a; }
+
+/* ── Item de service ────────────────────────── */
+.smm-item {
+    padding: 8px 10px !important;
+    border-radius: 8px !important;
+    align-items: flex-start !important;
+    gap: 11px !important;
+    transition: all 0.18s ease !important;
+}
+
+.smm-item::before { display: none !important; }
+
+.smm-item:hover {
+    transform: none !important;
+    padding-left: 10px !important;
+}
+
+/* Hover couleurs par colonne */
+.smm-body > .smm-col:nth-child(1) .smm-item:hover {
+    background: rgba(67,97,238,0.06) !important;
+    border-left-color: #4361ee !important;
+}
+.smm-body > .smm-col:nth-child(3) .smm-item:hover {
+    background: rgba(230,57,70,0.06) !important;
+    border-left-color: #e63946 !important;
+}
+.smm-body > .smm-col:nth-child(5) .smm-item:hover {
+    background: rgba(45,198,83,0.06) !important;
+    border-left-color: #2dc653 !important;
+}
+.smm-body > .smm-col:nth-child(7) .smm-item:hover {
+    background: rgba(212,175,55,0.07) !important;
+    border-left-color: #d4af37 !important;
+}
+
+/* Override des overrides du parent */
+.smm-item:hover .mega-menu-v2-icon { transform: none !important; }
+.smm-item:hover span { color: inherit !important; }
+
+/* ── Icône de service ───────────────────────── */
+.smm-item-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: transform 0.18s ease;
+}
+
+.smm-item-icon svg {
+    width: 17px;
+    height: 17px;
+}
+
+.smm-item:hover .smm-item-icon { transform: scale(1.08); }
+
+.smm-icon-explorer { background: rgba(67,97,238,0.1); }
+.smm-icon-explorer svg { stroke: #4361ee; }
+.smm-icon-medias   { background: rgba(230,57,70,0.1); }
+.smm-icon-medias svg { stroke: #e63946; }
+.smm-icon-voyages  { background: rgba(45,198,83,0.1); }
+.smm-icon-voyages svg { stroke: #2dc653; }
+.smm-icon-services { background: rgba(212,175,55,0.12); }
+.smm-icon-services svg { stroke: #c9980a; }
+
+/* ── Texte de l'item ────────────────────────── */
+.smm-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.smm-item-info strong {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0a1628;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.18s;
+}
+
+.smm-item-info span {
+    font-size: 11px;
+    color: #9ba3af;
+    line-height: 1.35;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.smm-body > .smm-col:nth-child(1) .smm-item:hover .smm-item-info strong { color: #4361ee !important; }
+.smm-body > .smm-col:nth-child(3) .smm-item:hover .smm-item-info strong { color: #e63946 !important; }
+.smm-body > .smm-col:nth-child(5) .smm-item:hover .smm-item-info strong { color: #2dc653 !important; }
+.smm-body > .smm-col:nth-child(7) .smm-item:hover .smm-item-info strong { color: #c9980a !important; }
+
+/* ── Séparateur vertical ────────────────────── */
+.smm-sep {
+    width: 1px;
+    background: #e8ecf0;
+    margin: 4px 0;
+    align-self: stretch;
+    flex-shrink: 0;
+}
+
+/* ── Pied : accès rapide ────────────────────── */
+.smm-footer {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 28px 12px;
+    background: #f8f9fb;
+    border-top: 1px solid #eaecf0;
+    flex-wrap: wrap;
+}
+
+.smm-footer-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-right: 2px;
+    flex-shrink: 0;
+}
+
+.smm-footer-pill {
+    padding: 4px 13px !important;
+    background: #ffffff !important;
+    border: 1px solid #dde1e8 !important;
+    border-left: 1px solid #dde1e8 !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+    color: #4a5568 !important;
+    font-weight: 500 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0 !important;
+    transition: all 0.18s ease !important;
+    text-decoration: none !important;
+    white-space: nowrap;
+}
+
+.smm-footer-pill::before { display: none !important; }
+
+.smm-footer-pill:hover {
+    background: #0a1628 !important;
+    color: #ffffff !important;
+    border-color: #0a1628 !important;
+    transform: none !important;
+    padding-left: 13px !important;
+}
+
+/* ── Responsive ─────────────────────────────── */
+@media (max-width: 1200px) {
+    .smm-banner-cats { display: none; }
+    .smm-col { padding: 0 14px; }
+    .smm-item-info span { display: none; }
+    .smm-item-info strong { white-space: normal; }
+}
+
+@media (max-width: 992px) {
+    .smm-body {
+        flex-wrap: wrap;
+        padding: 14px;
+    }
+    .smm-sep { display: none; }
+    .smm-col {
+        flex: 0 0 calc(50% - 14px);
+        padding: 8px 10px;
+        border-bottom: 1px solid #eee;
+    }
+    .smm-item-info span { display: block !important; }
+}
+
 /* Overlay pour mobile */
 .mega-menu-v2-overlay-mobile {
     display: none;

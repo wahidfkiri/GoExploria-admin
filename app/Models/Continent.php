@@ -5,11 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 use App\Traits\HasPage;
 
 class Continent extends Model
 {
     use HasFactory, SoftDeletes, HasPage;
+
+    protected $appends = ['image_url'];
 
     protected $fillable = [
         'name',
@@ -30,6 +33,12 @@ class Continent extends Model
         'countries_count' => 'integer',
         'is_active' => 'boolean'
     ];
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image) return null;
+        return Storage::disk('public')->url($this->image);
+    }
 
     // Relation avec les pays
     public function countries()

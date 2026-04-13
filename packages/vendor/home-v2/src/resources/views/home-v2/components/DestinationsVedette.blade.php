@@ -1,5 +1,5 @@
 {{-- Destinations Vedette Component - Destinations vedette --}}
-<section class="destinations-vedette-v2-section">
+<section class="destinations-vedette-v2-section" id="destinations-vedette">
     <div class="destinations-vedette-v2-container">
         {{-- ============================================================
              ENTÊTE DESTINATIONS VEDETTES — même layout que RestaurantHeader
@@ -321,25 +321,6 @@
                         <span class="destinations-vedette-v2-card-location">Îles de la Madeleine</span>
                         <div class="destinations-vedette-v2-card-rating">
                             ⭐⭐⭐⭐⭐
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            {{-- Destination Card 8 --}}
-            <article class="destinations-vedette-v2-card" data-category="urbain">
-                <div class="destinations-vedette-v2-card-image">
-                    <img src="https://images.unsplash.com/photo-1560932831-e8e0e8b9a3f8?w=600&h=400&fit=crop" alt="Ottawa">
-                </div>
-                <div class="destinations-vedette-v2-card-content">
-                    <h3 class="destinations-vedette-v2-card-title">Ottawa</h3>
-                    <p class="destinations-vedette-v2-card-description">
-                        Capitale du Canada, riche en histoire, musées nationaux et architecture.
-                    </p>
-                    <div class="destinations-vedette-v2-card-footer">
-                        <span class="destinations-vedette-v2-card-location">Ontario</span>
-                        <div class="destinations-vedette-v2-card-rating">
-                            ⭐⭐⭐⭐
                         </div>
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-<section class="tourism-section">
+<section class="tourism-section" id="tourisme-business">
 
     {{-- EN-TÊTE STANDARD --}}
     <div class="resto-header-block">

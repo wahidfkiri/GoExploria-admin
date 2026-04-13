@@ -137,13 +137,29 @@
     font-weight: 700;
     text-decoration: none;
     padding: 0;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 5px;
 }
 
 .destinations-mega-country-link:hover {
     color: #1a2942;
+    text-decoration: none;
+}
+
+.destinations-mega-country-link:hover span {
     text-decoration: underline;
+}
+
+/* Image miniature du pays */
+.destinations-mega-country-img {
+    width: 48px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.1);
 }
 
 /* Liste des provinces */

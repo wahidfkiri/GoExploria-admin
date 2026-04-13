@@ -283,3 +283,11 @@ Route::prefix('pages')->name('pages.')->group(function () {
         return view('home-v2.pages.accord-mets-vins');
     })->name('accord-mets-vins');
 });
+
+// Pages principales du Header
+Route::get('/contact',      fn() => view('home-v2.pages.contact'))->name('contact');
+Route::get('/inscription',  fn() => view('home-v2.pages.inscription'))->name('inscription');
+Route::get('/mon-compte',   fn() => view('home-v2.pages.mon-compte'))->name('mon-compte');
+Route::get('/devis',        fn() => view('home-v2.pages.devis'))->name('devis');
+Route::get('/favoris',      fn() => view('home-v2.pages.favoris'))->name('favoris');
+Route::get('/panier',       fn() => view('home-v2.pages.panier'))->name('panier');

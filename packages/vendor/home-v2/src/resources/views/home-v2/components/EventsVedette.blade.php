@@ -1,5 +1,5 @@
 {{-- Events Vedette Component - Événements vedette au Québec --}}
-<section class="events-vedette-v2-section">
+<section class="events-vedette-v2-section" id="evenements-vedette">
     <div class="events-vedette-v2-container">
         {{-- ============================================================
              ENTÊTE ÉVÉNEMENTS VEDETTE — même layout que RestaurantHeader

@@ -1,9 +1,34 @@
 /**
- * NewsSection - Design System Bosse
+ * NewsSection
  */
 
-.news-section-block {
-    padding: 60px 40px !important;
+.news-v2-section {
+    background: #fff;
+    font-family: Montserrat, sans-serif;
+}
+
+.news-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px;
+}
+
+/* Divider Exploration */
+.news-explore-divider {
+    margin: 56px 0 32px;
+    text-align: center;
+}
+
+.news-explore-divider h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1a3a8f;
+    margin-bottom: 8px;
+}
+
+.news-explore-divider p {
+    font-size: 14px;
+    color: #94a3b8;
 }
 
 /* Grille des Articles Récents */
@@ -119,10 +144,6 @@
 .news-read-btn:hover { color: #d32f2f; }
 
 /* Section Explorer par Région */
-.news-explore-divider {
-    margin: 60px 0 40px;
-    text-align: center;
-}
 
 .news-region-grid {
     display: grid;
@@ -224,9 +245,10 @@
 
 @media (max-width: 768px) {
     .news-articles-grid { grid-template-columns: 1fr; }
-    .news-section-block { padding: 40px 20px !important; }
+    .news-container { padding: 32px 20px; }
 }
 
 @media (max-width: 480px) {
     .news-region-grid { grid-template-columns: 1fr; }
+    .news-container { padding: 24px 14px; }
 }

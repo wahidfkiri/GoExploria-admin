@@ -1,24 +1,77 @@
+{{-- RealEstateSection — GoExploria Immobilier --}}
 <section class="immo-v2-section" id="real-estate-section">
-    <div class="immo-v2-container">
-        {{-- BLOC DESIGN BOSSE --}}
-        <div class="design-bosse-block">
-            <h2 class="design-bosse-title" style="text-align: center;">Trouvez la propriété de vos rêves</h2>
-            
-            <div class="design-bosse-controls">
-                <div class="immo-v2-filters">
-                    <span class="design-bosse-label">
-                        <span class="bosse-picto">🏠</span> Nos biens immobiliers :
-                    </span>
-                    <button class="events-vedette-v2-filter-btn" data-filter="all">Tous</button>
-                    <button class="events-vedette-v2-filter-btn" data-filter="maison">Maisons</button>
-                    <button class="events-vedette-v2-filter-btn" data-filter="appartement">Appartements</button>
-                </div>
 
-                <a href="#" class="design-bosse-more-btn">
-                    En savoir plus <span class="events-vedette-v2-plus-icon">+</span>
+    {{-- ============================================================
+         ENTÊTE STANDARD — IMMOBILIER
+         ============================================================ --}}
+    <div class="resto-header-block">
+        <div class="resto-header-main">
+            <div class="resto-header-logo-left">
+                <a href="#" class="resto-accord-btn" title="GoExploria">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('logo.png') }}" alt="GoExploria">
+                    </div>
+                    <span class="resto-accord-btn-label">GoExploria</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
+            </div>
+            <div class="resto-header-center">
+                <h1 class="resto-header-title">TROUVEZ LA PROPRIÉTÉ DE VOS RÊVES</h1>
+                <p class="resto-header-subtitle">
+                    Maisons · Appartements · Villas · Studios — Des biens sélectionnés pour correspondre à vos projets et à votre budget.
+                </p>
+                <div class="resto-header-tabs" role="tablist">
+                    <button class="resto-tab-btn active" role="tab" data-filter="all">
+                        <i class="fas fa-th-large"></i> Tous les biens
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-filter="maison">
+                        <i class="fas fa-home"></i> Maisons
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-filter="appartement">
+                        <i class="fas fa-building"></i> Appartements
+                    </button>
+                    <a href="#" class="immo-header-more-btn">
+                        En savoir plus <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="resto-header-logo-right">
+                <a href="#" class="resto-accord-btn" title="Plans Web Go">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('plan-n-go.png') }}" alt="Plans Web Go">
+                    </div>
+                    <span class="resto-accord-btn-label">Plans Web Go</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
                 </a>
             </div>
         </div>
+        <div class="resto-header-destinations-bar">
+            <div class="resto-dest-row">
+                <div class="resto-dest-icon-box">
+                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
+                    <span>Destinations</span>
+                </div>
+                <div class="resto-dest-breadcrumb">
+                    <a href="#" class="resto-dest-link active">Toutes destinations</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Amérique du Nord</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Canada</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Québec</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ============================================================
+         CONTENU PRINCIPAL
+         ============================================================ --}}
+    <div class="immo-v2-container">
 
         <!-- GRILLE DE CARTES (4 propriétés) -->
         <div class="immo-v2-grid">
@@ -29,6 +82,7 @@
                     <span class="immo-v2-img-badge">À vendre</span>
                 </div>
                 <div class="immo-v2-card-content">
+                    <div class="immo-v2-price">345 000 €</div>
                     <h3 class="immo-v2-card-title">Appartement Lumière</h3>
                     <div class="immo-v2-location"><i class="fas fa-map-pin"></i> Quartier Centre, Lyon</div>
                     <div class="immo-v2-features">
@@ -36,20 +90,18 @@
                         <span class="immo-v2-feature-item"><i class="fas fa-bed"></i> 3 chambres</span>
                         <span class="immo-v2-feature-item"><i class="fas fa-bath"></i> 2 sdb</span>
                     </div>
-                    <div class="immo-v2-footer">
-                        <div class="immo-v2-price">345 000 €<span class="price-suffix"></span></div>
-                        <a href="#" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
-                    </div>
+                    <a href="#" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
                 </div>
             </article>
 
             <!-- Carte 2 : Maison contemporaine -->
             <article class="immo-v2-card">
                 <div class="immo-v2-card-img">
-                    <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7fa44b7?w=800&auto=format&fit=crop&q=70" alt="Maison contemporaine">
+                    <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&auto=format&fit=crop&q=70" alt="Maison contemporaine">
                     <span class="immo-v2-img-badge">Coup de cœur</span>
                 </div>
                 <div class="immo-v2-card-content">
+                    <div class="immo-v2-price">895 000 €</div>
                     <h3 class="immo-v2-card-title">Villa Moderne</h3>
                     <div class="immo-v2-location"><i class="fas fa-map-pin"></i> Saint-Germain, Paris</div>
                     <div class="immo-v2-features">
@@ -57,10 +109,7 @@
                         <span class="immo-v2-feature-item"><i class="fas fa-bed"></i> 5 chambres</span>
                         <span class="immo-v2-feature-item"><i class="fas fa-tree"></i> Jardin 300 m²</span>
                     </div>
-                    <div class="immo-v2-footer">
-                        <div class="immo-v2-price">895 000 €<span class="price-suffix"></span></div>
-                        <a href="#" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
-                    </div>
+                    <a href="#" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
                 </div>
             </article>
 
@@ -71,6 +120,7 @@
                     <span class="immo-v2-img-badge">Investissement</span>
                 </div>
                 <div class="immo-v2-card-content">
+                    <div class="immo-v2-price">125 000 €</div>
                     <h3 class="immo-v2-card-title">Studio Centre</h3>
                     <div class="immo-v2-location"><i class="fas fa-map-pin"></i> Bordeaux Centre</div>
                     <div class="immo-v2-features">
@@ -78,10 +128,7 @@
                         <span class="immo-v2-feature-item"><i class="fas fa-door-open"></i> 1 pièce</span>
                         <span class="immo-v2-feature-item"><i class="fas fa-chart-line"></i> Rendement 6%</span>
                     </div>
-                    <div class="immo-v2-footer">
-                        <div class="immo-v2-price">125 000 €<span class="price-suffix"></span></div>
-                        <a href="#" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
-                    </div>
+                    <a href="#" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
                 </div>
             </article>
 
@@ -92,6 +139,7 @@
                     <span class="immo-v2-img-badge">Exclusivité</span>
                 </div>
                 <div class="immo-v2-card-content">
+                    <div class="immo-v2-price">580 000 €</div>
                     <h3 class="immo-v2-card-title">Duplex Terrasse</h3>
                     <div class="immo-v2-location"><i class="fas fa-map-pin"></i> Montpellier</div>
                     <div class="immo-v2-features">
@@ -99,10 +147,7 @@
                         <span class="immo-v2-feature-item"><i class="fas fa-bed"></i> 4 chambres</span>
                         <span class="immo-v2-feature-item"><i class="fas fa-sun"></i> Terrasse 40 m²</span>
                     </div>
-                    <div class="immo-v2-footer">
-                        <div class="immo-v2-price">580 000 €<span class="price-suffix"></span></div>
-                        <a href="#" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
-                    </div>
+                    <a href="#" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
                 </div>
             </article>
         </div>
