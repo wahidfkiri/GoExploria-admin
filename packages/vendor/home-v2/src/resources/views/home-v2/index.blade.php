@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-mega-menu-modern.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-search.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/search-bar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/categories-mega-menu.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/videos-dropdown.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/viewing-carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/tiktok-carousel.css') }}">

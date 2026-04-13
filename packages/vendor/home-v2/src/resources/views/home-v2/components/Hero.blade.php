@@ -160,11 +160,12 @@
                         </div>
                     </div>
                     
-                    <a href="{{ url('/deals') }}" class="quick-link-item">
+                    {{-- Categories Mega Menu Trigger --}}
+                    <div class="quick-link-item" id="catMegaTrigger" style="cursor:pointer;" title="Catégories & Activités">
                         <div class="icon-circle icon-standard">
                             <i class="fas fa-tag"></i>
                         </div>
-                    </a>
+                    </div>
                     
                     <a href="{{ url('/offres') }}" class="quick-link-item">
                         <div class="icon-circle icon-standard">
@@ -203,6 +204,9 @@
 
 {{-- INFO MEGA MENU - Hors de tout overflow parent pour un positionnement correct --}}
 @include('home-v2.components.InfoMegaMenu')
+
+{{-- CATEGORIES MEGA MENU - Panel fixed, positionné par JS sous le trigger --}}
+@include('home-v2.components.CategoriesMegaMenu')
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
