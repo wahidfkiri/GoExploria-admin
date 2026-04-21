@@ -80,16 +80,6 @@
                 </a>
             </div>
         </div>
-        {{-- Dropdown Vidéos - HORS du <li> pour un centrage full-width correct --}}
-        <div class="nav-videos-dropdown" id="videosDropdown">
-            <div class="nav-videos-header">
-                <h3 class="nav-videos-title">Nos Vidéos</h3>
-                <p class="nav-videos-subtitle">Découvrez notre collection de vidéos</p>
-            </div>
-            <div class="nav-videos-list" id="videosDropdownList">
-                {{-- Les vidéos seront chargées dynamiquement --}}
-            </div>
-        </div>
     </nav>
 </header>
 

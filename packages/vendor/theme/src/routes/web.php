@@ -77,3 +77,7 @@ Route::prefix('theme')->group(function () {
         });
     });
 });
+
+Route::get('landing/plans', function() {
+    return view('theme::landing');
+});
