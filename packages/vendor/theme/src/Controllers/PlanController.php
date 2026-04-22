@@ -28,4 +28,16 @@ class PlanController extends Controller
         
         return view('theme::plans.plan-detail', compact('plan'));
     }
+
+    
+    public function preview($id = null)
+    {
+            $plan = Plan::active()
+                ->with('plugins')
+                ->firstOrFail();
+        
+        return view('theme::plans.plan-' . $id, compact('plan'));
+    }
+
+
 }

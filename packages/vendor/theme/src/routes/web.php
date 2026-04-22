@@ -80,4 +80,7 @@ Route::prefix('theme')->group(function () {
 });
 
 Route::get('plans/{slug}', [PlanController::class, 'show'])->name('plans.show');
-    
+Route::get('plans/preview/{id}', [PlanController::class, 'preview'])->name('plans.preview');
+Route::get('plans/contact', function() {
+        return null;
+})->name('contact.send');
