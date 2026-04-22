@@ -100,95 +100,7 @@
             <div class="resto-header-shimmer"></div>
         </div>
 
-        {{-- SLIDESHOW MULTI-CARTE ÉVÉNEMENTS --}}
-        @php
-        $eventsSlides = [
-            [
-                'main' => [
-                    'src'   => 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=900&h=500&fit=crop',
-                    'video' => 'M-2eAiU09qg',
-                    'title' => "Festival d'été de Québec",
-                    'desc'  => 'Le plus grand festival en plein air de la francophonie',
-                    'badge' => 'new',
-                ],
-                'grid' => [
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Carnaval de Québec',
-                        'desc'  => "Le plus grand carnaval d'hiver au monde",
-                        'badge' => 'hot',
-                    ],
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Osheaga — Montréal',
-                        'desc'  => 'Musique, arts et culture au cœur de Montréal',
-                        'badge' => 'trending',
-                    ],
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Jazz de Montréal',
-                        'desc'  => 'Le plus grand festival de jazz du monde',
-                        'badge' => 'popular',
-                    ],
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Fête des Neiges',
-                        'desc'  => 'Glisse, sculptures de glace et festivités hivernales',
-                        'badge' => 'new',
-                    ],
-                ],
-            ],
-            [
-                'main' => [
-                    'src'   => 'https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=900&h=500&fit=crop',
-                    'video' => 'M-2eAiU09qg',
-                    'title' => 'Festival des Couleurs — Laurentides',
-                    'desc'  => "L'explosion de couleurs des Laurentides en automne",
-                    'badge' => 'trending',
-                ],
-                'grid' => [
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Juste pour Rire',
-                        'desc'  => 'Le plus grand festival de comédie au monde',
-                        'badge' => 'popular',
-                    ],
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Grand Prix du Canada',
-                        'desc'  => 'Formule 1 sur le Circuit Gilles-Villeneuve',
-                        'badge' => 'hot',
-                    ],
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Cirque du Soleil',
-                        'desc'  => 'Magie, acrobaties et spectacles inoubliables',
-                        'badge' => 'new',
-                    ],
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Francofolies',
-                        'desc'  => 'La chanson francophone à l\'honneur à Montréal',
-                        'badge' => 'trending',
-                    ],
-                ],
-            ],
-        ];
-        @endphp
-        @include('home-v2.components.MediaSlideshow', [
-            'slideshowId' => 'eventsMedia',
-            'slides'      => $eventsSlides,
-        ])
-
-        {{-- Carousel des événements --}}
+         {{-- Carousel des événements --}}
         <div class="vedette-carousel-outer">
             <button class="vedette-carousel-btn vedette-carousel-prev" id="eventsCarouselPrev" aria-label="Précédent"><i class="fas fa-chevron-left"></i></button>
             <div class="events-vedette-v2-scroll-wrapper">
@@ -357,7 +269,97 @@
             <button class="vedette-carousel-btn vedette-carousel-next" id="eventsCarouselNext" aria-label="Suivant"><i class="fas fa-chevron-right"></i></button>
         </div>
         <div class="vedette-carousel-progress"><div class="vedette-carousel-bar" id="eventsCarouselBar"></div></div>
-    </div>
+    
+
+        {{-- SLIDESHOW MULTI-CARTE ÉVÉNEMENTS --}}
+        @php
+        $eventsSlides = [
+            [
+                'main' => [
+                    'src'   => 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=900&h=500&fit=crop',
+                    'video' => 'M-2eAiU09qg',
+                    'title' => "Festival d'été de Québec",
+                    'desc'  => 'Le plus grand festival en plein air de la francophonie',
+                    'badge' => 'new',
+                ],
+                'grid' => [
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Carnaval de Québec',
+                        'desc'  => "Le plus grand carnaval d'hiver au monde",
+                        'badge' => 'hot',
+                    ],
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Osheaga — Montréal',
+                        'desc'  => 'Musique, arts et culture au cœur de Montréal',
+                        'badge' => 'trending',
+                    ],
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Jazz de Montréal',
+                        'desc'  => 'Le plus grand festival de jazz du monde',
+                        'badge' => 'popular',
+                    ],
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Fête des Neiges',
+                        'desc'  => 'Glisse, sculptures de glace et festivités hivernales',
+                        'badge' => 'new',
+                    ],
+                ],
+            ],
+            [
+                'main' => [
+                    'src'   => 'https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=900&h=500&fit=crop',
+                    'video' => 'M-2eAiU09qg',
+                    'title' => 'Festival des Couleurs — Laurentides',
+                    'desc'  => "L'explosion de couleurs des Laurentides en automne",
+                    'badge' => 'trending',
+                ],
+                'grid' => [
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Juste pour Rire',
+                        'desc'  => 'Le plus grand festival de comédie au monde',
+                        'badge' => 'popular',
+                    ],
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Grand Prix du Canada',
+                        'desc'  => 'Formule 1 sur le Circuit Gilles-Villeneuve',
+                        'badge' => 'hot',
+                    ],
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Cirque du Soleil',
+                        'desc'  => 'Magie, acrobaties et spectacles inoubliables',
+                        'badge' => 'new',
+                    ],
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Francofolies',
+                        'desc'  => 'La chanson francophone à l\'honneur à Montréal',
+                        'badge' => 'trending',
+                    ],
+                ],
+            ],
+        ];
+        @endphp
+        @include('home-v2.components.MediaSlideshow', [
+            'slideshowId' => 'eventsMedia',
+            'slides'      => $eventsSlides,
+        ])
+
+       </div>
 </section>
 <script>
 (function () {

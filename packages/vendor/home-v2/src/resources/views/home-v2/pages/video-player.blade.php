@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/navigation.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-destinations-mega.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/mega-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/services-mega-menu-v2.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-mega-menu-modern.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-search.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/search-bar.css') }}">

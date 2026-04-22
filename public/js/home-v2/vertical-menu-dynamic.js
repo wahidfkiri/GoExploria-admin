@@ -70,6 +70,9 @@ class VerticalMenuDynamic {
         const loader = this.menuList.querySelector('.vertical-menu-v2-loading');
         if (loader) {
             loader.remove();
+        } else {
+            // Les menus sont déjà définis statiquement — ne pas injecter depuis l'API
+            return;
         }
         
         // Générer le HTML des menus dynamiques

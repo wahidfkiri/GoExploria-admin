@@ -40,11 +40,11 @@
                     </li> -->
                     <li><a href="{{ route('contact') }}">CONTACT</a></li>
                     <li><a href="{{ route('inscription') }}">INSCRIPTION</a></li>
-                    <li><a href="{{ route('mon-compte') }}">MON COMPTE</a></li>
+                    <li><a href="{{ route('mon-compte') }}" class="nav-account-icon" title="Mon compte" aria-label="Mon compte"><i class="fas fa-user-circle"></i></a></li>
                 </ul>
             </div>
             
-            @include('home-v2.components.MegaMenu')
+            @include('home-v2.components.ServicesMegaMenuV2')
             
             <div class="nav-right">
                 <a href="javascript:void(0)" class="nav-icon mobile-search-trigger" id="mobileSearchTrigger" aria-label="Recherche">

@@ -1,0 +1,168 @@
+/* ============================================================
+   ANCRES DE SECTION — compensation header (80px) + barre sticky (48px)
+   ============================================================ */
+.snb-anchor {
+    display: block;
+    position: relative;
+    top: -140px;
+    visibility: hidden;
+    pointer-events: none;
+    height: 0;
+}
+
+/* ============================================================
+   SECTIONS NAV BAR — Barre de navigation horizontale
+   Liens vers les principales sections de la page d'accueil
+   ============================================================ */
+
+.snb-bar {
+    position: sticky;
+    top: 80px;
+    z-index: 200;
+    background: rgba(255, 255, 255, 0.80);
+    border-bottom: 2px solid #d4af37;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+.snb-inner {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 48px;
+    overflow: hidden;
+}
+
+/* Label gauche */
+.snb-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    color: #d4af37;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.snb-label i {
+    font-size: 14px;
+}
+
+/* Séparateur vertical */
+.snb-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(212, 175, 55, 0.35);
+    margin: 0 16px;
+    flex-shrink: 0;
+}
+
+/* Liste de liens */
+.snb-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex: 1;
+}
+
+.snb-links::-webkit-scrollbar {
+    display: none;
+}
+
+/* Lien individuel */
+.snb-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: linear-gradient(90deg, #0a1628 0%, #1a2942 100%);
+    white-space: nowrap;
+    transition: all 0.22s ease;
+    border: 1px solid transparent;
+}
+
+.snb-link i {
+    font-size: 12px;
+    color: #d4af37;
+    flex-shrink: 0;
+}
+
+.snb-link:hover,
+.snb-link.active {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: rgba(212, 175, 55, 0.4);
+    color: #d4af37;
+}
+
+/* Surlignage actif au scroll via JS */
+.snb-link.active {
+    background: rgba(212, 175, 55, 0.22);
+    border-color: #d4af37;
+    color: #d4af37;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+    .snb-label span {
+        display: none;
+    }
+    .snb-label {
+        gap: 0;
+    }
+    .snb-divider {
+        margin: 0 10px;
+    }
+    .snb-link {
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .snb-bar {
+        top: 60px;
+    }
+    .snb-inner {
+        padding: 0 8px;
+        height: 56px;
+    }
+    .snb-label {
+        display: none;
+    }
+    .snb-divider {
+        display: none;
+    }
+    .snb-link {
+        flex-direction: column;
+        gap: 3px;
+        padding: 6px 8px;
+        border-radius: 8px;
+        align-items: center;
+    }
+    .snb-link i {
+        font-size: 13px;
+    }
+    .snb-link span {
+        font-size: 9px;
+        line-height: 1.1;
+        text-align: center;
+        max-width: 60px;
+        white-space: normal;
+    }
+}

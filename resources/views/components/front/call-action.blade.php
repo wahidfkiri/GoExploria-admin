@@ -107,7 +107,7 @@
                     <!-- Contenu superposé -->
                     <div class="modal-image-content">
                         <div class="modal-image-icon">
-                            <i class="fas fa-comments"></i>
+                            <img src="{{ asset('header_info/GO-EXPLORIA-NEXT-LEVEL.png') }}" alt="GoExploria Next Level" style="width:100%;height:auto;max-width:260px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.35));">
                         </div>
                         <h4>Votre Partenaire Digital</h4>
                         <p>Go Exploria Business est votre partenaire pour la transformation digitale de votre entreprise.</p>

@@ -1,0 +1,186 @@
+/* ============================================
+   TYPOGRAPHIE GLOBALE DES PAGES — agrandie
+   Surcharge pour toutes les pages (inscription,
+   contact, devis, panier, favoris, mon-compte,
+   categories, category, activity, etc.)
+   ============================================ */
+
+/* Bump du corps de texte général */
+.page-wrap,
+.page-wrap p,
+.page-wrap li,
+.page-wrap span:not([class*="icon"]):not([class*="badge"]),
+.page-wrap label,
+.insc-page,
+.insc-page p,
+.insc-page li,
+.insc-page label,
+.dashboard,
+.dashboard p,
+.dashboard li,
+.dashboard td,
+.dashboard label,
+.dashboard .main,
+.dashboard main {
+    font-size: 16px !important;
+    line-height: 1.65 !important;
+}
+
+/* Titres de section */
+.page-wrap .section-title,
+.page-wrap h1,
+.page-wrap h2,
+.insc-page h1,
+.insc-page h2,
+.insc-page .section-title,
+.dashboard h1,
+.dashboard h2,
+.dashboard .section-title {
+    font-size: 2.2rem !important;
+    line-height: 1.2 !important;
+}
+
+.page-wrap h3,
+.page-wrap .info-card h3,
+.page-wrap .card-title,
+.insc-page h3,
+.insc-page .card-title,
+.dashboard h3,
+.dashboard .card-title,
+.dashboard .card-header .card-title {
+    font-size: 1.3rem !important;
+    line-height: 1.3 !important;
+}
+
+.page-wrap .section-sub,
+.page-wrap .subtitle {
+    font-size: 16px !important;
+    line-height: 1.65 !important;
+}
+
+.page-wrap .section-label,
+.page-wrap .badge,
+.page-wrap .info-badge {
+    font-size: 13px !important;
+    letter-spacing: 2px !important;
+}
+
+/* Cartes d'info */
+.page-wrap .info-card h3 { font-size: 17px !important; }
+.page-wrap .info-card p,
+.page-wrap .info-card a { font-size: 15px !important; }
+
+/* Formulaires (toutes pages) */
+.page-wrap input,
+.page-wrap textarea,
+.page-wrap select,
+.insc-page input,
+.insc-page textarea,
+.insc-page select,
+.dashboard input,
+.dashboard textarea,
+.dashboard select {
+    font-size: 15px !important;
+}
+
+.page-wrap label,
+.page-wrap .form-label,
+.insc-page label,
+.insc-page .form-label,
+.dashboard label,
+.dashboard .form-label {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+.page-wrap button,
+.page-wrap .btn,
+.insc-page button,
+.insc-page .btn,
+.dashboard button,
+.dashboard .btn {
+    font-size: 15px !important;
+}
+
+/* Sidebar dashboard (mon-compte) */
+.dashboard .sidebar-item {
+    font-size: 15px !important;
+    padding: 12px 14px !important;
+}
+.dashboard .sidebar-sep {
+    font-size: 12px !important;
+    letter-spacing: 2px !important;
+}
+
+/* Stats cards (mon-compte) */
+.dashboard .stat-card .num {
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+}
+.dashboard .stat-card .lbl {
+    font-size: 13px !important;
+}
+
+/* Tableaux (mon-compte, panier, favoris, devis) */
+.dashboard table th,
+.dashboard table td,
+.page-wrap table th,
+.page-wrap table td {
+    font-size: 14px !important;
+}
+.dashboard .booking-name,
+.page-wrap .booking-name {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+
+/* Prix et montants */
+.dashboard .booking-amount,
+.page-wrap .booking-amount,
+.page-wrap .cart-total,
+.page-wrap .price {
+    font-size: 16px !important;
+    font-weight: 800 !important;
+}
+
+/* Cartes panier / favoris / devis */
+.page-wrap .fav-name,
+.page-wrap .cart-item-name {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+.page-wrap .fav-price,
+.page-wrap .cart-item-price {
+    font-size: 15px !important;
+}
+
+/* Banner de page */
+.page-banner-title {
+    font-size: clamp(2rem, 4vw, 3rem) !important;
+}
+.page-banner-sub {
+    font-size: 16px !important;
+    line-height: 1.7 !important;
+}
+.page-banner-badge {
+    font-size: 13px !important;
+}
+
+/* Liens dans les pages */
+.page-wrap a:not(.btn):not(.nav-link) {
+    font-size: inherit;
+}
+
+/* Responsive : léger ajustement mobile */
+@media (max-width: 768px) {
+    .page-wrap,
+    .page-wrap p,
+    .page-wrap li {
+        font-size: 15px !important;
+    }
+    .page-wrap .section-title,
+    .page-wrap h1,
+    .page-wrap h2 {
+        font-size: 1.7rem !important;
+    }
+}

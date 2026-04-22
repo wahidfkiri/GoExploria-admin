@@ -5,12 +5,12 @@
 /* Panel positionné en fixed via JS */
 .cat-mega-panel {
     position: fixed;
-    width: 680px;
+    width: 820px;
     max-width: calc(100vw - 24px);
-    background: var(--navy-dark);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #ffffff;
+    border: 1px solid rgba(10, 22, 40, 0.08);
     border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.30);
     display: flex;
     flex-direction: row;
     opacity: 0;
@@ -29,41 +29,42 @@
 
 /* ── Left: categories list ───────────────────── */
 .cat-mega-left {
-    width: 210px;
+    width: 260px;
     flex-shrink: 0;
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 10px 0;
+    background: #f7f9fc;
+    border-right: 1px solid rgba(10, 22, 40, 0.08);
+    padding: 14px 0;
     overflow-y: auto;
-    max-height: 400px;
+    max-height: 480px;
 }
 
 .cat-mega-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 16px 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    margin-bottom: 4px;
+    gap: 10px;
+    padding: 10px 20px 14px;
+    border-bottom: 1px solid rgba(10, 22, 40, 0.08);
+    margin-bottom: 6px;
 }
 
 .cat-mega-header-icon {
-    width: 28px;
-    height: 28px;
-    background: rgba(212, 175, 55, 0.15);
-    border-radius: 6px;
+    width: 36px;
+    height: 36px;
+    background: rgba(26, 114, 204, 0.12);
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--accent-gold);
-    font-size: 12px;
+    color: #1a72cc;
+    font-size: 16px;
 }
 
 .cat-mega-header-title {
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 800;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    color: var(--accent-gold);
+    color: #0a1628;
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -71,40 +72,41 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 16px;
+    padding: 13px 20px;
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.72);
-    font-size: 12.5px;
+    color: #0a1628;
+    font-size: 15px;
     font-weight: 600;
     font-family: 'Montserrat', sans-serif;
     transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
     border-left: 3px solid transparent;
     text-decoration: none;
-    gap: 8px;
+    gap: 10px;
 }
 
 .cat-mega-cat-item:hover,
 .cat-mega-cat-item.active {
-    background: rgba(255, 255, 255, 0.06);
-    color: var(--white);
-    border-left-color: var(--accent-gold);
+    background: rgba(26, 114, 204, 0.08);
+    color: #0a3d82;
+    border-left-color: #1a72cc;
+    font-weight: 700;
 }
 
 .cat-mega-cat-count {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.06);
-    border-radius: 10px;
-    padding: 1px 6px;
+    color: #6b7280;
+    background: rgba(10, 22, 40, 0.06);
+    border-radius: 12px;
+    padding: 2px 9px;
     flex-shrink: 0;
     transition: background 0.15s, color 0.15s;
 }
 
 .cat-mega-cat-item.active .cat-mega-cat-count,
 .cat-mega-cat-item:hover .cat-mega-cat-count {
-    background: rgba(212, 175, 55, 0.2);
-    color: var(--accent-gold);
+    background: rgba(26, 114, 204, 0.15);
+    color: #0a3d82;
 }
 
 /* ── Right: activities panel ─────────────────── */
@@ -119,14 +121,14 @@
 .cat-mega-right-inner {
     flex: 1;
     overflow-y: auto;
-    padding: 12px;
-    max-height: 360px;
+    padding: 18px 20px;
+    max-height: 440px;
 }
 
 .cat-mega-activities {
     display: none;
     grid-template-columns: 1fr 1fr;
-    gap: 4px;
+    gap: 6px;
 }
 
 .cat-mega-activities.visible {
@@ -136,48 +138,52 @@
 .cat-mega-act-link {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 9px 10px;
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.68);
-    font-size: 12px;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    color: #334155;
+    font-size: 14.5px;
     font-weight: 500;
     font-family: 'Montserrat', sans-serif;
     text-decoration: none;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
 .cat-mega-act-link:hover {
-    background: rgba(212, 175, 55, 0.1);
-    color: var(--accent-gold);
+    background: rgba(26, 114, 204, 0.08);
+    color: #0a3d82;
+    transform: translateX(3px);
+    font-weight: 600;
 }
 
 .cat-mega-act-dot {
-    width: 5px;
-    height: 5px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
-    background: rgba(212, 175, 55, 0.5);
+    background: #1a72cc;
     flex-shrink: 0;
-    transition: background 0.15s;
+    transition: background 0.15s, transform 0.15s;
 }
 
 .cat-mega-act-link:hover .cat-mega-act-dot {
-    background: var(--accent-gold);
+    background: #0a3d82;
+    transform: scale(1.3);
 }
 
 .cat-mega-empty {
-    color: rgba(255, 255, 255, 0.28);
-    font-size: 12px;
-    padding: 24px 16px;
+    color: #94a3b8;
+    font-size: 14px;
+    padding: 32px 20px;
     text-align: center;
     font-style: italic;
     font-family: 'Montserrat', sans-serif;
 }
 
-/* ── Footer bar ──────────────────────────────── */
+/* ── Footer bar ─────────────────────────────── */
 .cat-mega-footer {
-    padding: 10px 14px;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 14px 20px;
+    background: #f7f9fc;
+    border-top: 1px solid rgba(10, 22, 40, 0.08);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -187,39 +193,41 @@
 .cat-mega-view-all {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    color: var(--accent-gold);
-    font-size: 11px;
+    gap: 8px;
+    color: #1a72cc;
+    font-size: 13px;
     font-weight: 700;
     font-family: 'Montserrat', sans-serif;
     text-decoration: none;
     letter-spacing: 0.5px;
-    transition: opacity 0.2s;
+    transition: color 0.2s, transform 0.2s;
 }
 
-.cat-mega-view-all:hover { opacity: 0.75; }
+.cat-mega-view-all:hover { color: #0a3d82; transform: translateX(2px); }
 
 .cat-mega-view-all-cats {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 11px;
+    color: #64748b;
+    font-size: 13px;
     font-weight: 600;
     font-family: 'Montserrat', sans-serif;
     text-decoration: none;
     transition: color 0.2s;
 }
 
-.cat-mega-view-all-cats:hover { color: rgba(255, 255, 255, 0.8); }
+.cat-mega-view-all-cats:hover { color: #0a1628; }
 
-/* ── Scrollbars ──────────────────────────────── */
+/* ── Scrollbars ───────────────────────────── */
 .cat-mega-left::-webkit-scrollbar,
-.cat-mega-right-inner::-webkit-scrollbar { width: 3px; }
+.cat-mega-right-inner::-webkit-scrollbar { width: 6px; }
 .cat-mega-left::-webkit-scrollbar-track,
 .cat-mega-right-inner::-webkit-scrollbar-track { background: transparent; }
 .cat-mega-left::-webkit-scrollbar-thumb,
-.cat-mega-right-inner::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+.cat-mega-right-inner::-webkit-scrollbar-thumb { background: rgba(10, 22, 40, 0.15); border-radius: 3px; }
+.cat-mega-left::-webkit-scrollbar-thumb:hover,
+.cat-mega-right-inner::-webkit-scrollbar-thumb:hover { background: rgba(10, 22, 40, 0.3); }
 
 /* ── Responsive mobile ───────────────────────── */
 @media (max-width: 768px) {

@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/navigation.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-destinations-mega.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/mega-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/services-mega-menu-v2.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/sections-nav-bar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-mega-menu-modern.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-search.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/search-bar.css') }}">
@@ -35,6 +37,7 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/events-vedette.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-vedette.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/restaurants-vedette.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/products-vedette.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/page-6-packages.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/page-3-infos.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/page-5-tourism.css') }}">
@@ -56,23 +59,40 @@
     
     <main class="main-content">
         @include('home-v2.components.Hero')
+        @include('home-v2.components.SectionsNavBar')
+
+        <div id="section-medias" class="snb-anchor"></div>
         @include('geo-map::index')
         @include('home-v2.components.VideoPlayer')
         @include('home-v2.components.ViewingCarousel')
         @include('home-v2.components.TikTokCarousel')
+        @include('home-v2.components.MultilingualGrid')
+
+        <div id="section-vedettes" class="snb-anchor"></div>
         @include('home-v2.components.EventsVedette')
         @include('home-v2.components.DestinationsVedette')
+
+        <div id="section-restaurants" class="snb-anchor"></div>
         {{-- Entête standard restaurant — autonome, hors template --}}
         @include('home-v2.components.RestaurantHeader')
+
+        <div id="section-voyages" class="snb-anchor"></div>
         @include('home-v2.components.TravelPackages')
         @include('home-v2.components.TravelInfos')
         @include('home-v2.components.TourismSection')
+        @include('home-v2.components.BusinessTourism')
+
+        <div id="section-next-level" class="snb-anchor"></div>
         @include('home-v2.components.PartnersMaster')
         @include('home-v2.components.AgencySection')
-        @include('home-v2.components.RealEstateSection')
-        @include('home-v2.components.MultilingualGrid')
-        @include('home-v2.components.NewsSection')
         @include('home-v2.components.WebServices')
+
+        <div id="section-marketplace" class="snb-anchor"></div>
+        @include('home-v2.components.RealEstateSection')
+        @include('home-v2.components.ProductsVedette')
+
+        <div id="section-a-la-une" class="snb-anchor"></div>
+        @include('home-v2.components.NewsSection')
     </main>
     
     {{-- Modal réservation global Table & Vin --}}

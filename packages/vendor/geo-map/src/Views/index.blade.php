@@ -258,7 +258,7 @@
                     </a>
                 </div>
                 <div class="resto-header-center">
-                    <h2 class="resto-header-title">ACTIVEZ VOS ESPACES DESTINATIONS</h2>
+                    <h2 class="resto-header-title">LA GÉO CARTE VIDÉO</h2>
                     <p class="resto-header-subtitle">Découvrez les lieux incontournables sur notre carte interactive et planifiez vos aventures au Canada.</p>
                     <div class="resto-header-tabs" role="tablist">
                         <button class="resto-tab-btn active" role="tab" data-espace="all">

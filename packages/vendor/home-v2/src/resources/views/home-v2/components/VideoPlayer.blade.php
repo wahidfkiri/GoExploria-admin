@@ -4,7 +4,7 @@
    CONFIG
 ---------------------------------------------------------------- */
 $vpConfig = [
-    'title'      => 'MA CHAÎNE·VIDÉOS',
+    'title'      => 'MA CHAINE VIDEO',
     'subtitle'   => 'Films · Documentaires · Plein air · Gastronomie — Explorez le Québec en images avec la chaîne vidéo officielle GoExploria.',
     'logo_left'  => [
         'src'   => asset('GO-EXPLORIA-MY-TUBE.png'),

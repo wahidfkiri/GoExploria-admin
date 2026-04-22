@@ -9,7 +9,7 @@
                     {{-- Vidéo YouTube/Vimeo avec iframe --}}
                     <iframe 
                         class="video-background" 
-                        src="{{ $slider->video_embed_url }}?autoplay={{ $index === 0 ? '1' : '0' }}&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" 
+                        src="{{ $slider->video_embed_url }}?autoplay={{ $index === 0 ? '1' : '0' }}&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1" 
                         frameborder="0" 
                         allow="autoplay; encrypted-media" 
                         allowfullscreen
@@ -76,6 +76,20 @@
             <button class="carousel-dot" data-slide="{{ $index }}" aria-label="Video {{ $index + 1 }}"></button>
             @endforeach
         </div>
+
+        {{-- Bouton son vidéo (mute/unmute) — gauche du Hero --}}
+        <button type="button" class="hero-sound-toggle" id="heroSoundToggle" aria-label="Activer le son" title="Activer le son">
+            <svg class="hero-sound-icon-muted" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <line x1="23" y1="9" x2="17" y2="15"></line>
+                <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+            <svg class="hero-sound-icon-on" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+        </button>
     </div>
 
     {{-- Section mobile uniquement : Email + Logo + Map --}}
@@ -86,10 +100,6 @@
         <div class="hero-mobile-logo-container">
             <a href="#" class="hero-mobile-logo">
                 <img src="{{ asset('logo.png') }}" alt="GO EXPLORIA" class="hero-mobile-logo-img">
-                <!-- <div class="logo-text">
-                    <div class="logo-exploria">GO EXPLORIA</div>
-                    <div class="logo-location">QUÉBEC, CANADA</div>
-                </div> -->
             </a>
             <img src="{{ asset('header_info/map2.png') }}" alt="Map" class="hero-mobile-map">
         </div>
@@ -105,20 +115,41 @@
         {{-- Barre horizontale complète avec destinations + recherche --}}
         <div class="search-bar-v2">
             <div class="search-bar-v2-container">
-                {{-- Logo REDI + DESTINATIONS (un seul élément à gauche) --}}
-                <div class="search-bar-v2-destinations" style="position: relative;">
-                    <img src="{{ asset('REDI.png') }}" alt="Destinations" class="search-bar-v2-globe-icon">
-                    <span class="search-bar-v2-destinations-title" id="destinationsMainTrigger">DESTINATIONS</span>
-                    <div class="search-bar-v2-destinations-links" id="destinationsBreadcrumb">
-                        {{-- Le fil d'Ariane sera généré dynamiquement par JavaScript --}}
-                        <span class="search-bar-v2-destinations-link">Survolez pour explorer</span>
-                    </div>
+                {{-- Globe Destinations --}}
+                <div class="search-bar-v2-destinations" style="position: relative; flex-direction: column; gap: 2px; align-items: center;">
+                    <img src="{{ asset('REDI.png') }}" alt="Destinations" class="search-bar-v2-globe-icon" id="destinationsMainTrigger" style="cursor:pointer;">
+                    <span class="search-bar-v2-destinations-title" id="destinationsBreadcrumb">Destinations</span>
                     
                     {{-- Mega Menu Destinations Principal --}}
                     @include('home-v2.components.DestinationsMegaMenu')
                 </div>
 
-                {{-- Barre de recherche --}}
+               
+                {{-- 3 Pictos ronds bleus : i · iT · iB --}}
+                <div class="search-bar-v2-quick-links">
+                    {{-- Info i --}}
+                    <div class="quick-link-item info-trigger" id="infoTrigger" title="Informations">
+                        <div class="icon-circle icon-blue">
+                            <span class="picto-label">i</span>
+                        </div>
+                    </div>
+                    
+                    {{-- iT Tourisme --}}
+                    <div class="quick-link-item" id="catMegaTriggerTourisme" style="cursor:pointer;" title="Activités Tourisme">
+                        <div class="icon-circle icon-blue">
+                            <span class="picto-label">iT</span>
+                        </div>
+                    </div>
+
+                    {{-- iB Business --}}
+                    <div class="quick-link-item" id="catMegaTriggerBusiness" style="cursor:pointer;" title="Activités Business">
+                        <div class="icon-circle icon-blue">
+                            <span class="picto-label">iB</span>
+                        </div>
+                    </div>
+                </div>
+
+                 {{-- Barre de recherche --}}
                 <div class="search-bar-v2-search">
                     <div class="search-bar-v2-input-wrapper">
                         <svg class="search-bar-v2-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -152,45 +183,6 @@
                     </div>
                 </div>
 
-                {{-- NOUVEAU : 6 Boutons Icônes FontAwesome Rapides --}}
-                <div class="search-bar-v2-quick-links">
-                    <div class="quick-link-item info-trigger" id="infoTrigger">
-                        <div class="icon-circle icon-standard">
-                            <i class="fas fa-info"></i>
-                        </div>
-                    </div>
-                    
-                    {{-- Categories Mega Menu Trigger --}}
-                    <div class="quick-link-item" id="catMegaTrigger" style="cursor:pointer;" title="Catégories & Activités">
-                        <div class="icon-circle icon-standard">
-                            <i class="fas fa-tag"></i>
-                        </div>
-                    </div>
-                    
-                    <a href="{{ url('/offres') }}" class="quick-link-item">
-                        <div class="icon-circle icon-standard">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                    </a>
-                    
-                    <!-- <a href="{{ url('/nouvelles') }}" class="quick-link-item">
-                        <div class="icon-circle icon-standard">
-                            <i class="fas fa-newspaper"></i>
-                        </div>
-                    </a>
-                    
-                    <a href="{{ url('/must-see') }}" class="quick-link-item">
-                        <div class="icon-circle icon-standard">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                    </a>
-                    
-                    <a href="{{ url('/aventures') }}" class="quick-link-item">
-                        <div class="icon-circle icon-standard">
-                            <i class="fas fa-binoculars"></i>
-                        </div>
-                    </a> -->
-                </div>
 
                 {{-- Logo Plan-n-go --}}
                 <div class="search-bar-v2-brand">
@@ -271,5 +263,135 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('resize', positionMegaMenu);
     window.addEventListener('scroll', positionMegaMenu);
+});
+
+/* ─────────────────────────────────────────────
+   Animation dactylographique du placeholder
+   Boucle : écriture → pause → effacement
+   ───────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('searchBarInput');
+    if (!input) return;
+
+    const phrases = [
+        'Explorez le monde…',
+        'Rechercher une destination…',
+        'Découvrez des activités…',
+        'Trouvez un hébergement…'
+    ];
+
+    let phraseIdx = 0;
+    let charIdx = 0;
+    let isDeleting = false;
+    const typeSpeed = 70;     // ms par caractère (écriture)
+    const eraseSpeed = 40;    // ms par caractère (effacement)
+    const holdDelay = 2000;   // pause à la fin de chaque phrase
+    const startDelay = 500;   // avant de démarrer l'effacement / mot suivant
+
+    function tick() {
+        // Stop l'animation dès que l'utilisateur saisit quelque chose
+        if (input.value && !input.dataset.animating) return;
+
+        const phrase = phrases[phraseIdx];
+        if (!isDeleting) {
+            charIdx++;
+            input.placeholder = phrase.substring(0, charIdx);
+            if (charIdx === phrase.length) {
+                isDeleting = true;
+                return setTimeout(tick, holdDelay);
+            }
+            setTimeout(tick, typeSpeed);
+        } else {
+            charIdx--;
+            input.placeholder = phrase.substring(0, charIdx);
+            if (charIdx === 0) {
+                isDeleting = false;
+                phraseIdx = (phraseIdx + 1) % phrases.length;
+                return setTimeout(tick, startDelay);
+            }
+            setTimeout(tick, eraseSpeed);
+        }
+    }
+
+    // Démarrer au chargement
+    input.dataset.animating = '1';
+    tick();
+
+    // Stopper l'animation dès que l'utilisateur tape
+    input.addEventListener('input', function() {
+        if (input.value.length > 0) {
+            delete input.dataset.animating;
+            input.placeholder = 'Rechercher…';
+        }
+    });
+});
+
+/* ─────────────────────────────────────────────
+   Bouton mute/unmute vidéo Hero
+   Gère <video> HTML5 + iframes YouTube/Vimeo
+   ───────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('heroSoundToggle');
+    if (!btn) return;
+
+    const iconMuted = btn.querySelector('.hero-sound-icon-muted');
+    const iconOn = btn.querySelector('.hero-sound-icon-on');
+    let isMuted = true;
+
+    function getActiveVideoEl() {
+        const active = document.querySelector('.video-slide.active');
+        if (!active) return null;
+        return active.querySelector('video.video-background, iframe.video-background');
+    }
+
+    function setMuteState(muted) {
+        isMuted = muted;
+        const el = getActiveVideoEl();
+        if (!el) return;
+
+        if (el.tagName === 'VIDEO') {
+            el.muted = muted;
+            if (!muted) {
+                const p = el.play();
+                if (p && typeof p.catch === 'function') p.catch(() => {});
+            }
+        } else if (el.tagName === 'IFRAME') {
+            // YouTube postMessage API
+            const cmd = muted ? 'mute' : 'unMute';
+            try {
+                el.contentWindow.postMessage(JSON.stringify({
+                    event: 'command',
+                    func: cmd,
+                    args: []
+                }), '*');
+            } catch (e) { /* ignore */ }
+
+            // Vimeo postMessage API
+            try {
+                el.contentWindow.postMessage(JSON.stringify({
+                    method: 'setVolume',
+                    value: muted ? 0 : 1
+                }), '*');
+            } catch (e) { /* ignore */ }
+        }
+
+        // UI
+        btn.classList.toggle('is-unmuted', !muted);
+        btn.setAttribute('aria-label', muted ? 'Activer le son' : 'Couper le son');
+        btn.setAttribute('title', muted ? 'Activer le son' : 'Couper le son');
+        if (iconMuted) iconMuted.style.display = muted ? '' : 'none';
+        if (iconOn) iconOn.style.display = muted ? 'none' : '';
+    }
+
+    btn.addEventListener('click', function() {
+        setMuteState(!isMuted);
+    });
+
+    // Re-synchroniser l'état mute à chaque changement de slide
+    document.querySelectorAll('.carousel-dot, .hero-video-card, .carousel-nav-btn').forEach(function(el) {
+        el.addEventListener('click', function() {
+            setTimeout(() => setMuteState(isMuted), 400);
+        });
+    });
 });
 </script>

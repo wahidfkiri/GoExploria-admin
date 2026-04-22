@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-menu.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/navigation.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/mega-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/services-mega-menu-v2.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-mega-menu-modern.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-destinations-mega.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-search.css') }}">
@@ -24,11 +25,16 @@
         /* ── Page Banner ──────────────────────────────── */
         .page-banner{background:linear-gradient(135deg,#0a1628 0%,#1a2942 100%);padding:48px 40px;position:relative;overflow:hidden}
         .page-banner::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1400&q=80') center/cover;opacity:.1}
-        .page-banner-inner{position:relative;z-index:1;max-width:1200px;margin:0 auto}
+        .page-banner-inner{position:relative;z-index:1;max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px}
+        .page-banner-text{flex:1}
         .page-banner-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.3);border-radius:20px;font-size:11px;font-weight:700;color:#d4af37;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px}
         .page-banner-title{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:900;color:#fff;line-height:1.15;margin-bottom:8px}
         .page-banner-title span{color:#d4af37}
         .page-banner-sub{font-size:14px;color:rgba(255,255,255,.6);line-height:1.6;max-width:580px}
+        .page-banner-logos{display:flex;gap:28px;align-items:center;flex-shrink:0}
+        .page-banner-logos img{height:70px;width:auto;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}
+        .page-banner-logos .logo-sep{width:1px;height:50px;background:rgba(255,255,255,.2)}
+        @media(max-width:768px){.page-banner-logos{display:none}}
 
         /* ── Layout ──────────────────────────────────── */
         .page-wrap{max-width:1200px;margin-top:150px;margin-left:auto;margin-right:auto;padding:40px 32px 60px}
