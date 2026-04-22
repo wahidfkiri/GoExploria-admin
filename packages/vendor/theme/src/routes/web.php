@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Vendor\Theme\Controllers\PlanController;
 
 Route::prefix('theme')->group(function () {
 
@@ -78,6 +79,5 @@ Route::prefix('theme')->group(function () {
     });
 });
 
-Route::get('landing/plans', function() {
-    return view('theme::landing');
-});
+Route::get('plans/{slug}', [PlanController::class, 'show'])->name('plans.show');
+    
