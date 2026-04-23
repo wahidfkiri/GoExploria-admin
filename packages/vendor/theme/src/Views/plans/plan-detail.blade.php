@@ -3,438 +3,583 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ $plan->name }} — GoExploria | Solution digitale tout-en-un</title>
+  <title>{{ $plan->name }} — GoExploria | Excellence digitale</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="{{asset('vendor/theme/css/styles.css')}}">
   <style>
-    /* Styles modernes et professionnels */
-    :root {
-      --primary: #4f46e5;
-      --primary-light: #6366f1;
-      --primary-dark: #4338ca;
-      --secondary: #f59e0b;
-      --success: #10b981;
-      --gray-50: #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-600: #4b5563;
-      --gray-700: #374151;
-      --gray-800: #1f2937;
-      --gray-900: #111827;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    /* Hero Light & Fresh */
-    .hero-light {
-      min-height: 85vh;
-      display: flex;
-      align-items: center;
-      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #fef3c7 100%);
-      position: relative;
-      overflow: hidden;
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #ffffff;
+      color: #0a0a1a;
+      scroll-behavior: smooth;
     }
-    .hero-light::before {
-      content: '';
-      position: absolute;
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      border-radius: 4px;
+    }
+
+    /* Navigation Premium */
+    .nav-premium {
+      position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      bottom: 0;
-      background: url('https://images.unsplash.com/photo-1557683316-973673baf926?w=1920&h=1080&fit=crop');
-      background-size: cover;
-      background-position: center;
-      opacity: 0.05;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      z-index: 1000;
+      padding: 16px 0;
+      transition: all 0.3s ease;
+    }
+
+    .nav-premium.scrolled {
+      padding: 12px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    /* Hero Section Premium */
+    .hero-premium {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #fefce8 0%, #fef3c7 50%, #fce7f3 100%);
+      padding-top: 80px;
+    }
+
+    .hero-premium .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.4;
       pointer-events: none;
     }
-    .hero-light .container {
-      position: relative;
-      z-index: 2;
+
+    .orb-1 {
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: #4f46e5;
     }
-    .hero-badge {
-      background: white;
-      padding: 0.5rem 1rem;
-      border-radius: 50px;
-      font-size: 0.8rem;
+
+    .orb-2 {
+      bottom: -100px;
+      left: -100px;
+      width: 350px;
+      height: 350px;
+      background: #ec4899;
+    }
+
+    .orb-3 {
+      top: 50%;
+      left: 30%;
+      width: 200px;
+      height: 200px;
+      background: #f59e0b;
+    }
+
+    .hero-badge-premium {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(10px);
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 0.85rem;
       font-weight: 600;
-      color: var(--primary);
-      display: inline-block;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      color: #4f46e5;
+      margin-bottom: 28px;
+      border: 1px solid rgba(79,70,229,0.2);
     }
-    .hero-light h1 {
-      font-size: 3.5rem;
+
+    .hero-title-premium {
+      font-size: 4.5rem;
       font-weight: 800;
-      line-height: 1.2;
-      color: var(--gray-900);
-      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
     }
-    .gradient-text {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+
+    .gradient-premium {
+      background: linear-gradient(135deg, #4f46e5 0%, #ec4899 50%, #f59e0b 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .hero-subtitle {
+
+    .hero-desc-premium {
       font-size: 1.2rem;
-      color: var(--gray-600);
-      margin-bottom: 2rem;
+      color: #4b5563;
+      line-height: 1.6;
       max-width: 500px;
+      margin-bottom: 32px;
     }
-    .btn-hero-primary {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+
+    .btn-premium-primary {
+      background: #0a0a1a;
       color: white;
-      padding: 1rem 2rem;
-      border-radius: 50px;
+      padding: 16px 36px;
+      border-radius: 100px;
       font-weight: 600;
       border: none;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 8px;
+      font-size: 1rem;
     }
-    .btn-hero-primary:hover {
+
+    .btn-premium-primary:hover {
+      background: #4f46e5;
       transform: translateY(-2px);
-      box-shadow: 0 20px 30px -10px rgba(79,70,229,0.3);
+      box-shadow: 0 20px 30px -10px rgba(79,70,229,0.4);
     }
-    .btn-hero-secondary {
-      background: white;
-      color: var(--primary);
-      padding: 1rem 2rem;
-      border-radius: 50px;
+
+    .btn-premium-secondary {
+      background: transparent;
+      color: #0a0a1a;
+      padding: 16px 36px;
+      border-radius: 100px;
       font-weight: 600;
-      border: 2px solid var(--primary);
+      border: 2px solid #e5e7eb;
       cursor: pointer;
       transition: all 0.3s ease;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-    }
-    .btn-hero-secondary:hover {
-      background: var(--primary);
-      color: white;
-    }
-    .hero-stats {
-      display: flex;
-      gap: 2rem;
-      margin-top: 3rem;
-      flex-wrap: wrap;
-    }
-    .hero-stat-card {
-      background: white;
-      padding: 1rem 1.5rem;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    }
-    .hero-stat-card .stat-value {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--primary);
-      display: block;
-    }
-    .hero-stat-card .stat-label {
-      font-size: 0.85rem;
-      color: var(--gray-600);
+      gap: 8px;
     }
 
-    /* Features Grid */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
+    .btn-premium-secondary:hover {
+      border-color: #4f46e5;
+      color: #4f46e5;
     }
-    .feature-card {
+
+    /* Trust Badges */
+    .trust-badges {
+      display: flex;
+      gap: 32px;
+      margin-top: 48px;
+      flex-wrap: wrap;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .trust-item .icon {
+      width: 40px;
+      height: 40px;
       background: white;
-      padding: 1.5rem;
-      border-radius: 20px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    /* Section Header Premium */
+    .section-header-premium {
       text-align: center;
+      max-width: 700px;
+      margin: 0 auto 64px;
+    }
+
+    .section-tag-premium {
+      display: inline-block;
+      background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .section-title-premium {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    /* Service Cards Premium */
+    .service-card-premium {
+      background: white;
+      border-radius: 32px;
+      padding: 48px;
+      margin-bottom: 40px;
+      transition: all 0.4s ease;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .service-card-premium:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 40px 60px -20px rgba(0,0,0,0.15);
+    }
+
+    .service-card-premium.alt {
+      background: linear-gradient(135deg, #faf5ff 0%, #fefce8 100%);
+    }
+
+    .service-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .service-card-grid.reverse {
+      direction: rtl;
+    }
+
+    .service-card-grid.reverse > * {
+      direction: ltr;
+    }
+
+    .service-icon-premium {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .service-icon-premium i {
+      font-size: 32px;
+      color: white;
+    }
+
+    .service-title-premium {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .service-desc-premium {
+      color: #6b7280;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .features-grid-premium {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 24px 0;
+    }
+
+    .feature-chip {
+      background: #f3f4f6;
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 32px;
+      margin: 24px 0;
+    }
+
+    .stat-premium {
+      text-align: left;
+    }
+
+    .stat-premium .value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-premium .label {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .service-media-premium {
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 25px 40px -20px rgba(0,0,0,0.2);
+    }
+
+    .service-media-premium img {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .service-media-premium:hover img {
+      transform: scale(1.05);
+    }
+
+    /* Pricing Section */
+    .pricing-premium {
+      background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+      border-radius: 48px;
+      padding: 64px;
+      text-align: center;
+      margin: 60px 0;
+    }
+
+    .pricing-badge {
+      background: rgba(255,255,255,0.1);
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      color: #f59e0b;
+      margin-bottom: 24px;
+    }
+
+    .pricing-premium .amount {
+      font-size: 4rem;
+      font-weight: 800;
+      color: white;
+      margin: 20px 0;
+    }
+
+    .pricing-premium .features-list {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin: 32px 0;
+      color: #9ca3af;
+    }
+
+    /* Stats Grid Premium */
+    .stats-premium-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      background: #faf5ff;
+      border-radius: 48px;
+      padding: 48px;
+      text-align: center;
+      margin: 60px 0;
+    }
+
+    .stat-premium-card .number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* CTA Premium */
+    .cta-premium {
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      border-radius: 48px;
+      padding: 64px;
+      text-align: center;
+      color: white;
+      margin: 60px 0;
+    }
+
+    .btn-cta-premium {
+      background: white;
+      color: #4f46e5;
+      padding: 16px 40px;
+      border-radius: 100px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      margin-top: 24px;
       transition: all 0.3s ease;
-      border: 1px solid var(--gray-200);
     }
-    .feature-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 20px 30px -10px rgba(0,0,0,0.1);
+
+    .btn-cta-premium:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 30px -10px rgba(0,0,0,0.2);
     }
-    .feature-icon {
+
+    /* Testimonials */
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin: 48px 0;
+    }
+
+    .testimonial-card {
+      background: white;
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* Contact Section Premium */
+    .contact-premium {
+      background: #faf5ff;
+      border-radius: 48px;
+      padding: 48px;
+      margin: 60px 0;
+    }
+
+    .contact-premium-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+
+    /* Floating Action */
+    .fab-premium {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
       width: 60px;
       height: 60px;
-      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1rem;
-    }
-    .feature-icon i {
-      font-size: 1.5rem;
-      color: white;
-    }
-
-    /* Service Blocks */
-    .service-block {
-      padding: 80px 0;
-      border-bottom: 1px solid var(--gray-200);
-    }
-    .service-block.alt {
-      background: var(--gray-50);
-    }
-    .service-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-    }
-    .service-grid.reverse {
-      direction: rtl;
-    }
-    .service-grid.reverse > * {
-      direction: ltr;
-    }
-    .service-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: white;
-      padding: 0.5rem 1rem;
-      border-radius: 50px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--primary);
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    .service-title {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      color: var(--gray-900);
-    }
-    .service-description {
-      color: var(--gray-600);
-      line-height: 1.7;
-      margin-bottom: 1.5rem;
-    }
-    .service-features-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      margin: 1.5rem 0;
-    }
-    .service-feature-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.5rem;
-      background: white;
-      border-radius: 12px;
-      transition: all 0.3s ease;
-    }
-    .service-feature-item:hover {
-      transform: translateX(5px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-    .service-feature-item i {
-      color: var(--success);
-      font-size: 1.1rem;
-    }
-    .service-stats-group {
-      display: flex;
-      gap: 1rem;
-      margin: 1.5rem 0;
-      flex-wrap: wrap;
-    }
-    .service-stat-card {
-      flex: 1;
-      text-align: center;
-      padding: 1rem;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    .service-stat-card .stat-number {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--primary);
-    }
-    .service-stat-card .stat-text {
-      font-size: 0.8rem;
-      color: var(--gray-600);
-    }
-    .btn-service {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      color: white;
-      padding: 0.8rem 1.8rem;
-      border-radius: 50px;
-      font-weight: 600;
-      border: none;
       cursor: pointer;
+      box-shadow: 0 10px 25px rgba(79,70,229,0.4);
       transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .btn-service:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px -5px rgba(79,70,229,0.4);
-    }
-    .service-media {
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 25px 40px -12px rgba(0,0,0,0.2);
-    }
-    .service-swiper-custom {
-      border-radius: 24px;
-    }
-    .service-swiper-custom img {
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-    }
-
-    /* Section Title */
-    .section-title-custom {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    .section-tag-custom {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 50px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-    .section-title-custom h2 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--gray-900);
-    }
-
-    /* CTA Section */
-    .cta-section {
-      background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%);
-      padding: 80px 0;
-      text-align: center;
-    }
-    .btn-cta {
-      background: linear-gradient(135deg, var(--secondary) 0%, #d97706 100%);
-      color: white;
-      padding: 1rem 2.5rem;
-      border-radius: 50px;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .btn-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 20px 30px -10px rgba(0,0,0,0.3);
-    }
-
-    /* Floating Button */
-    .floating-btn {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: linear-gradient(135deg, var(--secondary) 0%, #d97706 100%);
-      padding: 1rem 1.5rem;
-      border-radius: 50px;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
       z-index: 100;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.3s ease;
       border: none;
     }
-    .floating-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+
+    .fab-premium:hover {
+      transform: scale(1.1);
     }
 
-    @media (max-width: 768px) {
-      .hero-light h1 { font-size: 2rem; }
-      .service-grid { grid-template-columns: 1fr; gap: 2rem; }
-      .service-grid.reverse { direction: ltr; }
-      .service-swiper-custom img { height: 250px; }
-      .section-title-custom h2 { font-size: 1.8rem; }
+    /* Footer Premium */
+    .footer-premium {
+      background: #0a0a1a;
+      color: #9ca3af;
+      padding: 60px 0 30px;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 968px) {
+      .hero-title-premium { font-size: 3rem; }
+      .service-card-grid { grid-template-columns: 1fr; gap: 32px; }
+      .service-card-grid.reverse { direction: ltr; }
+      .stats-premium-grid { grid-template-columns: 1fr 1fr; }
+      .testimonial-grid { grid-template-columns: 1fr; }
+      .contact-premium-grid { grid-template-columns: 1fr; }
+      .section-title-premium { font-size: 2rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav class="nav" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000;">
-    <div class="nav-container">
+  <!-- Navigation Premium -->
+  <nav class="nav-premium" id="nav">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
       <div class="nav-logo">
-        <img src="{{asset('logo.png')}}" style="width:150px;"/>
+        <img src="{{asset('logo.png')}}" style="height: 42px; width: auto;"/>
       </div>
-      <div class="nav-links">
-        <a href="#services" class="nav-link">Services</a>
-        <a href="#facturation" class="nav-link">Facturation</a>
-        <a href="#marketplace" class="nav-link">Marketplace</a>
-        <a href="#showcase" class="nav-link">Réalisations</a>
-        <a href="#contact" class="nav-link">Contact</a>
-        <button class="btn-primary" style="padding: 0.5rem 1.25rem; margin-left: 1rem;" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Devis gratuit</button>
+      <div style="display: flex; gap: 40px; align-items: center;">
+        <a href="#services" style="text-decoration: none; color: #0a0a1a; font-weight: 500;">Services</a>
+        <a href="#pricing" style="text-decoration: none; color: #0a0a1a; font-weight: 500;">Tarifs</a>
+        <a href="#testimonials" style="text-decoration: none; color: #0a0a1a; font-weight: 500;">Clients</a>
+        <a href="#contact" style="text-decoration: none; color: #0a0a1a; font-weight: 500;">Contact</a>
+        <button class="btn-premium-primary" style="padding: 10px 24px;" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
+          <i class="fas fa-rocket"></i> Devis gratuit
+        </button>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section Light & Fresh -->
-  <section class="hero-light">
+  <!-- Hero Section Premium -->
+  <section class="hero-premium">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
     <div class="container">
-      <div class="hero-badge">
-        <i class="fas fa-crown"></i> Plan Premium
-      </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;">
         <div>
-          <h1>Transformez votre <span class="gradient-text">présence en ligne</span><br>avec <span class="gradient-text">{{ $plan->name }}</span></h1>
-          <p class="hero-subtitle">{{ $plan->description ?? 'La solution digitale tout-en-un qui propulse votre entreprise vers de nouveaux sommets.' }}</p>
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <button class="btn-hero-primary" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">
-              <i class="fas fa-rocket"></i> Découvrir les services
+          <div class="hero-badge-premium">
+            <i class="fas fa-crown"></i>
+            Plan Premium — {{ $plan->name }}
+          </div>
+          <h1 class="hero-title-premium">
+            Transformez votre<br>
+            <span class="gradient-premium">présence digitale</span>
+          </h1>
+          <p class="hero-desc-premium">
+            {{ $plan->description ?? 'La solution tout-en-un qui propulse votre entreprise vers l\'excellence digitale.' }}
+          </p>
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <button class="btn-premium-primary" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">
+              <i class="fas fa-arrow-right"></i> Découvrir
             </button>
-            <button class="btn-hero-secondary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
-              <i class="fas fa-headset"></i> Demander un devis
+            <button class="btn-premium-secondary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
+              <i class="fas fa-play"></i> Voir démo
             </button>
           </div>
-          <div class="hero-stats">
-            <div class="hero-stat-card">
-              <span class="stat-value">{{ $plan->formatted_price }}</span>
-              <span class="stat-label">/{{ $plan->billing_cycle ?? 'mois' }}</span>
+          <div class="trust-badges">
+            <div class="trust-item">
+              <div class="icon"><i class="fas fa-chart-line" style="color: #4f46e5;"></i></div>
+              <div><strong>+237%</strong><br><span style="font-size: 0.8rem;">de visibilité</span></div>
             </div>
-            @if($plan->is_popular)
-            <div class="hero-stat-card">
-              <span class="stat-value"><i class="fas fa-star" style="color: #f59e0b;"></i> Populaire</span>
-              <span class="stat-label">Recommandé</span>
+            <div class="trust-item">
+              <div class="icon"><i class="fas fa-star" style="color: #f59e0b;"></i></div>
+              <div><strong>4.9★</strong><br><span style="font-size: 0.8rem;">satisfaction</span></div>
             </div>
-            @endif
-            <div class="hero-stat-card">
-              <span class="stat-value">{{ $plan->plugins->count() }}</span>
-              <span class="stat-label">Services inclus</span>
+            <div class="trust-item">
+              <div class="icon"><i class="fas fa-users" style="color: #10b981;"></i></div>
+              <div><strong>3000+</strong><br><span style="font-size: 0.8rem;">clients actifs</span></div>
             </div>
           </div>
         </div>
         <div>
-          <div style="background: white; border-radius: 32px; padding: 2rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);">
-            <div style="text-align: center;">
-              <i class="fas fa-chart-line" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
-              <h3 style="margin-bottom: 1rem;">Ce que vous gagnez</h3>
-              <div class="features-grid" style="grid-template-columns: 1fr; gap: 0.75rem;">
-                <div style="display: flex; align-items: center; gap: 0.75rem;"><i class="fas fa-check-circle" style="color: var(--success);"></i> +237% de visibilité locale</div>
-                <div style="display: flex; align-items: center; gap: 0.75rem;"><i class="fas fa-check-circle" style="color: var(--success);"></i> Support prioritaire 24/7</div>
-                <div style="display: flex; align-items: center; gap: 0.75rem;"><i class="fas fa-check-circle" style="color: var(--success);"></i> Analytics en temps réel</div>
-                <div style="display: flex; align-items: center; gap: 0.75rem;"><i class="fas fa-check-circle" style="color: var(--success);"></i> Sans engagement</div>
+          <div style="background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); border-radius: 32px; padding: 32px; border: 1px solid rgba(255,255,255,0.5);">
+            <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+              <span style="background: #e0e7ff; padding: 8px 16px; border-radius: 100px; font-size: 0.8rem;"><i class="fas fa-check-circle" style="color: #10b981;"></i> Support 24/7</span>
+              <span style="background: #e0e7ff; padding: 8px 16px; border-radius: 100px; font-size: 0.8rem;"><i class="fas fa-check-circle" style="color: #10b981;"></i> Analytics avancés</span>
+              <span style="background: #e0e7ff; padding: 8px 16px; border-radius: 100px; font-size: 0.8rem;"><i class="fas fa-check-circle" style="color: #10b981;"></i> Mises à jour</span>
+            </div>
+            <div style="background: white; border-radius: 24px; padding: 24px;">
+              <h4 style="margin-bottom: 16px;">Votre plan {{ $plan->name }} inclus :</h4>
+              <div style="display: flex; flex-direction: column; gap: 14px;">
+                @foreach($plan->plugins->take(4) as $plugin)
+                  <div><i class="fas fa-check-circle" style="color: #10b981; margin-right: 12px;"></i> {{ $plugin->name }}</div>
+                @endforeach
+                <div><i class="fas fa-plus-circle" style="color: #4f46e5; margin-right: 12px;"></i> +{{ $plan->plugins->count() - 4 }} autres services</div>
               </div>
             </div>
           </div>
@@ -443,26 +588,27 @@
     </div>
   </section>
 
-  <!-- SERVICES SECTION - Plugins dynamiques -->
-  <section class="section" id="services" style="padding: 0;">
+  <!-- Services Section -->
+  <section id="services" style="padding: 80px 0;">
+    <div class="container">
+      <div class="section-header-premium">
+        <span class="section-tag-premium">Nos services premium</span>
+        <h2 class="section-title-premium">Une <span class="gradient-premium">expérience complète</span><br>pour votre succès</h2>
+        <p style="color: #6b7280;">Des solutions intégrées qui font la différence</p>
+      </div>
+    </div>
+
     @forelse($plan->plugins as $index => $plugin)
       @php
         $isEven = $loop->iteration % 2 == 0;
         
-        if(stripos($plugin->name, 'vidéo') !== false || stripos($plugin->name, 'carte') !== false) {
+        if(stripos($plugin->name, 'vidéo') !== false) {
           $pluginData = [
             'icon' => 'fa-map-marker-alt',
-            'badge' => '📍 Géomarketing vidéo',
             'title' => 'Vidéo sur la carte',
-            'description' => 'Diffusez vos vidéos promotionnelles directement sur Google Maps et Apple Maps. Notre technologie brevetée de géolocalisation précise permet d\'associer votre contenu vidéo à un emplacement stratégique.',
-            'features' => [
-              'Géolocalisation précise à 5 mètres près',
-              'Rayon d\'action personnalisable de 100m à 5km',
-              'Lecture automatique au survol (sans son)',
-              'Statistiques détaillées : vues, clics, durée',
-              'Compatible Google Maps, Apple Maps, Waze'
-            ],
-            'stats' => [['value' => '+237%', 'label' => 'visibilité locale'], ['value' => '+156%', 'label' => 'conversion']],
+            'desc' => 'Diffusez vos vidéos promotionnelles directement sur Google Maps et Apple Maps. Notre technologie brevetée de géolocalisation précise transforme chaque recherche en opportunité de conversion.',
+            'features' => ['Géolocalisation précise à 5m', 'Rayon personnalisable 100m-5km', 'Lecture automatique au survol', 'Statistiques en temps réel'],
+            'stats' => [['value' => '+237%', 'label' => 'visibilité locale'], ['value' => '+156%', 'label' => 'taux de conversion']],
             'images' => [
               'https://images.unsplash.com/photo-1579869847514-7c1a19d2d2ad?w=800&h=500&fit=crop',
               'https://images.unsplash.com/photo-1524661135-423995f22d0f?w=800&h=500&fit=crop',
@@ -470,20 +616,13 @@
             ]
           ];
         }
-        elseif(stripos($plugin->name, 'site') !== false || stripos($plugin->name, 'web') !== false) {
+        elseif(stripos($plugin->name, 'site') !== false) {
           $pluginData = [
             'icon' => 'fa-laptop-code',
-            'badge' => '🌐 Création sur mesure',
             'title' => 'Création site web',
-            'description' => 'Obtenez un site web professionnel, moderne et ultra-rapide, livré en seulement 48 heures. Design responsive, animations fluides et expérience utilisateur optimisée.',
-            'features' => [
-              'Design unique et personnalisé sans template',
-              'Responsive mobile-first (100% adapté)',
-              'CMS intuitif avec interface drag & drop',
-              'Livraison garantie en 48 heures',
-              'Boutique e-commerce disponible sur demande'
-            ],
-            'stats' => [['value' => '48h', 'label' => 'livraison'], ['value' => '100%', 'label' => 'satisfaction']],
+            'desc' => 'Un site web professionnel, moderne et ultra-rapide livré en 48h. Design unique, responsive et CMS intuitif pour une gestion simplifiée.',
+            'features' => ['Design unique sans template', 'Responsive mobile-first', 'CMS drag & drop', 'Livraison 48h garantie'],
+            'stats' => [['value' => '48h', 'label' => 'livraison express'], ['value' => '100%', 'label' => 'clients satisfaits']],
             'images' => [
               'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&h=500&fit=crop',
               'https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&h=500&fit=crop',
@@ -494,17 +633,10 @@
         elseif(stripos($plugin->name, 'seo') !== false) {
           $pluginData = [
             'icon' => 'fa-chart-line',
-            'badge' => '📈 Référencement naturel',
             'title' => 'SEO & Visibilité Google',
-            'description' => 'Atteignez la première page de Google grâce à notre stratégie SEO complète et personnalisée. Audit technique, mots-clés pertinents et netlinking de qualité.',
-            'features' => [
-              'Audit technique complet',
-              'Recherche de mots-clés à forte intention d\'achat',
-              'Stratégie de netlinking avec sites de qualité',
-              'Rapports mensuels avec recommandations',
-              'Optimisation Google My Business'
-            ],
-            'stats' => [['value' => 'Top 10', 'label' => 'mots-clés'], ['value' => '30 jours', 'label' => 'résultats']],
+            'desc' => 'Atteignez la première page de Google grâce à notre stratégie SEO complète. Audit technique, mots-clés stratégiques et netlinking de qualité.',
+            'features' => ['Audit technique complet', 'Mots-clés à forte intention', 'Netlinking de qualité', 'Rapports mensuels détaillés'],
+            'stats' => [['value' => 'Top 10', 'label' => 'mots-clés visés'], ['value' => '30 jours', 'label' => 'premiers résultats']],
             'images' => [
               'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=800&h=500&fit=crop',
               'https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=800&h=500&fit=crop',
@@ -515,16 +647,9 @@
         elseif(stripos($plugin->name, 'mail') !== false) {
           $pluginData = [
             'icon' => 'fa-envelope-open-text',
-            'badge' => '✉️ Marketing automation',
             'title' => 'Mail Marketing',
-            'description' => 'Boostez vos ventes avec des campagnes email marketing intelligentes et entièrement automatisées. Segmentation avancée et A/B testing.',
-            'features' => [
-              'Campagnes automatisées (drip marketing)',
-              'Segmentation avancée par comportement',
-              'A/B testing sur objets et contenus',
-              'Taux d\'ouverture moyen supérieur à 42%',
-              'Analytics détaillés et heatmaps'
-            ],
+            'desc' => 'Campagnes email marketing intelligentes et automatisées. Segmentation avancée, A/B testing et analytics détaillés pour maximiser vos conversions.',
+            'features' => ['Campagnes automatisées', 'Segmentation avancée', 'A/B testing', 'Analytics détaillés'],
             'stats' => [['value' => '42%', 'label' => 'taux ouverture'], ['value' => '18%', 'label' => 'taux clic']],
             'images' => [
               'https://images.unsplash.com/photo-1512626120412-faf41adb4874?w=800&h=500&fit=crop',
@@ -536,10 +661,9 @@
         else {
           $pluginData = [
             'icon' => 'fa-puzzle-piece',
-            'badge' => '🔌 ' . $plugin->name,
             'title' => $plugin->name,
-            'description' => $plugin->description ?? 'Découvrez cette fonctionnalité puissante incluse dans votre plan.',
-            'features' => ['Fonctionnalité premium incluse', 'Support technique prioritaire', 'Mises à jour régulières'],
+            'desc' => $plugin->description ?? 'Découvrez cette fonctionnalité premium incluse dans votre plan pour booster votre productivité.',
+            'features' => ['Fonctionnalité premium', 'Support prioritaire', 'Mises à jour incluses'],
             'stats' => [['value' => 'Inclus', 'label' => 'dans le plan'], ['value' => '24/7', 'label' => 'support']],
             'images' => [
               'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=500&fit=crop',
@@ -549,38 +673,34 @@
         }
       @endphp
 
-      <div class="service-block {{ $isEven ? 'alt' : '' }}">
-        <div class="container">
-          <div class="service-grid {{ $isEven ? 'reverse' : '' }}">
+      <div class="container">
+        <div class="service-card-premium {{ $isEven ? 'alt' : '' }}">
+          <div class="service-card-grid {{ $isEven ? 'reverse' : '' }}">
             <div>
-              <div class="service-badge">
+              <div class="service-icon-premium">
                 <i class="fas {{ $pluginData['icon'] }}"></i>
-                {{ $pluginData['badge'] }}
               </div>
-              <h3 class="service-title">{{ $pluginData['title'] }}</h3>
-              <p class="service-description">{{ $pluginData['description'] }}</p>
-              <div class="service-features-list">
+              <h3 class="service-title-premium">{{ $pluginData['title'] }}</h3>
+              <p class="service-desc-premium">{{ $pluginData['desc'] }}</p>
+              <div class="features-grid-premium">
                 @foreach($pluginData['features'] as $feature)
-                  <div class="service-feature-item">
-                    <i class="fas fa-check-circle"></i>
-                    <span>{{ $feature }}</span>
-                  </div>
+                  <span class="feature-chip">{{ $feature }}</span>
                 @endforeach
               </div>
-              <div class="service-stats-group">
+              <div class="stats-row">
                 @foreach($pluginData['stats'] as $stat)
-                  <div class="service-stat-card">
-                    <div class="stat-number">{{ $stat['value'] }}</div>
-                    <div class="stat-text">{{ $stat['label'] }}</div>
+                  <div class="stat-premium">
+                    <div class="value">{{ $stat['value'] }}</div>
+                    <div class="label">{{ $stat['label'] }}</div>
                   </div>
                 @endforeach
               </div>
-              <button class="btn-service" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
-                <i class="fas fa-arrow-right"></i> Je veux ce service
+              <button class="btn-premium-primary" style="margin-top: 16px;" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
+                Je veux ce service <i class="fas fa-arrow-right"></i>
               </button>
             </div>
-            <div class="service-media">
-              <div class="swiper service-swiper-custom">
+            <div class="service-media-premium">
+              <div class="swiper service-swiper-premium">
                 <div class="swiper-wrapper">
                   @foreach($pluginData['images'] as $image)
                     <div class="swiper-slide">
@@ -597,42 +717,36 @@
         </div>
       </div>
     @empty
-      <div class="container" style="text-align: center; padding: 80px 0;">
-        <p>Aucun service disponible pour ce plan.</p>
-      </div>
+      <div class="container" style="text-align: center; padding: 60px;">Aucun service disponible.</div>
     @endforelse
   </section>
 
-  <!-- SECTION FACTURATION - Statique -->
-  <section class="service-block alt" id="facturation">
-    <div class="container">
-      <div class="service-grid reverse">
+  <!-- Facturation Section -->
+  <div class="container">
+    <div class="service-card-premium alt">
+      <div class="service-card-grid">
         <div>
-          <div class="service-badge">
-            <i class="fas fa-file-invoice-dollar"></i>
-            💳 Finance simplifiée
+          <div class="service-icon-premium"><i class="fas fa-file-invoice-dollar"></i></div>
+          <h3 class="service-title-premium">Gestion facturation</h3>
+          <p class="service-desc-premium">Centralisez votre gestion financière. Créez des devis et factures personnalisables, programmez des relances automatiques, et suivez vos paiements en temps réel avec intégration Stripe et PayPal.</p>
+          <div class="features-grid-premium">
+            <span class="feature-chip">Devis personnalisés</span>
+            <span class="feature-chip">Relances automatiques</span>
+            <span class="feature-chip">Stripe/PayPal</span>
+            <span class="feature-chip">Export comptable</span>
           </div>
-          <h3 class="service-title">Gestion facturation</h3>
-          <p class="service-description">Centralisez l'ensemble de votre gestion financière sur une seule plateforme intuitive. Créez des devis et factures personnalisables en quelques clics, programmez des relances automatiques par email, et suivez vos paiements en temps réel. L'intégration native avec Stripe et PayPal vous permet d'encaisser vos clients directement en ligne.</p>
-          <div class="service-features-list">
-            <div class="service-feature-item"><i class="fas fa-check-circle"></i> Devis et factures personnalisables avec votre logo</div>
-            <div class="service-feature-item"><i class="fas fa-check-circle"></i> Relances automatiques par email (échéances)</div>
-            <div class="service-feature-item"><i class="fas fa-check-circle"></i> Intégration Stripe, PayPal et virement SEPA</div>
-            <div class="service-feature-item"><i class="fas fa-check-circle"></i> Export comptable (CSV, Excel, PDF, EBP)</div>
-            <div class="service-feature-item"><i class="fas fa-check-circle"></i> Tableau de bord financier en temps réel</div>
+          <div class="stats-row">
+            <div class="stat-premium"><div class="value">-72h</div><div class="label">délai réduit</div></div>
+            <div class="stat-premium"><div class="value">100%</div><div class="label">automatisé</div></div>
           </div>
-          <div class="service-stats-group">
-            <div class="service-stat-card"><div class="stat-number">-72h</div><div class="stat-text">délai de paiement réduit</div></div>
-            <div class="service-stat-card"><div class="stat-number">100%</div><div class="stat-text">process automatisé</div></div>
-          </div>
-          <button class="btn-service" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})"><i class="fas fa-arrow-right"></i> Je veux ce service</button>
+          <button class="btn-premium-primary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Je veux ce service <i class="fas fa-arrow-right"></i></button>
         </div>
-        <div class="service-media">
-          <div class="swiper service-swiper-custom">
+        <div class="service-media-premium">
+          <div class="swiper service-swiper-premium">
             <div class="swiper-wrapper">
-              <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=500&fit=crop" alt="Facturation en ligne"></div>
-              <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1554774853-719586f82d77?w=800&h=500&fit=crop" alt="Paiement en ligne"></div>
-              <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&h=500&fit=crop" alt="Dashboard financier"></div>
+              <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=500&fit=crop" alt="Facturation"></div>
+              <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1554774853-719586f82d77?w=800&h=500&fit=crop" alt="Paiement"></div>
+              <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&h=500&fit=crop" alt="Dashboard"></div>
             </div>
             <div class="swiper-pagination"></div>
             <div class="swiper-button-next"></div>
@@ -641,38 +755,34 @@
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- SECTION MARKETPLACE - Statique -->
-  <section class="service-block" id="marketplace">
-    <div class="container">
-      <div class="service-grid">
+  <!-- Marketplace Section -->
+  <div class="container">
+    <div class="service-card-premium">
+      <div class="service-card-grid reverse">
         <div>
-          <div class="service-badge">
-            <i class="fas fa-store"></i>
-            🛒 Vendez partout
+          <div class="service-icon-premium"><i class="fas fa-store"></i></div>
+          <h3 class="service-title-premium">Marketplace intégrée</h3>
+          <p class="service-desc-premium">Développez votre chiffre d'affaires sur notre marketplace avec 50k+ visiteurs mensuels. Gestion centralisée des stocks, commandes unifiées et commission personnalisable.</p>
+          <div class="features-grid-premium">
+            <span class="feature-chip">Multi-vendeurs</span>
+            <span class="feature-chip">Commission 0-20%</span>
+            <span class="feature-chip">Stocks temps réel</span>
+            <span class="feature-chip">Support logistique</span>
           </div>
-          <h3 class="service-title">Marketplace intégrée</h3>
-          <p class="service-description">Développez votre chiffre d'affaires en vendant vos produits et services sur notre marketplace intégrée. Bénéficiez d'une visibilité accrue auprès de nos 50 000 visiteurs mensuels. La gestion des stocks, des commandes et des livraisons est entièrement unifiée, et vous définissez librement vos commissions.</p>
-          <div class="service-features-list">
-            <div class="service-feature-item"><i class="fas fa-check-circle"></i> Multi-vendeurs avec commission personnalisable</div>
-            <div class="service-feature-item"><i class="fas fa-check-circle"></i> Gestion centralisée des stocks en temps réel</div>
-            <div class="service-feature-item"><i class="fas fa-check-circle"></i> Commandes et livraisons unifiées</div>
-            <div class="service-feature-item"><i class="fas fa-check-circle"></i> Commission personnalisable de 0 à 20%</div>
-            <div class="service-feature-item"><i class="fas fa-check-circle"></i> Support logistique et service client inclus</div>
+          <div class="stats-row">
+            <div class="stat-premium"><div class="value">+156%</div><div class="label">ventes générées</div></div>
+            <div class="stat-premium"><div class="value">50k+</div><div class="label">visiteurs/mois</div></div>
           </div>
-          <div class="service-stats-group">
-            <div class="service-stat-card"><div class="stat-number">+156%</div><div class="stat-text">de ventes générées</div></div>
-            <div class="service-stat-card"><div class="stat-number">50k+</div><div class="stat-text">visiteurs par mois</div></div>
-          </div>
-          <button class="btn-service" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})"><i class="fas fa-arrow-right"></i> Je veux ce service</button>
+          <button class="btn-premium-primary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Je veux ce service <i class="fas fa-arrow-right"></i></button>
         </div>
-        <div class="service-media">
-          <div class="swiper service-swiper-custom">
+        <div class="service-media-premium">
+          <div class="swiper service-swiper-premium">
             <div class="swiper-wrapper">
               <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=800&h=500&fit=crop" alt="Marketplace"></div>
-              <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=500&fit=crop" alt="Vente en ligne"></div>
-              <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&h=500&fit=crop" alt="Gestion des stocks"></div>
+              <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=500&fit=crop" alt="Vente"></div>
+              <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&h=500&fit=crop" alt="Gestion"></div>
             </div>
             <div class="swiper-pagination"></div>
             <div class="swiper-button-next"></div>
@@ -681,186 +791,178 @@
         </div>
       </div>
     </div>
-  </section>
+  </div>
+
+  <!-- Pricing Section -->
+  <div class="container" id="pricing">
+    <div class="pricing-premium">
+      <div class="pricing-badge"><i class="fas fa-gem"></i> Plan recommandé</div>
+      <h2 style="color: white; font-size: 2rem;">{{ $plan->name }}</h2>
+      <div class="amount">{{ $plan->formatted_price }}<span style="font-size: 1.2rem;">/{{ $plan->billing_cycle ?? 'mois' }}</span></div>
+      <div class="features-list">
+        <span><i class="fas fa-check-circle"></i> Support prioritaire 24/7</span>
+        <span><i class="fas fa-check-circle"></i> Analytics avancés</span>
+        <span><i class="fas fa-check-circle"></i> Mises à jour incluses</span>
+        <span><i class="fas fa-check-circle"></i> Sans engagement</span>
+      </div>
+      <button class="btn-cta-premium" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Commencer maintenant</button>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="container">
+    <div class="stats-premium-grid">
+      <div class="stat-premium-card"><div class="number">3000+</div><div>Clients actifs</div></div>
+      <div class="stat-premium-card"><div class="number">4.9★</div><div>Satisfaction client</div></div>
+      <div class="stat-premium-card"><div class="number">98%</div><div>Taux de rétention</div></div>
+      <div class="stat-premium-card"><div class="number">24/7</div><div>Support disponible</div></div>
+    </div>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="container" id="testimonials">
+    <div class="section-header-premium">
+      <span class="section-tag-premium">Témoignages</span>
+      <h2 class="section-title-premium">Ce que nos <span class="gradient-premium">clients disent</span></h2>
+    </div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <i class="fas fa-quote-left" style="color: #4f46e5; font-size: 2rem; opacity: 0.3;"></i>
+        <p style="margin: 16px 0; line-height: 1.6;">"GoExploria a transformé notre présence en ligne. Résultats visibles en moins d'un mois!"</p>
+        <div><strong>Sophie Martin</strong><br><span style="font-size: 0.8rem; color: #9ca3af;">Le Petit Bistro</span></div>
+      </div>
+      <div class="testimonial-card">
+        <i class="fas fa-quote-left" style="color: #4f46e5; font-size: 2rem; opacity: 0.3;"></i>
+        <p style="margin: 16px 0; line-height: 1.6;">"La marketplace nous a ouvert de nouveaux marchés. +156% de ventes en 3 mois!"</p>
+        <div><strong>Thomas Dubois</strong><br><span style="font-size: 0.8rem; color: #9ca3af;">La Maison du Café</span></div>
+      </div>
+      <div class="testimonial-card">
+        <i class="fas fa-quote-left" style="color: #4f46e5; font-size: 2rem; opacity: 0.3;"></i>
+        <p style="margin: 16px 0; line-height: 1.6;">"Support réactif et solutions innovantes. Je recommande vivement!"</p>
+        <div><strong>Julie Lambert</strong><br><span style="font-size: 0.8rem; color: #9ca3af;">Immobilier Premium</span></div>
+      </div>
+    </div>
+  </div>
 
   <!-- CTA Section -->
-  <div class="cta-section">
-    <div class="container">
-      <h2 style="color: white; margin-bottom: 1rem;">Prêt à transformer votre activité ?</h2>
-      <p style="color: #9ca3af; margin-bottom: 2rem;">Rejoignez plus de 3000 entreprises qui nous font confiance</p>
-      <button class="btn-cta" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
-        <i class="fas fa-calendar-check"></i> Demander une démo gratuite
+  <div class="container">
+    <div class="cta-premium">
+      <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 16px;"></i>
+      <h2 style="font-size: 2rem;">Prêt à booster votre activité ?</h2>
+      <p>Rejoignez plus de 3000 entreprises qui nous font confiance</p>
+      <button class="btn-cta-premium" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
+        <i class="fas fa-calendar-check"></i> Demander une démo
       </button>
     </div>
   </div>
 
-  <!-- Showcase Section -->
-  <section class="section" id="showcase" style="background: var(--gray-50);">
-    <div class="container">
-      <div class="section-title-custom">
-        <span class="section-tag-custom">Ils nous font confiance</span>
-        <h2>+3000 <span class="gradient-text">clients satisfaits</span></h2>
-        <p style="color: var(--gray-600);">Découvrez comment nos clients ont transformé leur présence digitale.</p>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
-        <div style="border-radius: 24px; overflow: hidden; position: relative;">
-          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&h=400&fit=crop" style="width:100%; height:300px; object-fit:cover;">
-          <div style="position: absolute; inset:0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; padding: 2rem;">
-            <div style="color: white;">
-              <h4>Le Petit Bistro</h4>
-              <p>+156% de réservations en ligne</p>
-              <span style="background: var(--success); padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem;">Vidéo sur carte</span>
-            </div>
-          </div>
-        </div>
-        <div style="border-radius: 24px; overflow: hidden; position: relative;">
-          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop" style="width:100%; height:300px; object-fit:cover;">
-          <div style="position: absolute; inset:0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; padding: 2rem;">
-            <div style="color: white;">
-              <h4>La Maison du Café</h4>
-              <p>+89% de clients en boutique</p>
-              <span style="background: var(--success); padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem;">SEO + Site web</span>
-            </div>
-          </div>
-        </div>
-        <div style="border-radius: 24px; overflow: hidden; position: relative;">
-          <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop" style="width:100%; height:300px; object-fit:cover;">
-          <div style="position: absolute; inset:0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; padding: 2rem;">
-            <div style="color: white;">
-              <h4>Immobilier Premium</h4>
-              <p>+234 leads qualifiés/mois</p>
-              <span style="background: var(--success); padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem;">Pack complet</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- Contact Section -->
-  <section class="section" id="contact" style="background: white;">
-    <div class="container">
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; background: var(--gray-50); border-radius: 32px; padding: 3rem;">
+  <div class="container" id="contact">
+    <div class="contact-premium">
+      <div class="contact-premium-grid">
         <div>
-          <span class="section-tag-custom">Parlons de votre projet</span>
-          <h2 style="font-size: 2rem; margin: 1rem 0;">Contactez notre <span class="gradient-text">équipe expert</span></h2>
-          <p>Notre équipe vous répond sous 24h et vous propose une démo personnalisée gratuite.</p>
-          <div style="margin-top: 2rem;">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-              <div style="background: #e0e7ff; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fas fa-envelope" style="color: var(--primary);"></i></div>
+          <div class="section-tag-premium" style="display: inline-block;">Contactez-nous</div>
+          <h2 style="font-size: 2rem; margin: 20px 0;">Parlons de <span class="gradient-premium">votre projet</span></h2>
+          <p style="color: #6b7280; margin-bottom: 32px;">Notre équipe vous répond sous 24h.</p>
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fas fa-envelope" style="color: #4f46e5;"></i></div>
               <div><strong>Email</strong><br>hello@goexploria.com</div>
             </div>
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-              <div style="background: #e0e7ff; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fas fa-phone" style="color: var(--primary);"></i></div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fas fa-phone" style="color: #4f46e5;"></i></div>
               <div><strong>Téléphone</strong><br>+1 (514) 555-9210</div>
             </div>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-              <div style="background: #e0e7ff; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i></div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fas fa-map-marker-alt" style="color: #4f46e5;"></i></div>
               <div><strong>Adresse</strong><br>123 rue Saint-Denis, Montréal, QC</div>
             </div>
           </div>
         </div>
         <div>
-          <form action="{{ url('contact.send') }}" method="POST">
-            @csrf
-            <input type="text" name="name" placeholder="Votre nom" style="width:100%; padding: 1rem; border-radius: 12px; border: 1px solid var(--gray-200); margin-bottom: 1rem;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-              <input type="email" name="email" placeholder="Email professionnel" style="padding: 1rem; border-radius: 12px; border: 1px solid var(--gray-200);">
-              <input type="tel" name="phone" placeholder="Téléphone" style="padding: 1rem; border-radius: 12px; border: 1px solid var(--gray-200);">
+          <form style="display: flex; flex-direction: column; gap: 16px;">
+            <input type="text" placeholder="Votre nom" style="padding: 14px 18px; border: 1px solid #e5e7eb; border-radius: 16px; font-family: inherit;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <input type="email" placeholder="Email" style="padding: 14px 18px; border: 1px solid #e5e7eb; border-radius: 16px; font-family: inherit;">
+              <input type="tel" placeholder="Téléphone" style="padding: 14px 18px; border: 1px solid #e5e7eb; border-radius: 16px; font-family: inherit;">
             </div>
-            <select name="service" style="width:100%; padding: 1rem; border-radius: 12px; border: 1px solid var(--gray-200); margin-bottom: 1rem;">
-              <option value="">Service souhaité</option>
+            <select style="padding: 14px 18px; border: 1px solid #e5e7eb; border-radius: 16px; font-family: inherit;">
+              <option>Service souhaité</option>
               @foreach($plan->plugins as $plugin)
                 <option>{{ $plugin->name }}</option>
               @endforeach
               <option>Gestion facturation</option>
-              <option>Marketplace intégrée</option>
+              <option>Marketplace</option>
             </select>
-            <textarea name="message" rows="4" placeholder="Décrivez votre projet..." style="width:100%; padding: 1rem; border-radius: 12px; border: 1px solid var(--gray-200); margin-bottom: 1rem;"></textarea>
-            <button type="submit" class="btn-service" style="width:100%; justify-content: center;"><i class="fas fa-paper-plane"></i> Envoyer le message</button>
-            <p style="text-align: center; margin-top: 1rem; font-size: 0.8rem; color: var(--gray-600);">Sans engagement · Démo gratuite · Réponse sous 24h</p>
+            <textarea rows="4" placeholder="Décrivez votre projet..." style="padding: 14px 18px; border: 1px solid #e5e7eb; border-radius: 16px; font-family: inherit; resize: vertical;"></textarea>
+            <button class="btn-premium-primary" style="width: 100%; justify-content: center;">Envoyer <i class="fas fa-paper-plane"></i></button>
+            <p style="text-align: center; font-size: 0.8rem; color: #9ca3af;">Sans engagement · Démo gratuite · Réponse sous 24h</p>
           </form>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Floating Button -->
-  <button class="floating-btn" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
-    <i class="fas fa-comment-dots"></i>
-    <span>Devis gratuit</span>
+  <!-- Floating Action Button -->
+  <button class="fab-premium" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
+    <i class="fas fa-comment-dots" style="color: white; font-size: 24px;"></i>
   </button>
 
   <!-- Footer -->
-  <footer style="background: var(--gray-900); color: #9ca3af; padding: 60px 0 30px;">
+  <footer class="footer-premium">
     <div class="container">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 48px;">
         <div>
-          <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Go<span style="color: var(--secondary);">Exploria</span></div>
-          <p>La plateforme tout-en-un pour les professionnels.</p>
-          <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-            <a href="#" style="color: #9ca3af;"><i class="fab fa-linkedin"></i></a>
-            <a href="#" style="color: #9ca3af;"><i class="fab fa-facebook"></i></a>
-            <a href="#" style="color: #9ca3af;"><i class="fab fa-twitter"></i></a>
-          </div>
+          <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 16px;">Go<span style="color: #4f46e5;">Exploria</span></div>
+          <p style="color: #6b7280;">La plateforme tout-en-un pour les professionnels.</p>
         </div>
         <div>
-          <h4 style="color: white; margin-bottom: 1rem;">Services</h4>
-          @foreach($plan->plugins->take(5) as $plugin)
-            <a href="#" style="display: block; margin-bottom: 0.5rem; color: #9ca3af; text-decoration: none;">{{ $plugin->name }}</a>
+          <h4 style="color: white; margin-bottom: 16px;">Services</h4>
+          @foreach($plan->plugins->take(4) as $plugin)
+            <a href="#" style="display: block; margin-bottom: 8px; color: #9ca3af; text-decoration: none;">{{ $plugin->name }}</a>
           @endforeach
-          <a href="#" style="display: block; margin-bottom: 0.5rem; color: #9ca3af; text-decoration: none;">Gestion facturation</a>
-          <a href="#" style="display: block; margin-bottom: 0.5rem; color: #9ca3af; text-decoration: none;">Marketplace</a>
         </div>
         <div>
-          <h4 style="color: white; margin-bottom: 1rem;">Ressources</h4>
-          <a href="#" style="display: block; margin-bottom: 0.5rem; color: #9ca3af; text-decoration: none;">Blog</a>
-          <a href="#" style="display: block; margin-bottom: 0.5rem; color: #9ca3af; text-decoration: none;">Documentation</a>
-          <a href="#" style="display: block; margin-bottom: 0.5rem; color: #9ca3af; text-decoration: none;">API</a>
-          <a href="#" style="display: block; margin-bottom: 0.5rem; color: #9ca3af; text-decoration: none;">Support</a>
+          <h4 style="color: white; margin-bottom: 16px;">Ressources</h4>
+          <a href="#" style="display: block; margin-bottom: 8px; color: #9ca3af; text-decoration: none;">Blog</a>
+          <a href="#" style="display: block; margin-bottom: 8px; color: #9ca3af; text-decoration: none;">Documentation</a>
+          <a href="#" style="display: block; margin-bottom: 8px; color: #9ca3af; text-decoration: none;">API</a>
         </div>
         <div>
-          <h4 style="color: white; margin-bottom: 1rem;">Légal</h4>
-          <a href="#" style="display: block; margin-bottom: 0.5rem; color: #9ca3af; text-decoration: none;">CGU</a>
-          <a href="#" style="display: block; margin-bottom: 0.5rem; color: #9ca3af; text-decoration: none;">Confidentialité</a>
-          <a href="#" style="display: block; margin-bottom: 0.5rem; color: #9ca3af; text-decoration: none;">Mentions légales</a>
-          <a href="#" style="display: block; margin-bottom: 0.5rem; color: #9ca3af; text-decoration: none;">RGPD</a>
+          <h4 style="color: white; margin-bottom: 16px;">Légal</h4>
+          <a href="#" style="display: block; margin-bottom: 8px; color: #9ca3af; text-decoration: none;">CGU</a>
+          <a href="#" style="display: block; margin-bottom: 8px; color: #9ca3af; text-decoration: none;">Confidentialité</a>
+          <a href="#" style="display: block; margin-bottom: 8px; color: #9ca3af; text-decoration: none;">Mentions légales</a>
         </div>
       </div>
-      <div style="text-align: center; padding-top: 3rem; margin-top: 3rem; border-top: 1px solid #1e293b;">
+      <div style="text-align: center; padding-top: 48px; margin-top: 48px; border-top: 1px solid #1f2937;">
         <p>© 2026 GoExploria — Tous droits réservés</p>
-        <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem;">
-          <span>🔒 Paiement sécurisé</span>
-          <span>🇫🇷 Hébergé en France</span>
-          <span>✅ RGPD conforme</span>
-        </div>
       </div>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script>
-    document.querySelectorAll('.service-swiper-custom').forEach(swiperEl => {
+    // Nav scroll effect
+    window.addEventListener('scroll', function() {
+      const nav = document.getElementById('nav');
+      if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+
+    // Initialize Swipers
+    document.querySelectorAll('.service-swiper-premium').forEach(swiperEl => {
       const slides = swiperEl.querySelectorAll('.swiper-slide');
-      const slidesCount = slides.length;
       new Swiper(swiperEl, {
         slidesPerView: 1,
         spaceBetween: 0,
-        loop: slidesCount >= 2,
-        autoplay: slidesCount >= 2 ? { delay: 4000, disableOnInteraction: false } : false,
+        loop: slides.length >= 2,
+        autoplay: slides.length >= 2 ? { delay: 4000, disableOnInteraction: false } : false,
         pagination: { el: '.swiper-pagination', clickable: true },
         navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
-      });
-    });
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        const href = this.getAttribute('href');
-        if (href !== '#') {
-          e.preventDefault();
-          const target = document.querySelector(href);
-          if (target) target.scrollIntoView({ behavior: 'smooth' });
-        }
       });
     });
   </script>

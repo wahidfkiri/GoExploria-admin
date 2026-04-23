@@ -30,14 +30,6 @@ class PlanController extends Controller
     }
 
     
-    public function preview($id = null)
-    {
-            $plan = Plan::active()
-                ->with('plugins')
-                ->firstOrFail();
-        
-        return view('theme::plans.plan-' . $id, compact('plan'));
-    }
 
 
 }
