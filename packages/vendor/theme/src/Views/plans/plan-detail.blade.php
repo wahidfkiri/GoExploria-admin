@@ -545,11 +545,11 @@
           </p>
           <div style="display: flex; gap: 16px; flex-wrap: wrap;">
             <button class="btn-premium-primary" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">
-              <i class="fas fa-arrow-right"></i> Découvrir
+              <i class="fas fa-arrow-right"></i> Découvrir Nos Services
             </button>
-            <button class="btn-premium-secondary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
+            <!-- <button class="btn-premium-secondary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
               <i class="fas fa-play"></i> Voir démo
-            </button>
+            </button> -->
           </div>
           <div class="trust-badges">
             <div class="trust-item">
@@ -562,7 +562,7 @@
             </div>
             <div class="trust-item">
               <div class="icon"><i class="fas fa-users" style="color: #10b981;"></i></div>
-              <div><strong>3000+</strong><br><span style="font-size: 0.8rem;">clients actifs</span></div>
+              <div><strong>100+</strong><br><span style="font-size: 0.8rem;">clients actifs</span></div>
             </div>
           </div>
         </div>
@@ -583,6 +583,163 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Vision Stratégique -->
+  <section class="vision-section" style="padding: 80px 0; background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);">
+    <div class="container">
+      <div class="vision-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+        <div>
+          <span class="section-tag-premium" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); display: inline-block;">🎯 NOTRE VISION</span>
+          <h2 style="font-size: 2.2rem; font-weight: 700; margin: 24px 0 16px;">Le <span class="gradient-premium">"couteau suisse du web"</span></h2>
+          <p style="color: #475569; line-height: 1.7; margin-bottom: 24px;">
+            {{ $plan->vision_text ?? 'Une plateforme tout-en-un dédiée à la transformation digitale, au développement commercial et touristique et à la visibilité internationale des entreprises, combinant marketing, technologie et accès aux marchés globaux.' }}
+          </p>
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 24px;">
+            <div style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-chart-line" style="color: #4f46e5; font-size: 1.2rem;"></i><span>Transformation digitale</span></div>
+            <div style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-globe" style="color: #4f46e5; font-size: 1.2rem;"></i><span>Visibilité internationale</span></div>
+            <div style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-rocket" style="color: #4f46e5; font-size: 1.2rem;"></i><span>Développement commercial</span></div>
+          </div>
+        </div>
+        <div>
+          <div style="background: linear-gradient(135deg, #f1f5f9, #ffffff); border-radius: 32px; padding: 32px; border: 1px solid #e2e8f0;">
+            <i class="fas fa-quote-right" style="font-size: 3rem; color: #4f46e5; opacity: 0.3; display: block; text-align: right;"></i>
+            <p style="font-size: 1.1rem; line-height: 1.7; color: #334155; margin: 20px 0;">
+              "{{ $plan->vision_quote ?? 'Une solution conçue pour propulser les entreprises vers une croissance rapide et durable à l\'échelle mondiale.' }}"
+            </p>
+            <div style="display: flex; align-items: center; gap: 16px; margin-top: 24px;">
+              <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #4f46e5, #ec4899); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-crown" style="color: white;"></i>
+              </div>
+              <div>
+                <strong style="color: #1e293b;">{{ $plan->vision_quote_author ?? 'GO EXPLORIA BUSINESS' }}</strong>
+                <p style="color: #64748b; font-size: 0.8rem;">Next Level — La croissance au cœur de nos offres</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+     <!-- Section Investissement Marketing -->
+  <section style="padding: 60px 0; background: linear-gradient(135deg, #faf5ff 0%, #fefce8 100%);">
+    <div class="container">
+      <div class="section-header-premium">
+        <span class="section-tag-premium" style="background: linear-gradient(135deg, #f59e0b, #ec4899);">💰 INVESTISSEMENT MARKETING</span>
+        <h2 class="section-title-premium"><span class="gradient-premium">{{ $plan->marketing_budget ? '+ ' . number_format($plan->marketing_budget, 0, ',', ' ') . '$ / an' : '+250 000$ / an' }}</span> pour votre visibilité</h2>
+        <p style="color: #6b7280;">Un déploiement continu en marketing digital pour maximiser votre ROI</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 32px;">
+        @php
+          $marketingFeatures = $plan->marketing_features ?? ['SEO & Ads', 'Production Média', 'Campagnes Internationales'];
+        @endphp
+        
+        @foreach($marketingFeatures as $index => $feature)
+          @php
+            $icons = [
+              0 => ['icon' => 'fa-chart-simple', 'color' => '#4f46e5', 'bg' => '#e0e7ff', 'desc' => 'Déploiement continu en marketing digital, SEO, Google Ads et Meta Ads'],
+              1 => ['icon' => 'fa-video', 'color' => '#10b981', 'bg' => '#d1fae5', 'desc' => 'Vidéo, photographie, storytelling pour valoriser votre entreprise'],
+              2 => ['icon' => 'fa-globe', 'color' => '#ec4899', 'bg' => '#fce7f3', 'desc' => 'Campagnes multi-plateformes internationales pour maximiser votre visibilité'],
+            ];
+            $iconData = $icons[$index] ?? ['icon' => 'fa-chart-line', 'color' => '#4f46e5', 'bg' => '#e0e7ff', 'desc' => 'Solution marketing premium incluse'];
+          @endphp
+          <div class="invest-card" style="background: white; border-radius: 24px; padding: 28px; text-align: center; transition: all 0.3s ease;">
+            <div style="width: 60px; height: 60px; background: {{ $iconData['bg'] }}; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+              <i class="fas {{ $iconData['icon'] }}" style="font-size: 28px; color: {{ $iconData['color'] }};"></i>
+            </div>
+            <h3 style="margin-bottom: 12px;">{{ $feature }}</h3>
+            <p style="color: #64748b; font-size: 0.9rem;">{{ $iconData['desc'] }}</p>
+            <div style="margin-top: 16px;"><span class="feature-chip">+25% croissance annuelle</span></div>
+          </div>
+        @endforeach
+      </div>
+    </div>
+  </section>
+
+   <!-- Section Accès Marchés Internationaux -->
+  <section style="padding: 80px 0;">
+    <div class="container">
+      <div class="section-header-premium">
+        <span class="section-tag-premium" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">🌍 ACCÈS AUX MARCHÉS</span>
+        <h2 class="section-title-premium">Potentiel de <span class="gradient-premium">{{ $plan->markets ? array_sum(array_column($plan->markets, 'population_numeric')) . ' millions' : '4 milliards' }}</span> de consommateurs</h2>
+        <p style="color: #6b7280;">Plateforme multilingue {{ $plan->market_languages ? 'avec ' . count($plan->market_languages) . ' fonctionnalités' : 'jusqu\'à 25 langues disponibles' }}</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 32px;">
+        @php
+          $markets = $plan->markets ?? [
+            ['name' => 'Canada', 'population' => '~40M', 'icon' => 'fa-globe-americas'],
+            ['name' => 'États-Unis', 'population' => '~335M', 'icon' => 'fa-flag-usa'],
+            ['name' => 'Europe', 'population' => '~450M', 'icon' => 'fa-euro-sign'],
+            ['name' => 'Monde', 'population' => '~8Md', 'icon' => 'fa-chart-line'],
+          ];
+        @endphp
+        
+        @foreach($markets as $market)
+          <div style="background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 20px; padding: 24px; text-align: center; color: white;">
+            <i class="fas {{ $market['icon'] ?? 'fa-globe' }}" style="font-size: 2rem; color: #fbbf24; margin-bottom: 12px;"></i>
+            <div style="font-size: 1.8rem; font-weight: 800;">{{ $market['population'] ?? '—' }}</div>
+            <div style="font-size: 0.85rem; opacity: 0.8;">{{ $market['name'] ?? 'Marché' }}</div>
+          </div>
+        @endforeach
+      </div>
+
+      <div style="text-align: center; margin-top: 40px;">
+        <div style="display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
+          @php
+            $languages = $plan->market_languages ?? ['Jusqu\'à 25 langues', 'Marchés émergents', 'Expansion internationale', 'ROI optimisé'];
+          @endphp
+          @foreach($languages as $lang)
+            <span class="feature-chip"><i class="fas fa-language"></i> {{ $lang }}</span>
+          @endforeach
+        </div>
+      </div>
+    </div>
+  </section>
+
+     <!-- Section Outils Marketing Performants -->
+  <section style="padding: 60px 0; background: #f8fafc;">
+    <div class="container">
+      <div class="section-header-premium">
+        <span class="section-tag-premium" style="background: linear-gradient(135deg, #10b981, #059669);">🧰 OUTILS MARKETING</span>
+        <h2 class="section-title-premium">Un écosystème <span class="gradient-premium">complet et performant</span></h2>
+        <p style="color: #6b7280;">Tous les outils nécessaires pour votre succès digital</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+        @php
+          $tools = $plan->marketing_tools ?? [
+            ['name' => 'Marketing digital intégré', 'icon' => 'fa-bullhorn', 'features' => ['SEO avancé & international', 'Publicité Google & Meta Ads', 'Email marketing automatisé', 'CRM & gestion des leads']],
+            ['name' => 'Intelligence & données', 'icon' => 'fa-database', 'features' => ['Tableaux de bord analytiques', 'Suivi performances marketing', 'Analyse des tendances marchés']],
+            ['name' => 'Automatisation & IA', 'icon' => 'fa-robot', 'features' => ['Création de contenu assistée par IA', 'Call-to-action optimisés', 'Segmentation client intelligente']],
+          ];
+        @endphp
+        
+        @foreach($tools as $tool)
+          <div style="background: white; border-radius: 24px; padding: 28px;">
+            <div style="width: 50px; height: 50px; background: #e0e7ff; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+              <i class="fas {{ $tool['icon'] ?? 'fa-bullhorn' }}" style="color: #4f46e5; font-size: 24px;"></i>
+            </div>
+            <h3 style="margin-bottom: 12px;">{{ $tool['name'] }}</h3>
+            <ul style="list-style: none; padding: 0;">
+              @foreach($tool['features'] as $feature)
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: #10b981; margin-right: 8px;"></i> {{ $feature }}</li>
+              @endforeach
+            </ul>
+          </div>
+        @endforeach
+      </div>
+
+      <div style="text-align: center; margin-top: 32px;">
+        <div class="stats-row" style="justify-content: center;">
+          <div class="stat-premium"><div class="value">+ efficacité</div><div class="label">Résultats mesurables</div></div>
+          <div class="stat-premium"><div class="value">+ conversion</div><div class="label">Taux optimisés</div></div>
+          <div class="stat-premium"><div class="value">+ croissance</div><div class="label">Durable</div></div>
         </div>
       </div>
     </div>
@@ -793,6 +950,48 @@
     </div>
   </div>
 
+      <!-- Section Espaces Entreprises -->
+  <section style="padding: 80px 0;">
+    <div class="container">
+      <div class="section-header-premium">
+        <span class="section-tag-premium" style="background: linear-gradient(135deg, #8b5cf6, #d946ef);">🏢 ACTIVEZ VOS ESPACES</span>
+        <h2 class="section-title-premium">Des solutions <span class="gradient-premium">adaptées à vos besoins</span></h2>
+        <p style="color: #6b7280;">Choisissez l'espace qui correspond à votre activité</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
+        @php
+          $spaceTypes = [
+            ['type' => 'entreprise', 'name' => 'Espace Entreprise', 'desc' => 'Visibilité & ventes', 'icon' => 'fa-building', 'color' => 'linear-gradient(135deg, #4f46e5, #7c3aed)'],
+            ['type' => 'destination', 'name' => 'Espace Destination', 'desc' => 'Tourisme & attractivité', 'icon' => 'fa-umbrella-beach', 'color' => 'linear-gradient(135deg, #ec4899, #f43f5e)'],
+            ['type' => 'partenaire', 'name' => 'Espace Partenaires', 'desc' => 'Affiliés & collaborations', 'icon' => 'fa-handshake', 'color' => 'linear-gradient(135deg, #f59e0b, #ef4444)'],
+            ['type' => 'perso', 'name' => 'Espace Perso', 'desc' => 'Particuliers & créateurs', 'icon' => 'fa-user', 'color' => 'linear-gradient(135deg, #10b981, #06b6d4)'],
+          ];
+        @endphp
+        @foreach($spaceTypes as $space)
+          <div style="background: {{ $space['color'] }}; border-radius: 24px; padding: 28px; text-align: center; color: white; transition: transform 0.3s;">
+            <i class="fas {{ $space['icon'] }}" style="font-size: 2.5rem; margin-bottom: 16px;"></i>
+            <h3>{{ $space['name'] }}</h3>
+            <p style="font-size: 0.85rem; opacity: 0.9; margin: 12px 0;">{{ $space['desc'] }}</p>
+            <span style="display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 100px; font-size: 0.7rem;">{{ $space['type'] === 'partenaire' ? 'Network' : ($space['type'] === 'perso' ? 'Individual' : ($space['type'] === 'destination' ? 'Travel' : 'Business')) }}</span>
+          </div>
+        @endforeach
+      </div>
+
+      <div style="margin-top: 48px; background: #f1f5f9; border-radius: 32px; padding: 32px; text-align: center;">
+        <h3 style="margin-bottom: 16px;">Solutions Entreprises — Passez au niveau supérieur</h3>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;">
+          <span class="feature-chip"><i class="fas fa-code"></i> Création sites web</span>
+          <span class="feature-chip"><i class="fas fa-cart-shopping"></i> E-commerce & réservation</span>
+          <span class="feature-chip"><i class="fas fa-chart-line"></i> SEO international</span>
+          <span class="feature-chip"><i class="fas fa-headset"></i> Accompagnement stratégique</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+
   <!-- Pricing Section -->
   <div class="container" id="pricing">
     <div class="pricing-premium">
@@ -808,6 +1007,216 @@
       <button class="btn-cta-premium" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Commencer maintenant</button>
     </div>
   </div>
+
+<!-- SECTION : COMPARAISON DES PLANS DÉTAILLÉS -->
+<section id="all-plans" style="padding: 60px 0; background: #f8fafc;">
+  <div class="container">
+    <div class="section-header-premium">
+      <span class="section-tag-premium" style="background: linear-gradient(135deg, #f59e0b, #ec4899);">📊 COMPARAISON</span>
+      <h2 class="section-title-premium">Trouvez le plan <span class="gradient-premium">parfait pour vous</span></h2>
+      <p class="section-subtitle" style="color: #64748b;">Comparez les fonctionnalités et choisissez l'offre adaptée à vos besoins</p>
+    </div>
+
+    <!-- Tableau de comparaison responsive -->
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+        <thead>
+          <tr style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white;">
+            <th style="padding: 20px; text-align: left;">Fonctionnalités</th>
+            <th style="padding: 20px; text-align: center;">Espace Perso</th>
+            <th style="padding: 20px; text-align: center;">Espace Entreprise</th>
+            <th style="padding: 20px; text-align: center;">Espace Destination</th>
+            <th style="padding: 20px; text-align: center;">Espace Partenaire</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 16px 20px; font-weight: 600;">Site web</td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0; background: #f8fafc;">
+            <td style="padding: 16px 20px; font-weight: 600;">Vidéo sur carte</td>
+            <td style="padding: 16px; text-align: center;">—</td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+            <td style="padding: 16px; text-align: center;">—</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 16px 20px; font-weight: 600;">SEO International</td>
+            <td style="padding: 16px; text-align: center;">Basique</td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+            <td style="padding: 16px; text-align: center;">—</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0; background: #f8fafc;">
+            <td style="padding: 16px 20px; font-weight: 600;">CRM & Leads</td>
+            <td style="padding: 16px; text-align: center;">—</td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 16px 20px; font-weight: 600;">Email marketing</td>
+            <td style="padding: 16px; text-align: center;">—</td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0; background: #f8fafc;">
+            <td style="padding: 16px 20px; font-weight: 600;">Programme affiliation</td>
+            <td style="padding: 16px; text-align: center;">—</td>
+            <td style="padding: 16px; text-align: center;">—</td>
+            <td style="padding: 16px; text-align: center;">—</td>
+            <td style="padding: 16px; text-align: center;"><i class="fas fa-check-circle" style="color: #10b981;"></i></td>
+          </tr>
+          <tr>
+            <td style="padding: 16px 20px; font-weight: 600;">Commission</td>
+            <td style="padding: 16px; text-align: center;">—</td>
+            <td style="padding: 16px; text-align: center;">—</td>
+            <td style="padding: 16px; text-align: center;">—</td>
+            <td style="padding: 16px; text-align: center;">Jusqu'à 20%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Boutons d'action après le tableau -->
+    <div style="display: flex; justify-content: center; gap: 20px; margin-top: 40px; flex-wrap: wrap;">
+      <button class="btn-premium-primary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
+        <i class="fas fa-headset"></i> Besoin d'un conseil ?
+      </button>
+      <button class="btn-premium-secondary" onclick="window.location.href='{{ route('register') }}'">
+        <i class="fas fa-arrow-right"></i> S'inscrire maintenant
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION : RÉSUMÉ DES AVANTAGES PAR CATÉGORIE -->
+<section style="padding: 60px 0;">
+  <div class="container">
+    <div class="section-header-premium">
+      <span class="section-tag-premium" style="background: linear-gradient(135deg, #10b981, #059669);">✨ POURQUOI CHOISIR GO EXPLORIA ?</span>
+      <h2 class="section-title-premium">Des avantages <span class="gradient-premium">sur mesure</span> pour chaque profil</h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px;">
+      <!-- Avantages Entreprises -->
+      <div style="background: linear-gradient(135deg, #eef2ff, #ffffff); border-radius: 24px; padding: 32px;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+          <div style="width: 60px; height: 60px; background: #4f46e5; border-radius: 18px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-building" style="font-size: 28px; color: white;"></i></div>
+          <h3 style="font-size: 1.5rem;">Pour les Entreprises</h3>
+        </div>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 12px;"><i class="fas fa-chart-line" style="color: #4f46e5; width: 24px;"></i> Augmentez votre visibilité locale et internationale</li>
+          <li style="margin-bottom: 12px;"><i class="fas fa-video" style="color: #4f46e5; width: 24px;"></i> Vidéos géolocalisées sur Google Maps</li>
+          <li style="margin-bottom: 12px;"><i class="fas fa-envelope" style="color: #4f46e5; width: 24px;"></i> Marketing automation avancé</li>
+          <li><i class="fas fa-chart-simple" style="color: #4f46e5; width: 24px;"></i> Analytics en temps réel</li>
+        </ul>
+      </div>
+
+      <!-- Avantages Destinations -->
+      <div style="background: linear-gradient(135deg, #fdf2f8, #ffffff); border-radius: 24px; padding: 32px;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+          <div style="width: 60px; height: 60px; background: #ec4899; border-radius: 18px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-umbrella-beach" style="font-size: 28px; color: white;"></i></div>
+          <h3 style="font-size: 1.5rem;">Pour les Destinations</h3>
+        </div>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 12px;"><i class="fas fa-globe" style="color: #ec4899; width: 24px;"></i> Attirez des touristes internationaux</li>
+          <li style="margin-bottom: 12px;"><i class="fas fa-calendar" style="color: #ec4899; width: 24px;"></i> Système de réservation intégré</li>
+          <li style="margin-bottom: 12px;"><i class="fas fa-language" style="color: #ec4899; width: 24px;"></i> Jusqu'à 25 langues disponibles</li>
+          <li><i class="fas fa-star" style="color: #ec4899; width: 24px;"></i> Mise en avant des points d'intérêt</li>
+        </ul>
+      </div>
+
+      <!-- Avantages Partenaires -->
+      <div style="background: linear-gradient(135deg, #fefce8, #ffffff); border-radius: 24px; padding: 32px;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+          <div style="width: 60px; height: 60px; background: #f59e0b; border-radius: 18px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-handshake" style="font-size: 28px; color: white;"></i></div>
+          <h3 style="font-size: 1.5rem;">Pour les Partenaires</h3>
+        </div>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 12px;"><i class="fas fa-euro-sign" style="color: #f59e0b; width: 24px;"></i> Gagnez des commissions jusqu'à 20%</li>
+          <li style="margin-bottom: 12px;"><i class="fas fa-link" style="color: #f59e0b; width: 24px;"></i> Liens d'affiliation personnalisés</li>
+          <li style="margin-bottom: 12px;"><i class="fas fa-chart-line" style="color: #f59e0b; width: 24px;"></i> Suivi des performances en temps réel</li>
+          <li><i class="fas fa-headset" style="color: #f59e0b; width: 24px;"></i> Support dédié aux partenaires</li>
+        </ul>
+      </div>
+
+      <!-- Avantages Perso -->
+      <div style="background: linear-gradient(135deg, #ecfdf5, #ffffff); border-radius: 24px; padding: 32px;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+          <div style="width: 60px; height: 60px; background: #10b981; border-radius: 18px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-user" style="font-size: 28px; color: white;"></i></div>
+          <h3 style="font-size: 1.5rem;">Pour les Particuliers</h3>
+        </div>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 12px;"><i class="fas fa-laptop" style="color: #10b981; width: 24px;"></i> Créez votre site vitrine facilement</li>
+          <li style="margin-bottom: 12px;"><i class="fas fa-images" style="color: #10b981; width: 24px;"></i> Mettez en valeur votre portfolio</li>
+          <li style="margin-bottom: 12px;"><i class="fas fa-share-alt" style="color: #10b981; width: 24px;"></i> Réseaux sociaux intégrés</li>
+          <li><i class="fas fa-charging-station" style="color: #10b981; width: 24px;"></i> Tarifs abordables dès 29€/mois</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION : APPEL À L'ACTION FINAL -->
+<section style="padding: 60px 0; background: linear-gradient(135deg, #0a0a1a, #1e1e3a);">
+  <div class="container" style="text-align: center;">
+    <i class="fas fa-rocket" style="font-size: 3rem; color: #fbbf24; margin-bottom: 24px;"></i>
+    <h2 style="font-size: 2rem; color: white; margin-bottom: 16px;">Prêt à passer au niveau supérieur ?</h2>
+    <p style="color: #9ca3af; margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto;">
+      Rejoignez les entreprises qui ont déjà choisi GO EXPLORIA pour booster leur visibilité et leurs ventes
+    </p>
+    <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+      <button class="btn-cta-premium" style="background: #fbbf24; color: #1e293b;" onclick="window.location.href='#all-plans'">
+        <i class="fas fa-shopping-cart"></i> Choisir mon plan
+      </button>
+      <button class="btn-premium-secondary" style="border-color: #fbbf24; color: #fbbf24;" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
+        <i class="fas fa-calendar-check"></i> Demander une démo
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .category-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .category-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 30px 40px -15px rgba(0,0,0,0.2);
+  }
+  .btn-category {
+    transition: all 0.3s ease;
+  }
+  .btn-category:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+  @media (max-width: 968px) {
+    .category-card { min-width: 280px; }
+    [style*="grid-template-columns: repeat(4, 1fr)"] {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    [style*="grid-template-columns: repeat(2, 1fr)"] {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  function scrollToPlan(category) {
+    const element = document.getElementById('all-plans');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+</script>
 
   <!-- Stats Grid -->
   <div class="container">
@@ -828,7 +1237,7 @@
     <div class="testimonial-grid">
       <div class="testimonial-card">
         <i class="fas fa-quote-left" style="color: #4f46e5; font-size: 2rem; opacity: 0.3;"></i>
-        <p style="margin: 16px 0; line-height: 1.6;">"GoExploria a transformé notre présence en ligne. Résultats visibles en moins d'un mois!"</p>
+        <p style="margin: 16px 0; line-height: 1.6;">"GoExploria Business a transformé notre présence en ligne. Résultats visibles en moins d'un mois!"</p>
         <div><strong>Sophie Martin</strong><br><span style="font-size: 0.8rem; color: #9ca3af;">Le Petit Bistro</span></div>
       </div>
       <div class="testimonial-card">
@@ -867,7 +1276,7 @@
           <div style="display: flex; flex-direction: column; gap: 24px;">
             <div style="display: flex; align-items: center; gap: 16px;">
               <div style="width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fas fa-envelope" style="color: #4f46e5;"></i></div>
-              <div><strong>Email</strong><br>hello@goexploria.com</div>
+              <div><strong>Email</strong><br>info@goexploriabusiness.com</div>
             </div>
             <div style="display: flex; align-items: center; gap: 16px;">
               <div style="width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fas fa-phone" style="color: #4f46e5;"></i></div>
@@ -908,6 +1317,33 @@
     <i class="fas fa-comment-dots" style="color: white; font-size: 24px;"></i>
   </button>
 
+     <!-- Section Résultats Concrets -->
+  <section style="padding: 60px 0; background: linear-gradient(135deg, #0a0a1a, #1e1e3a); color: white;">
+    <div class="container">
+      <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+        <i class="fas fa-chart-line" style="font-size: 3rem; color: #fbbf24; margin-bottom: 24px;"></i>
+        <h2 style="font-size: 2rem; margin-bottom: 16px;">ET OBTENEZ DES <span style="color: #fbbf24;">RÉSULTATS CONCRETS</span></h2>
+        <p style="color: #9ca3af; margin-bottom: 32px;">Une plateforme hybride entre agence marketing, outil technologique et réseau de visibilité international</p>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+          @php
+            $results = $plan->concrete_results ?? [
+              ['value' => '+237%', 'label' => 'de visibilité'],
+              ['value' => '4.9★', 'label' => 'satisfaction'],
+              ['value' => '98%', 'label' => 'rétention'],
+              ['value' => '24/7', 'label' => 'support'],
+            ];
+          @endphp
+          @foreach($results as $result)
+            <div style="text-align: center; min-width: 150px;">
+              <div class="value" style="font-size: 2rem; font-weight: 800; color: #fbbf24;">{{ $result['value'] }}</div>
+              <div class="label" style="color: #9ca3af;">{{ $result['label'] }}</div>
+            </div>
+          @endforeach
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer-premium">
     <div class="container">
@@ -936,7 +1372,7 @@
         </div>
       </div>
       <div style="text-align: center; padding-top: 48px; margin-top: 48px; border-top: 1px solid #1f2937;">
-        <p>© 2026 GoExploria — Tous droits réservés</p>
+        <p>© 2026 GoExploria Business — Tous droits réservés</p>
       </div>
     </div>
   </footer>
