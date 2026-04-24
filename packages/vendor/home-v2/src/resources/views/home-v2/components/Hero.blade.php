@@ -49,8 +49,20 @@
             <div class="hero-video-cards">
                 @foreach($sliders as $index => $slider)
                 <div class="hero-video-card {{ $index === 0 ? 'active' : '' }}" data-video="{{ $index }}">
-                    @if($slider->video_type === 'youtube' || $slider->video_type === 'vimeo')
+                    @php($isExternalVideo = $slider->video_type === 'youtube' || $slider->video_type === 'vimeo')
+                    @php($hasCardImage = !empty($slider->thumbnail_path) || !empty($slider->image_path))
+                    @if($isExternalVideo && $hasCardImage)
                         <img class="hero-video-card-thumbnail" src="{{ $slider->thumbnail_url }}" alt="{{ $slider->name }}">
+                    @elseif($isExternalVideo)
+                        @php($iframeSeparator = str_contains($slider->video_embed_url ?? '', '?') ? '&' : '?')
+                        <iframe
+                            class="hero-video-card-thumbnail"
+                            src="{{ $slider->video_embed_url }}{{ $iframeSeparator }}autoplay=0&mute=1&controls=0&loop=1&playsinline=1&rel=0&modestbranding=1"
+                            frameborder="0"
+                            allow="autoplay; encrypted-media"
+                            allowfullscreen
+                            style="pointer-events: none;"
+                        ></iframe>
                     @else
                         <video class="hero-video-card-thumbnail" muted>
                             <source src="{{ $slider->video_embed_url }}" type="video/mp4">

@@ -169,7 +169,7 @@ class Slider extends Model
             }
             return asset('storage/' . $this->image_path);
         }
-        return asset('images/default-slider.jpg');
+        return null;
     }
 
     /**
@@ -211,7 +211,13 @@ class Slider extends Model
             }
             return asset('storage/' . $this->image_path);
         }
-        return asset('images/default-slider.jpg');
+
+        // Never force a default image; for videos, let consumers fallback to the video itself.
+        if ($this->type === 'video' && $this->video_embed_url) {
+            return $this->video_embed_url;
+        }
+
+        return null;
     }
 
     /**

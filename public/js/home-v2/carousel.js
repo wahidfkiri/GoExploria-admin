@@ -110,14 +110,14 @@ class VideoCarousel {
             const videoUrl = this.getSlideVideoUrl(index);
 
             if (!thumbnail) {
-                this.applyVideoUrlFallback(card, imagePath || videoUrl);
+                this.applyThumbnailVideoFallback(card, index, imagePath || videoUrl);
                 return;
             }
 
             if (thumbnail.tagName === 'IMG') {
                 const src = this.toAbsoluteUrl((thumbnail.getAttribute('src') || '').trim());
                 if (!src) {
-                    this.applyVideoUrlFallback(card, imagePath || videoUrl);
+                    this.applyThumbnailVideoFallback(card, index, imagePath || videoUrl);
                     return;
                 }
 
@@ -126,13 +126,13 @@ class VideoCarousel {
                 thumbnail.dataset.fullPath = src;
 
                 thumbnail.addEventListener('error', () => {
-                    this.applyVideoUrlFallback(card, src);
+                    this.applyThumbnailVideoFallback(card, index, src);
                 }, { once: true });
 
                 // If the image is already broken before listeners are attached,
                 // fallback immediately to full path text.
                 if (thumbnail.complete && thumbnail.naturalWidth === 0) {
-                    this.applyVideoUrlFallback(card, src);
+                    this.applyThumbnailVideoFallback(card, index, src);
                 }
                 return;
             }
@@ -142,10 +142,96 @@ class VideoCarousel {
                 const src = ((source && source.getAttribute('src')) || thumbnail.getAttribute('src') || '').trim();
 
                 if (!src) {
-                    this.applyVideoUrlFallback(card, imagePath || videoUrl);
+                    this.applyThumbnailVideoFallback(card, index, imagePath || videoUrl);
                 }
             }
         });
+    }
+
+    applyThumbnailVideoFallback(card, index, fallbackText) {
+        if (card.dataset.thumbnailVideoFallbackApplied === '1') return;
+
+        const media = this.createCardVideoPreview(index);
+        if (media) {
+            const existing = card.querySelector('.hero-video-card-thumbnail');
+            if (existing) {
+                existing.replaceWith(media);
+            } else {
+                card.prepend(media);
+            }
+            card.dataset.thumbnailVideoFallbackApplied = '1';
+            return;
+        }
+
+        this.applyVideoUrlFallback(card, fallbackText);
+    }
+
+    createCardVideoPreview(index) {
+        const slide = this.slides[index];
+        if (!slide) return null;
+
+        const iframe = slide.querySelector('iframe.video-background, iframe');
+        if (iframe) {
+            const src = this.withQueryParam(
+                this.withQueryParam(
+                    this.withQueryParam(
+                        this.withQueryParam((iframe.getAttribute('src') || '').trim(), 'autoplay', '0'),
+                        'mute',
+                        '1'
+                    ),
+                    'controls',
+                    '0'
+                ),
+                'playsinline',
+                '1'
+            );
+
+            if (!src) return null;
+
+            const preview = document.createElement('iframe');
+            preview.className = 'hero-video-card-thumbnail';
+            preview.src = src;
+            preview.setAttribute('frameborder', '0');
+            preview.setAttribute('allow', 'autoplay; encrypted-media');
+            preview.setAttribute('allowfullscreen', '');
+            preview.style.pointerEvents = 'none';
+            return preview;
+        }
+
+        const slideVideo = slide.querySelector('video');
+        if (slideVideo) {
+            const source = slide.querySelector('video source');
+            const src = ((source && source.getAttribute('src')) || slideVideo.getAttribute('src') || '').trim();
+            if (!src) return null;
+
+            const preview = document.createElement('video');
+            preview.className = 'hero-video-card-thumbnail';
+            preview.muted = true;
+            preview.loop = true;
+            preview.autoplay = true;
+            preview.playsInline = true;
+
+            const previewSource = document.createElement('source');
+            previewSource.src = src;
+            previewSource.type = 'video/mp4';
+            preview.appendChild(previewSource);
+
+            return preview;
+        }
+
+        return null;
+    }
+
+    withQueryParam(url, key, value) {
+        if (!url) return '';
+
+        try {
+            const parsed = new URL(url, window.location.origin);
+            parsed.searchParams.set(key, value);
+            return parsed.href;
+        } catch (e) {
+            return url;
+        }
     }
 
     getCardImagePath(index) {
