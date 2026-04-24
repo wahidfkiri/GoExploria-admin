@@ -93,33 +93,40 @@ class VideoCarousel {
     }
 
     updateNavButtonsVisibility() {
-        const shouldShowNav = this.videoCards.length > 5;
+        const videosCount = Math.max(this.slides.length, this.videoCards.length);
+        const shouldShowNav = videosCount > 5;
 
         [this.prevBtn, this.nextBtn].forEach(btn => {
             if (!btn) return;
             btn.style.display = shouldShowNav ? '' : 'none';
+            btn.setAttribute('aria-hidden', shouldShowNav ? 'false' : 'true');
         });
     }
 
     setupVideoCardFallbacks() {
         this.videoCards.forEach((card, index) => {
             const thumbnail = card.querySelector('.hero-video-card-thumbnail');
+            const imagePath = this.getCardImagePath(index);
             const videoUrl = this.getSlideVideoUrl(index);
 
             if (!thumbnail) {
-                this.applyVideoUrlFallback(card, videoUrl);
+                this.applyVideoUrlFallback(card, imagePath || videoUrl);
                 return;
             }
 
             if (thumbnail.tagName === 'IMG') {
-                const src = (thumbnail.getAttribute('src') || '').trim();
+                const src = this.toAbsoluteUrl((thumbnail.getAttribute('src') || '').trim());
                 if (!src) {
-                    this.applyVideoUrlFallback(card, videoUrl);
+                    this.applyVideoUrlFallback(card, imagePath || videoUrl);
                     return;
                 }
 
+                thumbnail.src = src;
+                thumbnail.setAttribute('title', src);
+                thumbnail.dataset.fullPath = src;
+
                 thumbnail.addEventListener('error', () => {
-                    this.applyVideoUrlFallback(card, videoUrl);
+                    this.applyVideoUrlFallback(card, src);
                 }, { once: true });
                 return;
             }
@@ -129,10 +136,31 @@ class VideoCarousel {
                 const src = ((source && source.getAttribute('src')) || thumbnail.getAttribute('src') || '').trim();
 
                 if (!src) {
-                    this.applyVideoUrlFallback(card, videoUrl);
+                    this.applyVideoUrlFallback(card, imagePath || videoUrl);
                 }
             }
         });
+    }
+
+    getCardImagePath(index) {
+        const card = this.videoCards[index];
+        if (!card) return '';
+
+        const img = card.querySelector('img.hero-video-card-thumbnail');
+        if (!img) return '';
+
+        const src = (img.getAttribute('src') || '').trim();
+        return this.toAbsoluteUrl(src);
+    }
+
+    toAbsoluteUrl(url) {
+        if (!url) return '';
+
+        try {
+            return new URL(url, window.location.origin).href;
+        } catch (e) {
+            return url;
+        }
     }
 
     getSlideVideoUrl(index) {
