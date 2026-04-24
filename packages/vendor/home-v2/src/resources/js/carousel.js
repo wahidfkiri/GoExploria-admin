@@ -14,7 +14,7 @@ class VideoCarousel {
         this.nextBtn = document.querySelector('.carousel-nav-btn.next');
         this.cardsContainer = document.querySelector('.hero-video-cards');
         this.autoPlayInterval = null;
-        this.autoPlayDelay = 8000;
+        this.autoPlayDelay = 15000;
         this.isMobile = window.innerWidth <= 768;
         this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         this.scrollPosition = 0;
@@ -24,6 +24,8 @@ class VideoCarousel {
     
     init() {
         if (this.slides.length === 0) return;
+
+        this.updateNavButtonsVisibility();
         
         this.dots.forEach((dot, index) => {
             dot.addEventListener('click', () => this.goToSlide(index));
@@ -33,10 +35,12 @@ class VideoCarousel {
             card.addEventListener('click', () => this.goToSlide(index));
             
             const thumbnail = card.querySelector('.hero-video-card-thumbnail');
-            if (thumbnail) {
+            if (thumbnail && thumbnail.tagName === 'VIDEO') {
                 thumbnail.currentTime = 2;
             }
         });
+
+        this.setupVideoCardFallbacks();
         
         if (this.prevBtn && this.nextBtn) {
             this.prevBtn.addEventListener('click', () => this.scrollCarousel('prev'));
@@ -87,12 +91,96 @@ class VideoCarousel {
             }
         });
     }
+
+    updateNavButtonsVisibility() {
+        const shouldShowNav = this.videoCards.length > 5;
+
+        [this.prevBtn, this.nextBtn].forEach(btn => {
+            if (!btn) return;
+            btn.style.display = shouldShowNav ? '' : 'none';
+        });
+    }
+
+    setupVideoCardFallbacks() {
+        this.videoCards.forEach((card, index) => {
+            const thumbnail = card.querySelector('.hero-video-card-thumbnail');
+            const videoUrl = this.getSlideVideoUrl(index);
+
+            if (!thumbnail) {
+                this.applyVideoUrlFallback(card, videoUrl);
+                return;
+            }
+
+            if (thumbnail.tagName === 'IMG') {
+                const src = (thumbnail.getAttribute('src') || '').trim();
+                if (!src) {
+                    this.applyVideoUrlFallback(card, videoUrl);
+                    return;
+                }
+
+                thumbnail.addEventListener('error', () => {
+                    this.applyVideoUrlFallback(card, videoUrl);
+                }, { once: true });
+                return;
+            }
+
+            if (thumbnail.tagName === 'VIDEO') {
+                const source = thumbnail.querySelector('source');
+                const src = ((source && source.getAttribute('src')) || thumbnail.getAttribute('src') || '').trim();
+
+                if (!src) {
+                    this.applyVideoUrlFallback(card, videoUrl);
+                }
+            }
+        });
+    }
+
+    getSlideVideoUrl(index) {
+        const slide = this.slides[index];
+        if (!slide) return '';
+
+        const iframe = slide.querySelector('iframe');
+        if (iframe) {
+            return (iframe.getAttribute('src') || '').trim();
+        }
+
+        const source = slide.querySelector('video source');
+        if (source) {
+            return (source.getAttribute('src') || '').trim();
+        }
+
+        const video = slide.querySelector('video');
+        if (video) {
+            return (video.getAttribute('src') || '').trim();
+        }
+
+        return '';
+    }
+
+    applyVideoUrlFallback(card, videoUrl) {
+        if (!videoUrl || card.dataset.videoUrlFallbackApplied === '1') return;
+
+        card.dataset.videoUrlFallbackApplied = '1';
+
+        const thumbnail = card.querySelector('.hero-video-card-thumbnail');
+        if (thumbnail) {
+            thumbnail.style.display = 'none';
+        }
+
+        const title = card.querySelector('.hero-video-card-title');
+        if (title) {
+            title.textContent = videoUrl;
+        } else {
+            card.textContent = videoUrl;
+        }
+    }
     
     handleResize() {
         this.slides.forEach(slide => {
             const video = slide.querySelector('video');
             if (video) {
-                video.style.objectFit = 'cover';
+                video.style.objectFit = 'contain';
+                video.style.objectPosition = 'center center';
             }
         });
     }

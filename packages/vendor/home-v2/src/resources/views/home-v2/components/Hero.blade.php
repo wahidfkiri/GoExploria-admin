@@ -184,8 +184,46 @@
                 </div>
 
 
-                {{-- Logo Plan-n-go --}}
-                <div class="search-bar-v2-brand">
+                {{-- Boutons rapides après la barre de recherche : EE · ED · MP · Voiture · Avion --}}
+                <div class="search-bar-v2-quick-links search-bar-v2-quick-links--post">
+                    {{-- EE — Espace Entreprise --}}
+                    <div class="quick-link-item" id="quickLinkEE" style="cursor:pointer;" title="Espace Entreprise">
+                        <div class="icon-circle icon-blue">
+                            <span class="picto-label">EE</span>
+                        </div>
+                    </div>
+
+                    {{-- ED — Espace Destination --}}
+                    <div class="quick-link-item" id="quickLinkED" style="cursor:pointer;" title="Espace Destination">
+                        <div class="icon-circle icon-blue">
+                            <span class="picto-label">ED</span>
+                        </div>
+                    </div>
+
+                    {{-- MP — Marketplace --}}
+                    <div class="quick-link-item" id="quickLinkMP" style="cursor:pointer;" title="Marketplace">
+                        <div class="icon-circle icon-blue">
+                            <span class="picto-label">MP</span>
+                        </div>
+                    </div>
+
+                    {{-- Voiture — Location Véhicule --}}
+                    <div class="quick-link-item" id="quickLinkCar" style="cursor:pointer;" title="Location Véhicule">
+                        <div class="icon-circle icon-blue">
+                            <i class="fas fa-car picto-icon"></i>
+                        </div>
+                    </div>
+
+                    {{-- Avion — Billets Avion --}}
+                    <div class="quick-link-item" id="quickLinkPlane" style="cursor:pointer;" title="Billets Avion">
+                        <div class="icon-circle icon-blue">
+                            <i class="fas fa-plane picto-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Logo Plan-n-go — déclencheur du méga-menu Plan & GO --}}
+                <div class="search-bar-v2-brand" id="planNGoTrigger" style="cursor:pointer;" title="Plan & GO">
                     <img src="{{ asset('plan-n-go.png') }}" alt="PLAN-N-GO" class="search-bar-v2-logo">
                 </div>
             </div>
@@ -199,6 +237,9 @@
 
 {{-- CATEGORIES MEGA MENU - Panel fixed, positionné par JS sous le trigger --}}
 @include('home-v2.components.CategoriesMegaMenu')
+
+{{-- QUICK LINKS MEGA MENUS — Panels pour MP, EE, ED, Voiture, Avion, Plan & GO --}}
+@include('home-v2.components.HeroQuickMegaMenus')
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

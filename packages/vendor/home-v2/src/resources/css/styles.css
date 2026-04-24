@@ -422,6 +422,7 @@ html {
     opacity: 0;
     transition: opacity 1.5s ease-in-out;
     overflow: hidden;
+    background: #000;
 }
 
 .video-slide.active {
@@ -431,22 +432,18 @@ html {
 .video-background {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center center;
 }
 
-/* YouTube/Vimeo iframes : object-fit ne fonctionne pas sur iframe,
-   on utilise la technique 16:9 de couverture absolue               */
+/* YouTube/Vimeo iframes : affichage complet de la vidéo */
 iframe.video-background {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    /* Couvre le conteneur quel que soit son ratio */
-    width: 100vw;
-    height: 56.25vw;     /* 16:9 de la largeur viewport */
-    min-height: 100%;    /* jamais plus court que le conteneur */
-    min-width: 177.78vh; /* 16:9 de la hauteur viewport */
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
     border: none;
     pointer-events: none;
     object-fit: unset;
