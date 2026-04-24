@@ -200,14 +200,18 @@ const menuData = {
         ]
     },
 
-    'immo-quebec': {
-        title: 'ESPACE IMMO QUÉBEC',
-        tag: 'Immobilier touristique',
-        icon: 'fas fa-home',
+    'espaces-specialises': {
+        title: 'ESPACES SPÉCIALISÉS',
+        tag: 'Immobilier, hébergement, alimentation & mobilité touristique',
+        icon: 'fas fa-layer-group',
         categories: [
-            { icon: 'fas fa-mountain',        name: 'ESPACES CHALETS À VENDRE',                    desc: 'Chalets & Propriétés en nature',           link: '#chalets-vendre' },
-            { icon: 'fas fa-house-user',       name: 'ESPACES MAISONS CHALETS À VENDRE',            desc: 'Maisons & Chalets résidentiels',           link: '#maisons-chalets' },
-            { icon: 'fas fa-building',         name: 'ESPACES PROJET IMMOBILIER TOURISTIQUE',       desc: 'Développement & Investissement',           link: '#projet-immo' }
+            { icon: 'fas fa-home',             name: 'IMMO QUÉBEC',                                  desc: 'Plateforme immobilière québécoise',        link: '#immo-quebec' },
+            { icon: 'fas fa-key',              name: 'CHALETS À LOUER',                              desc: 'Locations saisonnières & escapades',       link: '#chalets-a-louer' },
+            { icon: 'fas fa-shopping-basket',  name: 'MARCHÉS D\'ALIMENTATIONS',                     desc: 'Épiceries, marchés publics & terroir',     link: '#marches-alimentations' },
+            { icon: 'fas fa-car-side',         name: 'LOCATION AUTO, VUS, VÉHICULES RÉCRÉATIFS 4 SAISONS', desc: 'Autos, VUS, VR, motoneiges, bateaux', link: '#location-vehicules' },
+            { icon: 'fas fa-mountain',         name: 'ESPACES CHALETS À VENDRE',                     desc: 'Chalets & Propriétés en nature',           link: '#chalets-vendre' },
+            { icon: 'fas fa-house-user',       name: 'ESPACES MAISONS CHALETS À VENDRE',             desc: 'Maisons & Chalets résidentiels',           link: '#maisons-chalets' },
+            { icon: 'fas fa-building',         name: 'ESPACES PROJET IMMOBILIER TOURISTIQUE',        desc: 'Développement & Investissement',           link: '#projet-immo' }
         ]
     },
 
@@ -231,7 +235,7 @@ const mainTitlesOrder = [
     'vedettes',
     'voyages-forfaits',
     'marketplace',
-    'immo-quebec',
+    'espaces-specialises',
     'a-la-une'
 ];
 

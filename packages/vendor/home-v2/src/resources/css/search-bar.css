@@ -214,6 +214,24 @@
     user-select: none;
 }
 
+/* Icône FontAwesome à l'intérieur de la sphère (voiture, avion, etc.) */
+.picto-icon {
+    font-size: 24px;
+    color: #ffffff;
+    line-height: 1;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* Labels courts à 2 lettres (EE, ED, MP) — légèrement resserrés */
+.search-bar-v2-quick-links--post .picto-label {
+    font-size: 22px;
+}
+
+/* Espacement du groupe de boutons rapides après la barre de recherche */
+.search-bar-v2-quick-links--post {
+    margin-left: 4px;
+}
+
 /* Conserver compatibilité anciens styles */
 .icon-standard { display: none; }
 .icon-large { display: none; }

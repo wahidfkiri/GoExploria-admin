@@ -159,8 +159,12 @@
                     <li><a href="#certificats" class="vertical-menu-v2-sublink">Certificats-Cartes-Produits Cadeaux</a></li>
                     <li><a href="#packages-cadeaux" class="vertical-menu-v2-sublink">Espaces Packages Cadeaux</a></li>
 
-                    {{-- BLOC 7 : IMMO QUÉBEC --}}
-                    <li class="vertical-menu-v2-subcat">Espace Immo Qu&eacute;bec</li>
+                    {{-- BLOC 7 : ESPACES SPÉCIALISÉS --}}
+                    <li class="vertical-menu-v2-subcat">Espaces Sp&eacute;cialis&eacute;s</li>
+                    <li><a href="#immo-quebec" class="vertical-menu-v2-sublink">Immo Qu&eacute;bec</a></li>
+                    <li><a href="#chalets-a-louer" class="vertical-menu-v2-sublink">Chalets &agrave; Louer</a></li>
+                    <li><a href="#marches-alimentations" class="vertical-menu-v2-sublink">March&eacute;s d&apos;Alimentations</a></li>
+                    <li><a href="#location-vehicules" class="vertical-menu-v2-sublink">Location Auto, VUS, V&eacute;hicules R&eacute;cr&eacute;atifs 4 Saisons</a></li>
                     <li><a href="#chalets-vendre" class="vertical-menu-v2-sublink">Espaces Chalets &agrave; Vendre</a></li>
                     <li><a href="#maisons-chalets" class="vertical-menu-v2-sublink">Espaces Maisons Chalets &agrave; Vendre</a></li>
                     <li><a href="#projet-immo" class="vertical-menu-v2-sublink">Espaces Projet Immobilier Touristique</a></li>

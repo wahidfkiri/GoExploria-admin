@@ -238,22 +238,31 @@
     box-shadow: 0 15px 30px rgba(26, 58, 143, 0.3);
 }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* ≤ 1200px : 3 colonnes */
+@media (max-width: 1200px) {
+    .immo-v2-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ≤ 1024px : 2 colonnes */
+@media (max-width: 1024px) {
     .immo-v2-container {
-        padding: 32px 20px;
-    }
-
-    .immo-header-more-btn {
-        display: none;
-    }
-
-    .immo-v2-header h2 {
-        font-size: 28px;
+        padding: 40px 24px;
     }
 
     .immo-v2-grid {
-        gap: 20px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+        margin-bottom: 40px;
+    }
+
+    .immo-v2-card {
+        border-radius: 22px;
     }
 
     .immo-v2-card-img {
@@ -261,81 +270,186 @@
     }
 
     .immo-v2-card-content {
-        padding: 20px;
-    }
-
-    .immo-v2-agent-cta {
-        flex-direction: column;
-        text-align: center;
-        padding: 30px 20px;
-        border-radius: 25px;
-    }
-
-    .immo-v2-agent-info {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .immo-v2-agent-img {
-        width: 90px;
-        height: 90px;
-    }
-
-    .immo-v2-footer {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .immo-v2-price {
-        font-size: 22px;
-    }
-
-    .immo-v2-btn {
-        padding: 10px 20px;
-        font-size: 13px;
-    }
-}
-
-@media (max-width: 480px) {
-    .immo-v2-container {
-        padding: 24px 14px;
-    }
-
-    .immo-v2-header h2 {
-        font-size: 24px;
-    }
-
-    .immo-v2-header p {
-        font-size: 15px;
-    }
-
-    .immo-v2-card-content {
-        padding: 15px;
+        padding: 22px;
     }
 
     .immo-v2-card-title {
         font-size: 20px;
     }
+}
 
-    .immo-v2-footer {
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
+/* ≤ 768px : 2 colonnes serrées, cartes plus compactes */
+@media (max-width: 768px) {
+    .immo-v2-container {
+        padding: 28px 16px;
+    }
+
+    .immo-header-more-btn {
+        display: none;
+    }
+
+    .immo-v2-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .immo-v2-card {
+        border-radius: 18px;
+    }
+
+    .immo-v2-card-img {
+        height: 170px;
+    }
+
+    .immo-v2-img-badge {
+        top: 12px;
+        left: 12px;
+        padding: 6px 12px;
+        font-size: 10px;
+    }
+
+    .immo-v2-card-content {
+        padding: 16px;
+    }
+
+    .immo-v2-price {
+        font-size: 17px;
+        margin-bottom: 8px;
+    }
+
+    .immo-v2-card-title {
+        font-size: 17px;
+        margin-bottom: 6px;
+    }
+
+    .immo-v2-location {
+        font-size: 12px;
+        margin-bottom: 12px;
+    }
+
+    .immo-v2-features {
+        gap: 10px;
+        padding: 10px 0;
+        margin-bottom: 16px;
+    }
+
+    .immo-v2-feature-item {
+        font-size: 11px;
+        gap: 5px;
+    }
+
+    .immo-v2-feature-item i {
+        font-size: 13px;
     }
 
     .immo-v2-btn {
+        padding: 10px 16px;
+        font-size: 12px;
+        gap: 6px;
+    }
+
+    /* Bloc agent empilé et compact */
+    .immo-v2-agent-cta {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px 18px;
+        border-radius: 20px;
+        gap: 20px;
+    }
+
+    .immo-v2-agent-info {
+        flex-direction: column;
+        gap: 14px;
         width: 100%;
-        justify-content: center;
+    }
+
+    .immo-v2-agent-img {
+        width: 82px;
+        height: 82px;
     }
 
     .immo-v2-agent-details h4 {
-        font-size: 20px;
+        font-size: 18px;
+    }
+
+    .immo-v2-agent-details p {
+        font-size: 13px;
     }
 
     .immo-v2-contact-btn {
         width: 100%;
         text-align: center;
-        padding: 14px 20px;
+        padding: 13px 20px;
+        font-size: 14px;
+    }
+}
+
+/* ≤ 560px : 1 colonne pleine largeur (lisibilité maximale) */
+@media (max-width: 560px) {
+    .immo-v2-container {
+        padding: 22px 12px;
+    }
+
+    .immo-v2-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .immo-v2-card {
+        border-radius: 16px;
+    }
+
+    .immo-v2-card-img {
+        height: 200px;
+    }
+
+    .immo-v2-card-content {
+        padding: 18px;
+    }
+
+    .immo-v2-card-title {
+        font-size: 19px;
+    }
+
+    .immo-v2-price {
+        font-size: 19px;
+    }
+
+    .immo-v2-features {
+        gap: 14px;
+    }
+
+    .immo-v2-feature-item {
+        font-size: 12px;
+    }
+
+    .immo-v2-btn {
+        font-size: 13px;
+        padding: 11px 18px;
+    }
+}
+
+/* ≤ 380px : très petits écrans */
+@media (max-width: 380px) {
+    .immo-v2-container {
+        padding: 18px 10px;
+    }
+
+    .immo-v2-card-img {
+        height: 180px;
+    }
+
+    .immo-v2-card-content {
+        padding: 14px;
+    }
+
+    .immo-v2-features {
+        gap: 10px;
+    }
+
+    .immo-v2-agent-img {
+        width: 72px;
+        height: 72px;
     }
 }

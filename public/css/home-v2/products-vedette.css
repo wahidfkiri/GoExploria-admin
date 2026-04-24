@@ -351,24 +351,80 @@
     .products-vedette-v2-section   { padding: 45px 0; }
     .products-vedette-v2-container { padding: 0 20px; }
     .products-vedette-v2-card      { min-width: 240px; max-width: 240px; }
-    .products-vedette-v2-card-image { height: 216px; }
-    .products-vedette-v2-filter-btn { font-size: 16px; padding: 5px 16px; }
+    .products-vedette-v2-card-image { height: 210px; }
+    .products-vedette-v2-filter-btn { font-size: 10px; padding: 5px 11px; }
 }
 
 @media (max-width: 768px) {
     .products-vedette-v2-section   { padding: 30px 0; }
-    .products-vedette-v2-container { padding: 0 15px; }
-    .products-vedette-v2-card      { min-width: 220px; max-width: 220px; }
-    .products-vedette-v2-card-image { height: 200px; }
-    .products-vedette-v2-card-title { font-size: 14px; }
-    .products-vedette-v2-price     { font-size: 16px; }
-    .products-vedette-v2-add-btn   { width: 36px; height: 36px; font-size: 12px; }
+    .products-vedette-v2-container { padding: 0 12px; }
+
+    /* Carousel : réduire le padding réservé aux boutons pour laisser de la place aux cartes */
+    .products-vedette-v2-section .vedette-carousel-outer { padding: 0 38px; }
+    .products-vedette-v2-section .vedette-carousel-btn   { width: 34px; height: 34px; font-size: 12px; }
+    .products-vedette-v2-section .vedette-carousel-progress { margin: 10px 38px 2px; }
+
+    /* Filtres catégories : scroll horizontal sur mobile pour éviter le retour à la ligne inesthétique */
+    .products-vedette-v2-filters {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        gap: 6px;
+        padding-bottom: 4px;
+        width: 100%;
+    }
+    .products-vedette-v2-filters::-webkit-scrollbar { display: none; }
+    .products-vedette-v2-filter-btn {
+        flex-shrink: 0;
+        font-size: 10px;
+        padding: 5px 10px;
+    }
+
+    /* Cartes */
+    .products-vedette-v2-card         { min-width: 200px; max-width: 200px; border-radius: 12px; }
+    .products-vedette-v2-card-image   { height: 180px; }
+    .products-vedette-v2-card-content { padding: 12px; gap: 6px; }
+    .products-vedette-v2-card-brand   { font-size: 9px; letter-spacing: 1px; }
+    .products-vedette-v2-card-title   { font-size: 13px; min-height: 34px; }
+    .products-vedette-v2-card-rating  { font-size: 11px; }
+    .products-vedette-v2-card-reviews { font-size: 10px; }
+    .products-vedette-v2-price        { font-size: 15px; }
+    .products-vedette-v2-price-old    { font-size: 10px; }
+    .products-vedette-v2-badge        { font-size: 9px; padding: 4px 8px; }
+    .products-vedette-v2-add-btn      { width: 34px; height: 34px; font-size: 12px; }
+    .products-vedette-v2-fav          { width: 30px; height: 30px; font-size: 12px; }
 }
 
 @media (max-width: 480px) {
-    .products-vedette-v2-card      { min-width: 200px; max-width: 200px; }
-    .products-vedette-v2-card-image { height: 180px; }
-    .products-vedette-v2-card-content { padding: 12px; }
-    .products-vedette-v2-card-title { font-size: 13px; min-height: 36px; }
-    .products-vedette-v2-price     { font-size: 15px; }
+    .products-vedette-v2-container { padding: 0 8px; }
+
+    /* Encore moins de padding pour les boutons carousel sur smartphone */
+    .products-vedette-v2-section .vedette-carousel-outer { padding: 0 6px; }
+    .products-vedette-v2-section .vedette-carousel-btn   {
+        width: 30px; height: 30px; font-size: 11px;
+        background: rgba(255,255,255,0.92);
+    }
+    .products-vedette-v2-section .vedette-carousel-prev  { left: -2px; }
+    .products-vedette-v2-section .vedette-carousel-next  { right: -2px; }
+    .products-vedette-v2-section .vedette-carousel-progress { margin: 10px 6px 2px; }
+
+    /* Cartes : 1 carte quasi pleine largeur, lisibilité maximale */
+    .products-vedette-v2-scroll-container { gap: 12px; }
+    .products-vedette-v2-card         { min-width: 75vw; max-width: 75vw; }
+    .products-vedette-v2-card-image   { height: 56vw; max-height: 240px; }
+    .products-vedette-v2-card-content { padding: 12px 14px; }
+    .products-vedette-v2-card-title   { font-size: 14px; min-height: 36px; }
+    .products-vedette-v2-price        { font-size: 16px; }
+    .products-vedette-v2-add-btn      { width: 36px; height: 36px; font-size: 13px; }
+
+    /* Aperçu rapide (overlay) — toujours visible sur tactile puisque le hover ne s'applique pas */
+    .products-vedette-v2-quick      { transform: translateY(0); background: linear-gradient(180deg, rgba(10,22,40,0) 0%, rgba(10,22,40,0.75) 100%); padding: 10px; }
+    .products-vedette-v2-quick-btn  { font-size: 11px; padding: 7px 10px; }
+}
+
+@media (max-width: 360px) {
+    .products-vedette-v2-card       { min-width: 82vw; max-width: 82vw; }
+    .products-vedette-v2-card-title { font-size: 13px; }
+    .products-vedette-v2-price      { font-size: 15px; }
 }
