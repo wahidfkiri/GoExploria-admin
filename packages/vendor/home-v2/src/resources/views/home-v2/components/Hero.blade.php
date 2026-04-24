@@ -1,5 +1,6 @@
 {{-- Hero Section Component --}}
 <section class="hero-v2">
+    @php($showCarouselNav = isset($sliders) && count($sliders) > 5)
     {{-- Video Carousel Background - Confiné au Hero --}}
     <div class="video-carousel-background">
         <div class="video-carousel-container">
@@ -38,11 +39,13 @@
         
         {{-- Cartes vidéo miniatures sur la vidéo principale --}}
         <div class="hero-video-cards-overlay">
+            @if($showCarouselNav)
             <button class="carousel-nav-btn prev" aria-label="Précédent">
                 <svg viewBox="0 0 24 24">
                     <path d="M15 18l-6-6 6-6"/>
                 </svg>
             </button>
+            @endif
             <div class="hero-video-cards">
                 @foreach($sliders as $index => $slider)
                 <div class="hero-video-card {{ $index === 0 ? 'active' : '' }}" data-video="{{ $index }}">
@@ -64,11 +67,13 @@
                 </div>
                 @endforeach
             </div>
+            @if($showCarouselNav)
             <button class="carousel-nav-btn next" aria-label="Suivant">
                 <svg viewBox="0 0 24 24">
                     <path d="M9 18l6-6-6-6"/>
                 </svg>
             </button>
+            @endif
         </div>
         
         <div class="carousel-controls">

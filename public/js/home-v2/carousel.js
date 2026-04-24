@@ -128,6 +128,12 @@ class VideoCarousel {
                 thumbnail.addEventListener('error', () => {
                     this.applyVideoUrlFallback(card, src);
                 }, { once: true });
+
+                // If the image is already broken before listeners are attached,
+                // fallback immediately to full path text.
+                if (thumbnail.complete && thumbnail.naturalWidth === 0) {
+                    this.applyVideoUrlFallback(card, src);
+                }
                 return;
             }
 
