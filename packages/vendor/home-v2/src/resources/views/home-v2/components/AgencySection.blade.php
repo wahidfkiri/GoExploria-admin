@@ -1,14 +1,83 @@
+{{-- Agency Section — GoExploria Consulting & Expertise --}}
 <section class="agency-v2-section" id="consulting-section">
-    <div class="agency-v2-container">
-        <!-- Header de la section -->
-        <div class="agency-v2-header">
-            <span class="agency-v2-badge">Consulting & Expertise</span>
-            <h1 class="agency-v2-title">Agence de Conseil pour Votre Entreprise</h1>
-            <p class="agency-v2-subtitle">Développez votre entreprise avec notre expertise stratégique et nos solutions sur mesure. Demandez votre consultation personnalisée.</p>
-        </div>
 
+    {{-- ============================================================
+         ENTÊTE STANDARD — AGENCE DE CONSEIL
+         ============================================================ --}}
+    <div class="resto-header-block">
+        <div class="resto-header-main">
+            <div class="resto-header-logo-left">
+                <a href="#" class="resto-accord-btn" title="GoExploria">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('logo.png') }}" alt="GoExploria">
+                    </div>
+                    <span class="resto-accord-btn-label">GoExploria</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
+            </div>
+            <div class="resto-header-center">
+                <h1 class="resto-header-title">AGENCE DE CONSEIL POUR VOTRE ENTREPRISE</h1>
+                <p class="resto-header-subtitle">
+                    Consulting · Expertise · Stratégie · Digital — Développez votre entreprise avec nos solutions sur mesure et notre accompagnement professionnel.
+                </p>
+                <div class="resto-header-tabs" role="tablist">
+                    <button class="resto-tab-btn active" role="tab" data-espace="all">
+                        <i class="fas fa-th-large"></i> Toutes les options
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-espace="entreprise">
+                        <i class="fas fa-briefcase"></i> Espace entreprise
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-espace="destination">
+                        <i class="fas fa-map-marker-alt"></i> Espace destination
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-espace="activite">
+                        <i class="fas fa-person-hiking"></i> Espace activité
+                    </button>
+                    <a href="#" class="agency-header-more-btn">
+                        En savoir plus <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="resto-header-logo-right">
+                <a href="#" class="resto-accord-btn" title="Plans Web Go">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('plan-n-go.png') }}" alt="Plans Web Go">
+                    </div>
+                    <span class="resto-accord-btn-label">Plans Web Go</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="resto-header-destinations-bar">
+            <div class="resto-dest-row">
+                <div class="resto-dest-icon-box">
+                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
+                    <span>Destinations</span>
+                </div>
+                <div class="resto-dest-breadcrumb">
+                    <a href="#" class="resto-dest-link active">Toutes destinations</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Amérique du Nord</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Canada</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Québec</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ============================================================
+         CONTENU PRINCIPAL
+         ============================================================ --}}
+    <div class="agency-v2-container">
         <div class="agency-v2-content">
-            <!-- Colonne Gauche : Présentation entreprise -->
+
+            {{-- Colonne Gauche : Présentation entreprise --}}
             <div class="agency-v2-info-card">
                 <div class="agency-v2-brand">
                     <div class="agency-v2-logo-box">
@@ -33,7 +102,6 @@
                     <li><i class="fas fa-check-circle"></i> Accompagnement global</li>
                 </ul>
 
-                <!-- Section Plans intégrée dans la colonne info pour un meilleur équilibre -->
                 <div class="agency-v2-footer-content">
                     <div class="agency-v2-plans-grid">
                         <div class="agency-v2-plan-item">
@@ -55,7 +123,7 @@
                 </div>
             </div>
 
-            <!-- Colonne Droite : Formulaire interactif -->
+            {{-- Colonne Droite : Formulaire interactif --}}
             <div class="agency-v2-form-card">
                 <h3 class="agency-v2-form-title">Demandez Votre Consultation</h3>
                 <form class="agency-v2-form" id="agencyConsultationForm">
@@ -93,8 +161,8 @@
                     </button>
                 </form>
 
-                <!-- Stats compactes au pied du formulaire -->
-                <div class="agency-v2-stats" style="margin-top: 30px; gap: 30px; padding: 20px;">
+                {{-- Stats compactes --}}
+                <div class="agency-v2-stats">
                     <div class="agency-v2-stat-unit">
                         <span class="agency-v2-stat-value">+42%</span>
                         <span class="agency-v2-stat-label">Croissance</span>
@@ -105,8 +173,10 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
+
 </section>
 
 <script>

@@ -2,7 +2,7 @@
 <div class="header-mega-menu info-mega-menu-v2 compact-menu" id="infoMegaMenuV2">
 
     {{-- Ticker Section --}}
-    <div class="mega-menu-ticker">
+    <!-- <div class="mega-menu-ticker">
         <div class="ticker-item">
             <i class="fas fa-chart-line" style="color: #ffd700;"></i>
             <span style="color: #ffd700;">TSX: 21,450.12 <span style="color: #4cd137;">+1.2%</span></span>
@@ -15,7 +15,7 @@
             <i class="fas fa-gas-pump" style="color: #fff;"></i>
             <span>Essence: 1.62$</span>
         </div>
-    </div>
+    </div> -->
 
     <div class="mega-menu-main-content">
         {{-- 5 Columns Grid with FontAwesome Icons ONLY --}}

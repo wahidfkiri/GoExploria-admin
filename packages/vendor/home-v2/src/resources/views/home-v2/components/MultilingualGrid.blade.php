@@ -1,16 +1,77 @@
 {{-- Multilingual Grid Component (VOTRE ESPACE ENTREPRISE MULTILINGUES) --}}
-<section class="multilingual-v2-section design-bosse-section" id="enterprise-multilingual">
-    <div class="design-bosse-container">
-        
-        {{-- BLOC DESIGN BOSSE --}}
-        <div class="design-bosse-block lang-grid-block">
-            <h1 class="design-bosse-title">VOTRE ESPACE ENTREPRISE MULTILINGUES</h1>
-            
-            <div class="design-bosse-controls" style="justify-content: center; text-align: center; margin-bottom: 40px;">
-                <p style="font-size: 16px; color: #666; font-weight: 500; max-width: 800px; margin: 0 auto;">
-                    Choisissez votre langue préférée afin de pénétrer les marchés internationaux et offrir une expérience de shopping exclusive
-                </p>
+<section class="multilingual-v2-section" id="enterprise-multilingual">
+
+    {{-- ============================================================
+         ENTÊTE STANDARD — ESPACE MULTILINGUE
+         ============================================================ --}}
+    <div class="resto-header-block">
+        <div class="resto-header-main">
+            <div class="resto-header-logo-left">
+                <a href="#" class="resto-accord-btn" title="GoExploria">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('logo.png') }}" alt="GoExploria">
+                    </div>
+                    <span class="resto-accord-btn-label">GoExploria</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
             </div>
+            <div class="resto-header-center">
+                <h1 class="resto-header-title">VOTRE ESPACE ENTREPRISE MULTILINGUES</h1>
+                <p class="resto-header-subtitle">
+                    Choisissez votre langue préférée afin de pénétrer les marchés internationaux et offrir une expérience de shopping exclusive.
+                </p>
+                <div class="resto-header-tabs" role="tablist">
+                    <button class="resto-tab-btn active" role="tab" data-espace="all">
+                        <i class="fas fa-th-large"></i> Toutes les langues
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-espace="entreprise">
+                        <i class="fas fa-briefcase"></i> Espace entreprise
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-espace="destination">
+                        <i class="fas fa-map-marker-alt"></i> Espace destination
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-espace="activite">
+                        <i class="fas fa-person-hiking"></i> Espace activité
+                    </button>
+                </div>
+            </div>
+            <div class="resto-header-logo-right">
+                <a href="#" class="resto-accord-btn" title="Plans Web Go">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('plan-n-go.png') }}" alt="Plans Web Go">
+                    </div>
+                    <span class="resto-accord-btn-label">Plans Web Go</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="resto-header-destinations-bar">
+            <div class="resto-dest-row">
+                <div class="resto-dest-icon-box">
+                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
+                    <span>Destinations</span>
+                </div>
+                <div class="resto-dest-breadcrumb">
+                    <a href="#" class="resto-dest-link active">Toutes destinations</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Amérique du Nord</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Canada</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Québec</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ============================================================
+         CONTENU PRINCIPAL
+         ============================================================ --}}
+    <div class="mlg-container">
 
             {{-- Grille des Langues --}}
             <div class="lang-grid-container">
@@ -119,6 +180,5 @@
 
             </div>
 
-        </div>
-    </div>
+    </div>{{-- /mlg-container --}}
 </section>

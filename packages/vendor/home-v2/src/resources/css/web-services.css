@@ -1,11 +1,62 @@
 /**
- * Web Services Section - Design System Bosse
+ * Web Services Section
  */
 
-.web-services-block {
-    padding: 80px 40px !important;
-    position: relative;
+.web-services-v2-section {
     background: #fff;
+    font-family: Montserrat, sans-serif;
+}
+
+.ws-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 40px;
+}
+
+/* CTA Final */
+.ws-cta-final {
+    margin-top: 80px;
+    text-align: center;
+    background: #1a3a8f;
+    padding: 60px 40px;
+    border-radius: 24px;
+    color: #fff;
+}
+
+.ws-cta-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.ws-cta-desc {
+    font-size: 16px;
+    opacity: 0.9;
+    max-width: 700px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+}
+
+.ws-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    color: #1a3a8f;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    letter-spacing: 0.5px;
+}
+
+.ws-cta-btn:hover {
+    background: #eff6ff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
 }
 
 /* Header Badge Style */
@@ -335,8 +386,8 @@
 
 /* Tablettes / Mobile Landscape (991px) */
 @media (max-width: 991px) {
-    .web-services-block {
-        padding: 50px 25px !important;
+    .ws-container {
+        padding: 36px 24px;
     }
 
     .web-carousels-grid {
@@ -374,12 +425,16 @@
 
 /* Mobile (768px) */
 @media (max-width: 768px) {
-    .web-services-block {
-        padding: 40px 15px !important;
+    .ws-container {
+        padding: 28px 16px;
     }
 
-    .design-bosse-title {
-        font-size: 22px !important;
+    .ws-cta-final {
+        padding: 40px 20px;
+    }
+
+    .ws-cta-title {
+        font-size: 20px;
     }
 
     .web-editor-text h3 {
@@ -404,14 +459,6 @@
         font-size: 12px;
     }
 
-    /* CTA Section Mobile */
-    div[style*="background: #1a3a8f"] {
-        padding: 40px 20px !important;
-    }
-
-    div[style*="background: #1a3a8f"] h2 {
-        font-size: 20px !important;
-    }
 }
 
 /* Petits Mobiles (480px) */

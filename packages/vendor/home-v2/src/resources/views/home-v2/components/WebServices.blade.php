@@ -1,17 +1,77 @@
-{{-- Web Services Component (100% Content - Design System Bosse) --}}
-<section class="web-services-v2-section design-bosse-section" id="web-services">
-    <div class="design-bosse-container">
-        
-        {{-- BLOC DESIGN BOSSE --}}
-        <div class="design-bosse-block web-services-block">
-            <h1 class="design-bosse-title">DÉVELOPPEZ VOTRE PRÉSENCE EN LIGNE AVEC NOS SERVICES WEB</h1>
-            
-            <div class="design-bosse-controls" style="justify-content: center; text-align: center; margin-bottom: 40px;">
-                <span class="web-badge-pro">SOLUTIONS WEB PROFESSIONNELLES</span>
-                <p style="font-size: 16px; color: #666; font-weight: 500; max-width: 800px; margin: 20px auto 0;">
-                    Découvrez notre plateforme tout-en-un pour créer, gérer et optimiser votre présence numérique avec des outils innovants et une assistance experte.
-                </p>
+{{-- Web Services Component --}}
+<section class="web-services-v2-section" id="web-services">
+
+    {{-- ============================================================
+         ENTÊTE STANDARD — SERVICES WEB
+         ============================================================ --}}
+    <div class="resto-header-block">
+        <div class="resto-header-main">
+            <div class="resto-header-logo-left">
+                <a href="#" class="resto-accord-btn" title="GoExploria">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('logo.png') }}" alt="GoExploria">
+                    </div>
+                    <span class="resto-accord-btn-label">GoExploria</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
             </div>
+            <div class="resto-header-center">
+                <h1 class="resto-header-title">DÉVELOPPEZ VOTRE PRÉSENCE EN LIGNE AVEC NOS SERVICES WEB</h1>
+                <p class="resto-header-subtitle">
+                    Solutions Web Professionnelles — Plateforme tout-en-un pour créer, gérer et optimiser votre présence numérique.
+                </p>
+                <div class="resto-header-tabs" role="tablist">
+                    <button class="resto-tab-btn active" role="tab" data-espace="all">
+                        <i class="fas fa-th-large"></i> Tous les services
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-espace="entreprise">
+                        <i class="fas fa-briefcase"></i> Espace entreprise
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-espace="destination">
+                        <i class="fas fa-map-marker-alt"></i> Espace destination
+                    </button>
+                    <button class="resto-tab-btn" role="tab" data-espace="activite">
+                        <i class="fas fa-person-hiking"></i> Espace activité
+                    </button>
+                </div>
+            </div>
+            <div class="resto-header-logo-right">
+                <a href="#" class="resto-accord-btn" title="Plans Web Go">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('plan-n-go.png') }}" alt="Plans Web Go">
+                    </div>
+                    <span class="resto-accord-btn-label">Plans Web Go</span>
+                    <span class="resto-accord-btn-cta">
+                        <i class="fas fa-external-link-alt"></i> Visiter
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="resto-header-destinations-bar">
+            <div class="resto-dest-row">
+                <div class="resto-dest-icon-box">
+                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
+                    <span>Destinations</span>
+                </div>
+                <div class="resto-dest-breadcrumb">
+                    <a href="#" class="resto-dest-link active">Toutes destinations</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Amérique du Nord</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Canada</a>
+                    <span class="resto-dest-sep">/</span>
+                    <a href="#" class="resto-dest-link">Québec</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ============================================================
+         CONTENU PRINCIPAL
+         ============================================================ --}}
+    <div class="ws-container">
 
             {{-- 1. Les 3 Carrousels --}}
             <div class="web-carousels-grid">
@@ -174,14 +234,13 @@
             </div>
 
             {{-- CTA Final --}}
-            <div style="margin-top: 80px; text-align: center; background: #1a3a8f; padding: 60px 30px; border-radius: 24px; color: #fff;">
-                <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 20px;">PRÊT À TRANSFORMER VOTRE PRÉSENCE EN LIGNE ?</h2>
-                <p style="font-size: 16px; margin-bottom: 40px; opacity: 0.9; max-width: 700px; margin-left: auto; margin-right: auto;">
+            <div class="ws-cta-final">
+                <h2 class="ws-cta-title">PRÊT À TRANSFORMER VOTRE PRÉSENCE EN LIGNE ?</h2>
+                <p class="ws-cta-desc">
                     Rejoignez des centaines d'entreprises qui ont déjà augmenté leur visibilité et leurs résultats avec nos solutions web innovantes.
                 </p>
-                <a href="#" class="design-bosse-more-btn" style="background: #fff; color: #1a3a8f; padding: 12px 30px; font-size: 14px; display: inline-flex; width: auto; margin: 0 auto;">INSCRIVEZ-VOUS MAINTENANT <span class="events-vedette-v2-plus-icon">+</span></a>
+                <a href="#" class="ws-cta-btn">INSCRIVEZ-VOUS MAINTENANT <i class="fas fa-arrow-right"></i></a>
             </div>
 
-        </div>
-    </div>
+    </div>{{-- /ws-container --}}
 </section>

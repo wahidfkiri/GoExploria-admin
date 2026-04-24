@@ -394,12 +394,10 @@ $restoEventCards = [
     ['type'=>'fete-peres',    'badge'=>'Premium',      'price'=>'120$ / pers.',  'title'=>'Dégustation Whisky',          'desc'=>"Menu 4 services avec dégustation de whiskies d'exception et cigares.",          'img'=>'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=500&h=280&fit=crop'],
     ['type'=>'fete-peres',    'badge'=>'Famille',      'price'=>'55$ / pers.',   'title'=>'Barbecue Familial',           'desc'=>'Grande table conviviale, BBQ à volonté, bières et desserts.',                    'img'=>'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&h=280&fit=crop'],
     ['type'=>'noel',          'badge'=>'Réveillon',    'price'=>'110$ / pers.',  'title'=>'Réveillon de Noël',           'desc'=>'Menu 5 services, musique live, cotillons et vins millésimés.',                   'img'=>'https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=500&h=280&fit=crop'],
-    ['type'=>'noel',          'badge'=>'Tradition',    'price'=>'75$ / pers.',   'title'=>'Dîner de Noël en Famille',    'desc'=>'Menu traditionnel québécois avec tourtière et bûche maison.',                   'img'=>'https://images.unsplash.com/photo-1543155170-9eb4f10b0fc0?w=500&h=280&fit=crop'],
     ['type'=>'noel',          'badge'=>'Corporate',    'price'=>'50$ / pers.',   'title'=>'Cocktail Noël Corporate',     'desc'=>'Forfait groupe 20+ personnes, bouchées fines & cocktails de saison.',            'img'=>'https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=500&h=280&fit=crop'],
     ['type'=>'jour-an',       'badge'=>'Gala',         'price'=>'150$ / pers.',  'title'=>'Gala Saint-Sylvestre',        'desc'=>'Soirée de gala avec champagne minuit, musique live et menu gastronomique.',      'img'=>'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&h=280&fit=crop'],
     ['type'=>'jour-an',       'badge'=>'Festif',       'price'=>'85$ / pers.',   'title'=>'Cocktail Nouvel An',          'desc'=>'Bouchées festives, champagne à minuit, DJ et ambiance festive.',                 'img'=>'https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=500&h=280&fit=crop'],
     ['type'=>'anniversaires', 'badge'=>'VIP',          'price'=>'95$ / pers.',   'title'=>'Forfait Anniversaire VIP',    'desc'=>'Table décorée, gâteau personnalisé, bouteille de champagne et menu surprise.',   'img'=>'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=280&fit=crop'],
-    ['type'=>'anniversaires', 'badge'=>'Enfants',      'price'=>'35$ / enfant',  'title'=>'Anniversaire Enfants',        'desc'=>'Menu enfant, gâteau animé, cadeaux surprises et décoration thématique.',         'img'=>'https://images.unsplash.com/photo-1587640478513-6c6ed3ac2e80?w=500&h=280&fit=crop'],
     ['type'=>'anniversaires', 'badge'=>'Groupe',       'price'=>'55$ / pers.',   'title'=>'Soirée Groupe Anniversaire',  'desc'=>'Salle privée pour 15 à 50 personnes, menu banquet et animation.',                'img'=>'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&h=280&fit=crop'],
     ['type'=>'levee-fonds',   'badge'=>'Gala',         'price'=>'125$ / pers.',  'title'=>'Gala Caritatif',              'desc'=>'Dîner gala avec encan, conférenciers et menu gastronomique.',                    'img'=>'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500&h=280&fit=crop'],
     ['type'=>'levee-fonds',   'badge'=>'Communauté',   'price'=>'40$ / pers.',   'title'=>'Brunch Bénéfice',             'desc'=>'Brunch communautaire avec musique live et kiosques de dons.',                    'img'=>'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&h=280&fit=crop'],
@@ -408,8 +406,8 @@ $restoEventCards = [
     ['type'=>'irlandais',     'badge'=>'St-Patrick',   'price'=>'60$ / pers.',   'title'=>"St. Patrick's Dinner",        'desc'=>"Corned beef, irish stew, Guinness et whisky irlandais.",                         'img'=>'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=500&h=280&fit=crop'],
     ['type'=>'irlandais',     'badge'=>'Pub',          'price'=>'45$ / pers.',   'title'=>'Soirée Pub Irlandais',        'desc'=>'Menu pub avec bières irlandaises, musique live et ambiance festive.',            'img'=>'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&h=280&fit=crop'],
     ['type'=>'paques',        'badge'=>'Famille',      'price'=>'55$ / pers.',   'title'=>'Brunch de Pâques',            'desc'=>"Buffet familial avec chasse aux œufs pour les enfants et menu pascal.",          'img'=>'https://images.unsplash.com/photo-1547592180-85f173990554?w=500&h=280&fit=crop'],
-    ['type'=>'paques',        'badge'=>'Gastronomique','price'=>'80$ / pers.',   'title'=>'Dîner Pascal Gastronomique',  'desc'=>'Menu 4 services avec agneau pascal et accord vins de saison.',                  'img'=>'https://images.unsplash.com/photo-1476978913421-dad2ebd01d17?w=500&h=280&fit=crop'],
-];
+   
+    ];
 
 /* ----------------------------------------------------------------
    MENU RESTO GRAFFITI — Données du site restaurantgraffiti.com
@@ -430,12 +428,6 @@ $menuItems = [
      'price'=>'19 $','sub'=>'Entrées','badge'=>'cat-entrees','cat'=>'entrees',
      'accord'=>'Chianti Classico',
      'img'=>'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&h=300&fit=crop'],
-
-    ['id'=>3,  'name'=>"Poêlée de ris de veau",
-     'desc'=>"Champignons marinés au balsamique",
-     'price'=>'28 $','sub'=>'Entrées','badge'=>'cat-entrees','cat'=>'entrees',
-     'accord'=>'Bourgogne Blanc · Meursault',
-     'img'=>'https://images.unsplash.com/photo-1476978913421-dad2ebd01d17?w=500&h=300&fit=crop'],
 
     ['id'=>4,  'name'=>"Bruschetta au canard confit",
      'desc'=>"Pain à l'ail gratiné au fromage Doré-mi",
@@ -595,12 +587,6 @@ $menuItems = [
      'price'=>'44 $','sub'=>'Les classiques','badge'=>'cat-mets','cat'=>'mets-principaux',
      'accord'=>'Pomerol · Merlot',
      'img'=>'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&h=300&fit=crop'],
-
-    ['id'=>30, 'name'=>"Ris de veau poêlés aux champignons marinés au balsamique",
-     'desc'=>"Gratin dauphinois et légumes du moment",
-     'price'=>'50 $','sub'=>'Les classiques','badge'=>'cat-mets','cat'=>'mets-principaux',
-     'accord'=>'Meursault · Bourgogne Blanc',
-     'img'=>'https://images.unsplash.com/photo-1476978913421-dad2ebd01d17?w=500&h=300&fit=crop'],
 
     ['id'=>31, 'name'=>"Escalope de veau Graffiti",
      'desc'=>"Sauce crème aux champignons et linguine avec légumes du moment",

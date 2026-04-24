@@ -1,4 +1,4 @@
-<section class="travel-section">
+<section class="travel-section" id="alertes-voyages">
 
     {{-- ============================================================
          EN-TÊTE STANDARD — ALERTE VOYAGES / COMPAGNIES AÉRIENNES

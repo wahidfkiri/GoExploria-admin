@@ -5,9 +5,12 @@
 
 /* Container principal de la barre horizontale */
 .search-bar-v2 {
-    background: rgba(10, 22, 40, 0.95);
-    padding: 12px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    background: rgba(5, 15, 35, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 10px 0;
     position: relative;
     z-index: 50;
 }
@@ -31,22 +34,29 @@
 }
 
 .search-bar-v2-globe-icon {
-    width: 40px;
+    width: 40;
     height: 40px;
     object-fit: contain;
     flex-shrink: 0;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+    transition: transform 0.2s ease;
+}
+
+.search-bar-v2-globe-icon:hover {
+    transform: scale(1.0);
 }
 
 .search-bar-v2-destinations-title {
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 800;
     color: #ffffff;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     margin: 0;
     white-space: nowrap;
     text-decoration: none;
     transition: color 0.3s ease;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
 }
 
 .search-bar-v2-destinations-title:hover {
@@ -164,8 +174,6 @@
 }
 
 .icon-circle {
-    width: 36px;
-    height: 36px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -173,38 +181,58 @@
     transition: all 0.2s ease;
 }
 
-.icon-standard {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 13px;
+/* Sphère bleue unifiée : i / iT / iB */
+.icon-blue {
+    width: 68px;
+    height: 68px;
+    background: radial-gradient(circle at 36% 32%, #72c8ff 0%, #1b72cc 45%, #0a3d82 100%);
+    border: 2.5px solid rgba(255, 255, 255, 0.40);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.50), inset 0 2px 0 rgba(255, 255, 255, 0.28);
+    transition: all 0.22s ease;
 }
 
-.icon-standard:hover {
-    background: rgba(212, 175, 55, 0.18);
-    border-color: rgba(212, 175, 55, 0.5);
-    color: #d4af37;
+.icon-blue:hover {
+    transform: scale(1.10);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.60), inset 0 2px 0 rgba(255, 255, 255, 0.28);
 }
 
-.quick-link-item.active .icon-standard,
-.quick-link-item.info-trigger.active .icon-standard {
-    background: rgba(212, 175, 55, 0.2);
-    border-color: #d4af37;
-    color: #d4af37;
+.quick-link-item.active .icon-blue,
+.quick-link-item.info-trigger.active .icon-blue {
+    box-shadow: 0 0 0 3px #d4af37, 0 5px 18px rgba(0, 0, 0, 0.50);
 }
+
+/* Texte typographié dans la sphère */
+.picto-label {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-style: italic;
+    font-weight: 900;
+    font-size: 26px;
+    color: #ffffff;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    user-select: none;
+}
+
+/* Conserver compatibilité anciens styles */
+.icon-standard { display: none; }
+.icon-large { display: none; }
+.cat-trigger-label { display: none; }
 
 /* Logo Plan-n-go à droite */
 .search-bar-v2-brand {
     flex-shrink: 0;
     line-height: 0;
+    margin-left: auto;
 }
 
 .search-bar-v2-logo {
-    height: 40px;
+    height: 64px;
     width: auto;
-    max-width: 120px;
+    max-width: 180px;
     object-fit: contain;
     display: block;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
 }
 
 /* Dropdown des résultats */

@@ -1,5 +1,5 @@
 {{-- Destinations Vedette Component - Destinations vedette --}}
-<section class="destinations-vedette-v2-section">
+<section class="destinations-vedette-v2-section" id="destinations-vedette">
     <div class="destinations-vedette-v2-container">
         {{-- ============================================================
              ENTÊTE DESTINATIONS VEDETTES — même layout que RestaurantHeader
@@ -99,96 +99,7 @@
 
             <div class="resto-header-shimmer"></div>
         </div>
-
-        {{-- SLIDESHOW MULTI-CARTE DESTINATIONS --}}
-        @php
-        $destSlides = [
-            [
-                'main' => [
-                    'src'   => 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&h=500&fit=crop',
-                    'video' => 'M-2eAiU09qg',
-                    'title' => 'Vieux-Québec',
-                    'desc'  => 'Le cœur historique de la capitale, classé UNESCO',
-                    'badge' => 'new',
-                ],
-                'grid' => [
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Charlevoix',
-                        'desc'  => 'Paysages époustouflants entre fleuve et montagnes',
-                        'badge' => 'hot',
-                    ],
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Gaspésie',
-                        'desc'  => 'Falaises, rochers et mer déchaînée',
-                        'badge' => 'trending',
-                    ],
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Mont-Tremblant',
-                        'desc'  => 'Station four-saisons au cœur des Laurentides',
-                        'badge' => 'popular',
-                    ],
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Saguenay–Lac-Saint-Jean',
-                        'desc'  => 'Fjords majestueux et nature sauvage',
-                        'badge' => 'new',
-                    ],
-                ],
-            ],
-            [
-                'main' => [
-                    'src'   => 'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=900&h=500&fit=crop',
-                    'video' => 'M-2eAiU09qg',
-                    'title' => 'Îles-de-la-Madeleine',
-                    'desc'  => 'Un archipel unique au milieu du golfe Saint-Laurent',
-                    'badge' => 'trending',
-                ],
-                'grid' => [
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Laurentides',
-                        'desc'  => 'Lacs, forêts et stations de ski emblématiques',
-                        'badge' => 'popular',
-                    ],
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1512273222628-4daea6e55abb?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Cantons-de-l\'Est',
-                        'desc'  => 'Vignobles, auberges et villages pittoresques',
-                        'badge' => 'hot',
-                    ],
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Mauricie',
-                        'desc'  => 'Parc national et rivières cristallines',
-                        'badge' => 'new',
-                    ],
-                    [
-                        'src'   => 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=500&h=300&fit=crop',
-                        'video' => 'M-2eAiU09qg',
-                        'title' => 'Montréal',
-                        'desc'  => 'Métropole vibrante, culture et gastronomie',
-                        'badge' => 'popular',
-                    ],
-                ],
-            ],
-        ];
-        @endphp
-        @include('home-v2.components.MediaSlideshow', [
-            'slideshowId' => 'destMedia',
-            'slides'      => $destSlides,
-        ])
-
-        {{-- Carousel des destinations --}}
+ {{-- Carousel des destinations --}}
         <div class="vedette-carousel-outer">
             <button class="vedette-carousel-btn vedette-carousel-prev" id="destCarouselPrev" aria-label="Précédent"><i class="fas fa-chevron-left"></i></button>
             <div class="destinations-vedette-v2-scroll-wrapper">
@@ -325,31 +236,102 @@
                     </div>
                 </div>
             </article>
-
-            {{-- Destination Card 8 --}}
-            <article class="destinations-vedette-v2-card" data-category="urbain">
-                <div class="destinations-vedette-v2-card-image">
-                    <img src="https://images.unsplash.com/photo-1560932831-e8e0e8b9a3f8?w=600&h=400&fit=crop" alt="Ottawa">
-                </div>
-                <div class="destinations-vedette-v2-card-content">
-                    <h3 class="destinations-vedette-v2-card-title">Ottawa</h3>
-                    <p class="destinations-vedette-v2-card-description">
-                        Capitale du Canada, riche en histoire, musées nationaux et architecture.
-                    </p>
-                    <div class="destinations-vedette-v2-card-footer">
-                        <span class="destinations-vedette-v2-card-location">Ontario</span>
-                        <div class="destinations-vedette-v2-card-rating">
-                            ⭐⭐⭐⭐
-                        </div>
-                    </div>
-                </div>
-            </article>
                 </div>
             </div>
             <button class="vedette-carousel-btn vedette-carousel-next" id="destCarouselNext" aria-label="Suivant"><i class="fas fa-chevron-right"></i></button>
         </div>
         <div class="vedette-carousel-progress"><div class="vedette-carousel-bar" id="destCarouselBar"></div></div>
-    </div>
+  
+
+        {{-- SLIDESHOW MULTI-CARTE DESTINATIONS --}}
+        @php
+        $destSlides = [
+            [
+                'main' => [
+                    'src'   => 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&h=500&fit=crop',
+                    'video' => 'M-2eAiU09qg',
+                    'title' => 'Vieux-Québec',
+                    'desc'  => 'Le cœur historique de la capitale, classé UNESCO',
+                    'badge' => 'new',
+                ],
+                'grid' => [
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Charlevoix',
+                        'desc'  => 'Paysages époustouflants entre fleuve et montagnes',
+                        'badge' => 'hot',
+                    ],
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Gaspésie',
+                        'desc'  => 'Falaises, rochers et mer déchaînée',
+                        'badge' => 'trending',
+                    ],
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Mont-Tremblant',
+                        'desc'  => 'Station four-saisons au cœur des Laurentides',
+                        'badge' => 'popular',
+                    ],
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Saguenay–Lac-Saint-Jean',
+                        'desc'  => 'Fjords majestueux et nature sauvage',
+                        'badge' => 'new',
+                    ],
+                ],
+            ],
+            [
+                'main' => [
+                    'src'   => 'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=900&h=500&fit=crop',
+                    'video' => 'M-2eAiU09qg',
+                    'title' => 'Îles-de-la-Madeleine',
+                    'desc'  => 'Un archipel unique au milieu du golfe Saint-Laurent',
+                    'badge' => 'trending',
+                ],
+                'grid' => [
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Laurentides',
+                        'desc'  => 'Lacs, forêts et stations de ski emblématiques',
+                        'badge' => 'popular',
+                    ],
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1512273222628-4daea6e55abb?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Cantons-de-l\'Est',
+                        'desc'  => 'Vignobles, auberges et villages pittoresques',
+                        'badge' => 'hot',
+                    ],
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Mauricie',
+                        'desc'  => 'Parc national et rivières cristallines',
+                        'badge' => 'new',
+                    ],
+                    [
+                        'src'   => 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=500&h=300&fit=crop',
+                        'video' => 'M-2eAiU09qg',
+                        'title' => 'Montréal',
+                        'desc'  => 'Métropole vibrante, culture et gastronomie',
+                        'badge' => 'popular',
+                    ],
+                ],
+            ],
+        ];
+        @endphp
+        @include('home-v2.components.MediaSlideshow', [
+            'slideshowId' => 'destMedia',
+            'slides'      => $destSlides,
+        ])
+
+         </div>
 </section>
 <script>
 (function () {
