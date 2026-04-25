@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Slider;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 
 class SliderController extends Controller
@@ -32,7 +33,17 @@ class SliderController extends Controller
             ->ordered()
             ->get();
 
-        return view('home-v2.index', compact('sliders'));
+        $plans = Plan::active()
+            ->ordered()
+            ->with([
+                'activeDestinations',
+                'plugins' => function ($query) {
+                    $query->orderBy('name');
+                }
+            ])
+            ->get();
+
+        return view('home-v2.index', compact('sliders', 'plans'));
     }
 
     /**

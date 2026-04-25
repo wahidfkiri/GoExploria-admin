@@ -38,6 +38,7 @@
                     <!-- <li class="nav-menu-v2-has-videos" id="videosMenuItem">
                         <a href="#videos">VIDÉOS</a>
                     </li> -->
+                    <li><a href="#section-nos-plans">NOS PLANS</a></li>
                     <li><a href="{{ route('contact') }}">CONTACT</a></li>
                     <li><a href="{{ route('inscription') }}">INSCRIPTION</a></li>
                     <li><a href="{{ route('mon-compte') }}" class="nav-account-icon" title="Mon compte" aria-label="Mon compte"><i class="fas fa-user-circle"></i></a></li>

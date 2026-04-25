@@ -51,6 +51,7 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/real-estate.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/restaurant-header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/resa-modal.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/nos-plans.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/footer.css') }}">
 </head>
 <body>
@@ -93,6 +94,9 @@
 
         <div id="section-a-la-une" class="snb-anchor"></div>
         @include('home-v2.components.NewsSection')
+
+        <div id="section-nos-plans" class="snb-anchor"></div>
+        @include('home-v2.components.NosPlans')
     </main>
     
     {{-- Modal réservation global Table & Vin --}}

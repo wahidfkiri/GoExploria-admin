@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Slider;
 use App\Models\Category;
 use App\Models\Activity;
+use App\Models\Plan;
 
 class HomeV2Controller extends Controller
 {
@@ -19,7 +20,17 @@ class HomeV2Controller extends Controller
             ->ordered()
             ->get();
 
-        return view('home-v2.index', compact('sliders'));
+        $plans = Plan::active()
+            ->ordered()
+            ->with([
+                'activeDestinations',
+                'plugins' => function ($query) {
+                    $query->orderBy('name');
+                }
+            ])
+            ->get();
+
+        return view('home-v2.index', compact('sliders', 'plans'));
     }
 
     /**
