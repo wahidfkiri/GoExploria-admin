@@ -16,14 +16,18 @@ class PlanController extends Controller
     /**
      * Affiche le détail d'un plan spécifique
      */
-    public function show($slug = null)
+    public function show($identifier = null)
     {
         try {
-            // Si un slug est fourni, on cherche ce plan
-            if ($slug) {
-                $plan = Plan::where('slug', $slug)
-                    ->with('plugins')
-                    ->firstOrFail();
+            // Si un identifiant est fourni, on cherche ce plan (id numérique ou slug)
+            if ($identifier !== null && $identifier !== '') {
+                $planQuery = Plan::with('plugins');
+
+                if (is_numeric($identifier)) {
+                    $plan = $planQuery->where('id', (int) $identifier)->firstOrFail();
+                } else {
+                    $plan = $planQuery->where('slug', $identifier)->firstOrFail();
+                }
             } else {
                 // Sinon, on prend le premier plan actif
                 $plan = Plan::active()

@@ -80,6 +80,9 @@ Route::prefix('theme')->group(function () {
 });
 
 Route::get('plans-detail', [PlanController::class, 'show'])->name('plans.show');
+Route::get('plan-detail/{id}', [PlanController::class, 'show'])
+    ->whereNumber('id')
+    ->name('plan.detail');
 Route::get('plans/contact', function() {
         return null;
 })->name('contact.send');

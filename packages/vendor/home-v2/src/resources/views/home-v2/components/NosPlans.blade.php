@@ -1,7 +1,7 @@
 @php
     $plansCollection = $plans ?? collect();
-    $canOpenPlanDetail = \Illuminate\Support\Facades\Route::has('plans.show');
-    $canOpenDevis = \Illuminate\Support\Facades\Route::has('devis');
+    $canOpenPlanDetail = \Illuminate\Support\Facades\Route::has('plan.detail');
+    $canOpenLegacyPlanDetail = \Illuminate\Support\Facades\Route::has('plans.show');
     $cleanPlanText = function ($value, $limit = 200) {
         $raw = (string) ($value ?? '');
         $raw = str_ireplace(['<br>', '<br/>', '<br />', '</p>', '</div>', '</li>'], ' ', $raw);
@@ -70,9 +70,9 @@
                         $priceLabel = $plan->price ? $plan->formatted_price : 'Sur demande';
                         $cycleLabel = $plan->billing_cycle === 'yearly' ? '/an' : '/mois';
                         $detailsUrl = $canOpenPlanDetail
-                            ? route('plans.show', ['slug' => $plan->slug])
-                            : '#';
-                        $devisUrl = $canOpenDevis ? route('devis') : '#';
+                            ? route('plan.detail', ['id' => $plan->id])
+                            : ($canOpenLegacyPlanDetail ? route('plans.show', ['slug' => $plan->slug]) : '#');
+                        $devisUrl = $detailsUrl;
                     @endphp
 
                     <article class="nos-plan-panel" role="listitem">
