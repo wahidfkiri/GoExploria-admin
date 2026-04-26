@@ -452,4 +452,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+/* ─────────────────────────────────────────────
+   Fit précis des iframes YouTube/Vimeo du Hero
+   Réduit le zoom tout en évitant les bandes noires
+   ───────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function() {
+    const VIDEO_RATIO = 16 / 9;
+    const VERTICAL_FOCUS_TOP = 54;
+
+    function fitHeroIframes() {
+        document.querySelectorAll('.video-slide iframe.video-background').forEach(function(iframe) {
+            const container = iframe.closest('.video-slide');
+            if (!container) return;
+
+            const cw = container.clientWidth;
+            const ch = container.clientHeight;
+            if (!cw || !ch) return;
+
+            const containerRatio = cw / ch;
+
+            iframe.style.left = '50%';
+            // Favorise la zone haute de la vidéo (moins de coupe en haut)
+            iframe.style.top = VERTICAL_FOCUS_TOP + '%';
+            iframe.style.transform = 'translate(-50%, -50%)';
+
+            if (containerRatio > VIDEO_RATIO) {
+                // Conteneur plus large : on ajuste sur la largeur, hauteur auto 16:9
+                iframe.style.width = cw + 'px';
+                iframe.style.height = (cw / VIDEO_RATIO) + 'px';
+            } else {
+                // Conteneur plus haut : on ajuste sur la hauteur, largeur auto 16:9
+                iframe.style.width = (ch * VIDEO_RATIO) + 'px';
+                iframe.style.height = ch + 'px';
+            }
+        });
+    }
+
+    fitHeroIframes();
+    window.addEventListener('resize', fitHeroIframes);
+    window.addEventListener('orientationchange', fitHeroIframes);
+
+    document.querySelectorAll('.carousel-dot, .hero-video-card, .carousel-nav-btn').forEach(function(el) {
+        el.addEventListener('click', function() {
+            setTimeout(fitHeroIframes, 420);
+        });
+    });
+});
 </script>

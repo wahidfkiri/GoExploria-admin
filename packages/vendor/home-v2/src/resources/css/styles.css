@@ -431,22 +431,23 @@ html {
 
 .video-background {
     width: 100%;
-    /* height: 100%; */
-    object-fit: contain;
+    height: 100%;
+    object-fit: cover;
     object-position: center center;
+    display: block;
 }
 
-/* YouTube/Vimeo iframes : affichage complet de la vidéo */
+/* YouTube/Vimeo iframes : affichage full-bleed sans bandes noires */
 iframe.video-background {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
     width: 100%;
     height: 100%;
-    transform: none;
+    transform: translate(-50%, -50%);
     border: none;
     pointer-events: none;
-    object-fit: unset;
+    will-change: width, height, transform;
 }
 
 /* Video overlay désactivé pour afficher les vraies vidéos sans transparence
