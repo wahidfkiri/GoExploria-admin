@@ -1,3 +1,20 @@
+@php
+    $tr = static function (string $text): string {
+        $locale = app()->getLocale();
+        if ($locale === 'fr') {
+            return $text;
+        }
+
+        static $maps = [];
+        if (! array_key_exists($locale, $maps)) {
+            $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');
+            $maps[$locale] = is_file($path) ? (require $path) : [];
+        }
+
+        return $maps[$locale][$text] ?? $text;
+    };
+@endphp
+
 {{-- Business & Tourism Component --}}
 <section class="bt-section" id="business-tourism">
 
@@ -5,26 +22,26 @@
     <div class="resto-header-block">
         <div class="resto-header-main">
             <div class="resto-header-logo-left">
-                <a href="#" class="resto-accord-btn" title="GoExploria">
-                    <div class="logo-wrapper"><img src="{{ asset('logo.png') }}" alt="GoExploria"></div>
-                    <span class="resto-accord-btn-label">GoExploria</span>
-                    <span class="resto-accord-btn-cta"><i class="fas fa-external-link-alt"></i> Visiter</span>
+                <a href="#" class="resto-accord-btn" title="{{ $tr('GoExploria') }}">
+                    <div class="logo-wrapper"><img src="{{ asset('logo.png') }}" alt="{{ $tr('GoExploria') }}"></div>
+                    <span class="resto-accord-btn-label">{{ $tr('GoExploria') }}</span>
+                    <span class="resto-accord-btn-cta"><i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}</span>
                 </a>
             </div>
             <div class="resto-header-center">
-                <h1 class="resto-header-title">SOLUTIONS BUSINESS &amp; TOURISME</h1>
-                <p class="resto-header-subtitle">Expertise commerciale et expériences touristiques pour les professionnels</p>
+                <h1 class="resto-header-title">{{ $tr('SOLUTIONS BUSINESS & TOURISME') }}</h1>
+                <p class="resto-header-subtitle">{{ $tr('Expertise commerciale et expériences touristiques pour les professionnels') }}</p>
                 <div class="resto-header-tabs">
-                    <button class="resto-tab-btn active"><i class="fas fa-chart-line"></i>ESPACE BUSINESS</button>
-                    <button class="resto-tab-btn"><i class="fas fa-globe-americas"></i>ESPACE TOURISME</button>
-                    <button class="resto-tab-btn"><i class="fas fa-handshake"></i>ESPACE PARTENAIRES</button>
+                    <button class="resto-tab-btn active"><i class="fas fa-chart-line"></i>{{ $tr('ESPACE BUSINESS') }}</button>
+                    <button class="resto-tab-btn"><i class="fas fa-globe-americas"></i>{{ $tr('ESPACE TOURISME') }}</button>
+                    <button class="resto-tab-btn"><i class="fas fa-handshake"></i>{{ $tr('ESPACE PARTENAIRES') }}</button>
                 </div>
             </div>
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="Partenariats">
-                    <div class="logo-wrapper"><img src="{{ asset('REDI.png') }}" alt="Partenariats"></div>
-                    <span class="resto-accord-btn-label">Partenariats</span>
-                    <span class="resto-accord-btn-cta"><i class="fas fa-external-link-alt"></i> Découvrir</span>
+                <a href="#" class="resto-accord-btn" title="{{ $tr('Partenariats') }}">
+                    <div class="logo-wrapper"><img src="{{ asset('REDI.png') }}" alt="{{ $tr('Partenariats') }}"></div>
+                    <span class="resto-accord-btn-label">{{ $tr('Partenariats') }}</span>
+                    <span class="resto-accord-btn-cta"><i class="fas fa-external-link-alt"></i> {{ $tr('Découvrir') }}</span>
                 </a>
             </div>
         </div>
@@ -41,33 +58,33 @@
                 <div class="bt-card-top">
                     <div class="bt-icon-box"><i class="fas fa-chart-line"></i></div>
                     <div>
-                        <h2 class="bt-card-title">Solutions Business</h2>
-                        <p class="bt-card-desc">Stratégies sur mesure pour développer votre entreprise, optimiser vos processus et maximiser votre rentabilité sur le marché international.</p>
+                        <h2 class="bt-card-title">{{ $tr('Solutions Business') }}</h2>
+                        <p class="bt-card-desc">{{ $tr('Stratégies sur mesure pour développer votre entreprise, optimiser vos processus et maximiser votre rentabilité sur le marché international.') }}</p>
                     </div>
                 </div>
                 <ul class="bt-features">
-                    <li><i class="fas fa-check-circle"></i> Consultation stratégique et analyse de marché</li>
-                    <li><i class="fas fa-check-circle"></i> Développement de partenariats internationaux</li>
-                    <li><i class="fas fa-check-circle"></i> Optimisation des processus opérationnels</li>
-                    <li><i class="fas fa-check-circle"></i> Solutions digitales innovantes</li>
+                    <li><i class="fas fa-check-circle"></i> {{ $tr('Consultation stratégique et analyse de marché') }}</li>
+                    <li><i class="fas fa-check-circle"></i> {{ $tr('Développement de partenariats internationaux') }}</li>
+                    <li><i class="fas fa-check-circle"></i> {{ $tr('Optimisation des processus opérationnels') }}</li>
+                    <li><i class="fas fa-check-circle"></i> {{ $tr('Solutions digitales innovantes') }}</li>
                 </ul>
 
                 {{-- Carousel vidéos Business --}}
                 <div class="bt-carousel" data-videos='[
-                    {"id":"xPPLbEFbCAo","title":"Solutions Business GoExploria"},
-                    {"id":"xPPLbEFbCAo","title":"Développement International"}
+                    {"id":"xPPLbEFbCAo","title":"{{ $tr('Solutions Business GoExploria') }}"},
+                    {"id":"xPPLbEFbCAo","title":"{{ $tr('Développement International') }}"}
                 ]'>
                     <div class="bt-carousel-stage">
-                        <img class="bt-carousel-preview" src="https://img.youtube.com/vi/xPPLbEFbCAo/maxresdefault.jpg" alt="Solutions Business GoExploria" data-videoid="xPPLbEFbCAo">
-                        <button class="bt-carousel-play" aria-label="Lire"><i class="fas fa-play"></i></button>
-                        <button class="bt-carousel-arrow bt-carousel-prev" aria-label="Précédent"><i class="fas fa-chevron-left"></i></button>
-                        <button class="bt-carousel-arrow bt-carousel-next" aria-label="Suivant"><i class="fas fa-chevron-right"></i></button>
+                        <img class="bt-carousel-preview" src="https://img.youtube.com/vi/xPPLbEFbCAo/maxresdefault.jpg" alt="{{ $tr('Solutions Business GoExploria') }}" data-videoid="xPPLbEFbCAo">
+                        <button class="bt-carousel-play" aria-label="{{ $tr('Lire') }}"><i class="fas fa-play"></i></button>
+                        <button class="bt-carousel-arrow bt-carousel-prev" aria-label="{{ $tr('Précédent') }}"><i class="fas fa-chevron-left"></i></button>
+                        <button class="bt-carousel-arrow bt-carousel-next" aria-label="{{ $tr('Suivant') }}"><i class="fas fa-chevron-right"></i></button>
                         <div class="bt-carousel-counter"><span class="bt-carousel-cur">1</span> / <span class="bt-carousel-tot">2</span></div>
-                        <div class="bt-carousel-title-bar">Solutions Business GoExploria</div>
+                        <div class="bt-carousel-title-bar">{{ $tr('Solutions Business GoExploria') }}</div>
                     </div>
                 </div>
 
-                <a href="#" class="bt-cta-btn bt-cta-primary">DÉCOUVRIR NOS SOLUTIONS <i class="fas fa-arrow-right"></i></a>
+                <a href="#" class="bt-cta-btn bt-cta-primary">{{ $tr('DÉCOUVRIR NOS SOLUTIONS') }} <i class="fas fa-arrow-right"></i></a>
             </div>
 
             {{-- CARTE TOURISME --}}
@@ -75,33 +92,33 @@
                 <div class="bt-card-top">
                     <div class="bt-icon-box bt-icon-tourisme"><i class="fas fa-globe-americas"></i></div>
                     <div>
-                        <h2 class="bt-card-title">Expériences Touristiques</h2>
-                        <p class="bt-card-desc">Voyages sur mesure combinant découvertes culturelles, aventures uniques et moments de détente pour les professionnels et leurs équipes.</p>
+                        <h2 class="bt-card-title">{{ $tr('Expériences Touristiques') }}</h2>
+                        <p class="bt-card-desc">{{ $tr('Voyages sur mesure combinant découvertes culturelles, aventures uniques et moments de détente pour les professionnels et leurs équipes.') }}</p>
                     </div>
                 </div>
                 <ul class="bt-features">
-                    <li><i class="fas fa-check-circle"></i> Voyages d'affaires sur mesure</li>
-                    <li><i class="fas fa-check-circle"></i> Retraites d'entreprise en destinations exclusives</li>
-                    <li><i class="fas fa-check-circle"></i> Team-building aventure et culturel</li>
-                    <li><i class="fas fa-check-circle"></i> Circuits découverte pour partenaires</li>
+                    <li><i class="fas fa-check-circle"></i> {{ $tr('Voyages d\'affaires sur mesure') }}</li>
+                    <li><i class="fas fa-check-circle"></i> {{ $tr('Retraites d\'entreprise en destinations exclusives') }}</li>
+                    <li><i class="fas fa-check-circle"></i> {{ $tr('Team-building aventure et culturel') }}</li>
+                    <li><i class="fas fa-check-circle"></i> {{ $tr('Circuits découverte pour partenaires') }}</li>
                 </ul>
 
                 {{-- Carousel vidéos Tourisme --}}
                 <div class="bt-carousel" data-videos='[
-                    {"id":"xPPLbEFbCAo","title":"Expériences Touristiques GoExploria"},
-                    {"id":"xPPLbEFbCAo","title":"Découverte du Québec"}
+                    {"id":"xPPLbEFbCAo","title":"{{ $tr('Expériences Touristiques GoExploria') }}"},
+                    {"id":"xPPLbEFbCAo","title":"{{ $tr('Découverte du Québec') }}"}
                 ]'>
                     <div class="bt-carousel-stage">
-                        <img class="bt-carousel-preview" src="https://img.youtube.com/vi/xPPLbEFbCAo/maxresdefault.jpg" alt="Expériences Touristiques GoExploria" data-videoid="xPPLbEFbCAo">
-                        <button class="bt-carousel-play" aria-label="Lire"><i class="fas fa-play"></i></button>
-                        <button class="bt-carousel-arrow bt-carousel-prev" aria-label="Précédent"><i class="fas fa-chevron-left"></i></button>
-                        <button class="bt-carousel-arrow bt-carousel-next" aria-label="Suivant"><i class="fas fa-chevron-right"></i></button>
+                        <img class="bt-carousel-preview" src="https://img.youtube.com/vi/xPPLbEFbCAo/maxresdefault.jpg" alt="{{ $tr('Expériences Touristiques GoExploria') }}" data-videoid="xPPLbEFbCAo">
+                        <button class="bt-carousel-play" aria-label="{{ $tr('Lire') }}"><i class="fas fa-play"></i></button>
+                        <button class="bt-carousel-arrow bt-carousel-prev" aria-label="{{ $tr('Précédent') }}"><i class="fas fa-chevron-left"></i></button>
+                        <button class="bt-carousel-arrow bt-carousel-next" aria-label="{{ $tr('Suivant') }}"><i class="fas fa-chevron-right"></i></button>
                         <div class="bt-carousel-counter"><span class="bt-carousel-cur">1</span> / <span class="bt-carousel-tot">2</span></div>
-                        <div class="bt-carousel-title-bar">Expériences Touristiques GoExploria</div>
+                        <div class="bt-carousel-title-bar">{{ $tr('Expériences Touristiques GoExploria') }}</div>
                     </div>
                 </div>
 
-                <a href="#" class="bt-cta-btn bt-cta-secondary">EXPLORER NOS DESTINATIONS <i class="fas fa-arrow-right"></i></a>
+                <a href="#" class="bt-cta-btn bt-cta-secondary">{{ $tr('EXPLORER NOS DESTINATIONS') }} <i class="fas fa-arrow-right"></i></a>
             </div>
 
         </div>
@@ -110,19 +127,19 @@
         <div class="bt-stats-grid">
             <div class="bt-stat-unit">
                 <span class="bt-stat-number">250+</span>
-                <span class="bt-stat-label">Projets réalisés</span>
+                <span class="bt-stat-label">{{ $tr('Projets réalisés') }}</span>
             </div>
             <div class="bt-stat-unit">
                 <span class="bt-stat-number">40</span>
-                <span class="bt-stat-label">Pays couverts</span>
+                <span class="bt-stat-label">{{ $tr('Pays couverts') }}</span>
             </div>
             <div class="bt-stat-unit">
                 <span class="bt-stat-number">98%</span>
-                <span class="bt-stat-label">Satisfaction</span>
+                <span class="bt-stat-label">{{ $tr('Satisfaction') }}</span>
             </div>
             <div class="bt-stat-unit">
                 <span class="bt-stat-number">15+</span>
-                <span class="bt-stat-label">Années d'expérience</span>
+                <span class="bt-stat-label">{{ $tr('Années d\'expérience') }}</span>
             </div>
         </div>
 
@@ -202,4 +219,3 @@
     document.querySelectorAll('.bt-carousel').forEach(initBtCarousel);
 })();
 </script>
-

@@ -1,4 +1,5 @@
 {{-- Partners Master Component — GoExploria --}}
+@php(ob_start());@endphp
 <section class="pm-section" id="partners-master">
 
     {{-- ============================================================
@@ -249,3 +250,7 @@
    
 
 </section>
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

@@ -1,3 +1,20 @@
+@php
+    $tr = static function (string $text): string {
+        $locale = app()->getLocale();
+        if ($locale === 'fr') {
+            return $text;
+        }
+
+        static $maps = [];
+        if (! array_key_exists($locale, $maps)) {
+            $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');
+            $maps[$locale] = is_file($path) ? (require $path) : [];
+        }
+
+        return $maps[$locale][$text] ?? $text;
+    };
+@endphp
+
 <section class="travel-section" id="alertes-voyages">
 
     {{-- ============================================================
@@ -9,44 +26,44 @@
 
             {{-- Logo gauche : GoExploria --}}
             <div class="resto-header-logo-left">
-                <a href="#" class="resto-accord-btn" title="GoExploria">
+                <a href="#" class="resto-accord-btn" title="{{ $tr('GoExploria') }}">
                     <div class="logo-wrapper">
-                        <img src="{{ asset('logo.png') }}" alt="GoExploria">
+                        <img src="{{ asset('logo.png') }}" alt="{{ $tr('GoExploria') }}">
                     </div>
-                    <span class="resto-accord-btn-label">GoExploria</span>
+                    <span class="resto-accord-btn-label">{{ $tr('GoExploria') }}</span>
                     <span class="resto-accord-btn-cta">
-                        <i class="fas fa-external-link-alt"></i> Visiter
+                        <i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}
                     </span>
                 </a>
             </div>
 
             {{-- Centre : titre + sous-titre + onglets --}}
             <div class="resto-header-center">
-                <h1 class="resto-header-title">ALERTE VOYAGES / COMPAGNIES AÉRIENNES</h1>
-                <p class="resto-header-subtitle">Informations en temps réel · Alertes, vols en direct et compagnies aériennes partenaires</p>
+                <h1 class="resto-header-title">{{ $tr('ALERTE VOYAGES / COMPAGNIES AÉRIENNES') }}</h1>
+                <p class="resto-header-subtitle">{{ $tr('Informations en temps réel · Alertes, vols en direct et compagnies aériennes partenaires') }}</p>
 
                 <div class="resto-header-tabs">
                     <button class="resto-tab-btn active">
-                        <i class="fas fa-exclamation-triangle"></i> Alertes voyage
+                        <i class="fas fa-exclamation-triangle"></i> {{ $tr('Alertes voyage') }}
                     </button>
                     <button class="resto-tab-btn">
-                        <i class="fas fa-plane-departure"></i> Vols en direct
+                        <i class="fas fa-plane-departure"></i> {{ $tr('Vols en direct') }}
                     </button>
                     <button class="resto-tab-btn">
-                        <i class="fas fa-plane"></i> Compagnie aérienne
+                        <i class="fas fa-plane"></i> {{ $tr('Compagnie aérienne') }}
                     </button>
                 </div>
             </div>
 
             {{-- Logo droit : Compagnie Aérienne --}}
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="Compagnie Aérienne">
+                <a href="#" class="resto-accord-btn" title="{{ $tr('Compagnie Aérienne') }}">
                     <div class="logo-wrapper travelinfo-airline-icon">
                         <i class="fas fa-plane-departure"></i>
                     </div>
-                    <span class="resto-accord-btn-label">Compagnie Aérienne</span>
+                    <span class="resto-accord-btn-label">{{ $tr('Compagnie Aérienne') }}</span>
                     <span class="resto-accord-btn-cta">
-                        <i class="fas fa-external-link-alt"></i> Partenaires
+                        <i class="fas fa-external-link-alt"></i> {{ $tr('Partenaires') }}
                     </span>
                 </a>
             </div>
@@ -58,26 +75,26 @@
 
             <div class="resto-dest-row">
                 <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                    <span>Destinations</span>
+                    <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations') }}">
+                    <span>{{ $tr('Destinations') }}</span>
                 </div>
                   <div class="resto-dest-row">
                 <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                    <span>Destinations</span>
+                    <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations') }}">
+                    <span>{{ $tr('Destinations') }}</span>
                 </div>
                 <div class="resto-dest-breadcrumb">
-                    <a href="#" class="resto-dest-link active">Toutes destinations</a>
+                    <a href="#" class="resto-dest-link active">{{ $tr('Toutes destinations') }}</a>
                     <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Europe</a>
+                    <a href="#" class="resto-dest-link">{{ $tr('Europe') }}</a>
                     <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Ontario</a>
+                    <a href="#" class="resto-dest-link">{{ $tr('Ontario') }}</a>
                     <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Mauricie</a>
+                    <a href="#" class="resto-dest-link">{{ $tr('Mauricie') }}</a>
                     <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Île d'Orléans</a>
+                    <a href="#" class="resto-dest-link">{{ $tr('Île d\'Orléans') }}</a>
                     <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Vieux-Québec</a>
+                    <a href="#" class="resto-dest-link">{{ $tr('Vieux-Québec') }}</a>
                 </div>
             </div>
             </div>
@@ -85,10 +102,10 @@
             <div class="resto-actions-row">
                 <div class="resto-header-ctas">
                     <a href="#" class="resto-cta-btn primary">
-                        <i class="fas fa-calendar-check"></i> Réservez
+                        <i class="fas fa-calendar-check"></i> {{ $tr('Réservez') }}
                     </a>
                     <a href="#" class="resto-cta-btn secondary">
-                        En savoir <span class="cta-plus">+</span>
+                        {{ $tr('En savoir') }} <span class="cta-plus">+</span>
                     </a>
                 </div>
             </div>
@@ -107,8 +124,8 @@
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 <div>
-                    <h2 class="info-section-title">Alertes voyage</h2>
-                    <p class="info-section-sub">Informations en temps réel • 3 alertes</p>
+                    <h2 class="info-section-title">{{ $tr('Alertes voyage') }}</h2>
+                    <p class="info-section-sub">{{ $tr('Informations en temps réel • 3 alertes') }}</p>
                 </div>
             </div>
 
@@ -116,12 +133,12 @@
             <div class="alert-card">
                 <div class="alert-icon alert-orange"><i class="fas fa-wind"></i></div>
                 <div class="alert-content">
-                    <h3 class="alert-title">Fortes turbulences - Atlantique Nord</h3>
-                    <p class="alert-desc">Des turbulences sévères sont signalées sur les vols entre New York et Londres. Prévoyez des retards possibles.</p>
+                    <h3 class="alert-title">{{ $tr('Fortes turbulences - Atlantique Nord') }}</h3>
+                    <p class="alert-desc">{{ $tr('Des turbulences sévères sont signalées sur les vols entre New York et Londres. Prévoyez des retards possibles.') }}</p>
                     <div class="alert-meta">
-                        <span class="meta-item"><i class="far fa-clock"></i> Il y a 25 min</span>
-                        <span class="meta-item"><i class="fas fa-map-marker-alt"></i> Zone A4</span>
-                        <span class="meta-item"><i class="fas fa-plane"></i> 8 vols concernés</span>
+                        <span class="meta-item"><i class="far fa-clock"></i> {{ $tr('Il y a 25 min') }}</span>
+                        <span class="meta-item"><i class="fas fa-map-marker-alt"></i> {{ $tr('Zone A4') }}</span>
+                        <span class="meta-item"><i class="fas fa-plane"></i> {{ $tr('8 vols concernés') }}</span>
                     </div>
                 </div>
             </div>
@@ -130,12 +147,12 @@
             <div class="alert-card">
                 <div class="alert-icon alert-blue"><i class="fas fa-bullhorn"></i></div>
                 <div class="alert-content">
-                    <h3 class="alert-title">Mouvement social - Aéroport de Paris</h3>
-                    <p class="alert-desc">Préavis de grève des contrôleurs aériens ce vendredi. Jusqu'à 40% des vols pourraient être annulés.</p>
+                    <h3 class="alert-title">{{ $tr('Mouvement social - Aéroport de Paris') }}</h3>
+                    <p class="alert-desc">{{ $tr('Préavis de grève des contrôleurs aériens ce vendredi. Jusqu\'à 40% des vols pourraient être annulés.') }}</p>
                     <div class="alert-meta">
-                        <span class="meta-item"><i class="far fa-clock"></i> Il y a 2h</span>
-                        <span class="meta-item"><i class="fas fa-map-marker-alt"></i> CDG, ORY</span>
-                        <span class="meta-item"><i class="far fa-calendar-alt"></i> 15-16 Mars</span>
+                        <span class="meta-item"><i class="far fa-clock"></i> {{ $tr('Il y a 2h') }}</span>
+                        <span class="meta-item"><i class="fas fa-map-marker-alt"></i> {{ $tr('CDG, ORY') }}</span>
+                        <span class="meta-item"><i class="far fa-calendar-alt"></i> {{ $tr('15-16 Mars') }}</span>
                     </div>
                 </div>
             </div>
@@ -144,12 +161,12 @@
             <div class="alert-card">
                 <div class="alert-icon alert-red"><i class="fas fa-shield-alt"></i></div>
                 <div class="alert-content">
-                    <h3 class="alert-title">Niveau de sécurité renforcé - Tel Aviv</h3>
-                    <p class="alert-desc">Mesures de contrôle supplémentaires. Prévoyez 3h d'avance pour votre départ.</p>
+                    <h3 class="alert-title">{{ $tr('Niveau de sécurité renforcé - Tel Aviv') }}</h3>
+                    <p class="alert-desc">{{ $tr('Mesures de contrôle supplémentaires. Prévoyez 3h d\'avance pour votre départ.') }}</p>
                     <div class="alert-meta">
-                        <span class="meta-item"><i class="far fa-clock"></i> Il y a 45 min</span>
-                        <span class="meta-item"><i class="fas fa-map-marker-alt"></i> TLV</span>
-                        <span class="meta-item"><i class="fas fa-exclamation-circle"></i> Vigilance</span>
+                        <span class="meta-item"><i class="far fa-clock"></i> {{ $tr('Il y a 45 min') }}</span>
+                        <span class="meta-item"><i class="fas fa-map-marker-alt"></i> {{ $tr('TLV') }}</span>
+                        <span class="meta-item"><i class="fas fa-exclamation-circle"></i> {{ $tr('Vigilance') }}</span>
                     </div>
                 </div>
             </div>
@@ -162,8 +179,8 @@
                     <i class="fas fa-plane-departure"></i>
                 </div>
                 <div>
-                    <h2 class="info-section-title">COMPAGNIES AÉRIENNES</h2>
-                    <p class="info-section-sub">Suivi des départs • 4 vols</p>
+                    <h2 class="info-section-title">{{ $tr('COMPAGNIES AÉRIENNES') }}</h2>
+                    <p class="info-section-sub">{{ $tr('Suivi des départs • 4 vols') }}</p>
                 </div>
             </div>
 
@@ -179,14 +196,14 @@
                             <i class="fas fa-arrow-right"></i>
                         </h4>
                         <p class="plane-status">
-                            <span>Paris → New York</span>
-                            <span class="status-badge">À l'heure</span>
+                            <span>{{ $tr('Paris → New York') }}</span>
+                            <span class="status-badge">{{ $tr('À l\'heure') }}</span>
                         </p>
                         <div class="flight-time">
-                            <i class="far fa-clock"></i> 14:45 • Terminal 2E
+                            <i class="far fa-clock"></i> {{ $tr('14:45 • Terminal 2E') }}
                         </div>
                         <div class="weather-badge">
-                            <i class="fas fa-cloud"></i> 7°C • Visibilité bonne
+                            <i class="fas fa-cloud"></i> {{ $tr('7°C • Visibilité bonne') }}
                         </div>
                     </div>
                 </div>
@@ -202,14 +219,14 @@
                             <i class="fas fa-arrow-right"></i>
                         </h4>
                         <p class="plane-status">
-                            <span>Francfort → Tokyo</span>
-                            <span class="status-badge status-warning">Retard 25min</span>
+                            <span>{{ $tr('Francfort → Tokyo') }}</span>
+                            <span class="status-badge status-warning">{{ $tr('Retard 25min') }}</span>
                         </p>
                         <div class="flight-time">
-                            <i class="far fa-clock"></i> 22:10 • Porte B43
+                            <i class="far fa-clock"></i> {{ $tr('22:10 • Porte B43') }}
                         </div>
                         <div class="weather-badge">
-                            <i class="fas fa-cloud-showers-heavy"></i> 13°C • Pluie légère
+                            <i class="fas fa-cloud-showers-heavy"></i> {{ $tr('13°C • Pluie légère') }}
                         </div>
                     </div>
                 </div>
@@ -225,14 +242,14 @@
                             <i class="fas fa-arrow-right"></i>
                         </h4>
                         <p class="plane-status">
-                            <span>Londres → Dubai</span>
-                            <span class="status-badge">À l'heure</span>
+                            <span>{{ $tr('Londres → Dubai') }}</span>
+                            <span class="status-badge">{{ $tr('À l\'heure') }}</span>
                         </p>
                         <div class="flight-time">
-                            <i class="far fa-clock"></i> 09:20 • Gate 12
+                            <i class="far fa-clock"></i> {{ $tr('09:20 • Gate 12') }}
                         </div>
                         <div class="weather-badge">
-                            <i class="fas fa-sun"></i> 28°C • Ciel dégagé
+                            <i class="fas fa-sun"></i> {{ $tr('28°C • Ciel dégagé') }}
                         </div>
                     </div>
                 </div>
@@ -248,14 +265,14 @@
                             <i class="fas fa-arrow-right"></i>
                         </h4>
                         <p class="plane-status">
-                            <span>Milan → Dubaï</span>
-                            <span class="status-badge">Embarquement</span>
+                            <span>{{ $tr('Milan → Dubaï') }}</span>
+                            <span class="status-badge">{{ $tr('Embarquement') }}</span>
                         </p>
                         <div class="flight-time">
-                            <i class="far fa-clock"></i> 16:30 • Porte D7
+                            <i class="far fa-clock"></i> {{ $tr('16:30 • Porte D7') }}
                         </div>
                         <div class="weather-badge">
-                            <i class="fas fa-sun"></i> 22°C • Vent faible
+                            <i class="fas fa-sun"></i> {{ $tr('22°C • Vent faible') }}
                         </div>
                     </div>
                 </div>
@@ -264,7 +281,7 @@
             <!-- Lien voir tous les vols -->
             <div style="margin-top: 30px; text-align: right;">
                 <a href="#" class="btn-outline-primary">
-                    Voir tous les vols <i class="fas fa-arrow-right"></i>
+                    {{ $tr('Voir tous les vols') }} <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
         </div>

@@ -1,4 +1,5 @@
 ﻿{{-- GoExploria MyTUBE - Lecteur vidéo style YouTube --}}
+@php(ob_start());@endphp
 @php
 $gxtVideos = [
     [
@@ -470,3 +471,7 @@ $gxtVideos = [
     });
 })();
 </script>
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

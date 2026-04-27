@@ -1,6 +1,24 @@
 {{-- Video Player Component - MA CHAÎNE·VIDÉOS --}}
 @php
 /* ----------------------------------------------------------------
+   TRADUCTION LOCALE
+---------------------------------------------------------------- */
+$tr = static function (string $text): string {
+    $locale = app()->getLocale();
+    if ($locale === 'fr') {
+        return $text;
+    }
+
+    static $maps = [];
+    if (! array_key_exists($locale, $maps)) {
+        $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');
+        $maps[$locale] = is_file($path) ? (require $path) : [];
+    }
+
+    return $maps[$locale][$text] ?? $text;
+};
+
+/* ----------------------------------------------------------------
    CONFIG
 ---------------------------------------------------------------- */
 $vpConfig = [
@@ -19,6 +37,15 @@ $vpConfig = [
         'label' => 'Plans Web Go',
     ],
 ];
+
+if (app()->getLocale() !== 'fr') {
+    $vpConfig['title'] = $tr($vpConfig['title']);
+    $vpConfig['subtitle'] = $tr($vpConfig['subtitle']);
+    $vpConfig['logo_left']['alt'] = $tr($vpConfig['logo_left']['alt']);
+    $vpConfig['logo_left']['label'] = $tr($vpConfig['logo_left']['label']);
+    $vpConfig['logo_plans']['alt'] = $tr($vpConfig['logo_plans']['alt']);
+    $vpConfig['logo_plans']['label'] = $tr($vpConfig['logo_plans']['label']);
+}
 
 /* ----------------------------------------------------------------
    MÉDIAS — Playlist
@@ -80,6 +107,16 @@ $vpMediaItems = [
         'category'    => 'entreprise',
     ],
 ];
+
+if (app()->getLocale() !== 'fr') {
+    foreach ($vpMediaItems as &$mediaItem) {
+        $mediaItem['title'] = $tr($mediaItem['title']);
+        $mediaItem['description'] = $tr($mediaItem['description']);
+        $mediaItem['badge'] = $tr($mediaItem['badge']);
+        $mediaItem['category'] = $tr($mediaItem['category']);
+    }
+    unset($mediaItem);
+}
 @endphp
 
 <section class="video-player-v2-section" id="vp-chaine">
@@ -100,7 +137,7 @@ $vpMediaItems = [
                         </div>
                         <span class="resto-accord-btn-label">{{ $vpConfig['logo_left']['label'] }}</span>
                         <span class="resto-accord-btn-cta">
-                            <i class="fas fa-external-link-alt"></i> Visiter
+                            <i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}
                         </span>
                     </a>
                 </div>
@@ -112,16 +149,16 @@ $vpMediaItems = [
 
                     <div class="resto-header-tabs">
                         <a href="#" class="resto-tab-btn active">
-                            <i class="fas fa-th-large"></i> Toutes les options
+                            <i class="fas fa-th-large"></i> {{ $tr('Toutes les options') }}
                         </a>
                         <a href="#" class="resto-tab-btn">
-                            <i class="fas fa-briefcase"></i> Espace entreprise
+                            <i class="fas fa-briefcase"></i> {{ $tr('Espace entreprise') }}
                         </a>
                         <a href="#" class="resto-tab-btn">
-                            <i class="fas fa-map-marker-alt"></i> Espace destination
+                            <i class="fas fa-map-marker-alt"></i> {{ $tr('Espace destination') }}
                         </a>
                         <a href="#" class="resto-tab-btn">
-                            <i class="fas fa-person-hiking"></i> Espace activité
+                            <i class="fas fa-person-hiking"></i> {{ $tr('Espace activité') }}
                         </a>
                     </div>
                 </div>
@@ -134,7 +171,7 @@ $vpMediaItems = [
                         </div>
                         <span class="resto-accord-btn-label">{{ $vpConfig['logo_plans']['label'] }}</span>
                         <span class="resto-accord-btn-cta">
-                            <i class="fas fa-external-link-alt"></i> Visiter
+                            <i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}
                         </span>
                     </a>
                 </div>
@@ -146,19 +183,19 @@ $vpMediaItems = [
 
                 <div class="resto-dest-row">
                     <div class="resto-dest-icon-box">
-                        <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                        <span>Destinations</span>
+                        <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations') }}">
+                        <span>{{ $tr('Destinations') }}</span>
                     </div>
                     <div class="resto-dest-breadcrumb">
-                        <a href="#" class="resto-dest-link active" data-dest="all">Toutes destinations</a>
+                        <a href="#" class="resto-dest-link active" data-dest="all">{{ $tr('Toutes destinations') }}</a>
                         <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link" data-dest="amerique-nord">Amérique du Nord</a>
+                        <a href="#" class="resto-dest-link" data-dest="amerique-nord">{{ $tr('Amérique du Nord') }}</a>
                         <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link" data-dest="canada">Canada</a>
+                        <a href="#" class="resto-dest-link" data-dest="canada">{{ $tr('Canada') }}</a>
                         <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link" data-dest="quebec">Québec</a>
+                        <a href="#" class="resto-dest-link" data-dest="quebec">{{ $tr('Québec') }}</a>
                         <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link" data-dest="region-quebec">Région de Québec</a>
+                        <a href="#" class="resto-dest-link" data-dest="region-quebec">{{ $tr('Région de Québec') }}</a>
                     </div>
                 </div>
 
@@ -181,7 +218,7 @@ $vpMediaItems = [
                         poster="{{ $vpMediaItems[0]['poster'] }}"
                     >
                         <source src="{{ $vpMediaItems[0]['src'] }}" type="video/mp4">
-                        Votre navigateur ne supporte pas la lecture de vidéos.
+                        {{ $tr('Votre navigateur ne supporte pas la lecture de vidéos.') }}
                     </video>
                 </div>
 
@@ -222,9 +259,9 @@ $vpMediaItems = [
             <div class="video-player-v2-playlist">
                 <div class="video-player-v2-playlist-header">
                     <h3 class="video-player-v2-playlist-title">
-                        <i class="fas fa-list"></i> PLAYLIST
+                        <i class="fas fa-list"></i> {{ $tr('PLAYLIST') }}
                     </h3>
-                    <span class="vp-playlist-count">{{ count($vpMediaItems) }} vidéos</span>
+                    <span class="vp-playlist-count">{{ count($vpMediaItems) }} {{ $tr('vidéos') }}</span>
                 </div>
                 <ul class="video-player-v2-playlist-items" id="playlistItems">
                     @foreach($vpMediaItems as $i => $item)

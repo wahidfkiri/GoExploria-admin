@@ -4,7 +4,7 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);">
     <div class="header-top">
         <div class="header-contact">
-            <a href="mailto:INFOGOEXPLORIA@GMAIL.COM">INFOGOEXPLORIA@GMAIL.COM</a>
+            <a href="mailto:{{ __('home-v2.common.email') }}">{{ __('home-v2.common.email') }}</a>
         </div>
         <div class="header-promo">
             <span>GO PROMO</span>
@@ -87,3 +87,4 @@
         </div>
     </nav>
 </header>
+

@@ -1,9 +1,26 @@
+@php
+    $tr = static function (string $text): string {
+        $locale = app()->getLocale();
+        if ($locale === 'fr') {
+            return $text;
+        }
+
+        static $maps = [];
+        if (! array_key_exists($locale, $maps)) {
+            $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');
+            $maps[$locale] = is_file($path) ? (require $path) : [];
+        }
+
+        return $maps[$locale][$text] ?? $text;
+    };
+@endphp
+
 {{-- Mega Menu Component pour Destinations --}}
 <div class="destinations-mega-menu" id="destinationsMegaMenu">
     {{-- Loader --}}
     <div class="destinations-mega-loader" id="destinationsLoader">
         <div class="destinations-spinner"></div>
-        <p>Chargement des destinations...</p>
+        <p>{{ $tr('Chargement des destinations...') }}</p>
     </div>
 
     {{-- Contenu principal --}}
@@ -13,6 +30,6 @@
 
     {{-- Message si aucune destination --}}
     <div class="destinations-mega-menu-empty" id="destinationsEmpty" style="display: none;">
-        <p>Aucune destination disponible pour le moment.</p>
+        <p>{{ $tr('Aucune destination disponible pour le moment.') }}</p>
     </div>
 </div>

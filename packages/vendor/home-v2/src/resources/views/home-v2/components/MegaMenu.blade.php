@@ -1,3 +1,5 @@
+@php(ob_start());@endphp
+
 {{-- Mega Menu Component pour "Nos Services" --}}
 <div class="mega-menu-v2" id="megaMenuServices">
 
@@ -215,3 +217,8 @@
 
 
 </div>
+
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

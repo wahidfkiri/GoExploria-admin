@@ -32,6 +32,33 @@ Route::post('/chat/clear-history', [ChatController::class, 'clearHistory'])->nam
 // Page de login
 Route::get('/', [HomeV2Controller::class, 'index'])->name('home-v2');
 
+Route::get('/locale/{locale}', function (string $locale) {
+    $supported = ['fr', 'en', 'es', 'de', 'it'];
+
+    if (! in_array($locale, $supported, true)) {
+        $locale = 'fr';
+    }
+
+    session(['locale' => $locale]);
+    app()->setLocale($locale);
+
+    $fallback = url()->previous() ?: route('home-v2');
+    $redirect = request()->query('redirect', $fallback);
+
+    if (! is_string($redirect)) {
+        $redirect = $fallback;
+    }
+
+    $appHost = parse_url(url('/'), PHP_URL_HOST);
+    $redirectHost = parse_url($redirect, PHP_URL_HOST);
+
+    if ($redirectHost !== null && $redirectHost !== $appHost) {
+        $redirect = $fallback;
+    }
+
+    return redirect()->to($redirect);
+})->name('locale.switch');
+
 Route::get('welcome-2', function () {
     return view('welcome');
 });
@@ -297,3 +324,5 @@ Route::get('/mon-compte',   fn() => view('home-v2.pages.mon-compte'))->name('mon
 Route::get('/devis',        fn() => view('home-v2.pages.devis'))->name('devis');
 Route::get('/favoris',      fn() => view('home-v2.pages.favoris'))->name('favoris');
 Route::get('/panier',       fn() => view('home-v2.pages.panier'))->name('panier');
+Route::get('/politique-confidentialite', fn() => view('home-v2.pages.privacy-policy'))->name('privacy.policy');
+Route::get('/termes-et-conditions', fn() => view('home-v2.pages.terms-conditions'))->name('terms.conditions');

@@ -2,6 +2,21 @@
 use App\Models\Category;
 use App\Models\CategorieType;
 
+$tr = static function (string $text): string {
+    $locale = app()->getLocale();
+    if ($locale === 'fr') {
+        return $text;
+    }
+
+    static $maps = [];
+    if (! array_key_exists($locale, $maps)) {
+        $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');
+        $maps[$locale] = is_file($path) ? (require $path) : [];
+    }
+
+    return $maps[$locale][$text] ?? $text;
+};
+
 $tourismeType  = CategorieType::where('name', 'like', '%tourisme%')->orWhere('name', 'like', '%Tourisme%')->first();
 $businessType  = CategorieType::where('name', 'like', '%business%')->orWhere('name', 'like', '%Business%')->first();
 
@@ -19,11 +34,11 @@ $businessCats = $businessType
 @endphp
 
 {{-- ── PANEL TOURISME ── --}}
-<div class="cat-mega-panel" id="catMegaPanelTourisme" role="dialog" aria-label="Catégories Tourisme">
+<div class="cat-mega-panel" id="catMegaPanelTourisme" role="dialog" aria-label="{{ $tr('Catégories Tourisme') }}">
     <div class="cat-mega-left">
         <div class="cat-mega-header">
             <div class="cat-mega-header-icon"><i class="fas fa-map-marked-alt"></i></div>
-            <span class="cat-mega-header-title">Activités Tourisme</span>
+            <span class="cat-mega-header-title">{{ $tr('Activités Tourisme') }}</span>
         </div>
         @forelse($tourismeCats as $index => $cat)
             <a href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
@@ -35,7 +50,7 @@ $businessCats = $businessType
                 <span class="cat-mega-cat-count">{{ $cat->activities->count() }}</span>
             </a>
         @empty
-            <div class="cat-mega-empty">Aucune catégorie active</div>
+            <div class="cat-mega-empty">{{ $tr('Aucune catégorie active') }}</div>
         @endforelse
     </div>
     <div class="cat-mega-right">
@@ -48,7 +63,7 @@ $businessCats = $businessType
                             <span class="cat-mega-act-dot"></span>{{ $act->name }}
                         </a>
                     @empty
-                        <div class="cat-mega-empty">Aucune activité</div>
+                        <div class="cat-mega-empty">{{ $tr('Aucune activité') }}</div>
                     @endforelse
                 </div>
             @empty
@@ -58,20 +73,20 @@ $businessCats = $businessType
         <div class="cat-mega-footer">
             <a href="{{ route('category.show', $tourismeCats->first()->slug ?? $tourismeCats->first()->id) }}"
                class="cat-mega-view-all" id="catMegaViewAllTourisme">
-                Voir toutes les activités <i class="fas fa-arrow-right" style="font-size:9px;margin-left:2px"></i>
+                {{ $tr('Voir toutes les activités') }} <i class="fas fa-arrow-right" style="font-size:9px;margin-left:2px"></i>
             </a>
-            <a href="{{ route('categories.index') }}" class="cat-mega-view-all-cats">Toutes les catégories</a>
+            <a href="{{ route('categories.index') }}" class="cat-mega-view-all-cats">{{ $tr('Toutes les catégories') }}</a>
         </div>
         @endif
     </div>
 </div>
 
 {{-- ── PANEL BUSINESS ── --}}
-<div class="cat-mega-panel" id="catMegaPanelBusiness" role="dialog" aria-label="Catégories Business">
+<div class="cat-mega-panel" id="catMegaPanelBusiness" role="dialog" aria-label="{{ $tr('Catégories Business') }}">
     <div class="cat-mega-left">
         <div class="cat-mega-header">
             <div class="cat-mega-header-icon"><i class="fas fa-briefcase"></i></div>
-            <span class="cat-mega-header-title">Activités Business</span>
+            <span class="cat-mega-header-title">{{ $tr('Activités Business') }}</span>
         </div>
         @forelse($businessCats as $index => $cat)
             <a href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
@@ -83,7 +98,7 @@ $businessCats = $businessType
                 <span class="cat-mega-cat-count">{{ $cat->activities->count() }}</span>
             </a>
         @empty
-            <div class="cat-mega-empty">Aucune catégorie active</div>
+            <div class="cat-mega-empty">{{ $tr('Aucune catégorie active') }}</div>
         @endforelse
     </div>
     <div class="cat-mega-right">
@@ -96,7 +111,7 @@ $businessCats = $businessType
                             <span class="cat-mega-act-dot"></span>{{ $act->name }}
                         </a>
                     @empty
-                        <div class="cat-mega-empty">Aucune activité</div>
+                        <div class="cat-mega-empty">{{ $tr('Aucune activité') }}</div>
                     @endforelse
                 </div>
             @empty
@@ -106,9 +121,9 @@ $businessCats = $businessType
         <div class="cat-mega-footer">
             <a href="{{ route('category.show', $businessCats->first()->slug ?? $businessCats->first()->id) }}"
                class="cat-mega-view-all" id="catMegaViewAllBusiness">
-                Voir toutes les activités <i class="fas fa-arrow-right" style="font-size:9px;margin-left:2px"></i>
+                {{ $tr('Voir toutes les activités') }} <i class="fas fa-arrow-right" style="font-size:9px;margin-left:2px"></i>
             </a>
-            <a href="{{ route('categories.index') }}" class="cat-mega-view-all-cats">Toutes les catégories</a>
+            <a href="{{ route('categories.index') }}" class="cat-mega-view-all-cats">{{ $tr('Toutes les catégories') }}</a>
         </div>
         @endif
     </div>

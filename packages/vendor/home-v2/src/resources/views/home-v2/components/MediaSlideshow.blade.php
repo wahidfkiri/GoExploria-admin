@@ -19,6 +19,23 @@
     $modalTitleId = $slideshowId . 'ModalTitle';
     $closeModalId = $slideshowId . 'CloseModal';
     $videoContId  = $slideshowId . 'VideoCont';
+
+    $mssTr = isset($tr) && is_callable($tr)
+        ? $tr
+        : static function (string $text): string {
+            $locale = app()->getLocale();
+            if ($locale === 'fr') {
+                return $text;
+            }
+
+            static $maps = [];
+            if (! array_key_exists($locale, $maps)) {
+                $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');
+                $maps[$locale] = is_file($path) ? (require $path) : [];
+            }
+
+            return $maps[$locale][$text] ?? $text;
+        };
 @endphp
 
 {{-- ===== GALLERY MULTI-CARTE ===== --}}
@@ -76,7 +93,7 @@
 
     {{-- Navigation : ◀  ● ● ○  ▶ --}}
     <div class="mss-gallery-nav">
-        <button class="mss-gallery-nav-btn" id="{{ $prevId }}" aria-label="Précédent">
+        <button class="mss-gallery-nav-btn" id="{{ $prevId }}" aria-label="{{ $mssTr('Précédent') }}">
             <i class="fas fa-chevron-left"></i>
         </button>
         <div class="mss-gallery-dots" id="{{ $dotsId }}">
@@ -85,7 +102,7 @@
                      data-idx="{{ $i }}"></div>
             @endforeach
         </div>
-        <button class="mss-gallery-nav-btn" id="{{ $nextId }}" aria-label="Suivant">
+        <button class="mss-gallery-nav-btn" id="{{ $nextId }}" aria-label="{{ $mssTr('Suivant') }}">
             <i class="fas fa-chevron-right"></i>
         </button>
     </div>
@@ -96,7 +113,7 @@
 <div class="mss-gallery-modal" id="{{ $modalId }}">
     <div class="mss-gallery-modal-content">
         <div class="mss-gallery-modal-header">
-            <h3 class="mss-gallery-modal-title" id="{{ $modalTitleId }}">Vidéo</h3>
+            <h3 class="mss-gallery-modal-title" id="{{ $modalTitleId }}">{{ $mssTr('Vidéo') }}</h3>
             <button class="mss-gallery-modal-close" id="{{ $closeModalId }}">&times;</button>
         </div>
         <div class="mss-gallery-video-container" id="{{ $videoContId }}"></div>
@@ -163,6 +180,8 @@
     /* ---- Modal vidéo ---- */
     var ytFrameId = '{{ $slideshowId }}YtFrame';
     var ytErrId   = '{{ $slideshowId }}YtErr';
+    var unavailableLabel = @json($mssTr('Vidéo non disponible'));
+    var unavailableHint = @json($mssTr('Vidéo introuvable ou non autorisée en intégration'));
 
     var ytMsgHandler = function (e) {
         if (!e.data) return;
@@ -192,8 +211,8 @@
                 ' allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>' +
                 '<div id="' + ytErrId + '" style="display:none;position:absolute;inset:0;background:#0a1628;flex-direction:column;align-items:center;justify-content:center;gap:14px;">' +
                 '<i class="fas fa-video-slash" style="font-size:3rem;color:#f26522;"></i>' +
-                '<p style="color:#fff;font-family:Montserrat,sans-serif;font-weight:700;margin:0;">Vidéo non disponible</p>' +
-                '<p style="color:rgba(255,255,255,0.6);font-family:Montserrat,sans-serif;font-size:0.8rem;margin:0;">Vidéo introuvable ou non autorisée en intégration</p>' +
+                '<p style="color:#fff;font-family:Montserrat,sans-serif;font-weight:700;margin:0;">' + unavailableLabel + '</p>' +
+                '<p style="color:rgba(255,255,255,0.6);font-family:Montserrat,sans-serif;font-size:0.8rem;margin:0;">' + unavailableHint + '</p>' +
                 '</div></div>';
             window.addEventListener('message', ytMsgHandler);
         }

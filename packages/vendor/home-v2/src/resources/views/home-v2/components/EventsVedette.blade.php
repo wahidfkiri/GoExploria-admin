@@ -1,3 +1,20 @@
+@php
+    $tr = static function (string $text): string {
+        $locale = app()->getLocale();
+        if ($locale === 'fr') {
+            return $text;
+        }
+
+        static $maps = [];
+        if (! array_key_exists($locale, $maps)) {
+            $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');
+            $maps[$locale] = is_file($path) ? (require $path) : [];
+        }
+
+        return $maps[$locale][$text] ?? $text;
+    };
+@endphp
+
 {{-- Events Vedette Component - Événements vedette au Québec --}}
 <section class="events-vedette-v2-section" id="evenements-vedette">
     <div class="events-vedette-v2-container">
@@ -10,49 +27,49 @@
 
                 {{-- Logo gauche : GoExploria --}}
                 <div class="resto-header-logo-left">
-                    <a href="#" class="resto-accord-btn" title="GoExploria">
+                    <a href="#" class="resto-accord-btn" title="{{ $tr('GoExploria') }}">
                         <div class="logo-wrapper">
-                            <img src="{{ asset('logo.png') }}" alt="GoExploria">
+                            <img src="{{ asset('logo.png') }}" alt="{{ $tr('GoExploria') }}">
                         </div>
-                        <span class="resto-accord-btn-label">GoExploria</span>
+                        <span class="resto-accord-btn-label">{{ $tr('GoExploria') }}</span>
                         <span class="resto-accord-btn-cta">
-                            <i class="fas fa-external-link-alt"></i> Visiter
+                            <i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}
                         </span>
                     </a>
                 </div>
 
                 {{-- Centre : titre + sous-titre + 4 boutons espaces --}}
                 <div class="resto-header-center">
-                    <h1 class="resto-header-title">ÉVÉNEMENTS VEDETTE AU QUÉBEC</h1>
+                    <h1 class="resto-header-title">{{ $tr('ÉVÉNEMENTS VEDETTE AU QUÉBEC') }}</h1>
                     <p class="resto-header-subtitle">
-                        Festivals · Culture · Plein air · Gastronomie — Les événements incontournables de la Belle Province sélectionnés par GoExploria.
+                        {{ $tr('Festivals · Culture · Plein air · Gastronomie — Les événements incontournables de la Belle Province sélectionnés par GoExploria.') }}
                     </p>
 
                     <div class="resto-header-tabs" role="tablist">
                         <button class="resto-tab-btn active" role="tab" data-espace="all">
-                            <i class="fas fa-th-large"></i> Toutes les options
+                            <i class="fas fa-th-large"></i> {{ $tr('Toutes les options') }}
                         </button>
                         <button class="resto-tab-btn" role="tab" data-espace="entreprise">
-                            <i class="fas fa-briefcase"></i> Espace entreprise
+                            <i class="fas fa-briefcase"></i> {{ $tr('Espace entreprise') }}
                         </button>
                         <button class="resto-tab-btn" role="tab" data-espace="destination">
-                            <i class="fas fa-map-marker-alt"></i> Espace destination
+                            <i class="fas fa-map-marker-alt"></i> {{ $tr('Espace destination') }}
                         </button>
                         <button class="resto-tab-btn" role="tab" data-espace="activite">
-                            <i class="fas fa-person-hiking"></i> Espace activité
+                            <i class="fas fa-person-hiking"></i> {{ $tr('Espace activité') }}
                         </button>
                     </div>
                 </div>
 
                 {{-- Logo droit : Événements Québec --}}
                 <div class="resto-header-logo-right">
-                    <a href="#" class="resto-accord-btn" title="Événements Québec">
+                    <a href="#" class="resto-accord-btn" title="{{ $tr('Événements Québec') }}">
                         <div class="logo-wrapper">
-                            <img src="{{ asset('plan-n-go.png') }}" alt="Événements Québec">
+                            <img src="{{ asset('plan-n-go.png') }}" alt="{{ $tr('Événements Québec') }}">
                         </div>
-                        <span class="resto-accord-btn-label">Événements Québec</span>
+                        <span class="resto-accord-btn-label">{{ $tr('Événements Québec') }}</span>
                         <span class="resto-accord-btn-cta">
-                            <i class="fas fa-external-link-alt"></i> Visiter
+                            <i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}
                         </span>
                     </a>
                 </div>
@@ -64,33 +81,33 @@
 
                 <div class="resto-dest-row">
                     <div class="resto-dest-icon-box">
-                        <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                        <span>Destinations</span>
+                        <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations') }}">
+                        <span>{{ $tr('Destinations') }}</span>
                     </div>
                     <div class="resto-dest-breadcrumb">
-                        <a href="#" class="resto-dest-link active" data-dest="all">Toutes destinations</a>
+                        <a href="#" class="resto-dest-link active" data-dest="all">{{ $tr('Toutes destinations') }}</a>
                         <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link" data-dest="amerique-nord">Amérique du Nord</a>
+                        <a href="#" class="resto-dest-link" data-dest="amerique-nord">{{ $tr('Amérique du Nord') }}</a>
                         <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link" data-dest="canada">Canada</a>
+                        <a href="#" class="resto-dest-link" data-dest="canada">{{ $tr('Canada') }}</a>
                         <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link" data-dest="quebec">Québec</a>
+                        <a href="#" class="resto-dest-link" data-dest="quebec">{{ $tr('Québec') }}</a>
                         <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link" data-dest="region-quebec">Région de Québec</a>
+                        <a href="#" class="resto-dest-link" data-dest="region-quebec">{{ $tr('Région de Québec') }}</a>
                     </div>
                 </div>
 
                 <div class="resto-actions-row">
                     <div class="resto-header-ctas">
                         <div class="events-vedette-v2-filters">
-                            <button class="events-vedette-v2-filter-btn active" data-filter="all"><i class="fas fa-th-large"></i> Tous les événements</button>
-                            <button class="events-vedette-v2-filter-btn" data-filter="culture"><i class="fas fa-palette"></i> Culture &amp; Arts</button>
-                            <button class="events-vedette-v2-filter-btn" data-filter="gastronomie"><i class="fas fa-utensils"></i> Gastronomie</button>
-                            <button class="events-vedette-v2-filter-btn" data-filter="nature"><i class="fas fa-leaf"></i> Nature &amp; Plein air</button>
-                            <button class="events-vedette-v2-filter-btn" data-filter="aventures"><i class="fas fa-person-hiking"></i> Aventure &amp; Sports</button>
+                            <button class="events-vedette-v2-filter-btn active" data-filter="all"><i class="fas fa-th-large"></i> {{ $tr('Tous les événements') }}</button>
+                            <button class="events-vedette-v2-filter-btn" data-filter="culture"><i class="fas fa-palette"></i> {{ $tr('Culture & Arts') }}</button>
+                            <button class="events-vedette-v2-filter-btn" data-filter="gastronomie"><i class="fas fa-utensils"></i> {{ $tr('Gastronomie') }}</button>
+                            <button class="events-vedette-v2-filter-btn" data-filter="nature"><i class="fas fa-leaf"></i> {{ $tr('Nature & Plein air') }}</button>
+                            <button class="events-vedette-v2-filter-btn" data-filter="aventures"><i class="fas fa-person-hiking"></i> {{ $tr('Aventure & Sports') }}</button>
                         </div>
                         <a href="#" class="resto-cta-btn secondary">
-                            En savoir <span class="cta-plus">+</span>
+                            {{ $tr('En savoir') }} <span class="cta-plus">+</span>
                         </a>
                     </div>
                 </div>
@@ -102,25 +119,25 @@
 
          {{-- Carousel des événements --}}
         <div class="vedette-carousel-outer">
-            <button class="vedette-carousel-btn vedette-carousel-prev" id="eventsCarouselPrev" aria-label="Précédent"><i class="fas fa-chevron-left"></i></button>
+            <button class="vedette-carousel-btn vedette-carousel-prev" id="eventsCarouselPrev" aria-label="{{ $tr('Précédent') }}"><i class="fas fa-chevron-left"></i></button>
             <div class="events-vedette-v2-scroll-wrapper">
                 <div class="events-vedette-v2-scroll-container" id="eventsVedetteGrid">
             {{-- Event Card 1 --}}
             <article class="events-vedette-v2-card" data-category="culture">
                 <div class="events-vedette-v2-card-image">
-                    <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600&h=400&fit=crop" alt="Festival d'été de Québec">
+                    <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600&h=400&fit=crop" alt="{{ $tr('Festival d\'été de Québec') }}">
                     <div class="events-vedette-v2-card-date">
-                        <span class="events-vedette-v2-date-text">15-24 JUIN</span>
+                        <span class="events-vedette-v2-date-text">{{ $tr('15-24 JUIN') }}</span>
                     </div>
                 </div>
                 <div class="events-vedette-v2-card-content">
-                    <h3 class="events-vedette-v2-card-title">Festival d'été de Québec</h3>
+                    <h3 class="events-vedette-v2-card-title">{{ $tr('Festival d\'été de Québec') }}</h3>
                     <p class="events-vedette-v2-card-description">
-                        Le plus grand festival extérieur en Amérique du Nord, avec des artistes internationaux.
+                        {{ $tr('Le plus grand festival extérieur en Amérique du Nord, avec des artistes internationaux.') }}
                     </p>
                     <div class="events-vedette-v2-card-footer">
-                        <span class="events-vedette-v2-card-location">Québec</span>
-                        <span class="events-vedette-v2-card-tag">Scènes extérieures</span>
+                        <span class="events-vedette-v2-card-location">{{ $tr('Québec') }}</span>
+                        <span class="events-vedette-v2-card-tag">{{ $tr('Scènes extérieures') }}</span>
                     </div>
                 </div>
             </article>
@@ -128,19 +145,19 @@
             {{-- Event Card 2 --}}
             <article class="events-vedette-v2-card" data-category="gastronomie">
                 <div class="events-vedette-v2-card-image">
-                    <img src="https://images.unsplash.com/photo-1555244162-803834f70033?w=600&h=400&fit=crop" alt="Carnaval de Québec">
+                    <img src="https://images.unsplash.com/photo-1555244162-803834f70033?w=600&h=400&fit=crop" alt="{{ $tr('Carnaval de Québec') }}">
                     <div class="events-vedette-v2-card-date">
-                        <span class="events-vedette-v2-date-text">28 FÉV - 10 MAR</span>
+                        <span class="events-vedette-v2-date-text">{{ $tr('28 FÉV - 10 MAR') }}</span>
                     </div>
                 </div>
                 <div class="events-vedette-v2-card-content">
-                    <h3 class="events-vedette-v2-card-title">Carnaval de Québec</h3>
+                    <h3 class="events-vedette-v2-card-title">{{ $tr('Carnaval de Québec') }}</h3>
                     <p class="events-vedette-v2-card-description">
-                        Le plus grand carnaval d'hiver au monde avec Bonhomme Carnaval comme ambassadeur.
+                        {{ $tr('Le plus grand carnaval d\'hiver au monde avec Bonhomme Carnaval comme ambassadeur.') }}
                     </p>
                     <div class="events-vedette-v2-card-footer">
-                        <span class="events-vedette-v2-card-location">Québec</span>
-                        <span class="events-vedette-v2-card-tag">Activités hivernales</span>
+                        <span class="events-vedette-v2-card-location">{{ $tr('Québec') }}</span>
+                        <span class="events-vedette-v2-card-tag">{{ $tr('Activités hivernales') }}</span>
                     </div>
                 </div>
             </article>
@@ -148,19 +165,19 @@
             {{-- Event Card 3 --}}
             <article class="events-vedette-v2-card" data-category="culture">
                 <div class="events-vedette-v2-card-image">
-                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&h=400&fit=crop" alt="Osheaga">
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&h=400&fit=crop" alt="{{ $tr('Osheaga') }}">
                     <div class="events-vedette-v2-card-date">
-                        <span class="events-vedette-v2-date-text">AOÛT 2024</span>
+                        <span class="events-vedette-v2-date-text">{{ $tr('AOÛT 2024') }}</span>
                     </div>
                 </div>
                 <div class="events-vedette-v2-card-content">
-                    <h3 class="events-vedette-v2-card-title">Osheaga</h3>
+                    <h3 class="events-vedette-v2-card-title">{{ $tr('Osheaga') }}</h3>
                     <p class="events-vedette-v2-card-description">
-                        Festival de musique et arts contemporains sur l'île Sainte-Hélène à Montréal.
+                        {{ $tr('Festival de musique et arts contemporains sur l\'île Sainte-Hélène à Montréal.') }}
                     </p>
                     <div class="events-vedette-v2-card-footer">
-                        <span class="events-vedette-v2-card-location">Montréal</span>
-                        <span class="events-vedette-v2-card-tag">Musique & Arts</span>
+                        <span class="events-vedette-v2-card-location">{{ $tr('Montréal') }}</span>
+                        <span class="events-vedette-v2-card-tag">{{ $tr('Musique & Arts') }}</span>
                     </div>
                 </div>
             </article>
@@ -168,19 +185,19 @@
             {{-- Event Card 4 --}}
             <article class="events-vedette-v2-card" data-category="nature">
                 <div class="events-vedette-v2-card-image">
-                    <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600&h=400&fit=crop" alt="Festival des couleurs">
+                    <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600&h=400&fit=crop" alt="{{ $tr('Festival des couleurs') }}">
                     <div class="events-vedette-v2-card-date">
-                        <span class="events-vedette-v2-date-text">OCT 2024</span>
+                        <span class="events-vedette-v2-date-text">{{ $tr('OCT 2024') }}</span>
                     </div>
                 </div>
                 <div class="events-vedette-v2-card-content">
-                    <h3 class="events-vedette-v2-card-title">Festival des couleurs</h3>
+                    <h3 class="events-vedette-v2-card-title">{{ $tr('Festival des couleurs') }}</h3>
                     <p class="events-vedette-v2-card-description">
-                        Célébration de l'automne et des magnifiques paysages colorés des Cantons-de-l'Est.
+                        {{ $tr('Célébration de l\'automne et des magnifiques paysages colorés des Cantons-de-l\'Est.') }}
                     </p>
                     <div class="events-vedette-v2-card-footer">
-                        <span class="events-vedette-v2-card-location">Cantons-de-l'Est</span>
-                        <span class="events-vedette-v2-card-tag">Nature & Culture</span>
+                        <span class="events-vedette-v2-card-location">{{ $tr('Cantons-de-l\'Est') }}</span>
+                        <span class="events-vedette-v2-card-tag">{{ $tr('Nature & Culture') }}</span>
                     </div>
                 </div>
             </article>
@@ -188,19 +205,19 @@
             {{-- Event Card 5 --}}
             <article class="events-vedette-v2-card" data-category="aventures">
                 <div class="events-vedette-v2-card-image">
-                    <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&h=400&fit=crop" alt="Festival de montgolfières">
+                    <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&h=400&fit=crop" alt="{{ $tr('Festival de montgolfières') }}">
                     <div class="events-vedette-v2-card-date">
-                        <span class="events-vedette-v2-date-text">SEPT 2024</span>
+                        <span class="events-vedette-v2-date-text">{{ $tr('SEPT 2024') }}</span>
                     </div>
                 </div>
                 <div class="events-vedette-v2-card-content">
-                    <h3 class="events-vedette-v2-card-title">Festival de montgolfières</h3>
+                    <h3 class="events-vedette-v2-card-title">{{ $tr('Festival de montgolfières') }}</h3>
                     <p class="events-vedette-v2-card-description">
-                        Le plus grand rassemblement de montgolfières au Canada à Saint-Jean-sur-Richelieu.
+                        {{ $tr('Le plus grand rassemblement de montgolfières au Canada à Saint-Jean-sur-Richelieu.') }}
                     </p>
                     <div class="events-vedette-v2-card-footer">
-                        <span class="events-vedette-v2-card-location">Saint-Jean-sur-Richelieu</span>
-                        <span class="events-vedette-v2-card-tag">Aventures</span>
+                        <span class="events-vedette-v2-card-location">{{ $tr('Saint-Jean-sur-Richelieu') }}</span>
+                        <span class="events-vedette-v2-card-tag">{{ $tr('Aventures') }}</span>
                     </div>
                 </div>
             </article>
@@ -208,19 +225,19 @@
             {{-- Event Card 6 --}}
             <article class="events-vedette-v2-card" data-category="culture">
                 <div class="events-vedette-v2-card-image">
-                    <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&h=400&fit=crop" alt="Festival Juste pour rire">
+                    <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&h=400&fit=crop" alt="{{ $tr('Festival Juste pour rire') }}">
                     <div class="events-vedette-v2-card-date">
-                        <span class="events-vedette-v2-date-text">JUIL 2024</span>
+                        <span class="events-vedette-v2-date-text">{{ $tr('JUIL 2024') }}</span>
                     </div>
                 </div>
                 <div class="events-vedette-v2-card-content">
-                    <h3 class="events-vedette-v2-card-title">Festival Juste pour rire</h3>
+                    <h3 class="events-vedette-v2-card-title">{{ $tr('Festival Juste pour rire') }}</h3>
                     <p class="events-vedette-v2-card-description">
-                        Le plus grand festival d'humour au monde avec des spectacles et animations.
+                        {{ $tr('Le plus grand festival d\'humour au monde avec des spectacles et animations.') }}
                     </p>
                     <div class="events-vedette-v2-card-footer">
-                        <span class="events-vedette-v2-card-location">Montréal</span>
-                        <span class="events-vedette-v2-card-tag">Humour & Spectacles</span>
+                        <span class="events-vedette-v2-card-location">{{ $tr('Montréal') }}</span>
+                        <span class="events-vedette-v2-card-tag">{{ $tr('Humour & Spectacles') }}</span>
                     </div>
                 </div>
             </article>
@@ -228,19 +245,19 @@
             {{-- Event Card 7 --}}
             <article class="events-vedette-v2-card" data-category="gastronomie">
                 <div class="events-vedette-v2-card-image">
-                    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop" alt="Festival gastronomique">
+                    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop" alt="{{ $tr('Festival gastronomique') }}">
                     <div class="events-vedette-v2-card-date">
-                        <span class="events-vedette-v2-date-text">MAI 2024</span>
+                        <span class="events-vedette-v2-date-text">{{ $tr('MAI 2024') }}</span>
                     </div>
                 </div>
                 <div class="events-vedette-v2-card-content">
-                    <h3 class="events-vedette-v2-card-title">Festival gastronomique</h3>
+                    <h3 class="events-vedette-v2-card-title">{{ $tr('Festival gastronomique') }}</h3>
                     <p class="events-vedette-v2-card-description">
-                        Découvrez la richesse culinaire du Québec avec des chefs renommés.
+                        {{ $tr('Découvrez la richesse culinaire du Québec avec des chefs renommés.') }}
                     </p>
                     <div class="events-vedette-v2-card-footer">
-                        <span class="events-vedette-v2-card-location">Montréal</span>
-                        <span class="events-vedette-v2-card-tag">Gastronomie</span>
+                        <span class="events-vedette-v2-card-location">{{ $tr('Montréal') }}</span>
+                        <span class="events-vedette-v2-card-tag">{{ $tr('Gastronomie') }}</span>
                     </div>
                 </div>
             </article>
@@ -248,25 +265,25 @@
             {{-- Event Card 8 --}}
             <article class="events-vedette-v2-card" data-category="nature">
                 <div class="events-vedette-v2-card-image">
-                    <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600&h=400&fit=crop" alt="Festival des baleines">
+                    <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600&h=400&fit=crop" alt="{{ $tr('Festival des baleines') }}">
                     <div class="events-vedette-v2-card-date">
-                        <span class="events-vedette-v2-date-text">JUIN 2024</span>
+                        <span class="events-vedette-v2-date-text">{{ $tr('JUIN 2024') }}</span>
                     </div>
                 </div>
                 <div class="events-vedette-v2-card-content">
-                    <h3 class="events-vedette-v2-card-title">Festival des baleines</h3>
+                    <h3 class="events-vedette-v2-card-title">{{ $tr('Festival des baleines') }}</h3>
                     <p class="events-vedette-v2-card-description">
-                        Observation des baleines et célébration de la faune marine du Saint-Laurent.
+                        {{ $tr('Observation des baleines et célébration de la faune marine du Saint-Laurent.') }}
                     </p>
                     <div class="events-vedette-v2-card-footer">
-                        <span class="events-vedette-v2-card-location">Tadoussac</span>
-                        <span class="events-vedette-v2-card-tag">Nature & Faune</span>
+                        <span class="events-vedette-v2-card-location">{{ $tr('Tadoussac') }}</span>
+                        <span class="events-vedette-v2-card-tag">{{ $tr('Nature & Faune') }}</span>
                     </div>
                 </div>
             </article>
                 </div>
             </div>
-            <button class="vedette-carousel-btn vedette-carousel-next" id="eventsCarouselNext" aria-label="Suivant"><i class="fas fa-chevron-right"></i></button>
+            <button class="vedette-carousel-btn vedette-carousel-next" id="eventsCarouselNext" aria-label="{{ $tr('Suivant') }}"><i class="fas fa-chevron-right"></i></button>
         </div>
         <div class="vedette-carousel-progress"><div class="vedette-carousel-bar" id="eventsCarouselBar"></div></div>
     
@@ -353,6 +370,29 @@
                 ],
             ],
         ];
+
+        if (app()->getLocale() !== 'fr') {
+            foreach ($eventsSlides as &$slide) {
+                if (isset($slide['main']['title'])) {
+                    $slide['main']['title'] = $tr($slide['main']['title']);
+                }
+                if (isset($slide['main']['desc'])) {
+                    $slide['main']['desc'] = $tr($slide['main']['desc']);
+                }
+                if (! empty($slide['grid']) && is_array($slide['grid'])) {
+                    foreach ($slide['grid'] as &$item) {
+                        if (isset($item['title'])) {
+                            $item['title'] = $tr($item['title']);
+                        }
+                        if (isset($item['desc'])) {
+                            $item['desc'] = $tr($item['desc']);
+                        }
+                    }
+                    unset($item);
+                }
+            }
+            unset($slide);
+        }
         @endphp
         @include('home-v2.components.MediaSlideshow', [
             'slideshowId' => 'eventsMedia',

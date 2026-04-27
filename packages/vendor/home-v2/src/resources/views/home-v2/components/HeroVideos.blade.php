@@ -1,3 +1,20 @@
+@php
+    $tr = static function (string $text): string {
+        $locale = app()->getLocale();
+        if ($locale === 'fr') {
+            return $text;
+        }
+
+        static $maps = [];
+        if (! array_key_exists($locale, $maps)) {
+            $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');
+            $maps[$locale] = is_file($path) ? (require $path) : [];
+        }
+
+        return $maps[$locale][$text] ?? $text;
+    };
+@endphp
+
 {{-- Hero Videos Component - Vidéos défilantes sous le Hero --}}
 <section class="hero-videos-v2-section">
     {{-- Grille de vidéos avec carousel infini --}}
@@ -6,7 +23,7 @@
         {{-- Vidéo 1 --}}
         <div class="hero-videos-v2-card">
             <div class="hero-videos-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="hero-videos-v2-thumbnail">
+                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="{{ $tr('Video thumbnail') }}" class="hero-videos-v2-thumbnail">
                 <div class="hero-videos-v2-overlay">
                     <button class="hero-videos-v2-play-btn">
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
@@ -15,9 +32,9 @@
                         </svg>
                     </button>
                     <div class="hero-videos-v2-content">
-                        <span class="hero-videos-v2-badge">GENERAL</span>
-                        <h3 class="hero-videos-v2-video-title">This is the power of gathering: it inspire...</h3>
-                        <p class="hero-videos-v2-date">AUGUST 28, 2022</p>
+                        <span class="hero-videos-v2-badge">{{ $tr('GENERAL') }}</span>
+                        <h3 class="hero-videos-v2-video-title">{{ $tr('This is the power of gathering: it inspire...') }}</h3>
+                        <p class="hero-videos-v2-date">{{ $tr('AUGUST 28, 2022') }}</p>
                     </div>
                 </div>
             </div>
@@ -26,7 +43,7 @@
         {{-- Vidéo 2 --}}
         <div class="hero-videos-v2-card">
             <div class="hero-videos-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="hero-videos-v2-thumbnail">
+                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="{{ $tr('Video thumbnail') }}" class="hero-videos-v2-thumbnail">
                 <div class="hero-videos-v2-overlay">
                     <button class="hero-videos-v2-play-btn">
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
@@ -35,9 +52,9 @@
                         </svg>
                     </button>
                     <div class="hero-videos-v2-content">
-                        <span class="hero-videos-v2-badge">NEWS</span>
-                        <h3 class="hero-videos-v2-video-title">There are big problems that...</h3>
-                        <p class="hero-videos-v2-date">APRIL 2, 2022</p>
+                        <span class="hero-videos-v2-badge">{{ $tr('NEWS') }}</span>
+                        <h3 class="hero-videos-v2-video-title">{{ $tr('There are big problems that...') }}</h3>
+                        <p class="hero-videos-v2-date">{{ $tr('APRIL 2, 2022') }}</p>
                     </div>
                 </div>
             </div>
@@ -46,7 +63,7 @@
         {{-- Vidéo 3 --}}
         <div class="hero-videos-v2-card">
             <div class="hero-videos-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="hero-videos-v2-thumbnail">
+                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="{{ $tr('Video thumbnail') }}" class="hero-videos-v2-thumbnail">
                 <div class="hero-videos-v2-overlay">
                     <button class="hero-videos-v2-play-btn">
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
@@ -55,9 +72,9 @@
                         </svg>
                     </button>
                     <div class="hero-videos-v2-content">
-                        <span class="hero-videos-v2-badge">SPECIAL</span>
-                        <h3 class="hero-videos-v2-video-title">We are part of this universe; we are in...</h3>
-                        <p class="hero-videos-v2-date">MAY 11, 2022</p>
+                        <span class="hero-videos-v2-badge">{{ $tr('SPECIAL') }}</span>
+                        <h3 class="hero-videos-v2-video-title">{{ $tr('We are part of this universe; we are in...') }}</h3>
+                        <p class="hero-videos-v2-date">{{ $tr('MAY 11, 2022') }}</p>
                     </div>
                 </div>
             </div>
@@ -66,7 +83,7 @@
         {{-- Vidéo 4 --}}
         <div class="hero-videos-v2-card">
             <div class="hero-videos-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="hero-videos-v2-thumbnail">
+                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="{{ $tr('Video thumbnail') }}" class="hero-videos-v2-thumbnail">
                 <div class="hero-videos-v2-overlay">
                     <button class="hero-videos-v2-play-btn">
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
@@ -75,9 +92,9 @@
                         </svg>
                     </button>
                     <div class="hero-videos-v2-content">
-                        <span class="hero-videos-v2-badge">NEWS</span>
-                        <h3 class="hero-videos-v2-video-title">What we have once enjoyed we can nev...</h3>
-                        <p class="hero-videos-v2-date">JANUARY 1, 2022</p>
+                        <span class="hero-videos-v2-badge">{{ $tr('NEWS') }}</span>
+                        <h3 class="hero-videos-v2-video-title">{{ $tr('What we have once enjoyed we can nev...') }}</h3>
+                        <p class="hero-videos-v2-date">{{ $tr('JANUARY 1, 2022') }}</p>
                     </div>
                 </div>
             </div>
@@ -87,7 +104,7 @@
         {{-- Vidéo 1 (copie) --}}
         <div class="hero-videos-v2-card">
             <div class="hero-videos-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="hero-videos-v2-thumbnail">
+                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="{{ $tr('Video thumbnail') }}" class="hero-videos-v2-thumbnail">
                 <div class="hero-videos-v2-overlay">
                     <button class="hero-videos-v2-play-btn">
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
@@ -96,9 +113,9 @@
                         </svg>
                     </button>
                     <div class="hero-videos-v2-content">
-                        <span class="hero-videos-v2-badge">GENERAL</span>
-                        <h3 class="hero-videos-v2-video-title">This is the power of gathering: it inspire...</h3>
-                        <p class="hero-videos-v2-date">AUGUST 28, 2022</p>
+                        <span class="hero-videos-v2-badge">{{ $tr('GENERAL') }}</span>
+                        <h3 class="hero-videos-v2-video-title">{{ $tr('This is the power of gathering: it inspire...') }}</h3>
+                        <p class="hero-videos-v2-date">{{ $tr('AUGUST 28, 2022') }}</p>
                     </div>
                 </div>
             </div>
@@ -107,7 +124,7 @@
         {{-- Vidéo 2 (copie) --}}
         <div class="hero-videos-v2-card">
             <div class="hero-videos-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="hero-videos-v2-thumbnail">
+                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="{{ $tr('Video thumbnail') }}" class="hero-videos-v2-thumbnail">
                 <div class="hero-videos-v2-overlay">
                     <button class="hero-videos-v2-play-btn">
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
@@ -116,9 +133,9 @@
                         </svg>
                     </button>
                     <div class="hero-videos-v2-content">
-                        <span class="hero-videos-v2-badge">NEWS</span>
-                        <h3 class="hero-videos-v2-video-title">There are big problems that...</h3>
-                        <p class="hero-videos-v2-date">APRIL 2, 2022</p>
+                        <span class="hero-videos-v2-badge">{{ $tr('NEWS') }}</span>
+                        <h3 class="hero-videos-v2-video-title">{{ $tr('There are big problems that...') }}</h3>
+                        <p class="hero-videos-v2-date">{{ $tr('APRIL 2, 2022') }}</p>
                     </div>
                 </div>
             </div>
@@ -127,7 +144,7 @@
         {{-- Vidéo 3 (copie) --}}
         <div class="hero-videos-v2-card">
             <div class="hero-videos-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="hero-videos-v2-thumbnail">
+                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="{{ $tr('Video thumbnail') }}" class="hero-videos-v2-thumbnail">
                 <div class="hero-videos-v2-overlay">
                     <button class="hero-videos-v2-play-btn">
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
@@ -136,9 +153,9 @@
                         </svg>
                     </button>
                     <div class="hero-videos-v2-content">
-                        <span class="hero-videos-v2-badge">SPECIAL</span>
-                        <h3 class="hero-videos-v2-video-title">We are part of this universe; we are in...</h3>
-                        <p class="hero-videos-v2-date">MAY 11, 2022</p>
+                        <span class="hero-videos-v2-badge">{{ $tr('SPECIAL') }}</span>
+                        <h3 class="hero-videos-v2-video-title">{{ $tr('We are part of this universe; we are in...') }}</h3>
+                        <p class="hero-videos-v2-date">{{ $tr('MAY 11, 2022') }}</p>
                     </div>
                 </div>
             </div>
@@ -147,7 +164,7 @@
         {{-- Vidéo 4 (copie) --}}
         <div class="hero-videos-v2-card">
             <div class="hero-videos-v2-video">
-                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video thumbnail" class="hero-videos-v2-thumbnail">
+                <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="{{ $tr('Video thumbnail') }}" class="hero-videos-v2-thumbnail">
                 <div class="hero-videos-v2-overlay">
                     <button class="hero-videos-v2-play-btn">
                         <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
@@ -156,9 +173,9 @@
                         </svg>
                     </button>
                     <div class="hero-videos-v2-content">
-                        <span class="hero-videos-v2-badge">NEWS</span>
-                        <h3 class="hero-videos-v2-video-title">What we have once enjoyed we can nev...</h3>
-                        <p class="hero-videos-v2-date">JANUARY 1, 2022</p>
+                        <span class="hero-videos-v2-badge">{{ $tr('NEWS') }}</span>
+                        <h3 class="hero-videos-v2-video-title">{{ $tr('What we have once enjoyed we can nev...') }}</h3>
+                        <p class="hero-videos-v2-date">{{ $tr('JANUARY 1, 2022') }}</p>
                     </div>
                 </div>
             </div>
@@ -194,18 +211,18 @@
                     {{-- Informations de la vidéo --}}
                     <div class="hero-videos-v2-modal-info">
                         <div class="hero-videos-v2-modal-badge-wrapper">
-                            <span class="hero-videos-v2-modal-badge" id="heroModalBadge">GENERAL</span>
+                            <span class="hero-videos-v2-modal-badge" id="heroModalBadge">{{ $tr('GENERAL') }}</span>
                         </div>
-                        <h2 class="hero-videos-v2-modal-title" id="heroModalTitle">Titre de la vidéo</h2>
-                        <p class="hero-videos-v2-modal-date" id="heroModalDate">DATE</p>
-                        <p class="hero-videos-v2-modal-description" id="heroModalDescription">Description de la vidéo sélectionnée.</p>
+                        <h2 class="hero-videos-v2-modal-title" id="heroModalTitle">{{ $tr('Titre de la vidéo') }}</h2>
+                        <p class="hero-videos-v2-modal-date" id="heroModalDate">{{ $tr('DATE') }}</p>
+                        <p class="hero-videos-v2-modal-description" id="heroModalDescription">{{ $tr('Description de la vidéo sélectionnée.') }}</p>
                     </div>
                 </div>
 
                 {{-- Playlist à droite --}}
                 <div class="hero-videos-v2-modal-playlist">
                     <div class="hero-videos-v2-modal-playlist-header">
-                        <h3 class="hero-videos-v2-modal-playlist-title">Playlist</h3>
+                        <h3 class="hero-videos-v2-modal-playlist-title">{{ $tr('Playlist') }}</h3>
                     </div>
                     <ul class="hero-videos-v2-modal-playlist-items" id="heroModalPlaylistItems">
                         {{-- Les items seront générés dynamiquement --}}

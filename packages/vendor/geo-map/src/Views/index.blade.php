@@ -1,3 +1,16 @@
+@php
+    $geoMapTranslations = [];
+    if (app()->getLocale() !== 'fr') {
+        $geoMapTranslationPath = lang_path(app()->getLocale() . DIRECTORY_SEPARATOR . 'geo-map-map.php');
+        if (is_file($geoMapTranslationPath)) {
+            $loadedTranslations = require $geoMapTranslationPath;
+            if (is_array($loadedTranslations)) {
+                $geoMapTranslations = $loadedTranslations;
+            }
+        }
+    }
+    ob_start();
+@endphp
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <!-- Bootstrap CSS -->
@@ -307,6 +320,12 @@
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['Accept']            = 'application/json';
 const API_BASE_URL = window.location.origin + '/geo-map';
+const GEO_MAP_I18N = @json($geoMapTranslations ?? []);
+const geoMapT = (key) => (
+    Object.prototype.hasOwnProperty.call(GEO_MAP_I18N, key)
+        ? GEO_MAP_I18N[key]
+        : key
+);
 
 class InteractiveMap {
     constructor() {
@@ -467,7 +486,7 @@ class InteractiveMap {
         const videoHtml = yt ? `
             <div class="youtube-video-container">
                 <iframe src="https://www.youtube.com/embed/${yt}?autoplay=0&mute=1&controls=1&modestbranding=1&rel=0"
-                    title="Vidéo de ${place.name}" frameborder="0"
+                    title="${geoMapT('Vidéo de')} ${place.name}" frameborder="0"
                     allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen
                     style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"></iframe>
                 <div style="position:absolute;top:8px;right:8px;background:rgba(255,0,0,0.9);color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;z-index:10;display:flex;align-items:center;gap:4px;">
@@ -488,10 +507,10 @@ class InteractiveMap {
                     </div>
                     ${videoHtml}
                     <p style="margin:12px 0;font-size:11px;color:#666;line-height:1.4;max-height:40px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">
-                        ${place.description||'Aucune description disponible'}
+                        ${place.description||geoMapT('Aucune description disponible')}
                     </p>
                     <button class="popup-details-btn" onclick="event.stopPropagation();window.mapApp.showPlaceModal(${JSON.stringify(place).replace(/"/g,'&quot;')})">
-                        <i class="fas fa-info-circle"></i> Voir les détails
+                        <i class="fas fa-info-circle"></i> ${geoMapT('Voir les détails')}
                     </button>
                 </div>
             </div>`;
@@ -538,7 +557,7 @@ class InteractiveMap {
                             </div>
                             <button class="ops-card-meta-btn"
                                 onclick="window.mapApp.closeModal();setTimeout(()=>window.mapApp.showPlaceModal(${pj}),200)">
-                                Voir
+                                ${geoMapT('Voir')}
                             </button>
                         </div>
                     </div>
@@ -574,7 +593,7 @@ class InteractiveMap {
         return `
             <div class="ops-slider-wrapper">
                 <div class="ops-slider-header">
-                    <h4><i class="fab fa-youtube" style="color:#FF0000;"></i> Découvrez aussi</h4>
+                    <h4><i class="fab fa-youtube" style="color:#FF0000;"></i> ${geoMapT('Découvrez aussi')}</h4>
                     <span class="ops-badge">${this.capitalizeFirstLetter(currentPlace.category)}</span>
                 </div>
 
@@ -584,8 +603,8 @@ class InteractiveMap {
                 </div>
 
                 <div class="ops-nav-row">
-                    <button id="${prevId}" class="ops-nav-btn" aria-label="Précédent">&#8249;</button>
-                    <button id="${nextId}" class="ops-nav-btn" aria-label="Suivant">&#8250;</button>
+                    <button id="${prevId}" class="ops-nav-btn" aria-label="${geoMapT('Précédent')}">&#8249;</button>
+                    <button id="${nextId}" class="ops-nav-btn" aria-label="${geoMapT('Suivant')}">&#8250;</button>
                 </div>
             </div>`;
     }
@@ -626,7 +645,7 @@ class InteractiveMap {
         /* Gallery */
         const galleryHtml = (place.images?.length > 0) ? `
             <div style="margin-bottom:30px;">
-                <h4 style="color:#333;margin-bottom:15px;font-size:1.1rem;"><i class="fas fa-images" style="color:#4299e1;"></i> Galerie photos</h4>
+                <h4 style="color:#333;margin-bottom:15px;font-size:1.1rem;"><i class="fas fa-images" style="color:#4299e1;"></i> ${geoMapT('Galerie photos')}</h4>
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;">
                     ${place.images.map(img=>`
                         <div onclick="window.mapApp.openGalleryImage('${img.url}')" style="aspect-ratio:1;border-radius:10px;overflow:hidden;cursor:pointer;background:#f0f0f0;position:relative;">
@@ -670,7 +689,7 @@ class InteractiveMap {
                             <i class="${m.icon}" style="font-size:15px;"></i> ${m.label}
                         </a>`;
             }).join('');
-            socialHtml = `<div style="margin-bottom:30px;"><h4 style="color:#333;margin-bottom:15px;font-size:1.1rem;"><i class="fas fa-share-alt" style="color:#4299e1;"></i> Réseaux sociaux</h4><div style="display:flex;flex-wrap:wrap;gap:8px;">${btns}</div></div>`;
+            socialHtml = `<div style="margin-bottom:30px;"><h4 style="color:#333;margin-bottom:15px;font-size:1.1rem;"><i class="fas fa-share-alt" style="color:#4299e1;"></i> ${geoMapT('Réseaux sociaux')}</h4><div style="display:flex;flex-wrap:wrap;gap:8px;">${btns}</div></div>`;
         }
 
         /* CTA */
@@ -701,7 +720,7 @@ class InteractiveMap {
                     <h2 style="margin:0 0 10px 0;color:#1a1a1a;font-size:1.8rem;">${this.escapeHtml(place.name)}</h2>
                     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                         <span style="background:${this.getCategoryColor(place.category)};color:white;padding:6px 16px;border-radius:20px;font-size:14px;font-weight:500;">${this.capitalizeFirstLetter(place.category)}</span>
-                        ${place.details?.rating?`<span style="background:#fbbf24;color:#333;padding:6px 12px;border-radius:20px;font-size:14px;"><i class="fas fa-star"></i> ${place.details.rating} (${place.details.reviews_count||0} avis)</span>`:''}
+                        ${place.details?.rating?`<span style="background:#fbbf24;color:#333;padding:6px 12px;border-radius:20px;font-size:14px;"><i class="fas fa-star"></i> ${place.details.rating} (${place.details.reviews_count||0} ${geoMapT('avis')})</span>`:''}
                         <span style="color:#666;font-size:14px;"><i class="fas fa-map-marker-alt"></i> ${place.province||'Canada'}</span>
                     </div>
                 </div>
@@ -712,7 +731,7 @@ class InteractiveMap {
 
                 <!-- Description -->
                 <div style="margin-bottom:30px;">
-                    <h4 style="color:#333;margin-bottom:15px;font-size:1.2rem;"><i class="fas fa-info-circle" style="color:#4299e1;"></i> Description</h4>
+                    <h4 style="color:#333;margin-bottom:15px;font-size:1.2rem;"><i class="fas fa-info-circle" style="color:#4299e1;"></i> ${geoMapT('Description')}</h4>
                     <p style="color:#666;line-height:1.6;font-size:16px;">${place.description||''}</p>
                     ${place.details?.long_description?`<p style="color:#666;line-height:1.6;font-size:16px;margin-top:15px;">${place.details.long_description}</p>`:''}
                 </div>
@@ -721,26 +740,26 @@ class InteractiveMap {
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin-bottom:30px;">
                     ${place.address?`
                         <div style="background:#f8f9fa;padding:20px;border-radius:10px;border-left:4px solid #4299e1;">
-                            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;"><i class="fas fa-map-marker-alt" style="color:#4299e1;font-size:18px;"></i><strong style="color:#333;font-size:16px;">Adresse</strong></div>
+                            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;"><i class="fas fa-map-marker-alt" style="color:#4299e1;font-size:18px;"></i><strong style="color:#333;font-size:16px;">${geoMapT('Adresse')}</strong></div>
                             <p style="margin:0;color:#666;font-size:15px;">${this.escapeHtml(place.address)}</p>
                             ${place.city?`<p style="margin:5px 0 0;color:#666;font-size:14px;">${this.escapeHtml(place.city)}${place.postal_code?`, ${place.postal_code}`:''}</p>`:''}
                         </div>`:''}
                     ${place.details?.phone?`
                         <div style="background:#f8f9fa;padding:20px;border-radius:10px;border-left:4px solid #38a169;">
-                            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;"><i class="fas fa-phone" style="color:#38a169;font-size:18px;"></i><strong style="color:#333;font-size:16px;">Contact</strong></div>
+                            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;"><i class="fas fa-phone" style="color:#38a169;font-size:18px;"></i><strong style="color:#333;font-size:16px;">${geoMapT('Contact')}</strong></div>
                             <p style="margin:0;"><a href="tel:${place.details.phone}" style="color:#4299e1;text-decoration:none;font-weight:500;">${place.details.phone}</a></p>
                             ${place.details.email?`<p style="margin:5px 0 0;"><a href="mailto:${place.details.email}" style="color:#4299e1;text-decoration:none;">${place.details.email}</a></p>`:''}
                         </div>`:''}
                     ${place.details?.website?`
                         <div style="background:#f8f9fa;padding:20px;border-radius:10px;border-left:4px solid #805ad5;">
-                            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;"><i class="fas fa-globe" style="color:#805ad5;font-size:18px;"></i><strong style="color:#333;font-size:16px;">Site web</strong></div>
-                            <p style="margin:0;"><a href="${place.details.website}" target="_blank" style="color:#4299e1;text-decoration:none;font-weight:500;">Visiter le site officiel</a></p>
+                            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;"><i class="fas fa-globe" style="color:#805ad5;font-size:18px;"></i><strong style="color:#333;font-size:16px;">${geoMapT('Site web')}</strong></div>
+                            <p style="margin:0;"><a href="${place.details.website}" target="_blank" style="color:#4299e1;text-decoration:none;font-weight:500;">${geoMapT('Visiter le site officiel')}</a></p>
                         </div>`:''}
                 </div>
 
                 ${place.details?.horaires?`
                     <div style="margin-bottom:30px;">
-                        <h4 style="color:#333;margin-bottom:15px;font-size:1.2rem;"><i class="fas fa-clock"></i> Horaires</h4>
+                        <h4 style="color:#333;margin-bottom:15px;font-size:1.2rem;"><i class="fas fa-clock"></i> ${geoMapT('Horaires')}</h4>
                         <div style="background:#f8f9fa;padding:20px;border-radius:10px;">
                             <pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:#666;">${typeof place.details.horaires==='string'?place.details.horaires:JSON.stringify(place.details.horaires,null,2)}</pre>
                         </div>
@@ -748,7 +767,7 @@ class InteractiveMap {
 
                 ${place.details?.services?`
                     <div style="margin-bottom:30px;">
-                        <h4 style="color:#333;margin-bottom:15px;font-size:1.2rem;"><i class="fas fa-concierge-bell"></i> Services</h4>
+                        <h4 style="color:#333;margin-bottom:15px;font-size:1.2rem;"><i class="fas fa-concierge-bell"></i> ${geoMapT('Services')}</h4>
                         <div style="display:flex;flex-wrap:wrap;gap:10px;">
                             ${(typeof place.details.services==='string'?JSON.parse(place.details.services):place.details.services).map(s=>`<span style="background:#e0e7ff;color:#3730a3;padding:5px 12px;border-radius:20px;font-size:13px;">${s}</span>`).join('')}
                         </div>
@@ -760,7 +779,7 @@ class InteractiveMap {
                 <div style="display:flex;gap:15px;margin-top:30px;padding-top:25px;border-top:1px solid #e0e0e0;">
                     ${ctaHtml}
                     <button onclick="window.mapApp.closeModal()" style="flex:1;padding:14px;background:#f0f0f0;color:#333;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:10px;">
-                        <i class="fas fa-times"></i> Fermer
+                        <i class="fas fa-times"></i> ${geoMapT('Fermer')}
                     </button>
                 </div>
             </div>`;
@@ -771,7 +790,7 @@ class InteractiveMap {
         const c = document.getElementById('places-list');
         if (!c) return;
         c.innerHTML = '';
-        if (!this.places.length) { c.innerHTML=`<div class="no-results"><i class="fas fa-map-marker-alt"></i><h4>Aucun lieu trouvé</h4><p>Essayez de modifier le filtre</p></div>`; return; }
+        if (!this.places.length) { c.innerHTML=`<div class="no-results"><i class="fas fa-map-marker-alt"></i><h4>${geoMapT('Aucun lieu trouvé')}</h4><p>${geoMapT('Essayez de modifier le filtre')}</p></div>`; return; }
         this.places.forEach(p => c.appendChild(this.createPlaceElement(p)));
     }
     createPlaceElement(place) {
@@ -784,11 +803,11 @@ class InteractiveMap {
                 <h4>${this.escapeHtml(place.name)}</h4>
                 <span class="place-category" style="background:${this.getCategoryColor(place.category)}">${this.capitalizeFirstLetter(place.category)}</span>
                 <span style="display:block;font-size:11px;color:#666;margin-top:5px;"><i class="fas fa-map-marker-alt"></i> ${place.province||'Canada'}</span>
-                <p class="place-description">${this.escapeHtml(place.description?.substring(0,80)||'Aucune description disponible')}...</p>
-                ${place.youtube_id?`<div style="font-size:12px;color:#666;margin-bottom:10px;display:flex;align-items:center;gap:5px;"><i class="fab fa-youtube" style="color:#ff0000;"></i> Vidéo disponible</div>`:''}
+                <p class="place-description">${this.escapeHtml(place.description?.substring(0,80)||geoMapT('Aucune description disponible'))}...</p>
+                ${place.youtube_id?`<div style="font-size:12px;color:#666;margin-bottom:10px;display:flex;align-items:center;gap:5px;"><i class="fab fa-youtube" style="color:#ff0000;"></i> ${geoMapT('Vidéo disponible')}</div>`:''}
                 <div class="place-actions">
-                    <button class="view-details-btn"><i class="fas fa-eye"></i> Détails</button>
-                    <button class="locate-btn-small"><i class="fas fa-map-marker-alt"></i> Carte</button>
+                    <button class="view-details-btn"><i class="fas fa-eye"></i> ${geoMapT('Détails')}</button>
+                    <button class="locate-btn-small"><i class="fas fa-map-marker-alt"></i> ${geoMapT('Carte')}</button>
                 </div>
             </div>`;
         div.querySelector('.view-details-btn').addEventListener('click', e=>{ e.stopPropagation(); this.showPlaceModal(place); });
@@ -897,3 +916,11 @@ function sendHeight() {
 window.onload  = sendHeight;
 window.onresize = sendHeight;
 </script>
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate(
+        $__componentHtml,
+        app()->getLocale(),
+        'geo-map-map.php'
+    );
+@endphp

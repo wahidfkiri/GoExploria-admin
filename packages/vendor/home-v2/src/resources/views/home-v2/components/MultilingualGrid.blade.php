@@ -1,3 +1,20 @@
+@php
+    $tr = static function (string $text): string {
+        $locale = app()->getLocale();
+        if ($locale === 'fr') {
+            return $text;
+        }
+
+        static $maps = [];
+        if (! array_key_exists($locale, $maps)) {
+            $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');
+            $maps[$locale] = is_file($path) ? (require $path) : [];
+        }
+
+        return $maps[$locale][$text] ?? $text;
+    };
+@endphp
+
 {{-- Multilingual Grid Component (VOTRE ESPACE ENTREPRISE MULTILINGUES) --}}
 <section class="multilingual-v2-section" id="enterprise-multilingual">
 
@@ -7,44 +24,44 @@
     <div class="resto-header-block">
         <div class="resto-header-main">
             <div class="resto-header-logo-left">
-                <a href="#" class="resto-accord-btn" title="GoExploria">
+                <a href="#" class="resto-accord-btn" title="{{ $tr('GoExploria') }}">
                     <div class="logo-wrapper">
-                        <img src="{{ asset('logo.png') }}" alt="GoExploria">
+                        <img src="{{ asset('logo.png') }}" alt="{{ $tr('GoExploria') }}">
                     </div>
-                    <span class="resto-accord-btn-label">GoExploria</span>
+                    <span class="resto-accord-btn-label">{{ $tr('GoExploria') }}</span>
                     <span class="resto-accord-btn-cta">
-                        <i class="fas fa-external-link-alt"></i> Visiter
+                        <i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}
                     </span>
                 </a>
             </div>
             <div class="resto-header-center">
-                <h1 class="resto-header-title">VOTRE ESPACE ENTREPRISE MULTILINGUES</h1>
+                <h1 class="resto-header-title">{{ $tr('VOTRE ESPACE ENTREPRISE MULTILINGUES') }}</h1>
                 <p class="resto-header-subtitle">
-                    Choisissez votre langue préférée afin de pénétrer les marchés internationaux et offrir une expérience de shopping exclusive.
+                    {{ $tr('Choisissez votre langue préférée afin de pénétrer les marchés internationaux et offrir une expérience de shopping exclusive.') }}
                 </p>
                 <div class="resto-header-tabs" role="tablist">
                     <button class="resto-tab-btn active" role="tab" data-espace="all">
-                        <i class="fas fa-th-large"></i> Toutes les langues
+                        <i class="fas fa-th-large"></i> {{ $tr('Toutes les langues') }}
                     </button>
                     <button class="resto-tab-btn" role="tab" data-espace="entreprise">
-                        <i class="fas fa-briefcase"></i> Espace entreprise
+                        <i class="fas fa-briefcase"></i> {{ $tr('Espace entreprise') }}
                     </button>
                     <button class="resto-tab-btn" role="tab" data-espace="destination">
-                        <i class="fas fa-map-marker-alt"></i> Espace destination
+                        <i class="fas fa-map-marker-alt"></i> {{ $tr('Espace destination') }}
                     </button>
                     <button class="resto-tab-btn" role="tab" data-espace="activite">
-                        <i class="fas fa-person-hiking"></i> Espace activité
+                        <i class="fas fa-person-hiking"></i> {{ $tr('Espace activité') }}
                     </button>
                 </div>
             </div>
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="Plans Web Go">
+                <a href="#" class="resto-accord-btn" title="{{ $tr('Plans Web Go') }}">
                     <div class="logo-wrapper">
-                        <img src="{{ asset('plan-n-go.png') }}" alt="Plans Web Go">
+                        <img src="{{ asset('plan-n-go.png') }}" alt="{{ $tr('Plans Web Go') }}">
                     </div>
-                    <span class="resto-accord-btn-label">Plans Web Go</span>
+                    <span class="resto-accord-btn-label">{{ $tr('Plans Web Go') }}</span>
                     <span class="resto-accord-btn-cta">
-                        <i class="fas fa-external-link-alt"></i> Visiter
+                        <i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}
                     </span>
                 </a>
             </div>
@@ -52,17 +69,17 @@
         <div class="resto-header-destinations-bar">
             <div class="resto-dest-row">
                 <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                    <span>Destinations</span>
+                    <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations') }}">
+                    <span>{{ $tr('Destinations') }}</span>
                 </div>
                 <div class="resto-dest-breadcrumb">
-                    <a href="#" class="resto-dest-link active">Toutes destinations</a>
+                    <a href="#" class="resto-dest-link active">{{ $tr('Toutes destinations') }}</a>
                     <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Amérique du Nord</a>
+                    <a href="#" class="resto-dest-link">{{ $tr('Amérique du Nord') }}</a>
                     <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Canada</a>
+                    <a href="#" class="resto-dest-link">{{ $tr('Canada') }}</a>
                     <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Québec</a>
+                    <a href="#" class="resto-dest-link">{{ $tr('Québec') }}</a>
                 </div>
             </div>
         </div>
@@ -78,53 +95,53 @@
                 
                 {{-- Français (PRINCIPALE) --}}
                 <div class="lang-card">
-                    <span class="lang-status-badge principale">PRINCIPALE</span>
+                    <span class="lang-status-badge principale">{{ $tr('PRINCIPALE') }}</span>
                     <div class="flag-circle">
-                        <img src="https://flagcdn.com/w160/fr.png" alt="Drapeau Français">
+                        <img src="https://flagcdn.com/w160/fr.png" alt="{{ $tr('Drapeau Français') }}">
                     </div>
-                    <h3>Français</h3>
-                    <p>Langue originale. Contenu complet et support client en français.</p>
+                    <h3>{{ $tr('Français') }}</h3>
+                    <p>{{ $tr('Langue originale. Contenu complet et support client en français.') }}</p>
                     <button class="lang-select-btn selected">
-                        <i class="fas fa-check"></i> Sélectionné
+                        <i class="fas fa-check"></i> {{ $tr('Sélectionné') }}
                     </button>
                 </div>
 
                 {{-- Anglais (POPULAIRE) --}}
                 <div class="lang-card">
-                    <span class="lang-status-badge populaire">POPULAIRE</span>
+                    <span class="lang-status-badge populaire">{{ $tr('POPULAIRE') }}</span>
                     <div class="flag-circle">
-                        <img src="https://flagcdn.com/w160/gb.png" alt="Drapeau Anglais">
+                        <img src="https://flagcdn.com/w160/gb.png" alt="{{ $tr('Drapeau Anglais') }}">
                     </div>
-                    <h3>ANGLAIS</h3>
-                    <p>International version. Full content and customer support.</p>
+                    <h3>{{ $tr('ANGLAIS') }}</h3>
+                    <p>{{ $tr('International version. Full content and customer support.') }}</p>
                     <button class="lang-select-btn">
-                        <i class="fas fa-globe"></i> Select
+                        <i class="fas fa-globe"></i> {{ $tr('Select') }}
                     </button>
                 </div>
 
                 {{-- Espagnol (NOUVEAU) --}}
                 <div class="lang-card">
-                    <span class="lang-status-badge nouveau">NOUVEAU</span>
+                    <span class="lang-status-badge nouveau">{{ $tr('NOUVEAU') }}</span>
                     <div class="flag-circle">
-                        <img src="https://flagcdn.com/w160/es.png" alt="Drapeau Espagnol">
+                        <img src="https://flagcdn.com/w160/es.png" alt="{{ $tr('Drapeau Espagnol') }}">
                     </div>
-                    <h3>Español</h3>
-                    <p>Versión internacional. Contenido completo y soporte.</p>
+                    <h3>{{ $tr('Español') }}</h3>
+                    <p>{{ $tr('Versión internacional. Contenido completo y soporte.') }}</p>
                     <button class="lang-select-btn">
-                        <i class="fas fa-globe"></i> Seleccionar
+                        <i class="fas fa-globe"></i> {{ $tr('Seleccionar') }}
                     </button>
                 </div>
 
                 {{-- Allemand (PROCHAINE) --}}
                 <div class="lang-card">
-                    <span class="lang-status-badge prochaine">PROCHAINE</span>
+                    <span class="lang-status-badge prochaine">{{ $tr('PROCHAINE') }}</span>
                     <div class="flag-circle">
-                        <img src="https://flagcdn.com/w160/de.png" alt="Drapeau Allemand">
+                        <img src="https://flagcdn.com/w160/de.png" alt="{{ $tr('Drapeau Allemand') }}">
                     </div>
-                    <h3>ALLEMAND</h3>
-                    <p>Internationale Version. Vollständiger Inhalt.</p>
+                    <h3>{{ $tr('ALLEMAND') }}</h3>
+                    <p>{{ $tr('Internationale Version. Vollständiger Inhalt.') }}</p>
                     <button class="lang-select-btn">
-                        <i class="fas fa-globe"></i> Auswählen
+                        <i class="fas fa-globe"></i> {{ $tr('Auswählen') }}
                     </button>
                 </div>
 
@@ -134,7 +151,7 @@
             <div class="enterprise-footer-note">
                 <div class="note-box">
                     <i class="fas fa-globe-americas"></i>
-                    <span>🌐 Votre ESPACE ENTREPRISE inclut LE SEO GOOGLE / CDN + 4/8/12 jusqu'à 25 langues disponibles</span>
+                    <span>{{ $tr('🌐 Votre ESPACE ENTREPRISE inclut LE SEO GOOGLE / CDN + 4/8/12 jusqu\'à 25 langues disponibles') }}</span>
                 </div>
             </div>
 
@@ -144,38 +161,38 @@
                 
                 {{-- Chinois Mandarin --}}
                 <div class="lang-card">
-                    <span class="lang-status-badge principale">PRINCIPALE</span>
-                    <div class="flag-circle"><img src="https://flagcdn.com/w160/cn.png" alt="Drapeau Chinois"></div>
-                    <h3>CHINOIS MANDARIN</h3>
-                    <p>Langue stratégique pour le marché asiatique. Support partiel.</p>
-                    <button class="lang-select-btn"><i class="fas fa-globe"></i> Send</button>
+                    <span class="lang-status-badge principale">{{ $tr('PRINCIPALE') }}</span>
+                    <div class="flag-circle"><img src="https://flagcdn.com/w160/cn.png" alt="{{ $tr('Drapeau Chinois') }}"></div>
+                    <h3>{{ $tr('CHINOIS MANDARIN') }}</h3>
+                    <p>{{ $tr('Langue stratégique pour le marché asiatique. Support partiel.') }}</p>
+                    <button class="lang-select-btn"><i class="fas fa-globe"></i> {{ $tr('Send') }}</button>
                 </div>
 
                 {{-- Hindi Inde --}}
                 <div class="lang-card">
-                    <span class="lang-status-badge populaire">POPULAIRE</span>
-                    <div class="flag-circle"><img src="https://flagcdn.com/w160/in.png" alt="Drapeau Hindi"></div>
-                    <h3>HINDI INDE</h3>
-                    <p>International version. Full content and support.</p>
-                    <button class="lang-select-btn"><i class="fas fa-globe"></i> Send</button>
+                    <span class="lang-status-badge populaire">{{ $tr('POPULAIRE') }}</span>
+                    <div class="flag-circle"><img src="https://flagcdn.com/w160/in.png" alt="{{ $tr('Drapeau Hindi') }}"></div>
+                    <h3>{{ $tr('HINDI INDE') }}</h3>
+                    <p>{{ $tr('International version. Full content and support.') }}</p>
+                    <button class="lang-select-btn"><i class="fas fa-globe"></i> {{ $tr('Send') }}</button>
                 </div>
 
                 {{-- Portugais --}}
                 <div class="lang-card">
-                    <span class="lang-status-badge nouveau">NOUVEAU</span>
-                    <div class="flag-circle"><img src="https://flagcdn.com/w160/pt.png" alt="Drapeau Portugal"></div>
-                    <h3>PORTUGAIS</h3>
-                    <p>Versión internacional. Contenido completo y soporte.</p>
-                    <button class="lang-select-btn"><i class="fas fa-globe"></i> Send</button>
+                    <span class="lang-status-badge nouveau">{{ $tr('NOUVEAU') }}</span>
+                    <div class="flag-circle"><img src="https://flagcdn.com/w160/pt.png" alt="{{ $tr('Drapeau Portugal') }}"></div>
+                    <h3>{{ $tr('PORTUGAIS') }}</h3>
+                    <p>{{ $tr('Versión internacional. Contenido completo y soporte.') }}</p>
+                    <button class="lang-select-btn"><i class="fas fa-globe"></i> {{ $tr('Send') }}</button>
                 </div>
 
                 {{-- Arabe --}}
                 <div class="lang-card">
-                    <span class="lang-status-badge prochaine">PROCHAINE</span>
-                    <div class="flag-circle"><img src="https://flagcdn.com/w160/sa.png" alt="Drapeau Arabie"></div>
-                    <h3>ARABE</h3>
-                    <p>Internationale Version. Vollständiger Inhalt.</p>
-                    <button class="lang-select-btn"><i class="fas fa-globe"></i> Send</button>
+                    <span class="lang-status-badge prochaine">{{ $tr('PROCHAINE') }}</span>
+                    <div class="flag-circle"><img src="https://flagcdn.com/w160/sa.png" alt="{{ $tr('Drapeau Arabie') }}"></div>
+                    <h3>{{ $tr('ARABE') }}</h3>
+                    <p>{{ $tr('Internationale Version. Vollständiger Inhalt.') }}</p>
+                    <button class="lang-select-btn"><i class="fas fa-globe"></i> {{ $tr('Send') }}</button>
                 </div>
 
             </div>

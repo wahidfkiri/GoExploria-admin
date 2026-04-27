@@ -5,6 +5,7 @@
        → categories() actives → activities() actives.
      ================================================================= --}}
 
+@php(ob_start());@endphp
 @php
     use App\Models\CategorieType;
 
@@ -167,3 +168,7 @@ function hqmSelect(e, el, panelId) {
     if (viewAll && el.dataset.catHref) viewAll.href = el.dataset.catHref;
 }
 </script>
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

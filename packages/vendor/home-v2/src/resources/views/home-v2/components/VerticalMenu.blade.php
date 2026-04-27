@@ -1,3 +1,4 @@
+@php(ob_start());@endphp
 {{-- Menu Vertical Principal Component --}}
 <div class="vertical-menu-v2-overlay" id="verticalMenuOverlay"></div>
 
@@ -219,3 +220,7 @@
     {{-- Mega Menu Destinations --}}
     @include('home-v2.components.VerticalDestinationsMegaMenu')
 </aside>
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

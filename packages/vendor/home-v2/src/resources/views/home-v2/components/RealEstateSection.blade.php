@@ -1,4 +1,5 @@
 {{-- RealEstateSection — GoExploria Immobilier --}}
+@php(ob_start());@endphp
 <section class="immo-v2-section" id="real-estate-section">
 
     {{-- ============================================================
@@ -166,3 +167,7 @@
         </div>
     </div>
 </section>
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

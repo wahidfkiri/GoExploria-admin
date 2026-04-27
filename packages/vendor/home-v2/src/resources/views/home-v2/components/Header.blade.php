@@ -1,11 +1,26 @@
 {{-- flag-icons CDN --}}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
 
+@php
+    $supportedLocales = [
+        'fr' => ['flag' => 'fr', 'code' => 'FR', 'label' => __('home-v2.language.fr')],
+        'en' => ['flag' => 'gb', 'code' => 'EN', 'label' => __('home-v2.language.en')],
+        'es' => ['flag' => 'es', 'code' => 'ES', 'label' => __('home-v2.language.es')],
+        'de' => ['flag' => 'de', 'code' => 'DE', 'label' => __('home-v2.language.de')],
+        'it' => ['flag' => 'it', 'code' => 'IT', 'label' => __('home-v2.language.it')],
+    ];
+    $currentLocale = app()->getLocale();
+    if (! array_key_exists($currentLocale, $supportedLocales)) {
+        $currentLocale = 'fr';
+    }
+    $currentLanguage = $supportedLocales[$currentLocale];
+@endphp
+
 {{-- Header Component --}}
 <header class="header-v2">
     <!-- <div class="header-top">
         <div class="header-contact">
-            <a href="mailto:INFOGOEXPLORIA@GMAIL.COM">INFOGOEXPLORIA@GMAIL.COM</a>
+            <a href="mailto:{{ __('home-v2.common.email') }}">{{ __('home-v2.common.email') }}</a>
         </div>
         <div class="header-promo">
             <span>GO PROMO</span>
@@ -22,7 +37,7 @@
                 </button>
                 
                 <a href="/" class="logo">
-                     <img src="{{ asset('logo.png') }}" alt="GO EXPLORIA">
+                    <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}">
                 </a>
                 <a href="#carte-interactive" class="logo-map-link" title="Voir la carte interactive">
                     <img src="{{ asset('header_info/map2.png') }}" alt="Carte Interactive" class="logo-map-icon">
@@ -31,66 +46,48 @@
             
             <div class="nav-center">
                 <ul class="nav-menu">
-                    <li><a href="#valeurs">NOS VALEURS</a></li>
+                    <li><a href="#valeurs">{{ __('home-v2.header.menu.values') }}</a></li>
                     <li class="nav-menu-v2-has-mega" id="servicesMenuItem">
-                        <a href="#services">NOS SERVICES</a>
+                        <a href="#services">{{ __('home-v2.header.menu.services') }}</a>
                     </li>
                     <!-- <li class="nav-menu-v2-has-videos" id="videosMenuItem">
                         <a href="#videos">VIDÉOS</a>
                     </li> -->
-                    <li><a href="#section-nos-plans">NOS PLANS</a></li>
-                    <li><a href="{{ route('contact') }}">CONTACT</a></li>
-                    <li><a href="{{ route('inscription') }}">INSCRIPTION</a></li>
-                    <li><a href="{{ route('mon-compte') }}" class="nav-account-icon" title="Mon compte" aria-label="Mon compte"><i class="fas fa-user-circle"></i></a></li>
+                    <li><a href="#section-nos-plans">{{ __('home-v2.header.menu.plans') }}</a></li>
+                    <li><a href="{{ route('contact') }}">{{ __('home-v2.header.menu.contact') }}</a></li>
+                    <li><a href="{{ route('inscription') }}">{{ __('home-v2.header.menu.signup') }}</a></li>
+                    <li><a href="{{ route('mon-compte') }}" class="nav-account-icon" title="{{ __('home-v2.common.account') }}" aria-label="{{ __('home-v2.common.account') }}"><i class="fas fa-user-circle"></i></a></li>
                 </ul>
             </div>
             
             @include('home-v2.components.ServicesMegaMenuV2')
             
             <div class="nav-right">
-                <a href="javascript:void(0)" class="nav-icon mobile-search-trigger" id="mobileSearchTrigger" aria-label="Recherche">
+                <a href="javascript:void(0)" class="nav-icon mobile-search-trigger" id="mobileSearchTrigger" aria-label="{{ __('home-v2.common.search') }}">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="8"></circle>
                         <path d="m21 21-4.35-4.35"></path>
                     </svg>
                 </a>
-                {{-- ── Language Switcher ── --}}
+                {{-- —— Language Switcher —— --}}
                 <div class="lang-switcher" id="langSwitcher">
-                    <button class="lang-btn" id="langBtn" aria-label="Sélectionner la langue" aria-expanded="false">
-                        <span class="fi fi-fr lang-flag" id="langCurrentFlag"></span>
-                        <span class="lang-code" id="langCurrentCode">FR</span>
+                    <button class="lang-btn" id="langBtn" aria-label="{{ __('home-v2.language.select') }}" aria-expanded="false">
+                        <span class="fi fi-{{ $currentLanguage['flag'] }} lang-flag" id="langCurrentFlag"></span>
+                        <span class="lang-code" id="langCurrentCode">{{ $currentLanguage['code'] }}</span>
                         <svg class="lang-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </button>
                     <ul class="lang-dropdown" id="langDropdown" role="listbox">
-                        <li class="lang-option lang-active" role="option" data-lang="fr" data-flag="fr" data-code="FR">
-                            <span class="fi fi-fr lang-flag"></span>
-                            <span class="lang-name">Fran&ccedil;ais</span>
-                        </li>
-                        <li class="lang-option" role="option" data-lang="en" data-flag="gb" data-code="EN">
-                            <span class="fi fi-gb lang-flag"></span>
-                            <span class="lang-name">English</span>
-                        </li>
-                        <li class="lang-option" role="option" data-lang="es" data-flag="es" data-code="ES">
-                            <span class="fi fi-es lang-flag"></span>
-                            <span class="lang-name">Espa&ntilde;ol</span>
-                        </li>
-                        <li class="lang-option" role="option" data-lang="de" data-flag="de" data-code="DE">
-                            <span class="fi fi-de lang-flag"></span>
-                            <span class="lang-name">Deutsch</span>
-                        </li>
-                        <li class="lang-option" role="option" data-lang="it" data-flag="it" data-code="IT">
-                            <span class="fi fi-it lang-flag"></span>
-                            <span class="lang-name">Italiano</span>
-                        </li>
-                        <li class="lang-option" role="option" data-lang="pt" data-flag="pt" data-code="PT">
-                            <span class="fi fi-pt lang-flag"></span>
-                            <span class="lang-name">Portugu&ecirc;s</span>
-                        </li>
+                        @foreach ($supportedLocales as $localeCode => $localeData)
+                            <li class="lang-option {{ $localeCode === $currentLocale ? 'lang-active' : '' }}" role="option" data-lang="{{ $localeCode }}" data-flag="{{ $localeData['flag'] }}" data-code="{{ $localeData['code'] }}">
+                                <span class="fi fi-{{ $localeData['flag'] }} lang-flag"></span>
+                                <span class="lang-name">{{ $localeData['label'] }}</span>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
-                <a href="{{ route('devis') }}" class="nav-icon" aria-label="Devis">
+                <a href="{{ route('devis') }}" class="nav-icon" aria-label="{{ __('home-v2.common.quote') }}">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                         <polyline points="14 2 14 8 20 8"></polyline>
@@ -99,17 +96,18 @@
                         <polyline points="10 9 9 9 8 9"></polyline>
                     </svg>
                 </a>
-                <a href="{{ route('favoris') }}" class="nav-icon" aria-label="Favoris">
+                <a href="{{ route('favoris') }}" class="nav-icon" aria-label="{{ __('home-v2.common.favorites') }}">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                     </svg>
                 </a>
-                <a href="{{ route('panier') }}" class="nav-icon cart" aria-label="Panier">
+                <a href="{{ route('panier') }}" class="nav-icon cart" aria-label="{{ __('home-v2.common.cart') }}">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="9" cy="21" r="1"></circle>
                         <circle cx="20" cy="21" r="1"></circle>
                         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                     </svg>
+                    <!-- <span class="cart-badge">0</span> -->
                 </a>
             </div>
         </div>
@@ -137,7 +135,7 @@
         dropdown.addEventListener('mouseleave', () => closeDropdown());
         dropdown.addEventListener('mouseenter', () => dropdown.classList.add('active'));
 
-        // FERMETURE AUTOMATIQUE dès qu'un lien vidéo est cliqué
+        // Fermeture automatique dès qu'un lien vidéo est cliqué
         dropdown.addEventListener('click', function(e) {
             const link = e.target.closest('a, button, .video-card, [data-video]');
             if (link) {
@@ -153,30 +151,33 @@
         });
     })();
 
-    // ── Language Switcher ──────────────────────────────────────────
+    // —— Language Switcher ————————————————————————————————————
     (function() {
         const switcher = document.getElementById('langSwitcher');
-        const btn      = document.getElementById('langBtn');
+        const btn = document.getElementById('langBtn');
         const dropdown = document.getElementById('langDropdown');
         if (!switcher || !btn || !dropdown) return;
 
-        function open()  { switcher.classList.add('open');    btn.setAttribute('aria-expanded', 'true'); }
+        function open() { switcher.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
         function close() { switcher.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
-        function toggle(){ switcher.classList.contains('open') ? close() : open(); }
+        function toggle() { switcher.classList.contains('open') ? close() : open(); }
 
         btn.addEventListener('click', function(e) { e.stopPropagation(); toggle(); });
 
         // Sélection d'une langue
         dropdown.querySelectorAll('.lang-option').forEach(function(opt) {
             opt.addEventListener('click', function() {
-                dropdown.querySelectorAll('.lang-option').forEach(o => o.classList.remove('lang-active'));
+                dropdown.querySelectorAll('.lang-option').forEach(function(o) { o.classList.remove('lang-active'); });
                 opt.classList.add('lang-active');
+
                 const flagEl = document.getElementById('langCurrentFlag');
                 flagEl.className = 'fi fi-' + opt.dataset.flag + ' lang-flag';
                 document.getElementById('langCurrentCode').textContent = opt.dataset.code;
+
                 close();
-                // TODO: connecter à la route de changement de locale Laravel
-                // window.location.href = '/lang/' + opt.dataset.lang;
+
+                const targetUrl = '{{ route('locale.switch', ['locale' => '__LOCALE__']) }}'.replace('__LOCALE__', opt.dataset.lang);
+                window.location.href = targetUrl + '?redirect=' + encodeURIComponent(window.location.href);
             });
         });
 

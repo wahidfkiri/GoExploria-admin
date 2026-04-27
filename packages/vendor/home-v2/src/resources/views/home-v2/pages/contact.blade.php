@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contactez-nous &mdash; GoExploria</title>
+    <title>{{ __('home-v2.pages.contact_title') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -146,9 +146,9 @@
             <div class="info-icon"><i class="fas fa-envelope"></i></div>
             <h3>Courriel &amp; R&eacute;seaux</h3>
             <p>
-                <strong>G&eacute;n&eacute;ral :</strong> <a href="mailto:info@goexploria.com">info@goexploria.com</a><br>
-                <strong>Support :</strong> <a href="mailto:support@goexploria.com">support@goexploria.com</a><br>
-                <strong>Partenariats :</strong> <a href="mailto:partners@goexploria.com">partners@goexploria.com</a>
+                <strong>G&eacute;n&eacute;ral :</strong> <a href="mailto:info@goexploriabusiness.com">info@goexploriabusiness.com</a><br>
+                <strong>Support :</strong> <a href="mailto:support@goexploriabusiness.com">support@goexploriabusiness.com</a><br>
+                <strong>Partenariats :</strong> <a href="mailto:partners@goexploriabusiness.com">partners@goexploriabusiness.com</a>
             </p>
         </div>
     </div>
@@ -296,3 +296,5 @@
 <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
 </body>
 </html>
+
+

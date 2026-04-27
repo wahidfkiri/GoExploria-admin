@@ -5,19 +5,19 @@
         <div class="footer-v2-container">
             <div class="footer-v2-newsletter-content">
                 <div class="footer-v2-newsletter-text">
-                    <h3 class="footer-v2-newsletter-title">Restez informé</h3>
-                    <p class="footer-v2-newsletter-subtitle">Soyez le premier à découvrir nos nouvelles offres et destinations exclusives</p>
+                    <h3 class="footer-v2-newsletter-title">{{ __('home-v2.footer.newsletter_title') }}</h3>
+                    <p class="footer-v2-newsletter-subtitle">{{ __('home-v2.footer.newsletter_subtitle') }}</p>
                 </div>
                 <form class="footer-v2-newsletter-form">
-                    <input 
-                        type="email" 
-                        class="footer-v2-newsletter-input" 
-                        placeholder="Votre adresse email"
-                        aria-label="Email pour newsletter"
+                    <input
+                        type="email"
+                        class="footer-v2-newsletter-input"
+                        placeholder="{{ __('home-v2.footer.newsletter_placeholder') }}"
+                        aria-label="{{ __('home-v2.footer.newsletter_aria') }}"
                         required
                     >
                     <button type="submit" class="footer-v2-newsletter-btn">
-                        S'abonner
+                        {{ __('home-v2.footer.newsletter_button') }}
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
@@ -35,16 +35,13 @@
                 {{-- Column 1: Logo & About --}}
                 <div class="footer-v2-column footer-v2-brand">
                     <a href="#" class="footer-v2-logo">
-                        <img src="{{ asset('logo.png') }}" alt="GO EXPLORIA" class="footer-v2-logo-img">
+                        <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}" class="footer-v2-logo-img">
                         <div class="footer-v2-logo-text">
-                            <div class="footer-v2-logo-name">GO EXPLORIA</div>
-                            <div class="footer-v2-logo-location">QUÉBEC, CANADA</div>
+                            <div class="footer-v2-logo-name">{{ __('home-v2.brand.name_upper') }}</div>
+                            <div class="footer-v2-logo-location">{{ __('home-v2.brand.location') }}</div>
                         </div>
                     </a>
-                    <p class="footer-v2-description">
-                        Votre partenaire de confiance pour des expériences de voyage inoubliables au Québec et au Canada. 
-                        Découvrez des destinations exceptionnelles et créez des souvenirs mémorables.
-                    </p>
+                    <p class="footer-v2-description">{{ __('home-v2.footer.description') }}</p>
                     <div class="footer-v2-social">
                         <a href="#" class="footer-v2-social-link" aria-label="Facebook">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -76,46 +73,46 @@
 
                 {{-- Column 2: Services --}}
                 <div class="footer-v2-column">
-                    <h4 class="footer-v2-column-title">Nos Services</h4>
+                    <h4 class="footer-v2-column-title">{{ __('home-v2.footer.columns.services') }}</h4>
                     <ul class="footer-v2-links">
-                        <li><a href="#forfaits-voyage" class="footer-v2-link">Forfaits Voyage</a></li>
-                        <li><a href="#vols-direct" class="footer-v2-link">Vols en Direct</a></li>
-                        <li><a href="#activites-4-saisons" class="footer-v2-link">Activités 4 Saisons</a></li>
-                        <li><a href="#biens-immobiliers" class="footer-v2-link">Biens Immobiliers</a></li>
-                        <li><a href="#agence-conseil" class="footer-v2-link">Agence de Conseil</a></li>
-                        <li><a href="#solutions-web" class="footer-v2-link">Solutions Web</a></li>
+                        <li><a href="#forfaits-voyage" class="footer-v2-link">{{ __('home-v2.footer.services_links.travel_packages') }}</a></li>
+                        <li><a href="#vols-direct" class="footer-v2-link">{{ __('home-v2.footer.services_links.live_flights') }}</a></li>
+                        <li><a href="#activites-4-saisons" class="footer-v2-link">{{ __('home-v2.footer.services_links.activities') }}</a></li>
+                        <li><a href="#biens-immobiliers" class="footer-v2-link">{{ __('home-v2.footer.services_links.real_estate') }}</a></li>
+                        <li><a href="#agence-conseil" class="footer-v2-link">{{ __('home-v2.footer.services_links.agency') }}</a></li>
+                        <li><a href="#solutions-web" class="footer-v2-link">{{ __('home-v2.footer.services_links.web') }}</a></li>
                     </ul>
                 </div>
 
                 {{-- Column 3: Destinations --}}
                 <div class="footer-v2-column">
-                    <h4 class="footer-v2-column-title">Destinations</h4>
+                    <h4 class="footer-v2-column-title">{{ __('home-v2.footer.columns.destinations') }}</h4>
                     <ul class="footer-v2-links">
-                        <li><a href="#quebec" class="footer-v2-link">Québec</a></li>
-                        <li><a href="#montreal" class="footer-v2-link">Montréal</a></li>
-                        <li><a href="#ottawa" class="footer-v2-link">Ottawa</a></li>
-                        <li><a href="#toronto" class="footer-v2-link">Toronto</a></li>
-                        <li><a href="#vancouver" class="footer-v2-link">Vancouver</a></li>
-                        <li><a href="#banff" class="footer-v2-link">Banff & Rocheuses</a></li>
+                        <li><a href="#quebec" class="footer-v2-link">{{ __('home-v2.footer.destinations_links.quebec') }}</a></li>
+                        <li><a href="#montreal" class="footer-v2-link">{{ __('home-v2.footer.destinations_links.montreal') }}</a></li>
+                        <li><a href="#ottawa" class="footer-v2-link">{{ __('home-v2.footer.destinations_links.ottawa') }}</a></li>
+                        <li><a href="#toronto" class="footer-v2-link">{{ __('home-v2.footer.destinations_links.toronto') }}</a></li>
+                        <li><a href="#vancouver" class="footer-v2-link">{{ __('home-v2.footer.destinations_links.vancouver') }}</a></li>
+                        <li><a href="#banff" class="footer-v2-link">{{ __('home-v2.footer.destinations_links.banff') }}</a></li>
                     </ul>
                 </div>
 
                 {{-- Column 4: Informations --}}
                 <div class="footer-v2-column">
-                    <h4 class="footer-v2-column-title">Informations</h4>
+                    <h4 class="footer-v2-column-title">{{ __('home-v2.footer.columns.information') }}</h4>
                     <ul class="footer-v2-links">
-                        <li><a href="#about" class="footer-v2-link">À Propos</a></li>
-                        <li><a href="#valeurs" class="footer-v2-link">Nos Valeurs</a></li>
-                        <li><a href="#temoignage" class="footer-v2-link">Témoignages</a></li>
-                        <li><a href="#faq" class="footer-v2-link">FAQ</a></li>
-                        <li><a href="#contact" class="footer-v2-link">Contact</a></li>
-                        <li><a href="#careers" class="footer-v2-link">Carrières</a></li>
+                        <li><a href="#about" class="footer-v2-link">{{ __('home-v2.footer.information_links.about') }}</a></li>
+                        <li><a href="#valeurs" class="footer-v2-link">{{ __('home-v2.footer.information_links.values') }}</a></li>
+                        <li><a href="#temoignage" class="footer-v2-link">{{ __('home-v2.footer.information_links.testimonials') }}</a></li>
+                        <li><a href="#faq" class="footer-v2-link">{{ __('home-v2.footer.information_links.faq') }}</a></li>
+                        <li><a href="#contact" class="footer-v2-link">{{ __('home-v2.footer.information_links.contact') }}</a></li>
+                        <li><a href="#careers" class="footer-v2-link">{{ __('home-v2.footer.information_links.careers') }}</a></li>
                     </ul>
                 </div>
 
                 {{-- Column 5: Contact --}}
                 <div class="footer-v2-column">
-                    <h4 class="footer-v2-column-title">Contact</h4>
+                    <h4 class="footer-v2-column-title">{{ __('home-v2.footer.columns.contact') }}</h4>
                     <ul class="footer-v2-contact">
                         <li class="footer-v2-contact-item">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -135,7 +132,7 @@
                                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                                 <polyline points="22,6 12,13 2,6"></polyline>
                             </svg>
-                            <a href="mailto:INFOGOEXPLORIA@GMAIL.COM">INFOGOEXPLORIA@GMAIL.COM</a>
+                            <a href="mailto:{{ __('home-v2.common.email') }}">{{ __('home-v2.common.email') }}</a>
                         </li>
                     </ul>
                 </div>
@@ -148,16 +145,12 @@
         <div class="footer-v2-container">
             <div class="footer-v2-bottom-content">
                 <div class="footer-v2-copyright">
-                    <p>&copy; {{ date('Y') }} GO EXPLORIA. Tous droits réservés.</p>
+                    <p>{{ __('home-v2.footer.copyright', ['year' => date('Y')]) }}</p>
                 </div>
                 <div class="footer-v2-legal">
-                    <a href="#privacy" class="footer-v2-legal-link">Politique de confidentialité</a>
+                    <a href="{{ route('privacy.policy') }}" class="footer-v2-legal-link">{{ __('home-v2.footer.legal.privacy') }}</a>
                     <span class="footer-v2-separator">|</span>
-                    <a href="#terms" class="footer-v2-legal-link">Conditions d'utilisation</a>
-                    <span class="footer-v2-separator">|</span>
-                    <a href="#cookies" class="footer-v2-legal-link">Politique de cookies</a>
-                    <span class="footer-v2-separator">|</span>
-                    <a href="#sitemap" class="footer-v2-legal-link">Plan du site</a>
+                    <a href="{{ route('terms.conditions') }}" class="footer-v2-legal-link">{{ __('home-v2.footer.legal.terms') }}</a>
                 </div>
             </div>
         </div>

@@ -1,5 +1,28 @@
 {{-- Hero Section Component --}}
 <section class="hero-v2">
+    @php
+        $tr = static function (string $text): string {
+            $locale = app()->getLocale();
+            if ($locale === 'fr') {
+                return $text;
+            }
+
+            static $maps = [];
+            if (! array_key_exists($locale, $maps)) {
+                $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');
+                $maps[$locale] = is_file($path) ? (require $path) : [];
+            }
+
+            return $maps[$locale][$text] ?? $text;
+        };
+
+        $heroPlaceholderPhrases = [
+            $tr('Explorez le monde…'),
+            $tr('Rechercher une destination…'),
+            $tr('Découvrez des activités…'),
+            $tr('Trouvez un hébergement…'),
+        ];
+    @endphp
     @php($showCarouselNav = isset($sliders) && count($sliders) > 5)
     {{-- Video Carousel Background - Confiné au Hero --}}
     <div class="video-carousel-background">
@@ -10,7 +33,7 @@
                     {{-- Vidéo YouTube/Vimeo avec iframe --}}
                     <iframe 
                         class="video-background" 
-                        src="{{ $slider->video_embed_url }}?autoplay={{ $index === 0 ? '1' : '0' }}&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1" 
+                        src="{{ $slider->video_embed_url }}{{ str_contains($slider->video_embed_url ?? '', '?') ? '&' : '?' }}autoplay={{ $index === 0 ? '1' : '0' }}&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&vq=hd1080&origin={{ urlencode(url('/')) }}" 
                         frameborder="0" 
                         allow="autoplay; encrypted-media" 
                         allowfullscreen
@@ -40,7 +63,7 @@
         {{-- Cartes vidéo miniatures sur la vidéo principale --}}
         <div class="hero-video-cards-overlay">
             @if($showCarouselNav)
-            <button class="carousel-nav-btn prev" aria-label="Précédent">
+            <button class="carousel-nav-btn prev" aria-label="{{ $tr('Précédent') }}">
                 <svg viewBox="0 0 24 24">
                     <path d="M15 18l-6-6 6-6"/>
                 </svg>
@@ -80,7 +103,7 @@
                 @endforeach
             </div>
             @if($showCarouselNav)
-            <button class="carousel-nav-btn next" aria-label="Suivant">
+            <button class="carousel-nav-btn next" aria-label="{{ $tr('Suivant') }}">
                 <svg viewBox="0 0 24 24">
                     <path d="M9 18l6-6-6-6"/>
                 </svg>
@@ -90,12 +113,12 @@
         
         <div class="carousel-controls">
             @foreach($sliders as $index => $slider)
-            <button class="carousel-dot" data-slide="{{ $index }}" aria-label="Video {{ $index + 1 }}"></button>
+            <button class="carousel-dot" data-slide="{{ $index }}" aria-label="{{ $tr('Vidéo') }} {{ $index + 1 }}"></button>
             @endforeach
         </div>
 
         {{-- Bouton son vidéo (mute/unmute) — gauche du Hero --}}
-        <button type="button" class="hero-sound-toggle" id="heroSoundToggle" aria-label="Activer le son" title="Activer le son">
+        <button type="button" class="hero-sound-toggle" id="heroSoundToggle" aria-label="{{ $tr('Activer le son') }}" title="{{ $tr('Activer le son') }}">
             <svg class="hero-sound-icon-muted" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                 <line x1="23" y1="9" x2="17" y2="15"></line>
@@ -112,7 +135,7 @@
     {{-- Section mobile uniquement : Email + Logo + Map --}}
     <div class="hero-mobile-header">
         <div class="hero-mobile-email">
-            <a href="mailto:INFOGOEXPLORIA@GMAIL.COM">INFOGOEXPLORIA@GMAIL.COM</a>
+            <a href="mailto:{{ __('home-v2.common.email') }}">{{ __('home-v2.common.email') }}</a>
         </div>
         <div class="hero-mobile-logo-container">
             <a href="#" class="hero-mobile-logo">
@@ -135,7 +158,7 @@
                 {{-- Globe Destinations --}}
                 <div class="search-bar-v2-destinations" style="position: relative; flex-direction: column; gap: 2px; align-items: center;">
                     <img src="{{ asset('REDI.png') }}" alt="Destinations" class="search-bar-v2-globe-icon" id="destinationsMainTrigger" style="cursor:pointer;">
-                    <span class="search-bar-v2-destinations-title" id="destinationsBreadcrumb">Destinations</span>
+                    <span class="search-bar-v2-destinations-title" id="destinationsBreadcrumb">{{ $tr('Destinations') }}</span>
                     
                     {{-- Mega Menu Destinations Principal --}}
                     @include('home-v2.components.DestinationsMegaMenu')
@@ -145,21 +168,21 @@
                 {{-- 3 Pictos ronds bleus : i · iT · iB --}}
                 <div class="search-bar-v2-quick-links">
                     {{-- Info i --}}
-                    <div class="quick-link-item info-trigger" id="infoTrigger" title="Informations">
+                    <div class="quick-link-item info-trigger" id="infoTrigger" title="{{ $tr('Informations') }}">
                         <div class="icon-circle icon-blue">
                             <span class="picto-label">i</span>
                         </div>
                     </div>
                     
                     {{-- iT Tourisme --}}
-                    <div class="quick-link-item" id="catMegaTriggerTourisme" style="cursor:pointer;" title="Activités Tourisme">
+                    <div class="quick-link-item" id="catMegaTriggerTourisme" style="cursor:pointer;" title="{{ $tr('Activités Tourisme') }}">
                         <div class="icon-circle icon-blue">
                             <span class="picto-label">iT</span>
                         </div>
                     </div>
 
                     {{-- iB Business --}}
-                    <div class="quick-link-item" id="catMegaTriggerBusiness" style="cursor:pointer;" title="Activités Business">
+                    <div class="quick-link-item" id="catMegaTriggerBusiness" style="cursor:pointer;" title="{{ $tr('Activités Business') }}">
                         <div class="icon-circle icon-blue">
                             <span class="picto-label">iB</span>
                         </div>
@@ -177,11 +200,11 @@
                             type="text" 
                             class="search-bar-v2-input" 
                             id="searchBarInput"
-                            placeholder="Rechercher une destination, activité, hébergement..."
-                            aria-label="Rechercher une destination"
+                            placeholder="{{ $tr('Rechercher une destination, activité, hébergement...') }}"
+                            aria-label="{{ $tr('Rechercher une destination') }}"
                             autocomplete="off"
                         >
-                        <button class="search-bar-v2-clear-btn" id="searchBarClearBtn" aria-label="Effacer">
+                        <button class="search-bar-v2-clear-btn" id="searchBarClearBtn" aria-label="{{ $tr('Effacer') }}">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -192,7 +215,7 @@
                     {{-- Dropdown des résultats --}}
                     <div class="search-bar-v2-results" id="searchBarResults">
                         <div class="search-bar-v2-results-header">
-                            <h4 class="search-bar-v2-results-title">Résultats de la recherche</h4>
+                            <h4 class="search-bar-v2-results-title">{{ $tr('Résultats de la recherche') }}</h4>
                         </div>
                         <ul class="search-bar-v2-results-list" id="searchBarResultsList">
                             {{-- Les résultats seront injectés ici par JavaScript --}}
@@ -204,35 +227,35 @@
                 {{-- Boutons rapides après la barre de recherche : EE · ED · MP · Voiture · Avion --}}
                 <div class="search-bar-v2-quick-links search-bar-v2-quick-links--post">
                     {{-- EE — Espace Entreprise --}}
-                    <div class="quick-link-item" id="quickLinkEE" style="cursor:pointer;" title="Espace Entreprise">
+                    <div class="quick-link-item" id="quickLinkEE" style="cursor:pointer;" title="{{ $tr('Espace Entreprise') }}">
                         <div class="icon-circle icon-blue">
                             <span class="picto-label">EE</span>
                         </div>
                     </div>
 
                     {{-- ED — Espace Destination --}}
-                    <div class="quick-link-item" id="quickLinkED" style="cursor:pointer;" title="Espace Destination">
+                    <div class="quick-link-item" id="quickLinkED" style="cursor:pointer;" title="{{ $tr('Espace Destination') }}">
                         <div class="icon-circle icon-blue">
                             <span class="picto-label">ED</span>
                         </div>
                     </div>
 
                     {{-- MP — Marketplace --}}
-                    <div class="quick-link-item" id="quickLinkMP" style="cursor:pointer;" title="Marketplace">
+                    <div class="quick-link-item" id="quickLinkMP" style="cursor:pointer;" title="{{ $tr('Marketplace') }}">
                         <div class="icon-circle icon-blue">
                             <span class="picto-label">MP</span>
                         </div>
                     </div>
 
                     {{-- Voiture — Location Véhicule --}}
-                    <div class="quick-link-item" id="quickLinkCar" style="cursor:pointer;" title="Location Véhicule">
+                    <div class="quick-link-item" id="quickLinkCar" style="cursor:pointer;" title="{{ $tr('Location Véhicule') }}">
                         <div class="icon-circle icon-blue">
                             <i class="fas fa-car picto-icon"></i>
                         </div>
                     </div>
 
                     {{-- Avion — Billets Avion --}}
-                    <div class="quick-link-item" id="quickLinkPlane" style="cursor:pointer;" title="Billets Avion">
+                    <div class="quick-link-item" id="quickLinkPlane" style="cursor:pointer;" title="{{ $tr('Billets Avion') }}">
                         <div class="icon-circle icon-blue">
                             <i class="fas fa-plane picto-icon"></i>
                         </div>
@@ -240,7 +263,7 @@
                 </div>
 
                 {{-- Logo Plan-n-go — déclencheur du méga-menu Plan & GO --}}
-                <div class="search-bar-v2-brand" id="planNGoTrigger" style="cursor:pointer;" title="Plan & GO">
+                <div class="search-bar-v2-brand" id="planNGoTrigger" style="cursor:pointer;" title="{{ $tr('Plan & GO') }}">
                     <img src="{{ asset('plan-n-go.png') }}" alt="PLAN-N-GO" class="search-bar-v2-logo">
                 </div>
             </div>
@@ -331,12 +354,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const input = document.getElementById('searchBarInput');
     if (!input) return;
 
-    const phrases = [
-        'Explorez le monde…',
-        'Rechercher une destination…',
-        'Découvrez des activités…',
-        'Trouvez un hébergement…'
-    ];
+    const phrases = @json($heroPlaceholderPhrases ?? []);
 
     let phraseIdx = 0;
     let charIdx = 0;
@@ -379,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
     input.addEventListener('input', function() {
         if (input.value.length > 0) {
             delete input.dataset.animating;
-            input.placeholder = 'Rechercher…';
+            input.placeholder = @json($tr('Rechercher…'));
         }
     });
 });
@@ -392,9 +410,44 @@ document.addEventListener('DOMContentLoaded', function() {
     const btn = document.getElementById('heroSoundToggle');
     if (!btn) return;
 
+    const labelSoundOn = @json($tr('Activer le son'));
+    const labelSoundOff = @json($tr('Couper le son'));
+
     const iconMuted = btn.querySelector('.hero-sound-icon-muted');
     const iconOn = btn.querySelector('.hero-sound-icon-on');
     let isMuted = true;
+
+    function isYouTubeIframe(el) {
+        if (!el || el.tagName !== 'IFRAME') return false;
+        const src = (el.getAttribute('src') || '').toLowerCase();
+        return src.includes('youtube.com/embed') || src.includes('youtube-nocookie.com/embed');
+    }
+
+    function requestYouTubeHd(el) {
+        if (!isYouTubeIframe(el)) return;
+        try {
+            el.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'setPlaybackQualityRange',
+                args: ['hd1080']
+            }), '*');
+            el.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: 'setPlaybackQuality',
+                args: ['hd1080']
+            }), '*');
+        } catch (e) { /* ignore */ }
+    }
+
+    function boostActiveYouTubeQuality() {
+        const el = getActiveVideoEl();
+        if (!el) return;
+        [250, 800, 1600, 3000].forEach(function(delay) {
+            setTimeout(function() {
+                requestYouTubeHd(el);
+            }, delay);
+        });
+    }
 
     function getActiveVideoEl() {
         const active = document.querySelector('.video-slide.active');
@@ -431,12 +484,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     value: muted ? 0 : 1
                 }), '*');
             } catch (e) { /* ignore */ }
+
+            if (!muted) {
+                requestYouTubeHd(el);
+            }
         }
 
         // UI
         btn.classList.toggle('is-unmuted', !muted);
-        btn.setAttribute('aria-label', muted ? 'Activer le son' : 'Couper le son');
-        btn.setAttribute('title', muted ? 'Activer le son' : 'Couper le son');
+        btn.setAttribute('aria-label', muted ? labelSoundOn : labelSoundOff);
+        btn.setAttribute('title', muted ? labelSoundOn : labelSoundOff);
         if (iconMuted) iconMuted.style.display = muted ? '' : 'none';
         if (iconOn) iconOn.style.display = muted ? 'none' : '';
     }
@@ -448,9 +505,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // Re-synchroniser l'état mute à chaque changement de slide
     document.querySelectorAll('.carousel-dot, .hero-video-card, .carousel-nav-btn').forEach(function(el) {
         el.addEventListener('click', function() {
-            setTimeout(() => setMuteState(isMuted), 400);
+            setTimeout(function() {
+                setMuteState(isMuted);
+                boostActiveYouTubeQuality();
+            }, 400);
         });
     });
+
+    const carouselContainer = document.querySelector('.video-carousel-container');
+    if (carouselContainer) {
+        const observer = new MutationObserver(function(mutations) {
+            let hasActiveChange = false;
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' &&
+                    mutation.attributeName === 'class' &&
+                    mutation.target.classList &&
+                    mutation.target.classList.contains('video-slide')) {
+                    hasActiveChange = true;
+                }
+            });
+            if (hasActiveChange) {
+                setTimeout(function() {
+                    setMuteState(isMuted);
+                    boostActiveYouTubeQuality();
+                }, 300);
+            }
+        });
+        observer.observe(carouselContainer, {
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['class']
+        });
+    }
+
+    boostActiveYouTubeQuality();
 });
 
 /* ─────────────────────────────────────────────
@@ -500,3 +588,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+

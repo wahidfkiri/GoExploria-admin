@@ -1,5 +1,20 @@
+@php(ob_start());@endphp
+@php
+    $supportedLocales = [
+        'fr' => ['flag' => 'fr', 'code' => 'FR', 'label' => __('home-v2.language.fr')],
+        'en' => ['flag' => 'gb', 'code' => 'EN', 'label' => __('home-v2.language.en')],
+        'es' => ['flag' => 'es', 'code' => 'ES', 'label' => __('home-v2.language.es')],
+        'de' => ['flag' => 'de', 'code' => 'DE', 'label' => __('home-v2.language.de')],
+        'it' => ['flag' => 'it', 'code' => 'IT', 'label' => __('home-v2.language.it')],
+    ];
+    $currentLocale = app()->getLocale();
+    if (! array_key_exists($currentLocale, $supportedLocales)) {
+        $currentLocale = 'fr';
+    }
+    $currentLanguage = $supportedLocales[$currentLocale];
+@endphp
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="{{ $currentLocale }}" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +24,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
   <link rel="stylesheet" href="{{asset('vendor/theme/css/styles.css')}}">
   <style>
     * {
@@ -59,6 +75,94 @@
     .nav-premium.scrolled {
       padding: 12px 0;
       box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .plan-detail-logo-link {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .plan-detail-logo-image {
+      height: 64px;
+      width: auto;
+      display: block;
+    }
+
+    .plan-lang-switcher {
+      position: relative;
+    }
+
+    .plan-lang-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(17, 24, 39, 0.12);
+      border-radius: 999px;
+      padding: 8px 12px;
+      cursor: pointer;
+      color: #0a0a1a;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .plan-lang-btn:hover {
+      border-color: rgba(79, 70, 229, 0.35);
+    }
+
+    .plan-lang-flag {
+      font-size: 1rem;
+      border-radius: 999px;
+    }
+
+    .plan-lang-chevron {
+      transition: transform 0.2s ease;
+    }
+
+    .plan-lang-switcher.open .plan-lang-chevron {
+      transform: rotate(180deg);
+    }
+
+    .plan-lang-dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: calc(100% + 10px);
+      min-width: 170px;
+      background: #ffffff;
+      border: 1px solid rgba(17, 24, 39, 0.08);
+      border-radius: 14px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.15);
+      overflow: hidden;
+      z-index: 1200;
+      padding: 6px;
+    }
+
+    .plan-lang-switcher.open .plan-lang-dropdown {
+      display: block;
+    }
+
+    .plan-lang-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      color: #111827;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 9px 10px;
+    }
+
+    .plan-lang-option:hover,
+    .plan-lang-option.plan-lang-active {
+      background: #f3f4f6;
     }
 
     /* Hero Section Premium */
@@ -346,6 +450,14 @@
       transition: transform 0.5s ease;
     }
 
+    .service-media-premium video {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+      display: block;
+      background: #000;
+    }
+
     .service-media-premium:hover img {
       transform: scale(1.05);
     }
@@ -501,6 +613,7 @@
       .testimonial-grid { grid-template-columns: 1fr; }
       .contact-premium-grid { grid-template-columns: 1fr; }
       .section-title-premium { font-size: 2rem; }
+      .plan-detail-logo-image { height: 56px; }
     }
   </style>
 </head>
@@ -510,13 +623,41 @@
   <nav class="nav-premium" id="nav">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
       <div class="nav-logo">
-        <img src="{{asset('logo.png')}}" style="height: 42px; width: auto;"/>
+        <a href="{{ url('/') }}" class="plan-detail-logo-link" aria-label="Accueil">
+          <img src="{{ asset('logo.png') }}" class="plan-detail-logo-image" alt="GoExploria Business">
+        </a>
       </div>
-      <div style="display: flex; gap: 40px; align-items: center;">
+      <div style="display: flex; gap: 32px; align-items: center;">
         <a href="#services" style="text-decoration: none; color: #0a0a1a; font-weight: 500;">Services</a>
         <a href="#pricing" style="text-decoration: none; color: #0a0a1a; font-weight: 500;">Tarifs</a>
         <a href="#testimonials" style="text-decoration: none; color: #0a0a1a; font-weight: 500;">Clients</a>
         <a href="#contact" style="text-decoration: none; color: #0a0a1a; font-weight: 500;">Contact</a>
+        <div class="plan-lang-switcher" id="planLangSwitcher">
+          <button class="plan-lang-btn" id="planLangBtn" aria-label="{{ __('home-v2.language.select') }}" aria-expanded="false">
+            <span class="fi fi-{{ $currentLanguage['flag'] }} plan-lang-flag" id="planLangCurrentFlag"></span>
+            <span id="planLangCurrentCode">{{ $currentLanguage['code'] }}</span>
+            <svg class="plan-lang-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <ul class="plan-lang-dropdown" id="planLangDropdown" role="listbox">
+            @foreach ($supportedLocales as $localeCode => $localeData)
+              <li>
+                <button
+                  class="plan-lang-option {{ $localeCode === $currentLocale ? 'plan-lang-active' : '' }}"
+                  type="button"
+                  role="option"
+                  data-lang="{{ $localeCode }}"
+                  data-flag="{{ $localeData['flag'] }}"
+                  data-code="{{ $localeData['code'] }}"
+                >
+                  <span class="fi fi-{{ $localeData['flag'] }} plan-lang-flag"></span>
+                  <span>{{ $localeData['label'] }}</span>
+                </button>
+              </li>
+            @endforeach
+          </ul>
+        </div>
         <button class="btn-premium-primary" style="padding: 10px 24px;" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
           <i class="fas fa-rocket"></i> Devis gratuit
         </button>
@@ -755,6 +896,31 @@
       </div>
     </div>
 
+    @php
+      $resolvePluginMediaUrl = function (?string $path): ?string {
+        if (!is_string($path) || trim($path) === '') {
+          return null;
+        }
+
+        $path = trim($path);
+        if (
+          str_starts_with($path, 'http://') ||
+          str_starts_with($path, 'https://') ||
+          str_starts_with($path, '//') ||
+          str_starts_with($path, 'data:')
+        ) {
+          return $path;
+        }
+
+        $cleanPath = ltrim($path, '/');
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($cleanPath)) {
+          return \Illuminate\Support\Facades\Storage::disk('public')->url($cleanPath);
+        }
+
+        return asset($cleanPath);
+      };
+    @endphp
+
     @forelse($plan->plugins as $index => $plugin)
       @php
         $isEven = $loop->iteration % 2 == 0;
@@ -816,10 +982,14 @@
           ];
         }
         else {
+          $pluginDescription = trim((string) ($plugin->description ?? ''));
+          $pluginDescription = strip_tags(html_entity_decode($pluginDescription));
+          $pluginDescription = preg_replace('/\s+/', ' ', $pluginDescription);
+
           $pluginData = [
             'icon' => 'fa-puzzle-piece',
             'title' => $plugin->name,
-            'desc' => $plugin->description ?? 'Découvrez cette fonctionnalité premium incluse dans votre plan pour booster votre productivité.',
+            'desc' => $pluginDescription !== '' ? $pluginDescription : 'Découvrez cette fonctionnalité premium incluse dans votre plan pour booster votre productivité.',
             'features' => ['Fonctionnalité premium', 'Support prioritaire', 'Mises à jour incluses'],
             'stats' => [['value' => 'Inclus', 'label' => 'dans le plan'], ['value' => '24/7', 'label' => 'support']],
             'images' => [
@@ -827,6 +997,37 @@
               'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&h=500&fit=crop'
             ]
           ];
+        }
+
+        $staticSlides = collect($pluginData['images'] ?? [])
+          ->filter(fn ($image) => is_string($image) && trim($image) !== '')
+          ->map(fn ($image) => ['type' => 'image', 'url' => $image])
+          ->values()
+          ->all();
+
+        $pluginMediaType = strtolower((string) ($plugin->main_media_type ?? ''));
+        $mainImageUrl = $resolvePluginMediaUrl($plugin->main_image_path ?? null);
+        $mainVideoUrl = $resolvePluginMediaUrl($plugin->main_video_path ?? null);
+        $galleryUrls = collect($plugin->gallery_images ?? [])
+          ->filter(fn ($image) => is_string($image) && trim($image) !== '')
+          ->map(fn ($image) => $resolvePluginMediaUrl($image))
+          ->filter()
+          ->values()
+          ->all();
+
+        $serviceMediaSlides = [];
+        if ($pluginMediaType === 'image' && $mainImageUrl) {
+          $serviceMediaSlides[] = ['type' => 'image', 'url' => $mainImageUrl];
+          foreach ($galleryUrls as $galleryUrl) {
+            $serviceMediaSlides[] = ['type' => 'image', 'url' => $galleryUrl];
+          }
+        } elseif ($pluginMediaType === 'video' && $mainVideoUrl) {
+          $serviceMediaSlides[] = ['type' => 'video', 'url' => $mainVideoUrl];
+          foreach ($galleryUrls as $galleryUrl) {
+            $serviceMediaSlides[] = ['type' => 'image', 'url' => $galleryUrl];
+          }
+        } else {
+          $serviceMediaSlides = $staticSlides;
         }
       @endphp
 
@@ -859,9 +1060,15 @@
             <div class="service-media-premium">
               <div class="swiper service-swiper-premium">
                 <div class="swiper-wrapper">
-                  @foreach($pluginData['images'] as $image)
+                  @foreach($serviceMediaSlides as $slide)
                     <div class="swiper-slide">
-                      <img src="{{ $image }}" alt="{{ $pluginData['title'] }}">
+                      @if(($slide['type'] ?? 'image') === 'video')
+                        <video controls preload="metadata" playsinline>
+                          <source src="{{ $slide['url'] }}">
+                        </video>
+                      @else
+                        <img src="{{ $slide['url'] }}" alt="{{ $pluginData['title'] }}">
+                      @endif
                     </div>
                   @endforeach
                 </div>
@@ -1389,6 +1596,67 @@
       }
     });
 
+    // Language Switcher
+    (function() {
+      const switcher = document.getElementById('planLangSwitcher');
+      const btn = document.getElementById('planLangBtn');
+      const dropdown = document.getElementById('planLangDropdown');
+      if (!switcher || !btn || !dropdown) return;
+
+      function open() {
+        switcher.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+
+      function close() {
+        switcher.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+
+      function toggle() {
+        if (switcher.classList.contains('open')) {
+          close();
+          return;
+        }
+        open();
+      }
+
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggle();
+      });
+
+      dropdown.querySelectorAll('.plan-lang-option').forEach(function(option) {
+        option.addEventListener('click', function() {
+          dropdown.querySelectorAll('.plan-lang-option').forEach(function(item) {
+            item.classList.remove('plan-lang-active');
+          });
+          option.classList.add('plan-lang-active');
+
+          const currentFlag = document.getElementById('planLangCurrentFlag');
+          currentFlag.className = 'fi fi-' + option.dataset.flag + ' plan-lang-flag';
+          document.getElementById('planLangCurrentCode').textContent = option.dataset.code;
+
+          close();
+
+          const targetUrl = '{{ route('locale.switch', ['locale' => '__LOCALE__']) }}'.replace('__LOCALE__', option.dataset.lang);
+          window.location.href = targetUrl + '?redirect=' + encodeURIComponent(window.location.href);
+        });
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!switcher.contains(e.target)) {
+          close();
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          close();
+        }
+      });
+    })();
+
     // Initialize Swipers
     document.querySelectorAll('.service-swiper-premium').forEach(swiperEl => {
       const slides = swiperEl.querySelectorAll('.swiper-slide');
@@ -1404,3 +1672,11 @@
   </script>
 </body>
 </html>
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate(
+        $__componentHtml,
+        app()->getLocale(),
+        'theme-plan-detail.php'
+    );
+@endphp

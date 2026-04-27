@@ -1,3 +1,5 @@
+@php(ob_start());@endphp
+
 {{-- Dernières Nouvelles Component --}}
 <section class="news-v2-section" id="news-section">
 
@@ -172,3 +174,8 @@
 
     </div>{{-- /news-container --}}
 </section>
+
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

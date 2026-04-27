@@ -26,7 +26,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
             'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
             'user.active' => \App\Http\Middleware\CheckUserActive::class,
+            'set.locale' => \App\Http\Middleware\SetLocale::class,
+            'translate.home-v2' => \App\Http\Middleware\TranslateHomeV2Components::class,
         ]);
+
+        $middleware->appendToGroup('web', \App\Http\Middleware\SetLocale::class);
+        $middleware->appendToGroup('web', \App\Http\Middleware\TranslateHomeV2Components::class);
         
         // API middleware (Sanctum)
         $middleware->statefulApi();

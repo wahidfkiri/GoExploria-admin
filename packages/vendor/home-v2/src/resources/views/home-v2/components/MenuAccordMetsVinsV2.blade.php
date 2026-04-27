@@ -3,6 +3,7 @@
      Sections : Entrées · Salades · Pâtes · Tartares · Classiques · Desserts
      ============================================================ --}}
 
+@php(ob_start());@endphp
 @php
 $menuSections = [
     [
@@ -556,3 +557,7 @@ function aproposGo(idx) {
     dots.forEach(function (d, i) { d.classList.toggle('active', i === idx); });
 }
 </script>
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

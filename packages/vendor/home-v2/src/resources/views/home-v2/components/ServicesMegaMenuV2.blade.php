@@ -1,3 +1,4 @@
+@php(ob_start());@endphp
 {{-- MEGA MENU SERVICES V4 --}}
 
 <!-- Overlay -->
@@ -377,3 +378,7 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
 generateSidebar();
 generateMainContent('espaces-medias');
 </script>
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

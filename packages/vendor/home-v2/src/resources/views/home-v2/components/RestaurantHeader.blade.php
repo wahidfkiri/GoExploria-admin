@@ -1,3 +1,5 @@
+@php(ob_start());@endphp
+
 {{-- ============================================================
      RESTAURANT SERVICE BLOCK — Standard Template
      GoExploria · Accord Mets & Vins
@@ -1241,3 +1243,8 @@ $menuItems = [
 
 })();
 </script>
+
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

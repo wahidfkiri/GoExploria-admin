@@ -1,3 +1,4 @@
+@php(ob_start());@endphp
 {{-- Mega Menu Destinations pour le Menu Vertical --}}
 <div class="vmenu-destinations-mega" id="verticalDestinationsMega">
     {{-- Header du Mega Menu --}}
@@ -42,3 +43,7 @@
         </div>
     </div>
 </div>
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

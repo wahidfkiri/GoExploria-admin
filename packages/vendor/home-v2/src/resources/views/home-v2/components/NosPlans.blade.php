@@ -11,6 +11,7 @@
         return \Illuminate\Support\Str::limit($raw, $limit);
     };
 @endphp
+@php(ob_start());@endphp
 
 <section class="nos-plans-section" id="nos-plans">
     <div class="nos-plans-container">
@@ -201,3 +202,7 @@
         @endif
     </div>
 </section>
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

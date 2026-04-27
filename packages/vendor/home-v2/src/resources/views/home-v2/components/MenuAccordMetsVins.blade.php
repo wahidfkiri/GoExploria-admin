@@ -3,6 +3,7 @@
      Hero · Carousel images+vidéo · Cartes vins · Lightbox · Modal · Réservation
      ============================================================ --}}
 
+@php(ob_start());@endphp
 @php
 /* ---- Slides du carousel (images locales + 1 vidéo YouTube) ---- */
 $amvSlides = [
@@ -728,3 +729,7 @@ $amvWines = [
     });
 })();
 </script>
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp

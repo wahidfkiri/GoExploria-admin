@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
-<html lang="fr">
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="GoExploria — Aventure Accords Mets & Vins : menus, carousel, sélection de vins, réservation">
-    <title>Accord Mets & Vins — GoExploria</title>
+    <title>{{ __('home-v2.pages.food_wine_title') }}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -115,3 +115,5 @@
 
 </body>
 </html>
+
+

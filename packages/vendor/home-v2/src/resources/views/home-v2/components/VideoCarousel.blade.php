@@ -1,3 +1,20 @@
+@php
+    $tr = static function (string $text): string {
+        $locale = app()->getLocale();
+        if ($locale === 'fr') {
+            return $text;
+        }
+
+        static $maps = [];
+        if (! array_key_exists($locale, $maps)) {
+            $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');
+            $maps[$locale] = is_file($path) ? (require $path) : [];
+        }
+
+        return $maps[$locale][$text] ?? $text;
+    };
+@endphp
+
 {{-- Video Carousel Background Component --}}
 <div class="video-carousel-background">
     <div class="video-carousel-container">
@@ -21,8 +38,8 @@
     </div>
     
     <div class="carousel-controls">
-        <button class="carousel-dot" data-slide="0" aria-label="Video 1"></button>
-        <button class="carousel-dot" data-slide="1" aria-label="Video 2"></button>
-        <button class="carousel-dot" data-slide="2" aria-label="Video 3"></button>
+        <button class="carousel-dot" data-slide="0" aria-label="{{ $tr('Vidéo') }} 1"></button>
+        <button class="carousel-dot" data-slide="1" aria-label="{{ $tr('Vidéo') }} 2"></button>
+        <button class="carousel-dot" data-slide="2" aria-label="{{ $tr('Vidéo') }} 3"></button>
     </div>
 </div>

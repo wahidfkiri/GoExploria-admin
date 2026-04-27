@@ -1,3 +1,5 @@
+@php(ob_start());@endphp
+
 {{-- Info Mega Menu Component Compact --}}
 <div class="header-mega-menu info-mega-menu-v2 compact-menu" id="infoMegaMenuV2">
 
@@ -197,3 +199,8 @@
         })();
     </script>
 </div>
+
+@php
+    $__componentHtml = ob_get_clean();
+    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+@endphp
