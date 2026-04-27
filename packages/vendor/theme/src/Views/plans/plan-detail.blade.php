@@ -896,31 +896,6 @@
       </div>
     </div>
 
-    @php
-      $resolvePluginMediaUrl = function (?string $path): ?string {
-        if (!is_string($path) || trim($path) === '') {
-          return null;
-        }
-
-        $path = trim($path);
-        if (
-          str_starts_with($path, 'http://') ||
-          str_starts_with($path, 'https://') ||
-          str_starts_with($path, '//') ||
-          str_starts_with($path, 'data:')
-        ) {
-          return $path;
-        }
-
-        $cleanPath = ltrim($path, '/');
-        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($cleanPath)) {
-          return \Illuminate\Support\Facades\Storage::disk('public')->url($cleanPath);
-        }
-
-        return asset($cleanPath);
-      };
-    @endphp
-
     @forelse($plan->plugins as $index => $plugin)
       @php
         $isEven = $loop->iteration % 2 == 0;
@@ -1006,14 +981,9 @@
           ->all();
 
         $pluginMediaType = strtolower((string) ($plugin->main_media_type ?? ''));
-        $mainImageUrl = $resolvePluginMediaUrl($plugin->main_image_path ?? null);
-        $mainVideoUrl = $resolvePluginMediaUrl($plugin->main_video_path ?? null);
-        $galleryUrls = collect($plugin->gallery_images ?? [])
-          ->filter(fn ($image) => is_string($image) && trim($image) !== '')
-          ->map(fn ($image) => $resolvePluginMediaUrl($image))
-          ->filter()
-          ->values()
-          ->all();
+        $mainImageUrl = $plugin->main_image_url;
+        $mainVideoUrl = $plugin->main_video_url;
+        $galleryUrls = $plugin->gallery_image_urls ?? [];
 
         $serviceMediaSlides = [];
         if ($pluginMediaType === 'image' && $mainImageUrl) {

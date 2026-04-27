@@ -6,10 +6,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Plugin extends Model
 {
     use HasFactory;
+
+    private const ADMIN_STORAGE_BASE_URL = 'https://admin.goexploriabusiness.com/storage';
 
     protected $table = 'plugins';
 
@@ -34,6 +37,65 @@ class Plugin extends Model
         'last_checked_at' => 'datetime',
         'gallery_images' => 'array',
     ];
+
+    /**
+     * Full URL for main image media.
+     */
+    public function getMainImageUrlAttribute(): ?string
+    {
+        return $this->buildMediaUrl($this->main_image_path);
+    }
+
+    /**
+     * Full URL for main video media.
+     */
+    public function getMainVideoUrlAttribute(): ?string
+    {
+        return $this->buildMediaUrl($this->main_video_path);
+    }
+
+    /**
+     * Full URLs for gallery images.
+     */
+    public function getGalleryImageUrlsAttribute(): array
+    {
+        $gallery = $this->gallery_images;
+        if (!is_array($gallery)) {
+            return [];
+        }
+
+        return collect($gallery)
+            ->filter(fn ($path) => is_string($path) && trim($path) !== '')
+            ->map(fn ($path) => $this->buildMediaUrl($path))
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Build full media URL from DB path.
+     */
+    private function buildMediaUrl(?string $path): ?string
+    {
+        if (!is_string($path) || trim($path) === '') {
+            return null;
+        }
+
+        $path = trim($path);
+        if (Str::startsWith($path, ['http://', 'https://', '//', 'data:'])) {
+            return $path;
+        }
+
+        $cleanPath = ltrim($path, '/');
+        if (Str::startsWith($cleanPath, 'storage/')) {
+            $cleanPath = Str::after($cleanPath, 'storage/');
+        }
+        if (Str::startsWith($cleanPath, 'public/')) {
+            $cleanPath = Str::after($cleanPath, 'public/');
+        }
+
+        return rtrim(self::ADMIN_STORAGE_BASE_URL, '/') . '/' . ltrim($cleanPath, '/');
+    }
 
     /**
      * Get the category that owns the plugin.
