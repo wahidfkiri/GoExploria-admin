@@ -12,6 +12,19 @@
         $currentLocale = 'fr';
     }
     $currentLanguage = $supportedLocales[$currentLocale];
+
+    $heroVideoUrl = null;
+    if (isset($plan) && $plan->relationLoaded('plugins')) {
+        $videoPlugin = $plan->plugins->first(function ($plugin) {
+            return strtolower((string) ($plugin->main_media_type ?? '')) === 'video'
+                && ! empty($plugin->main_video_url);
+        });
+
+        $heroVideoUrl = $videoPlugin?->main_video_url;
+        if (! $heroVideoUrl) {
+            $heroVideoUrl = $plan->plugins->first(fn ($plugin) => ! empty($plugin->demo_url))?->demo_url;
+        }
+    }
 @endphp
 <!DOCTYPE html>
 <html lang="{{ $currentLocale }}" data-theme="light">
@@ -688,9 +701,11 @@
             <button class="btn-premium-primary" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">
               <i class="fas fa-arrow-right"></i> Découvrir Nos Services
             </button>
-            <!-- <button class="btn-premium-secondary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
-              <i class="fas fa-play"></i> Voir démo
-            </button> -->
+            @if($heroVideoUrl)
+              <a class="btn-premium-secondary" href="{{ $heroVideoUrl }}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                <i class="fas fa-play"></i> Voir démo
+              </a>
+            @endif
           </div>
           <div class="trust-badges">
             <div class="trust-item">
