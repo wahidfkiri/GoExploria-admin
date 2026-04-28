@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome pour les icônes -->
+    <!-- Font Awesome pour les icÃ´nes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="{{ asset('css/home-v2/styles.css') }}">
@@ -74,8 +74,8 @@
         @include('home-v2.components.DestinationsVedette')
 
         <div id="section-restaurants" class="snb-anchor"></div>
-        {{-- Entête standard restaurant — autonome, hors template --}}
-        @include('home-v2.components.RestaurantHeader')
+        {{-- EntÃªte standard restaurant â€” autonome, hors template --}}
+        @include('home-v2.components.RestaurantAmbianceVedetteV2')
 
         <div id="section-voyages" class="snb-anchor"></div>
         @include('home-v2.components.TravelPackages')
@@ -99,10 +99,10 @@
         @include('home-v2.components.NosPlans')
     </main>
     
-    {{-- Modal réservation global Table & Vin --}}
+    {{-- Modal rÃ©servation global Table & Vin --}}
     @include('home-v2.components.ResaModal')
 
-    {{-- Modal vidéo réutilisable pour toute la plateforme --}}
+    {{-- Modal vidÃ©o rÃ©utilisable pour toute la plateforme --}}
     @include('components.VideoModal')
     
     @include('components.front.call-action')
@@ -118,7 +118,7 @@
     <script src="{{ asset('js/home-v2/mega-menu-service.js') }}"></script>
     {{-- Charger le menu vertical dynamique --}}
     <script src="{{ asset('js/home-v2/vertical-menu-dynamic.js') }}"></script>
-    {{-- Charger le contrôleur du menu vertical (gestion accordéon et vidéos) --}}
+    {{-- Charger le contrÃ´leur du menu vertical (gestion accordÃ©on et vidÃ©os) --}}
     <script src="{{ asset('js/home-v2/vertical-menu.js') }}"></script>
     {{-- Charger le mega menu Destinations pour le menu vertical --}}
     <script src="{{ asset('js/home-v2/vertical-destinations-mega.js') }}"></script>
@@ -127,7 +127,7 @@
     <script src="{{ asset('js/home-v2/destinations-search.js') }}"></script>
     <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
     {{-- Charger le service API pour la carte interactive --}}
-    {{-- Charger video-modal.js EN PREMIER car les autres composants en dépendent --}}
+    {{-- Charger video-modal.js EN PREMIER car les autres composants en dÃ©pendent --}}
     <script src="{{ asset('js/video-modal.js') }}"></script>
     <script src="{{ asset('js/home-v2/viewing-carousel.js') }}"></script>
     <script src="{{ asset('js/home-v2/videos-dropdown.js') }}"></script>
@@ -139,4 +139,5 @@
     <script src="{{ asset('js/home-v2/partners-master.js') }}"></script>
 </body>
 </html>
+
 

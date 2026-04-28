@@ -1,9 +1,9 @@
-/* ============================================================
-   RESTAURANT SERVICE BLOCK — Standard Template
-   GoExploria · Accord Mets & Vins
+﻿/* ============================================================
+   RESTAURANT SERVICE BLOCK â€” Standard Template
+   GoExploria Â· Accord Mets & Vins
    ============================================================ */
 
-/* ---- Forcer Montserrat sur tout le bloc (écrase Bootstrap / héritage navigateur) ---- */
+/* ---- Forcer Montserrat sur tout le bloc (Ã©crase Bootstrap / hÃ©ritage navigateur) ---- */
 .resto-service-block,
 .resto-service-block *,
 .resto-service-block *::before,
@@ -11,7 +11,7 @@
     font-family: 'Montserrat', sans-serif;
 }
 
-/* ---- Restaurer Font Awesome (écrasé par la règle *::before/*::after ci-dessus) ---- */
+/* ---- Restaurer Font Awesome (Ã©crasÃ© par la rÃ¨gle *::before/*::after ci-dessus) ---- */
 .resto-service-block .fas,
 .resto-service-block .fa-solid {
     font-family: "Font Awesome 6 Free" !important;
@@ -237,7 +237,7 @@
     text-shadow: none;
 }
 
-/* ---- Onglets catégories ---- */
+/* ---- Onglets catÃ©gories ---- */
 .resto-header-tabs {
     display: flex;
     flex-wrap: wrap;
@@ -282,6 +282,7 @@
     cursor: pointer;
     transition: all 0.25s ease;
     white-space: nowrap;
+    text-decoration: none !important;
 }
 
 .resto-tab-btn:hover {
@@ -289,6 +290,7 @@
     border-color: rgba(10,22,40,0.55);
     transform: translateY(-1px);
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    text-decoration: none !important;
 }
 
 .resto-tab-btn.active {
@@ -296,10 +298,17 @@
     border-color: #1e88e5;
     color: #ffffff;
     box-shadow: 0 3px 14px rgba(30,136,229,0.45);
+    text-decoration: none !important;
+}
+
+.resto-tab-btn:focus,
+.resto-tab-btn:focus-visible,
+.resto-tab-btn:active {
+    text-decoration: none !important;
 }
 
 /* ============================================================
-   DROPDOWN ÉVÉNEMENTS
+   DROPDOWN Ã‰VÃ‰NEMENTS
    ============================================================ */
 .resto-events-dropdown {
     position: relative;
@@ -335,7 +344,7 @@
     transform: rotate(180deg);
 }
 
-/* Menu déroulant */
+/* Menu dÃ©roulant */
 .resto-events-menu {
     display: none;
     position: absolute;
@@ -446,7 +455,7 @@
     border-top: 1px solid rgba(10,22,40,0.12);
 }
 
-/* Ligne 1 : icône destinations + breadcrumb */
+/* Ligne 1 : icÃ´ne destinations + breadcrumb */
 .resto-dest-row {
     display: flex;
     align-items: center;
@@ -590,7 +599,7 @@
     line-height: 1;
 }
 
-/* ---- Ligne déco animée ---- */
+/* ---- Ligne dÃ©co animÃ©e ---- */
 .resto-header-shimmer {
     position: relative;
     z-index: 1;
@@ -607,19 +616,20 @@
 }
 
 /* ============================================================
-   SECTION MÉDIA — Slideshow Multi-carte
+   SECTION MÃ‰DIA â€” Slideshow Multi-carte
    ============================================================ */
 .resto-media-strip {
     display: block;
     background: #0e1a2e;
     position: relative;
+    z-index: 1;
 }
 
-/* Anciennes règles carousel supprimées — remplacées par MediaSlideshow */
+/* Anciennes rÃ¨gles carousel supprimÃ©es â€” remplacÃ©es par MediaSlideshow */
 
-/* Règles vidéo featured + lightbox supprimées — remplacées par MediaSlideshow */
+/* RÃ¨gles vidÃ©o featured + lightbox supprimÃ©es â€” remplacÃ©es par MediaSlideshow */
 
-/* Responsive media strip — le MediaSlideshow gère son propre responsive */
+/* Responsive media strip â€” le MediaSlideshow gÃ¨re son propre responsive */
 
 /* ============================================================
    RESPONSIVE
@@ -708,7 +718,7 @@
         justify-content: center;
     }
 
-    /* ---- Sélecteur de langue pleine largeur ---- */
+    /* ---- SÃ©lecteur de langue pleine largeur ---- */
     .resto-lang-switcher {
         width: 100%;
     }
@@ -743,7 +753,7 @@
         font-size: 11px;
     }
 
-    /* ---- Événements : 1 colonne ---- */
+    /* ---- Ã‰vÃ©nements : 1 colonne ---- */
     .resto-events-grid {
         grid-template-columns: 1fr;
         padding: 16px 12px;
@@ -795,6 +805,8 @@
    ZONE CONTENU : filtre actif + grille de cartes
    ============================================================ */
 .resto-content-area {
+    position: relative;
+    z-index: 2;
     background: #f9fafb;
     padding: 32px;
 }
@@ -856,7 +868,7 @@
     width: 100%;
 }
 
-/* ---- Séparateur slideshow (span toutes colonnes) ---- */
+/* ---- SÃ©parateur slideshow (span toutes colonnes) ---- */
 .resto-cards-grid-break {
     grid-column: 1 / -1;
     width: 100%;
@@ -1054,7 +1066,7 @@
     box-shadow: 0 4px 14px rgba(30,136,229,0.45);
 }
 
-/* ---- Message aucun résultat ---- */
+/* ---- Message aucun rÃ©sultat ---- */
 .resto-no-results {
     display: none;
     grid-column: 1 / -1;
@@ -1152,7 +1164,7 @@
 }
 
 /* ============================================================
-   BOUTON ÉVÉNEMENTS (barre actions)
+   BOUTON Ã‰VÃ‰NEMENTS (barre actions)
    ============================================================ */
 .resto-events-nav-btn {
     background: #1e88e5;
@@ -1173,7 +1185,7 @@
 }
 
 /* ============================================================
-   EN-TÊTE STANDARD DE SECTION (réutilisable : Events, Plans…)
+   EN-TÃŠTE STANDARD DE SECTION (rÃ©utilisable : Events, Plansâ€¦)
    ============================================================ */
 .resto-section-std-header {
     position: relative;
@@ -1287,7 +1299,7 @@
 }
 
 /* ============================================================
-   SECTION ÉVÉNEMENTS
+   SECTION Ã‰VÃ‰NEMENTS
    ============================================================ */
 .resto-events-section {
     background: #f9fafb;
@@ -1295,7 +1307,7 @@
     padding: 0 0 48px;
 }
 
-/* ---- En-tête de section ---- */
+/* ---- En-tÃªte de section ---- */
 .resto-events-header {
     text-align: center;
     padding: 48px 32px 32px;
@@ -1433,7 +1445,7 @@
     margin: 0 auto;
 }
 
-/* ---- Carte événement ---- */
+/* ---- Carte Ã©vÃ©nement ---- */
 .resto-event-card {
     background: #ffffff;
     border-radius: 12px;
@@ -1551,7 +1563,7 @@
     box-shadow: 0 4px 14px rgba(30,136,229,0.4);
 }
 
-/* ---- Aucun résultat ---- */
+/* ---- Aucun rÃ©sultat ---- */
 .resto-events-no-results {
     display: none;
     grid-column: 1 / -1;
@@ -1707,7 +1719,7 @@
     transform: translateY(-14px);
 }
 
-/* Badge recommandé */
+/* Badge recommandÃ© */
 .resto-plan-badge {
     position: absolute;
     top: 0;
@@ -1937,7 +1949,7 @@
 }
 
 /* ============================================================
-   SECTION RÉSERVATION (ancre cible)
+   SECTION RÃ‰SERVATION (ancre cible)
    ============================================================ */
 .resto-reservation-section {
     background: #ffffff;
@@ -2023,7 +2035,7 @@
 }
 
 /* ============================================================
-   RESPONSIVE — contenu
+   RESPONSIVE â€” contenu
    ============================================================ */
 @media (max-width: 1280px) {
     .resto-cards-grid {
@@ -2054,3 +2066,4 @@
         flex-direction: column;
     }
 }
+

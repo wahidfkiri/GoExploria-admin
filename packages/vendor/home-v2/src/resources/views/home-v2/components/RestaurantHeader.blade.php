@@ -57,6 +57,12 @@ $restoCats = [
         'title' => 'AMBIANCE RESTO — Desserts',
         'desc'  => "Crème brûlée à la vanille, tiramisus maison et créations sucrées de nos pâtissiers — finissez en beauté avec nos desserts et leurs doux accords mignardises.",
     ],
+    [
+        'key'   => 'vins',
+        'label' => 'Vins',
+        'title' => 'AMBIANCE RESTO — Vins',
+        'desc'  => "Rouges de caractère, blancs minéraux, rosés d'été et bulles d'exception — une sélection premium pour accompagner chaque moment.",
+    ],
 ];
 
 /* ----------------------------------------------------------------
@@ -607,6 +613,30 @@ $menuItems = [
      'price'=>'35 $','sub'=>'Les classiques','badge'=>'cat-mets','cat'=>'mets-principaux',
      'accord'=>'Soave · Pinot Grigio',
      'img'=>'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&h=300&fit=crop'],
+    /* ==================== VINS ==================== */
+    ['id'=>35, 'name'=>"Sélection Sommelier — Dégustation Signature",
+     'desc'=>"4 verres (rouge, blanc, rosé, bulles) accompagnés de bouchées gastronomiques.",
+     'price'=>'39 $','sub'=>'Vins','badge'=>'cat-vins','cat'=>'vins',
+     'accord'=>'Accords selon le menu du chef',
+     'img'=>'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=500&h=300&fit=crop'],
+
+    ['id'=>36, 'name'=>"Grand Cru Rouge — Cave Prestige",
+     'desc'=>"Assemblage riche et élégant, idéal avec viandes braisées et plats en sauce.",
+     'price'=>'56 $','sub'=>'Vins','badge'=>'cat-vins','cat'=>'vins',
+     'accord'=>'Filet mignon, joue de bœuf, gibier',
+     'img'=>'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=500&h=300&fit=crop'],
+
+    ['id'=>37, 'name'=>"Blanc Minéral — Récolte Côtière",
+     'desc'=>"Fraîcheur, notes d'agrumes et belle longueur en bouche.",
+     'price'=>'44 $','sub'=>'Vins','badge'=>'cat-vins','cat'=>'vins',
+     'accord'=>'Fruits de mer, tartare de thon, saumon',
+     'img'=>'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=500&h=300&fit=crop'],
+
+    ['id'=>38, 'name'=>"Rosé & Bulles — Soirée Festive",
+     'desc'=>"Rosé sec et cuvée effervescente pour apéritifs et desserts.",
+     'price'=>'48 $','sub'=>'Vins','badge'=>'cat-vins','cat'=>'vins',
+     'accord'=>'Entrées, desserts et occasions spéciales',
+     'img'=>'https://images.unsplash.com/photo-1497534446932-c925b458314e?w=500&h=300&fit=crop'],
 
     /* ==================== DESSERTS ==================== */
     ['id'=>34, 'name'=>"Crème brûlée vanille",
@@ -757,8 +787,8 @@ $menuItems = [
          ============================================================ --}}
     <div class="resto-media-strip">
         @include('home-v2.components.MediaSlideshow', [
-            'slideshowId' => 'restoMedia',
             'slides'      => $restoSlides,
+            'slideshowId' => 'restoMedia',
         ])
     </div>
 
@@ -779,7 +809,6 @@ $menuItems = [
         {{-- Grille de cartes --}}
         <div class="resto-cards-grid" id="resto-cards-grid">
 
-            @php $accordSlideIndex = 0; @endphp
             @foreach($menuItems as $item)
             <article class="resto-card"
                      data-dest="all amerique-nord canada quebec region-quebec"
@@ -818,14 +847,14 @@ $menuItems = [
                 </div>
 
             </article>
-            @if($loop->iteration % 8 === 0 && !$loop->last)
-            @php
-                $slideshowSet = $accordSlideshows[$accordSlideIndex % count($accordSlideshows)][0];
-                $accordSlideIndex++;
-            @endphp
+            @endforeach
+
+            @foreach($accordSlideshows as $idx => $slideshowGroup)
+            @php $slideshowSet = $slideshowGroup[0] ?? null; @endphp
+            @if($slideshowSet)
             <div class="resto-cards-grid-break">
                 @include('home-v2.components.MediaSlideshow', [
-                    'slideshowId' => 'accordMedia' . $loop->iteration,
+                    'slideshowId' => 'accordMediaAfter' . ($idx + 1),
                     'slides'      => [$slideshowSet],
                 ])
             </div>
