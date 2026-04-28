@@ -53,7 +53,9 @@
                     <!-- <li class="nav-menu-v2-has-videos" id="videosMenuItem">
                         <a href="#videos">VIDÉOS</a>
                     </li> -->
-                    <li><a href="#section-nos-plans">{{ __('home-v2.header.menu.plans') }}</a></li>
+                    <li class="nav-menu-v2-has-plans" id="plansMenuItem">
+                        <a href="#section-nos-plans" id="plansMenuTrigger">{{ __('home-v2.header.menu.plans') }}</a>
+                    </li>
                     <li><a href="{{ route('contact') }}">{{ __('home-v2.header.menu.contact') }}</a></li>
                     <li><a href="{{ route('inscription') }}">{{ __('home-v2.header.menu.signup') }}</a></li>
                     <li><a href="{{ route('mon-compte') }}" class="nav-account-icon" title="{{ __('home-v2.common.account') }}" aria-label="{{ __('home-v2.common.account') }}"><i class="fas fa-user-circle"></i></a></li>
@@ -61,6 +63,7 @@
             </div>
             
             @include('home-v2.components.ServicesMegaMenuV2')
+            @include('home-v2.components.PlansMegaMenu')
             
             <div class="nav-right">
                 <a href="javascript:void(0)" class="nav-icon mobile-search-trigger" id="mobileSearchTrigger" aria-label="{{ __('home-v2.common.search') }}">

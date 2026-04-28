@@ -15,6 +15,16 @@
     z-index: 50;
 }
 
+.hero-v2 .search-bar-v2.search-bar-v2-floating {
+    position: fixed !important;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 10035;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 .search-bar-v2-container {
     max-width: 2000px;
     margin: 0 auto;

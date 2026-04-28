@@ -587,5 +587,71 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   Search-bar sticky : reste visible au scroll (comme le header)
+   Garde sa position normale au chargement dans le Hero
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+document.addEventListener('DOMContentLoaded', function() {
+    const searchBar = document.querySelector('.hero-v2 .search-bar-v2');
+    const header = document.querySelector('.header-v2');
+    if (!searchBar || !header) return;
+
+    const spacer = document.createElement('div');
+    spacer.style.display = 'none';
+    searchBar.insertAdjacentElement('afterend', spacer);
+
+    let stickyStart = 0;
+
+    function measureStickyStart() {
+        const wasFloating = searchBar.classList.contains('search-bar-v2-floating');
+        if (wasFloating) {
+            searchBar.classList.remove('search-bar-v2-floating');
+            searchBar.style.top = '';
+            spacer.style.display = 'none';
+            spacer.style.height = '0px';
+        }
+
+        stickyStart = searchBar.getBoundingClientRect().top + window.scrollY;
+
+        if (wasFloating) {
+            searchBar.classList.add('search-bar-v2-floating');
+        }
+    }
+
+    function updateStickySearchBar() {
+        if (window.innerWidth <= 1024) {
+            searchBar.classList.remove('search-bar-v2-floating');
+            searchBar.style.top = '';
+            spacer.style.display = 'none';
+            spacer.style.height = '0px';
+            return;
+        }
+
+        const headerBottom = Math.max(0, header.getBoundingClientRect().bottom);
+        const shouldFloat = (window.scrollY + headerBottom + 8) >= stickyStart;
+
+        if (shouldFloat) {
+            searchBar.classList.add('search-bar-v2-floating');
+            searchBar.style.top = (headerBottom + 8) + 'px';
+            spacer.style.display = 'block';
+            spacer.style.height = searchBar.offsetHeight + 'px';
+        } else {
+            searchBar.classList.remove('search-bar-v2-floating');
+            searchBar.style.top = '';
+            spacer.style.display = 'none';
+            spacer.style.height = '0px';
+        }
+    }
+
+    measureStickyStart();
+    updateStickySearchBar();
+
+    window.addEventListener('scroll', updateStickySearchBar, { passive: true });
+    window.addEventListener('resize', function() {
+        measureStickyStart();
+        updateStickySearchBar();
+    });
+});
 </script>
 

@@ -241,6 +241,49 @@ const mainTitlesOrder = [
 ];
 
 // ============================================================
+// NORMALISATION DES LIENS : TOUS LES LIENS VERS BLOCS INDEX
+// ============================================================
+const sectionAnchorByBlock = {
+    'espaces-medias': '#section-medias',
+    'next-level': '#section-next-level',
+    'restaurants-alimentations': '#section-restaurants',
+    'vedettes': '#section-vedettes',
+    'voyages-forfaits': '#section-voyages',
+    'marketplace': '#section-marketplace',
+    'espaces-specialises': '#section-marketplace',
+    'a-la-une': '#section-a-la-une'
+};
+
+const unresolvedServiceBlocks = [];
+
+mainTitlesOrder.forEach(function(blockKey) {
+    const block = menuData[blockKey];
+    const sectionAnchor = sectionAnchorByBlock[blockKey];
+
+    if (!block || !Array.isArray(block.categories)) return;
+
+    if (!sectionAnchor) {
+        unresolvedServiceBlocks.push(block.title || blockKey);
+        return;
+    }
+
+    block.categories.forEach(function(category, index) {
+        category.link = sectionAnchor;
+        category.external = false;
+
+        // Cas demandé : le 1er item "ESPACES TOURISME ET BUSINESS"
+        // doit aller à la section dédiée et non à la carte.
+        if (blockKey === 'espaces-medias' && index === 0) {
+            category.link = '#tourisme-business';
+        }
+    });
+});
+
+if (unresolvedServiceBlocks.length > 0) {
+    console.warn('[ServicesMegaMenuV2] Blocs sans ancre section:', unresolvedServiceBlocks);
+}
+
+// ============================================================
 // GÉNÉRATION SIDEBAR
 // ============================================================
 function generateSidebar() {
@@ -345,6 +388,13 @@ smmOverlay.addEventListener('mouseenter', cancelClose);
 
 if (smmClose)   smmClose.addEventListener('click', closeMenu);
 if (smmOverlay) smmOverlay.addEventListener('click', closeMenu);
+
+// Fermer le mega menu dès clic sur un lien de carte
+smmContainer.addEventListener('click', function(e) {
+    const cardLink = e.target.closest('.smm-v4-card-link');
+    if (!cardLink) return;
+    closeMenu();
+});
 
 // Hover sur un bloc dans la sidebar (plus réactif que le clic)
 document.addEventListener('mouseover', function(e) {
