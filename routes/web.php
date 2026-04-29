@@ -309,6 +309,10 @@ Route::prefix('pages')->name('pages.')->group(function () {
     Route::get('/accord-mets-vins', function() {
         return view('home-v2.pages.accord-mets-vins');
     })->name('accord-mets-vins');
+
+    Route::get('/chalets-a-louer/grande-serenite', function() {
+        return view('home-v2.pages.chalet-rental-detail');
+    })->name('chalet-rental-detail');
 });
 
 

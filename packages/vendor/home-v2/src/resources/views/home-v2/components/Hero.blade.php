@@ -23,11 +23,12 @@
             $tr('Trouvez un hébergement…'),
         ];
     @endphp
-    @php($showCarouselNav = isset($sliders) && count($sliders) > 5)
+    @php($orderedSliders = collect($sliders ?? [])->sortBy('order')->values())
+    @php($showCarouselNav = $orderedSliders->count() > 5)
     {{-- Video Carousel Background - Confiné au Hero --}}
     <div class="video-carousel-background">
         <div class="video-carousel-container">
-            @foreach($sliders as $index => $slider)
+            @foreach($orderedSliders as $index => $slider)
             <div class="video-slide {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}">
                 @if($slider->video_type === 'youtube' || $slider->video_type === 'vimeo')
                     {{-- Vidéo YouTube/Vimeo avec iframe --}}
@@ -50,7 +51,7 @@
                     <div class="hero-video-info">
                         <h2 class="hero-video-main-title">{{ $slider->name }}</h2>
                         @if($slider->button_text && $slider->button_url)
-                            <a href="{{ $slider->button_url }}" class="hero-video-main-button">
+                            <a href="{{ $slider->button_url }}" class="hero-video-main-button" target="_blank" rel="noopener noreferrer">
                                 {{ $slider->button_text }}
                             </a>
                         @endif
@@ -70,7 +71,7 @@
             </button>
             @endif
             <div class="hero-video-cards">
-                @foreach($sliders as $index => $slider)
+                @foreach($orderedSliders as $index => $slider)
                 <div class="hero-video-card {{ $index === 0 ? 'active' : '' }}" data-video="{{ $index }}">
                     @php($isExternalVideo = $slider->video_type === 'youtube' || $slider->video_type === 'vimeo')
                     @php($hasCardImage = !empty($slider->thumbnail_path) || !empty($slider->image_path))
@@ -112,7 +113,7 @@
         </div>
         
         <div class="carousel-controls">
-            @foreach($sliders as $index => $slider)
+            @foreach($orderedSliders as $index => $slider)
             <button class="carousel-dot" data-slide="{{ $index }}" aria-label="{{ $tr('Vidéo') }} {{ $index + 1 }}"></button>
             @endforeach
         </div>

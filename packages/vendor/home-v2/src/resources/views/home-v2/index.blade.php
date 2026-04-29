@@ -89,6 +89,7 @@
         @include('home-v2.components.WebServices')
 
         <div id="section-marketplace" class="snb-anchor"></div>
+        @include('home-v2.components.SpecializedSpacesSection')
         @include('home-v2.components.RealEstateSection')
         @include('home-v2.components.ProductsVedette')
 
