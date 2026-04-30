@@ -313,6 +313,18 @@ Route::prefix('pages')->name('pages.')->group(function () {
     Route::get('/chalets-a-louer/grande-serenite', function() {
         return view('home-v2.pages.chalet-rental-detail');
     })->name('chalet-rental-detail');
+
+    Route::get('/chalets-a-louer/lac-azur-signature', function() {
+        return view('home-v2.pages.chalet-rental-lac-azur');
+    })->name('chalet-rental-lac-azur');
+
+    Route::get('/maisons-chalets-a-vendre/eclipse-forestier', function() {
+        return view('home-v2.pages.maison-forestiere-eclipse');
+    })->name('maison-forestiere-eclipse');
+
+    Route::get('/projets-touristiques/halte-boreale', function() {
+        return view('home-v2.pages.projet-touristique-boreal');
+    })->name('projet-touristique-boreal');
 });
 
 

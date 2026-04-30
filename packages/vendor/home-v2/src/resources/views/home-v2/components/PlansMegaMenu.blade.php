@@ -20,6 +20,7 @@
         [
             'title' => 'ESPACES ENTREPRISES',
             'description' => 'ACTIVEZ VOS ESPACES ENTREPRISES ICI',
+            'price' => 'À partir de 299 CAD / mois',
             'icon' => 'fas fa-building',
             'color' => 'plans-mega-card-enterprise',
             'fallback' => $plansPresentationUrl,
@@ -27,6 +28,7 @@
         [
             'title' => 'ESPACES DESTINATIONS',
             'description' => 'ACTIVEZ VOS ESPACES DESTINATION ICI',
+            'price' => 'À partir de 249 CAD / mois',
             'icon' => 'fas fa-map-marked-alt',
             'color' => 'plans-mega-card-destination',
             'fallback' => $plansPresentationUrl,
@@ -34,6 +36,7 @@
         [
             'title' => 'ESPACE ACTIVITÉ → PRODUITS & SERVICES',
             'description' => 'ACTIVER VOTRE ESPACE ACTIVITÉ AVEC LIENS DIRECT',
+            'price' => 'À partir de 199 CAD / mois',
             'icon' => 'fas fa-box-open',
             'color' => 'plans-mega-card-activity',
             'fallback' => $plansPresentationUrl,
@@ -41,6 +44,7 @@
         [
             'title' => 'ESPACES PARTENAIRES AFFILIÉS',
             'description' => 'ACTIVEZ VOS ESPACES PARTENAIRES AFFILIÉS ICI',
+            'price' => 'À partir de 179 CAD / mois',
             'icon' => 'fas fa-handshake',
             'color' => 'plans-mega-card-partner',
             'fallback' => $plansPresentationUrl,
@@ -48,6 +52,7 @@
         [
             'title' => 'ESPACES PERSO',
             'description' => 'ACTIVEZ VOS ESPACES PERSO ICI',
+            'price' => 'À partir de 99 CAD / mois',
             'icon' => 'fas fa-user-circle',
             'color' => 'plans-mega-card-personal',
             'fallback' => $plansPresentationUrl,
@@ -59,8 +64,21 @@
 <div class="plans-mega-v2" id="plansMegaMenu" aria-hidden="true">
     <div class="plans-mega-v2-head">
         <div class="plans-mega-v2-kicker">PASSEZ AU NIVEAU SUPÉRIEURE</div>
-        <h3>GO EXPLORIA BUSINESS - NEXT LEVEL LE COUTEAU SUISSE DU WEB</h3>
+        <h3>GO EXPLORIA BUSINESS - NEXT LEVEL</h3>
+        <p class="plans-mega-v2-intro">
+            GO EXPLORIA BUSINESS - NEXT LEVEL, c'est :
+        </p>
+        <ul class="plans-mega-v2-points">
+            <li>✔ Un investissement marketing massif</li>
+            <li>✔ Une plateforme technologique complète</li>
+            <li>✔ Une visibilité internationale immédiate</li>
+            <li>✔ Des performances mesurables et rentables</li>
+            <li>✔ Une solution conçue pour propulser les entreprises vers une croissance rapide et durable à l'échelle mondiale.</li>
+        </ul>
+        <p class="plans-mega-v2-cta-main">PASSEZ AU NIVEAU SUPÉRIEURE</p>
+        <p class="plans-mega-v2-cta-title">GO EXPLORIA BUSINESS - NEXT LEVEL</p>
         <p>Plateforme marketing régional, national et internationale, votre croissance au cœur de nos offres!</p>
+        <p class="plans-mega-v2-cta-end">ET OBTENEZ DES RÉSULTATS CONCRET.</p>
     </div>
 
     <div class="plans-mega-v2-grid">
@@ -76,6 +94,7 @@
                 <div class="plans-mega-v2-card-icon"><i class="{{ $card['icon'] }}"></i></div>
                 <div class="plans-mega-v2-card-title">{{ $card['title'] }}</div>
                 <div class="plans-mega-v2-card-desc">{{ $card['description'] }}</div>
+                <div class="plans-mega-v2-card-price">{{ $card['price'] }}</div>
                 @if ($linkedPlan)
                     <div class="plans-mega-v2-card-plan">{{ $linkedPlan->name }}</div>
                 @endif
@@ -158,6 +177,54 @@
         margin-right: auto;
     }
 
+    .plans-mega-v2-intro {
+        font-weight: 700;
+        margin-bottom: 8px !important;
+    }
+
+    .plans-mega-v2-points {
+        list-style: none;
+        margin: 0 auto 10px;
+        padding: 0;
+        max-width: 760px;
+        text-align: left;
+        display: grid;
+        gap: 4px;
+    }
+
+    .plans-mega-v2-points li {
+        color: #253754;
+        font-size: 14px;
+        line-height: 1.45;
+        font-weight: 600;
+    }
+
+    .plans-mega-v2-cta-main {
+        margin-top: 4px !important;
+        color: #c89c2f !important;
+        font-size: 13px !important;
+        font-weight: 900 !important;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .plans-mega-v2-cta-title {
+        margin-top: 2px !important;
+        margin-bottom: 4px !important;
+        color: #10203a !important;
+        font-size: 16px !important;
+        font-weight: 900 !important;
+        text-transform: uppercase;
+    }
+
+    .plans-mega-v2-cta-end {
+        margin-top: 6px !important;
+        color: #10203a !important;
+        font-size: 13px !important;
+        font-weight: 900 !important;
+        text-transform: uppercase;
+    }
+
     .plans-mega-v2-grid {
         display: grid;
         grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -200,7 +267,19 @@
         font-size: 13.5px;
         line-height: 1.35;
         opacity: 0.95;
-        flex: 1;
+    }
+
+    .plans-mega-v2-card-price {
+        display: inline-flex;
+        align-self: flex-start;
+        margin-top: 2px;
+        padding: 4px 9px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        font-size: 11.5px;
+        font-weight: 800;
+        letter-spacing: 0.01em;
     }
 
     .plans-mega-v2-card-plan {

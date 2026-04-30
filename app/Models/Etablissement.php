@@ -40,7 +40,13 @@ class Etablissement extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+    public function themes()
+    {
+        return $this->belongsToMany(\Vendor\Cms\Models\Theme::class, 'cms_etablissement_theme', 'etablissement_id', 'theme_id')
+            ->withPivot('is_active', 'config')
+            ->withTimestamps();
+    }
+
     /**
      * Relation Many-to-Many avec les activités
      */

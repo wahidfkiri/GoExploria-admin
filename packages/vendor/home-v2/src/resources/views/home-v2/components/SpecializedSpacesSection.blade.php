@@ -96,7 +96,7 @@
                         <span class="immo-v2-feature-item"><i class="fas fa-bed"></i> 2 chambres</span>
                         <span class="immo-v2-feature-item"><i class="fas fa-tree"></i> Terrain boisé</span>
                     </div>
-                    <a href="{{ route('pages.chalet-rental-detail') }}" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
+                    <a href="{{ route('pages.chalet-rental-lac-azur') }}" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
                 </div>
             </article>
 
@@ -114,7 +114,7 @@
                         <span class="immo-v2-feature-item"><i class="fas fa-bed"></i> 4 chambres</span>
                         <span class="immo-v2-feature-item"><i class="fas fa-water"></i> Vue sur lac</span>
                     </div>
-                    <a href="{{ route('pages.chalet-rental-detail') }}" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
+                    <a href="{{ route('pages.maison-forestiere-eclipse') }}" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
                 </div>
             </article>
 
@@ -132,7 +132,7 @@
                         <span class="immo-v2-feature-item"><i class="fas fa-building"></i> 8 unités</span>
                         <span class="immo-v2-feature-item"><i class="fas fa-chart-line"></i> Fort potentiel locatif</span>
                     </div>
-                    <a href="{{ route('pages.chalet-rental-detail') }}" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
+                    <a href="{{ route('pages.projet-touristique-boreal') }}" class="immo-v2-btn">Voir le détail <i class="fas fa-arrow-right"></i></a>
                 </div>
             </article>
         </div>
