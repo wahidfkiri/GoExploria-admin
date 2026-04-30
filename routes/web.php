@@ -311,7 +311,7 @@ Route::prefix('pages')->name('pages.')->group(function () {
     })->name('accord-mets-vins');
 
     Route::get('/chalets-a-louer/grande-serenite', function() {
-        return view('home-v2.pages.chalet-rental-detail');
+        return view('home-v2.pages.chalet-rental-detail-grande-serenite-v2');
     })->name('chalet-rental-detail');
 
     Route::get('/chalets-a-louer/lac-azur-signature', function() {
