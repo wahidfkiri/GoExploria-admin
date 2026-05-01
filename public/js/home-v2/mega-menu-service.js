@@ -161,12 +161,28 @@ class MegaMenuService {
         if (!query || query.length < 2) return [];
 
         try {
-            const response = await fetch(`${this.baseURL}/search?q=${encodeURIComponent(query)}`);
+            const response = await fetch(`${this.baseURL}/search?query=${encodeURIComponent(query)}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             
             const result = await response.json();
             if (result.success) {
-                return result.data;
+                const grouped = result.data || {};
+                const map = {
+                    continents: 'continent',
+                    countries: 'country',
+                    provinces: 'province',
+                    regions: 'region',
+                    villes: 'ville',
+                    secteurs: 'secteur'
+                };
+
+                const flat = [];
+                Object.entries(map).forEach(([groupKey, type]) => {
+                    const items = Array.isArray(grouped[groupKey]) ? grouped[groupKey] : [];
+                    items.forEach((item) => flat.push({ ...item, type }));
+                });
+
+                return flat;
             }
             return [];
         } catch (error) {

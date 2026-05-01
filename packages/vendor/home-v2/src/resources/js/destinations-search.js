@@ -279,6 +279,9 @@ class DestinationsSearch {
 
 // Initialiser au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.__GOEXPLORIA_USE_NEW_SEARCH_BAR) {
+        return;
+    }
     if (window.megaMenuService) {
         new DestinationsSearch();
     } else {

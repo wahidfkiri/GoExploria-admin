@@ -9,6 +9,8 @@ use App\Models\Region;
 use App\Models\Ville;
 use App\Models\Secteur;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -456,12 +458,61 @@ class DestinationService
     /**
      * Récupérer un continent par son slug
      */
+    private function resolveGeoBySlug(string $modelClass, string $slug)
+    {
+        $model = new $modelClass();
+        $table = $model->getTable();
+        $rawSlug = trim($slug);
+        $normalizedSlug = Str::slug($rawSlug);
+        $baseQuery = $modelClass::active();
+
+        if (Schema::hasColumn($table, 'slug')) {
+            $bySlug = (clone $baseQuery)->where('slug', $rawSlug)->first();
+            if ($bySlug) {
+                return $bySlug;
+            }
+
+            if ($normalizedSlug !== $rawSlug) {
+                $byNormalizedSlug = (clone $baseQuery)->where('slug', $normalizedSlug)->first();
+                if ($byNormalizedSlug) {
+                    return $byNormalizedSlug;
+                }
+            }
+        }
+
+        if (Schema::hasColumn($table, 'code')) {
+            $byCode = (clone $baseQuery)
+                ->whereRaw('LOWER(code) = ?', [Str::lower($rawSlug)])
+                ->first();
+
+            if ($byCode) {
+                return $byCode;
+            }
+        }
+
+        if (!Schema::hasColumn($table, 'name')) {
+            return null;
+        }
+
+        return $baseQuery->get()->first(function ($item) use ($normalizedSlug, $rawSlug) {
+            $name = (string) ($item->name ?? '');
+            $nameSlug = Str::slug($name);
+
+            if ($nameSlug === $normalizedSlug || Str::lower($name) === Str::lower($rawSlug)) {
+                return true;
+            }
+
+            $code = (string) ($item->code ?? '');
+            return $code !== '' && Str::slug($code) === $normalizedSlug;
+        });
+    }
+
     public function getContinentBySlug(string $slug)
     {
         $cacheKey = "destinations.continent.slug.{$slug}";
         
         return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($slug) {
-            return Continent::active()->where('slug', $slug)->first();
+            return $this->resolveGeoBySlug(Continent::class, $slug);
         });
     }
 
@@ -473,7 +524,7 @@ class DestinationService
         $cacheKey = "destinations.country.slug.{$slug}";
         
         return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($slug) {
-            return Country::active()->where('slug', $slug)->first();
+            return $this->resolveGeoBySlug(Country::class, $slug);
         });
     }
 
@@ -485,7 +536,7 @@ class DestinationService
         $cacheKey = "destinations.province.slug.{$slug}";
         
         return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($slug) {
-            return Province::active()->where('slug', $slug)->first();
+            return $this->resolveGeoBySlug(Province::class, $slug);
         });
     }
 
@@ -497,7 +548,7 @@ class DestinationService
         $cacheKey = "destinations.region.slug.{$slug}";
         
         return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($slug) {
-            return Region::active()->where('slug', $slug)->first();
+            return $this->resolveGeoBySlug(Region::class, $slug);
         });
     }
 
@@ -509,7 +560,7 @@ class DestinationService
         $cacheKey = "destinations.ville.slug.{$slug}";
         
         return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($slug) {
-            return Ville::active()->where('slug', $slug)->first();
+            return $this->resolveGeoBySlug(Ville::class, $slug);
         });
     }
 
@@ -521,7 +572,7 @@ class DestinationService
         $cacheKey = "destinations.secteur.slug.{$slug}";
         
         return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($slug) {
-            return Secteur::active()->where('slug', $slug)->first();
+            return $this->resolveGeoBySlug(Secteur::class, $slug);
         });
     }
 

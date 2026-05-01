@@ -98,6 +98,9 @@
 
         <div id="section-nos-plans" class="snb-anchor"></div>
         @include('home-v2.components.NosPlans')
+        @include('home-v2.components.MarketFoodVedette')
+        @include('home-v2.components.LocationVehiculesVedette')
+        @include('home-v2.components.ChassePecheVedette')
     </main>
     
     {{-- Modal rÃ©servation global Table & Vin --}}
@@ -140,5 +143,3 @@
     <script src="{{ asset('js/home-v2/partners-master.js') }}"></script>
 </body>
 </html>
-
-
