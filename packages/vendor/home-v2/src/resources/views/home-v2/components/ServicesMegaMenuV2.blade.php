@@ -43,7 +43,7 @@ const menuData = {
         tag: 'go exploria espaces media',
         icon: 'fas fa-photo-video',
         categories: [
-            { icon: 'fas fa-briefcase',       name: 'ESPACES TOURISME ET BUSINESS',        desc: 'Avec les 2 nouveaux logos',                   link: '#tourisme-business' },
+            { icon: 'fas fa-briefcase',       name: 'ESPACES TOURISME ET BUSINESS',        desc: 'Business & Tourisme',                         link: '#business-tourism' },
             { icon: 'fas fa-map-marked-alt',  name: 'ACTIVEZ VOTRE ESPACES DESTINATIONS',  desc: 'Québec, Canada, Europe, Monde',               link: '#activez-destinations' },
             { icon: 'fas fa-building',        name: 'ACTIVEZ VOTRE ESPACES ENTREPRISES',   desc: 'Profil professionnel complet',                link: '#activez-entreprises' },
             { icon: 'fas fa-user-circle',     name: 'ACTIVEZ VOTRE ESPACES PERSO',         desc: 'Espace personnel & Favoris',                  link: '#activez-perso' },
@@ -240,48 +240,7 @@ const mainTitlesOrder = [
     'a-la-une'
 ];
 
-// ============================================================
-// NORMALISATION DES LIENS : TOUS LES LIENS VERS BLOCS INDEX
-// ============================================================
-const sectionAnchorByBlock = {
-    'espaces-medias': '#section-medias',
-    'next-level': '#section-next-level',
-    'restaurants-alimentations': '#section-restaurants',
-    'vedettes': '#section-vedettes',
-    'voyages-forfaits': '#section-voyages',
-    'marketplace': '#section-marketplace',
-    'espaces-specialises': '#section-marketplace',
-    'a-la-une': '#section-a-la-une'
-};
-
-const unresolvedServiceBlocks = [];
-
-mainTitlesOrder.forEach(function(blockKey) {
-    const block = menuData[blockKey];
-    const sectionAnchor = sectionAnchorByBlock[blockKey];
-
-    if (!block || !Array.isArray(block.categories)) return;
-
-    if (!sectionAnchor) {
-        unresolvedServiceBlocks.push(block.title || blockKey);
-        return;
-    }
-
-    block.categories.forEach(function(category, index) {
-        category.link = sectionAnchor;
-        category.external = false;
-
-        // Cas demandé : le 1er item "ESPACES TOURISME ET BUSINESS"
-        // doit aller à la section dédiée et non à la carte.
-        if (blockKey === 'espaces-medias' && index === 0) {
-            category.link = '#tourisme-business';
-        }
-    });
-});
-
-if (unresolvedServiceBlocks.length > 0) {
-    console.warn('[ServicesMegaMenuV2] Blocs sans ancre section:', unresolvedServiceBlocks);
-}
+// Les liens directs définis dans menuData (category.link) sont conservés tels quels.
 
 // ============================================================
 // GÉNÉRATION SIDEBAR

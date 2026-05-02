@@ -1070,6 +1070,162 @@
     @endforelse
   </section>
 
+  @php
+    $includedServices = collect($plan->servicesItems ?? [])->filter(function ($service) {
+      return (bool) ($service->is_active ?? true);
+    })->values();
+  @endphp
+
+  @if($includedServices->isNotEmpty())
+    <!-- Services inclus via PlanService -->
+    <section id="services-inclus" style="padding: 20px 0 80px;">
+      <div class="container">
+        <div class="section-header-premium">
+          <span class="section-tag-premium" style="background: linear-gradient(135deg, #22c55e, #10b981);">Services inclus</span>
+          <h2 class="section-title-premium">Les services <span class="gradient-premium">compris dans ce plan</span></h2>
+          <p style="color: #6b7280;">Contenu dynamique depuis la table plan_services</p>
+        </div>
+      </div>
+
+      @foreach($includedServices as $service)
+        @php
+          $isEven = $loop->iteration % 2 == 0;
+          $serviceTitle = trim((string) ($service->title ?? '')) !== '' ? $service->title : 'Service inclus';
+
+          $serviceDescriptionRaw = trim((string) ($service->description ?? ''));
+          if ($serviceDescriptionRaw === '') {
+            $serviceDescriptionRaw = trim((string) ($service->content ?? ''));
+          }
+          $serviceDescription = \Illuminate\Support\Str::limit(
+            preg_replace('/\s+/', ' ', strip_tags(html_entity_decode($serviceDescriptionRaw))),
+            260
+          );
+
+          $serviceType = strtolower(trim((string) ($service->service_type ?? '')));
+          $serviceIconMap = [
+            'video' => 'fa-video',
+            'seo' => 'fa-chart-line',
+            'site' => 'fa-laptop-code',
+            'web' => 'fa-globe',
+            'email' => 'fa-envelope-open-text',
+            'marketing' => 'fa-bullhorn',
+            'reservation' => 'fa-calendar-check',
+            'crm' => 'fa-users-gear',
+            'media' => 'fa-photo-film',
+          ];
+          $serviceIcon = 'fa-puzzle-piece';
+          foreach ($serviceIconMap as $key => $icon) {
+            if (str_contains($serviceType, $key)) {
+              $serviceIcon = $icon;
+              break;
+            }
+          }
+
+          $featureSource = trim((string) ($service->content ?? ''));
+          $serviceFeatures = collect(preg_split('/[\r\n,;|]+/', $featureSource ?: ''))
+            ->map(fn ($value) => trim(strip_tags((string) $value)))
+            ->filter(fn ($value) => $value !== '')
+            ->take(4)
+            ->values();
+
+          if ($serviceFeatures->isEmpty()) {
+            $serviceFeatures = collect(['Service inclus', 'Activation rapide', 'Support disponible']);
+          }
+
+          $servicePriceRaw = $service->getAttributes()['price'] ?? $service->price;
+          $servicePriceNum = $servicePriceRaw === null || $servicePriceRaw === '' ? null : (float) $servicePriceRaw;
+          $serviceCurrency = trim((string) ($service->currency ?? ''));
+
+          $serviceStats = [
+            [
+              'value' => $servicePriceNum !== null && $servicePriceNum > 0
+                ? number_format($servicePriceNum, 0, ',', ' ') . ($serviceCurrency !== '' ? ' ' . $serviceCurrency : '')
+                : 'Inclus',
+              'label' => 'tarification',
+            ],
+            [
+              'value' => $serviceType !== '' ? strtoupper($serviceType) : 'STANDARD',
+              'label' => 'type de service',
+            ],
+          ];
+
+          $serviceMediaSlides = [];
+          $serviceMediaType = strtolower((string) ($service->main_media_type ?? ''));
+          $serviceMainImageUrl = $service->main_image_url;
+          $serviceMainVideoUrl = $service->main_video_url;
+          $serviceGalleryUrls = $service->gallery_image_urls ?? [];
+
+          if ($serviceMediaType === 'video' && $serviceMainVideoUrl) {
+            $serviceMediaSlides[] = ['type' => 'video', 'url' => $serviceMainVideoUrl];
+          } elseif ($serviceMainImageUrl) {
+            $serviceMediaSlides[] = ['type' => 'image', 'url' => $serviceMainImageUrl];
+          }
+
+          foreach ($serviceGalleryUrls as $galleryUrl) {
+            $serviceMediaSlides[] = ['type' => 'image', 'url' => $galleryUrl];
+          }
+
+          if (empty($serviceMediaSlides)) {
+            $serviceMediaSlides = [
+              ['type' => 'image', 'url' => 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=500&fit=crop'],
+              ['type' => 'image', 'url' => 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&h=500&fit=crop'],
+            ];
+          }
+        @endphp
+
+        <div class="container">
+          <div class="service-card-premium {{ $isEven ? 'alt' : '' }}">
+            <div class="service-card-grid {{ $isEven ? 'reverse' : '' }}">
+              <div>
+                <div class="service-icon-premium">
+                  <i class="fas {{ $serviceIcon }}"></i>
+                </div>
+                <h3 class="service-title-premium">{{ $serviceTitle }}</h3>
+                <p class="service-desc-premium">{{ $serviceDescription !== '' ? $serviceDescription : 'Service inclus dans votre plan.' }}</p>
+                <div class="features-grid-premium">
+                  @foreach($serviceFeatures as $feature)
+                    <span class="feature-chip">{{ $feature }}</span>
+                  @endforeach
+                </div>
+                <div class="stats-row">
+                  @foreach($serviceStats as $stat)
+                    <div class="stat-premium">
+                      <div class="value">{{ $stat['value'] }}</div>
+                      <div class="label">{{ $stat['label'] }}</div>
+                    </div>
+                  @endforeach
+                </div>
+                <button class="btn-premium-primary" style="margin-top: 16px;" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
+                  Je veux ce service <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+              <div class="service-media-premium">
+                <div class="swiper service-swiper-premium">
+                  <div class="swiper-wrapper">
+                    @foreach($serviceMediaSlides as $slide)
+                      <div class="swiper-slide">
+                        @if(($slide['type'] ?? 'image') === 'video')
+                          <video controls preload="metadata" playsinline>
+                            <source src="{{ $slide['url'] }}">
+                          </video>
+                        @else
+                          <img src="{{ $slide['url'] }}" alt="{{ $serviceTitle }}">
+                        @endif
+                      </div>
+                    @endforeach
+                  </div>
+                  <div class="swiper-pagination"></div>
+                  <div class="swiper-button-next"></div>
+                  <div class="swiper-button-prev"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      @endforeach
+    </section>
+  @endif
+
   <!-- Facturation Section -->
   <div class="container">
     <div class="service-card-premium alt">

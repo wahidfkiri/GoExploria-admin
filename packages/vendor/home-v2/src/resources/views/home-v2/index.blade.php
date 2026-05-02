@@ -63,6 +63,7 @@
         @include('home-v2.components.SectionsNavBar')
 
         <div id="section-medias" class="snb-anchor"></div>
+        @include('home-v2.components.BusinessTourism')
         @include('geo-map::index')
         @include('home-v2.components.VideoPlayer')
         @include('home-v2.components.ViewingCarousel')
@@ -81,7 +82,6 @@
         @include('home-v2.components.TravelPackages')
         @include('home-v2.components.TravelInfos')
         @include('home-v2.components.TourismSection')
-        @include('home-v2.components.BusinessTourism')
 
         <div id="section-next-level" class="snb-anchor"></div>
         @include('home-v2.components.PartnersMaster')

@@ -15,6 +15,7 @@ class Plan extends Model
     protected $fillable = [
         // Informations de base
         'name',
+        'icon',
         'slug',
         'description',
         'services',         // Rich HTML from WYSIWYG editor
@@ -116,8 +117,6 @@ class Plan extends Model
                     ->withTimestamps();
     }
 
-    
-
     /**
      * All media (images + videos) for this plan
      */
@@ -155,7 +154,12 @@ class Plan extends Model
      */
     public function destinations()
     {
-        return $this->hasMany(PlanDestination::class);
+        return $this->hasMany(PlanDestination::class)->orderBy('sort_order');
+    }
+
+    public function servicesItems()
+    {
+        return $this->hasMany(PlanService::class)->orderBy('sort_order')->orderBy('id', 'desc');
     }
 
     /**

@@ -19,9 +19,19 @@ class PlanController extends Controller
     public function show($identifier = null)
     {
         try {
+            // Force the plan detail page to render in French.
+            app()->setLocale('fr');
+            session(['locale' => 'fr']);
             // Si un identifiant est fourni, on cherche ce plan (id numérique ou slug)
             if ($identifier !== null && $identifier !== '') {
-                $planQuery = Plan::with('plugins');
+                $planQuery = Plan::with([
+                    'plugins',
+                    'servicesItems' => function ($query) {
+                        $query->where('is_active', true)
+                            ->orderBy('sort_order')
+                            ->orderByDesc('id');
+                    },
+                ]);
 
                 if (is_numeric($identifier)) {
                     $plan = $planQuery->where('id', (int) $identifier)->firstOrFail();
@@ -31,7 +41,14 @@ class PlanController extends Controller
             } else {
                 // Sinon, on prend le premier plan actif
                 $plan = Plan::active()
-                    ->with('plugins')
+                    ->with([
+                        'plugins',
+                        'servicesItems' => function ($query) {
+                            $query->where('is_active', true)
+                                ->orderBy('sort_order')
+                                ->orderByDesc('id');
+                        },
+                    ])
                     ->firstOrFail();
             }
             

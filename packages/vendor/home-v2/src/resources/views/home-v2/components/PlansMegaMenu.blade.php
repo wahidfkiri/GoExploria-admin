@@ -8,13 +8,35 @@
             ->where('is_active', true)
             ->orderBy('sort_order')
             ->orderBy('id')
-            ->take(5)
-            ->get(['id', 'name', 'slug']);
+            ->get(['id', 'name', 'slug', 'description', 'icon', 'price', 'currency', 'billing_cycle']);
     } catch (\Throwable $e) {
         $plansForMegaMenu = collect();
     }
 
     $plansPresentationUrl = $canOpenPlansPresentation ? route('plans.show') : url('/plans-detail');
+
+    $cleanPlanText = function ($value, $limit = 95) {
+        $raw = (string) ($value ?? '');
+        $raw = str_ireplace(['<br>', '<br/>', '<br />', '</p>', '</div>', '</li>'], ' ', $raw);
+        $raw = strip_tags($raw);
+        $raw = preg_replace('/\s+/u', ' ', $raw);
+        $raw = trim((string) $raw);
+        return \Illuminate\Support\Str::limit($raw, $limit);
+    };
+
+    $planIconClass = function ($icon) {
+        $raw = trim((string) ($icon ?? ''));
+        if ($raw === '') {
+            return 'fas fa-layer-group';
+        }
+        if (str_contains($raw, ' ')) {
+            return $raw;
+        }
+        if (str_starts_with($raw, 'fa-')) {
+            return 'fas ' . $raw;
+        }
+        return 'fas fa-' . ltrim($raw, '-');
+    };
 
     $plansMegaCards = [
         [
@@ -58,6 +80,14 @@
             'fallback' => $plansPresentationUrl,
         ],
     ];
+
+    $plansMegaColors = [
+        'plans-mega-card-enterprise',
+        'plans-mega-card-destination',
+        'plans-mega-card-activity',
+        'plans-mega-card-partner',
+        'plans-mega-card-personal',
+    ];
 @endphp
 
 <div class="plans-mega-v2-overlay" id="plansMegaOverlay"></div>
@@ -82,24 +112,42 @@
     </div>
 
     <div class="plans-mega-v2-grid">
-        @foreach ($plansMegaCards as $index => $card)
-            @php
-                $linkedPlan = $plansForMegaMenu->get($index);
-                $cardUrl = $card['fallback'];
-                if ($linkedPlan && $canOpenPlanDetail) {
-                    $cardUrl = route('plan.detail', ['id' => $linkedPlan->id]);
-                }
-            @endphp
-            <a href="{{ $cardUrl }}" class="plans-mega-v2-card {{ $card['color'] }}">
-                <div class="plans-mega-v2-card-icon"><i class="{{ $card['icon'] }}"></i></div>
-                <div class="plans-mega-v2-card-title">{{ $card['title'] }}</div>
-                <div class="plans-mega-v2-card-desc">{{ $card['description'] }}</div>
-                <div class="plans-mega-v2-card-price">{{ $card['price'] }}</div>
-                @if ($linkedPlan)
-                    <div class="plans-mega-v2-card-plan">{{ $linkedPlan->name }}</div>
-                @endif
-            </a>
-        @endforeach
+        @if ($plansForMegaMenu->isNotEmpty())
+            @foreach ($plansForMegaMenu as $index => $plan)
+                @php
+                    $cardColor = $plansMegaColors[$index % count($plansMegaColors)];
+                    $cardUrl = ($plan->slug ?? '') !== ''
+                        ? url('/plan-detail/' . $plan->slug)
+                        : ($canOpenPlanDetail ? route('plan.detail', ['id' => $plan->id]) : $plansPresentationUrl);
+                    $cardTitle = (string) ($plan->name ?? 'Plan GoExploria');
+                    $cardDescription = $cleanPlanText($plan->description, 95) ?: 'Activez votre espace plan ici.';
+                    $cardIcon = $planIconClass($plan->icon ?? null);
+                    $priceRaw = $plan->getAttributes()['price'] ?? $plan->price;
+                    $priceNum = $priceRaw === null || $priceRaw === '' ? null : (float) $priceRaw;
+                    $hasPublishedPrice = $priceNum !== null && $priceNum > 0;
+                    $billingSuffix = $plan->billing_cycle === 'yearly' ? '/an' : '/mois';
+                    $cardPrice = $hasPublishedPrice
+                        ? (number_format($priceNum, 0, ',', ' ') . ' ' . ($plan->currency ?: 'CAD') . ' ' . $billingSuffix)
+                        : 'Sur demande';
+                @endphp
+                <a href="{{ $cardUrl }}" class="plans-mega-v2-card {{ $cardColor }}">
+                    <div class="plans-mega-v2-card-icon"><i class="{{ $cardIcon }}"></i></div>
+                    <div class="plans-mega-v2-card-title">{{ $cardTitle }}</div>
+                    <div class="plans-mega-v2-card-desc">{{ $cardDescription }}</div>
+                    <div class="plans-mega-v2-card-price">{{ $cardPrice }}</div>
+                    <div class="plans-mega-v2-card-plan">{{ $plan->name }}</div>
+                </a>
+            @endforeach
+        @else
+            @foreach ($plansMegaCards as $card)
+                <a href="{{ $card['fallback'] }}" class="plans-mega-v2-card {{ $card['color'] }}">
+                    <div class="plans-mega-v2-card-icon"><i class="{{ $card['icon'] }}"></i></div>
+                    <div class="plans-mega-v2-card-title">{{ $card['title'] }}</div>
+                    <div class="plans-mega-v2-card-desc">{{ $card['description'] }}</div>
+                    <div class="plans-mega-v2-card-price">{{ $card['price'] }}</div>
+                </a>
+            @endforeach
+        @endif
     </div>
 </div>
 
