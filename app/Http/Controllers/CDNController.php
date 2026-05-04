@@ -810,6 +810,8 @@ class CDNController extends Controller
             throw new \RuntimeException('Aucun fichier valide extrait du ZIP');
         }
 
+        $this->enforceThemeFolderStructure($basePath, $visibility, $requestId);
+
         return [
             'extracted_count' => count($storedFiles),
             'skipped_count' => $skippedCount,
@@ -856,6 +858,70 @@ class CDNController extends Controller
         unset($entry);
 
         return $entries;
+    }
+
+    protected function enforceThemeFolderStructure(string $basePath, string $visibility, string $requestId): void
+    {
+        $basePath = trim(str_replace('\\', '/', $basePath), '/');
+        if (!preg_match('#(^|/)cms/themes/[^/]+(/|$)#', $basePath)) {
+            return;
+        }
+
+        $disk = Storage::disk('cdn');
+
+        // Ensure required theme folders exist.
+        foreach (['assets/css', 'assets/js', 'partials', 'pages'] as $dir) {
+            $dirPath = trim($basePath . '/' . $dir, '/');
+            try {
+                $disk->makeDirectory($dirPath);
+            } catch (\Throwable $e) {
+                Log::warning('Unable to create theme directory', [
+                    'request_id' => $requestId,
+                    'directory' => $dirPath,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        $themeSlug = strtolower(basename($basePath));
+
+        // Move known files from root/wrapper to expected folders.
+        $this->relocateThemeFile($disk, $basePath, $themeSlug, ['style.css', 'responsive.css', 'theme.css'], 'assets/css', $requestId);
+        $this->relocateThemeFile($disk, $basePath, $themeSlug, ['main.js', 'theme.js'], 'assets/js', $requestId);
+        $this->relocateThemeFile($disk, $basePath, $themeSlug, ['header.blade.php', 'footer.blade.php'], 'partials', $requestId);
+        $this->relocateThemeFile($disk, $basePath, $themeSlug, ['home.blade.php', 'page.blade.php'], 'pages', $requestId);
+    }
+
+    protected function relocateThemeFile($disk, string $basePath, string $themeSlug, array $filenames, string $targetSubDir, string $requestId): void
+    {
+        foreach ($filenames as $filename) {
+            $sourceCandidates = [
+                trim($basePath . '/' . $filename, '/'),
+                trim($basePath . '/' . $themeSlug . '/' . $filename, '/'),
+            ];
+
+            $targetPath = trim($basePath . '/' . $targetSubDir . '/' . $filename, '/');
+
+            foreach ($sourceCandidates as $sourcePath) {
+                if (!$disk->exists($sourcePath) || $sourcePath === $targetPath) {
+                    continue;
+                }
+
+                try {
+                    if ($disk->exists($targetPath)) {
+                        $disk->delete($targetPath);
+                    }
+                    $disk->move($sourcePath, $targetPath);
+                } catch (\Throwable $e) {
+                    Log::warning('Unable to relocate extracted theme file', [
+                        'request_id' => $requestId,
+                        'source' => $sourcePath,
+                        'target' => $targetPath,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+        }
     }
 
     protected function normalizeZipEntryPath(string $entryName): ?string
