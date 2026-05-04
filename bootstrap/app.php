@@ -28,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'user.active' => \App\Http\Middleware\CheckUserActive::class,
             'set.locale' => \App\Http\Middleware\SetLocale::class,
             'translate.home-v2' => \App\Http\Middleware\TranslateHomeV2Components::class,
+            'cdn.auth' => \App\Http\Middleware\CdnAuthMiddleware::class,
         ]);
 
         $middleware->appendToGroup('web', \App\Http\Middleware\SetLocale::class);

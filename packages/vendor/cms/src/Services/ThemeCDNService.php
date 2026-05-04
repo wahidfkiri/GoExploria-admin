@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use ZipArchive;
 
 class ThemeCDNService
 {
@@ -68,6 +69,10 @@ class ThemeCDNService
                     ]
                 ];
             }
+
+            if ($this->isZipFile($fileInfo['name'])) {
+                return $this->uploadZipArchive($file, $path, $visibility, $requestId, $fileInfo, $startTime);
+            }
             
             $fileContent = $this->getFileContent($file);
             $fileName = $fileInfo['name'];
@@ -90,18 +95,7 @@ class ThemeCDNService
                 'api_endpoint' => $this->baseUrl . '/api/upload'
             ]);
             
-            $response = Http::timeout($this->timeout)
-                ->retry($this->retryTimes, 100)
-                ->withHeaders([
-                    'X-API-Key' => $this->apiKey,
-                    'X-API-Secret' => $this->apiSecret,
-                ])
-                ->attach('file', $fileContent, $fileName)
-                ->post($this->baseUrl . '/api/upload', [
-                    'path' => $path,
-                    'visibility' => $visibility,
-                    'type' => 'theme'
-                ]);
+            $response = $this->sendUploadRequest($fileContent, $fileName, $path, $visibility);
             
             $duration = round((microtime(true) - $startTime) * 1000, 2);
             
@@ -159,7 +153,7 @@ class ThemeCDNService
     /**
      * Upload an entire directory to CDN
      */
-    public function uploadDirectory($sourceDir, $targetPath, $callback = null)
+    public function uploadDirectory($sourceDir, $targetPath, $callback = null, $visibility = 'public')
     {
         $files = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($sourceDir, \RecursiveDirectoryIterator::SKIP_DOTS),
@@ -177,7 +171,7 @@ class ThemeCDNService
             $relativePath = str_replace($sourceDir . DIRECTORY_SEPARATOR, '', $file->getPathname());
             $cdnFilePath = $targetPath . '/' . str_replace(DIRECTORY_SEPARATOR, '/', $relativePath);
             
-            $result = $this->upload($file->getPathname(), dirname($cdnFilePath), 'public');
+            $result = $this->upload($file->getPathname(), dirname($cdnFilePath), $visibility);
             
             if ($result['success'] ?? false) {
                 $uploaded[] = $cdnFilePath;
@@ -449,5 +443,214 @@ class ThemeCDNService
         }
         
         return false;
+    }
+
+    protected function sendUploadRequest(string $fileContent, string $fileName, string $path, string $visibility)
+    {
+        return Http::timeout($this->timeout)
+            ->retry($this->retryTimes, 100)
+            ->withHeaders([
+                'X-API-Key' => $this->apiKey,
+                'X-API-Secret' => $this->apiSecret,
+            ])
+            ->attach('file', $fileContent, $fileName)
+            ->post($this->baseUrl . '/api/upload', [
+                'path' => $path,
+                'visibility' => $visibility,
+                'type' => 'theme'
+            ]);
+    }
+
+    protected function isZipFile(?string $fileName): bool
+    {
+        if (!$fileName) {
+            return false;
+        }
+
+        return strtolower((string) pathinfo($fileName, PATHINFO_EXTENSION)) === 'zip';
+    }
+
+    protected function uploadZipArchive($file, string $path, string $visibility, string $requestId, array $fileInfo, float $startTime): array
+    {
+        $zipPath = null;
+
+        if ($file instanceof UploadedFile) {
+            $zipPath = $file->getRealPath();
+        } elseif (is_string($file) && file_exists($file)) {
+            $zipPath = $file;
+        }
+
+        if (!$zipPath || !file_exists($zipPath)) {
+            return [
+                'success' => false,
+                'error' => 'ZIP file path is invalid',
+                'request_id' => $requestId,
+            ];
+        }
+
+        $tempDir = storage_path('app/temp/theme_cdn_zip_' . Str::uuid());
+        if (!is_dir($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+
+        $zip = new ZipArchive();
+        $openResult = $zip->open($zipPath);
+
+        if ($openResult !== true) {
+            $this->deleteDirectory($tempDir);
+
+            return [
+                'success' => false,
+                'error' => 'Unable to open ZIP file (code: ' . $openResult . ')',
+                'request_id' => $requestId,
+            ];
+        }
+
+        $writtenCount = 0;
+
+        try {
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $entryName = (string) $zip->getNameIndex($i);
+                if ($entryName === '' || str_ends_with($entryName, '/')) {
+                    continue;
+                }
+
+                $normalizedEntryPath = $this->normalizeZipEntryPath($entryName);
+                if ($normalizedEntryPath === null) {
+                    continue;
+                }
+
+                $entryContent = $zip->getFromIndex($i);
+                if ($entryContent === false) {
+                    continue;
+                }
+
+                $targetFilePath = $tempDir . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $normalizedEntryPath);
+                $targetDir = dirname($targetFilePath);
+                if (!is_dir($targetDir)) {
+                    mkdir($targetDir, 0755, true);
+                }
+
+                file_put_contents($targetFilePath, $entryContent);
+                $writtenCount++;
+            }
+        } finally {
+            $zip->close();
+        }
+
+        if ($writtenCount === 0) {
+            $this->deleteDirectory($tempDir);
+
+            return [
+                'success' => false,
+                'error' => 'ZIP has no valid files to extract',
+                'request_id' => $requestId,
+            ];
+        }
+
+        $uploadResult = $this->uploadDirectory($tempDir, $path, null, $visibility);
+        $duration = round((microtime(true) - $startTime) * 1000, 2);
+
+        $this->deleteDirectory($tempDir);
+
+        if (!($uploadResult['success'] ?? false)) {
+            Log::channel('theme_cdn')->error('Theme CDN ZIP Upload Failed', [
+                'request_id' => $requestId,
+                'file_name' => $fileInfo['name'] ?? null,
+                'uploaded_count' => $uploadResult['uploaded_count'] ?? 0,
+                'failed_count' => $uploadResult['failed_count'] ?? 0,
+            ]);
+
+            return [
+                'success' => false,
+                'error' => 'ZIP extracted but one or more files failed to upload',
+                'request_id' => $requestId,
+                'is_zip' => true,
+                'uploaded_count' => $uploadResult['uploaded_count'] ?? 0,
+                'failed_count' => $uploadResult['failed_count'] ?? 0,
+                'failed' => $uploadResult['failed'] ?? [],
+                'duration_ms' => $duration,
+            ];
+        }
+
+        Log::channel('theme_cdn')->info('Theme CDN ZIP Upload Successful', [
+            'request_id' => $requestId,
+            'file_name' => $fileInfo['name'] ?? null,
+            'uploaded_count' => $uploadResult['uploaded_count'] ?? 0,
+            'duration_ms' => $duration,
+        ]);
+
+        return [
+            'success' => true,
+            'request_id' => $requestId,
+            'is_zip' => true,
+            'extracted' => true,
+            'base_path' => trim($path, '/'),
+            'zip_original_name' => $fileInfo['name'] ?? null,
+            'uploaded_count' => $uploadResult['uploaded_count'] ?? 0,
+            'failed_count' => $uploadResult['failed_count'] ?? 0,
+            'uploaded' => $uploadResult['uploaded'] ?? [],
+            'failed' => $uploadResult['failed'] ?? [],
+            'duration_ms' => $duration,
+        ];
+    }
+
+    protected function deleteDirectory(string $dir): bool
+    {
+        if (!file_exists($dir)) {
+            return true;
+        }
+
+        if (!is_dir($dir)) {
+            return @unlink($dir);
+        }
+
+        foreach (scandir($dir) as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            if (!$this->deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+                return false;
+            }
+        }
+
+        return @rmdir($dir);
+    }
+
+    protected function normalizeZipEntryPath(string $entryName): ?string
+    {
+        $entryName = trim(str_replace('\\', '/', $entryName), '/');
+        if ($entryName === '') {
+            return null;
+        }
+
+        $segments = explode('/', $entryName);
+        $safeSegments = [];
+
+        foreach ($segments as $segment) {
+            if ($segment === '' || $segment === '.') {
+                continue;
+            }
+
+            if ($segment === '..') {
+                return null;
+            }
+
+            $safeSegment = preg_replace('/[^A-Za-z0-9._-]/', '-', $segment) ?: '';
+            $safeSegment = trim($safeSegment, '-');
+
+            if ($safeSegment === '') {
+                continue;
+            }
+
+            $safeSegments[] = $safeSegment;
+        }
+
+        if (empty($safeSegments)) {
+            return null;
+        }
+
+        return implode('/', $safeSegments);
     }
 }
