@@ -548,6 +548,7 @@ class ThemeCDNService
             ];
         }
 
+        $this->normalizeExtractedThemeDirectory($tempDir, $path);
         $uploadResult = $this->uploadDirectory($tempDir, $path, null, $visibility);
         $duration = round((microtime(true) - $startTime) * 1000, 2);
 
@@ -652,5 +653,142 @@ class ThemeCDNService
         }
 
         return implode('/', $safeSegments);
+    }
+
+    /**
+     * Normalize extracted theme tree before uploading it file-by-file.
+     * This prevents flat ZIPs from ending up with all files at theme root.
+     */
+    protected function normalizeExtractedThemeDirectory(string $tempDir, string $targetPath): void
+    {
+        $this->removeDirectoryIfExists($tempDir . DIRECTORY_SEPARATOR . '__MACOSX');
+
+        $targetPath = trim(str_replace('\\', '/', $targetPath), '/');
+        $topLevelDirs = $this->getTopLevelDirectories($tempDir);
+        $topLevelFiles = $this->getTopLevelFiles($tempDir);
+
+        // If target path already contains theme folder (cms/themes/{id}/{slug})
+        // and ZIP has a single wrapper folder with same slug, flatten one level.
+        if (preg_match('#^cms/themes/\d+/([^/]+)$#', $targetPath, $m) && count($topLevelDirs) === 1 && empty($topLevelFiles)) {
+            $expectedSlug = strtolower($m[1]);
+            $wrapperName = strtolower(basename($topLevelDirs[0]));
+
+            if ($wrapperName === $expectedSlug) {
+                $this->moveDirectoryContent($topLevelDirs[0], $tempDir);
+                @rmdir($topLevelDirs[0]);
+                $topLevelDirs = $this->getTopLevelDirectories($tempDir);
+            }
+        }
+
+        // If target is cms/themes/{id} only, keep wrapper folder if present.
+        // If there is no wrapper, auto-organize flat files in root.
+        if (preg_match('#^cms/themes/\d+$#', $targetPath)) {
+            if (empty($topLevelDirs)) {
+                $this->organizeThemeFlatFilesInDirectory($tempDir);
+                return;
+            }
+
+            // Also normalize common "wrapper folder + flat files" cases.
+            foreach ($topLevelDirs as $dir) {
+                $this->organizeThemeFlatFilesInDirectory($dir);
+            }
+        }
+    }
+
+    protected function organizeThemeFlatFilesInDirectory(string $dir): void
+    {
+        $map = [
+            'header.blade.php' => 'partials',
+            'footer.blade.php' => 'partials',
+            'home.blade.php' => 'pages',
+            'page.blade.php' => 'pages',
+            'main.js' => 'assets/js',
+            'theme.js' => 'assets/js',
+            'style.css' => 'assets/css',
+            'responsive.css' => 'assets/css',
+            'theme.css' => 'assets/css',
+        ];
+
+        foreach ($this->getTopLevelFiles($dir) as $filePath) {
+            $fileName = basename($filePath);
+            $lookup = strtolower($fileName);
+
+            if (!isset($map[$lookup])) {
+                continue;
+            }
+
+            $targetDir = $dir . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $map[$lookup]);
+            if (!is_dir($targetDir)) {
+                mkdir($targetDir, 0755, true);
+            }
+
+            $targetPath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
+            if (file_exists($targetPath)) {
+                @unlink($targetPath);
+            }
+
+            @rename($filePath, $targetPath);
+        }
+    }
+
+    protected function getTopLevelDirectories(string $dir): array
+    {
+        $result = [];
+        foreach (scandir($dir) ?: [] as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+            $full = $dir . DIRECTORY_SEPARATOR . $entry;
+            if (is_dir($full)) {
+                $result[] = $full;
+            }
+        }
+        return $result;
+    }
+
+    protected function getTopLevelFiles(string $dir): array
+    {
+        $result = [];
+        foreach (scandir($dir) ?: [] as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+            $full = $dir . DIRECTORY_SEPARATOR . $entry;
+            if (is_file($full)) {
+                $result[] = $full;
+            }
+        }
+        return $result;
+    }
+
+    protected function moveDirectoryContent(string $sourceDir, string $targetDir): void
+    {
+        foreach (scandir($sourceDir) ?: [] as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+
+            $source = $sourceDir . DIRECTORY_SEPARATOR . $entry;
+            $target = $targetDir . DIRECTORY_SEPARATOR . $entry;
+
+            if (file_exists($target)) {
+                if (is_dir($target) && is_dir($source)) {
+                    $this->moveDirectoryContent($source, $target);
+                    @rmdir($source);
+                }
+                continue;
+            }
+
+            @rename($source, $target);
+        }
+    }
+
+    protected function removeDirectoryIfExists(string $dir): void
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        $this->deleteDirectory($dir);
     }
 }
