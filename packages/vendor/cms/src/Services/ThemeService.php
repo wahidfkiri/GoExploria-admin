@@ -208,7 +208,14 @@ class ThemeService
             }
             
             $relativePath = str_replace($sourceDir . DIRECTORY_SEPARATOR, '', $file->getPathname());
-            $cdnFilePath = $targetPath . '/' . str_replace(DIRECTORY_SEPARATOR, '/', $relativePath);
+            $relativePath = str_replace(DIRECTORY_SEPARATOR, '/', $relativePath);
+            $relativePath = $this->normalizeThemeRelativePathForCdn($relativePath, $targetPath);
+
+            if ($relativePath === null) {
+                continue;
+            }
+
+            $cdnFilePath = trim($targetPath . '/' . $relativePath, '/');
             
             Log::info('Uploading theme file to CDN', [
                 'local_path' => $file->getPathname(),
@@ -222,6 +229,77 @@ class ThemeService
                 throw new \Exception('Failed to upload file to CDN: ' . ($uploadResult['error'] ?? 'Unknown error'));
             }
         }
+    }
+
+    protected function normalizeThemeRelativePathForCdn(string $relativePath, string $themePath): ?string
+    {
+        $relativePath = trim(str_replace('\\', '/', $relativePath), '/');
+        if ($relativePath === '') {
+            return null;
+        }
+
+        $basename = strtolower(pathinfo($relativePath, PATHINFO_BASENAME));
+        if ($basename === '.ds_store' || str_ends_with($basename, '.file')) {
+            return null;
+        }
+
+        if (str_starts_with($relativePath, '__MACOSX/')) {
+            return null;
+        }
+
+        $segments = array_values(array_filter(explode('/', $relativePath), static fn ($s) => $s !== ''));
+        if (empty($segments)) {
+            return null;
+        }
+
+        $themeSlug = strtolower(basename(trim(str_replace('\\', '/', $themePath), '/')));
+        $first = strtolower($segments[0] ?? '');
+
+        // Flatten wrapper folder when it matches target slug.
+        if (count($segments) > 1 && $first === $themeSlug) {
+            array_shift($segments);
+            $first = strtolower($segments[0] ?? '');
+        }
+
+        if (in_array($first, ['assets', 'partials', 'pages'], true)) {
+            return implode('/', $segments);
+        }
+
+        if (count($segments) === 1) {
+            return $this->mapThemeRootFilenameToStructuredPath($segments[0]);
+        }
+
+        if (count($segments) === 2) {
+            $mapped = $this->mapThemeRootFilenameToStructuredPath($segments[1]);
+            if ($mapped !== $segments[1]) {
+                return $mapped;
+            }
+        }
+
+        return implode('/', $segments);
+    }
+
+    protected function mapThemeRootFilenameToStructuredPath(string $filename): string
+    {
+        $lookup = strtolower($filename);
+
+        if (in_array($lookup, ['header.blade.php', 'footer.blade.php'], true)) {
+            return 'partials/' . $filename;
+        }
+
+        if (in_array($lookup, ['home.blade.php', 'page.blade.php'], true)) {
+            return 'pages/' . $filename;
+        }
+
+        if (in_array($lookup, ['main.js', 'theme.js'], true)) {
+            return 'assets/js/' . $filename;
+        }
+
+        if (in_array($lookup, ['style.css', 'responsive.css', 'theme.css'], true)) {
+            return 'assets/css/' . $filename;
+        }
+
+        return $filename;
     }
     
     /**
@@ -249,14 +327,18 @@ class ThemeService
                         if (in_array($basename, $previewNames)) {
                             $imageContent = $zip->getFromName($filename);
                             
-                            // Create temp file to upload
-                            $tempFile = tempnam(sys_get_temp_dir(), 'theme_preview');
+                            $tmpDir = storage_path('app/temp');
+                            if (!is_dir($tmpDir)) {
+                                mkdir($tmpDir, 0755, true);
+                            }
+                            $tempFile = $tmpDir . '/preview-' . Str::uuid() . '.' . $extension;
                             file_put_contents($tempFile, $imageContent);
                             
-                            $previewImageName = "preview.{$extension}";
                             $uploadResult = $this->themeCdnService->upload($tempFile, $themePath, 'public');
                             
-                            unlink($tempFile);
+                            if (file_exists($tempFile)) {
+                                unlink($tempFile);
+                            }
                             
                             if (isset($uploadResult['success']) && $uploadResult['success']) {
                                 $previewImagePath = $uploadResult['url'];
@@ -278,12 +360,18 @@ class ThemeService
                         if (in_array($extension, $imageExtensions)) {
                             $imageContent = $zip->getFromName($filename);
                             
-                            $tempFile = tempnam(sys_get_temp_dir(), 'theme_preview');
+                            $tmpDir = storage_path('app/temp');
+                            if (!is_dir($tmpDir)) {
+                                mkdir($tmpDir, 0755, true);
+                            }
+                            $tempFile = $tmpDir . '/preview-' . Str::uuid() . '.' . $extension;
                             file_put_contents($tempFile, $imageContent);
                             
                             $uploadResult = $this->themeCdnService->upload($tempFile, $themePath, 'public');
                             
-                            unlink($tempFile);
+                            if (file_exists($tempFile)) {
+                                unlink($tempFile);
+                            }
                             
                             if (isset($uploadResult['success']) && $uploadResult['success']) {
                                 $previewImagePath = $uploadResult['url'];
