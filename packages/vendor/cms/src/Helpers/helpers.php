@@ -921,4 +921,67 @@ if (!function_exists('get_company_info')) {
         ];
     }
 }
+
+if (!function_exists('get_slider_media')) {
+    /**
+     * Get slider media directly from cms.cms_media.
+     *
+     * @param int|null $etablissementId
+     * @return \Illuminate\Support\Collection
+     */
+    function get_slider_media($etablissementId = null)
+    {
+        $etablissementId = $etablissementId ?: getCurrentEtablissementId();
+
+        if (!$etablissementId) {
+            return collect();
+        }
+
+        try {
+            $rows = \Illuminate\Support\Facades\DB::connection('cms')
+                ->table('cms_media')
+                ->where('etablissement_id', $etablissementId)
+                ->where('is_public', 1)
+                ->where('is_slider', 1)
+                ->whereNull('deleted_at')
+                ->orderBy('order', 'asc')
+                ->orderBy('id', 'desc')
+                ->get();
+
+            return $rows->map(function ($media) {
+                $path = trim((string) ($media->path ?? ''));
+                $imageUrl = $path !== ''
+                    ? (preg_match('/^https?:\/\//i', $path) ? $path : \Illuminate\Support\Facades\Storage::disk('public')->url($path))
+                    : null;
+
+                $videoUrl = trim((string) ($media->video_url ?? ''));
+                $type = strtolower((string) ($media->type ?? ''));
+                $isVideo = $type === 'video' || $videoUrl !== '';
+
+                if ($videoUrl === '' && $type === 'video' && $imageUrl) {
+                    $videoUrl = $imageUrl;
+                }
+
+                return [
+                    'id' => (int) ($media->id ?? 0),
+                    'name' => $media->title ?: ($media->name ?? 'Media slider'),
+                    'description' => $media->description ?? null,
+                    'type' => $isVideo ? 'video' : 'image',
+                    'image_url' => $imageUrl,
+                    'thumbnail_url' => $imageUrl,
+                    'video_url' => $videoUrl !== '' ? $videoUrl : null,
+                    'button_text' => $media->button_text ?? null,
+                    'button_url' => $media->button_url ?? null,
+                    'order' => (int) ($media->order ?? 0),
+                ];
+            })->values();
+        } catch (\Throwable $e) {
+            \Log::warning('Unable to load slider media from cms.cms_media: ' . $e->getMessage(), [
+                'etablissement_id' => $etablissementId,
+            ]);
+
+            return collect();
+        }
+    }
+}
 }

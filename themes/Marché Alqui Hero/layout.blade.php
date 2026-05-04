@@ -57,7 +57,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <link rel="stylesheet" href="{{ theme_asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset('css/style.css') }}?v=20260504-1">
 
     @php $customCss = theme_setting('custom_css'); @endphp
     @if($customCss)
@@ -85,6 +85,9 @@
                     @endphp
                     <article class="mah-slide {{ $index === 0 ? 'is-active' : '' }}" data-slide="{{ $index }}">
                         @if($videoUrl !== '')
+                            @if($imageUrl !== '')
+                                <img class="mah-media" src="{{ $imageUrl }}" alt="{{ $name }}">
+                            @endif
                             @if($youtubeEmbed || $vimeoEmbed)
                                 <iframe
                                     class="mah-media"
@@ -150,7 +153,7 @@
     @endif
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="{{ theme_asset('js/main.js') }}"></script>
+    <script src="{{ theme_asset('js/main.js') }}?v=20260504-1"></script>
 
     @php $customJs = theme_setting('custom_js'); @endphp
     @if($customJs)
@@ -160,4 +163,6 @@
     @stack('scripts')
 </body>
 </html>
+
+
 

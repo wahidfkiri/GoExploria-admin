@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Vendor\Cms\Models\Theme;
 use Vendor\Cms\Models\Page;
 use Vendor\Cms\Models\Setting;
-use Vendor\Cms\Models\Media;
 use App\Models\Etablissement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -499,36 +498,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         }
 
         try {
-            return Media::query()
-                ->where('etablissement_id', $this->etablissement->id)
-                ->public()
-                ->slider()
-                ->ordered()
-                ->get()
-                ->map(function (Media $media) {
-                    $imageUrl = $media->url;
-                    $videoUrl = trim((string) ($media->video_url ?? ''));
-                    $isVideoType = strtolower((string) $media->type) === 'video';
-                    $isVideo = $isVideoType || $videoUrl !== '';
-
-                    if ($videoUrl === '' && $isVideoType) {
-                        $videoUrl = $imageUrl;
-                    }
-
-                    return [
-                        'id' => $media->id,
-                        'name' => $media->title ?: $media->name,
-                        'description' => $media->description,
-                        'type' => $isVideo ? 'video' : 'image',
-                        'image_url' => $imageUrl,
-                        'thumbnail_url' => $imageUrl,
-                        'video_url' => $videoUrl !== '' ? $videoUrl : null,
-                        'button_text' => $media->button_text,
-                        'button_url' => $media->button_url,
-                        'order' => (int) ($media->order ?? 0),
-                    ];
-                })
-                ->values();
+            return get_slider_media($this->etablissement->id);
         } catch (\Throwable $e) {
             Log::warning('Unable to load cms slider media: ' . $e->getMessage(), [
                 'etablissement_id' => $this->etablissement->id,
