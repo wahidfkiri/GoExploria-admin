@@ -67,7 +67,7 @@
     @stack('styles')
 </head>
 <body>
-    @include('theme::partials.header')
+    @includeIf('theme::partials.header')
 
     <section class="mah-hero" id="hero-slider-media">
         @if($slides->isNotEmpty())
@@ -143,7 +143,7 @@
         {!! get_map_section_html() !!}
     @endif
 
-    @include('theme::partials.footer')
+    @includeIf('theme::partials.footer')
 
     @if(has_whatsapp())
         {!! get_whatsapp_button_html() !!}
@@ -160,3 +160,4 @@
     @stack('scripts')
 </body>
 </html>
+

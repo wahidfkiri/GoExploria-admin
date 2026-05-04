@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use ZipArchive;
 
 class CDNController extends Controller
 {
@@ -134,6 +136,37 @@ class CDNController extends Controller
                 'mime' => $fileMime,
                 'temp_path' => $file->getPathname()
             ]);
+
+            $isZip = strtolower((string) $originalExtension) === 'zip';
+            if ($isZip) {
+                $zipBasePath = $this->resolveZipBasePath($path);
+                $zipResult = $this->extractZipAndStore($file, $zipBasePath, $visibility, $requestId);
+                $duration = round((microtime(true) - $startTime) * 1000, 2);
+
+                Log::channel('cdn_upload')->info('ZIP upload extracted successfully', [
+                    'request_id' => $requestId,
+                    'requested_path' => trim($path, '/'),
+                    'zip_base_path' => $zipBasePath,
+                    'extracted_count' => $zipResult['extracted_count'],
+                    'skipped_count' => $zipResult['skipped_count'],
+                    'duration_ms' => $duration
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'request_id' => $requestId,
+                    'is_zip' => true,
+                    'extracted' => true,
+                    'requested_path' => trim($path, '/'),
+                    'base_path' => $zipBasePath,
+                    'zip_original_name' => $originalName,
+                    'zip_size' => $fileSize,
+                    'extracted_count' => $zipResult['extracted_count'],
+                    'skipped_count' => $zipResult['skipped_count'],
+                    'files' => $zipResult['files'],
+                    'duration_ms' => $duration
+                ], 201);
+            }
             
             // Générer un nom unique
             $filename = $this->resolveUniqueFilename($path, $originalName, $originalExtension);
@@ -261,6 +294,31 @@ class CDNController extends Controller
             foreach ($request->file('files') as $index => $file) {
                 try {
                     $path = $request->input('path', '');
+                    $extension = strtolower((string) $file->getClientOriginalExtension());
+
+                    if ($extension === 'zip') {
+                        $zipBasePath = $this->resolveZipBasePath($path);
+                        $zipResult = $this->extractZipAndStore($file, $zipBasePath, 'public', $requestId);
+                        $fileSize = $file->getSize();
+                        $totalSize += $fileSize;
+
+                        $uploaded[] = [
+                            'path' => $zipBasePath,
+                            'url' => null,
+                            'original_name' => $file->getClientOriginalName(),
+                            'size' => $fileSize,
+                            'mime_type' => $file->getMimeType(),
+                            'is_zip' => true,
+                            'requested_path' => trim($path, '/'),
+                            'base_path' => $zipBasePath,
+                            'extracted_count' => $zipResult['extracted_count'],
+                            'skipped_count' => $zipResult['skipped_count'],
+                            'files' => $zipResult['files'],
+                        ];
+
+                        continue;
+                    }
+
                     $filename = $this->resolveUniqueFilename(
                         $path,
                         $file->getClientOriginalName(),
@@ -646,6 +704,122 @@ class CDNController extends Controller
                 'request_id' => $requestId
             ], 500);
         }
+    }
+
+    protected function resolveZipBasePath(string $path): string
+    {
+        $path = trim(str_replace('\\', '/', $path), '/');
+        if ($path === '') {
+            return '';
+        }
+
+        $segments = array_values(array_filter(explode('/', $path), static fn ($s) => $s !== ''));
+
+        // For themes: keep only cms/themes/{etablissementId}
+        if (count($segments) >= 3 && $segments[0] === 'cms' && $segments[1] === 'themes') {
+            return implode('/', array_slice($segments, 0, 3));
+        }
+
+        return $path;
+    }
+
+    protected function extractZipAndStore(UploadedFile $zipFile, string $basePath, string $visibility, string $requestId): array
+    {
+        $zip = new ZipArchive();
+        $zipPath = $zipFile->getRealPath();
+        $openResult = $zip->open($zipPath);
+
+        if ($openResult !== true) {
+            throw new \RuntimeException('Impossible d\'ouvrir le fichier ZIP (code: ' . $openResult . ')');
+        }
+
+        $storedFiles = [];
+        $skippedCount = 0;
+
+        try {
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $entryName = (string) $zip->getNameIndex($i);
+
+                if ($entryName === '' || str_ends_with($entryName, '/')) {
+                    continue;
+                }
+
+                $normalizedEntryPath = $this->normalizeZipEntryPath($entryName);
+                if ($normalizedEntryPath === null) {
+                    $skippedCount++;
+                    continue;
+                }
+
+                $entryContent = $zip->getFromIndex($i);
+                if ($entryContent === false) {
+                    $skippedCount++;
+                    continue;
+                }
+
+                $targetPath = trim($basePath . '/' . $normalizedEntryPath, '/');
+                Storage::disk('cdn')->put($targetPath, $entryContent, $visibility);
+
+                $storedFiles[] = [
+                    'path' => $targetPath,
+                    'url' => Storage::disk('cdn')->url($targetPath),
+                    'size' => strlen($entryContent),
+                    'original_name' => $entryName,
+                ];
+            }
+        } finally {
+            $zip->close();
+        }
+
+        if (count($storedFiles) === 0) {
+            Log::channel('cdn_upload')->warning('ZIP extraction produced no files', [
+                'request_id' => $requestId,
+                'zip_name' => $zipFile->getClientOriginalName(),
+                'base_path' => $basePath,
+                'skipped_count' => $skippedCount,
+            ]);
+
+            throw new \RuntimeException('Aucun fichier valide extrait du ZIP');
+        }
+
+        return [
+            'extracted_count' => count($storedFiles),
+            'skipped_count' => $skippedCount,
+            'files' => $storedFiles,
+        ];
+    }
+
+    protected function normalizeZipEntryPath(string $entryName): ?string
+    {
+        $entryName = trim(str_replace('\\', '/', $entryName), '/');
+        if ($entryName === '') {
+            return null;
+        }
+
+        $segments = explode('/', $entryName);
+        $safeSegments = [];
+
+        foreach ($segments as $segment) {
+            if ($segment === '' || $segment === '.') {
+                continue;
+            }
+
+            if ($segment === '..') {
+                return null;
+            }
+
+            $safeSegment = $this->sanitizeFilename($segment);
+            if ($safeSegment === '') {
+                continue;
+            }
+
+            $safeSegments[] = $safeSegment;
+        }
+
+        if (empty($safeSegments)) {
+            return null;
+        }
+
+        return implode('/', $safeSegments);
     }
 
     protected function resolveUniqueFilename(string $path, ?string $originalName, ?string $fallbackExtension = null): string
