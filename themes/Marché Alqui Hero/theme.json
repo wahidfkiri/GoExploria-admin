@@ -1,0 +1,36 @@
+﻿{
+  "name": "Marche Alqui Hero",
+  "version": "1.0.0",
+  "description": "Theme avec hero slider video/image depuis cms_media.",
+  "author": "GoExploria",
+  "author_url": "https://goexploria.com",
+  "license": "MIT",
+  "tags": ["hero", "slider", "video", "image", "cms-media"],
+  "screenshot": "preview.png",
+  "settings": {
+    "colors": {
+      "primary": "#d68b3c",
+      "primary_dark": "#b56a2a",
+      "secondary": "#2d6a2d",
+      "accent": "#f8f2ea",
+      "light": "#ffffff",
+      "dark": "#1a3a1a"
+    },
+    "fonts": {
+      "primary": "Inter",
+      "secondary": "Inter"
+    },
+    "layout": {
+      "container_width": "1280px",
+      "enable_header_sticky": true,
+      "enable_back_to_top": true,
+      "enable_whatsapp_button": true,
+      "whatsapp_number": "14186724792"
+    },
+    "slider": {
+      "autoplay_delay": 8000,
+      "loop": true,
+      "effect": "fade"
+    }
+  }
+}

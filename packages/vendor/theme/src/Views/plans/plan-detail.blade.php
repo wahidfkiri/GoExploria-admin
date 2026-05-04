@@ -691,13 +691,15 @@
             Plan Premium — {{ $plan->name }}
           </div>
           <h1 class="hero-title-premium">
-            Transformez votre<br>
-            <span class="gradient-premium">présence digitale</span>
+            <span class="gradient-premium">{{ $plan->name }}</span>
           </h1>
           <p class="hero-desc-premium">
             {{ $plan->description ?? 'La solution tout-en-un qui propulse votre entreprise vers l\'excellence digitale.' }}
           </p>
           <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <button class="btn-premium-primary" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">
+              <i class="fas fa-arrow-right"></i> Découvrir Nos Modules
+            </button>
             <button class="btn-premium-primary" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">
               <i class="fas fa-arrow-right"></i> Découvrir Nos Services
             </button>
