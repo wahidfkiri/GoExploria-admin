@@ -938,17 +938,27 @@ if (!function_exists('get_slider_media')) {
         }
 
         try {
-            $rows = \Illuminate\Support\Facades\DB::connection('cms')
+            $query = \Illuminate\Support\Facades\DB::connection('cms')
                 ->table('cms_media')
                 ->where('etablissement_id', $etablissementId)
-                ->where('is_public', 1)
                 ->where('is_slider', 1)
-                ->whereNull('deleted_at')
                 ->orderBy('order', 'asc')
-                ->orderBy('id', 'desc')
+                ->orderBy('id', 'desc');
+
+            // Strict mode first: public + not deleted.
+            $rows = (clone $query)
+                ->where('is_public', 1)
+                ->whereNull('deleted_at')
                 ->get();
 
-            return $rows->map(function ($media) {
+            // Fallback for legacy data: if strict result is empty, ignore is_public.
+            if ($rows->isEmpty()) {
+                $rows = (clone $query)
+                    ->whereNull('deleted_at')
+                    ->get();
+            }
+
+            $items = $rows->map(function ($media) {
                 $path = trim((string) ($media->path ?? ''));
                 $imageUrl = $path !== ''
                     ? (preg_match('/^https?:\/\//i', $path) ? $path : \Illuminate\Support\Facades\Storage::disk('public')->url($path))
@@ -975,6 +985,13 @@ if (!function_exists('get_slider_media')) {
                     'order' => (int) ($media->order ?? 0),
                 ];
             })->values();
+
+            \Log::info('get_slider_media result', [
+                'etablissement_id' => $etablissementId,
+                'count' => $items->count(),
+            ]);
+
+            return $items;
         } catch (\Throwable $e) {
             \Log::warning('Unable to load slider media from cms.cms_media: ' . $e->getMessage(), [
                 'etablissement_id' => $etablissementId,

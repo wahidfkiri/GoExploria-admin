@@ -134,6 +134,13 @@
                     </button>
                 @endforeach
             </div>
+        @else
+            <div class="mah-empty-hero">
+                <div class="container">
+                    <h2>Aucun média slider trouvé</h2>
+                    <p>Vérifier la table <code>cms.cms_media</code> avec <code>is_slider = 1</code> pour cet établissement.</p>
+                </div>
+            </div>
         @endif
     </section>
 
