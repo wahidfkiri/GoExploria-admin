@@ -747,6 +747,7 @@ class CDNController extends Controller
 
         $storedFiles = [];
         $skippedCount = 0;
+        $entries = [];
 
         try {
             for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -762,13 +763,23 @@ class CDNController extends Controller
                     continue;
                 }
 
-                $normalizedEntryPath = $this->normalizeThemeStructurePath($normalizedEntryPath, $basePath);
-                if ($normalizedEntryPath === null) {
+                $entries[] = [
+                    'index' => $i,
+                    'original_name' => $entryName,
+                    'path' => $normalizedEntryPath,
+                ];
+            }
+
+            $entries = $this->normalizeZipEntriesForTheme($entries, $basePath);
+
+            foreach ($entries as $entry) {
+                $normalizedEntryPath = $entry['path'] ?? null;
+                if (!$normalizedEntryPath) {
                     $skippedCount++;
                     continue;
                 }
 
-                $entryContent = $zip->getFromIndex($i);
+                $entryContent = $zip->getFromIndex((int) $entry['index']);
                 if ($entryContent === false) {
                     $skippedCount++;
                     continue;
@@ -781,7 +792,7 @@ class CDNController extends Controller
                     'path' => $targetPath,
                     'url' => Storage::disk('cdn')->url($targetPath),
                     'size' => strlen($entryContent),
-                    'original_name' => $entryName,
+                    'original_name' => $entry['original_name'],
                 ];
             }
         } finally {
@@ -804,6 +815,47 @@ class CDNController extends Controller
             'skipped_count' => $skippedCount,
             'files' => $storedFiles,
         ];
+    }
+
+    protected function normalizeZipEntriesForTheme(array $entries, string $basePath): array
+    {
+        if (empty($entries)) {
+            return $entries;
+        }
+
+        $isThemePath = (bool) preg_match('#(^|/)cms/themes/[^/]+(/|$)#', trim(str_replace('\\', '/', $basePath), '/'));
+        if (!$isThemePath) {
+            return $entries;
+        }
+
+        $firstSegments = [];
+        foreach ($entries as $entry) {
+            $parts = explode('/', $entry['path']);
+            $first = strtolower($parts[0] ?? '');
+            if ($first !== '') {
+                $firstSegments[$first] = true;
+            }
+        }
+
+        // Flatten single wrapper folder if archive is wrapped (theme-name/...).
+        $shouldFlattenWrapper = count($firstSegments) === 1
+            && !isset($firstSegments['assets'])
+            && !isset($firstSegments['partials'])
+            && !isset($firstSegments['pages']);
+
+        foreach ($entries as &$entry) {
+            $path = $entry['path'];
+
+            if ($shouldFlattenWrapper && str_contains($path, '/')) {
+                $path = preg_replace('#^[^/]+/#', '', $path) ?: $path;
+            }
+
+            $path = $this->normalizeThemeStructurePath($path, $basePath);
+            $entry['path'] = $path;
+        }
+        unset($entry);
+
+        return $entries;
     }
 
     protected function normalizeZipEntryPath(string $entryName): ?string
@@ -876,18 +928,18 @@ class CDNController extends Controller
             }
         }
 
+        // Re-map known theme files by basename even if archive folders are odd.
+        $basename = end($segments) ?: '';
+        if ($basename !== '') {
+            $mapped = $this->mapThemeRootFile($basename);
+            if ($mapped !== $basename) {
+                return $mapped;
+            }
+        }
+
         // Flat file at root
         if (count($segments) === 1) {
             return $this->mapThemeRootFile($segments[0]);
-        }
-
-        // Wrapper folder + flat file: theme-website/header.blade.php
-        if (count($segments) === 2) {
-            $wrapper = $segments[0];
-            $mapped = $this->mapThemeRootFile($segments[1]);
-            if ($mapped !== $segments[1]) {
-                return $wrapper . '/' . $mapped;
-            }
         }
 
         return $entryPath;
