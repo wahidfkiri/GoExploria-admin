@@ -830,26 +830,13 @@ class CDNController extends Controller
             return $entries;
         }
 
-        $firstSegments = [];
-        foreach ($entries as $entry) {
-            $parts = explode('/', $entry['path']);
-            $first = strtolower($parts[0] ?? '');
-            if ($first !== '') {
-                $firstSegments[$first] = true;
-            }
-        }
-
-        // Flatten single wrapper folder if archive is wrapped (theme-name/...).
-        $shouldFlattenWrapper = count($firstSegments) === 1
-            && !isset($firstSegments['assets'])
-            && !isset($firstSegments['partials'])
-            && !isset($firstSegments['pages']);
+        $wrapperPrefix = $this->detectThemeWrapperPrefix($entries);
 
         foreach ($entries as &$entry) {
             $path = $entry['path'];
 
-            if ($shouldFlattenWrapper && str_contains($path, '/')) {
-                $path = preg_replace('#^[^/]+/#', '', $path) ?: $path;
+            if ($wrapperPrefix !== null) {
+                $path = preg_replace('#^' . preg_quote($wrapperPrefix, '#') . '/#i', '', $path) ?: $path;
             }
 
             $path = $this->normalizeThemeStructurePath($path, $basePath);
@@ -890,6 +877,47 @@ class CDNController extends Controller
         $this->relocateThemeFile($disk, $basePath, $themeSlug, ['main.js', 'theme.js'], 'assets/js', $requestId);
         $this->relocateThemeFile($disk, $basePath, $themeSlug, ['header.blade.php', 'footer.blade.php'], 'partials', $requestId);
         $this->relocateThemeFile($disk, $basePath, $themeSlug, ['home.blade.php', 'page.blade.php'], 'pages', $requestId);
+
+        // Final normalization pass over all extracted files (handles wrapped folders,
+        // __MACOSX payloads, css/js folders at root, and mixed ZIP structures).
+        foreach ($disk->allFiles($basePath) as $filePath) {
+            $normalizedFilePath = trim(str_replace('\\', '/', $filePath), '/');
+            if ($normalizedFilePath === '' || !str_starts_with($normalizedFilePath, $basePath . '/')) {
+                continue;
+            }
+
+            $relativePath = substr($normalizedFilePath, strlen($basePath) + 1);
+            if ($relativePath === '' || str_contains($relativePath, '/../')) {
+                continue;
+            }
+
+            $targetRelativePath = $this->normalizeThemeStructurePath($relativePath, $basePath);
+            if ($targetRelativePath === null || $targetRelativePath === $relativePath) {
+                continue;
+            }
+
+            $targetPath = trim($basePath . '/' . $targetRelativePath, '/');
+            if ($targetPath === $normalizedFilePath) {
+                continue;
+            }
+
+            try {
+                if ($disk->exists($targetPath)) {
+                    // Keep canonical file and remove duplicate/misplaced one.
+                    $disk->delete($normalizedFilePath);
+                    continue;
+                }
+
+                $disk->move($normalizedFilePath, $targetPath);
+            } catch (\Throwable $e) {
+                Log::warning('Unable to normalize extracted theme file location', [
+                    'request_id' => $requestId,
+                    'source' => $normalizedFilePath,
+                    'target' => $targetPath,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 
     protected function relocateThemeFile($disk, string $basePath, string $themeSlug, array $filenames, string $targetSubDir, string $requestId): void
@@ -964,7 +992,7 @@ class CDNController extends Controller
         $entryPath = trim(str_replace('\\', '/', $entryPath), '/');
 
         // Ignore temporary helper files sometimes present in generated zips
-        if (preg_match('/\.file$/i', $entryPath)) {
+        if ($entryPath === '' || $this->isIgnorableZipPath($entryPath) || preg_match('/\.file$/i', $entryPath)) {
             return null;
         }
 
@@ -1009,6 +1037,60 @@ class CDNController extends Controller
         }
 
         return $entryPath;
+    }
+
+    protected function detectThemeWrapperPrefix(array $entries): ?string
+    {
+        $wrapper = null;
+        $hasNestedFiles = false;
+
+        foreach ($entries as $entry) {
+            $path = trim((string) ($entry['path'] ?? ''), '/');
+            if ($path === '' || $this->isIgnorableZipPath($path)) {
+                continue;
+            }
+
+            $parts = explode('/', $path);
+            if (count($parts) < 2) {
+                return null;
+            }
+
+            $firstSegment = strtolower((string) ($parts[0] ?? ''));
+            if ($firstSegment === '' || in_array($firstSegment, ['assets', 'partials', 'pages'], true)) {
+                return null;
+            }
+
+            if ($wrapper === null) {
+                $wrapper = $firstSegment;
+            } elseif ($wrapper !== $firstSegment) {
+                return null;
+            }
+
+            $hasNestedFiles = true;
+        }
+
+        return ($hasNestedFiles && $wrapper !== null) ? $wrapper : null;
+    }
+
+    protected function isIgnorableZipPath(string $path): bool
+    {
+        $path = trim(str_replace('\\', '/', $path), '/');
+        if ($path === '') {
+            return true;
+        }
+
+        $lowerPath = strtolower($path);
+        $basename = strtolower((string) basename($path));
+
+        if (str_starts_with($lowerPath, '__macosx/')) {
+            return true;
+        }
+
+        if (in_array($basename, ['.ds_store', 'thumbs.db'], true)) {
+            return true;
+        }
+
+        return false;
     }
 
     protected function mapThemeRootFile(string $fileName): string
