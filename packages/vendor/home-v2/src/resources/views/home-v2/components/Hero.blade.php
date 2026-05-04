@@ -30,7 +30,9 @@
         <div class="video-carousel-container">
             @foreach($orderedSliders as $index => $slider)
             <div class="video-slide {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}">
-                @if($slider->video_type === 'youtube' || $slider->video_type === 'vimeo')
+                @if($slider->type === 'image' && $slider->image_url)
+                    <img class="video-background" src="{{ $slider->image_url }}" alt="{{ $slider->name }}">
+                @elseif($slider->video_type === 'youtube' || $slider->video_type === 'vimeo')
                     {{-- Vidéo YouTube/Vimeo avec iframe --}}
                     <iframe 
                         class="video-background" 
@@ -73,9 +75,12 @@
             <div class="hero-video-cards">
                 @foreach($orderedSliders as $index => $slider)
                 <div class="hero-video-card {{ $index === 0 ? 'active' : '' }}" data-video="{{ $index }}">
+                    @php($isImageSlide = $slider->type === 'image')
                     @php($isExternalVideo = $slider->video_type === 'youtube' || $slider->video_type === 'vimeo')
                     @php($hasCardImage = !empty($slider->thumbnail_path) || !empty($slider->image_path))
-                    @if($isExternalVideo && $hasCardImage)
+                    @if($isImageSlide)
+                        <img class="hero-video-card-thumbnail" src="{{ $slider->thumbnail_url ?: $slider->image_url }}" alt="{{ $slider->name }}">
+                    @elseif($isExternalVideo && $hasCardImage)
                         <img class="hero-video-card-thumbnail" src="{{ $slider->thumbnail_url }}" alt="{{ $slider->name }}">
                     @elseif($isExternalVideo)
                         @php($iframeSeparator = str_contains($slider->video_embed_url ?? '', '?') ? '&' : '?')

@@ -110,6 +110,28 @@ class SliderSeeder extends Seeder
                 'button_text' => 'Explorer',
                 'button_url' => '/destinations/canada/vallees',
             ],
+            [
+                'name' => 'Village nordique',
+                'description' => 'Ambiance hivernale et chalets au Canada',
+                'type' => 'image',
+                'image_path' => 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=1920&h=1080&fit=crop',
+                'thumbnail_path' => 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=480&h=270&fit=crop',
+                'order' => 9,
+                'is_active' => true,
+                'button_text' => 'Voir le guide',
+                'button_url' => '/destinations/canada/hiver',
+            ],
+            [
+                'name' => 'Route panoramique',
+                'description' => 'Parcours scenic entre lacs et montagnes',
+                'type' => 'image',
+                'image_path' => 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920&h=1080&fit=crop',
+                'thumbnail_path' => 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=480&h=270&fit=crop',
+                'order' => 10,
+                'is_active' => true,
+                'button_text' => 'Explorer',
+                'button_url' => '/destinations/canada/routes',
+            ],
         ];
 
         foreach ($sliders as $slider) {

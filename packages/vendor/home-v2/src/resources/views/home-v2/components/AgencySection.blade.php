@@ -16,7 +16,7 @@
 @endphp
 
 {{-- Agency Section — GoExploria Consulting & Expertise --}}
-<section class="agency-v2-section" id="consulting-section">
+<section class="agency-v2-section" id="activez-entreprises">
 
     {{-- ============================================================
          ENTÊTE STANDARD — AGENCE DE CONSEIL

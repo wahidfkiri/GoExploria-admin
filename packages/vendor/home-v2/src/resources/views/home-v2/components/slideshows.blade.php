@@ -1,6 +1,6 @@
 {{-- Slideshows V2 Component - Carousel de galerie vidéo --}}
 {{-- Utilise la modal ViewingCarousel pour la lecture vidéo --}}
-<section class="slideshows-v2-section">
+<section class="slideshows-v2-section" id="slideshow">
     <div class="container">
         <div class="slideshows-v2-container">
             <div class="slideshows-v2-track" id="slideshowsV2Track">

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Vendor\Cms\Models\Page;
 use Vendor\Cms\Models\Theme;
 use Vendor\Cms\Models\Setting;
+use Vendor\Cms\Models\Media;
 use Vendor\Cms\Models\Traits\HasSettings;
 use App\Models\Etablissement;
 use Illuminate\Http\Request;
@@ -111,15 +112,24 @@ class PublicPageController extends Controller
         if (!$this->activeTheme) {
             return null;
         }
-        
-        // Utiliser la méthode getFullPath() du modèle
-        $fullPath = $this->activeTheme->getFullPath();
-        
-        // Nettoyer les doubles slashes et les backslashes pour Windows
-        $fullPath = str_replace('\\', '/', $fullPath);
-        $fullPath = preg_replace('#/+#', '/', $fullPath);
-        
-        return $fullPath;
+
+        $slug = is_object($this->activeTheme) ? ($this->activeTheme->slug ?? null) : null;
+        if (!$slug) {
+            return null;
+        }
+
+        $paths = [
+            storage_path("app/public/cms/themes/{$this->etablissement->id}/{$slug}"),
+            storage_path("app/public/cms/themes/{$slug}"),
+        ];
+
+        foreach ($paths as $candidate) {
+            if (File::exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return $paths[0];
     }
 
     /**
@@ -257,9 +267,59 @@ class PublicPageController extends Controller
             'activeTheme' => $theme,
             'settings' => $this->getAllSettings(),
             'menu' => $this->getMenu(),
+            'sliderMedia' => $this->getSliderMedia(),
             'previewMode' => $this->previewMode,
             'assetBase' => url("/themes/{$this->etablissement->id}/{$theme->id}/assets"),
         ];
+    }
+
+    /**
+     * Récupère les médias slider (images + vidéos) d'un établissement.
+     */
+    protected function getSliderMedia()
+    {
+        if (!$this->etablissement) {
+            return collect();
+        }
+
+        try {
+            return Media::query()
+                ->where('etablissement_id', $this->etablissement->id)
+                ->public()
+                ->slider()
+                ->ordered()
+                ->get()
+                ->map(function (Media $media) {
+                    $imageUrl = $media->url;
+                    $videoUrl = trim((string) ($media->video_url ?? ''));
+                    $isVideoType = strtolower((string) $media->type) === 'video';
+                    $isVideo = $isVideoType || $videoUrl !== '';
+
+                    if ($videoUrl === '' && $isVideoType) {
+                        $videoUrl = $imageUrl;
+                    }
+
+                    return [
+                        'id' => $media->id,
+                        'name' => $media->title ?: $media->name,
+                        'description' => $media->description,
+                        'type' => $isVideo ? 'video' : 'image',
+                        'image_url' => $imageUrl,
+                        'thumbnail_url' => $imageUrl,
+                        'video_url' => $videoUrl !== '' ? $videoUrl : null,
+                        'button_text' => $media->button_text,
+                        'button_url' => $media->button_url,
+                        'order' => (int) ($media->order ?? 0),
+                    ];
+                })
+                ->values();
+        } catch (\Throwable $e) {
+            \Log::warning('Unable to load cms slider media: ' . $e->getMessage(), [
+                'etablissement_id' => $this->etablissement->id,
+            ]);
+
+            return collect();
+        }
     }
 
     /**
@@ -397,15 +457,22 @@ class PublicPageController extends Controller
             $theme = Theme::where('id', $themeId)
                 ->where('etablissement_id', $etablissementId)
                 ->firstOrFail();
-            
-            $fullPath = $theme->getFullPath();
-            $fullPath = rtrim($fullPath, '/');
+
             $path = ltrim($path, '/');
-            
-            $filePath = $fullPath . '/assets/' . $path;
-            $filePath = str_replace('\\', '/', $filePath);
-            
-            if (!file_exists($filePath)) {
+            $filePaths = [
+                storage_path("app/public/cms/themes/{$etablissementId}/{$theme->slug}/assets/{$path}"),
+                storage_path("app/public/cms/themes/{$theme->slug}/assets/{$path}"),
+            ];
+
+            $filePath = null;
+            foreach ($filePaths as $candidate) {
+                if (file_exists($candidate)) {
+                    $filePath = str_replace('\\', '/', $candidate);
+                    break;
+                }
+            }
+
+            if (!$filePath) {
                 \Log::warning('Asset not found: ' . $filePath);
                 abort(404);
             }

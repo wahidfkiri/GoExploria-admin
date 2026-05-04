@@ -64,15 +64,15 @@
 
         <div id="section-medias" class="snb-anchor"></div>
         @include('home-v2.components.BusinessTourism')
-        @include('geo-map::index')
         @include('home-v2.components.VideoPlayer')
+        @include('home-v2.components.MultilingualGrid')
+        @include('home-v2.components.DestinationsVedette')
+        @include('geo-map::index')
         @include('home-v2.components.ViewingCarousel')
         @include('home-v2.components.TikTokCarousel')
-        @include('home-v2.components.MultilingualGrid')
 
         <div id="section-vedettes" class="snb-anchor"></div>
         @include('home-v2.components.EventsVedette')
-        @include('home-v2.components.DestinationsVedette')
 
         <div id="section-restaurants" class="snb-anchor"></div>
         {{-- EntÃªte standard restaurant â€” autonome, hors template --}}

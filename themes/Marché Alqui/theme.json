@@ -1,0 +1,36 @@
+{
+    "name": "Marché Alqui",
+    "version": "1.0.0",
+    "description": "Thème moderne pour épicerie multi-services avec boucherie, traiteur, méchoui, chasse et pêche",
+    "author": "Marché Alqui",
+    "author_url": "https://marchealqui.com",
+    "license": "MIT",
+    "tags": ["epicerie", "boucherie", "traiteur", "mechoui", "alimentation", "marche"],
+    "screenshot": "preview.png",
+    "settings": {
+        "colors": {
+            "primary": "#d68b3c",
+            "primary_dark": "#b56a2a",
+            "secondary": "#2d6a2d",
+            "accent": "#f8f2ea",
+            "light": "#ffffff",
+            "dark": "#1a3a1a"
+        },
+        "fonts": {
+            "primary": "Inter",
+            "secondary": "Inter"
+        },
+        "layout": {
+            "container_width": "1280px",
+            "enable_header_sticky": true,
+            "enable_back_to_top": true,
+            "enable_whatsapp_button": true,
+            "whatsapp_number": "14186724792"
+        },
+        "slider": {
+            "autoplay_delay": 5500,
+            "loop": true,
+            "effect": "slide"
+        }
+    }
+}

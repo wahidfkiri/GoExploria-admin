@@ -16,7 +16,6 @@ class HomeV2Controller extends Controller
     public function index()
     {
         $sliders = Slider::active()
-            ->videos()
             ->ordered()
             ->get();
 

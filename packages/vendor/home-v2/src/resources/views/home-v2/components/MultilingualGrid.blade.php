@@ -16,7 +16,7 @@
 @endphp
 
 {{-- Multilingual Grid Component (VOTRE ESPACE ENTREPRISE MULTILINGUES) --}}
-<section class="multilingual-v2-section" id="enterprise-multilingual">
+<section class="multilingual-v2-section" id="multilingue">
 
     {{-- ============================================================
          ENTÊTE STANDARD — ESPACE MULTILINGUE

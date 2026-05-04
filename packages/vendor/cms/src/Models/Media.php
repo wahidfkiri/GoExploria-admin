@@ -5,7 +5,14 @@ namespace Vendor\Cms\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 use App\Models\Etablissement;
+use App\Models\Continent;
+use App\Models\Country;
+use App\Models\Province;
+use App\Models\Region;
+use App\Models\Ville;
+use App\Models\Secteur;
 
 class Media extends Model
 {
@@ -25,6 +32,7 @@ class Media extends Model
         'mime_type',
         'extension',
         'type',
+        'video_url',
         'alt',
         'title',
         'description',
@@ -33,6 +41,16 @@ class Media extends Model
         'folder',
         'is_public',
         'metadata',
+        'continent_id',
+        'country_id',
+        'province_id',
+        'region_id',
+        'ville_id',
+        'secteur_id',
+        'is_slider',
+        'order',
+        'button_text',
+        'button_url',
     ];
 
     protected $casts = [
@@ -41,6 +59,8 @@ class Media extends Model
         'height' => 'integer',
         'is_public' => 'boolean',
         'metadata' => 'array',
+        'is_slider' => 'boolean',
+        'order' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
@@ -52,6 +72,36 @@ class Media extends Model
     public function etablissement()
     {
         return $this->belongsTo(Etablissement::class, 'etablissement_id');
+    }
+
+    public function continent()
+    {
+        return $this->belongsTo(Continent::class, 'continent_id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class, 'country_id');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'province_id');
+    }
+
+    public function region()
+    {
+        return $this->belongsTo(Region::class, 'region_id');
+    }
+
+    public function ville()
+    {
+        return $this->belongsTo(Ville::class, 'ville_id');
+    }
+
+    public function secteur()
+    {
+        return $this->belongsTo(Secteur::class, 'secteur_id');
     }
 
     /**
@@ -102,11 +152,25 @@ class Media extends Model
         return $query->where('folder', $folder);
     }
 
+    public function scopeSlider($query)
+    {
+        return $query->where('is_slider', true);
+    }
+
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('order', 'asc')->orderBy('id', 'desc');
+    }
+
     /**
      * Obtenir l'URL du fichier
      */
     public function getUrlAttribute()
     {
+        if (!empty($this->path) && preg_match('/^https?:\/\//i', $this->path)) {
+            return $this->path;
+        }
+
         return Storage::disk('public')->url($this->path);
     }
 

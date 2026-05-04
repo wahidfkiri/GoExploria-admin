@@ -14,7 +14,6 @@ class SliderController extends Controller
     public function getHeroSliders()
     {
         $sliders = Slider::active()
-            ->videos()
             ->ordered()
             ->get();
 

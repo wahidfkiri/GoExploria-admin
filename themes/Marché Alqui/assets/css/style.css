@@ -1,0 +1,232 @@
+/* ============================================
+   RESPONSIVE STYLES - Marché Alqui
+============================================ */
+
+@media (max-width: 1200px) {
+    .container {
+        padding: 0 20px;
+    }
+}
+
+@media (max-width: 992px) {
+    .hero-slider {
+        height: 70vh;
+        min-height: 500px;
+    }
+    
+    .hero-content h2 {
+        font-size: 2.2rem;
+    }
+    
+    .hero-content p {
+        font-size: 1rem;
+    }
+    
+    .split-section {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+@media (max-width: 900px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        background: #fffcf5;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        padding: 24px;
+        gap: 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .nav-links.active {
+        display: flex;
+    }
+    .menu-toggle {
+        display: block;
+    }
+    .footer-grid {
+        gap: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-slider {
+        height: 60vh;
+        min-height: 450px;
+        margin-top: 70px;
+    }
+    
+    .hero-content h2 {
+        font-size: 1.8rem;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-primary, .btn-outline-light {
+        padding: 10px 24px;
+        font-size: 0.9rem;
+    }
+    
+    section {
+        padding: 50px 0;
+    }
+    
+    .section-title {
+        font-size: 1.6rem;
+    }
+    
+    .section-sub {
+        font-size: 1rem;
+        margin-bottom: 32px;
+    }
+    
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .departments-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+    }
+    
+    .dept-item {
+        font-size: 0.85rem;
+        padding: 10px 12px;
+    }
+    
+    .gallerySwiper .swiper-slide img {
+        height: 220px;
+    }
+    
+    .testimonial-card {
+        padding: 24px;
+    }
+    
+    .contact-info {
+        padding: 24px;
+    }
+    
+    .back-to-top {
+        bottom: 80px;
+        right: 16px;
+        width: 45px;
+        height: 45px;
+        font-size: 1rem;
+    }
+    
+    .btn-wa {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        bottom: 20px;
+        right: 16px;
+    }
+    
+    .page-content {
+        padding: 100px 0 40px;
+    }
+    
+    .page-body {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 0 16px;
+    }
+    
+    .hero-slider {
+        height: 70vh;
+        min-height: 400px;
+    }
+    
+    .hero-content h2 {
+        font-size: 1.4rem;
+    }
+    
+    .hero-content p {
+        font-size: 0.85rem;
+        margin-bottom: 20px;
+    }
+    
+    .section-title {
+        font-size: 1.4rem;
+    }
+    
+    .card-icon {
+        padding: 24px 20px;
+    }
+    
+    .card-icon h3 {
+        font-size: 1.2rem;
+    }
+    
+    .departments-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .dept-item {
+        font-size: 0.75rem;
+        padding: 8px 10px;
+    }
+    
+    .services-list li {
+        font-size: 0.9rem;
+    }
+    
+    .footer-grid {
+        gap: 32px;
+    }
+    
+    .footer-col h3 {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-slider {
+        height: 65vh;
+    }
+    
+    .hero-content h2 {
+        font-size: 1.2rem;
+    }
+    
+    .hero-content p {
+        font-size: 0.75rem;
+    }
+    
+    .btn-primary, .btn-outline-light {
+        padding: 8px 20px;
+        font-size: 0.8rem;
+    }
+    
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+    
+    .logo span {
+        font-size: 0.65rem;
+    }
+    
+    .nav-container {
+        padding: 12px 20px;
+    }
+}
