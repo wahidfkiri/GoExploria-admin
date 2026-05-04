@@ -838,35 +838,57 @@ class CDNController extends Controller
             return null;
         }
 
-        // If the zip already provides folder structure, keep it.
-        if (str_contains($entryPath, '/')) {
+        // For theme uploads, auto-place known files into expected folders.
+        if (!preg_match('#(^|/)cms/themes/\d+(/|$)#', $basePath)) {
+            return $entryPath;
+        }
+        
+        $segments = explode('/', $entryPath);
+        $first = strtolower($segments[0] ?? '');
+
+        // Already structured as expected
+        if (in_array($first, ['assets', 'partials', 'pages'], true)) {
             return $entryPath;
         }
 
-        // For theme uploads, auto-place known root files into expected folders.
-        if (!preg_match('#^cms/themes/\d+$#', $basePath)) {
-            return $entryPath;
+        // Flat file at root
+        if (count($segments) === 1) {
+            return $this->mapThemeRootFile($segments[0]);
         }
 
-        $name = strtolower($entryPath);
-
-        if (in_array($name, ['header.blade.php', 'footer.blade.php'], true)) {
-            return 'partials/' . $entryPath;
-        }
-
-        if (in_array($name, ['home.blade.php', 'page.blade.php'], true)) {
-            return 'pages/' . $entryPath;
-        }
-
-        if (in_array($name, ['main.js', 'theme.js'], true)) {
-            return 'assets/js/' . $entryPath;
-        }
-
-        if (in_array($name, ['style.css', 'responsive.css', 'theme.css'], true)) {
-            return 'assets/css/' . $entryPath;
+        // Wrapper folder + flat file: theme-website/header.blade.php
+        if (count($segments) === 2) {
+            $wrapper = $segments[0];
+            $mapped = $this->mapThemeRootFile($segments[1]);
+            if ($mapped !== $segments[1]) {
+                return $wrapper . '/' . $mapped;
+            }
         }
 
         return $entryPath;
+    }
+
+    protected function mapThemeRootFile(string $fileName): string
+    {
+        $name = strtolower($fileName);
+
+        if (in_array($name, ['header.blade.php', 'footer.blade.php'], true)) {
+            return 'partials/' . $fileName;
+        }
+
+        if (in_array($name, ['home.blade.php', 'page.blade.php'], true)) {
+            return 'pages/' . $fileName;
+        }
+
+        if (in_array($name, ['main.js', 'theme.js'], true)) {
+            return 'assets/js/' . $fileName;
+        }
+
+        if (in_array($name, ['style.css', 'responsive.css', 'theme.css'], true)) {
+            return 'assets/css/' . $fileName;
+        }
+
+        return $fileName;
     }
 
     protected function resolveUniqueFilename(string $path, ?string $originalName, ?string $fallbackExtension = null): string
