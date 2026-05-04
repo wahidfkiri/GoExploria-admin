@@ -56,7 +56,9 @@
             {{-- CARTE BUSINESS --}}
             <div class="bt-card">
                 <div class="bt-card-top">
-                    <div class="bt-icon-box"><i class="fas fa-chart-line"></i></div>
+                    <div class="bt-icon-box bt-icon-image-box">
+                        <img class="bt-icon-image" src="{{ asset('images/info-business.png') }}" alt="{{ $tr('Solutions Business') }}" loading="lazy">
+                    </div>
                     <div>
                         <h2 class="bt-card-title">{{ $tr('Solutions Business') }}</h2>
                         <p class="bt-card-desc">{{ $tr('Stratégies sur mesure pour développer votre entreprise, optimiser vos processus et maximiser votre rentabilité sur le marché international.') }}</p>
@@ -90,7 +92,9 @@
             {{-- CARTE TOURISME --}}
             <div class="bt-card">
                 <div class="bt-card-top">
-                    <div class="bt-icon-box bt-icon-tourisme"><i class="fas fa-globe-americas"></i></div>
+                    <div class="bt-icon-box bt-icon-image-box">
+                        <img class="bt-icon-image" src="{{ asset('images/info-tourism.png') }}" alt="{{ $tr('Expériences Touristiques') }}" loading="lazy">
+                    </div>
                     <div>
                         <h2 class="bt-card-title">{{ $tr('Expériences Touristiques') }}</h2>
                         <p class="bt-card-desc">{{ $tr('Voyages sur mesure combinant découvertes culturelles, aventures uniques et moments de détente pour les professionnels et leurs équipes.') }}</p>
@@ -164,7 +168,6 @@
         totEl.textContent = videos.length;
 
         function goTo(n) {
-            /* Arrêter une éventuelle lecture en cours */
             var iframe = stage.querySelector('iframe');
             if (iframe) {
                 preview.style.display = '';
@@ -207,7 +210,6 @@
         btnNext.addEventListener('click', function () { goTo(idx + 1); });
         btnPlay.addEventListener('click', playActive);
 
-        /* Swipe tactile */
         var touchX = 0;
         stage.addEventListener('touchstart', function (e) { touchX = e.touches[0].clientX; }, { passive: true });
         stage.addEventListener('touchend', function (e) {

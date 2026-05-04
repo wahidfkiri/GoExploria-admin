@@ -24,6 +24,21 @@
         }
         return null;
     };
+
+    $toYoutubeThumb = static function (?string $url): ?string {
+        $url = trim((string) $url);
+        if ($url === '') return null;
+        if (preg_match('/(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/', $url, $m)) {
+            return 'https://i.ytimg.com/vi/' . $m[1] . '/hqdefault.jpg';
+        }
+        return null;
+    };
+
+    $isImageUrl = static function (?string $url): bool {
+        $url = trim((string) $url);
+        if ($url === '') return false;
+        return (bool) preg_match('/\.(jpg|jpeg|png|gif|webp|avif|svg)(\?.*)?$/i', $url);
+    };
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -57,7 +72,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <link rel="stylesheet" href="{{ theme_asset('css/style.css') }}?v=20260504-1">
+    <link rel="stylesheet" href="{{ theme_asset('css/style.css') }}?v=20260504-2">
 
     @php $customCss = theme_setting('custom_css'); @endphp
     @if($customCss)
@@ -85,7 +100,7 @@
                     @endphp
                     <article class="mah-slide {{ $index === 0 ? 'is-active' : '' }}" data-slide="{{ $index }}">
                         @if($videoUrl !== '')
-                            @if($imageUrl !== '')
+                            @if($imageUrl !== '' && $isImageUrl($imageUrl))
                                 <img class="mah-media" src="{{ $imageUrl }}" alt="{{ $name }}">
                             @endif
                             @if($youtubeEmbed || $vimeoEmbed)
@@ -101,7 +116,7 @@
                                     <source src="{{ $videoUrl }}" type="video/mp4">
                                 </video>
                             @endif
-                        @elseif($imageUrl !== '')
+                        @elseif($imageUrl !== '' && $isImageUrl($imageUrl))
                             <img class="mah-media" src="{{ $imageUrl }}" alt="{{ $name }}">
                         @endif
 
@@ -112,7 +127,7 @@
                                 <p>{{ $desc }}</p>
                             @endif
                             @if($buttonText !== '' && $buttonUrl !== '')
-                                <a class="mah-btn" href="{{ $buttonUrl }}">{{ $buttonText }}</a>
+                                <a class="mah-btn" href="{{ $buttonUrl }}" target="_blank" rel="noopener noreferrer">{{ $buttonText }}</a>
                             @endif
                         </div>
                     </article>
@@ -124,6 +139,8 @@
                     @php
                         $thumbUrl = trim((string) ($slide['thumbnail_url'] ?? ''));
                         if ($thumbUrl === '') $thumbUrl = trim((string) ($slide['image_url'] ?? ''));
+                        if ($thumbUrl === '') $thumbUrl = $toYoutubeThumb((string) ($slide['video_url'] ?? ''));
+                        if (!$isImageUrl($thumbUrl)) $thumbUrl = $toYoutubeThumb($thumbUrl);
                     @endphp
                     <button class="mah-thumb {{ $index === 0 ? 'is-active' : '' }}" type="button" data-target="{{ $index }}" aria-label="Slide {{ $index + 1 }}">
                         @if($thumbUrl !== '')
@@ -160,7 +177,7 @@
     @endif
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="{{ theme_asset('js/main.js') }}?v=20260504-1"></script>
+    <script src="{{ theme_asset('js/main.js') }}?v=20260504-2"></script>
 
     @php $customJs = theme_setting('custom_js'); @endphp
     @if($customJs)
@@ -170,6 +187,7 @@
     @stack('scripts')
 </body>
 </html>
+
 
 
 

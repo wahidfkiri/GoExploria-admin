@@ -968,9 +968,38 @@ if (!function_exists('get_slider_media')) {
                 $type = strtolower((string) ($media->type ?? ''));
                 $isVideo = $type === 'video' || $videoUrl !== '';
 
+                $extractYoutubeId = static function (?string $url): ?string {
+                    $url = trim((string) $url);
+                    if ($url === '') {
+                        return null;
+                    }
+                    if (preg_match('/(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/', $url, $m)) {
+                        return $m[1];
+                    }
+                    return null;
+                };
+
+                $isImageUrl = static function (?string $url): bool {
+                    $url = trim((string) $url);
+                    if ($url === '') {
+                        return false;
+                    }
+                    return (bool) preg_match('/\.(jpg|jpeg|png|gif|webp|avif|svg)(\?.*)?$/i', $url);
+                };
+
                 if ($videoUrl === '' && $type === 'video' && $imageUrl) {
                     $videoUrl = $imageUrl;
                 }
+
+                $youtubeId = $extractYoutubeId($videoUrl ?: $imageUrl);
+                $youtubeThumb = $youtubeId ? ('https://i.ytimg.com/vi/' . $youtubeId . '/hqdefault.jpg') : null;
+
+                // Never keep a YouTube watch URL as image source.
+                if ($imageUrl && !$isImageUrl($imageUrl) && $extractYoutubeId($imageUrl)) {
+                    $imageUrl = null;
+                }
+
+                $thumbnailUrl = $imageUrl ?: $youtubeThumb;
 
                 return [
                     'id' => (int) ($media->id ?? 0),
@@ -978,7 +1007,7 @@ if (!function_exists('get_slider_media')) {
                     'description' => $media->description ?? null,
                     'type' => $isVideo ? 'video' : 'image',
                     'image_url' => $imageUrl,
-                    'thumbnail_url' => $imageUrl,
+                    'thumbnail_url' => $thumbnailUrl,
                     'video_url' => $videoUrl !== '' ? $videoUrl : null,
                     'button_text' => $media->button_text ?? null,
                     'button_url' => $media->button_url ?? null,
