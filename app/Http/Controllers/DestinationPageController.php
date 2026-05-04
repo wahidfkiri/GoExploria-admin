@@ -15,7 +15,7 @@ class DestinationPageController extends Controller
     }
 
     /**
-     * Afficher la page d'un continent
+     * Afficher la page d'un continents
      */
     public function continent(string $slug)
     {
