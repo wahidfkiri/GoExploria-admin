@@ -667,9 +667,15 @@ class ThemeCDNService
         $topLevelDirs = $this->getTopLevelDirectories($tempDir);
         $topLevelFiles = $this->getTopLevelFiles($tempDir);
 
-        // If target path already contains theme folder (cms/themes/{id}/{slug})
+        // If target path already contains theme folder (cms/themes/{slug} or legacy cms/themes/{id}/{slug})
         // and ZIP has a single wrapper folder with same slug, flatten one level.
-        if (preg_match('#^cms/themes/\d+/([^/]+)$#', $targetPath, $m) && count($topLevelDirs) === 1 && empty($topLevelFiles)) {
+        if (
+            count($topLevelDirs) === 1 &&
+            (
+                preg_match('#^cms/themes/([^/]+)$#', $targetPath, $m) ||
+                preg_match('#^cms/themes/\d+/([^/]+)$#', $targetPath, $m)
+            )
+        ) {
             $expectedSlug = strtolower($m[1]);
             $wrapperName = strtolower(basename($topLevelDirs[0]));
 
@@ -680,9 +686,10 @@ class ThemeCDNService
             }
         }
 
-        // If target is cms/themes/{id} only, keep wrapper folder if present.
+        // If target is cms/themes/{slug} (or legacy cms/themes/{id}) and ZIP is flat,
+        // auto-organize known files into expected folders.
         // If there is no wrapper, auto-organize flat files in root.
-        if (preg_match('#^cms/themes/\d+$#', $targetPath)) {
+        if (preg_match('#^cms/themes/[^/]+$#', $targetPath) || preg_match('#^cms/themes/\d+$#', $targetPath)) {
             if (empty($topLevelDirs)) {
                 $this->organizeThemeFlatFilesInDirectory($tempDir);
                 return;

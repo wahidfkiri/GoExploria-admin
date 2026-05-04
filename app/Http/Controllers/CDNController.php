@@ -139,7 +139,7 @@ class CDNController extends Controller
 
             $isZip = strtolower((string) $originalExtension) === 'zip';
             if ($isZip) {
-                $zipBasePath = $this->resolveZipBasePath($path);
+                $zipBasePath = $this->resolveZipBasePath($path, $originalName);
                 $zipResult = $this->extractZipAndStore($file, $zipBasePath, $visibility, $requestId);
                 $duration = round((microtime(true) - $startTime) * 1000, 2);
 
@@ -297,7 +297,7 @@ class CDNController extends Controller
                     $extension = strtolower((string) $file->getClientOriginalExtension());
 
                     if ($extension === 'zip') {
-                        $zipBasePath = $this->resolveZipBasePath($path);
+                        $zipBasePath = $this->resolveZipBasePath($path, $file->getClientOriginalName());
                         $zipResult = $this->extractZipAndStore($file, $zipBasePath, 'public', $requestId);
                         $fileSize = $file->getSize();
                         $totalSize += $fileSize;
@@ -706,18 +706,30 @@ class CDNController extends Controller
         }
     }
 
-    protected function resolveZipBasePath(string $path): string
+    protected function resolveZipBasePath(string $path, ?string $originalName = null): string
     {
         $path = trim(str_replace('\\', '/', $path), '/');
-        if ($path === '') {
-            return '';
-        }
-
         $segments = array_values(array_filter(explode('/', $path), static fn ($s) => $s !== ''));
 
-        // For themes: keep only cms/themes/{etablissementId}
-        if (count($segments) >= 3 && $segments[0] === 'cms' && $segments[1] === 'themes') {
-            return implode('/', array_slice($segments, 0, 3));
+        // Target is already cms/themes/{theme-slug}
+        if (count($segments) >= 3 && $segments[0] === 'cms' && $segments[1] === 'themes' && !ctype_digit($segments[2])) {
+            return 'cms/themes/' . $segments[2];
+        }
+
+        // Legacy target cms/themes/{id}/{slug} -> cms/themes/{slug}
+        if (count($segments) >= 4 && $segments[0] === 'cms' && $segments[1] === 'themes' && ctype_digit($segments[2])) {
+            return 'cms/themes/' . $segments[3];
+        }
+
+        // Legacy target cms/themes/{id} + zip file name -> cms/themes/{zip-name}
+        if (count($segments) >= 3 && $segments[0] === 'cms' && $segments[1] === 'themes' && ctype_digit($segments[2])) {
+            $slug = $this->themeSlugFromFilename($originalName);
+            return 'cms/themes/' . $slug;
+        }
+
+        // Generic fallback for direct zip upload at root.
+        if ($path === '') {
+            return $originalName ? ('cms/themes/' . $this->themeSlugFromFilename($originalName)) : '';
         }
 
         return $path;
@@ -839,16 +851,29 @@ class CDNController extends Controller
         }
 
         // For theme uploads, auto-place known files into expected folders.
-        if (!preg_match('#(^|/)cms/themes/\d+(/|$)#', $basePath)) {
+        if (!preg_match('#(^|/)cms/themes/[^/]+(/|$)#', $basePath)) {
             return $entryPath;
         }
-        
+
+        $baseSegments = array_values(array_filter(explode('/', $basePath), static fn ($s) => $s !== ''));
+        $themeSlug = strtolower($baseSegments[2] ?? '');
         $segments = explode('/', $entryPath);
         $first = strtolower($segments[0] ?? '');
 
         // Already structured as expected
         if (in_array($first, ['assets', 'partials', 'pages'], true)) {
             return $entryPath;
+        }
+
+        // Avoid duplicate wrapper: cms/themes/theme-website + theme-website/...
+        if ($themeSlug !== '' && $first === $themeSlug && count($segments) > 1) {
+            array_shift($segments);
+            $entryPath = implode('/', $segments);
+            $segments = explode('/', $entryPath);
+            $first = strtolower($segments[0] ?? '');
+            if (in_array($first, ['assets', 'partials', 'pages'], true)) {
+                return $entryPath;
+            }
         }
 
         // Flat file at root
@@ -889,6 +914,15 @@ class CDNController extends Controller
         }
 
         return $fileName;
+    }
+
+    protected function themeSlugFromFilename(?string $originalName): string
+    {
+        $originalName = (string) ($originalName ?? '');
+        $baseName = pathinfo($originalName, PATHINFO_FILENAME);
+        $baseName = $baseName !== '' ? $baseName : 'theme';
+
+        return Str::slug($baseName) ?: 'theme';
     }
 
     protected function resolveUniqueFilename(string $path, ?string $originalName, ?string $fallbackExtension = null): string

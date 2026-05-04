@@ -27,7 +27,7 @@ class ThemeService
     public function uploadTheme($file, $name, $etablissementId): Theme
     {
         $slug = Str::slug($name);
-        $themePath = "cms/themes/{$etablissementId}/{$slug}";
+        $themePath = "cms/themes/{$slug}";
         
         if ($this->cdnEnabled) {
             // Upload to CDN
@@ -715,7 +715,7 @@ class ThemeService
         
         if ($theme->storage_type === 'cdn' && $this->cdnEnabled) {
             // Delete from CDN
-            $cdnPath = "cms/themes/{$etablissementId}/{$theme->slug}";
+            $cdnPath = "cms/themes/{$theme->slug}";
             $this->deleteDirectoryFromCDN($cdnPath);
             
             if ($theme->preview_image && $this->isCdnUrl($theme->preview_image)) {
@@ -724,7 +724,7 @@ class ThemeService
             }
         } else {
             // Delete from local storage
-            $fullPath = storage_path("app/public/cms/themes/{$etablissementId}/{$theme->slug}");
+            $fullPath = storage_path("app/public/{$theme->path}");
             
             if (file_exists($fullPath)) {
                 $this->deleteDirectory($fullPath);
@@ -864,14 +864,14 @@ class ThemeService
     public function duplicateTheme(Theme $theme, string $newName, $etablissementId): Theme
     {
         $newSlug = Str::slug($newName);
-        $newPath = "cms/themes/{$etablissementId}/{$newSlug}";
+        $newPath = "cms/themes/{$newSlug}";
         
         if ($theme->storage_type === 'cdn' && $this->cdnEnabled) {
             // For CDN, we need to copy files from source to destination
             // This requires listing source files and uploading them to new location
             throw new \Exception('Theme duplication from CDN is not yet implemented');
         } else {
-            $sourcePath = storage_path("app/public/cms/themes/{$etablissementId}/{$theme->slug}");
+            $sourcePath = storage_path("app/public/{$theme->path}");
             $destPath = storage_path("app/public/{$newPath}");
             
             if (!file_exists($destPath)) {
