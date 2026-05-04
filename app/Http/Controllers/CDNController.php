@@ -136,7 +136,7 @@ class CDNController extends Controller
             ]);
             
             // Générer un nom unique
-            $filename = Str::random(40) . '.' . $originalExtension;
+            $filename = $this->resolveUniqueFilename($path, $originalName, $originalExtension);
             $fullPath = trim($path . '/' . $filename, '/');
             
             Log::channel('cdn_upload')->info('Storing file', [
@@ -260,8 +260,12 @@ class CDNController extends Controller
             
             foreach ($request->file('files') as $index => $file) {
                 try {
-                    $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
                     $path = $request->input('path', '');
+                    $filename = $this->resolveUniqueFilename(
+                        $path,
+                        $file->getClientOriginalName(),
+                        $file->getClientOriginalExtension()
+                    );
                     $fullPath = trim($path . '/' . $filename, '/');
                     
                     $fileSize = $file->getSize();
@@ -642,6 +646,60 @@ class CDNController extends Controller
                 'request_id' => $requestId
             ], 500);
         }
+    }
+
+    protected function resolveUniqueFilename(string $path, ?string $originalName, ?string $fallbackExtension = null): string
+    {
+        $path = trim($path, '/');
+        $originalName = (string) ($originalName ?? '');
+        $fallbackExtension = strtolower((string) ($fallbackExtension ?? ''));
+
+        $baseName = pathinfo($originalName, PATHINFO_FILENAME);
+        $extension = strtolower((string) pathinfo($originalName, PATHINFO_EXTENSION));
+
+        if ($baseName === '') {
+            $baseName = 'file';
+        }
+
+        if ($extension === '' && $fallbackExtension !== '') {
+            $extension = ltrim($fallbackExtension, '.');
+        }
+
+        $baseName = $this->sanitizeFilename($baseName);
+        $extension = $this->sanitizeFilename($extension);
+
+        $candidate = $extension !== '' ? ($baseName . '.' . $extension) : $baseName;
+        $candidatePath = trim($path . '/' . $candidate, '/');
+
+        if (!Storage::disk('cdn')->exists($candidatePath)) {
+            return $candidate;
+        }
+
+        $counter = 1;
+        while ($counter <= 10000) {
+            $withSuffix = $extension !== ''
+                ? sprintf('%s-%d.%s', $baseName, $counter, $extension)
+                : sprintf('%s-%d', $baseName, $counter);
+
+            $withSuffixPath = trim($path . '/' . $withSuffix, '/');
+            if (!Storage::disk('cdn')->exists($withSuffixPath)) {
+                return $withSuffix;
+            }
+
+            $counter++;
+        }
+
+        return ($extension !== '')
+            ? sprintf('%s-%s.%s', $baseName, Str::lower((string) Str::uuid()), $extension)
+            : sprintf('%s-%s', $baseName, Str::lower((string) Str::uuid()));
+    }
+
+    protected function sanitizeFilename(string $value): string
+    {
+        $value = preg_replace('/[^A-Za-z0-9._-]/', '-', $value) ?? '';
+        $value = trim($value, '-._');
+
+        return $value !== '' ? $value : 'file';
     }
     
     /**
