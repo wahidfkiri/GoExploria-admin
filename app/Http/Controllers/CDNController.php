@@ -750,6 +750,12 @@ class CDNController extends Controller
                     continue;
                 }
 
+                $normalizedEntryPath = $this->normalizeThemeStructurePath($normalizedEntryPath, $basePath);
+                if ($normalizedEntryPath === null) {
+                    $skippedCount++;
+                    continue;
+                }
+
                 $entryContent = $zip->getFromIndex($i);
                 if ($entryContent === false) {
                     $skippedCount++;
@@ -820,6 +826,47 @@ class CDNController extends Controller
         }
 
         return implode('/', $safeSegments);
+    }
+
+    protected function normalizeThemeStructurePath(string $entryPath, string $basePath): ?string
+    {
+        $basePath = trim(str_replace('\\', '/', $basePath), '/');
+        $entryPath = trim(str_replace('\\', '/', $entryPath), '/');
+
+        // Ignore temporary helper files sometimes present in generated zips
+        if (preg_match('/\.file$/i', $entryPath)) {
+            return null;
+        }
+
+        // If the zip already provides folder structure, keep it.
+        if (str_contains($entryPath, '/')) {
+            return $entryPath;
+        }
+
+        // For theme uploads, auto-place known root files into expected folders.
+        if (!preg_match('#^cms/themes/\d+$#', $basePath)) {
+            return $entryPath;
+        }
+
+        $name = strtolower($entryPath);
+
+        if (in_array($name, ['header.blade.php', 'footer.blade.php'], true)) {
+            return 'partials/' . $entryPath;
+        }
+
+        if (in_array($name, ['home.blade.php', 'page.blade.php'], true)) {
+            return 'pages/' . $entryPath;
+        }
+
+        if (in_array($name, ['main.js', 'theme.js'], true)) {
+            return 'assets/js/' . $entryPath;
+        }
+
+        if (in_array($name, ['style.css', 'responsive.css', 'theme.css'], true)) {
+            return 'assets/css/' . $entryPath;
+        }
+
+        return $entryPath;
     }
 
     protected function resolveUniqueFilename(string $path, ?string $originalName, ?string $fallbackExtension = null): string
