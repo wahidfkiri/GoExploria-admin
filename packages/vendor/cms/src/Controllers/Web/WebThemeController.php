@@ -404,6 +404,14 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         View::addNamespace('theme', $themePath);
         View::addNamespace('theme_' . $theme->slug, $themePath);
         
+        // Supporte aussi les themes qui utilisent @include('partials.header') sans namespace.
+        $finder = View::getFinder();
+        if (method_exists($finder, 'prependLocation')) {
+            $finder->prependLocation($themePath);
+        } else {
+            $finder->addLocation($themePath);
+        }
+        
         $viewData = $this->prepareViewData($theme, $page, $preview, $demoContent);
         
         // 🔥 CORRECTION ICI 🔥

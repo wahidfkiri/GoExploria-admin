@@ -73,17 +73,19 @@ class ThemeService
         }
         
         try {
-            // Validate theme structure
-            $this->validateThemeStructure($tempDir);
+            $themeRootPath = $this->resolveThemeRootPath($tempDir);
+
+            // Validate and auto-complete theme structure
+            $this->validateThemeStructure($themeRootPath);
             
             // Upload all files to CDN
-            $this->uploadDirectoryToCDN($tempDir, $themePath);
+            $this->uploadDirectoryToCDN($themeRootPath, $themePath);
             
             // Extract preview image from zip root
             $previewImage = $this->extractPreviewImageFromCDN($zipPath, $themePath, $slug, $etablissementId);
             
             // Extract home page content
-            $homeContent = $this->extractHomePageContent($tempDir);
+            $homeContent = $this->extractHomePageContent($themeRootPath);
             
             // Check if theme already exists globally
             $existingTheme = Theme::where('slug', $slug)->first();
@@ -98,8 +100,8 @@ class ThemeService
                 'slug' => $slug,
                 'path' => $themePath,
                 'preview_image' => $previewImage,
-                'version' => $this->getThemeVersion($tempDir),
-                'description' => $this->getThemeDescription($tempDir),
+                'version' => $this->getThemeVersion($themeRootPath),
+                'description' => $this->getThemeDescription($themeRootPath),
                 'is_default' => Theme::count() === 0,
                 'storage_type' => 'cdn', // Add this column to your themes table
             ]);
@@ -153,7 +155,10 @@ class ThemeService
             throw new \Exception('Impossible d\'ouvrir le fichier ZIP');
         }
         
-        // Validate theme structure
+        $themeRootPath = $this->resolveThemeRootPath($fullPath);
+        $this->normalizeThemeDirectoryLayout($fullPath, $themeRootPath);
+
+        // Validate and auto-complete theme structure
         $this->validateThemeStructure($fullPath);
         
         // Extract preview image from zip root
@@ -517,6 +522,124 @@ class ThemeService
         
         if (!file_exists($path . '/pages')) {
             mkdir($path . '/pages', 0755, true);
+        }
+
+        $this->ensureThemeFallbackFiles($path);
+        $this->normalizeThemeBladeReferences($path);
+    }
+
+    /**
+     * Resolve the effective root directory of an extracted theme.
+     */
+    protected function resolveThemeRootPath(string $basePath): string
+    {
+        if (file_exists($basePath . '/layout.blade.php')) {
+            return $basePath;
+        }
+
+        foreach (glob($basePath . '/*', GLOB_ONLYDIR) ?: [] as $subDir) {
+            if (file_exists($subDir . '/layout.blade.php')) {
+                return $subDir;
+            }
+        }
+
+        return $basePath;
+    }
+
+    /**
+     * Flatten extracted directory when ZIP contains a top-level wrapper folder.
+     */
+    protected function normalizeThemeDirectoryLayout(string $targetRoot, string $themeRoot): void
+    {
+        $targetRoot = rtrim($targetRoot, DIRECTORY_SEPARATOR);
+        $themeRoot = rtrim($themeRoot, DIRECTORY_SEPARATOR);
+
+        if ($targetRoot === $themeRoot) {
+            return;
+        }
+
+        foreach (scandir($themeRoot) as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+
+            $source = $themeRoot . DIRECTORY_SEPARATOR . $entry;
+            $destination = $targetRoot . DIRECTORY_SEPARATOR . $entry;
+
+            if (file_exists($destination)) {
+                continue;
+            }
+
+            rename($source, $destination);
+        }
+
+        @rmdir($themeRoot);
+    }
+
+    protected function ensureThemeFallbackFiles(string $path): void
+    {
+        $this->ensureFileIfMissing(
+            $path . '/partials/header.blade.php',
+            "<header></header>\n"
+        );
+
+        $this->ensureFileIfMissing(
+            $path . '/partials/footer.blade.php',
+            "<footer></footer>\n"
+        );
+
+        $this->ensureFileIfMissing(
+            $path . '/pages/page.blade.php',
+            "@extends('theme::layout')\n\n@section('content')\n{!! \$content ?? '' !!}\n@endsection\n"
+        );
+    }
+
+    protected function ensureFileIfMissing(string $filePath, string $content): void
+    {
+        if (!file_exists($filePath)) {
+            file_put_contents($filePath, $content);
+        }
+    }
+
+    protected function normalizeThemeBladeReferences(string $path): void
+    {
+        $targets = [
+            $path . '/layout.blade.php',
+            $path . '/pages/home.blade.php',
+            $path . '/pages/page.blade.php',
+        ];
+
+        foreach ($targets as $filePath) {
+            if (!file_exists($filePath)) {
+                continue;
+            }
+
+            $content = file_get_contents($filePath);
+            if (!is_string($content) || $content === '') {
+                continue;
+            }
+
+            $updated = str_replace(
+                ["@include('partials.header')", '@include("partials.header")'],
+                ["@includeIf('theme::partials.header')", '@includeIf("theme::partials.header")'],
+                $content
+            );
+
+            $updated = str_replace(
+                ["@include('partials.footer')", '@include("partials.footer")'],
+                ["@includeIf('theme::partials.footer')", '@includeIf("theme::partials.footer")'],
+                $updated
+            );
+
+            $updated = str_replace(
+                ["@extends('layout')", '@extends("layout")'],
+                ["@extends('theme::layout')", '@extends("theme::layout")'],
+                $updated
+            );
+
+            if ($updated !== $content) {
+                file_put_contents($filePath, $updated);
+            }
         }
     }
     
