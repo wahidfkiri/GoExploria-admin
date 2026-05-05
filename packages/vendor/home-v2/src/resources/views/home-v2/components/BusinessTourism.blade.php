@@ -55,12 +55,13 @@
 
             {{-- CARTE BUSINESS --}}
             <div class="bt-card">
+                <img style="width: 120px;margin-right: auto;margin-left: auto;" class="bt-icon-image" src="{{ asset('images/info-business.png') }}" alt="{{ $tr('Solutions Business') }}" loading="lazy">
                 <div class="bt-card-top">
                     <div class="bt-icon-box bt-icon-image-box">
                         <img class="bt-icon-image" src="{{ asset('images/info-business.png') }}" alt="{{ $tr('Solutions Business') }}" loading="lazy">
                     </div>
                     <div>
-                        <h2 class="bt-card-title">{{ $tr('Solutions Business') }}</h2>
+                        <h2 class="bt-card-title">{{ $tr('SOLUTIONS WEB BUSINESS ') }}</h2>
                         <p class="bt-card-desc">{{ $tr('Stratégies sur mesure pour développer votre entreprise, optimiser vos processus et maximiser votre rentabilité sur le marché international.') }}</p>
                     </div>
                 </div>
@@ -91,12 +92,14 @@
 
             {{-- CARTE TOURISME --}}
             <div class="bt-card">
+                <img style="width: 120px;margin-right: auto;margin-left: auto;" class="bt-icon-image" src="{{ asset('images/info-tourism.png') }}" alt="{{ $tr('Expériences Touristiques') }}" loading="lazy">
+
                 <div class="bt-card-top">
                     <div class="bt-icon-box bt-icon-image-box">
                         <img class="bt-icon-image" src="{{ asset('images/info-tourism.png') }}" alt="{{ $tr('Expériences Touristiques') }}" loading="lazy">
                     </div>
                     <div>
-                        <h2 class="bt-card-title">{{ $tr('Expériences Touristiques') }}</h2>
+                        <h2 class="bt-card-title">{{ $tr('SOLUTIONS WEB TOURISME') }}</h2>
                         <p class="bt-card-desc">{{ $tr('Voyages sur mesure combinant découvertes culturelles, aventures uniques et moments de détente pour les professionnels et leurs équipes.') }}</p>
                     </div>
                 </div>

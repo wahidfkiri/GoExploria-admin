@@ -62,6 +62,20 @@ class VideoPlayerV2 {
         // Mettre à jour le compteur initial
         this.updateCounter();
     }
+
+    isItemVisible(item) {
+        return !!item && item.style.display !== 'none';
+    }
+
+    getVisibleIndices() {
+        const indices = [];
+        this.playlistItems.forEach((item, index) => {
+            if (this.isItemVisible(item)) {
+                indices.push(index);
+            }
+        });
+        return indices;
+    }
     
     playMedia(index) {
         if (index < 0 || index >= this.playlistItems.length) return;
@@ -114,13 +128,21 @@ class VideoPlayerV2 {
     }
     
     playNext() {
-        const nextIndex = (this.currentIndex + 1) % this.playlistItems.length;
-        this.playMedia(nextIndex);
+        const visible = this.getVisibleIndices();
+        if (!visible.length) return;
+
+        const currentVisiblePos = visible.indexOf(this.currentIndex);
+        const nextPos = currentVisiblePos === -1 ? 0 : (currentVisiblePos + 1) % visible.length;
+        this.playMedia(visible[nextPos]);
     }
     
     playPrevious() {
-        const prevIndex = (this.currentIndex - 1 + this.playlistItems.length) % this.playlistItems.length;
-        this.playMedia(prevIndex);
+        const visible = this.getVisibleIndices();
+        if (!visible.length) return;
+
+        const currentVisiblePos = visible.indexOf(this.currentIndex);
+        const prevPos = currentVisiblePos === -1 ? 0 : (currentVisiblePos - 1 + visible.length) % visible.length;
+        this.playMedia(visible[prevPos]);
     }
     
     scrollToItem(item) {
@@ -215,7 +237,17 @@ class VideoPlayerV2 {
     }
     
     updateCounter() {
-        this.mediaCounter.textContent = `${this.currentIndex + 1} / ${this.playlistItems.length}`;
+        if (!this.mediaCounter) return;
+
+        const visible = this.getVisibleIndices();
+        if (!visible.length) {
+            this.mediaCounter.textContent = '0 / 0';
+            return;
+        }
+
+        const currentVisiblePos = visible.indexOf(this.currentIndex);
+        const position = currentVisiblePos === -1 ? 1 : currentVisiblePos + 1;
+        this.mediaCounter.textContent = `${position} / ${visible.length}`;
     }
 }
 
@@ -224,7 +256,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const player = new VideoPlayerV2();
     
     // Charger le premier média automatiquement
-    if (player.playlistItems.length > 0) {
+    const visible = player.getVisibleIndices();
+    if (visible.length > 0) {
+        player.playMedia(visible[0]);
+    } else if (player.playlistItems.length > 0) {
         player.playMedia(0);
     }
 });

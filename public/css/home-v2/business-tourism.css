@@ -1,8 +1,8 @@
-/**
+﻿/**
  * Business & Tourism Section
  */
 
-/* ── Section wrapper ── */
+/* Section wrapper */
 .bt-section {
     background: #f8f9fc;
 }
@@ -13,7 +13,7 @@
     padding: 60px 40px;
 }
 
-/* ── Grille duo ── */
+/* Grille duo */
 .bt-dual-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -21,7 +21,7 @@
     margin-bottom: 48px;
 }
 
-/* ── Carte ── */
+/* Carte */
 .bt-card {
     background: #fff;
     border: 1px solid #e8ecf0;
@@ -43,7 +43,6 @@
     align-items: flex-start;
     gap: 18px;
 }
-
 .bt-icon-box {
     flex-shrink: 0;
     width: 56px;
@@ -56,6 +55,24 @@
     justify-content: center;
     font-size: 22px;
 }
+
+
+
+.bt-icon-image-box {
+    width: clamp(72px, 8vw, 108px);
+    height: clamp(72px, 8vw, 108px);
+    padding: 6px;
+    background: #fff;
+    border: 1px solid #eef1f5;
+}
+
+.bt-icon-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
 
 .bt-icon-tourisme {
     background: rgba(0, 174, 154, 0.08);
@@ -76,7 +93,7 @@
     margin: 0;
 }
 
-/* ── Features list ── */
+/* Features list */
 .bt-features {
     list-style: none;
     padding: 0;
@@ -101,7 +118,7 @@
     flex-shrink: 0;
 }
 
-/* ── Carousel vidéos ── */
+/* Carousel videos */
 .bt-carousel {
     flex: 1;
 }
@@ -165,7 +182,7 @@
     transform: translate(-50%, -50%) scale(1.12);
 }
 
-/* Flèches Prev / Next */
+/* Fleches Prev / Next */
 .bt-carousel-arrow {
     position: absolute;
     top: 50%;
@@ -225,7 +242,7 @@
     text-overflow: ellipsis;
 }
 
-/* ── CTA buttons ── */
+/* CTA buttons */
 .bt-cta-btn {
     display: inline-flex;
     align-items: center;
@@ -253,7 +270,7 @@
 }
 .bt-cta-secondary:hover { background: #1a3a8f; color: #fff; }
 
-/* ── Stats ── */
+/* Stats */
 .bt-stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -290,7 +307,7 @@
     letter-spacing: 1px;
 }
 
-/* ── Responsive ── */
+/* Responsive */
 @media (max-width: 1100px) {
     .bt-dual-grid { grid-template-columns: 1fr; }
 }
@@ -306,4 +323,19 @@
 @media (max-width: 480px) {
     .bt-stats-grid { grid-template-columns: 1fr 1fr; }
     .bt-card-top { flex-direction: column; }
+.bt-icon-box {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    background: rgba(26, 58, 143, 0.07);
+    color: #1a3a8f;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
 }
+}
+
+
+

@@ -1,4 +1,4 @@
-<!-- Font Awesome -->
+﻿<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -100,6 +100,26 @@
     .filter-group label { display:block; margin-bottom:5px; font-weight:500; color:var(--dark); }
     .form-select { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.9rem; transition:var(--transition); }
     .form-select:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(42,91,215,0.1); }
+    .resto-dest-breadcrumb { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+    .resto-dest-select {
+        min-width: 170px;
+        max-width: 220px;
+        padding: 6px 30px 6px 10px;
+        border: 1px solid #d8e2ff;
+        border-radius: 10px;
+        background: #fff;
+        color: #1a1d28;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    .resto-dest-select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(42,91,215,0.12);
+    }
+    .resto-dest-sep { color:#6c757d; font-weight:700; }
     .locate-btn { width:100%; padding:12px; background:linear-gradient(90deg,var(--primary),var(--primary-dark)); color:white; border:none; border-radius:8px; font-weight:500; cursor:pointer; transition:var(--transition); display:flex; align-items:center; justify-content:center; gap:8px; }
     .locate-btn:hover:not(:disabled) { background:linear-gradient(90deg,var(--primary-dark),var(--primary)); transform:translateY(-2px); }
     .locate-btn:disabled { opacity:0.6; cursor:not-allowed; }
@@ -137,9 +157,9 @@
     .youtube-video-container iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; }
     @keyframes popupFadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ══════════════════════════════════════════
+    /* ==========================================
        OPS VIDEO SWIPER
-    ══════════════════════════════════════════ */
+    ========================================== */
     .ops-slider-wrapper {
         margin-bottom: 30px;
         background: #f8faff;
@@ -258,13 +278,15 @@
                     </a>
                 </div>
                 <div class="resto-header-center">
-                    <h2 class="resto-header-title">LA GÉO CARTE VIDÉO</h2>
+                    <h1 class="resto-header-title">LA GÉO CARTE VIDÉO</h1>
+                    <h1 class="resto-header-title resto-header-title-highlight">Votre nouveau « Call-To-Action »</h1>
+                    <h2>VOS VIDÉOS SUR VOS ESPACES, LES ACTIVITÉS À PROXIMITÉ : HÉBERGEMENT, ACTIVITÉS HIVERNALES, MAGASINS D'ALIMENTATION, HÔPITAUX, ETC.</h2>
                     <p class="resto-header-subtitle">Découvrez les lieux incontournables sur notre carte interactive et planifiez vos aventures au Canada.</p>
                     <div class="resto-header-tabs" role="tablist">
                         <button class="resto-tab-btn active" role="tab" data-espace="all">
                             <i class="fas fa-globe"></i> Toutes les options
                         </button>
-                        <button class="resto-tab-btn" role="tab" data-espace="entreprise">
+                        <!-- <button class="resto-tab-btn" role="tab" data-espace="entreprise">
                             <i class="fas fa-briefcase"></i> Espace entreprise
                         </button>
                         <button class="resto-tab-btn" role="tab" data-espace="destination">
@@ -272,7 +294,7 @@
                         </button>
                         <button class="resto-tab-btn" role="tab" data-espace="activite">
                             <i class="fas fa-person-hiking"></i> Espace activité
-                        </button>
+                        </button> -->
                     </div>
                 </div>
                 <div class="resto-header-logo-right">
@@ -293,16 +315,14 @@
                         <img src="{{ asset('REDI.png') }}" alt="Destinations">
                         <span>Destinations</span>
                     </div>
-                    <div class="resto-dest-breadcrumb">
-                        <a href="#" class="resto-dest-link active">Toutes destinations</a>
+                                        <div class="resto-dest-breadcrumb">
+                        <select id="dest-continent-select" class="resto-dest-select" aria-label="Continent"></select>
                         <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link">Amérique du Nord</a>
+                        <select id="dest-country-select" class="resto-dest-select" aria-label="Pays"></select>
                         <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link">Canada</a>
+                        <select id="dest-province-select" class="resto-dest-select" aria-label="Province"></select>
                         <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link">Québec</a>
-                        <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link">Région de Québec</a>
+                        <select id="dest-region-select" class="resto-dest-select" aria-label="Région"></select>
                     </div>
                 </div>
             </div>
@@ -372,7 +392,7 @@ class InteractiveMap {
         this.init();
     }
 
-    /* ── Static data ── */
+    /* -- Static data -- */
     getStaticProvinces() {
         return [
             {code:'ab',name:'Alberta',                   lat:53.9333,lng:-116.5765},
@@ -410,7 +430,7 @@ class InteractiveMap {
         ];
     }
 
-    /* ── Init ── */
+    /* -- Init -- */
     async init() {
         try {
             this.initMap();
@@ -434,7 +454,7 @@ class InteractiveMap {
         L.control.scale({imperial:false,metric:true}).addTo(this.map);
     }
 
-    /* ── Filters ── */
+    /* -- Filters -- */
     loadFiltersStatic() {
         const provinces  = this.getStaticProvinces();
         const categories = this.getStaticCategories();
@@ -452,7 +472,7 @@ class InteractiveMap {
         if (document.getElementById('totalCategories')) this.animateCounter('totalCategories', 0, categories.length);
     }
 
-    /* ── Stats ── */
+    /* -- Stats -- */
     async loadStats() {
         try {
             const r = await axios.get(`${API_BASE_URL}/stats`);
@@ -463,7 +483,7 @@ class InteractiveMap {
         } catch(e) { console.error('Stats:',e); }
     }
 
-    /* ── Load places ── */
+    /* -- Load places -- */
     async loadPlaces() {
         if (this.isLoading) return;
         this.isLoading = true;
@@ -483,7 +503,7 @@ class InteractiveMap {
         } finally { this.isLoading = false; }
     }
 
-    /* ── Map helpers ── */
+    /* -- Map helpers -- */
     zoomToProvince(code) {
         const p = this.getStaticProvinces().find(p=>p.code===code);
         if (p) { this.map.setView([p.lat,p.lng],6); this.showNotification(`Zoom sur ${p.name}`,'success'); }
@@ -510,7 +530,7 @@ class InteractiveMap {
         return marker;
     }
 
-    /* ── Popup ── */
+    /* -- Popup -- */
     createPopupContent(place) {
         let yt = place.youtube_id;
         if (yt?.includes('?')) yt = yt.split('?')[0];
@@ -547,9 +567,9 @@ class InteractiveMap {
             </div>`;
     }
 
-    /* ══════════════════════════════════════════
+    /* ==========================================
        OTHER PLACES VIDEO SWIPER
-    ══════════════════════════════════════════ */
+    ========================================== */
     createOtherPlacesVideoSlider(currentPlace) {
         const others = this.places.filter(p =>
             p.id !== currentPlace.id && p.youtube_id && p.category === currentPlace.category
@@ -640,7 +660,7 @@ class InteractiveMap {
             </div>`;
     }
 
-    /* ── Modal ── */
+    /* -- Modal -- */
     showPlaceModal(place) {
         this._destroySwipers();
         const modal = document.getElementById('place-modal');
@@ -816,7 +836,7 @@ class InteractiveMap {
             </div>`;
     }
 
-    /* ── Places list ── */
+    /* -- Places list -- */
     renderPlacesList() {
         const c = document.getElementById('places-list');
         if (!c) return;
@@ -852,7 +872,7 @@ class InteractiveMap {
         const md=this.markers[place.id]; if(md?.popup) md.popup.setLatLng([place.latitude,place.longitude]).openOn(this.map);
     }
 
-    /* ── Geolocation ── */
+    /* -- Geolocation -- */
     locateUser() {
         if (!navigator.geolocation) { this.showNotification('Géolocalisation non supportée','error'); return; }
         const btn=document.getElementById('locate-me'); const orig=btn.innerHTML;
@@ -871,13 +891,13 @@ class InteractiveMap {
 
     updatePlacesCount() { const el=document.getElementById('places-count'); if(el) el.textContent=this.places.length; }
 
-    /* ── Sidebar ── */
+    /* -- Sidebar -- */
     initSidebar() {
         const btn=document.getElementById('sidebarToggle'); const side=document.getElementById('sidebarRight');
         if (btn&&side) { btn.addEventListener('click',()=>{ side.classList.toggle('active'); document.getElementById('sidebarToggleIcon').className=side.classList.contains('active')?'fas fa-times':'fas fa-bars'; }); }
     }
 
-    /* ── Event listeners ── */
+    /* -- Event listeners -- */
     setupEventListeners() {
         document.getElementById('province-filter')?.addEventListener('change', e=>{ e.target.value?this.zoomToProvince(e.target.value):this.map.setView([56.1304,-106.3468],4); });
         document.getElementById('category-filter')?.addEventListener('change', e=>{ this.selectedCategory=e.target.value; this.loadPlaces(); });
@@ -915,7 +935,7 @@ class InteractiveMap {
         });
     }
 
-    /* ── Close modal ── */
+    /* -- Close modal -- */
     closeModal() {
         this._destroySwipers();
         const modal=document.getElementById('place-modal');
@@ -923,7 +943,7 @@ class InteractiveMap {
         this.activePlace=null;
     }
 
-    /* ── Utilities ── */
+    /* -- Utilities -- */
     showNotification(message, type='info') {
         const t=document.createElement('div'); t.className=`toast-notification ${type}`;
         t.innerHTML=`<div style="display:flex;align-items:center;gap:12px;"><i class="fas ${type==='error'?'fa-exclamation-circle':type==='success'?'fa-check-circle':'fa-info-circle'}" style="font-size:20px;color:${type==='error'?'#e53e3e':type==='success'?'#38a169':'#2a5bd7'}"></i><span>${message}</span></div>`;
@@ -941,8 +961,119 @@ class InteractiveMap {
     escapeHtml(text) { if(!text) return ''; const d=document.createElement('div'); d.textContent=text; return d.innerHTML; }
 }
 
-/* ── Bootstrap ── */
+function initDestinationBreadcrumb() {
+    const continentSelect = document.getElementById('dest-continent-select');
+    const countrySelect = document.getElementById('dest-country-select');
+    const provinceSelect = document.getElementById('dest-province-select');
+    const regionSelect = document.getElementById('dest-region-select');
+
+    if (!continentSelect || !countrySelect || !provinceSelect || !regionSelect) {
+        return;
+    }
+
+    const hierarchy = {
+        'Amérique du Nord': ['Canada', 'États-Unis', 'Mexique', 'Cuba', 'Jamaïque', 'Groenland'],
+        'Amérique du Sud': ['Brésil', 'Argentine', 'Colombie', 'Pérou', 'Chili', 'Équateur'],
+        'Europe': ['France', 'Allemagne', 'Espagne', 'Italie', 'Portugal', 'Belgique'],
+        'Afrique': ['Maroc', 'Sénégal', 'Tunisie', 'Côte d’Ivoire', 'Cameroun', 'Kenya'],
+        'Asie': ['Japon', 'Corée du Sud', 'Thaïlande', 'Vietnam', 'Inde', 'Singapour'],
+        'Océanie': ['Australie', 'Nouvelle-Zélande', 'Fidji', 'Samoa', 'Vanuatu', 'Tonga']
+    };
+
+    const provincesByCountry = {
+        'Canada': ['Québec', 'Ontario', 'Alberta', 'Colombie-Britannique', 'Manitoba', 'Nouvelle-Écosse'],
+        'États-Unis': ['Californie', 'Texas', 'Floride', 'New York', 'Nevada', 'Colorado'],
+        'Mexique': ['Yucatán', 'Jalisco', 'Chiapas', 'Oaxaca', 'Puebla', 'Sonora'],
+        'Cuba': ['La Havane', 'Matanzas', 'Villa Clara', 'Holguín', 'Santiago', 'Pinar del Río'],
+        'Jamaïque': ['Kingston', 'Saint Andrew', 'Saint James', 'Trelawny', 'Hanover', 'Portland'],
+        'Groenland': ['Nuuk', 'Ilulissat', 'Qaqortoq', 'Sisimiut', 'Aasiaat', 'Tasiilaq'],
+        'Brésil': ['São Paulo', 'Rio de Janeiro', 'Bahia', 'Paraná', 'Ceará', 'Amazonas'],
+        'Argentine': ['Buenos Aires', 'Mendoza', 'Córdoba', 'Santa Fe', 'Salta', 'Neuquén'],
+        'Colombie': ['Bogotá D.C.', 'Antioquia', 'Bolívar', 'Valle del Cauca', 'Santander', 'Meta'],
+        'Pérou': ['Lima', 'Cusco', 'Arequipa', 'Piura', 'Loreto', 'La Libertad'],
+        'Chili': ['Santiago', 'Valparaíso', 'Biobío', 'Araucanía', 'Atacama', 'Los Lagos'],
+        'Équateur': ['Pichincha', 'Guayas', 'Azuay', 'Manabí', 'Loja', 'Esmeraldas'],
+        'France': ['Île-de-France', 'Provence-Alpes-Côte d’Azur', 'Nouvelle-Aquitaine', 'Occitanie', 'Bretagne', 'Normandie'],
+        'Allemagne': ['Bavière', 'Berlin', 'Hambourg', 'Saxe', 'Hesse', 'Rhénanie'],
+        'Espagne': ['Catalogne', 'Andalousie', 'Madrid', 'Valence', 'Galice', 'Pays Basque'],
+        'Italie': ['Lombardie', 'Lazio', 'Toscane', 'Vénétie', 'Sicile', 'Piémont'],
+        'Portugal': ['Lisbonne', 'Porto', 'Algarve', 'Madère', 'Açores', 'Coimbra'],
+        'Belgique': ['Bruxelles', 'Flandre-Occidentale', 'Anvers', 'Liège', 'Namur', 'Luxembourg'],
+        'Maroc': ['Casablanca-Settat', 'Rabat-Salé-Kénitra', 'Marrakech-Safi', 'Fès-Meknès', 'Souss-Massa', 'Tanger-Tétouan'],
+        'Sénégal': ['Dakar', 'Thiès', 'Saint-Louis', 'Ziguinchor', 'Kaolack', 'Diourbel'],
+        'Tunisie': ['Tunis', 'Sfax', 'Sousse', 'Nabeul', 'Tozeur', 'Bizerte'],
+        'Côte d’Ivoire': ['Abidjan', 'Yamoussoukro', 'Bouaké', 'San-Pédro', 'Korhogo', 'Daloa'],
+        'Cameroun': ['Littoral', 'Centre', 'Ouest', 'Nord-Ouest', 'Sud', 'Adamaoua'],
+        'Kenya': ['Nairobi', 'Mombasa', 'Kisumu', 'Nakuru', 'Eldoret', 'Nyeri'],
+        'Japon': ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido', 'Okinawa', 'Fukuoka'],
+        'Corée du Sud': ['Séoul', 'Busan', 'Incheon', 'Daegu', 'Gwangju', 'Jeju'],
+        'Thaïlande': ['Bangkok', 'Chiang Mai', 'Phuket', 'Krabi', 'Pattaya', 'Ayutthaya'],
+        'Vietnam': ['Hanoï', 'Hô Chi Minh-Ville', 'Da Nang', 'Hué', 'Nha Trang', 'Can Tho'],
+        'Inde': ['Maharashtra', 'Delhi', 'Karnataka', 'Tamil Nadu', 'Goa', 'Kerala'],
+        'Singapour': ['Centre', 'Est', 'Nord-Est', 'Nord', 'Ouest', 'Marina Bay'],
+        'Australie': ['Nouvelle-Galles du Sud', 'Victoria', 'Queensland', 'Tasmanie', 'Australie-Occidentale', 'Territoire du Nord'],
+        'Nouvelle-Zélande': ['Auckland', 'Wellington', 'Canterbury', 'Otago', 'Waikato', 'Bay of Plenty'],
+        'Fidji': ['Viti Levu', 'Vanua Levu', 'Lomaiviti', 'Kadavu', 'Rotuma', 'Lau'],
+        'Samoa': ['Apia', 'Tuamasaga', 'Palauli', 'Faasaleleaga', 'Aiga-i-le-Tai', 'Atua'],
+        'Vanuatu': ['Efate', 'Espiritu Santo', 'Malekula', 'Tanna', 'Pentecost', 'Ambrym'],
+        'Tonga': ['Tongatapu', 'Vavaʻu', 'Haʻapai', 'ʻEua', 'Niuas', 'Nomuka']
+    };
+
+    const regionSuffixes = ['Centre', 'Nord', 'Sud', 'Est', 'Ouest', 'Métropole'];
+
+    function toRegionList(provinceName) {
+        return regionSuffixes.map((suffix) => `${provinceName} - ${suffix}`);
+    }
+
+    function fillSelect(selectEl, values) {
+        selectEl.innerHTML = values.map((v) => `<option value="${v}">${v}</option>`).join('');
+    }
+
+    function getCountries(continent) {
+        return hierarchy[continent] || Object.values(hierarchy)[0];
+    }
+
+    function getProvinces(country) {
+        return provincesByCountry[country] || ['Zone A', 'Zone B', 'Zone C', 'Zone D', 'Zone E', 'Zone F'];
+    }
+
+    function syncFromContinent() {
+        const countries = getCountries(continentSelect.value);
+        fillSelect(countrySelect, countries.slice(0, 6));
+        countrySelect.selectedIndex = 0;
+        syncFromCountry();
+    }
+
+    function syncFromCountry() {
+        const provinces = getProvinces(countrySelect.value);
+        fillSelect(provinceSelect, provinces.slice(0, 6));
+        provinceSelect.selectedIndex = 0;
+        syncFromProvince();
+    }
+
+    function syncFromProvince() {
+        const regions = toRegionList(provinceSelect.value);
+        fillSelect(regionSelect, regions.slice(0, 6));
+        regionSelect.selectedIndex = 0;
+    }
+
+    fillSelect(continentSelect, Object.keys(hierarchy).slice(0, 6));
+    continentSelect.value = 'Amérique du Nord';
+    syncFromContinent();
+
+    countrySelect.value = 'Canada';
+    syncFromCountry();
+    provinceSelect.value = 'Québec';
+    syncFromProvince();
+
+    continentSelect.addEventListener('change', syncFromContinent);
+    countrySelect.addEventListener('change', syncFromCountry);
+    provinceSelect.addEventListener('change', syncFromProvince);
+}
+
+/* -- Bootstrap -- */
 document.addEventListener('DOMContentLoaded', ()=>{
+    initDestinationBreadcrumb();
     window.mapApp = new InteractiveMap();
     document.querySelectorAll('.info-card').forEach(c=>{
         c.addEventListener('mouseenter',function(){ this.classList.add('pulse'); });
@@ -958,3 +1089,5 @@ function sendHeight() {
 window.onload  = sendHeight;
 window.onresize = sendHeight;
 </script>
+
+
