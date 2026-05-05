@@ -1,4 +1,4 @@
-{{-- GoExploria Chaîne Vidéos TIC-TOKK --}}
+{{-- GoExploria Chaîne Vidéos TIK-TOK --}}
 @php(ob_start());@endphp
 @php
 $tiktokVideos = [
@@ -188,7 +188,7 @@ $tiktokVideos = [
 <section id="goexploria-tiktok" class="ttk-section">
 
     {{-- ============================================================
-         ENTÊTE STANDARD — CHAÎNE VIDÉOS TIC-TOKK
+         ENTÊTE STANDARD — CHAÎNE VIDÉOS TIK-TOK
          ============================================================ --}}
     <div class="resto-header-block">
         <div class="resto-header-main">
@@ -204,9 +204,9 @@ $tiktokVideos = [
                 </a>
             </div>
             <div class="resto-header-center">
-                <h1 class="resto-header-title">CHAÎNE VIDÉOS TIC-TOKK</h1>
+                <h1 class="resto-header-title">CHAÎNE VIDÉOS TIK-TOK</h1>
                 <p class="resto-header-subtitle">
-                    Découvertes · Aventures · Gastronomie · Culture — Explorez le Québec en format court avec GoExploria TIC-TOKK.
+                    Découvertes · Aventures · Gastronomie · Culture — Explorez le Québec en format court avec GoExploria TIK-TOK.
                 </p>
                 <div class="resto-header-tabs" role="tablist">
                     <button class="resto-tab-btn active" role="tab" data-espace="all">
@@ -294,9 +294,9 @@ $tiktokVideos = [
 </section>
 
 {{-- ============================================================
-     MODAL TIC-TOKK (lecteur + infos)
+     MODAL TIK-TOK (lecteur + infos)
      ============================================================ --}}
-<div class="ttk-modal" id="ttkModal" role="dialog" aria-modal="true" aria-label="Lecteur TIC-TOKK">
+<div class="ttk-modal" id="ttkModal" role="dialog" aria-modal="true" aria-label="Lecteur TIK-TOK">
     <div class="ttk-modal-inner">
 
         {{-- Barre supérieure --}}

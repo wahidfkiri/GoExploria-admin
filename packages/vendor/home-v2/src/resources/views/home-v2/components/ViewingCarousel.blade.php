@@ -173,6 +173,9 @@ $gxtVideos = [
 
             {{-- Centre : titre + sous-titre + 4 boutons espaces --}}
             <div class="resto-header-center">
+                <div class="gxt-header-brand gxt-header-brand--hero">
+                    <img src="{{ asset('GO-EXPLORIA-MY-TUBE.png') }}" alt="GoExploria MyTUBE" class="gxt-logo">
+                </div>
                 <h1 class="resto-header-title">GOEXPLORIA MYTUBE</h1>
                 <p class="resto-header-subtitle">
                     Films · Documentaires · Plein air · Gastronomie — Explorez le Québec en images avec la chaîne vidéo officielle GoExploria.
@@ -236,9 +239,6 @@ $gxtVideos = [
 
     {{-- ═══════════════ BARRE DE NAVIGATION ═══════════════ --}}
     <header class="gxt-header">
-        <div class="gxt-header-brand">
-            <img src="{{ asset('GO-EXPLORIA-MY-TUBE.png') }}" alt="GoExploria MyTUBE" class="gxt-logo">
-        </div>
         <div class="gxt-search-wrap">
             <div class="gxt-search-bar">
                 <input type="text" id="gxtSearchInput" placeholder="Rechercher une vidéo GoExploria..." class="gxt-search-input" autocomplete="off">

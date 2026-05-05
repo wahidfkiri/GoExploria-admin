@@ -66,6 +66,7 @@
         @include('home-v2.components.BusinessTourism')
         @include('home-v2.components.VideoPlayer')
         @include('home-v2.components.ViewingCarousel')
+        @include('home-v2.components.GallerieCaroussel')
         @include('home-v2.components.TikTokCarousel')
         @include('geo-map::index')
         @include('home-v2.components.MultilingualGrid')

@@ -144,9 +144,9 @@ $videoSeeds = [
         'category' => 'destination',
     ],
     [
-        'src'      => 'https://www.youtube.com/embed/SY3y6zNTiLs?autoplay=1&mute=1&loop=1&playlist=SY3y6zNTiLs&rel=0&modestbranding=1',
-        'poster'   => 'https://img.youtube.com/vi/SY3y6zNTiLs/hqdefault.jpg',
-        'thumb'    => 'https://img.youtube.com/vi/SY3y6zNTiLs/hqdefault.jpg',
+        'src'      => 'https://www.youtube.com/embed/uyrBtsvmzqM?autoplay=1&mute=1&loop=1&playlist=uyrBtsvmzqM&rel=0&modestbranding=1',
+        'poster'   => 'https://img.youtube.com/vi/uyrBtsvmzqM/hqdefault.jpg',
+        'thumb'    => 'https://img.youtube.com/vi/uyrBtsvmzqM/hqdefault.jpg',
         'suffix'   => 'Expériences Plein Air',
         'desc'     => 'Randonnée, aventure et nature active.',
         'badge'    => 'Vidéo · 0:10',
