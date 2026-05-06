@@ -20,13 +20,7 @@
 
     {{-- EN-TÊTE STANDARD --}}
     <div class="resto-header-block">
-        <div class="resto-header-main">
-            <div>
-                <div class="bt-left-brand" style="display:none;" aria-label="{{ $tr('GoExploria') }}">
-                    <div class="logo-wrapper"><img src="{{ asset('logo.png') }}" alt="{{ $tr('GoExploria') }}"></div>
-                    <span class="bt-left-brand-label">{{ $tr('GoExploria') }}</span>
-                </div>
-            </div>
+        <div class="resto-header-main bt-header-main">
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('SOLUTIONS BUSINESS & TOURISME') }}</h1>
                 <p class="resto-header-subtitle">{{ $tr('Expertise commerciale et expériences touristiques pour les professionnels') }}</p>
@@ -45,6 +39,12 @@
 </div>
             </div>
             <div class="resto-header-logo-right">
+                <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="{{ $tr('Next Level') }}"
+                    loading="lazy"
+                >
                 <a href="https://goexploria.com" class="bt-more-btn" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
                     <i class="fas fa-circle-info"></i>
                     <span>Go Next Level</span>
@@ -230,4 +230,3 @@
     document.querySelectorAll('.bt-carousel').forEach(initBtCarousel);
 })();
 </script>
-
