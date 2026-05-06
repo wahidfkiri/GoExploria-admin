@@ -47,7 +47,7 @@
             <div class="resto-header-logo-right">
                 <a href="https://goexploria.com" class="bt-more-btn" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
                     <i class="fas fa-circle-info"></i>
-                    <span>{{ $tr('En savoir plus') }}</span>
+                    <span>Go Next Level</span>
                 </a>
             </div>
         </div>
