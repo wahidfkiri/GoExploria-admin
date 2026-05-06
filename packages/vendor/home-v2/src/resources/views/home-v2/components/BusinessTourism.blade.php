@@ -39,15 +39,16 @@
 </div>
             </div>
             <div class="resto-header-logo-right">
-                <img
+                
+                <a href="https://goexploria.com" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
                     class="bt-next-level-image"
                     src="{{ asset('images/Next-level.png') }}"
                     alt="{{ $tr('Next Level') }}"
                     loading="lazy"
                 >
-                <a href="https://goexploria.com" class="bt-more-btn" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
-                    <i class="fas fa-circle-info"></i>
-                    <span>Go Next Level</span>
                 </a>
             </div>
         </div>
