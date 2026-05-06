@@ -213,7 +213,7 @@ foreach ($vpDestinationHierarchy as $continentData) {
 $vpTotalVideos = count($vpMediaItems);
 @endphp
 
-<section class="video-player-v2-section" id="chaine-videos">
+<section class="video-player-v2-section" id="vp-chaine">
     <div class="video-player-v2-container">
 
         <div class="resto-header-block">

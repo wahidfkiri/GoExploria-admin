@@ -200,7 +200,7 @@ $ttkCategories = [
 ];
 @endphp
 
-<section id="goexploria-tiktok" class="ttk-section">
+<section id="go-tik-tok" class="ttk-section">
 
     {{-- ============================================================
          ENTÊTE STANDARD — CHAÎNE VIDÉOS TIK-TOK
