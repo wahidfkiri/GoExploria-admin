@@ -1,4 +1,4 @@
-@php
+﻿@php
     $tr = static function (string $text): string {
         $locale = app()->getLocale();
         if ($locale === 'fr') {
@@ -38,25 +38,7 @@
                 <h1 class="resto-header-title">{{ $tr('AGENCE DE CONSEIL POUR VOTRE ENTREPRISE') }}</h1>
                 <p class="resto-header-subtitle">
                     {{ $tr('Consulting · Expertise · Stratégie · Digital — Développez votre entreprise avec nos solutions sur mesure et notre accompagnement professionnel.') }}
-                </p>
-                <div class="resto-header-tabs" role="tablist">
-                    <button class="resto-tab-btn active" role="tab" data-espace="all">
-                        <i class="fas fa-th-large"></i> {{ $tr('Toutes les options') }}
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-espace="entreprise">
-                        <i class="fas fa-briefcase"></i> {{ $tr('Espace entreprise') }}
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-espace="destination">
-                        <i class="fas fa-map-marker-alt"></i> {{ $tr('Espace destination') }}
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-espace="activite">
-                        <i class="fas fa-person-hiking"></i> {{ $tr('Espace activité') }}
-                    </button>
-                    <a href="#" class="agency-header-more-btn">
-                        {{ $tr('En savoir plus') }} <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
+                </p></div>
             <div class="resto-header-logo-right">
                 <a href="#" class="resto-accord-btn" title="{{ $tr('Plans Web Go') }}">
                     <div class="logo-wrapper">
@@ -71,20 +53,42 @@
         </div>
         <div class="resto-header-destinations-bar">
             <div class="resto-dest-row">
-                <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations') }}">
-                    <span>{{ $tr('Destinations') }}</span>
-                </div>
-                <div class="resto-dest-breadcrumb">
-                    <a href="#" class="resto-dest-link active">{{ $tr('Toutes destinations') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Amérique du Nord') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Canada') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Québec') }}</a>
-                </div>
-            </div>
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
+
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
         </div>
     </div>
 

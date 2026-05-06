@@ -80,32 +80,30 @@
                     <li class="vertical-menu-v2-subcat">Espaces M&eacute;dias</li>
                     <li><a href="#tourisme-business" class="vertical-menu-v2-sublink">Espaces Tourisme et Business</a></li>
                     <li><a href="#activez-destinations" class="vertical-menu-v2-sublink">Activez votre Espaces Destinations</a></li>
-                    <li><a href="#activez-entreprises" class="vertical-menu-v2-sublink">Activez votre Espaces Entreprises</a></li>
-                    <li><a href="#activez-perso" class="vertical-menu-v2-sublink">Activez votre Espaces Perso</a></li>
-                    <li><a href="#geo-carte-videos" class="vertical-menu-v2-sublink">Espace G&eacute;o-Carte-Vid&eacute;os</a></li>
+                    <li><a href="#geo-carte-videos" class="vertical-menu-v2-sublink">Espace Géo-Carte-Vidéos</a></li>
                     <li><a href="#multilingue" class="vertical-menu-v2-sublink">Espaces Multilingues</a></li>
                     <li><a href="#slideshow" class="vertical-menu-v2-sublink">Espaces Slide-Show Multiples</a></li>
                     <li><a href="#go-tik-tok" class="vertical-menu-v2-sublink">Espaces Go-Tik-Tok</a></li>
                     <li><a href="#my-tube" class="vertical-menu-v2-sublink">Espaces My-Tube</a></li>
-                    <li><a href="#chaine-videos" class="vertical-menu-v2-sublink">Espaces Cha&icirc;ne Vid&eacute;os</a></li>
+                    <li><a href="#chaine-videos" class="vertical-menu-v2-sublink">Espaces Chaine Vidéos</a></li>
                     <li><a href="#photos" class="vertical-menu-v2-sublink">Espaces Photos</a></li>
-                    <li><a href="#reseaux-sociaux" class="vertical-menu-v2-sublink">Espaces R&eacute;seaux Sociaux</a></li>
+                    <li><a href="#reseaux-sociaux" class="vertical-menu-v2-sublink">Espaces Réseaux Sociaux</a></li>
                     <li><a href="#pinterest" class="vertical-menu-v2-sublink">Espaces Inspiration Pinterest</a></li>
                     <li><a href="#avis-clients" class="vertical-menu-v2-sublink">Espaces Avis Clients</a></li>
 
                     {{-- BLOC 2 : ESPACES NEXT LEVEL --}}
                     <li class="vertical-menu-v2-subcat">Espaces Next Level</li>
-                    <li><a href="#optimisez" class="vertical-menu-v2-sublink">Optimisez votre Pr&eacute;sence en Ligne</a></li>
+                    <li><a href="#optimisez" class="vertical-menu-v2-sublink">Optimisez votre Présence en Ligne</a></li>
                     <li><a href="#partenaires-master" class="vertical-menu-v2-sublink">Partenaires Master User Go Exploria</a></li>
                     <li><a href="#activez-destinations" class="vertical-menu-v2-sublink">Activez votre Espaces Destinations</a></li>
                     <li><a href="#activez-entreprises" class="vertical-menu-v2-sublink">Activez votre Espaces Entreprises</a></li>
                     <li><a href="#activez-perso" class="vertical-menu-v2-sublink">Activez votre Espaces Perso</a></li>
                     <li><a href="#plans-next-level" class="vertical-menu-v2-sublink">Espaces Plans Next Level</a></li>
-                    <li><a href="#partenaires-affilies" class="vertical-menu-v2-sublink">Espaces Partenaires Affili&eacute;s</a></li>
-                    <li><a href="#editeur-site" class="vertical-menu-v2-sublink">Espaces &Eacute;diteur de Site Web</a></li>
-                    <li><a href="#editeur-entreprises" class="vertical-menu-v2-sublink">&Eacute;diteur d&apos;Espaces Entreprises</a></li>
-                    <li><a href="#editeur-perso" class="vertical-menu-v2-sublink">&Eacute;diteur d&apos;Espaces Perso</a></li>
-                    <li><a href="#geo-carte-videos" class="vertical-menu-v2-sublink">Espaces G&eacute;o-Carte-Vid&eacute;os</a></li>
+                    <li><a href="#partenaires-affilies" class="vertical-menu-v2-sublink">Espaces Partenaires Affiliés</a></li>
+                    <li><a href="#editeur-site" class="vertical-menu-v2-sublink">Espaces éditeur de Site Web</a></li>
+                    <li><a href="#editeur-entreprises" class="vertical-menu-v2-sublink">Editeur d'Espaces Entreprises</a></li>
+                    <li><a href="#editeur-perso" class="vertical-menu-v2-sublink">Editeur d'Espaces Perso</a></li>
+                    <li><a href="#geo-carte-videos" class="vertical-menu-v2-sublink">Espaces Géo-Carte-Vidéos</a></li>
                     <li><a href="#blog" class="vertical-menu-v2-sublink">Espaces Blog</a></li>
                     <li><a href="#api" class="vertical-menu-v2-sublink">Espaces API</a></li>
                     <li><a href="#mail" class="vertical-menu-v2-sublink">Espaces Mail</a></li>

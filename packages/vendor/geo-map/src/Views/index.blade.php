@@ -254,15 +254,38 @@
     .ops-nav-btn:hover { background:var(--primary); color:white; border-color:var(--primary); }
     .ops-nav-btn.swiper-button-disabled { opacity:0.3; pointer-events:none; }
 
+    /* Header principal (même logique de largeur que home-v2) */
+    #geo-carte-videos .resto-header-main {
+        grid-template-columns: 220px minmax(0, 1fr) 320px;
+        gap: 12px;
+        align-items: start;
+    }
+    #geo-carte-videos .resto-header-center {
+        width: 100%;
+        max-width: 1240px;
+        margin: 0 auto;
+    }
+    #geo-carte-videos .resto-header-center .resto-header-title,
+    #geo-carte-videos .resto-header-center .resto-header-title-highlight,
+    #geo-carte-videos .resto-header-center h2 {
+        max-width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #geo-carte-videos .resto-header-center .resto-header-subtitle {
+        max-width: 980px;
+    }
+
     /* Responsive */
     @media (max-width:1200px) { .sidebar-right{width:300px} .sidebar-toggle{right:320px} }
+    @media (max-width:1024px) { #geo-carte-videos .resto-header-main{ grid-template-columns:160px minmax(0,1fr) 240px; } }
     @media (max-width:992px)  { .content-wrapper{flex-direction:column} .section-title{font-size:2.5rem} .app-container{height:500px} }
     @media (max-width:768px)  { .section-title{font-size:2rem} .app-container{height:400px} .sidebar-right{width:100%;transform:translateX(100%)} .sidebar-right.active{transform:translateX(0)} .sidebar-toggle{right:20px;top:20px} .stat-item{min-width:150px;padding:20px} .stat-number{font-size:2.5rem} }
     @media (max-width:576px)  { .info-card{padding:25px} .info-title{font-size:1.5rem} .app-container{height:350px} .modal-content{width:95%;margin:20px auto} .leaflet-popup-content{min-width:240px} }
 </style>
 
 <!-- HTML -->
-<div class="container mt-5 mb-5" id="carte-interactive">
+<div class="container mt-5 mb-5" id="geo-carte-videos">
     <div class="row">
         <div class="resto-header-block">
             <div class="resto-header-main">

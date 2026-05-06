@@ -1,4 +1,4 @@
-@php
+﻿@php
     $tr = static function (string $text): string {
         $locale = app()->getLocale();
         if ($locale === 'fr') {
@@ -40,20 +40,7 @@
             {{-- Centre : titre + sous-titre + onglets --}}
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('ALERTE VOYAGES / COMPAGNIES AÉRIENNES') }}</h1>
-                <p class="resto-header-subtitle">{{ $tr('Informations en temps réel · Alertes, vols en direct et compagnies aériennes partenaires') }}</p>
-
-                <div class="resto-header-tabs">
-                    <button class="resto-tab-btn active">
-                        <i class="fas fa-exclamation-triangle"></i> {{ $tr('Alertes voyage') }}
-                    </button>
-                    <button class="resto-tab-btn">
-                        <i class="fas fa-plane-departure"></i> {{ $tr('Vols en direct') }}
-                    </button>
-                    <button class="resto-tab-btn">
-                        <i class="fas fa-plane"></i> {{ $tr('Compagnie aérienne') }}
-                    </button>
-                </div>
-            </div>
+                <p class="resto-header-subtitle">{{ $tr('Informations en temps réel · Alertes, vols en direct et compagnies aériennes partenaires') }}</p></div>
 
             {{-- Logo droit : Compagnie Aérienne --}}
             <div class="resto-header-logo-right">
@@ -74,30 +61,42 @@
         <div class="resto-header-destinations-bar">
 
             <div class="resto-dest-row">
-                <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations') }}">
-                    <span>{{ $tr('Destinations') }}</span>
-                </div>
-                  <div class="resto-dest-row">
-                <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations') }}">
-                    <span>{{ $tr('Destinations') }}</span>
-                </div>
-                <div class="resto-dest-breadcrumb">
-                    <a href="#" class="resto-dest-link active">{{ $tr('Toutes destinations') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Europe') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Ontario') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Mauricie') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Île d\'Orléans') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Vieux-Québec') }}</a>
-                </div>
-            </div>
-            </div>
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
+
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
 
             <div class="resto-actions-row">
                 <div class="resto-header-ctas">
@@ -196,7 +195,7 @@
                             <i class="fas fa-arrow-right"></i>
                         </h4>
                         <p class="plane-status">
-                            <span>{{ $tr('Paris → New York') }}</span>
+                            <span>{{ $tr('Paris â†’ New York') }}</span>
                             <span class="status-badge">{{ $tr('À l\'heure') }}</span>
                         </p>
                         <div class="flight-time">
@@ -219,7 +218,7 @@
                             <i class="fas fa-arrow-right"></i>
                         </h4>
                         <p class="plane-status">
-                            <span>{{ $tr('Francfort → Tokyo') }}</span>
+                            <span>{{ $tr('Francfort â†’ Tokyo') }}</span>
                             <span class="status-badge status-warning">{{ $tr('Retard 25min') }}</span>
                         </p>
                         <div class="flight-time">
@@ -242,7 +241,7 @@
                             <i class="fas fa-arrow-right"></i>
                         </h4>
                         <p class="plane-status">
-                            <span>{{ $tr('Londres → Dubai') }}</span>
+                            <span>{{ $tr('Londres â†’ Dubai') }}</span>
                             <span class="status-badge">{{ $tr('À l\'heure') }}</span>
                         </p>
                         <div class="flight-time">
@@ -265,7 +264,7 @@
                             <i class="fas fa-arrow-right"></i>
                         </h4>
                         <p class="plane-status">
-                            <span>{{ $tr('Milan → Dubaï') }}</span>
+                            <span>{{ $tr('Milan â†’ Dubaï') }}</span>
                             <span class="status-badge">{{ $tr('Embarquement') }}</span>
                         </p>
                         <div class="flight-time">

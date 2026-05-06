@@ -30,14 +30,7 @@ $gicPhotos = [
 
                 <div class="resto-header-center">
                     <h1 class="resto-header-title">ESPACES PHOTOS</h1>
-                    <p class="resto-header-subtitle">Destinations et choix des catégories · Photos avec tags international · Création des catégories de galeries.</p>
-                    <div class="resto-header-tabs" role="tablist">
-                        <button class="resto-tab-btn active" type="button"><i class="fas fa-images"></i> Toutes les options</button>
-                        <button class="resto-tab-btn" type="button"><i class="fas fa-globe"></i> International</button>
-                        <button class="resto-tab-btn" type="button"><i class="fas fa-hashtag"></i> Tags tendances</button>
-                        <button class="resto-tab-btn" type="button"><i class="fas fa-layer-group"></i> Catégories galeries</button>
-                    </div>
-                </div>
+                    <p class="resto-header-subtitle">Destinations et choix des catégories · Photos avec tags international · Création des catégories de galeries.</p></div>
 
                 <div class="resto-header-logo-right">
                     <a href="#" class="resto-accord-btn" title="Espaces Photos">
@@ -50,24 +43,42 @@ $gicPhotos = [
 
             <div class="resto-header-destinations-bar">
                 <div class="resto-dest-row">
-                    <div class="resto-dest-icon-box">
-                        <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                        <span>Destinations</span>
-                    </div>
-                    <div class="resto-dest-breadcrumb gic-destinations">
-                        <button class="resto-dest-link gic-dest-btn gic-dest-btn--xl active" type="button" data-dest="all">Monde</button>
-                        <span class="resto-dest-sep">/</span>
-                        <button class="resto-dest-link gic-dest-btn gic-dest-btn--md" type="button" data-dest="amerique-nord">Amérique du Nord</button>
-                        <span class="resto-dest-sep">/</span>
-                        <button class="resto-dest-link gic-dest-btn gic-dest-btn--sm" type="button" data-dest="europe">Europe</button>
-                        <span class="resto-dest-sep">/</span>
-                        <button class="resto-dest-link gic-dest-btn gic-dest-btn--pill" type="button" data-dest="asie">Asie</button>
-                        <span class="resto-dest-sep">/</span>
-                        <button class="resto-dest-link gic-dest-btn gic-dest-btn--md" type="button" data-dest="afrique">Afrique</button>
-                        <span class="resto-dest-sep">/</span>
-                        <button class="resto-dest-link gic-dest-btn gic-dest-btn--sm" type="button" data-dest="oceanie">Océanie</button>
-                    </div>
-                </div>
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
+
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
                 <div class="resto-actions-row">
                     <div class="resto-header-ctas">
                         <div class="gic-categories">

@@ -1,4 +1,4 @@
-@php
+﻿@php
     $tr = static function (string $text): string {
         $locale = app()->getLocale();
         if ($locale === 'fr') return $text;
@@ -25,13 +25,7 @@
             </div>
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('ESPACES RÉSEAUX SOCIAUX') }}</h1>
-                <p class="resto-header-subtitle">{{ $tr('Nous gérons vos réseaux sociaux de manière stratégique: contenu, community management, campagnes, social ads et croissance de votre audience.') }}</p>
-                <div class="resto-header-tabs">
-                    <button class="resto-tab-btn active">{{ $tr('Gestion complète') }}</button>
-                    <button class="resto-tab-btn">{{ $tr('Création de contenu') }}</button>
-                    <button class="resto-tab-btn">{{ $tr('Publicité sociale') }}</button>
-                </div>
-            </div>
+                <p class="resto-header-subtitle">{{ $tr('Nous gérons vos réseaux sociaux de manière stratégique: contenu, community management, campagnes, social ads et croissance de votre audience.') }}</p></div>
             <div class="resto-header-logo-right">
                 <a href="#" class="resto-accord-btn" title="Performance sociale">
                     <div class="logo-wrapper">
@@ -44,20 +38,42 @@
         </div>
         <div class="resto-header-destinations-bar">
             <div class="resto-dest-row">
-                <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations') }}">
-                    <span>{{ $tr('Destinations') }}</span>
-                </div>
-                <div class="resto-dest-breadcrumb">
-                    <a href="#" class="resto-dest-link active">{{ $tr('Toutes destinations') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Amérique du Nord') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Canada') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Québec') }}</a>
-                </div>
-            </div>
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
+
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
         </div>
         <div class="resto-header-shimmer"></div>
     </div>

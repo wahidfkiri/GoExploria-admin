@@ -73,9 +73,9 @@
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: 110px 1fr 110px;
+    grid-template-columns: 520px minmax(0, 1fr) 520px;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     padding: 18px 24px 16px;
     min-height: 100px;
 }
@@ -209,11 +209,28 @@
 
 /* ---- Colonne centre ---- */
 .resto-header-center {
+    grid-column: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
     text-align: center;
+}
+
+/* Harmonisation globale comme BusinessTourism: colonne gauche vide, centre, droite */
+.resto-header-logo-left {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.resto-header-logo-right {
+    grid-column: 3;
+    justify-self: end;
+    width: 460px;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
 }
 
 .resto-header-title {
@@ -455,7 +472,7 @@
     border-top: 1px solid rgba(10,22,40,0.12);
 }
 
-/* Ligne 1 : icÃ´ne destinations + breadcrumb */
+/* Ligne 1 : icône destinations + breadcrumb */
 .resto-dest-row {
     display: flex;
     align-items: center;
@@ -506,6 +523,38 @@
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
+}
+
+.vp-dest-breadcrumb {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+}
+
+.vp-dest-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    min-width: 150px;
+    max-width: 210px;
+    padding: 6px 28px 6px 10px;
+    border: 1px solid rgba(10, 22, 40, 0.18);
+    border-radius: 8px;
+    background: #fff;
+    color: #0a1628;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vp-dest-select:focus {
+    outline: none;
+    border-color: #f26522;
+    box-shadow: 0 0 0 2px rgba(242, 101, 34, 0.18);
 }
 
 .resto-dest-link {
@@ -636,7 +685,7 @@
    ============================================================ */
 @media (max-width: 1024px) {
     .resto-header-main {
-        grid-template-columns: 120px 1fr 120px;
+        grid-template-columns: 380px minmax(0, 1fr) 380px;
         padding: 20px 20px 16px;
     }
 
@@ -656,18 +705,29 @@
     }
 
     .resto-header-main {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr;
         padding: 16px 14px 14px;
-        gap: 12px;
+        gap: 10px;
         min-height: auto;
         align-items: center;
         justify-content: center;
     }
 
-    .resto-header-center     { order: 1; flex: 0 0 100%; }
-    .resto-header-logo-left  { order: 2; flex: 1; flex-direction: row; justify-content: center; }
-    .resto-header-logo-right { order: 2; flex: 1; flex-direction: row; justify-content: center; }
+    .resto-header-center {
+        grid-column: auto;
+    }
+    .resto-header-logo-left {
+        display: none;
+    }
+    .resto-header-logo-right {
+        grid-column: auto;
+        justify-self: center;
+        width: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
 
     .resto-header-logo-left .logo-wrapper,
     .resto-header-logo-right .logo-wrapper {
@@ -689,6 +749,16 @@
 
     .resto-dest-breadcrumb {
         display: none;
+    }
+
+    .resto-dest-breadcrumb.vp-dest-breadcrumb {
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .vp-dest-select {
+        min-width: 145px;
     }
 
     /* ---- Ligne actions : colonne sur mobile ---- */

@@ -24,19 +24,7 @@
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('SOLUTIONS BUSINESS & TOURISME') }}</h1>
                 <p class="resto-header-subtitle">{{ $tr('Expertise commerciale et expériences touristiques pour les professionnels') }}</p>
-                <div class="resto-dest-row bt-header-dest-row">
-    <div class="resto-dest-icon-box">
-        <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations') }}">
-        <span>{{ $tr('Destinations') }}</span>
-    </div>
-    <div class="resto-dest-breadcrumb">
-        <a href="#" class="resto-dest-link active">{{ $tr('Amérique du Nord') }}</a>
-        <span class="resto-dest-sep">/</span>
-        <a href="#" class="resto-dest-link">{{ $tr('Canada') }}</a>
-        <span class="resto-dest-sep">/</span>
-        <a href="#" class="resto-dest-link">{{ $tr('Québec') }}</a>
-    </div>
-</div>
+               
             </div>
             <div class="resto-header-logo-right">
                 
@@ -56,9 +44,47 @@
 
     {{-- CONTENU PRINCIPAL --}}
     <div class="bt-body">
+        
+     <div class="resto-dest-row">
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
+
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
 
         {{-- Duo Business / Tourisme --}}
-        <div class="bt-dual-grid">
+        <div class="bt-dual-grid mt-3">
 
             {{-- CARTE BUSINESS --}}
             <div class="bt-card">
@@ -79,7 +105,7 @@
                     <li><i class="fas fa-check-circle"></i> {{ $tr('Solutions digitales innovantes') }}</li>
                 </ul>
 
-                {{-- Carousel vidÃ©os Business --}}
+                {{-- Carousel vidéos Business --}}
                 <div class="bt-carousel" data-videos='[
                     {"id":"xPPLbEFbCAo","title":"{{ $tr('Solutions Business GoExploria') }}"},
                     {"id":"xPPLbEFbCAo","title":"{{ $tr('Développement International') }}"}
@@ -117,7 +143,7 @@
                     <li><i class="fas fa-check-circle"></i> {{ $tr('Circuits découverte pour partenaires') }}</li>
                 </ul>
 
-                {{-- Carousel vidÃ©os Tourisme --}}
+                {{-- Carousel vidéos Tourisme --}}
                 <div class="bt-carousel" data-videos='[
                     {"id":"xPPLbEFbCAo","title":"{{ $tr('Expériences Touristiques GoExploria') }}"},
                     {"id":"xPPLbEFbCAo","title":"{{ $tr('Découverte du Québec') }}"}

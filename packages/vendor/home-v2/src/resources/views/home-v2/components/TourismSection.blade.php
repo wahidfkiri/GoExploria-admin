@@ -1,4 +1,4 @@
-@php
+﻿@php
     $tr = static function (string $text): string {
         $locale = app()->getLocale();
         if ($locale === 'fr') {
@@ -29,13 +29,7 @@
             </div>
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('EXPLOREZ L\'INATTENDU / ACTIVITÉS PLEIN AIR') }}</h1>
-                <p class="resto-header-subtitle">{{ $tr('Des aventures immersives à chaque saison — Nature, hiver, découverte') }}</p>
-                <div class="resto-header-tabs">
-                    <button class="resto-tab-btn active"><i class="fas fa-hiking"></i>{{ $tr('ESPACE ENTREPRISES') }}</button>
-                    <button class="resto-tab-btn"><i class="fas fa-calendar-alt"></i>{{ $tr('ESPACE DESTINATIONS') }}</button>
-                    <button class="resto-tab-btn"><i class="fas fa-snowflake"></i>{{ $tr('ESPACE ACTIVITES') }}</button>
-                </div>
-            </div>
+                <p class="resto-header-subtitle">{{ $tr('Des aventures immersives à chaque saison — Nature, hiver, découverte') }}</p></div>
             <div class="resto-header-logo-right">
                 <a href="#" class="resto-accord-btn" title="{{ $tr('Écotourisme') }}">
                     <div class="logo-wrapper tourism-eco-icon"><i class="fas fa-leaf"></i></div>
@@ -46,24 +40,42 @@
         </div>
         <div class="resto-header-destinations-bar">
             <div class="resto-dest-row">
-                <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations') }}">
-                    <span>{{ $tr('Destinations') }}</span>
-                </div>
-                <div class="resto-dest-breadcrumb">
-                    <a href="#" class="resto-dest-link active">{{ $tr('Toutes destinations') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Europe') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Ontario') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Mauricie') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Île d\'Orléans') }}</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">{{ $tr('Vieux-Québec') }}</a>
-                </div>
-            </div>
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
+
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
             <div class="resto-actions-row">
                 <div class="resto-header-ctas">
                     <a href="#" class="resto-cta-btn primary"><i class="fas fa-calendar-check"></i> {{ $tr('Réservez') }}</a>
@@ -194,9 +206,9 @@
             </p>
             <div class="activity-difficulte">
               <span>{{ $tr('Difficulté') }}</span>
-              <span class="difficulty-stars">★★☆☆☆</span>
+              <span class="difficulty-stars">â˜…â˜…â˜†â˜†â˜†</span>
             </div>
-            <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('5 jours • Dès 890€') }}</div>
+            <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('5 jours • Dès 890â‚¬') }}</div>
           </div>
           <!-- Activité 2 -->
           <div class="hiver-activity-card">
@@ -207,7 +219,7 @@
             </p>
             <div class="activity-difficulte">
               <span>{{ $tr('Difficulté') }}</span>
-              <span class="difficulty-stars">★★★★☆</span>
+              <span class="difficulty-stars">â˜…â˜…â˜…â˜…â˜†</span>
             </div>
             <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('2 jours • Encadré') }}</div>
           </div>
@@ -220,7 +232,7 @@
             </p>
             <div class="activity-difficulte">
               <span>{{ $tr('Difficulté') }}</span>
-              <span class="difficulty-stars">★★★★★</span>
+              <span class="difficulty-stars">â˜…â˜…â˜…â˜…â˜…</span>
             </div>
             <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('4 jours • Niveau confirmé') }}</div>
           </div>
@@ -233,7 +245,7 @@
             </p>
             <div class="activity-difficulte">
               <span>{{ $tr('Difficulté') }}</span>
-              <span class="difficulty-stars">★★★☆☆</span>
+              <span class="difficulty-stars">â˜…â˜…â˜…â˜†â˜†</span>
             </div>
             <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('2 jours • Norvège') }}</div>
           </div>
@@ -246,7 +258,7 @@
             </p>
             <div class="activity-difficulte">
               <span>{{ $tr('Difficulté') }}</span>
-              <span class="difficulty-stars">★☆☆☆☆</span>
+              <span class="difficulty-stars">â˜…â˜†â˜†â˜†â˜†</span>
             </div>
             <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('6 jours • Photo') }}</div>
           </div>
@@ -259,7 +271,7 @@
             </p>
             <div class="activity-difficulte">
               <span>{{ $tr('Difficulté') }}</span>
-              <span class="difficulty-stars">★★☆☆☆</span>
+              <span class="difficulty-stars">â˜…â˜…â˜†â˜†â˜†</span>
             </div>
             <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('1 jour • France') }}</div>
           </div>

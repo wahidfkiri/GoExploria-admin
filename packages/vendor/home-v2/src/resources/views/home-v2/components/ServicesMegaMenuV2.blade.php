@@ -45,14 +45,12 @@ const menuData = {
         categories: [
             { icon: 'fas fa-briefcase',       name: 'ESPACES TOURISME ET BUSINESS',        desc: 'Business & Tourisme',                         link: '#business-tourism' },
             { icon: 'fas fa-map-marked-alt',  name: 'ACTIVEZ VOTRE ESPACES DESTINATIONS',  desc: 'Québec, Canada, Europe, Monde',               link: '#activez-destinations' },
-            { icon: 'fas fa-building',        name: 'ACTIVEZ VOTRE ESPACES ENTREPRISES',   desc: 'Profil professionnel complet',                link: '#activez-entreprises' },
-            { icon: 'fas fa-user-circle',     name: 'ACTIVEZ VOTRE ESPACES PERSO',         desc: 'Espace personnel & Favoris',                  link: '#activez-perso' },
             { icon: 'fas fa-globe',           name: 'ESPACE GÉO-CARTE-VIDÉOS',             desc: 'Cartographie interactive',                    link: '#geo-carte-videos' },
             { icon: 'fas fa-language',        name: 'ESPACES MULTILINGUES',                desc: 'Contenu international',                       link: '#multilingue' },
             { icon: 'fas fa-images',          name: 'ESPACES SLIDE-SHOW MULTIPLES',        desc: 'Galeries & Diaporamas',                       link: '#slideshow' },
             { icon: 'fab fa-tiktok',          name: 'ESPACES GO-TOK-TOK',                  desc: 'Vidéos courtes verticales',                   link: '#go-tok-tok' },
             { icon: 'fab fa-youtube',         name: 'ESPACES MY-TUBE',                     desc: 'Chaîne vidéos YouTube',                       link: '#my-tube' },
-            { icon: 'fas fa-film',            name: 'ESPACES CHAÎNE VIDÉOS',               desc: 'Playlists & Lives',                           link: '#chaine-videos' },
+            { icon: 'fas fa-film',            name: 'ESPACES CHAÎNE VIDÉOS',               desc: 'Playlists & Lives',                           link: '#vp-chaine' },
             {
                 icon: 'fas fa-camera',
                 name: 'ESPACES PHOTOS',
@@ -61,7 +59,7 @@ const menuData = {
                 grandchildren: ['Flickr', '500px', 'INSTAGRAM', 'Amalgram', 'Fotify / Kwikpic', 'Joomeo', 'Kululu']
             },
             { icon: 'fas fa-share-alt',       name: 'ESPACES RÉSEAUX SOCIAUX',             desc: 'Gestion de réseaux sociaux — blocs à faire', link: '#reseaux-sociaux' },
-            { icon: 'fab fa-pinterest-p',     name: 'ESPACES INSPIRATION PINTEREST',       desc: 'Tableaux & Collections',                      link: '#pinterest' },
+            // { icon: 'fab fa-pinterest-p',     name: 'ESPACES INSPIRATION PINTEREST',       desc: 'Tableaux & Collections',                      link: '#pinterest' },
             { icon: 'fas fa-star-half-alt',   name: 'ESPACES AVIS CLIENTS',                desc: 'Témoignages & Évaluations',                   link: '#avis-clients' }
         ]
     },

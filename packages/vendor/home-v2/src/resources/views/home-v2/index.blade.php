@@ -68,18 +68,19 @@
 
         <div id="section-medias" class="snb-anchor"></div>
         @include('home-v2.components.BusinessTourism')
-        @include('home-v2.components.VideoPlayer')
-        @include('home-v2.components.ViewingCarousel')
-        @include('home-v2.components.GallerieCaroussel')
+        @include('home-v2.components.DestinationsVedette')
+        @include('geo-map::index')
+        @include('home-v2.components.MultilingualGrid')
+        @include('home-v2.components.slideshows')
         @include('home-v2.components.TikTokCarousel')
+        @include('home-v2.components.ViewingCarousel')
+        @include('home-v2.components.VideoPlayer')
+        @include('home-v2.components.GallerieCaroussel')
+        @include('home-v2.components.EspaceSocialMediaSection')
         @include('home-v2.components.EspaceChatSection')
         @include('home-v2.components.EspaceMailMarketingSection')
         @include('home-v2.components.EspaceBlogSection')
         @include('home-v2.components.AvisClientsSection')
-        @include('home-v2.components.EspaceSocialMediaSection')
-        @include('geo-map::index')
-        @include('home-v2.components.MultilingualGrid')
-        @include('home-v2.components.DestinationsVedette')
 
         <div id="section-vedettes" class="snb-anchor"></div>
         @include('home-v2.components.EventsVedette')

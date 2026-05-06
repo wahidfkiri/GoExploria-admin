@@ -179,23 +179,7 @@ $gxtVideos = [
                 <h1 class="resto-header-title">GOEXPLORIA MYTUBE</h1>
                 <p class="resto-header-subtitle">
                     Films · Documentaires · Plein air · Gastronomie — Explorez le Québec en images avec la chaîne vidéo officielle GoExploria.
-                </p>
-
-                <div class="resto-header-tabs" role="tablist">
-                    <button class="resto-tab-btn active" role="tab" data-espace="all">
-                        <i class="fas fa-th-large"></i> Toutes les options
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-espace="entreprise">
-                        <i class="fas fa-briefcase"></i> Espace entreprise
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-espace="destination">
-                        <i class="fas fa-map-marker-alt"></i> Espace destination
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-espace="activite">
-                        <i class="fas fa-person-hiking"></i> Espace activité
-                    </button>
-                </div>
-            </div>
+                </p></div>
 
             {{-- Logo droit : GoExploria MyTube --}}
             <div class="resto-header-logo-right">
@@ -216,28 +200,48 @@ $gxtVideos = [
         <div class="resto-header-destinations-bar">
 
             <div class="resto-dest-row">
-                <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                    <span>Destinations</span>
-                </div>
-                <div class="resto-dest-breadcrumb">
-                    <a href="#" class="resto-dest-link active" data-dest="all">Toutes destinations</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link" data-dest="amerique-nord">Amérique du Nord</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link" data-dest="canada">Canada</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link" data-dest="quebec">Québec</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link" data-dest="region-quebec">Région de Québec</a>
-                </div>
-            </div>
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
+
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
 
         </div>
 
     </div>
 
-    {{-- ═══════════════ BARRE DE NAVIGATION ═══════════════ --}}
+    {{-- --------------- BARRE DE NAVIGATION --------------- --}}
     <header class="gxt-header">
         <div class="gxt-search-wrap">
             <div class="gxt-search-bar">
@@ -254,7 +258,7 @@ $gxtVideos = [
         </div>
     </header>
 
-    {{-- ═══════════════ FILTRES CATÉGORIES ═══════════════ --}}
+    {{-- --------------- FILTRES CATÉGORIES --------------- --}}
     <div class="gxt-filters-bar">
         <div class="gxt-filters-inner">
             <button class="gxt-filter active" data-filter="all">
@@ -278,7 +282,7 @@ $gxtVideos = [
         </div>
     </div>
 
-    {{-- ═══════════════ LECTEUR INLINE (affiché au clic) ═══════════════ --}}
+    {{-- --------------- LECTEUR INLINE (affiché au clic) --------------- --}}
     <div class="gxt-player-wrap" id="gxtPlayerWrap">
         <div class="gxt-player-main">
             <div class="gxt-player-embed">
@@ -314,7 +318,7 @@ $gxtVideos = [
         </aside>
     </div>
 
-    {{-- ═══════════════ BARRE TITRE SECTION ═══════════════ --}}
+    {{-- --------------- BARRE TITRE SECTION --------------- --}}
     <div class="gxt-content-bar">
         <h2 class="gxt-content-title">
             <i class="fas fa-fire"></i>
@@ -323,7 +327,7 @@ $gxtVideos = [
         <span class="gxt-video-count"><span id="gxtVideoCount">{{ count($gxtVideos) }}</span> vidéos</span>
     </div>
 
-    {{-- ═══════════════ GRILLE VIDÉOS ═══════════════ --}}
+    {{-- --------------- GRILLE VIDÉOS --------------- --}}
     <div class="gxt-grid" id="gxtGrid">
         @foreach($gxtVideos as $v)
         <div class="gxt-card"
@@ -367,7 +371,7 @@ $gxtVideos = [
 
 </section>
 
-{{-- ═══════════════ JS INTERACTIVITÉ ═══════════════ --}}
+{{-- --------------- JS INTERACTIVITÉ --------------- --}}
 <script>
 (function () {
     var cards       = Array.from(document.querySelectorAll('.gxt-card'));
@@ -381,7 +385,7 @@ $gxtVideos = [
 
     var catLabels = { all:'Vidéos populaires', destinations:'Destinations', gastronomie:'Gastronomie', aventure:'Aventure', evenements:'Événements', culture:'Culture' };
 
-    /* ── Filtrage ─────────────────────────────────────────── */
+    /* -- Filtrage ------------------------------------------- */
     function filterCards(cat, search) {
         var count = 0;
         cards.forEach(function (c) {
@@ -409,7 +413,7 @@ $gxtVideos = [
         filterCards(cat, this.value.trim());
     });
 
-    /* ── Lecture ──────────────────────────────────────────── */
+    /* -- Lecture -------------------------------------------- */
     function playVideo(card) {
         var id      = card.getAttribute('data-id');
         var title   = card.getAttribute('data-title');
@@ -441,7 +445,7 @@ $gxtVideos = [
         card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); playVideo(card); } });
     });
 
-    /* ── Sidebar ──────────────────────────────────────────── */
+    /* -- Sidebar -------------------------------------------- */
     function populateSidebar(current) {
         var list = document.getElementById('gxtSidebarList');
         list.innerHTML = '';
@@ -463,7 +467,7 @@ $gxtVideos = [
         });
     }
 
-    /* ── Fermer le lecteur ────────────────────────────────── */
+    /* -- Fermer le lecteur ---------------------------------- */
     document.getElementById('gxtClosePlayer').addEventListener('click', function () {
         iframe.src = '';
         playerWrap.classList.remove('gxt-player-active');

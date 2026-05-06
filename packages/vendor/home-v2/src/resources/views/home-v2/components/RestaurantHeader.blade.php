@@ -1,4 +1,4 @@
-@php(ob_start());@endphp
+﻿@php(ob_start());@endphp
 
 {{-- ============================================================
      RESTAURANT SERVICE BLOCK — Standard Template
@@ -728,20 +728,42 @@ $menuItems = [
 
             {{-- Ligne 1 : Icône + Breadcrumb destinations --}}
             <div class="resto-dest-row">
-                <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                    <span>Destinations</span>
-                </div>
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
 
-                <div class="resto-dest-breadcrumb">
-                    @foreach($restoDests as $i => $dest)
-                        @if($i > 0)<span class="resto-dest-sep">/</span>@endif
-                        <a href="#resto-cards-grid"
-                           class="resto-dest-link {{ $i === 0 ? 'active' : '' }}"
-                           data-dest="{{ $dest['key'] }}">{{ $dest['label'] }}</a>
-                    @endforeach
-                </div>
-            </div>
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
 
             {{-- Ligne 2 : CTAs + Plans + Langue --}}
             <div class="resto-actions-row">
@@ -1222,7 +1244,7 @@ $menuItems = [
             });
         });
 
-        /* ---- Bouton "Réservez" sur chaque carte → ouvre le modal global ---- */
+        /* ---- Bouton "Réservez" sur chaque carte â†’ ouvre le modal global ---- */
         document.querySelectorAll('.resto-card-reserve-btn').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();

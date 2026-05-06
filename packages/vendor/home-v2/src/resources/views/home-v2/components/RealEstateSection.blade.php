@@ -1,4 +1,4 @@
-{{-- RealEstateSection — GoExploria Immobilier --}}
+﻿{{-- RealEstateSection — GoExploria Immobilier --}}
 @php(ob_start());@endphp
 <section class="immo-v2-section" id="real-estate-section">
 
@@ -22,22 +22,7 @@
                 <h1 class="resto-header-title">TROUVEZ LA PROPRIÉTÉ DE VOS RÊVES</h1>
                 <p class="resto-header-subtitle">
                     Maisons · Appartements · Villas · Studios — Des biens sélectionnés pour correspondre à vos projets et à votre budget.
-                </p>
-                <div class="resto-header-tabs" role="tablist">
-                    <button class="resto-tab-btn active" role="tab" data-filter="all">
-                        <i class="fas fa-th-large"></i> Tous les biens
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-filter="maison">
-                        <i class="fas fa-home"></i> Maisons
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-filter="appartement">
-                        <i class="fas fa-building"></i> Appartements
-                    </button>
-                    <a href="#" class="immo-header-more-btn">
-                        En savoir plus <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
+                </p></div>
             <div class="resto-header-logo-right">
                 <a href="#" class="resto-accord-btn" title="Plans Web Go">
                     <div class="logo-wrapper">
@@ -52,20 +37,42 @@
         </div>
         <div class="resto-header-destinations-bar">
             <div class="resto-dest-row">
-                <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                    <span>Destinations</span>
-                </div>
-                <div class="resto-dest-breadcrumb">
-                    <a href="#" class="resto-dest-link active">Toutes destinations</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Amérique du Nord</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Canada</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Québec</a>
-                </div>
-            </div>
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
+
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
         </div>
     </div>
 
@@ -83,7 +90,7 @@
                     <span class="immo-v2-img-badge">À vendre</span>
                 </div>
                 <div class="immo-v2-card-content">
-                    <div class="immo-v2-price">345 000 €</div>
+                    <div class="immo-v2-price">345 000 â‚¬</div>
                     <h3 class="immo-v2-card-title">Appartement Lumière</h3>
                     <div class="immo-v2-location"><i class="fas fa-map-pin"></i> Quartier Centre, Lyon</div>
                     <div class="immo-v2-features">
@@ -102,7 +109,7 @@
                     <span class="immo-v2-img-badge">Coup de cœur</span>
                 </div>
                 <div class="immo-v2-card-content">
-                    <div class="immo-v2-price">895 000 €</div>
+                    <div class="immo-v2-price">895 000 â‚¬</div>
                     <h3 class="immo-v2-card-title">Villa Moderne</h3>
                     <div class="immo-v2-location"><i class="fas fa-map-pin"></i> Saint-Germain, Paris</div>
                     <div class="immo-v2-features">
@@ -121,7 +128,7 @@
                     <span class="immo-v2-img-badge">Investissement</span>
                 </div>
                 <div class="immo-v2-card-content">
-                    <div class="immo-v2-price">125 000 €</div>
+                    <div class="immo-v2-price">125 000 â‚¬</div>
                     <h3 class="immo-v2-card-title">Studio Centre</h3>
                     <div class="immo-v2-location"><i class="fas fa-map-pin"></i> Bordeaux Centre</div>
                     <div class="immo-v2-features">
@@ -140,7 +147,7 @@
                     <span class="immo-v2-img-badge">Exclusivité</span>
                 </div>
                 <div class="immo-v2-card-content">
-                    <div class="immo-v2-price">580 000 €</div>
+                    <div class="immo-v2-price">580 000 â‚¬</div>
                     <h3 class="immo-v2-card-title">Duplex Terrasse</h3>
                     <div class="immo-v2-location"><i class="fas fa-map-pin"></i> Montpellier</div>
                     <div class="immo-v2-features">

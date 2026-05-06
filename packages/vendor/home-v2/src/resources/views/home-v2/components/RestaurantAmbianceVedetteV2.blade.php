@@ -1,4 +1,4 @@
-@php(ob_start());@endphp
+﻿@php(ob_start());@endphp
 
 {{-- ============================================================
      Restaurant Ambiance Vedette V2
@@ -195,20 +195,42 @@
 
             <div class="resto-header-destinations-bar">
                 <div class="resto-dest-row">
-                    <div class="resto-dest-icon-box">
-                        <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                        <span>Destinations</span>
-                    </div>
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
 
-                    <div class="resto-dest-breadcrumb">
-                        @foreach($restoDests as $i => $dest)
-                            @if($i > 0)<span class="resto-dest-sep">/</span>@endif
-                            <a href="#resto-ambiance-vedette-v2"
-                               class="resto-dest-link {{ $i === 0 ? 'active' : '' }}"
-                               data-dest="{{ $dest['key'] }}">{{ $dest['label'] }}</a>
-                        @endforeach
-                    </div>
-                </div>
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
 
                 <div class="resto-actions-row">
                     <div class="resto-header-ctas">

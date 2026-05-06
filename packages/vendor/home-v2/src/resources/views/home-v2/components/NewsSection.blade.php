@@ -1,4 +1,4 @@
-@php(ob_start());@endphp
+﻿@php(ob_start());@endphp
 
 {{-- Dernières Nouvelles Component --}}
 <section class="news-v2-section" id="news-section">
@@ -23,25 +23,7 @@
                 <h1 class="resto-header-title">DERNIÈRES NOUVELLES</h1>
                 <p class="resto-header-subtitle">
                     Les articles les plus récents par région — Afrique · Europe · Asie · Amériques
-                </p>
-                <div class="resto-header-tabs" role="tablist">
-                    <button class="resto-tab-btn active" role="tab" data-region="all">
-                        <i class="fas fa-globe"></i> Toutes régions
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-region="afrique">
-                        <i class="fas fa-map-marker-alt"></i> Afrique
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-region="europe">
-                        <i class="fas fa-map-marker-alt"></i> Europe
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-region="asie">
-                        <i class="fas fa-map-marker-alt"></i> Asie
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-region="ameriques">
-                        <i class="fas fa-map-marker-alt"></i> Amériques
-                    </button>
-                </div>
-            </div>
+                </p></div>
             <div class="resto-header-logo-right">
                 <a href="#" class="resto-accord-btn" title="Plans Web Go">
                     <div class="logo-wrapper">
@@ -56,20 +38,42 @@
         </div>
         <div class="resto-header-destinations-bar">
             <div class="resto-dest-row">
-                <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                    <span>Destinations</span>
-                </div>
-                <div class="resto-dest-breadcrumb">
-                    <a href="#" class="resto-dest-link active">Toutes destinations</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Amérique du Nord</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Canada</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="#" class="resto-dest-link">Québec</a>
-                </div>
-            </div>
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
+
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
         </div>
     </div>
 

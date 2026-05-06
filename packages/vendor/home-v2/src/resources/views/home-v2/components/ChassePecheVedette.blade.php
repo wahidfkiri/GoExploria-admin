@@ -1,4 +1,4 @@
-@php(ob_start());@endphp
+﻿@php(ob_start());@endphp
 
 {{-- ============================================================
      Chasse et Peche - Meme structure/design que ProductsVedette
@@ -64,23 +64,7 @@
                     <h1 class="resto-header-title">CHASSE ET PÊCHE</h1>
                     <p class="resto-header-subtitle">
                         Cannes, leurres, equipement de chasse et peche blanche pour vos expeditions toute l annee.
-                    </p>
-
-                    <div class="resto-header-tabs" role="tablist">
-                        <button class="resto-tab-btn active" role="tab" data-espace="all">
-                            <i class="fas fa-compass"></i> Tout l equipement
-                        </button>
-                        <button class="resto-tab-btn" role="tab" data-espace="promo">
-                            <i class="fas fa-tag"></i> Promotions
-                        </button>
-                        <button class="resto-tab-btn" role="tab" data-espace="new">
-                            <i class="fas fa-star"></i> Nouveautes
-                        </button>
-                        <button class="resto-tab-btn" role="tab" data-espace="hot">
-                            <i class="fas fa-fire"></i> Meilleures ventes
-                        </button>
-                    </div>
-                </div>
+                    </p></div>
 
                 <div class="resto-header-logo-right">
                     <a href="#" class="resto-accord-btn" title="Reservation sorties">
@@ -97,20 +81,42 @@
 
             <div class="resto-header-destinations-bar">
                 <div class="resto-dest-row">
-                    <div class="resto-dest-icon-box">
-                        <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                        <span>Territoires</span>
-                    </div>
-                    <div class="resto-dest-breadcrumb">
-                        <a href="#" class="resto-dest-link active" data-dest="all">Abitibi</a>
-                        <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link" data-dest="saguenay">Saguenay</a>
-                        <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link" data-dest="charlevoix">Charlevoix</a>
-                        <span class="resto-dest-sep">/</span>
-                        <a href="#" class="resto-dest-link" data-dest="gaspesie">Gaspesie</a>
-                    </div>
-                </div>
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
+
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
 
                 <div class="resto-actions-row">
                     <div class="resto-header-ctas">

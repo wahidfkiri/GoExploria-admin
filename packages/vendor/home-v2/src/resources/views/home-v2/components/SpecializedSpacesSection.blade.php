@@ -1,4 +1,4 @@
-{{-- SpecializedSpacesSection — GoExploria Espaces spécialisés --}}
+﻿{{-- SpecializedSpacesSection — GoExploria Espaces spécialisés --}}
 @php(ob_start());@endphp
 <section class="immo-v2-section" id="specialized-spaces-section">
 
@@ -19,22 +19,7 @@
                 <h2 class="resto-header-title">ESPACES SPÉCIALISÉS</h2>
                 <p class="resto-header-subtitle">
                     Sélection d'espaces immobiliers au Québec pour investir, habiter et développer vos projets touristiques.
-                </p>
-                <div class="resto-header-tabs" role="tablist" aria-label="Catégories espaces spécialisés">
-                    <button class="resto-tab-btn active" role="tab" data-filter="all">
-                        <i class="fas fa-th-large"></i> Tous les espaces
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-filter="chalet">
-                        <i class="fas fa-mountain"></i> Chalets
-                    </button>
-                    <button class="resto-tab-btn" role="tab" data-filter="projet">
-                        <i class="fas fa-city"></i> Projets touristiques
-                    </button>
-                    <a href="{{ route('pages.chalet-rental-detail') }}" class="immo-header-more-btn">
-                        Voir plus <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
+                </p></div>
             <div class="resto-header-logo-right">
                 <a href="{{ route('pages.chalet-rental-detail') }}" class="resto-accord-btn" title="Plans Web Go">
                     <div class="logo-wrapper">
@@ -49,16 +34,42 @@
         </div>
         <div class="resto-header-destinations-bar">
             <div class="resto-dest-row">
-                <div class="resto-dest-icon-box">
-                    <img src="{{ asset('REDI.png') }}" alt="Destinations">
-                    <span>Destinations</span>
-                </div>
-                <div class="resto-dest-breadcrumb">
-                    <a href="{{ route('pages.chalet-rental-detail') }}" class="resto-dest-link active">Québec</a>
-                    <span class="resto-dest-sep">/</span>
-                    <a href="{{ route('pages.chalet-rental-detail') }}" class="resto-dest-link">Espaces spécialisés</a>
-                </div>
-            </div>
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="Destinations">
+        <span>Destinations</span>
+    </div>
+
+    <div class="resto-dest-breadcrumb vp-dest-breadcrumb">
+        <select id="vp-continent-select" class="vp-dest-select" aria-label="Continent">
+            <option value="amerique-nord">Amérique du Nord</option>
+            <option value="europe">Europe</option>
+            <option value="afrique">Afrique</option>
+            <option value="asie">Asie</option>
+            <option value="amerique-sud">Amérique du Sud</option>
+            <option value="oceanie">Océanie</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-country-select" class="vp-dest-select" aria-label="Pays">
+            <option value="canada">Canada</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-province-select" class="vp-dest-select" aria-label="Province">
+            <option value="quebec">Québec</option>
+            <option value="ontario">Ontario</option>
+            <option value="alberta">Alberta</option>
+            <option value="colombie-britannique">Colombie-Britannique</option>
+            <option value="nouvelle-ecosse">Nouvelle-Écosse</option>
+        </select>
+        <span class="resto-dest-sep">/</span>
+        <select id="vp-region-select" class="vp-dest-select" aria-label="Région">
+            <option value="region-de-quebec">Région de Québec</option>
+            <option value="montreal-metro">Montréal Métro</option>
+            <option value="mauricie">Mauricie</option>
+            <option value="gaspesie">Gaspésie</option>
+            <option value="saguenay">Saguenay</option>
+        </select>
+    </div>
+</div>
         </div>
     </div>
 
