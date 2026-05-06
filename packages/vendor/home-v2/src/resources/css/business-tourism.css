@@ -15,17 +15,19 @@
 
 .resto-header-main.bt-header-main {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: 460px minmax(0, 1fr) 460px;
     align-items: center;
     gap: 12px;
 }
 
 .resto-header-main.bt-header-main .resto-header-center {
+    grid-column: 2;
     width: 100%;
     text-align: center;
 }
 
 .resto-header-main.bt-header-main .resto-header-logo-right {
+    grid-column: 3;
     justify-self: end;
     width: 460px;
     display: flex;
@@ -384,7 +386,9 @@
         grid-template-columns: 1fr;
         gap: 10px;
     }
+    .resto-header-main.bt-header-main .resto-header-center,
     .resto-header-main.bt-header-main .resto-header-logo-right {
+        grid-column: auto;
         justify-self: center;
         width: 100%;
         flex-direction: column;
