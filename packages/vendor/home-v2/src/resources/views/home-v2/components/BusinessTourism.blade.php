@@ -1,4 +1,4 @@
-@php
+﻿@php
     $tr = static function (string $text): string {
         $locale = app()->getLocale();
         if ($locale === 'fr') {
@@ -21,27 +21,33 @@
     {{-- EN-TÊTE STANDARD --}}
     <div class="resto-header-block">
         <div class="resto-header-main">
-            <div class="resto-header-logo-left">
-                <a href="#" class="resto-accord-btn" title="{{ $tr('GoExploria') }}">
+            <div>
+                <div class="bt-left-brand" aria-label="{{ $tr('GoExploria') }}">
                     <div class="logo-wrapper"><img src="{{ asset('logo.png') }}" alt="{{ $tr('GoExploria') }}"></div>
-                    <span class="resto-accord-btn-label">{{ $tr('GoExploria') }}</span>
-                    <span class="resto-accord-btn-cta"><i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}</span>
-                </a>
+                    <span class="bt-left-brand-label">{{ $tr('GoExploria') }}</span>
+                </div>
             </div>
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('SOLUTIONS BUSINESS & TOURISME') }}</h1>
                 <p class="resto-header-subtitle">{{ $tr('Expertise commerciale et expériences touristiques pour les professionnels') }}</p>
-                <div class="resto-header-tabs">
-                    <button class="resto-tab-btn active"><i class="fas fa-chart-line"></i>{{ $tr('ESPACE BUSINESS') }}</button>
-                    <button class="resto-tab-btn"><i class="fas fa-globe-americas"></i>{{ $tr('ESPACE TOURISME') }}</button>
-                    <button class="resto-tab-btn"><i class="fas fa-handshake"></i>{{ $tr('ESPACE PARTENAIRES') }}</button>
-                </div>
+                <div class="resto-dest-row bt-header-dest-row">
+    <div class="resto-dest-icon-box">
+        <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations') }}">
+        <span>{{ $tr('Destinations') }}</span>
+    </div>
+    <div class="resto-dest-breadcrumb">
+        <a href="#" class="resto-dest-link active">{{ $tr('Amérique du Nord') }}</a>
+        <span class="resto-dest-sep">/</span>
+        <a href="#" class="resto-dest-link">{{ $tr('Canada') }}</a>
+        <span class="resto-dest-sep">/</span>
+        <a href="#" class="resto-dest-link">{{ $tr('Québec') }}</a>
+    </div>
+</div>
             </div>
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="{{ $tr('Partenariats') }}">
-                    <div class="logo-wrapper"><img src="{{ asset('REDI.png') }}" alt="{{ $tr('Partenariats') }}"></div>
-                    <span class="resto-accord-btn-label">{{ $tr('Partenariats') }}</span>
-                    <span class="resto-accord-btn-cta"><i class="fas fa-external-link-alt"></i> {{ $tr('Découvrir') }}</span>
+                <a href="https://goexploria.com" class="bt-more-btn" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-circle-info"></i>
+                    <span>{{ $tr('En savoir plus') }}</span>
                 </a>
             </div>
         </div>
@@ -72,7 +78,7 @@
                     <li><i class="fas fa-check-circle"></i> {{ $tr('Solutions digitales innovantes') }}</li>
                 </ul>
 
-                {{-- Carousel vidéos Business --}}
+                {{-- Carousel vidÃ©os Business --}}
                 <div class="bt-carousel" data-videos='[
                     {"id":"xPPLbEFbCAo","title":"{{ $tr('Solutions Business GoExploria') }}"},
                     {"id":"xPPLbEFbCAo","title":"{{ $tr('Développement International') }}"}
@@ -110,7 +116,7 @@
                     <li><i class="fas fa-check-circle"></i> {{ $tr('Circuits découverte pour partenaires') }}</li>
                 </ul>
 
-                {{-- Carousel vidéos Tourisme --}}
+                {{-- Carousel vidÃ©os Tourisme --}}
                 <div class="bt-carousel" data-videos='[
                     {"id":"xPPLbEFbCAo","title":"{{ $tr('Expériences Touristiques GoExploria') }}"},
                     {"id":"xPPLbEFbCAo","title":"{{ $tr('Découverte du Québec') }}"}
@@ -224,3 +230,4 @@
     document.querySelectorAll('.bt-carousel').forEach(initBtCarousel);
 })();
 </script>
+
