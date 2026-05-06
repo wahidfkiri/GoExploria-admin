@@ -11,7 +11,7 @@
     };
 @endphp
 
-<section class="social-space-section" id="espace-reseaux-sociaux">
+<section class="social-space-section" id="reseaux-sociaux">
     <div class="resto-header-block">
         <div class="resto-header-main">
             <div class="resto-header-logo-left">

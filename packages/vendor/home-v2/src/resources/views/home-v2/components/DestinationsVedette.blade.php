@@ -16,7 +16,7 @@
 @endphp
 
 {{-- Destinations Vedette Component - Destinations vedette --}}
-<section class="destinations-vedette-v2-section" id="destinations-vedette">
+<section class="destinations-vedette-v2-section" id="activez-destinations">
     <div class="destinations-vedette-v2-container">
         {{-- ============================================================
              ENTÊTE DESTINATIONS VEDETTES — même layout que RestaurantHeader

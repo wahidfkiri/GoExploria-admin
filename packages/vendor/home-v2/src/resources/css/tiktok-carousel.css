@@ -8,6 +8,17 @@
     font-family: Montserrat, sans-serif;
 }
 
+/* Filtres dans resto-actions-row */
+.ttk-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ttk-filters .ttk-filter-btn i {
+    margin-right: 6px;
+}
+
 /* ── GRILLE 6 COLONNES ─────────────────────────────────────── */
 .ttk-grid {
     display: grid;

@@ -149,7 +149,7 @@ $gxtVideos = [
 ];
 @endphp
 
-<section id="goexploria-mytube" class="gxt-section">
+<section id="my-tube" class="gxt-section">
 
     {{-- ============================================================
          ENTÊTE GOEXPLORIA MYTUBE — même layout que RestaurantHeader

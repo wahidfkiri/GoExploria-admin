@@ -342,3 +342,4 @@ Route::get('/favoris',      fn() => view('home-v2.pages.favoris'))->name('favori
 Route::get('/panier',       fn() => view('home-v2.pages.panier'))->name('panier');
 Route::get('/politique-confidentialite', fn() => view('home-v2.pages.privacy-policy'))->name('privacy.policy');
 Route::get('/termes-et-conditions', fn() => view('home-v2.pages.terms-conditions'))->name('terms.conditions');
+Route::get('/espace-photos', fn() => view('home-v2.pages.espace-photos'))->name('espace-photos');

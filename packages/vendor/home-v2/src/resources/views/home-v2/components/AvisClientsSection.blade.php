@@ -25,7 +25,7 @@
             </div>
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('ESPACE AVIS CLIENTS') }}</h1>
-                <p class="resto-header-subtitle">{{ $tr('TÃ©moignages authentiques de voyageurs, familles et entreprises partenaires.') }}</p>
+                <p class="resto-header-subtitle">{{ $tr('Témoignages authentiques de voyageurs, familles et entreprises partenaires.') }}</p>
             </div>
             <div class="resto-header-logo-right">
                 <a href="#" class="resto-accord-btn" title="Satisfaction">
@@ -46,11 +46,11 @@
                 <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&fit=crop" alt="Client 1">
                 <div>
                     <h3>Julie Tremblay</h3>
-                    <p>Voyageuse - QuÃ©bec</p>
+                    <p>Voyageuse - Québec</p>
                 </div>
             </div>
-            <div class="avis-stars">â˜…â˜…â˜…â˜…â˜…</div>
-            <p class="avis-text">{{ $tr('Service exceptionnel, rÃ©servation simple et suggestions parfaites pour notre sÃ©jour en famille.') }}</p>
+            <div class="avis-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="avis-text">{{ $tr('Service exceptionnel, réservation simple et suggestions parfaites pour notre séjour en famille.') }}</p>
         </article>
 
         <article class="avis-card avis-card-a">
@@ -58,11 +58,11 @@
                 <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop" alt="Client 2">
                 <div>
                     <h3>Marc Bouchard</h3>
-                    <p>Entrepreneur - MontrÃ©al</p>
+                    <p>Entrepreneur - Montréal</p>
                 </div>
             </div>
-            <div class="avis-stars">â˜…â˜…â˜…â˜…â˜…</div>
-            <p class="avis-text">{{ $tr('La visibilitÃ© de notre entreprise a augmentÃ© rapidement. Excellente Ã©quipe, trÃ¨s proactive.') }}</p>
+            <div class="avis-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="avis-text">{{ $tr('La visibilité de notre entreprise a augmenté rapidement. Excellente équipe, très proactive.') }}</p>
         </article>
 
         <article class="avis-card avis-card-a">
@@ -70,11 +70,11 @@
                 <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=120&h=120&fit=crop" alt="Client 3">
                 <div>
                     <h3>Sophie Gagnon</h3>
-                    <p>CrÃ©atrice - Saguenay</p>
+                    <p>Créatrice - Saguenay</p>
                 </div>
             </div>
-            <div class="avis-stars">â˜…â˜…â˜…â˜…â˜†</div>
-            <p class="avis-text">{{ $tr('TrÃ¨s belle plateforme pour dÃ©couvrir des activitÃ©s locales et partager nos expÃ©riences.') }}</p>
+            <div class="avis-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+            <p class="avis-text">{{ $tr('Très belle plateforme pour découvrir des activités locales et partager nos expériences.') }}</p>
         </article>
     </div>
 
@@ -89,11 +89,11 @@
             </div>
             <div class="avis-google-score">
                 <strong>4.9</strong>
-                <span>â˜…â˜…â˜…â˜…â˜…</span>
+                <span>&#9733;&#9733;&#9733;&#9733;&#9733;</span>
             </div>
-            <p class="avis-text">{{ $tr('Excellent suivi client, collaboration fluide et organisation des projets trÃ¨s efficace.') }}</p>
+            <p class="avis-text">{{ $tr('Excellent suivi client, collaboration fluide et organisation des projets très efficace.') }}</p>
             <div class="avis-foot">
-                <span>MontrÃ©al</span>
+                <span>Montréal</span>
                 <span>Il y a 2 jours</span>
             </div>
         </article>
@@ -108,11 +108,11 @@
             </div>
             <div class="avis-google-score">
                 <strong>5.0</strong>
-                <span>â˜…â˜…â˜…â˜…â˜…</span>
+                <span>&#9733;&#9733;&#9733;&#9733;&#9733;</span>
             </div>
-            <p class="avis-text">{{ $tr('Le tableau de suivi partagÃ© et les retours en temps rÃ©el nous ont beaucoup aidÃ©s.') }}</p>
+            <p class="avis-text">{{ $tr('Le tableau de suivi partagé et les retours en temps réel nous ont beaucoup aidés.') }}</p>
             <div class="avis-foot">
-                <span>QuÃ©bec</span>
+                <span>Québec</span>
                 <span>Il y a 1 semaine</span>
             </div>
         </article>
@@ -127,9 +127,9 @@
             </div>
             <div class="avis-google-score">
                 <strong>4.8</strong>
-                <span>â˜…â˜…â˜…â˜…â˜†</span>
+                <span>&#9733;&#9733;&#9733;&#9733;&#9734;</span>
             </div>
-            <p class="avis-text">{{ $tr('Communication claire, livraison rapide, et une vraie valeur ajoutÃ©e sur notre visibilitÃ©.') }}</p>
+            <p class="avis-text">{{ $tr('Communication claire, livraison rapide, et une vraie valeur ajoutée sur notre visibilité.') }}</p>
             <div class="avis-foot">
                 <span>Lyon</span>
                 <span>Il y a 3 semaines</span>
@@ -141,30 +141,30 @@
         <article class="avis-card avis-card-b">
             <span class="avis-badge">Top Note</span>
             <h3>Famille Dufour</h3>
-            <p class="avis-text">{{ $tr('Nous avons trouvÃ© un hÃ©bergement et des activitÃ©s en 10 minutes. ExpÃ©rience fluide et moderne.') }}</p>
+            <p class="avis-text">{{ $tr('Nous avons trouvé un hébergement et des activités en 10 minutes. Expérience fluide et moderne.') }}</p>
             <div class="avis-foot">
                 <span>Charlevoix</span>
-                <span class="avis-stars">â˜…â˜…â˜…â˜…â˜…</span>
+                <span class="avis-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
             </div>
         </article>
 
         <article class="avis-card avis-card-b">
-            <span class="avis-badge">RecommandÃ©</span>
+            <span class="avis-badge">Recommandé</span>
             <h3>Agence Nova Travel</h3>
-            <p class="avis-text">{{ $tr('Les modules marketing et mÃ©dias nous font gagner du temps. Les rÃ©sultats sont mesurables.') }}</p>
+            <p class="avis-text">{{ $tr('Les modules marketing et médias nous font gagner du temps. Les résultats sont mesurables.') }}</p>
             <div class="avis-foot">
                 <span>Paris</span>
-                <span class="avis-stars">â˜…â˜…â˜…â˜…â˜…</span>
+                <span class="avis-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
             </div>
         </article>
 
         <article class="avis-card avis-card-b">
             <span class="avis-badge">Nouveau client</span>
             <h3>Karim El Amrani</h3>
-            <p class="avis-text">{{ $tr('Interface claire, support rapide et une vraie qualitÃ© de contenu pour choisir nos destinations.') }}</p>
+            <p class="avis-text">{{ $tr('Interface claire, support rapide et une vraie qualité de contenu pour choisir nos destinations.') }}</p>
             <div class="avis-foot">
                 <span>Casablanca</span>
-                <span class="avis-stars">â˜…â˜…â˜…â˜…â˜†</span>
+                <span class="avis-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
             </div>
         </article>
     </div>

@@ -16,7 +16,7 @@ $gicPhotos = [
 ];
 @endphp
 
-<section id="gallerie-caroussel" class="gic-section">
+<section id="photos" class="gic-section">
     <div class="gic-container">
         <div class="resto-header-block">
             <div class="resto-header-main">

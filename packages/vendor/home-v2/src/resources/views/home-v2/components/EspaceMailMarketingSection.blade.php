@@ -79,13 +79,6 @@
                         <h3>Email Marketing E-commerce</h3>
                         <p>Relance panier abandonne, recommandations produit et sequence post-achat pour augmenter la valeur vie client.</p>
                     </div>
-                    <div class="mail-svg-widget" aria-hidden="true">
-                        <svg viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg">
-                            <polyline points="10,62 55,50 95,54 140,35 188,40 235,20 280,24 310,12" fill="none" stroke="#2d7ff9" stroke-width="4" stroke-linecap="round"/>
-                            <circle cx="235" cy="20" r="6" fill="#2d7ff9"/>
-                            <circle cx="310" cy="12" r="6" fill="#1fb981"/>
-                        </svg>
-                    </div>
                     <ul class="mail-feature-list">
                         <li><i class="fas fa-repeat"></i> Workflow de relance en 3 emails</li>
                         <li><i class="fas fa-percent"></i> Offres code promo dynamique</li>
@@ -101,16 +94,6 @@
                         <h3>Email Marketing Business</h3>
                         <p>Nurturing B2B pour qualifier vos leads: sequence webinar, etude de cas et prise de rendez-vous commerciale.</p>
                     </div>
-                    <div class="mail-svg-widget" aria-hidden="true">
-                        <svg viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="20" y="48" width="28" height="18" rx="4" fill="#87b7ff"/>
-                            <rect x="70" y="40" width="28" height="26" rx="4" fill="#6da4ff"/>
-                            <rect x="120" y="30" width="28" height="36" rx="4" fill="#4f90ff"/>
-                            <rect x="170" y="22" width="28" height="44" rx="4" fill="#2d7ff9"/>
-                            <rect x="220" y="14" width="28" height="52" rx="4" fill="#1f6ae0"/>
-                            <rect x="270" y="8" width="28" height="58" rx="4" fill="#1153c1"/>
-                        </svg>
-                    </div>
                     <ul class="mail-feature-list">
                         <li><i class="fas fa-user-check"></i> Score leads automatique</li>
                         <li><i class="fas fa-calendar-check"></i> CTA prise de rendez-vous CRM</li>
@@ -125,12 +108,6 @@
                         <span class="mail-campaign-badge"><i class="fas fa-plane-departure"></i> Tourism</span>
                         <h3>Email Marketing Tourism</h3>
                         <p>Campagnes inspiration destination, alertes forfaits et guides saisonniers pour augmenter les reservations.</p>
-                    </div>
-                    <div class="mail-svg-widget" aria-hidden="true">
-                        <svg viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M14 58 C60 30, 96 50, 140 26 C178 6, 236 18, 306 10" stroke="#1fb981" stroke-width="4" fill="none" stroke-linecap="round"/>
-                            <path d="M18 58 L44 58 M84 44 L110 44 M154 30 L180 30 M230 20 L256 20" stroke="#1fb981" stroke-width="4" stroke-linecap="round"/>
-                        </svg>
                     </div>
                     <ul class="mail-feature-list">
                         <li><i class="fas fa-map-marked-alt"></i> Segmentation par destination</li>

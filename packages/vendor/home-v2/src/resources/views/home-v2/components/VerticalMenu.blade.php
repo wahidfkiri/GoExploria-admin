@@ -85,7 +85,7 @@
                     <li><a href="#geo-carte-videos" class="vertical-menu-v2-sublink">Espace G&eacute;o-Carte-Vid&eacute;os</a></li>
                     <li><a href="#multilingue" class="vertical-menu-v2-sublink">Espaces Multilingues</a></li>
                     <li><a href="#slideshow" class="vertical-menu-v2-sublink">Espaces Slide-Show Multiples</a></li>
-                    <li><a href="#go-tok-tok" class="vertical-menu-v2-sublink">Espaces Go-Tok-Tok</a></li>
+                    <li><a href="#go-tik-tok" class="vertical-menu-v2-sublink">Espaces Go-Tik-Tok</a></li>
                     <li><a href="#my-tube" class="vertical-menu-v2-sublink">Espaces My-Tube</a></li>
                     <li><a href="#chaine-videos" class="vertical-menu-v2-sublink">Espaces Cha&icirc;ne Vid&eacute;os</a></li>
                     <li><a href="#photos" class="vertical-menu-v2-sublink">Espaces Photos</a></li>

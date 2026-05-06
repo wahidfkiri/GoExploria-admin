@@ -183,9 +183,24 @@ $tiktokVideos = [
         'overlay'  => '',
     ],
 ];
+
+$ttkCategories = [
+    1 => 'evenement',
+    2 => 'nature',
+    3 => 'aventure',
+    4 => 'evenement',
+    5 => 'gastronomie',
+    6 => 'nature',
+    7 => 'gastronomie',
+    8 => 'aventure',
+    9 => 'culture',
+    10 => 'evenement',
+    11 => 'nature',
+    12 => 'gastronomie',
+];
 @endphp
 
-<section id="goexploria-tiktok" class="ttk-section">
+<section id="go-tik-tok" class="ttk-section">
 
     {{-- ============================================================
          ENTÊTE STANDARD — CHAÎNE VIDÉOS TIK-TOK
@@ -253,6 +268,30 @@ $tiktokVideos = [
                     <a href="#" class="resto-dest-link">Région de Québec</a>
                 </div>
             </div>
+            <div class="resto-actions-row">
+                <div class="resto-header-ctas">
+                    <div class="products-vedette-v2-filters ttk-filters">
+                        <button class="products-vedette-v2-filter-btn ttk-filter-btn active" type="button" data-filter="all">
+                            <i class="fas fa-th-large"></i> Toutes catégories
+                        </button>
+                        <button class="products-vedette-v2-filter-btn ttk-filter-btn" type="button" data-filter="nature">
+                            <i class="fas fa-leaf"></i> Nature
+                        </button>
+                        <button class="products-vedette-v2-filter-btn ttk-filter-btn" type="button" data-filter="aventure">
+                            <i class="fas fa-mountain"></i> Aventure
+                        </button>
+                        <button class="products-vedette-v2-filter-btn ttk-filter-btn" type="button" data-filter="gastronomie">
+                            <i class="fas fa-utensils"></i> Gastronomie
+                        </button>
+                        <button class="products-vedette-v2-filter-btn ttk-filter-btn" type="button" data-filter="culture">
+                            <i class="fas fa-landmark"></i> Culture
+                        </button>
+                        <button class="products-vedette-v2-filter-btn ttk-filter-btn" type="button" data-filter="evenement">
+                            <i class="fas fa-calendar-alt"></i> Événement
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -272,6 +311,7 @@ $tiktokVideos = [
              data-likes="{{ $v['likes'] }}"
              data-comments="{{ $v['comments'] }}"
              data-saves="{{ $v['saves'] }}"
+             data-category="{{ $ttkCategories[$v['id']] ?? 'all' }}"
              data-caption="{{ addslashes($v['caption']) }}"
              data-sound="{{ addslashes($v['sound']) }}"
              tabindex="0" role="button">
@@ -436,10 +476,20 @@ $tiktokVideos = [
 <script>
 (function () {
     var videos  = @json($tiktokVideos);
+    var section = document.getElementById('goexploria-tiktok');
     var cards   = document.querySelectorAll('#ttkGrid .ttk-card');
     var modal   = document.getElementById('ttkModal');
     var iframe  = document.getElementById('ttkModalIframe');
     var current = 0;
+    var activeFilter = 'all';
+
+    function applyGridFilter() {
+        cards.forEach(function (card) {
+            var category = card.getAttribute('data-category') || 'all';
+            var visible = (activeFilter === 'all' || category === activeFilter);
+            card.style.display = visible ? '' : 'none';
+        });
+    }
 
     function openModal(index) {
         current = index;
@@ -475,6 +525,17 @@ $tiktokVideos = [
         card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(parseInt(card.getAttribute('data-index'))); } });
     });
 
+    if (section) {
+        section.querySelectorAll('.ttk-filter-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                section.querySelectorAll('.ttk-filter-btn').forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                activeFilter = btn.getAttribute('data-filter') || 'all';
+                applyGridFilter();
+            });
+        });
+    }
+
     document.getElementById('ttkModalClose').addEventListener('click', closeModal);
     document.getElementById('ttkNavPrev').addEventListener('click', function () { navigate(-1); });
     document.getElementById('ttkNavNext').addEventListener('click', function () { navigate(1); });
@@ -499,6 +560,7 @@ $tiktokVideos = [
             tab.classList.add('active');
         });
     });
+    applyGridFilter();
 })();
 </script>
 @php
