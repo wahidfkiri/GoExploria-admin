@@ -30,6 +30,10 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/videos-dropdown.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/viewing-carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/tiktok-carousel.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/espace-chat-section.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/espace-mail-marketing-section.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/espace-blog-section.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/espace-social-media-section.css') }}">
     <link rel="stylesheet" href="{{ asset('css/video-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/slideshows.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/video-player.css') }}">
@@ -68,6 +72,11 @@
         @include('home-v2.components.ViewingCarousel')
         @include('home-v2.components.GallerieCaroussel')
         @include('home-v2.components.TikTokCarousel')
+        @include('home-v2.components.EspaceChatSection')
+        @include('home-v2.components.EspaceMailMarketingSection')
+        @include('home-v2.components.EspaceBlogSection')
+        @include('home-v2.components.AvisClientsSection')
+        @include('home-v2.components.EspaceSocialMediaSection')
         @include('geo-map::index')
         @include('home-v2.components.MultilingualGrid')
         @include('home-v2.components.DestinationsVedette')
@@ -85,7 +94,7 @@
         @include('home-v2.components.TourismSection')
 
         <div id="section-next-level" class="snb-anchor"></div>
-        @include('home-v2.components.PartnersMaster')
+        <!-- @include('home-v2.components.PartnersMaster') -->
         @include('home-v2.components.AgencySection')
         @include('home-v2.components.WebServices')
 
@@ -136,6 +145,9 @@
     <script src="{{ asset('js/video-modal.js') }}"></script>
     <script src="{{ asset('js/home-v2/viewing-carousel.js') }}"></script>
     <script src="{{ asset('js/home-v2/videos-dropdown.js') }}"></script>
+    <script src="{{ asset('js/home-v2/espace-chat-section.js') }}"></script>
+    <script src="{{ asset('js/home-v2/espace-mail-marketing-section.js') }}"></script>
+    <script src="{{ asset('js/home-v2/espace-blog-section.js') }}"></script>
     <script src="{{ asset('js/home-v2/slideshows.js') }}"></script>
     <script src="{{ asset('js/home-v2/video-player.js') }}"></script>
     <script src="{{ asset('js/home-v2/events-vedette.js') }}"></script>
