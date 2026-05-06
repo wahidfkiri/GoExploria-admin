@@ -22,7 +22,7 @@
     <div class="resto-header-block">
         <div class="resto-header-main">
             <div>
-                <div class="bt-left-brand" aria-label="{{ $tr('GoExploria') }}">
+                <div class="bt-left-brand" style="display:none;" aria-label="{{ $tr('GoExploria') }}">
                     <div class="logo-wrapper"><img src="{{ asset('logo.png') }}" alt="{{ $tr('GoExploria') }}"></div>
                     <span class="bt-left-brand-label">{{ $tr('GoExploria') }}</span>
                 </div>
