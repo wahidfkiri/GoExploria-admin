@@ -159,7 +159,7 @@ $gxtVideos = [
         <div class="resto-header-main">
 
             {{-- Logo gauche : GoExploria --}}
-            <div class="resto-header-logo-left">
+            <div class="resto-header-logo-left" style="display:none;">
                 <a href="#" class="resto-accord-btn" title="GoExploria">
                     <div class="logo-wrapper">
                         <img src="{{ asset('logo.png') }}" alt="GoExploria">
@@ -377,8 +377,8 @@ $gxtVideos = [
 <style>
 /* Header override local: centre full width, côtés compacts */
 #my-tube .resto-header-main {
-    grid-template-columns: 110px minmax(0, 1fr) 110px;
-    gap: 14px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
 }
 #my-tube .resto-header-center {
     grid-column: 2;
@@ -402,7 +402,7 @@ $gxtVideos = [
 
 @media (max-width: 1024px) {
     #my-tube .resto-header-main {
-        grid-template-columns: 90px minmax(0, 1fr) 90px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
