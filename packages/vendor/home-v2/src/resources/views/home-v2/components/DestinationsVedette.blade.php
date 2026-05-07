@@ -43,20 +43,24 @@
                     <h1 class="resto-header-title">{{ $tr('DESTINATIONS VEDETTES') }}</h1>
                     <p class="resto-header-subtitle">
                         {{ $tr('Québec · Canada · Amérique du Nord — Découvrez les plus belles destinations sublimées par l\'expertise GoExploria.') }}
-                    </p></div>
+                    </p>
+                </div>
 
                 {{-- Logo droit : Destinations Vedettes --}}
-                <div class="resto-header-logo-right">
-                    <a href="#" class="resto-accord-btn" title="{{ $tr('Destinations Vedettes') }}">
-                        <div class="logo-wrapper">
-                            <img src="{{ asset('REDI.png') }}" alt="{{ $tr('Destinations Vedettes') }}">
-                        </div>
-                        <span class="resto-accord-btn-label">{{ $tr('Destinations Vedettes') }}</span>
-                        <span class="resto-accord-btn-cta">
-                            <i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}
-                        </span>
-                    </a>
-                </div>
+                
+            <div class="resto-header-logo-right">
+                
+                <a href="{{url('page-destinations')}}" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="{{ $tr('Next Level') }}"
+                    loading="lazy"
+                >
+                </a>
+            </div>
 
             </div>
 

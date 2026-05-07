@@ -28,7 +28,7 @@
             </div>
             <div class="resto-header-logo-right">
                 
-                <a href="https://goexploria.com" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
+                <a href="{{url('business-tourisme')}}" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
                     <!-- <i class="fas fa-circle-info"></i>
                     <span>Go Next Level</span> -->
                     <img

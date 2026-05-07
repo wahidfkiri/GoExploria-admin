@@ -40,14 +40,16 @@
                     {{ $tr('Choisissez votre langue préférée afin de pénétrer les marchés internationaux et offrir une expérience de shopping exclusive.') }}
                 </p></div>
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="{{ $tr('Plans Web Go') }}">
-                    <div class="logo-wrapper">
-                        <img src="{{ asset('plan-n-go.png') }}" alt="{{ $tr('Plans Web Go') }}">
-                    </div>
-                    <span class="resto-accord-btn-label">{{ $tr('Plans Web Go') }}</span>
-                    <span class="resto-accord-btn-cta">
-                        <i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}
-                    </span>
+                
+                <a href="{{url('page-multilingue')}}" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="{{ $tr('Next Level') }}"
+                    loading="lazy"
+                >
                 </a>
             </div>
         </div>

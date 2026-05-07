@@ -9,7 +9,8 @@ use App\Http\Controllers\{
     GeminiController,
     HomeController,
     LandingPageController,
-    DestinationPageController
+    DestinationPageController,
+    DevisController
 };
 use Vendor\HomeV2\Http\Controllers\HomeV2Controller;
 
@@ -337,9 +338,22 @@ Route::get('/activites/{slug}',            [\Vendor\HomeV2\Http\Controllers\Home
 Route::get('/contact',      fn() => view('home-v2.pages.contact'))->name('contact');
 Route::get('/inscription',  fn() => view('home-v2.pages.inscription'))->name('inscription');
 Route::get('/mon-compte',   fn() => view('home-v2.pages.mon-compte'))->name('mon-compte');
-Route::get('/devis',        fn() => view('home-v2.pages.devis'))->name('devis');
+Route::get('/devis',        [DevisController::class, 'show'])->name('devis');
+Route::post('/devis',       [DevisController::class, 'submit'])->name('devis.submit');
 Route::get('/favoris',      fn() => view('home-v2.pages.favoris'))->name('favoris');
 Route::get('/panier',       fn() => view('home-v2.pages.panier'))->name('panier');
 Route::get('/politique-confidentialite', fn() => view('home-v2.pages.privacy-policy'))->name('privacy.policy');
 Route::get('/termes-et-conditions', fn() => view('home-v2.pages.terms-conditions'))->name('terms.conditions');
 Route::get('/espace-photos', fn() => view('home-v2.pages.espace-photos'))->name('espace-photos');
+Route::get('/avis-clients', fn() => view('home-v2.pages.avis-clients'))->name('avis-clients');
+Route::get('/business-tourisme', fn() => view('home-v2.pages.business-tourisme'))->name('business-tourism');
+Route::get('/page-destinations', fn() => view('home-v2.pages.destinations'))->name('page-destinations');
+Route::get('/page-blog', fn() => view('home-v2.pages.blog'))->name('page-blog');
+Route::get('/page-chat', fn() => view('home-v2.pages.page-chat'))->name('page-chat');
+Route::get('/page-mail-marketing', fn() => view('home-v2.pages.page-mail-marketing'))->name('page-mail-marketing');
+Route::get('/page-social-media', fn() => view('home-v2.pages.page-social-media'))->name('page-social-media');
+Route::get('/page-galerie', fn() => view('home-v2.pages.page-galerie'))->name('page-galerie');
+Route::get('/page-multilingue', fn() => view('home-v2.pages.page-multilingue'))->name('page-multilingue');
+Route::get('/page-tiktok', fn() => view('home-v2.pages.page-tiktok'))->name('page-tiktok');
+Route::get('/page-videos', fn() => view('home-v2.pages.page-videos'))->name('page-videos');
+Route::get('/page-medias', fn() => view('home-v2.pages.page-media'))->name('page-medias');

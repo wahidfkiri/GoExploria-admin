@@ -26,13 +26,18 @@
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('ESPACE MAIL MARKETING') }}</h1>
                 <p class="resto-header-subtitle">{{ $tr('Concevez des campagnes qui convertissent: segmentation intelligente, design responsive et analytics en temps reel.') }}</p></div>
+            
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="Automatisation">
-                    <div class="logo-wrapper">
-                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200&h=200&fit=crop" alt="Automatisation marketing">
-                    </div>
-                    <span class="resto-accord-btn-label">Automation</span>
-                    <span class="resto-accord-btn-cta"><i class="fas fa-paper-plane"></i> Live</span>
+                
+                <a href="{{url('page-mail-marketing')}}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="Next Level"
+                    loading="lazy"
+                >
                 </a>
             </div>
         </div>

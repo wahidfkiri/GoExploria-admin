@@ -25,15 +25,21 @@
             </div>
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('ESPACE AVIS CLIENTS') }}</h1>
-                <p class="resto-header-subtitle">{{ $tr('Témoignages authentiques de voyageurs, familles et entreprises partenaires.') }}</p>
+                <h2 class="resto-header-eyebrow">3 méthodes pour créer un lien d’avis Google et optimiser vos fiches</h2>
+                <!-- <p class="resto-header-subtitle">{{ $tr('Témoignages authentiques de voyageurs, familles et entreprises partenaires.') }}</p> -->
             </div>
+            
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="Satisfaction">
-                    <div class="logo-wrapper">
-                        <i class="fas fa-award"></i>
-                    </div>
-                    <span class="resto-accord-btn-label">Satisfaction</span>
-                    <span class="resto-accord-btn-cta"><i class="fas fa-star"></i> 4.9/5</span>
+                
+                <a href="{{url('avis-clients')}}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="Next Level"
+                    loading="lazy"
+                >
                 </a>
             </div>
         </div>

@@ -32,13 +32,20 @@ $gicPhotos = [
                     <h1 class="resto-header-title">ESPACES PHOTOS</h1>
                     <p class="resto-header-subtitle">Destinations et choix des catégories · Photos avec tags international · Création des catégories de galeries.</p></div>
 
-                <div class="resto-header-logo-right">
-                    <a href="#" class="resto-accord-btn" title="Espaces Photos">
-                        <div class="logo-wrapper"><img src="{{ asset('GO-EXPLORIA-MY-TUBE.png') }}" alt="Espaces Photos"></div>
-                        <span class="resto-accord-btn-label">Espaces Photos</span>
-                        <span class="resto-accord-btn-cta"><i class="fas fa-camera"></i> Explorer</span>
-                    </a>
-                </div>
+                
+            <div class="resto-header-logo-right">
+                
+                <a href="{{url('page-gallerie')}}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="Next Level"
+                    loading="lazy"
+                >
+                </a>
+            </div>
             </div>
 
             <div class="resto-header-destinations-bar">

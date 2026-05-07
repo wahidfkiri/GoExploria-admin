@@ -223,15 +223,18 @@ $ttkCategories = [
                 <p class="resto-header-subtitle">
                     Découvertes · Aventures · Gastronomie · Culture — Explorez le Québec en format court avec GoExploria TIK-TOK.
                 </p></div>
+            
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="Plans Web Go">
-                    <div class="logo-wrapper">
-                        <img src="{{ asset('plan-n-go.png') }}" alt="Plans Web Go">
-                    </div>
-                    <span class="resto-accord-btn-label">Plans Web Go</span>
-                    <span class="resto-accord-btn-cta">
-                        <i class="fas fa-external-link-alt"></i> Visiter
-                    </span>
+                
+                <a href="{{url('page-tiktok')}}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="Next Level"
+                    loading="lazy"
+                >
                 </a>
             </div>
         </div>

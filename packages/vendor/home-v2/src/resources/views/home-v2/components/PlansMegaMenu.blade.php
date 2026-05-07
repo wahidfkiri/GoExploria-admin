@@ -92,6 +92,9 @@
 
 <div class="plans-mega-v2-overlay" id="plansMegaOverlay"></div>
 <div class="plans-mega-v2" id="plansMegaMenu" aria-hidden="true">
+    <button class="plans-mega-v2-close" id="plansMegaClose" aria-label="Fermer">
+        <i class="fas fa-times"></i>
+    </button>
     <div class="plans-mega-v2-head">
         <div class="plans-mega-v2-kicker">PASSEZ AU NIVEAU SUPÉRIEURE</div>
         <h3>GO EXPLORIA BUSINESS - NEXT LEVEL</h3>
@@ -188,6 +191,30 @@
 
     .plans-mega-v2.active {
         transform: translateX(-50%) translateY(0);
+    }
+
+    .plans-mega-v2-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1px solid rgba(16, 32, 58, 0.2);
+        background: #ffffff;
+        color: #10203a;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+        z-index: 2;
+    }
+
+    .plans-mega-v2-close:hover {
+        transform: translateY(-1px);
+        background: #10203a;
+        color: #ffffff;
     }
 
     .plans-mega-v2-head {
@@ -382,6 +409,7 @@
         const triggerLink = document.getElementById('plansMenuTrigger');
         const menu = document.getElementById('plansMegaMenu');
         const overlay = document.getElementById('plansMegaOverlay');
+        const closeBtn = document.getElementById('plansMegaClose');
         const header = document.querySelector('.header-v2');
         if (!trigger || !menu || !overlay) return;
 
@@ -445,6 +473,13 @@
         }
 
         overlay.addEventListener('click', closePlansMenu);
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closePlansMenu();
+            });
+        }
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closePlansMenu();

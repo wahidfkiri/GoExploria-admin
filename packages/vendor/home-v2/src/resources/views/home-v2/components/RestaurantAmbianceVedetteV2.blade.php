@@ -319,6 +319,46 @@
 </section>
 
 <style>
+/* Header override: centre large, côtés compacts (scope local à ce composant) */
+#resto-ambiance-vedette-v2 .resto-header-main {
+    grid-template-columns: 110px minmax(0, 1fr) 110px;
+    gap: 14px;
+}
+#resto-ambiance-vedette-v2 .resto-header-center {
+    grid-column: 2;
+    width: 100%;
+    max-width: 100%;
+}
+#resto-ambiance-vedette-v2 .resto-header-logo-left,
+#resto-ambiance-vedette-v2 .resto-header-logo-right {
+    visibility: visible;
+    pointer-events: auto;
+    width: auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+#resto-ambiance-vedette-v2 .resto-header-logo-right {
+    grid-column: 3;
+    justify-self: auto;
+}
+
+@media (max-width: 1024px) {
+    #resto-ambiance-vedette-v2 .resto-header-main {
+        grid-template-columns: 90px minmax(0, 1fr) 90px;
+    }
+}
+
+@media (max-width: 768px) {
+    #resto-ambiance-vedette-v2 .resto-header-logo-left {
+        display: flex !important;
+    }
+    #resto-ambiance-vedette-v2 .resto-header-logo-right {
+        width: auto;
+    }
+}
+
 /* Keep ProductsVedette logic (horizontal carousel), but with Restau card design */
 #resto-ambiance-vedette-v2 .products-vedette-v2-scroll-container {
     display: flex;

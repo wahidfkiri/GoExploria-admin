@@ -59,6 +59,25 @@ $vpCategories = [
 ];
 
 /* ----------------------------------------------------------------
+   CHAÎNES RÉSEAUX
+---------------------------------------------------------------- */
+$vpNetworks = [
+    ['name' => 'YouTube',     'icon' => 'fab fa-youtube',          'url' => 'https://www.youtube.com',   'desc' => 'Chaînes vidéo, playlists et diffusion mondiale.'],
+    ['name' => 'Vimeo',       'icon' => 'fab fa-vimeo-v',          'url' => 'https://vimeo.com',         'desc' => 'Hébergement premium et qualité professionnelle.'],
+    ['name' => 'Dailymotion', 'icon' => 'fas fa-play-circle',      'url' => 'https://www.dailymotion.com','desc' => 'Distribution vidéo éditoriale et internationale.'],
+    ['name' => 'Flickr',      'icon' => 'fab fa-flickr',           'url' => 'https://www.flickr.com',    'desc' => 'Galeries photo créatives et archives médias.'],
+    ['name' => 'Utréon',      'icon' => 'fas fa-circle-nodes',     'url' => 'https://utreon.com',        'desc' => 'Alternative moderne pour créateurs de contenu.'],
+    ['name' => 'Rumble',      'icon' => 'fas fa-bolt',             'url' => 'https://rumble.com',        'desc' => 'Plateforme vidéo dynamique et monétisation simple.'],
+    ['name' => 'DTube',       'icon' => 'fas fa-cube',             'url' => 'https://d.tube',            'desc' => 'Réseau vidéo décentralisé orienté communauté.'],
+    ['name' => 'PeerTube',    'icon' => 'fas fa-network-wired',    'url' => 'https://joinpeertube.org',  'desc' => 'Création de chaînes en réseau fédéré open source.'],
+    ['name' => 'Veoh',        'icon' => 'fas fa-tv',               'url' => 'https://www.veoh.com',      'desc' => 'Contenu long format et chaînes historiques.'],
+    ['name' => 'Twitch',      'icon' => 'fab fa-twitch',           'url' => 'https://www.twitch.tv',     'desc' => 'Live streaming interactif pour audiences actives.'],
+    ['name' => 'Craqueler',   'icon' => 'fas fa-film',             'url' => 'https://www.crackle.com',   'desc' => 'Catalogues vidéos, séries et formats divertissement.'],
+    ['name' => 'Odyssée',     'icon' => 'fas fa-satellite-dish',   'url' => 'https://odysee.com',        'desc' => 'Diffusion libre de contenus et communautés niches.'],
+    ['name' => 'Bitchute',    'icon' => 'fas fa-rocket',           'url' => 'https://www.bitchute.com',  'desc' => 'Partage vidéo alternatif et canaux spécialisés.'],
+];
+
+/* ----------------------------------------------------------------
    DESTINATIONS (1 pays par continent, 5 provinces, 5 regions)
 ---------------------------------------------------------------- */
 $vpDestinationHierarchy = [
@@ -234,7 +253,7 @@ $vpTotalVideos = count($vpMediaItems);
                     <h1 class="resto-header-title">{{ $vpConfig['title'] }}</h1>
                     <p class="resto-header-subtitle">{{ $vpConfig['subtitle'] }}</p>
 
-                    <div class="resto-header-tabs">
+                    <div class="resto-header-tabs" style="display:none;">
                         <a href="#" class="resto-tab-btn active">
                             <i class="fas fa-th-large"></i> {{ $tr('Toutes les options') }}
                         </a>
@@ -250,17 +269,20 @@ $vpTotalVideos = count($vpMediaItems);
                     </div>
                 </div>
 
-                <div class="resto-header-logo-right">
-                    <a href="{{ $vpConfig['logo_plans']['href'] }}" class="resto-accord-btn" title="{{ $vpConfig['logo_plans']['label'] }}">
-                        <div class="logo-wrapper">
-                            <img src="{{ $vpConfig['logo_plans']['src'] }}" alt="{{ $vpConfig['logo_plans']['alt'] }}">
-                        </div>
-                        <span class="resto-accord-btn-label">{{ $vpConfig['logo_plans']['label'] }}</span>
-                        <span class="resto-accord-btn-cta">
-                            <i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}
-                        </span>
-                    </a>
-                </div>
+               
+            <div class="resto-header-logo-right">
+                
+                <a href="#" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="Next Level"
+                    loading="lazy"
+                >
+                </a>
+            </div>
             </div>
 
             <div class="resto-header-destinations-bar">
@@ -404,6 +426,25 @@ $vpTotalVideos = count($vpMediaItems);
                 </ul>
             </div>
         </div>
+
+        <div class="vp-network-section">
+            <div class="vp-network-head">
+                <h3>{{ $tr('TOUTES LES CHAÎNES RÉSEAUX') }}</h3>
+                <p>{{ $tr('Activez votre présence multi-plateformes avec une diffusion cohérente sur les principaux réseaux vidéo et photo.') }}</p>
+            </div>
+            <div class="vp-network-grid">
+                @foreach($vpNetworks as $network)
+                    <a href="{{ $network['url'] }}" target="_blank" rel="noopener noreferrer" class="vp-network-card">
+                        <div class="vp-network-icon"><i class="{{ $network['icon'] }}"></i></div>
+                        <div class="vp-network-body">
+                            <h4>{{ $network['name'] }}</h4>
+                            <p>{{ $network['desc'] }}</p>
+                        </div>
+                        <span class="vp-network-go"><i class="fas fa-arrow-up-right-from-square"></i></span>
+                    </a>
+                @endforeach
+            </div>
+        </div>
     </div>
 </section>
 
@@ -447,6 +488,97 @@ $vpTotalVideos = count($vpMediaItems);
 #vp-chaine .video-player-v2-controls {
     display: none;
 }
+
+#vp-chaine .vp-network-section {
+    margin-top: 24px;
+    background: linear-gradient(180deg, #ffffff 0%, #f6f9ff 100%);
+    border: 1px solid rgba(12, 28, 54, 0.08);
+    border-radius: 16px;
+    padding: 18px;
+}
+#vp-chaine .vp-network-head h3 {
+    margin: 0;
+    color: #0a1628;
+    font-size: clamp(18px, 2vw, 24px);
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+#vp-chaine .vp-network-head p {
+    margin: 8px 0 0;
+    color: #5b6c84;
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 860px;
+}
+#vp-chaine .vp-network-grid {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+#vp-chaine .vp-network-card {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-decoration: none;
+    color: #ffffff;
+    border-radius: 14px;
+    padding: 14px 12px;
+    min-height: 126px;
+    box-shadow: 0 10px 22px rgba(13, 31, 62, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+#vp-chaine .vp-network-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 28px rgba(13, 31, 62, 0.28);
+}
+#vp-chaine .vp-network-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.18);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+}
+#vp-chaine .vp-network-body h4 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+#vp-chaine .vp-network-body p {
+    margin: 0;
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.92);
+}
+#vp-chaine .vp-network-go {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+#vp-chaine .vp-network-card:nth-child(1)  { background: linear-gradient(135deg, #ff0000, #a30000); }
+#vp-chaine .vp-network-card:nth-child(2)  { background: linear-gradient(135deg, #1ab7ea, #0a6c95); }
+#vp-chaine .vp-network-card:nth-child(3)  { background: linear-gradient(135deg, #0e6fff, #033785); }
+#vp-chaine .vp-network-card:nth-child(4)  { background: linear-gradient(135deg, #ff0084, #7d0055); }
+#vp-chaine .vp-network-card:nth-child(5)  { background: linear-gradient(135deg, #23b2ff, #0076a9); }
+#vp-chaine .vp-network-card:nth-child(6)  { background: linear-gradient(135deg, #7cd62e, #2a7a13); }
+#vp-chaine .vp-network-card:nth-child(7)  { background: linear-gradient(135deg, #4f5bd5, #222a78); }
+#vp-chaine .vp-network-card:nth-child(8)  { background: linear-gradient(135deg, #f16822, #9f3d12); }
+#vp-chaine .vp-network-card:nth-child(9)  { background: linear-gradient(135deg, #7b7e87, #3f4149); }
+#vp-chaine .vp-network-card:nth-child(10) { background: linear-gradient(135deg, #9146ff, #4a168f); }
+#vp-chaine .vp-network-card:nth-child(11) { background: linear-gradient(135deg, #ff9f1a, #8e4d00); }
+#vp-chaine .vp-network-card:nth-child(12) { background: linear-gradient(135deg, #00a8ff, #045f8d); }
+#vp-chaine .vp-network-card:nth-child(13) { background: linear-gradient(135deg, #ff5f5f, #8c1c1c); }
+
 @media (max-width: 992px) {
     #vp-chaine .resto-dest-row {
         flex-wrap: wrap;
@@ -457,6 +589,14 @@ $vpTotalVideos = count($vpMediaItems);
     }
     #vp-chaine .vp-dest-select {
         min-width: 145px;
+    }
+    #vp-chaine .vp-network-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 620px) {
+    #vp-chaine .vp-network-grid {
+        grid-template-columns: 1fr;
     }
 }
 </style>
@@ -641,4 +781,3 @@ $vpTotalVideos = count($vpMediaItems);
     refreshCountryAndBelow();
 })();
 </script>
-

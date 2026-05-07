@@ -26,13 +26,18 @@
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('ESPACES RÉSEAUX SOCIAUX') }}</h1>
                 <p class="resto-header-subtitle">{{ $tr('Nous gérons vos réseaux sociaux de manière stratégique: contenu, community management, campagnes, social ads et croissance de votre audience.') }}</p></div>
+            
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="Performance sociale">
-                    <div class="logo-wrapper">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <span class="resto-accord-btn-label">Social Performance</span>
-                    <span class="resto-accord-btn-cta"><i class="fas fa-arrow-trend-up"></i> Growth</span>
+                
+                <a href="{{url('page-social-media')}}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="Next Level"
+                    loading="lazy"
+                >
                 </a>
             </div>
         </div>

@@ -26,13 +26,18 @@
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('ESPACE BLOG EDITORIAL') }}</h1>
                 <p class="resto-header-subtitle">{{ $tr('Layout inspire du top-news-area: hero story, colonne breaking news et cartes categories modernes.') }}</p></div>
+            
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="Publication Rapide">
-                    <div class="logo-wrapper">
-                        <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=200&h=200&fit=crop" alt="Writing desk">
-                    </div>
-                    <span class="resto-accord-btn-label">Publication</span>
-                    <span class="resto-accord-btn-cta"><i class="fas fa-rss"></i> Daily</span>
+                
+                <a href="{{ env('APP_URL') }}/avis-clients#blog-page" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="{{ $tr('Next Level') }}"
+                    loading="lazy"
+                >
                 </a>
             </div>
         </div>

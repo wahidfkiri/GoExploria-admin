@@ -182,15 +182,18 @@ $gxtVideos = [
                 </p></div>
 
             {{-- Logo droit : GoExploria MyTube --}}
+            
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="GoExploria MyTube">
-                    <div class="logo-wrapper">
-                        <img src="{{ asset('GO-EXPLORIA-MY-TUBE.png') }}" alt="GoExploria MyTube">
-                    </div>
-                    <span class="resto-accord-btn-label">GoExploria MyTube</span>
-                    <span class="resto-accord-btn-cta">
-                        <i class="fas fa-external-link-alt"></i> Visiter
-                    </span>
+                
+                <a href="{{url('page-videos')}}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="Next Level"
+                    loading="lazy"
+                >
                 </a>
             </div>
 
@@ -370,6 +373,48 @@ $gxtVideos = [
     </div>
 
 </section>
+
+<style>
+/* Header override local: centre full width, côtés compacts */
+#my-tube .resto-header-main {
+    grid-template-columns: 110px minmax(0, 1fr) 110px;
+    gap: 14px;
+}
+#my-tube .resto-header-center {
+    grid-column: 2;
+    width: 100%;
+    max-width: 100%;
+}
+#my-tube .resto-header-logo-left,
+#my-tube .resto-header-logo-right {
+    visibility: visible;
+    pointer-events: auto;
+    width: auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+#my-tube .resto-header-logo-right {
+    grid-column: 3;
+    justify-self: auto;
+}
+
+@media (max-width: 1024px) {
+    #my-tube .resto-header-main {
+        grid-template-columns: 90px minmax(0, 1fr) 90px;
+    }
+}
+
+@media (max-width: 768px) {
+    #my-tube .resto-header-logo-left {
+        display: flex !important;
+    }
+    #my-tube .resto-header-logo-right {
+        width: auto;
+    }
+}
+</style>
 
 {{-- --------------- JS INTERACTIVITÉ --------------- --}}
 <script>

@@ -45,7 +45,7 @@
 
 .chat-single-image-wrap {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 14px;
     justify-content: center;
     margin-bottom: 18px;

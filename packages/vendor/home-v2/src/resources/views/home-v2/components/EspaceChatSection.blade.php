@@ -26,13 +26,18 @@
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('ESPACE CHAT CLIENT MODERNE') }}</h1>
                 <p class="resto-header-subtitle">{{ $tr('Centralisez vos conversations WhatsApp, Messenger, Instagram et site web dans une inbox unifiee rapide et professionnelle.') }}</p></div>
+            
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="Assistant IA">
-                    <div class="logo-wrapper">
-                        <img src="{{ asset('images/chat.png') }}" alt="Assistant IA">
-                    </div>
-                    <span class="resto-accord-btn-label">Assistant IA</span>
-                    <span class="resto-accord-btn-cta"><i class="fas fa-bolt"></i> Actif</span>
+                
+                <a href="{{url('page-chat')}}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="Next Level"
+                    loading="lazy"
+                >
                 </a>
             </div>
         </div>
@@ -101,6 +106,9 @@
                 </div>
                 <div class="chat-image-card">
                     <img src="{{ asset('images/chat-1.png') }}" alt="Module chat GoExploria secondaire">
+                </div>
+                <div class="chat-image-card">
+                    <img src="{{ asset('images/chat-2.png') }}" alt="Module chat GoExploria secondaire">
                 </div>
             </div>
             <div class="chat-single-content">
