@@ -46,6 +46,7 @@
         <div class="resto-header-shimmer"></div>
     </div>
 
+            @include('home-v2.components.SectionNavbarEspaceMedia')
     <div class="avis-row avis-row-style-a">
         <article class="avis-card avis-card-a">
             <div class="avis-top">

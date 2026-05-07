@@ -198,6 +198,7 @@ $gxtVideos = [
             </div>
 
         </div>
+            @include('home-v2.components.SectionNavbarEspaceMedia')
 
         {{-- Barre Destinations + Filtres --}}
         <div class="resto-header-destinations-bar">
@@ -385,9 +386,10 @@ $gxtVideos = [
     width: 100%;
     max-width: 100%;
 }
-#my-tube .resto-header-logo-left,
+#my-tube .resto-header-logo-left {
+    display: none !important;
+}
 #my-tube .resto-header-logo-right {
-    visibility: visible;
     pointer-events: auto;
     width: auto;
     flex-direction: column;
@@ -407,9 +409,6 @@ $gxtVideos = [
 }
 
 @media (max-width: 768px) {
-    #my-tube .resto-header-logo-left {
-        display: flex !important;
-    }
     #my-tube .resto-header-logo-right {
         width: auto;
     }

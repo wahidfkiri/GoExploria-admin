@@ -60,6 +60,9 @@ const menuData = {
             },
             { icon: 'fas fa-share-alt',       name: 'ESPACES RÉSEAUX SOCIAUX',             desc: 'Gestion de réseaux sociaux — blocs à faire', link: '#reseaux-sociaux' },
             // { icon: 'fab fa-pinterest-p',     name: 'ESPACES INSPIRATION PINTEREST',       desc: 'Tableaux & Collections',                      link: '#pinterest' },
+            { icon: 'fas fa-comments',         name: 'ESPACES MODULE CHAT',                         desc: 'Ajout comme module',                       link: '#espace-chat' },
+            { icon: 'fas fa-envelope',         name: 'ESPACES MAIL',                                desc: 'Messagerie & Campagnes',                   link: '#espace-mail-marketing' },
+            { icon: 'fas fa-rss',             name: 'ESPACES BLOG',                                desc: 'Publication & Articles',                   link: '#espace-blog' },
             { icon: 'fas fa-star-half-alt',   name: 'ESPACES AVIS CLIENTS',                desc: 'Témoignages & Évaluations',                   link: '#avis-clients' }
         ]
     },
@@ -91,17 +94,13 @@ const menuData = {
             { icon: 'fas fa-laptop-code',     name: 'ESPACES ÉDITEUR DE SITE WEB',                desc: 'Création sans code',                       link: '#editeur-site' },
             { icon: 'fas fa-store',           name: 'ÉDITEUR D\'ESPACES ENTREPRISES',              desc: 'Personnalisation avancée',                 link: '#editeur-entreprises' },
             { icon: 'fas fa-user-edit',       name: 'ÉDITEUR D\'ESPACES PERSO',                    desc: 'Espace personnel',                         link: '#editeur-perso' },
-            { icon: 'fas fa-globe',           name: 'ESPACES GÉO-CARTE-VIDÉOS',                    desc: 'Cartographie & vidéos',                    link: '#geo-carte-videos' },
-            { icon: 'fas fa-rss',             name: 'ESPACES BLOG',                                desc: 'Publication & Articles',                   link: '#blog' },
-            { icon: 'fas fa-plug',            name: 'ESPACES API',                                 desc: 'Intégrations & Webhooks',                  link: '#api' },
-            { icon: 'fas fa-envelope',         name: 'ESPACES MAIL',                                desc: 'Messagerie & Campagnes',                   link: '#mail' },
-            { icon: 'fas fa-comments',         name: 'ESPACES MODULE CHAT',                         desc: 'Ajout comme module',                       link: '#chat' },
             { icon: 'fas fa-paper-plane',     name: 'ESPACES FORMULAIRES',                         desc: 'Contact, Réservation, Inscription',        link: '#formulaires' },
             { icon: 'fas fa-mouse-pointer',   name: 'ESPACES CALL-TO-ACTIONS',                     desc: 'Boutons & Conversions',                    link: '#cta' },
             { icon: 'fas fa-search',          name: 'ESPACES PERFORMANCES SEO INTERNATIONAL',      desc: 'Audit & Optimisation',                     link: '#seo' },
             { icon: 'fas fa-map-pin',         name: 'ESPACES TÉLÉ-POSITIONNEMENT',                 desc: 'Géolocalisation avancée',                  link: '#tele-positionnement' },
             { icon: 'fas fa-external-link-alt', name: 'ESPACES FONCTIONNALITÉS COMPLÈTES',         desc: 'Voir toutes les options',                  link: 'http://www.goexploriabusiness.com/welcome-2', external: true },
-            { icon: 'fas fa-trophy',          name: 'PRÊT À PASSER AU NIVEAU SUPÉRIEUR',           desc: 'Démarrez maintenant',                      link: '#niveau-superieur' }
+            { icon: 'fas fa-trophy',          name: 'PRÊT À PASSER AU NIVEAU SUPÉRIEUR',           desc: 'Démarrez maintenant',                      link: '#niveau-superieur' },
+            { icon: 'fas fa-plug',            name: 'ESPACES API',                                 desc: 'Intégrations & Webhooks',                  link: '#api' },
         ]
     },
 

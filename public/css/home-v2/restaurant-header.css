@@ -73,7 +73,7 @@
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: 520px minmax(0, 1fr) 520px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: center;
     gap: 12px;
     padding: 18px 24px 16px;
@@ -217,16 +217,15 @@
     text-align: center;
 }
 
-/* Harmonisation globale comme BusinessTourism: colonne gauche vide, centre, droite */
+/* Harmonisation globale: 3 colonnes égales + colonne gauche masquée */
 .resto-header-logo-left {
-    visibility: hidden;
-    pointer-events: none;
+    display: none !important;
 }
 
 .resto-header-logo-right {
     grid-column: 3;
     justify-self: end;
-    width: 460px;
+    width: auto;
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
@@ -685,7 +684,7 @@
    ============================================================ */
 @media (max-width: 1024px) {
     .resto-header-main {
-        grid-template-columns: 380px minmax(0, 1fr) 380px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         padding: 20px 20px 16px;
     }
 

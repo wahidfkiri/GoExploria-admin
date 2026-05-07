@@ -319,43 +319,37 @@
 </section>
 
 <style>
-/* Header override: centre large, côtés compacts (scope local à ce composant) */
+/* Header override: 3 colonnes égales + gauche masqué */
 #resto-ambiance-vedette-v2 .resto-header-main {
-    grid-template-columns: 110px minmax(0, 1fr) 110px;
-    gap: 14px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
 }
 #resto-ambiance-vedette-v2 .resto-header-center {
     grid-column: 2;
     width: 100%;
     max-width: 100%;
 }
-#resto-ambiance-vedette-v2 .resto-header-logo-left,
+#resto-ambiance-vedette-v2 .resto-header-logo-left {
+    display: none !important;
+}
 #resto-ambiance-vedette-v2 .resto-header-logo-right {
-    visibility: visible;
-    pointer-events: auto;
+    grid-column: 3;
+    justify-self: end;
     width: auto;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 8px;
 }
+
+/* garde le style droit compact */
 #resto-ambiance-vedette-v2 .resto-header-logo-right {
-    grid-column: 3;
-    justify-self: auto;
+    pointer-events: auto;
 }
 
 @media (max-width: 1024px) {
     #resto-ambiance-vedette-v2 .resto-header-main {
-        grid-template-columns: 90px minmax(0, 1fr) 90px;
-    }
-}
-
-@media (max-width: 768px) {
-    #resto-ambiance-vedette-v2 .resto-header-logo-left {
-        display: flex !important;
-    }
-    #resto-ambiance-vedette-v2 .resto-header-logo-right {
-        width: auto;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 

@@ -41,6 +41,7 @@
                 </a>
             </div>
         </div>
+            @include('home-v2.components.SectionNavbarEspaceMedia')
         <div class="resto-header-destinations-bar">
             <div class="resto-dest-row">
     <div class="resto-dest-icon-box">

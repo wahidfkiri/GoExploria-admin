@@ -43,7 +43,11 @@
     </div>
 
     {{-- CONTENU PRINCIPAL --}}
+    
+            @include('home-v2.components.SectionNavbarEspaceMedia')
     <div class="bt-body">
+
+    
         
      <div class="resto-dest-row">
     <div class="resto-dest-icon-box">
