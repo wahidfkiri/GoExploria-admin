@@ -35,7 +35,7 @@ $gicPhotos = [
                 
             <div class="resto-header-logo-right">
                 
-                <a href="{{url('page-gallerie')}}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                <a href="{{url('page-galerie')}}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
                     <!-- <i class="fas fa-circle-info"></i>
                     <span>Go Next Level</span> -->
                     <img
