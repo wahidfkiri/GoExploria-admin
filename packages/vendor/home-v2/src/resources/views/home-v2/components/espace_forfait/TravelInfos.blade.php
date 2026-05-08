@@ -195,7 +195,7 @@
                             <i class="fas fa-arrow-right"></i>
                         </h4>
                         <p class="plane-status">
-                            <span>{{ $tr('Paris â†’ New York') }}</span>
+                            <span>{{ $tr('Paris → New York') }}</span>
                             <span class="status-badge">{{ $tr('À l\'heure') }}</span>
                         </p>
                         <div class="flight-time">
@@ -218,7 +218,7 @@
                             <i class="fas fa-arrow-right"></i>
                         </h4>
                         <p class="plane-status">
-                            <span>{{ $tr('Francfort â†’ Tokyo') }}</span>
+                            <span>{{ $tr('Francfort → Tokyo') }}</span>
                             <span class="status-badge status-warning">{{ $tr('Retard 25min') }}</span>
                         </p>
                         <div class="flight-time">
@@ -241,7 +241,7 @@
                             <i class="fas fa-arrow-right"></i>
                         </h4>
                         <p class="plane-status">
-                            <span>{{ $tr('Londres â†’ Dubai') }}</span>
+                            <span>{{ $tr('Londres → Dubai') }}</span>
                             <span class="status-badge">{{ $tr('À l\'heure') }}</span>
                         </p>
                         <div class="flight-time">
@@ -264,7 +264,7 @@
                             <i class="fas fa-arrow-right"></i>
                         </h4>
                         <p class="plane-status">
-                            <span>{{ $tr('Milan â†’ Dubaï') }}</span>
+                            <span>{{ $tr('Milan → Dubaï') }}</span>
                             <span class="status-badge">{{ $tr('Embarquement') }}</span>
                         </p>
                         <div class="flight-time">

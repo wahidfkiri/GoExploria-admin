@@ -94,15 +94,18 @@ $pkgEurope = [
                 <p class="resto-header-subtitle">{{ $pkgConfig['subtitle'] }}</p></div>
 
             {{-- Logo droit : Forfaits Voyages --}}
+            
             <div class="resto-header-logo-right">
-                <a href="{{ $pkgConfig['logo_right']['href'] }}" class="resto-accord-btn" title="{{ $pkgConfig['logo_right']['label'] }}">
-                    <div class="logo-wrapper">
-                        <img src="{{ $pkgConfig['logo_right']['src'] }}" alt="{{ $pkgConfig['logo_right']['alt'] }}">
-                    </div>
-                    <span class="resto-accord-btn-label">{{ $pkgConfig['logo_right']['label'] }}</span>
-                    <span class="resto-accord-btn-cta">
-                        <i class="fas fa-external-link-alt"></i> Visiter
-                    </span>
+                
+                <a href="{{url('forfaits-voyages')}}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="Next Level"
+                    loading="lazy"
+                >
                 </a>
             </div>
 
@@ -395,7 +398,7 @@ $pkgEurope = [
     if (form) {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            alert('âœ“ Forfait créé avec succès ! (Mode démonstration)');
+            alert('✓ Forfait créé avec succès ! (Mode démonstration)');
         });
     }
 

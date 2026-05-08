@@ -205,9 +205,9 @@
             </p>
             <div class="activity-difficulte">
               <span>{{ $tr('Difficulté') }}</span>
-              <span class="difficulty-stars">â˜…â˜…â˜†â˜†â˜†</span>
+              <span class="difficulty-stars">&#9733;&#9733;&#9734;&#9734;&#9734;</span>
             </div>
-            <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('5 jours • Dès 890â‚¬') }}</div>
+            <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('5 jours • Dès 890 €') }}</div>
           </div>
           <!-- Activité 2 -->
           <div class="hiver-activity-card">
@@ -218,7 +218,7 @@
             </p>
             <div class="activity-difficulte">
               <span>{{ $tr('Difficulté') }}</span>
-              <span class="difficulty-stars">â˜…â˜…â˜…â˜…â˜†</span>
+              <span class="difficulty-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
             </div>
             <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('2 jours • Encadré') }}</div>
           </div>
@@ -231,7 +231,7 @@
             </p>
             <div class="activity-difficulte">
               <span>{{ $tr('Difficulté') }}</span>
-              <span class="difficulty-stars">â˜…â˜…â˜…â˜…â˜…</span>
+              <span class="difficulty-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
             </div>
             <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('4 jours • Niveau confirmé') }}</div>
           </div>
@@ -244,7 +244,7 @@
             </p>
             <div class="activity-difficulte">
               <span>{{ $tr('Difficulté') }}</span>
-              <span class="difficulty-stars">â˜…â˜…â˜…â˜†â˜†</span>
+              <span class="difficulty-stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span>
             </div>
             <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('2 jours • Norvège') }}</div>
           </div>
@@ -257,7 +257,7 @@
             </p>
             <div class="activity-difficulte">
               <span>{{ $tr('Difficulté') }}</span>
-              <span class="difficulty-stars">â˜…â˜†â˜†â˜†â˜†</span>
+              <span class="difficulty-stars">&#9733;&#9734;&#9734;&#9734;&#9734;</span>
             </div>
             <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('6 jours • Photo') }}</div>
           </div>
@@ -270,7 +270,7 @@
             </p>
             <div class="activity-difficulte">
               <span>{{ $tr('Difficulté') }}</span>
-              <span class="difficulty-stars">â˜…â˜…â˜†â˜†â˜†</span>
+              <span class="difficulty-stars">&#9733;&#9733;&#9734;&#9734;&#9734;</span>
             </div>
             <div class="snow-decoration"><i class="fas fa-clock"></i> {{ $tr('1 jour • France') }}</div>
           </div>

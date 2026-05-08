@@ -371,3 +371,6 @@ Route::get('/espace-next-level/tele-positionnement', fn() => view('home-v2.pages
 
 // Route evenement vidette
 Route::get('/evenement-vedette', fn() => view('home-v2.pages.espace_evenement_vidette.page_evenement_vidette'))->name('evenement-vedette');
+
+// Route forfaits & voyages
+Route::get('/forfaits-voyages', fn() => view('home-v2.pages.espace_forfaits.page_forfaits_voyages'))->name('forfaits-voyages');
