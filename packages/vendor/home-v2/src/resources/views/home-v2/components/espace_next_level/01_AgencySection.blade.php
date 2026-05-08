@@ -83,12 +83,12 @@
                 </h2>
                 <p class="nl-hero-desc">{{ $tr('Notre équipe de consultants certifiés analyse votre situation actuelle, identifie les opportunités clés et déploie des stratégies digitales qui génèrent des résultats mesurables dès les premières semaines.') }}</p>
                 <div class="nl-hero-actions">
-                    <a href="{{ url('next-level-conseils') }}" class="nl-btn-primary" target="_blank">
+                    <a href="{{ url('devis') }}" class="nl-btn-primary" target="_blank">
                         <i class="fas fa-rocket"></i> {{ $tr('Consultation gratuite') }}
                     </a>
-                    <a href="#nl-plans" class="nl-btn-secondary">
+                    <!-- <a href="#nl-plans" class="nl-btn-secondary">
                         <i class="fas fa-list-check"></i> {{ $tr('Voir nos formules') }}
-                    </a>
+                    </a> -->
                 </div>
                 <div class="nl-hero-kpis">
                     <div class="nl-kpi"><strong>+42%</strong><span>{{ $tr('Croissance moyenne') }}</span></div>

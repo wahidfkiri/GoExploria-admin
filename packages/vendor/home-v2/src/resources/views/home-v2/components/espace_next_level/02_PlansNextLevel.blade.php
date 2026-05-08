@@ -248,10 +248,10 @@
                 <p>{{ $tr('Notre équipe vous guide gratuitement vers la solution la mieux adaptée à vos objectifs et à votre budget.') }}</p>
             </div>
             <div class="nl-compare-btns">
-                <a href="{{ url('next-level-comparatif') }}" class="nl-compare-btn-primary" target="_blank">
+                <!-- <a href="{{ url('next-level-comparatif') }}" class="nl-compare-btn-primary" target="_blank">
                     <i class="fas fa-balance-scale"></i> {{ $tr('Comparer les plans') }}
-                </a>
-                <a href="{{ url('next-level-conseils') }}" class="nl-compare-btn-secondary" target="_blank">
+                </a> -->
+                <a href="{{ url('devis') }}" class="nl-compare-btn-secondary" target="_blank">
                     <i class="fas fa-phone-alt"></i> {{ $tr('Parler à un expert') }}
                 </a>
             </div>
