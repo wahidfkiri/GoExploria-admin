@@ -30,11 +30,10 @@
             <div class="resto-header-center">
                 <h1 class="resto-header-title">{{ $tr('EXPLOREZ L\'INATTENDU / ACTIVITÉS PLEIN AIR') }}</h1>
                 <p class="resto-header-subtitle">{{ $tr('Des aventures immersives à chaque saison — Nature, hiver, découverte') }}</p></div>
+           
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="{{ $tr('Écotourisme') }}">
-                    <div class="logo-wrapper tourism-eco-icon"><i class="fas fa-leaf"></i></div>
-                    <span class="resto-accord-btn-label">{{ $tr('Écotourisme') }}</span>
-                    <span class="resto-accord-btn-cta"><i class="fas fa-external-link-alt"></i> {{ $tr('Découvrir') }}</span>
+                <a href="{{ url('espace-forfait/tourisme') }}" title="Espace forfaits Go exploria Business" target="_blank" rel="noopener noreferrer">
+                    <img class="bt-next-level-image" src="{{ asset('images/Next-level.png') }}" alt="{{ $tr('Next Level') }}" loading="lazy">
                 </a>
             </div>
         </div>

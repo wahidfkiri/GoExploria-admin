@@ -174,23 +174,20 @@
                         </button>
                     </div>
                 </div>
-
+ 
                 <div class="resto-header-logo-right">
-                    <a href="{{ $restoConfig['logo_accord']['href'] }}"
-                       class="resto-accord-btn"
-                       title="{{ $restoConfig['logo_accord']['label'] }}"
-                       target="_blank"
-                       rel="noopener noreferrer">
-                        <div class="logo-wrapper">
-                            <img src="{{ $restoConfig['logo_accord']['src'] }}"
-                                 alt="{{ $restoConfig['logo_accord']['alt'] }}">
-                        </div>
-                        <span class="resto-accord-btn-label">{{ $restoConfig['logo_accord']['label'] }}</span>
-                        <span class="resto-accord-btn-cta">
-                            <i class="fas fa-external-link-alt"></i> Visiter
-                        </span>
-                    </a>
-                </div>
+                
+                <a href="{{ $restoConfig['logo_accord']['href'] }}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="Next Level"
+                    loading="lazy"
+                >
+                </a>
+            </div>
             </div>
 
             <div class="resto-header-destinations-bar">

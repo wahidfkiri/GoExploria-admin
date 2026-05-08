@@ -186,7 +186,7 @@
                 <p class="resto-header-subtitle">{{ $tr('Des solutions clé-en-main pour chaque type d\'acteur : entreprises, destinations, partenaires, prestataires d\'activités et vendeurs de produits.') }}</p>
             </div>
             <div class="resto-header-logo-right">
-                <a href="{{ url('next-level-plans') }}" title="{{ $tr('Tous les plans') }}" target="_blank" rel="noopener noreferrer">
+                <a href="{{ url('next-level/plans') }}" title="{{ $tr('Tous les plans') }}" target="_blank" rel="noopener noreferrer">
                     <img class="bt-next-level-image" src="{{ asset('images/Next-level.png') }}" alt="{{ $tr('Next Level') }}" loading="lazy">
                 </a>
             </div>

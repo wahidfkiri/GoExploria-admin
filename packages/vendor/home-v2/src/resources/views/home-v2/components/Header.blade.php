@@ -1,4 +1,4 @@
-{{-- flag-icons CDN --}}
+﻿{{-- flag-icons CDN --}}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
 
 @php
@@ -46,12 +46,12 @@
             
             <div class="nav-center">
                 <ul class="nav-menu">
-                    <li><a href="#valeurs">{{ __('home-v2.header.menu.values') }}</a></li>
+                    <li><a href="{{ route('valeurs') }}">{{ __('home-v2.header.menu.values') }}</a></li>
                     <li class="nav-menu-v2-has-mega" id="servicesMenuItem">
                         <a href="#services">{{ __('home-v2.header.menu.services') }}</a>
                     </li>
                     <!-- <li class="nav-menu-v2-has-videos" id="videosMenuItem">
-                        <a href="#videos">VIDÉOS</a>
+                        <a href="#videos">VIDÃ‰OS</a>
                     </li> -->
                     <li class="nav-menu-v2-has-plans" id="plansMenuItem">
                         <a href="#section-nos-plans" id="plansMenuTrigger">{{ __('home-v2.header.menu.plans') }}</a>
@@ -72,7 +72,11 @@
                         <path d="m21 21-4.35-4.35"></path>
                     </svg>
                 </a>
-                {{-- —— Language Switcher —— --}}
+                <a href="{{ route('devis') }}" class="nav-devis-btn" target="_blank" rel="noopener noreferrer" aria-label="Demander un devis">
+                    <i class="fas fa-file-signature" aria-hidden="true"></i>
+                    <span>Demander un devis</span>
+                </a>
+                {{-- â€”â€” Language Switcher â€”â€” --}}
                 <div class="lang-switcher" id="langSwitcher">
                     <button class="lang-btn" id="langBtn" aria-label="{{ __('home-v2.language.select') }}" aria-expanded="false">
                         <span class="fi fi-{{ $currentLanguage['flag'] }} lang-flag" id="langCurrentFlag"></span>
@@ -90,15 +94,6 @@
                         @endforeach
                     </ul>
                 </div>
-                <a href="{{ route('devis') }}" class="nav-icon" aria-label="{{ __('home-v2.common.quote') }}">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                </a>
                 <a href="{{ route('favoris') }}" class="nav-icon" aria-label="{{ __('home-v2.common.favorites') }}">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -118,7 +113,7 @@
 </header>
 
 <script>
-    // Déclencheur JS pour le dropdown Vidéos
+    // DÃ©clencheur JS pour le dropdown VidÃ©os
     (function() {
         const trigger = document.getElementById('videosMenuItem');
         const dropdown = document.getElementById('videosDropdown');
@@ -138,7 +133,7 @@
         dropdown.addEventListener('mouseleave', () => closeDropdown());
         dropdown.addEventListener('mouseenter', () => dropdown.classList.add('active'));
 
-        // Fermeture automatique dès qu'un lien vidéo est cliqué
+        // Fermeture automatique dÃ¨s qu'un lien vidÃ©o est cliquÃ©
         dropdown.addEventListener('click', function(e) {
             const link = e.target.closest('a, button, .video-card, [data-video]');
             if (link) {
@@ -154,7 +149,7 @@
         });
     })();
 
-    // —— Language Switcher ————————————————————————————————————
+    // â€”â€” Language Switcher â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”
     (function() {
         const switcher = document.getElementById('langSwitcher');
         const btn = document.getElementById('langBtn');
@@ -167,7 +162,7 @@
 
         btn.addEventListener('click', function(e) { e.stopPropagation(); toggle(); });
 
-        // Sélection d'une langue
+        // SÃ©lection d'une langue
         dropdown.querySelectorAll('.lang-option').forEach(function(opt) {
             opt.addEventListener('click', function() {
                 dropdown.querySelectorAll('.lang-option').forEach(function(o) { o.classList.remove('lang-active'); });
@@ -184,7 +179,7 @@
             });
         });
 
-        // Fermer si clic à l'extérieur
+        // Fermer si clic Ã  l'extÃ©rieur
         document.addEventListener('click', function(e) {
             if (!switcher.contains(e.target)) close();
         });

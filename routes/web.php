@@ -336,6 +336,7 @@ Route::get('/activites/{slug}',            [\Vendor\HomeV2\Http\Controllers\Home
 
 // Pages principales du Header
 Route::get('/contact',      fn() => view('home-v2.pages.contact'))->name('contact');
+Route::get('/valeurs',      fn() => view('home-v2.pages.valeurs'))->name('valeurs');
 Route::get('/inscription',  fn() => view('home-v2.pages.inscription'))->name('inscription');
 Route::get('/mon-compte',   fn() => view('home-v2.pages.mon-compte'))->name('mon-compte');
 Route::get('/devis',        [DevisController::class, 'show'])->name('devis');
@@ -365,3 +366,8 @@ Route::get('/espace-next-level/editeur', fn() => view('home-v2.pages.espace_next
 Route::get('/espace-next-level/api', fn() => view('home-v2.pages.espace_next_level.page_espace_api'))->name('espace-next-level.api');
 Route::get('/espace-next-level/formulaire', fn() => view('home-v2.pages.espace_next_level.page_formulaire'))->name('espace-next-level.formulaire');
 Route::get('/espace-next-level/seo', fn() => view('home-v2.pages.espace_next_level.page_espace_seo'))->name('espace-next-level.seo');
+Route::get('/espace-next-level/tele-positionnement', fn() => view('home-v2.pages.espace_next_level.page_espace_tele_positionnement'))->name('espace-next-level.tele-positionnement');
+
+
+// Route evenement vidette
+Route::get('/evenement-vedette', fn() => view('home-v2.pages.espace_evenement_vidette.page_evenement_vidette'))->name('evenement-vedette');

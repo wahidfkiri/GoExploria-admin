@@ -94,32 +94,34 @@
          @include('home-v2.components.espace_next_level.07_Espaces_Tele_Positionnement')
       
 
-        <div id="section-vedettes" class="snb-anchor"></div>
-        @include('home-v2.components.EventsVedette')
-
         <div id="section-restaurants" class="snb-anchor"></div>
         {{-- EntÃªte standard restaurant â€” autonome, hors template --}}
-        @include('home-v2.components.RestaurantAmbianceVedetteV2')
+        @include('home-v2.components.espace_restaurant.RestaurantAmbianceVedetteV2')
+
+
+        <div id="section-vedettes" class="snb-anchor"></div>
+        @include('home-v2.components.espace_evenement_vidette.EventsVedette')
+
 
         <div id="section-voyages" class="snb-anchor"></div>
-        @include('home-v2.components.TravelPackages')
-        @include('home-v2.components.TravelInfos')
-        @include('home-v2.components.TourismSection')
+        @include('home-v2.components.espace_forfait.TravelPackages')
+        @include('home-v2.components.espace_forfait.TravelInfos')
+        @include('home-v2.components.espace_forfait.TourismSection')
+        @include('home-v2.components.espace_forfait.SpecializedSpacesSection')
 
 
         <div id="section-marketplace" class="snb-anchor"></div>
-        @include('home-v2.components.SpecializedSpacesSection')
-        @include('home-v2.components.RealEstateSection')
-        @include('home-v2.components.ProductsVedette')
+        @include('home-v2.components.espace_marketplace.RealEstateSection')
+        @include('home-v2.components.espace_marketplace.ProductsVedette')
+        @include('home-v2.components.espace_marketplace.MarketFoodVedette')
+        @include('home-v2.components.espace_marketplace.LocationVehiculesVedette')
+        @include('home-v2.components.espace_marketplace.ChassePecheVedette')
 
         <div id="section-a-la-une" class="snb-anchor"></div>
         @include('home-v2.components.NewsSection')
 
-        <div id="section-nos-plans" class="snb-anchor"></div>
+        <div id="section-nos-plans" class="snb-anchor"></div>        
         @include('home-v2.components.NosPlans')
-        @include('home-v2.components.MarketFoodVedette')
-        @include('home-v2.components.LocationVehiculesVedette')
-        @include('home-v2.components.ChassePecheVedette')
     </main>
     
     {{-- Modal rÃ©servation global Table & Vin --}}

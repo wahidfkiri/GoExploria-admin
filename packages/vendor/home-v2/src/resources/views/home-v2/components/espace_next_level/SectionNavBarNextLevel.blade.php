@@ -38,6 +38,12 @@
                     <span>Espace SEO </span>
                 </a>
             </li>
+            <li>
+                <a href="#nl-geo" class="snb-link">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Espace Télé Positionnement </span>
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

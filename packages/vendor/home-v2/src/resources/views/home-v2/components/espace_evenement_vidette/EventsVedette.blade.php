@@ -47,15 +47,10 @@
 
                 {{-- Logo droit : Événements Québec --}}
                 <div class="resto-header-logo-right">
-                    <a href="#" class="resto-accord-btn" title="{{ $tr('Événements Québec') }}">
-                        <div class="logo-wrapper">
-                            <img src="{{ asset('plan-n-go.png') }}" alt="{{ $tr('Événements Québec') }}">
-                        </div>
-                        <span class="resto-accord-btn-label">{{ $tr('Événements Québec') }}</span>
-                        <span class="resto-accord-btn-cta">
-                            <i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}
-                        </span>
-                    </a>
+                    
+                <a href="{{ url('evenement-vedette') }}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <img class="bt-next-level-image" src="{{ asset('images/Next-level.png') }}" alt="Next Level" loading="lazy">
+                </a>
                 </div>
 
             </div>

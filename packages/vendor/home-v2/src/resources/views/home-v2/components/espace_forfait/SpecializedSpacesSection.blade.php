@@ -21,14 +21,8 @@
                     Sélection d'espaces immobiliers au Québec pour investir, habiter et développer vos projets touristiques.
                 </p></div>
             <div class="resto-header-logo-right">
-                <a href="{{ route('pages.chalet-rental-detail') }}" class="resto-accord-btn" title="Plans Web Go">
-                    <div class="logo-wrapper">
-                        <img src="{{ asset('plan-n-go.png') }}" alt="Plans Web Go">
-                    </div>
-                    <span class="resto-accord-btn-label">Plans Web Go</span>
-                    <span class="resto-accord-btn-cta">
-                        <i class="fas fa-external-link-alt"></i> Visiter
-                    </span>
+                <a href="{{ url('pages.chalet-rental-detail') }}" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <img class="bt-next-level-image" src="{{ asset('images/Next-level.png') }}" alt="Next Level" loading="lazy">
                 </a>
             </div>
         </div>

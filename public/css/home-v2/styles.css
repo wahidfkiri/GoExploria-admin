@@ -378,6 +378,56 @@ html {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
+.nav-devis-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    background: linear-gradient(135deg, #d4af37, #f4c96a);
+    color: #1a2942;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-devis-btn i {
+    font-size: 14px;
+}
+
+.nav-devis-btn:hover {
+    color: #1a2942;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.35);
+    opacity: 0.95;
+}
+
+@media (max-width: 1200px) {
+    .nav-devis-btn {
+        width: 40px;
+        min-width: 40px;
+        padding: 0;
+        border-radius: 50%;
+    }
+
+    .nav-devis-btn span {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-devis-btn {
+        width: 36px;
+        min-width: 36px;
+        height: 36px;
+    }
+}
+
 .mobile-search-trigger {
     display: none;
 }
@@ -556,7 +606,7 @@ iframe.video-background {
     padding: 0;
     overflow: visible !important;
     /* Permettre au Mega Menu de sortir du cadre */
-    margin-top: 130px;
+    margin-top: 100px;
     margin-bottom: 0 !important;
     background-color: var(--navy-dark);
     z-index: 1000;
