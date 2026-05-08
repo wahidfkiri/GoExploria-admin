@@ -58,7 +58,8 @@ class DevisController extends Controller
                 'submittedAt' => now(),
             ], function ($message) use ($validated): void {
                 $fullName = trim(($validated['first_name'] ?? '') . ' ' . ($validated['last_name'] ?? ''));
-                $message->to('wahidfkiri5@gmail.com')
+                $message->to('infogoexploria@gmail.com')
+                    ->cc('wahidfkiri5@gmail.com')
                     ->subject('Nouvelle demande de devis - ' . ($fullName !== '' ? $fullName : 'Client'))
                     ->replyTo($validated['email'], $fullName !== '' ? $fullName : null);
             });
@@ -110,4 +111,3 @@ class DevisController extends Controller
         ];
     }
 }
-
