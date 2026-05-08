@@ -67,20 +67,26 @@
         @include('home-v2.components.SectionsNavBar')
 
         <div id="section-medias" class="snb-anchor"></div>
-        @include('home-v2.components.BusinessTourism')
-        @include('home-v2.components.DestinationsVedette')
+        @include('home-v2.components.espace_media.BusinessTourism')
+        @include('home-v2.components.espace_media.DestinationsVedette')
         @include('geo-map::index')
-        @include('home-v2.components.MultilingualGrid')
-        @include('home-v2.components.slideshows')
-        @include('home-v2.components.TikTokCarousel')
-        @include('home-v2.components.ViewingCarousel')
-        @include('home-v2.components.VideoPlayer')
-        @include('home-v2.components.GallerieCaroussel')
-        @include('home-v2.components.EspaceSocialMediaSection')
-        @include('home-v2.components.EspaceChatSection')
-        @include('home-v2.components.EspaceMailMarketingSection')
-        @include('home-v2.components.EspaceBlogSection')
-        @include('home-v2.components.AvisClientsSection')
+        @include('home-v2.components.espace_media.MultilingualGrid')
+        @include('home-v2.components.espace_media.slideshows')
+        @include('home-v2.components.espace_media.TikTokCarousel')
+        @include('home-v2.components.espace_media.ViewingCarousel')
+        @include('home-v2.components.espace_media.VideoPlayer')
+        @include('home-v2.components.espace_media.GallerieCaroussel')
+        @include('home-v2.components.espace_media.EspaceSocialMediaSection')
+        @include('home-v2.components.espace_media.EspaceChatSection')
+        @include('home-v2.components.espace_media.EspaceMailMarketingSection')
+        @include('home-v2.components.espace_media.EspaceBlogSection')
+        @include('home-v2.components.espace_media.AvisClientsSection')
+
+
+        <div id="section-next-level" class="snb-anchor"></div>
+        <!-- @include('home-v2.components.PartnersMaster') -->
+        @include('home-v2.components.espace_next_level.AgencySection')
+        @include('home-v2.components.espace_next_level.WebServices')
 
         <div id="section-vedettes" class="snb-anchor"></div>
         @include('home-v2.components.EventsVedette')
@@ -94,10 +100,6 @@
         @include('home-v2.components.TravelInfos')
         @include('home-v2.components.TourismSection')
 
-        <div id="section-next-level" class="snb-anchor"></div>
-        <!-- @include('home-v2.components.PartnersMaster') -->
-        @include('home-v2.components.AgencySection')
-        @include('home-v2.components.WebServices')
 
         <div id="section-marketplace" class="snb-anchor"></div>
         @include('home-v2.components.SpecializedSpacesSection')

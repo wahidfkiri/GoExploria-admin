@@ -99,6 +99,7 @@ body{font-family:'DM Sans',sans-serif;background:#f5f3ef;color:#1a1a1a}
       <li><a href="/page-multilingue" class="{{ request()->is('page-multilingue*') ? 'active' : '' }}">Multilingue</a></li>
       <li><a href="/page-tiktok" class="{{ request()->is('page-tiktok*') ? 'active' : '' }}">TikTok</a></li>
       <li><a href="/page-videos" class="{{ request()->is('page-videos*') ? 'active' : '' }}">Vidéos</a></li>
+      <li><a href="/page-medias" class="{{ request()->is('page-medias*') ? 'active' : '' }}">Chaines Médias</a></li>
     </ul>
     <div class="nav-mobile-menu"><i class="fas fa-bars"></i></div>
   </div>

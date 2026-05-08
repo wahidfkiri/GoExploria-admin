@@ -35,22 +35,28 @@
                 </a>
             </div>
             <div class="resto-header-center">
-                <h1 class="resto-header-title">{{ $tr('AGENCE DE CONSEIL POUR VOTRE ENTREPRISE') }}</h1>
+                <h1 class="resto-header-title">CONSEILS ENTREPRISES</h1>
+                <h2 class="resto-header-title">PASSEZ AU NIVEAU SUPÉRIEUR</h2>
                 <p class="resto-header-subtitle">
-                    {{ $tr('Consulting · Expertise · Stratégie · Digital — Développez votre entreprise avec nos solutions sur mesure et notre accompagnement professionnel.') }}
+                  Visibilité & Performance
+                    Démarrez maintenant OPTIMISEZ VOTRE PRÉSENCE EN LIGNE
+
                 </p></div>
             <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="{{ $tr('Plans Web Go') }}">
-                    <div class="logo-wrapper">
-                        <img src="{{ asset('plan-n-go.png') }}" alt="{{ $tr('Plans Web Go') }}">
-                    </div>
-                    <span class="resto-accord-btn-label">{{ $tr('Plans Web Go') }}</span>
-                    <span class="resto-accord-btn-cta">
-                        <i class="fas fa-external-link-alt"></i> {{ $tr('Visiter') }}
-                    </span>
+                
+                <a href="#" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="{{ $tr('Next Level') }}"
+                    loading="lazy"
+                >
                 </a>
             </div>
         </div>
+        @include('home-v2.components.espace_next_level.SectionNavBarNextLevel')
         <div class="resto-header-destinations-bar">
             <div class="resto-dest-row">
     <div class="resto-dest-icon-box">

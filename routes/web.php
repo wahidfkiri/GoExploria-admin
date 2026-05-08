@@ -356,4 +356,4 @@ Route::get('/page-galerie', fn() => view('home-v2.pages.page-galerie'))->name('p
 Route::get('/page-multilingue', fn() => view('home-v2.pages.page-multilingue'))->name('page-multilingue');
 Route::get('/page-tiktok', fn() => view('home-v2.pages.page-tiktok'))->name('page-tiktok');
 Route::get('/page-videos', fn() => view('home-v2.pages.page-videos'))->name('page-videos');
-Route::get('/page-medias', fn() => view('home-v2.pages.page-media'))->name('page-medias');
+Route::get('/page-medias', fn() => view('home-v2.pages.page-media-players'))->name('page-medias');
