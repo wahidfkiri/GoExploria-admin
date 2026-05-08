@@ -88,13 +88,13 @@ body{font-family:'DM Sans',sans-serif;background:#f5f3ef;color:#1a1a1a}
       <img src="{{ asset('logo.png') }}" alt="GoExploria Logo" style="width:150px;">
     </a>
     <ul class="nav-links">
-      <li><a href="/avis-clients" class="{{ request()->is('avis-clients*') ? 'active' : '' }}">Avis Clients</a></li>
       <li><a href="/business-tourisme" class="{{ request()->is('business-tourisme*') ? 'active' : '' }}">Business</a></li>
       <li><a href="/page-destinations" class="{{ request()->is('page-destinations*') ? 'active' : '' }}">Destinations</a></li>
       <li><a href="/page-blog" class="{{ request()->is('page-blog*') ? 'active' : '' }}">Blog</a></li>
       <li><a href="/page-chat" class="{{ request()->is('page-chat*') ? 'active' : '' }}">Chat</a></li>
       <li><a href="/page-mail-marketing" class="{{ request()->is('page-mail-marketing*') ? 'active' : '' }}">Mail</a></li>
       <li><a href="/page-social-media" class="{{ request()->is('page-social-media*') ? 'active' : '' }}">Social</a></li>
+      <li><a href="/avis-clients" class="{{ request()->is('avis-clients*') ? 'active' : '' }}">Avis Clients</a></li>
       <li><a href="/page-galerie" class="{{ request()->is('page-galerie*') ? 'active' : '' }}">Galerie</a></li>
       <li><a href="/page-multilingue" class="{{ request()->is('page-multilingue*') ? 'active' : '' }}">Multilingue</a></li>
       <li><a href="/page-tiktok" class="{{ request()->is('page-tiktok*') ? 'active' : '' }}">TikTok</a></li>
