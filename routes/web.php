@@ -357,3 +357,10 @@ Route::get('/page-multilingue', fn() => view('home-v2.pages.espace_media.page-mu
 Route::get('/page-tiktok', fn() => view('home-v2.pages.espace_media.page-tiktok'))->name('page-tiktok');
 Route::get('/page-videos', fn() => view('home-v2.pages.espace_media.page-videos'))->name('page-videos');
 Route::get('/page-medias', fn() => view('home-v2.pages.espace_media.page-media-players'))->name('page-medias');
+
+// Routes pour les sections de l'Espace Next Level 
+Route::get('/espace-next-level/agency', fn() => view('home-v2.pages.espace_next_level.page_agency'))->name('espace-next-level.agency');
+Route::get('/espace-next-level/plans', fn() => view('home-v2.pages.espace_next_level.page_plans'))->name('espace-next-level.plans');
+Route::get('/espace-next-level/editeur', fn() => view('home-v2.pages.espace_next_level.page_editeur'))->name('espace-next-level.editeur');
+Route::get('/espace-next-level/api', fn() => view('home-v2.pages.espace_next_level.page_espace_api'))->name('espace-next-level.api');
+Route::get('/espace-next-level/formulaire', fn() => view('home-v2.pages.espace_next_level.page_formulaire'))->name('espace-next-level.formulaire');

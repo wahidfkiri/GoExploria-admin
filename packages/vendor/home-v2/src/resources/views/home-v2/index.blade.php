@@ -85,8 +85,14 @@
 
         <div id="section-next-level" class="snb-anchor"></div>
         <!-- @include('home-v2.components.PartnersMaster') -->
-        @include('home-v2.components.espace_next_level.AgencySection')
-        @include('home-v2.components.espace_next_level.WebServices')
+         @include('home-v2.components.espace_next_level.01_AgencySection')
+         @include('home-v2.components.espace_next_level.02_PlansNextLevel')
+         @include('home-v2.components.espace_next_level.03_EspacesEditeur')
+         @include('home-v2.components.espace_next_level.04_EspacesApi')
+         @include('home-v2.components.espace_next_level.05_EspacesFormulaire')
+         @include('home-v2.components.espace_next_level.06_Espaces_Performance_SEO')
+         @include('home-v2.components.espace_next_level.07_Espaces_Tele_Positionnement')
+      
 
         <div id="section-vedettes" class="snb-anchor"></div>
         @include('home-v2.components.EventsVedette')
