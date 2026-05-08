@@ -75,13 +75,13 @@
                     </div>
                 </div>
                 <div class="nl-ed-actions">
-                    <a href="{{ url('next-level-editeur') }}" class="nl-btn-primary" target="_blank">
+                    <a href="{{ url('devis') }}" class="nl-btn-primary" target="_blank">
                         <i class="fas fa-play"></i> {{ $tr('Essayer gratuitement') }}
                     </a>
-                    <a href="{{ url('next-level-templates') }}" class="nl-btn-outline-dark" target="_blank">
+                    <!-- <a href="{{ url('next-level-templates') }}" class="nl-btn-outline-dark" target="_blank">
                         <i class="fas fa-th-large"></i> {{ $tr('Voir les templates') }}
                     </a>
-                </div>
+                </div> -->
             </div>
 
             <div class="nl-editor-right">
