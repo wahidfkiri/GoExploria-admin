@@ -364,3 +364,4 @@ Route::get('/espace-next-level/plans', fn() => view('home-v2.pages.espace_next_l
 Route::get('/espace-next-level/editeur', fn() => view('home-v2.pages.espace_next_level.page_editeur'))->name('espace-next-level.editeur');
 Route::get('/espace-next-level/api', fn() => view('home-v2.pages.espace_next_level.page_espace_api'))->name('espace-next-level.api');
 Route::get('/espace-next-level/formulaire', fn() => view('home-v2.pages.espace_next_level.page_formulaire'))->name('espace-next-level.formulaire');
+Route::get('/espace-next-level/seo', fn() => view('home-v2.pages.espace_next_level.page_espace_seo'))->name('espace-next-level.seo');
