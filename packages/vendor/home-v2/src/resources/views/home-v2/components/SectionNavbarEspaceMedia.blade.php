@@ -9,12 +9,6 @@
                 </a>
             </li>
             <li>
-                <a href="#activez-destinations" class="snb-link">
-                    <i class="fas fa-map-marked-alt"></i>
-                    <span>ESPACE DESTINATIONS VEDETTES</span>
-                </a>
-            </li>
-            <li>
                 <a href="#geo-carte-videos" class="snb-link">
                     <i class="fas fa-globe"></i>
                     <span>ESPACE GÉO-CARTE-VIDÉOS</span>
