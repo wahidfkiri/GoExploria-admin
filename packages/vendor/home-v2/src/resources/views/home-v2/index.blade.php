@@ -68,8 +68,8 @@
 
         <div id="section-medias" class="snb-anchor"></div>
         
-            @include('home-v2.components.SectionNavbarEspaceMedia')
         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> GO EXPLORIA ESPACES MÉDIAS </h1>
+            @include('home-v2.components.SectionNavbarEspaceMedia')
         
         @include('home-v2.components.espace_media.BusinessTourism')
         @include('geo-map::index')
