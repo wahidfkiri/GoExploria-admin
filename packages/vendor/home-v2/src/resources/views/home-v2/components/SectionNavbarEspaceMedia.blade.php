@@ -51,6 +51,12 @@
                 </a>
             </li>
             <li>
+                <a href="#espace-templates" class="snb-link">
+                    <i class="fas fa-layer-group"></i>
+                    <span>ESPACES TEMPLATES</span>
+                </a>
+            </li>
+            <li>
                 <a href="#photos" class="snb-link">
                     <i class="fas fa-camera"></i>
                     <span>ESPACES PHOTOS</span>

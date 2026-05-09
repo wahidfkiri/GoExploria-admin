@@ -44,7 +44,6 @@
 
     {{-- CONTENU PRINCIPAL --}}
     
-            @include('home-v2.components.SectionNavbarEspaceMedia')
     <div class="bt-body">
 
     

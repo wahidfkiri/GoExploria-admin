@@ -67,17 +67,10 @@
         @include('home-v2.components.SectionsNavBar')
 
         <div id="section-medias" class="snb-anchor"></div>
+        
+            @include('home-v2.components.SectionNavbarEspaceMedia')
         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> GO EXPLORIA ESPACES MÉDIAS </h1>
-        <h2 class="resto-header-title" style="text-align: center;"> GÉO CARTE VIDÉO -MA CHAINE VIDÉOS GOEXPLORIA MYTUBE</h2>
-        <h2 class="resto-header-title" style="text-align: center;">
-ESPACES PHOTOS- CHAÎNE VIDÉOS TIK-TOK- ESPACE </h2>
-        <h2 class="resto-header-title" style="text-align: center;">
-CHAT CLIENT MODERNE- ESPACE MAIL MARKETING- </h2>
-        <h2 class="resto-header-title" style="text-align: center;">
-ESPACE BLOG EDITORIAL- ESPACE AVIS CLIENTS</h2>
-        <h2 class="resto-header-title" style="text-align: center;"> 
-
-ESPACES RÉSEAUX SOCIAUX </h2>
+        
         @include('home-v2.components.espace_media.BusinessTourism')
         @include('geo-map::index')
         @include('home-v2.components.espace_media.VideoPlayer')
@@ -88,6 +81,7 @@ ESPACES RÉSEAUX SOCIAUX </h2>
         @include('home-v2.components.espace_media.MultilingualGrid')
         @include('home-v2.components.espace_media.EspaceSocialMediaSection')
         @include('home-v2.components.espace_media.AvisClientsSection')
+        @include('home-v2.components.espace_media.EspacesTemplatesSection')
         @include('home-v2.components.espace_media.EspaceMailMarketingSection')
         @include('home-v2.components.espace_media.EspaceChatSection')
         @include('home-v2.components.espace_media.EspaceBlogSection')
