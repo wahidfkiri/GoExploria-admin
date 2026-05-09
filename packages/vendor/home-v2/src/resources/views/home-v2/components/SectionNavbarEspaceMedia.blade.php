@@ -1,5 +1,5 @@
 {{-- Barre de navigation horizontale — liens vers les principales sections --}}
-<nav class="snb-bar" id="sectionsNavBarEspaceMedia" aria-label="{{ __('home-v2.sections_nav.aria') }}">
+<nav class="snb-bar" data-snb-media-nav="1" aria-label="{{ __('home-v2.sections_nav.aria') }}">
     <div class="snb-inner">
         <ul class="snb-links">
             <li>
@@ -99,11 +99,11 @@
 </nav>
 
 <style>
-    #sectionsNavBarEspaceMedia .snb-links {
+    [data-snb-media-nav] .snb-links {
         scroll-behavior: smooth;
     }
 
-    #sectionsNavBarEspaceMedia .snb-scroll-controls {
+    [data-snb-media-nav] .snb-scroll-controls {
         display: inline-flex;
         align-items: center;
         gap: 6px;
@@ -111,7 +111,7 @@
         flex-shrink: 0;
     }
 
-    #sectionsNavBarEspaceMedia .snb-scroll-btn {
+    [data-snb-media-nav] .snb-scroll-btn {
         width: 30px;
         height: 30px;
         border-radius: 50%;
@@ -125,19 +125,19 @@
         transition: all .2s ease;
     }
 
-    #sectionsNavBarEspaceMedia .snb-scroll-btn:hover {
+    [data-snb-media-nav] .snb-scroll-btn:hover {
         background: #d4af37;
         color: #fff;
         border-color: #d4af37;
     }
 
     @media (max-width: 768px) {
-        #sectionsNavBarEspaceMedia .snb-scroll-controls {
+        [data-snb-media-nav] .snb-scroll-controls {
             gap: 4px;
             margin-left: 6px;
         }
 
-        #sectionsNavBarEspaceMedia .snb-scroll-btn {
+        [data-snb-media-nav] .snb-scroll-btn {
             width: 28px;
             height: 28px;
         }
@@ -146,105 +146,111 @@
 
 <script>
     (function () {
-        const nav = document.getElementById('sectionsNavBarEspaceMedia');
-        if (!nav) return;
+        const navs = document.querySelectorAll('nav[data-snb-media-nav]');
+        if (!navs.length) return;
 
-        const links = Array.from(nav.querySelectorAll('.snb-link[href^="#"]'));
-        const linksRow = nav.querySelector('.snb-links');
-        const leftBtn = nav.querySelector('.snb-scroll-left');
-        const rightBtn = nav.querySelector('.snb-scroll-right');
-        if (!links.length || !linksRow) return;
+        const initNav = (nav) => {
+            if (nav.dataset.snbMediaInit === '1') return;
+            nav.dataset.snbMediaInit = '1';
 
-        const centerLink = (link) => {
-            const targetLeft = link.offsetLeft - (linksRow.clientWidth / 2) + (link.clientWidth / 2);
-            const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
-            const nextLeft = Math.max(0, Math.min(targetLeft, maxLeft));
-            linksRow.scrollTo({ left: nextLeft, behavior: 'smooth' });
-        };
+            const links = Array.from(nav.querySelectorAll('.snb-link[href^="#"]'));
+            const linksRow = nav.querySelector('.snb-links');
+            const leftBtn = nav.querySelector('.snb-scroll-left');
+            const rightBtn = nav.querySelector('.snb-scroll-right');
+            if (!links.length || !linksRow) return;
 
-        const setActive = (link, shouldCenter = true) => {
-            links.forEach((item) => item.classList.remove('active'));
-            link.classList.add('active');
-            if (shouldCenter) centerLink(link);
-        };
+            const centerLink = (link) => {
+                const targetLeft = link.offsetLeft - (linksRow.clientWidth / 2) + (link.clientWidth / 2);
+                const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
+                const nextLeft = Math.max(0, Math.min(targetLeft, maxLeft));
+                linksRow.scrollTo({ left: nextLeft, behavior: 'smooth' });
+            };
 
-        links.forEach((link) => {
-            link.addEventListener('click', function () {
-                setActive(link, true);
+            const setActive = (link, shouldCenter = true) => {
+                links.forEach((item) => item.classList.remove('active'));
+                link.classList.add('active');
+                if (shouldCenter) centerLink(link);
+            };
+
+            links.forEach((link) => {
+                link.addEventListener('click', function () {
+                    setActive(link, true);
+                });
             });
-        });
 
-        const activateFromHash = (shouldCenter = false) => {
-            const hash = window.location.hash;
-            const found = links.find((link) => link.getAttribute('href') === hash);
-            if (found) {
-                setActive(found, shouldCenter);
-                return true;
+            const activateFromHash = (shouldCenter = false) => {
+                const hash = window.location.hash;
+                const found = links.find((link) => link.getAttribute('href') === hash);
+                if (found) {
+                    setActive(found, shouldCenter);
+                    return true;
+                }
+                return false;
+            };
+
+            if (!activateFromHash(false)) {
+                setActive(links[0], false);
             }
-            return false;
-        };
 
-        if (!activateFromHash(false)) {
-            setActive(links[0], false);
-        }
-
-        window.addEventListener('hashchange', function () {
-            activateFromHash(true);
-        });
-
-        const step = 260;
-        const autoSpeed = 0.7;
-        let autoTimer = null;
-        let autoPaused = false;
-
-        const scrollByStep = (direction) => {
-            linksRow.scrollBy({ left: direction * step, behavior: 'smooth' });
-        };
-
-        const autoTick = () => {
-            if (autoPaused) return;
-            const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
-            if (maxLeft <= 0) return;
-            const next = linksRow.scrollLeft + autoSpeed;
-            linksRow.scrollLeft = next >= maxLeft ? 0 : next;
-        };
-
-        const startAuto = () => {
-            if (autoTimer) return;
-            autoTimer = setInterval(autoTick, 16);
-        };
-
-        const stopAuto = () => {
-            if (!autoTimer) return;
-            clearInterval(autoTimer);
-            autoTimer = null;
-        };
-
-        if (leftBtn) {
-            leftBtn.addEventListener('click', function () {
-                scrollByStep(-1);
+            window.addEventListener('hashchange', function () {
+                activateFromHash(true);
             });
-        }
 
-        if (rightBtn) {
-            rightBtn.addEventListener('click', function () {
-                scrollByStep(1);
-            });
-        }
+            const step = 320;
+            const autoSpeed = 1.4;
+            let autoTimer = null;
+            let autoPaused = false;
 
-        nav.addEventListener('mouseenter', function () { autoPaused = true; });
-        nav.addEventListener('mouseleave', function () { autoPaused = false; });
-        nav.addEventListener('focusin', function () { autoPaused = true; });
-        nav.addEventListener('focusout', function () { autoPaused = false; });
+            const scrollByStep = (direction) => {
+                linksRow.scrollBy({ left: direction * step, behavior: 'smooth' });
+            };
 
-        document.addEventListener('visibilitychange', function () {
-            if (document.hidden) {
-                stopAuto();
-            } else {
+            const autoTick = () => {
+                if (autoPaused) return;
+                const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
+                if (maxLeft <= 0) return;
+                const next = linksRow.scrollLeft + autoSpeed;
+                linksRow.scrollLeft = next >= maxLeft ? 0 : next;
+            };
+
+            const startAuto = () => {
+                if (autoTimer) return;
+                autoTimer = setInterval(autoTick, 16);
+            };
+
+            const stopAuto = () => {
+                if (!autoTimer) return;
+                clearInterval(autoTimer);
+                autoTimer = null;
+            };
+
+            if (leftBtn) {
+                leftBtn.addEventListener('click', function () {
+                    scrollByStep(-1);
+                });
+            }
+
+            if (rightBtn) {
+                rightBtn.addEventListener('click', function () {
+                    scrollByStep(1);
+                });
+            }
+
+            nav.addEventListener('mouseenter', function () { autoPaused = true; });
+            nav.addEventListener('mouseleave', function () { autoPaused = false; });
+            nav.addEventListener('focusin', function () { autoPaused = true; });
+            nav.addEventListener('focusout', function () { autoPaused = false; });
+
                 startAuto();
-            }
-        });
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) {
+                    stopAuto();
+                } else {
+                    startAuto();
+                }
+            });
+        };
 
-        startAuto();
+        navs.forEach(initNav);
     })();
 </script>
