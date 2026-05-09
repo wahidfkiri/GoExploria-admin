@@ -67,9 +67,10 @@
         @include('home-v2.components.SectionsNavBar')
 
         <div id="section-medias" class="snb-anchor"></div>
+        <h1>{{ __('home-v2.sections_nav.media_spaces') }}</h1>
         @include('home-v2.components.espace_media.BusinessTourism')
-        @include('home-v2.components.espace_media.DestinationsVedette')
         @include('geo-map::index')
+        @include('home-v2.components.espace_media.DestinationsVedette')
         @include('home-v2.components.espace_media.MultilingualGrid')
         @include('home-v2.components.espace_media.slideshows')
         @include('home-v2.components.espace_media.TikTokCarousel')

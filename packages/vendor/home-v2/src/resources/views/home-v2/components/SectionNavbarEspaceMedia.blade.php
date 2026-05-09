@@ -1,5 +1,5 @@
 {{-- Barre de navigation horizontale — liens vers les principales sections --}}
-<nav class="snb-bar" id="sectionsNavBar" aria-label="{{ __('home-v2.sections_nav.aria') }}">
+<nav class="snb-bar" id="sectionsNavBarEspaceMedia" aria-label="{{ __('home-v2.sections_nav.aria') }}">
     <div class="snb-inner">
         <ul class="snb-links">
             <li>
@@ -89,3 +89,57 @@
         </ul>
     </div>
 </nav>
+
+<style>
+    #sectionsNavBarEspaceMedia .snb-links {
+        scroll-behavior: smooth;
+    }
+</style>
+
+<script>
+    (function () {
+        const nav = document.getElementById('sectionsNavBarEspaceMedia');
+        if (!nav) return;
+
+        const links = Array.from(nav.querySelectorAll('.snb-link[href^="#"]'));
+        const linksRow = nav.querySelector('.snb-links');
+        if (!links.length || !linksRow) return;
+
+        const centerLink = (link) => {
+            const targetLeft = link.offsetLeft - (linksRow.clientWidth / 2) + (link.clientWidth / 2);
+            const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
+            const nextLeft = Math.max(0, Math.min(targetLeft, maxLeft));
+            linksRow.scrollTo({ left: nextLeft, behavior: 'smooth' });
+        };
+
+        const setActive = (link, shouldCenter = true) => {
+            links.forEach((item) => item.classList.remove('active'));
+            link.classList.add('active');
+            if (shouldCenter) centerLink(link);
+        };
+
+        links.forEach((link) => {
+            link.addEventListener('click', function () {
+                setActive(link, true);
+            });
+        });
+
+        const activateFromHash = (shouldCenter = false) => {
+            const hash = window.location.hash;
+            const found = links.find((link) => link.getAttribute('href') === hash);
+            if (found) {
+                setActive(found, shouldCenter);
+                return true;
+            }
+            return false;
+        };
+
+        if (!activateFromHash(false)) {
+            setActive(links[0], false);
+        }
+
+        window.addEventListener('hashchange', function () {
+            activateFromHash(true);
+        });
+    })();
+</script>
