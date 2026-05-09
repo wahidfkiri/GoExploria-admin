@@ -87,12 +87,60 @@
                 </a>
             </li>
         </ul>
+        <div class="snb-scroll-controls" aria-label="Navigation horizontale">
+            <button type="button" class="snb-scroll-btn snb-scroll-left" aria-label="Defiler vers la gauche">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button type="button" class="snb-scroll-btn snb-scroll-right" aria-label="Defiler vers la droite">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
     </div>
 </nav>
 
 <style>
     #sectionsNavBarEspaceMedia .snb-links {
         scroll-behavior: smooth;
+    }
+
+    #sectionsNavBarEspaceMedia .snb-scroll-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: 10px;
+        flex-shrink: 0;
+    }
+
+    #sectionsNavBarEspaceMedia .snb-scroll-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 1px solid rgba(212, 175, 55, 0.45);
+        background: #fff;
+        color: #1a2942;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all .2s ease;
+    }
+
+    #sectionsNavBarEspaceMedia .snb-scroll-btn:hover {
+        background: #d4af37;
+        color: #fff;
+        border-color: #d4af37;
+    }
+
+    @media (max-width: 768px) {
+        #sectionsNavBarEspaceMedia .snb-scroll-controls {
+            gap: 4px;
+            margin-left: 6px;
+        }
+
+        #sectionsNavBarEspaceMedia .snb-scroll-btn {
+            width: 28px;
+            height: 28px;
+        }
     }
 </style>
 
@@ -103,6 +151,8 @@
 
         const links = Array.from(nav.querySelectorAll('.snb-link[href^="#"]'));
         const linksRow = nav.querySelector('.snb-links');
+        const leftBtn = nav.querySelector('.snb-scroll-left');
+        const rightBtn = nav.querySelector('.snb-scroll-right');
         if (!links.length || !linksRow) return;
 
         const centerLink = (link) => {
@@ -141,5 +191,60 @@
         window.addEventListener('hashchange', function () {
             activateFromHash(true);
         });
+
+        const step = 260;
+        const autoSpeed = 0.7;
+        let autoTimer = null;
+        let autoPaused = false;
+
+        const scrollByStep = (direction) => {
+            linksRow.scrollBy({ left: direction * step, behavior: 'smooth' });
+        };
+
+        const autoTick = () => {
+            if (autoPaused) return;
+            const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
+            if (maxLeft <= 0) return;
+            const next = linksRow.scrollLeft + autoSpeed;
+            linksRow.scrollLeft = next >= maxLeft ? 0 : next;
+        };
+
+        const startAuto = () => {
+            if (autoTimer) return;
+            autoTimer = setInterval(autoTick, 16);
+        };
+
+        const stopAuto = () => {
+            if (!autoTimer) return;
+            clearInterval(autoTimer);
+            autoTimer = null;
+        };
+
+        if (leftBtn) {
+            leftBtn.addEventListener('click', function () {
+                scrollByStep(-1);
+            });
+        }
+
+        if (rightBtn) {
+            rightBtn.addEventListener('click', function () {
+                scrollByStep(1);
+            });
+        }
+
+        nav.addEventListener('mouseenter', function () { autoPaused = true; });
+        nav.addEventListener('mouseleave', function () { autoPaused = false; });
+        nav.addEventListener('focusin', function () { autoPaused = true; });
+        nav.addEventListener('focusout', function () { autoPaused = false; });
+
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                stopAuto();
+            } else {
+                startAuto();
+            }
+        });
+
+        startAuto();
     })();
 </script>
