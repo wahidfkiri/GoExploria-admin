@@ -78,10 +78,11 @@
                     <a href="{{ url('devis') }}" class="nl-btn-primary" target="_blank">
                         <i class="fas fa-play"></i> {{ $tr('Essayer gratuitement') }}
                     </a>
-                    <!-- <a href="{{ url('next-level-templates') }}" class="nl-btn-outline-dark" target="_blank">
+                    {{-- <a href="{{ url('next-level-templates') }}" class="nl-btn-outline-dark" target="_blank">
                         <i class="fas fa-th-large"></i> {{ $tr('Voir les templates') }}
                     </a>
-                </div> -->
+                    --}}
+                </div>
             </div>
 
             <div class="nl-editor-right">
@@ -173,6 +174,7 @@
 .nl-editor-left h2 { font-family: 'Playfair Display', serif; font-size: clamp(28px,3vw,42px); color: #1a1a1a; line-height: 1.15; margin-bottom: 16px; }
 .nl-editor-left h2 em { font-style: italic; color: #e8761a; }
 .nl-editor-left > p { font-size: 15px; color: #555; line-height: 1.8; margin-bottom: 28px; }
+.nl-editor-left { padding: 0 24px; }
 .nl-ed-steps { display: flex; flex-direction: column; gap: 20px; margin-bottom: 32px; }
 .nl-ed-step { display: flex; gap: 16px; align-items: flex-start; }
 .nl-ed-step-num {
@@ -191,7 +193,7 @@
 .nl-btn-outline-dark:hover { background: #1a1a1a; color: #fff; }
 
 /* Browser Frame */
-.nl-editor-right { position: relative; }
+.nl-editor-right { position: relative; justify-self: end; width: 100%; max-width: 700px; }
 .nl-browser-frame {
     background: #fff; border-radius: 16px; overflow: hidden;
     box-shadow: 0 32px 80px rgba(0,0,0,0.15); border: 1px solid #e5e7eb;
@@ -246,7 +248,7 @@
 .nl-floating-pill i { color: #e8761a; }
 
 /* Features Grid */
-.nl-ed-features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-bottom: 48px; }
+.nl-ed-features-grid { width: 100%; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; margin-bottom: 48px; }
 .nl-ed-feature-card { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 20px; padding: 28px; transition: all 0.3s; }
 .nl-ed-feature-card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
 .nl-ed-feature-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
@@ -272,13 +274,18 @@
 .nl-ed-cta-orange { background: #e8761a; color: #fff; }
 .nl-ed-cta-orange:hover { background: #c45e0e; color: #fff; }
 
-@@media(max-width:1100px) {
-    .nl-editor-showcase { grid-template-columns: 1fr; }
+@media(max-width:1100px) {
+    .nl-editor-showcase { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px; align-items: start; }
+    .nl-editor-left { padding: 0; }
     .nl-ed-features-grid { grid-template-columns: repeat(2,1fr); }
     .nl-ed-plans-row { grid-template-columns: 1fr; }
     .nl-floating-pill { display: none; }
 }
-@@media(max-width:640px) {
+@media(max-width:900px) {
+    .nl-editor-showcase { grid-template-columns: 1fr; }
+    .nl-editor-right { justify-self: stretch; max-width: none; }
+}
+@media(max-width:640px) {
     .nl-editor-body { padding: 0 16px 40px; }
     .nl-ed-features-grid { grid-template-columns: 1fr; }
 }

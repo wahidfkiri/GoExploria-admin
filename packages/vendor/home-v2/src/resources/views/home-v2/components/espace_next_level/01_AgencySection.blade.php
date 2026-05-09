@@ -34,7 +34,7 @@
                 <p class="resto-header-subtitle">{{ $tr('Démarrez maintenant et optimisez votre présence en ligne avec nos experts.') }}</p>
             </div>
             <div class="resto-header-logo-right">
-                <a href="{{ url('next-level-conseils') }}" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
+                <a href="{{ url('espace-next-level/agency') }}" title="{{ $tr('En savoir plus') }}" target="_blank" rel="noopener noreferrer">
                     <img class="bt-next-level-image" src="{{ asset('images/Next-level.png') }}" alt="{{ $tr('Next Level') }}" loading="lazy">
                 </a>
             </div>

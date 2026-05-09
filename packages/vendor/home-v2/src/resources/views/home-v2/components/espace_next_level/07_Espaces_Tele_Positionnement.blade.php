@@ -118,12 +118,12 @@
                     <div class="nl-geo-stat"><i class="fas fa-shield-alt"></i><div><strong>GDPR</strong><span>{{ $tr('Conforme') }}</span></div></div>
                 </div>
                 <div class="nl-geo-actions">
-                    <a href="{{ url('next-level-geo-demo') }}" class="nl-btn-primary" target="_blank">
-                        <i class="fas fa-map"></i> {{ $tr('Essayer la démo interactive') }}
+                    <a href="" class="nl-btn-primary" target="_blank">
+                        <i class="fas fa-map"></i>  {{ $tr('En savoir plus') }}
                     </a>
-                    <a href="#nl-geo-features" class="nl-btn-secondary-geo">
+                    <!-- <a href="#nl-geo-features" class="nl-btn-secondary-geo">
                         <i class="fas fa-arrow-down"></i> {{ $tr('En savoir plus') }}
-                    </a>
+                    </a> -->
                 </div>
             </div>
             <div class="nl-geo-hero-visual">
