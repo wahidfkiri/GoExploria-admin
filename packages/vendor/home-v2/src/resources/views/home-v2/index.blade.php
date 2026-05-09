@@ -67,7 +67,7 @@
         @include('home-v2.components.SectionsNavBar')
 
         <div id="section-medias" class="snb-anchor"></div>
-        <h1 class="resto-header-title" style="text-align: center;"> GO EXPLORIA ESPACES MÉDIAS </h1>
+        <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> GO EXPLORIA ESPACES MÉDIAS </h1>
         <h2 class="resto-header-title" style="text-align: center;"> GÉO CARTE VIDÉO -MA CHAINE VIDÉOS GOEXPLORIA MYTUBE</h2>
         <h2 class="resto-header-title" style="text-align: center;">
 ESPACES PHOTOS- CHAÎNE VIDÉOS TIK-TOK- ESPACE </h2>
