@@ -67,21 +67,27 @@
         @include('home-v2.components.SectionsNavBar')
 
         <div id="section-medias" class="snb-anchor"></div>
-        <h1 style="text-align: center;"> Espace Média </h1>
+        <h1 class="resto-header-title" style="text-align: center;"> GO EXPLORIA ESPACES MÉDIAS </h1>
+        <h2 class="resto-header-title" style="text-align: center;"> GÉO CARTE VIDÉO -MA CHAINE VIDÉOS GOEXPLORIA MYTUBE-
+ESPACES PHOTOS- CHAÎNE VIDÉOS TIK-TOK- ESPACE
+CHAT CLIENT MODERNE- ESPACE MAIL MARKETING-
+ESPACE BLOG EDITORIAL- ESPACE AVIS CLIENTS-
+
+ESPACES RÉSEAUX SOCIAUX </h2>
         @include('home-v2.components.espace_media.BusinessTourism')
         @include('geo-map::index')
-        @include('home-v2.components.espace_media.DestinationsVedette')
-        @include('home-v2.components.espace_media.MultilingualGrid')
-        @include('home-v2.components.espace_media.slideshows')
-        @include('home-v2.components.espace_media.TikTokCarousel')
-        @include('home-v2.components.espace_media.ViewingCarousel')
         @include('home-v2.components.espace_media.VideoPlayer')
+        @include('home-v2.components.espace_media.ViewingCarousel')
+        @include('home-v2.components.espace_media.TikTokCarousel')
         @include('home-v2.components.espace_media.GallerieCaroussel')
+        @include('home-v2.components.espace_media.slideshows')
+        @include('home-v2.components.espace_media.MultilingualGrid')
         @include('home-v2.components.espace_media.EspaceSocialMediaSection')
-        @include('home-v2.components.espace_media.EspaceChatSection')
-        @include('home-v2.components.espace_media.EspaceMailMarketingSection')
-        @include('home-v2.components.espace_media.EspaceBlogSection')
         @include('home-v2.components.espace_media.AvisClientsSection')
+        @include('home-v2.components.espace_media.EspaceMailMarketingSection')
+        @include('home-v2.components.espace_media.EspaceChatSection')
+        @include('home-v2.components.espace_media.EspaceBlogSection')
+        @include('home-v2.components.espace_media.DestinationsVedette')
 
 
         <div id="section-next-level" class="snb-anchor"></div>
