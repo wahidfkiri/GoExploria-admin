@@ -15,21 +15,9 @@
                 </a>
             </li>
             <li>
-                <a href="#section-vedettes" class="snb-link">
-                    <i class="fas fa-language"></i>
-                    <span>ESPACES MULTILINGUES</span>
-                </a>
-            </li>
-            <li>
-                <a href="#slideshow" class="snb-link">
-                    <i class="fas fa-images"></i>
-                    <span>ESPACES SLIDE-SHOW MULTIPLES</span>
-                </a>
-            </li>
-            <li>
-                <a href="#go-tik-tok" class="snb-link">
-                    <i class="fas fa-tiktok"></i>
-                    <span>ESPACES GO-TIK-TOK</span>
+                <a href="#vp-chaine" class="snb-link">
+                    <i class="fas fa-film"></i>
+                    <span>ESPACES CHAÎNE VIDÉOS</span>
                 </a>
             </li>
             <li>
@@ -39,15 +27,9 @@
                 </a>
             </li>
             <li>
-                <a href="#vp-chaine" class="snb-link">
-                    <i class="fas fa-film"></i>
-                    <span>ESPACES CHAÎNE VIDÉOS</span>
-                </a>
-            </li>
-            <li>
-                <a href="#espace-templates" class="snb-link">
-                    <i class="fas fa-layer-group"></i>
-                    <span>ESPACES TEMPLATES</span>
+                <a href="#go-tik-tok" class="snb-link">
+                    <i class="fas fa-tiktok"></i>
+                    <span>ESPACES GO-TIK-TOK</span>
                 </a>
             </li>
             <li>
@@ -57,15 +39,33 @@
                 </a>
             </li>
             <li>
+                <a href="#slideshow" class="snb-link">
+                    <i class="fas fa-images"></i>
+                    <span>ESPACES SLIDE-SHOW MULTIPLES</span>
+                </a>
+            </li>
+            <li>
+                <a href="#section-vedettes" class="snb-link">
+                    <i class="fas fa-language"></i>
+                    <span>ESPACES MULTILINGUES</span>
+                </a>
+            </li>
+            <li>
                 <a href="#reseaux-sociaux" class="snb-link">
                     <i class="fas fa-share-alt"></i>
                     <span>ESPACES RÉSEAUX SOCIAUX</span>
                 </a>
             </li>
             <li>
-                <a href="#espace-chat" class="snb-link">
-                    <i class="fas fa-comments"></i>
-                    <span>ESPACES MODULE CHAT</span>
+                <a href="#avis-clients" class="snb-link">
+                    <i class="fas fa-star"></i>
+                    <span>ESPACES AVIS CLIENTS</span>
+                </a>
+            </li>
+            <li>
+                <a href="#espace-templates" class="snb-link">
+                    <i class="fas fa-layer-group"></i>
+                    <span>ESPACES TEMPLATES</span>
                 </a>
             </li>
             <li>
@@ -75,15 +75,15 @@
                 </a>
             </li>
             <li>
-                <a href="#espace-blog" class="snb-link">
-                    <i class="fas fa-rss"></i>
-                    <span>ESPACES BLOG</span>
+                <a href="#espace-chat" class="snb-link">
+                    <i class="fas fa-comments"></i>
+                    <span>ESPACES MODULE CHAT</span>
                 </a>
             </li>
             <li>
-                <a href="#avis-clients" class="snb-link">
-                    <i class="fas fa-star"></i>
-                    <span>ESPACES AVIS CLIENTS</span>
+                <a href="#espace-blog" class="snb-link">
+                    <i class="fas fa-rss"></i>
+                    <span>ESPACES BLOG</span>
                 </a>
             </li>
         </ul>
