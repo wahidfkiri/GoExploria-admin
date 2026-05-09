@@ -67,7 +67,7 @@
         @include('home-v2.components.SectionsNavBar')
 
         <div id="section-medias" class="snb-anchor"></div>
-        <h1>{{ __('home-v2.sections_nav.media_spaces') }}</h1>
+        <h1 style="text-align: center;">{{ Espace Média }}</h1>
         @include('home-v2.components.espace_media.BusinessTourism')
         @include('geo-map::index')
         @include('home-v2.components.espace_media.DestinationsVedette')
