@@ -386,6 +386,6 @@ generateMainContent('espaces-medias');
 </script>
 @php
     $__componentHtml = ob_get_clean();
-    echo \App\Support\HomeV2HtmlTranslator::translate($__componentHtml, app()->getLocale());
+    echo $__componentHtml;
 @endphp
 
