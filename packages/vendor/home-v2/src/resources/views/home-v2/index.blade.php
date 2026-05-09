@@ -68,10 +68,14 @@
 
         <div id="section-medias" class="snb-anchor"></div>
         <h1 class="resto-header-title" style="text-align: center;"> GO EXPLORIA ESPACES MÉDIAS </h1>
-        <h2 class="resto-header-title" style="text-align: center;"> GÉO CARTE VIDÉO -MA CHAINE VIDÉOS GOEXPLORIA MYTUBE-
-ESPACES PHOTOS- CHAÎNE VIDÉOS TIK-TOK- ESPACE
-CHAT CLIENT MODERNE- ESPACE MAIL MARKETING-
-ESPACE BLOG EDITORIAL- ESPACE AVIS CLIENTS-
+        <h2 class="resto-header-title" style="text-align: center;"> GÉO CARTE VIDÉO -MA CHAINE VIDÉOS GOEXPLORIA MYTUBE</h2>
+        <h2 class="resto-header-title" style="text-align: center;">
+ESPACES PHOTOS- CHAÎNE VIDÉOS TIK-TOK- ESPACE </h2>
+        <h2 class="resto-header-title" style="text-align: center;">
+CHAT CLIENT MODERNE- ESPACE MAIL MARKETING- </h2>
+        <h2 class="resto-header-title" style="text-align: center;">
+ESPACE BLOG EDITORIAL- ESPACE AVIS CLIENTS</h2>
+        <h2 class="resto-header-title" style="text-align: center;"> 
 
 ESPACES RÉSEAUX SOCIAUX </h2>
         @include('home-v2.components.espace_media.BusinessTourism')
@@ -87,7 +91,6 @@ ESPACES RÉSEAUX SOCIAUX </h2>
         @include('home-v2.components.espace_media.EspaceMailMarketingSection')
         @include('home-v2.components.espace_media.EspaceChatSection')
         @include('home-v2.components.espace_media.EspaceBlogSection')
-        @include('home-v2.components.espace_media.DestinationsVedette')
 
 
         <div id="section-next-level" class="snb-anchor"></div>
@@ -99,6 +102,7 @@ ESPACES RÉSEAUX SOCIAUX </h2>
          @include('home-v2.components.espace_next_level.05_EspacesFormulaire')
          @include('home-v2.components.espace_next_level.06_Espaces_Performance_SEO')
          @include('home-v2.components.espace_next_level.07_Espaces_Tele_Positionnement')
+        <!-- @include('home-v2.components.espace_media.DestinationsVedette') -->
       
 
         <div id="section-restaurants" class="snb-anchor"></div>
