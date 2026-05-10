@@ -24,15 +24,18 @@
                 <p class="resto-header-subtitle">
                    Info en temps réel Actualités récentes Inscrivez au Alertes Nouvelles
                 </p></div>
-            <div class="resto-header-logo-right">
-                <a href="#" class="resto-accord-btn" title="Plans Web Go">
-                    <div class="logo-wrapper">
-                        <img src="{{ asset('plan-n-go.png') }}" alt="Plans Web Go">
-                    </div>
-                    <span class="resto-accord-btn-label">Plans Web Go</span>
-                    <span class="resto-accord-btn-cta">
-                        <i class="fas fa-external-link-alt"></i> Visiter
-                    </span>
+            
+           <div class="resto-header-logo-right">
+                
+                <a href="" title="En savoir plus" target="_blank" rel="noopener noreferrer">
+                    <!-- <i class="fas fa-circle-info"></i>
+                    <span>Go Next Level</span> -->
+                    <img
+                    class="bt-next-level-image"
+                    src="{{ asset('images/Next-level.png') }}"
+                    alt="Next Level"
+                    loading="lazy"
+                >
                 </a>
             </div>
         </div>

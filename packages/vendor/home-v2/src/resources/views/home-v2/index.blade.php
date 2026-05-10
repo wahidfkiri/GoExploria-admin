@@ -138,6 +138,7 @@
          <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ZONE GO EXPLORIA INFO </h1>
         <hr></hr>
         @include('home-v2.components.espace_go_exp_info.NewsSection')
+        @include('home-v2.components.espace_go_exp_info.bloc-nouvelles-regionales')
 
         <div id="section-nos-plans" class="snb-anchor"></div>        
         @include('home-v2.components.NosPlans')
