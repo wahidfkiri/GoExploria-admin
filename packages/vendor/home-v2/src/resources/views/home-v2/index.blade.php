@@ -69,6 +69,7 @@
         <div id="section-medias" class="snb-anchor"></div>
         
         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> GO EXPLORIA ESPACES MÉDIAS </h1>
+        <hr></hr>
             @include('home-v2.components.SectionNavbarEspaceMedia')
         
         @include('home-v2.components.espace_media.BusinessTourism')
@@ -88,7 +89,9 @@
 
 
         <div id="section-next-level" class="snb-anchor"></div>
-        <!-- @include('home-v2.components.PartnersMaster') -->
+       <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> GO EXPLORIA NEXT LEVEL </h1>
+        <hr></hr>
+
          @include('home-v2.components.espace_next_level.01_AgencySection')
          @include('home-v2.components.espace_next_level.02_PlansNextLevel')
          @include('home-v2.components.espace_next_level.03_EspacesEditeur')
@@ -96,40 +99,51 @@
          @include('home-v2.components.espace_next_level.05_EspacesFormulaire')
          @include('home-v2.components.espace_next_level.06_Espaces_Performance_SEO')
          @include('home-v2.components.espace_next_level.07_Espaces_Tele_Positionnement')
-        <!-- @include('home-v2.components.espace_media.DestinationsVedette') -->
+      
       
 
         <div id="section-restaurants" class="snb-anchor"></div>
-        {{-- EntÃªte standard restaurant â€” autonome, hors template --}}
+        <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES RESTAURANTS ET ALIMENTATIONS </h1>
+        <hr></hr>
+        {{-- Entete standard restaurant autonome, hors template --}}
         @include('home-v2.components.espace_restaurant.RestaurantAmbianceVedetteV2')
 
 
         <div id="section-vedettes" class="snb-anchor"></div>
+         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> GO EXPLORIA ESPACES VEDETTES </h1>
+        <hr></hr>
         @include('home-v2.components.espace_evenement_vidette.EventsVedette')
 
-
-        <div id="section-voyages" class="snb-anchor"></div>
-        @include('home-v2.components.espace_forfait.TravelPackages')
-        @include('home-v2.components.espace_forfait.TravelInfos')
-        @include('home-v2.components.espace_forfait.TourismSection')
-        @include('home-v2.components.espace_forfait.SpecializedSpacesSection')
-
-
         <div id="section-marketplace" class="snb-anchor"></div>
+        <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES GO EXPLORIA MARKETPLACE </h1>
+        <hr></hr>
+
         @include('home-v2.components.espace_marketplace.RealEstateSection')
         @include('home-v2.components.espace_marketplace.ProductsVedette')
         @include('home-v2.components.espace_marketplace.MarketFoodVedette')
         @include('home-v2.components.espace_marketplace.LocationVehiculesVedette')
         @include('home-v2.components.espace_marketplace.ChassePecheVedette')
 
+        
+        <div id="section-voyages" class="snb-anchor"></div>
+         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES GO EXPLORIA ESPACES SPECIALISÉS </h1>
+        <hr></hr>
+
+        @include('home-v2.components.espace_forfait.TravelPackages')
+        @include('home-v2.components.espace_forfait.TravelInfos')
+        @include('home-v2.components.espace_forfait.TourismSection')
+        @include('home-v2.components.espace_forfait.SpecializedSpacesSection')
+
         <div id="section-a-la-une" class="snb-anchor"></div>
-        @include('home-v2.components.NewsSection')
+         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ZONE GO EXPLORIA INFO </h1>
+        <hr></hr>
+        @include('home-v2.components.espace_go_exp_info.NewsSection')
 
         <div id="section-nos-plans" class="snb-anchor"></div>        
         @include('home-v2.components.NosPlans')
     </main>
     
-    {{-- Modal rÃ©servation global Table & Vin --}}
+    {{-- Modal réservation global Table & Vin --}}
     @include('home-v2.components.ResaModal')
 
     {{-- Modal vidÃ©o rÃ©utilisable pour toute la plateforme --}}

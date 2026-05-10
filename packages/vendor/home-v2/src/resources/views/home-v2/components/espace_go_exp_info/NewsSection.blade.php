@@ -20,9 +20,9 @@
                 </a>
             </div>
             <div class="resto-header-center">
-                <h1 class="resto-header-title">DERNIÈRES NOUVELLES</h1>
+                <h1 class="resto-header-title">ESPACES NOUVELLES DE L'HEURE</h1>
                 <p class="resto-header-subtitle">
-                    Les articles les plus récents par région — Afrique · Europe · Asie · Amériques
+                   Info en temps réel Actualités récentes Inscrivez au Alertes Nouvelles
                 </p></div>
             <div class="resto-header-logo-right">
                 <a href="#" class="resto-accord-btn" title="Plans Web Go">

@@ -198,11 +198,31 @@
 
             const step = 320;
             const autoSpeed = 1.4;
+            const edgeEpsilon = 2;
             let autoTimer = null;
             let autoPaused = false;
 
             const scrollByStep = (direction) => {
-                linksRow.scrollBy({ left: direction * step, behavior: 'smooth' });
+                const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
+                if (maxLeft <= 0) return;
+
+                const current = linksRow.scrollLeft;
+
+                if (direction > 0) {
+                    if (current >= maxLeft - edgeEpsilon) {
+                        linksRow.scrollTo({ left: 0, behavior: 'auto' });
+                        return;
+                    }
+                    linksRow.scrollTo({ left: Math.min(current + step, maxLeft), behavior: 'smooth' });
+                    return;
+                }
+
+                if (current <= edgeEpsilon) {
+                    linksRow.scrollTo({ left: maxLeft, behavior: 'auto' });
+                    return;
+                }
+
+                linksRow.scrollTo({ left: Math.max(current - step, 0), behavior: 'smooth' });
             };
 
             const autoTick = () => {
@@ -210,7 +230,11 @@
                 const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
                 if (maxLeft <= 0) return;
                 const next = linksRow.scrollLeft + autoSpeed;
-                linksRow.scrollLeft = next >= maxLeft ? 0 : next;
+                if (next >= maxLeft - edgeEpsilon) {
+                    linksRow.scrollLeft = 0;
+                    return;
+                }
+                linksRow.scrollLeft = next;
             };
 
             const startAuto = () => {

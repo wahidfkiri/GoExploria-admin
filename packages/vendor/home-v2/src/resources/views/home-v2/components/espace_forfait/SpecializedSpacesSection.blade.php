@@ -16,7 +16,8 @@
                 </a>
             </div>
             <div class="resto-header-center">
-                <h2 class="resto-header-title">ESPACES SPÉCIALISÉS</h2>
+                <h1 class="resto-header-title">CHALETS À LOUER</h1>
+                <h2  class="resto-header-title">CRÉATION DE FORFAITS TOURISTIQUE CORPORATIFS </h2>
                 <p class="resto-header-subtitle">
                     Sélection d'espaces immobiliers au Québec pour investir, habiter et développer vos projets touristiques.
                 </p></div>

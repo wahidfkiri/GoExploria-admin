@@ -71,35 +71,35 @@ const menuData = {
         tag: 'Prêt à passer au niveau supérieur',
         icon: 'fas fa-level-up-alt',
         categories: [
-            { icon: 'fas fa-chart-line',      name: 'ESPACES OPTIMISEZ VOTRE PRÉSENCE EN LIGNE',  desc: 'Visibilité & Performance',                link: '#optimisez' },
-            { icon: 'fas fa-handshake',       name: 'PARTENAIRES MASTER USER GO EXPLORIA',         desc: 'Choisissez votre niveau de partenariat',  link: '#partenaires-master' },
-            { icon: 'fas fa-map-marked-alt',  name: 'ACTIVEZ VOTRE ESPACES DESTINATIONS',          desc: 'Activez votre espace destinations',        link: '#activez-destinations' },
-            { icon: 'fas fa-building',        name: 'ACTIVEZ VOTRE ESPACES ENTREPRISES',            desc: 'Activez votre espace entreprises',         link: '#activez-entreprises' },
-            { icon: 'fas fa-user-circle',     name: 'ACTIVEZ VOTRE ESPACES PERSO',                  desc: 'Activez votre espace personnel',           link: '#activez-perso' },
+            { icon: 'fas fa-building',        name: 'CONSEILS ENTREPRISES',            desc: 'Activez votre espace entreprises',         link: '#activez-entreprises' },
             {
                 icon: 'fas fa-rocket',
                 name: 'ESPACES PLANS NEXT LEVEL',
                 desc: 'Liste des plans — un plan par page',
-                link: '#plans-next-level',
+                link: '#nl-plans',
                 grandchildren: ['1 — PLAN DE DÉVELOPPEMENT DES MARCHÉS', '2 — RÉSEAUTAGES RÉGIONAUX', '3 — À FINALISER']
             },
-            {
-                icon: 'fas fa-users',
-                name: 'ESPACES PARTENAIRES AFFILIÉS',
-                desc: 'Réseau de partenaires',
-                link: '#partenaires-affilies',
-                grandchildren: ['1 — MASTER PARTENAIRES DESTINATION : MRC, RÉGIONS TOURISTIQUES', '2 — PARTENAIRES SPONTANÉS : AVIS CLIENTS, PARTAGE PHOTOS/VIDÉOS', '3 — PARTENAIRES MARCHÉS CIBLES', '4 — PARTENAIRES RÉGIONAUX', '5 — PARTENAIRES NATIONAUX']
-            },
-            { icon: 'fas fa-laptop-code',     name: 'ESPACES ÉDITEUR DE SITE WEB',                desc: 'Création sans code',                       link: '#editeur-site' },
-            { icon: 'fas fa-store',           name: 'ÉDITEUR D\'ESPACES ENTREPRISES',             desc: 'Personnalisation avancée',                 link: '#editeur-entreprises' },
-            { icon: 'fas fa-user-edit',       name: 'ÉDITEUR D\'ESPACES PERSO',                   desc: 'Espace personnel',                         link: '#editeur-perso' },
-            { icon: 'fas fa-paper-plane',     name: 'ESPACES FORMULAIRES',                        desc: 'Contact, Réservation, Inscription',        link: '#formulaires' },
-            { icon: 'fas fa-mouse-pointer',   name: 'ESPACES CALL-TO-ACTIONS',                    desc: 'Boutons & Conversions',                    link: '#cta' },
-            { icon: 'fas fa-search',          name: 'ESPACES PERFORMANCES SEO INTERNATIONAL',     desc: 'Audit & Optimisation',                     link: '#seo' },
-            { icon: 'fas fa-map-pin',         name: 'ESPACES TÉLÉ-POSITIONNEMENT',                desc: 'Géolocalisation avancée',                  link: '#tele-positionnement' },
-            { icon: 'fas fa-external-link-alt', name: 'ESPACES FONCTIONNALITÉS COMPLÈTES',        desc: 'Voir toutes les options',                  link: 'http://www.goexploriabusiness.com/welcome-2', external: true },
-            { icon: 'fas fa-trophy',          name: 'PRÊT À PASSER AU NIVEAU SUPÉRIEUR',          desc: 'Démarrez maintenant',                      link: '#niveau-superieur' },
-            { icon: 'fas fa-plug',            name: 'ESPACES API',                                desc: 'Intégrations & Webhooks',                  link: '#api' },
+            { icon: 'fas fa-laptop-code',     name: 'ESPACES ÉDITEUR DE SITE WEB',                desc: 'Création sans code',                       link: '#nl-editeur' },
+                        { icon: 'fas fa-plug',            name: 'ESPACES API',                                desc: 'Intégrations & Webhooks',                  link: '#nl-api' },
+            { icon: 'fas fa-paper-plane',     name: 'ESPACES FORMULAIRES',                        desc: 'Contact, Réservation, Inscription',        link: '#nl-formulaires' },
+            { icon: 'fas fa-search',          name: 'ESPACES PERFORMANCES SEO INTERNATIONAL',     desc: 'Audit & Optimisation',                     link: '#nl-seo' },
+            { icon: 'fas fa-map-pin',         name: 'ESPACES TÉLÉ-POSITIONNEMENT',                desc: 'Géolocalisation avancée',                  link: '#nl-tele-positionnement' },
+            // { icon: 'fas fa-chart-line',      name: 'ESPACES OPTIMISEZ VOTRE PRÉSENCE EN LIGNE',  desc: 'Visibilité & Performance',                link: '#optimisez' },
+            // { icon: 'fas fa-handshake',       name: 'PARTENAIRES MASTER USER GO EXPLORIA',         desc: 'Choisissez votre niveau de partenariat',  link: '#partenaires-master' },
+            // { icon: 'fas fa-map-marked-alt',  name: 'ACTIVEZ VOTRE ESPACES DESTINATIONS',          desc: 'Activez votre espace destinations',        link: '#activez-destinations' },
+            // { icon: 'fas fa-user-circle',     name: 'ACTIVEZ VOTRE ESPACES PERSO',                  desc: 'Activez votre espace personnel',           link: '#activez-perso' },
+            // {
+            //     icon: 'fas fa-users',
+            //     name: 'ESPACES PARTENAIRES AFFILIÉS',
+            //     desc: 'Réseau de partenaires',
+            //     link: '#partenaires-affilies',
+            //     grandchildren: ['1 — MASTER PARTENAIRES DESTINATION : MRC, RÉGIONS TOURISTIQUES', '2 — PARTENAIRES SPONTANÉS : AVIS CLIENTS, PARTAGE PHOTOS/VIDÉOS', '3 — PARTENAIRES MARCHÉS CIBLES', '4 — PARTENAIRES RÉGIONAUX', '5 — PARTENAIRES NATIONAUX']
+            // },
+            // { icon: 'fas fa-store',           name: 'ÉDITEUR D\'ESPACES ENTREPRISES',             desc: 'Personnalisation avancée',                 link: '#editeur-entreprises' },
+            // { icon: 'fas fa-user-edit',       name: 'ÉDITEUR D\'ESPACES PERSO',                   desc: 'Espace personnel',                         link: '#editeur-perso' },
+            // { icon: 'fas fa-mouse-pointer',   name: 'ESPACES CALL-TO-ACTIONS',                    desc: 'Boutons & Conversions',                    link: '#cta' },
+            // { icon: 'fas fa-external-link-alt', name: 'ESPACES FONCTIONNALITÉS COMPLÈTES',        desc: 'Voir toutes les options',                  link: 'http://www.goexploriabusiness.com/welcome-2', external: true },
+            // { icon: 'fas fa-trophy',          name: 'PRÊT À PASSER AU NIVEAU SUPÉRIEUR',          desc: 'Démarrez maintenant',                      link: '#niveau-superieur' },
         ]
     },
 
@@ -130,7 +130,7 @@ const menuData = {
     },
 
     'vedettes': {
-        title: 'ESPACES VEDETTES',
+        title: 'GO EXPLORIA ESPACES VEDETTES',
         tag: 'tous les espaces',
         icon: 'fas fa-star',
         categories: [
@@ -198,7 +198,7 @@ const menuData = {
     },
 
     'espaces-specialises': {
-        title: 'ESPACES SPÉCIALISÉS',
+        title: 'GO EXPLORIA ESPACES SPÉCIALISÉS',
         tag: 'Immobilier, hébergement, alimentation & mobilité touristique',
         icon: 'fas fa-layer-group',
         categories: [
@@ -213,7 +213,7 @@ const menuData = {
     },
 
     'a-la-une': {
-        title: 'ESPACES À LA UNE',
+        title: 'ZONE GO EXPLORIA INFO',
         tag: 'Actualités & Nouvelles',
         icon: 'fas fa-newspaper',
         categories: [

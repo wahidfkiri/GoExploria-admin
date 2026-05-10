@@ -1,5 +1,5 @@
-{{-- Barre de navigation horizontale — liens vers les principales sections --}}
-<nav class="snb-bar" id="sectionsNavBar" aria-label="{{ __('home-v2.sections_nav.aria') }}">
+﻿{{-- Barre de navigation horizontale — liens vers les principales sections --}}
+<nav class="snb-bar" data-snb-next-nav="1" aria-label="{{ __('home-v2.sections_nav.aria') }}">
     <div class="snb-inner">
         <ul class="snb-links">
             <li>
@@ -23,27 +23,233 @@
             <li>
                 <a href="#nl-api" class="snb-link">
                     <i class="fas fa-code"></i>
-                    <span>Espace API </span>
+                    <span>Espace API</span>
                 </a>
             </li>
             <li>
                 <a href="#nl-formulaires" class="snb-link">
                     <i class="fas fa-file-alt"></i>
-                    <span>Espace Formulaire </span>
+                    <span>Espace Formulaire</span>
                 </a>
             </li>
             <li>
                 <a href="#nl-seo" class="snb-link">
                     <i class="fas fa-file-alt"></i>
-                    <span>Espace SEO </span>
+                    <span>Espace SEO</span>
                 </a>
             </li>
             <li>
-                <a href="#nl-geo" class="snb-link">
+                <a href="#nl-tele-positionnement" class="snb-link">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span>Espace Télé Positionnement </span>
+                    <span>Espace Télé Positionnement</span>
                 </a>
             </li>
         </ul>
+        <div class="snb-scroll-controls" aria-label="Navigation horizontale">
+            <button type="button" class="snb-scroll-btn snb-scroll-left" aria-label="Defiler vers la gauche">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button type="button" class="snb-scroll-btn snb-scroll-right" aria-label="Defiler vers la droite">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
     </div>
 </nav>
+
+<style>
+    [data-snb-next-nav] .snb-links {
+        scroll-behavior: smooth;
+    }
+
+    [data-snb-next-nav] .snb-scroll-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: 10px;
+        flex-shrink: 0;
+    }
+
+    [data-snb-next-nav] .snb-scroll-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 1px solid rgba(212, 175, 55, 0.45);
+        background: #fff;
+        color: #1a2942;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all .2s ease;
+    }
+
+    [data-snb-next-nav] .snb-scroll-btn:hover {
+        background: #d4af37;
+        color: #fff;
+        border-color: #d4af37;
+    }
+
+    @media (max-width: 768px) {
+        [data-snb-next-nav] .snb-scroll-controls {
+            gap: 4px;
+            margin-left: 6px;
+        }
+
+        [data-snb-next-nav] .snb-scroll-btn {
+            width: 28px;
+            height: 28px;
+        }
+    }
+</style>
+
+<script>
+    (function () {
+        const initAll = function () {
+            const navs = document.querySelectorAll('nav[data-snb-next-nav]');
+            if (!navs.length) return;
+
+            navs.forEach(function (nav) {
+                if (nav.dataset.snbNextInit === '1') return;
+                nav.dataset.snbNextInit = '1';
+
+                const links = Array.from(nav.querySelectorAll('.snb-link[href^="#"]'));
+                const linksRow = nav.querySelector('.snb-links');
+                const leftBtn = nav.querySelector('.snb-scroll-left');
+                const rightBtn = nav.querySelector('.snb-scroll-right');
+                if (!links.length || !linksRow) return;
+
+                const centerLink = function (link) {
+                    const targetLeft = link.offsetLeft - (linksRow.clientWidth / 2) + (link.clientWidth / 2);
+                    const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
+                    const nextLeft = Math.max(0, Math.min(targetLeft, maxLeft));
+                    linksRow.scrollTo({ left: nextLeft, behavior: 'smooth' });
+                };
+
+                const setActive = function (link, shouldCenter = true) {
+                    links.forEach(function (item) { item.classList.remove('active'); });
+                    link.classList.add('active');
+                    if (shouldCenter) centerLink(link);
+                };
+
+                links.forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        setActive(link, true);
+                    });
+                });
+
+                const activateFromHash = function (shouldCenter = false) {
+                    const hash = window.location.hash;
+                    const found = links.find(function (link) { return link.getAttribute('href') === hash; });
+                    if (found) {
+                        setActive(found, shouldCenter);
+                        return true;
+                    }
+                    return false;
+                };
+
+                if (!activateFromHash(false)) {
+                    setActive(links[0], false);
+                }
+
+                window.addEventListener('hashchange', function () {
+                    activateFromHash(true);
+                });
+
+                const step = 320;
+                const autoSpeed = 1.4;
+                const edgeEpsilon = 2;
+                let autoTimer = null;
+                let autoPaused = false;
+
+                const scrollByStep = function (direction) {
+                    const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
+                    if (maxLeft <= 0) return;
+
+                    const current = linksRow.scrollLeft;
+
+                    if (direction > 0) {
+                        if (current >= maxLeft - edgeEpsilon) {
+                            linksRow.scrollTo({ left: 0, behavior: 'auto' });
+                            return;
+                        }
+                        linksRow.scrollTo({ left: Math.min(current + step, maxLeft), behavior: 'smooth' });
+                        return;
+                    }
+
+                    if (current <= edgeEpsilon) {
+                        linksRow.scrollTo({ left: maxLeft, behavior: 'auto' });
+                        return;
+                    }
+
+                    linksRow.scrollTo({ left: Math.max(current - step, 0), behavior: 'smooth' });
+                };
+
+                const autoTick = function () {
+                    if (autoPaused) return;
+                    const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
+                    if (maxLeft <= 0) return;
+                    const next = linksRow.scrollLeft + autoSpeed;
+                    if (next >= maxLeft - edgeEpsilon) {
+                        linksRow.scrollLeft = 0;
+                        return;
+                    }
+                    linksRow.scrollLeft = next;
+                };
+
+                const startAuto = function () {
+                    if (autoTimer) return;
+                    autoTimer = setInterval(autoTick, 16);
+                };
+
+                const stopAuto = function () {
+                    if (!autoTimer) return;
+                    clearInterval(autoTimer);
+                    autoTimer = null;
+                };
+
+                if (leftBtn) {
+                    leftBtn.addEventListener('click', function () {
+                        scrollByStep(-1);
+                    });
+                }
+
+                if (rightBtn) {
+                    rightBtn.addEventListener('click', function () {
+                        scrollByStep(1);
+                    });
+                }
+
+                nav.addEventListener('mouseenter', function () { autoPaused = true; });
+                nav.addEventListener('mouseleave', function () { autoPaused = false; });
+                nav.addEventListener('focusin', function () { autoPaused = true; });
+                nav.addEventListener('focusout', function () { autoPaused = false; });
+
+                startAuto();
+                document.addEventListener('visibilitychange', function () {
+                    if (document.hidden) {
+                        stopAuto();
+                    } else {
+                        startAuto();
+                    }
+                });
+            });
+        };
+
+        if (!window.__snbNextNavBooted) {
+            window.__snbNextNavBooted = true;
+            window.__initSnbNextNav = initAll;
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initAll);
+            } else {
+                initAll();
+            }
+
+            window.addEventListener('load', initAll);
+            setTimeout(initAll, 0);
+            setTimeout(initAll, 300);
+        } else if (typeof window.__initSnbNextNav === 'function') {
+            window.__initSnbNextNav();
+        }
+    })();
+</script>
