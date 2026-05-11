@@ -112,7 +112,7 @@
                     <li><a href="#cta" class="vertical-menu-v2-sublink">Espaces Call-to-Actions</a></li>
                     <li><a href="#seo" class="vertical-menu-v2-sublink">Performances SEO International</a></li>
                     <li><a href="#tele-positionnement" class="vertical-menu-v2-sublink">Espaces T&eacute;l&eacute;-Positionnement</a></li>
-                    <li><a href="http://www.goexploriabusiness.com/welcome-2" target="_blank" class="vertical-menu-v2-sublink">Fonctionnalit&eacute;s Compl&egrave;tes ↗</a></li>
+                    <li><a href="https://goexploriabusiness.com/welcome-2" target="_blank" class="vertical-menu-v2-sublink">Fonctionnalit&eacute;s Compl&egrave;tes ↗</a></li>
 
                     {{-- BLOC 3 : RESTAURANTS ET ALIMENTATIONS --}}
                     <li class="vertical-menu-v2-subcat">Restaurants &amp; Alimentations</li>

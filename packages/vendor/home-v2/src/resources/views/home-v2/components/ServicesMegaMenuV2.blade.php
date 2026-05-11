@@ -98,7 +98,7 @@ const menuData = {
             // { icon: 'fas fa-store',           name: 'ÉDITEUR D\'ESPACES ENTREPRISES',             desc: 'Personnalisation avancée',                 link: '#editeur-entreprises' },
             // { icon: 'fas fa-user-edit',       name: 'ÉDITEUR D\'ESPACES PERSO',                   desc: 'Espace personnel',                         link: '#editeur-perso' },
             // { icon: 'fas fa-mouse-pointer',   name: 'ESPACES CALL-TO-ACTIONS',                    desc: 'Boutons & Conversions',                    link: '#cta' },
-            // { icon: 'fas fa-external-link-alt', name: 'ESPACES FONCTIONNALITÉS COMPLÈTES',        desc: 'Voir toutes les options',                  link: 'http://www.goexploriabusiness.com/welcome-2', external: true },
+            // { icon: 'fas fa-external-link-alt', name: 'ESPACES FONCTIONNALITÉS COMPLÈTES',        desc: 'Voir toutes les options',                  link: 'https://goexploriabusiness.com/welcome-2', external: true },
             // { icon: 'fas fa-trophy',          name: 'PRÊT À PASSER AU NIVEAU SUPÉRIEUR',          desc: 'Démarrez maintenant',                      link: '#niveau-superieur' },
         ]
     },
@@ -387,4 +387,3 @@ generateMainContent('espaces-medias');
     $__componentHtml = ob_get_clean();
     echo $__componentHtml;
 @endphp
-

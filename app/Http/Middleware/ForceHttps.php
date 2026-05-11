@@ -13,7 +13,7 @@ class ForceHttps
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! app()->environment('production') || ! (bool) config('app.force_https')) {
+        if (! app()->environment('production')) {
             return $next($request);
         }
 
@@ -23,10 +23,17 @@ class ForceHttps
 
         $currentHost = $request->getHost();
         $canonicalHost = preg_replace('/^www\./i', '', $currentHost);
+        $hasWww = ! empty($canonicalHost) && strcasecmp($currentHost, $canonicalHost) !== 0;
+        $forceHttps = (bool) config('app.force_https');
 
-        $needsHostRedirect = ! empty($canonicalHost) && strcasecmp($currentHost, $canonicalHost) !== 0;
+        // Always canonicalize www.* to https://non-www
+        if ($hasWww) {
+            $targetUrl = 'https://' . $canonicalHost . $request->getRequestUri();
+            return redirect()->to($targetUrl, 301);
+        }
 
-        if (! $isHttps || $needsHostRedirect) {
+        // Optional HTTP -> HTTPS redirect for non-www domains
+        if ($forceHttps && ! $isHttps) {
             $targetUrl = 'https://' . ($canonicalHost ?: $currentHost) . $request->getRequestUri();
             return redirect()->to($targetUrl, 301);
         }
