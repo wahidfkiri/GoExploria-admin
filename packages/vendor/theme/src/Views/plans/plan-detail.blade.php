@@ -752,15 +752,15 @@
       <div class="vision-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
         <div>
           <span class="section-tag-premium" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); display: inline-block;">🎯 NOTRE VISION</span>
-          <h2 style="font-size: 2.2rem; font-weight: 700; margin: 24px 0 16px;">Le <span class="gradient-premium">"couteau suisse du web"</span></h2>
-          <p style="color: #475569; line-height: 1.7; margin-bottom: 24px;">
-            {{ $plan->vision_text ?? 'Une plateforme tout-en-un dédiée à la transformation digitale, au développement commercial et touristique et à la visibilité internationale des entreprises, combinant marketing, technologie et accès aux marchés globaux.' }}
-          </p>
-          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 24px;">
+          <h2 style="font-size: 2.2rem; font-weight: 700; margin: 24px 0 16px;"><span class="gradient-premium">Notre plan en détail</span></h2>
+          <!-- <p style="color: #475569; line-height: 1.7; margin-bottom: 24px;"> -->
+            {!! $plan->services !!}
+          <!-- </p> -->
+          <!-- <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 24px;">
             <div style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-chart-line" style="color: #4f46e5; font-size: 1.2rem;"></i><span>Transformation digitale</span></div>
             <div style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-globe" style="color: #4f46e5; font-size: 1.2rem;"></i><span>Visibilité internationale</span></div>
             <div style="display: flex; align-items: center; gap: 12px;"><i class="fas fa-rocket" style="color: #4f46e5; font-size: 1.2rem;"></i><span>Développement commercial</span></div>
-          </div>
+          </div> -->
         </div>
         <div>
           <div style="background: linear-gradient(135deg, #f1f5f9, #ffffff); border-radius: 32px; padding: 32px; border: 1px solid #e2e8f0;">
