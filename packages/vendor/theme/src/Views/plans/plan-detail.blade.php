@@ -1183,7 +1183,7 @@
   </div>
 
       <!-- Section Espaces Entreprises -->
-  <section style="padding: 80px 0;">
+  <section style="padding: 80px 0; display:none;">
     <div class="container">
       <div class="section-header-premium">
         <span class="section-tag-premium" style="background: linear-gradient(135deg, #8b5cf6, #d946ef);">🏢 ACTIVEZ VOS ESPACES</span>
@@ -1225,7 +1225,7 @@
   
 
   <!-- Pricing Section -->
-  <div class="container" id="pricing">
+  <div class="container" id="pricing" style="display:none;">
     <div class="pricing-premium">
       <div class="pricing-badge"><i class="fas fa-gem"></i> Plan recommandé</div>
       <h2 style="color: white; font-size: 2rem;">{{ $plan->name }}</h2>
@@ -1241,7 +1241,7 @@
   </div>
 
 <!-- SECTION : COMPARAISON DES PLANS DÉTAILLÉS -->
-<section id="all-plans" style="padding: 60px 0; background: #f8fafc;">
+<section id="all-plans" style="padding: 60px 0; background: #f8fafc;display:none;">
   <div class="container">
     <div class="section-header-premium">
       <span class="section-tag-premium" style="background: linear-gradient(135deg, #f59e0b, #ec4899);">📊 COMPARAISON</span>
