@@ -29,8 +29,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'set.locale' => \App\Http\Middleware\SetLocale::class,
             'translate.home-v2' => \App\Http\Middleware\TranslateHomeV2Components::class,
             'cdn.auth' => \App\Http\Middleware\CdnAuthMiddleware::class,
+            'force.https' => \App\Http\Middleware\ForceHttps::class,
         ]);
 
+        $middleware->appendToGroup('web', \App\Http\Middleware\ForceHttps::class);
         $middleware->appendToGroup('web', \App\Http\Middleware\SetLocale::class);
         $middleware->appendToGroup('web', \App\Http\Middleware\TranslateHomeV2Components::class);
         
