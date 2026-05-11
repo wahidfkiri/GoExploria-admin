@@ -13,7 +13,7 @@ class ForceHttps
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! app()->environment('production')) {
+        if (! app()->environment('production') || ! (bool) config('app.force_https')) {
             return $next($request);
         }
 
