@@ -698,10 +698,7 @@
           </p>
           <div style="display: flex; gap: 16px; flex-wrap: wrap;">
             <button class="btn-premium-primary" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">
-              <i class="fas fa-arrow-right"></i> Découvrir Nos Modules
-            </button>
-            <button class="btn-premium-primary" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">
-              <i class="fas fa-arrow-right"></i> Découvrir Nos Services
+              <i class="fas fa-arrow-right"></i> Achéter Maintenant
             </button>
             @if($heroVideoUrl)
               <a class="btn-premium-secondary" href="{{ $heroVideoUrl }}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
@@ -1241,7 +1238,7 @@
   </div>
 
 <!-- SECTION : COMPARAISON DES PLANS DÉTAILLÉS -->
-<section id="all-plans" style="padding: 60px 0; background: #f8fafc;display:none;">
+<section id="all-plans" style="padding: 60px 0; background: #f8fafc; display:none;">
   <div class="container">
     <div class="section-header-premium">
       <span class="section-tag-premium" style="background: linear-gradient(135deg, #f59e0b, #ec4899);">📊 COMPARAISON</span>
@@ -1408,7 +1405,7 @@
         <i class="fas fa-shopping-cart"></i> Choisir mon plan
       </button>
       <button class="btn-premium-secondary" style="border-color: #fbbf24; color: #fbbf24;" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">
-        <i class="fas fa-calendar-check"></i> Demander une démo
+        <i class="fas fa-calendar-check"></i> Demander un devis
       </button>
     </div>
   </div>
