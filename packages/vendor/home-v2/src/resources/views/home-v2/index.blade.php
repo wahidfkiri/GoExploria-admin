@@ -140,8 +140,7 @@
         @include('home-v2.components.espace_go_exp_info.NewsSection')
         @include('home-v2.components.espace_go_exp_info.bloc-nouvelles-regionales')
 
-        <div id="section-nos-plans" class="snb-anchor"></div>        
-        @include('home-v2.components.NosPlans')
+        <div id="section-nos-plans" class="snb-anchor"></div>   
     </main>
     
     {{-- Modal réservation global Table & Vin --}}

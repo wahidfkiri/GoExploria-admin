@@ -97,8 +97,8 @@
     </button>
     <div class="plans-mega-v2-head">
         <div class="plans-mega-v2-kicker">PASSEZ AU NIVEAU SUPÉRIEURE</div>
-        <h3>GO EXPLORIA BUSINESS - NEXT LEVEL</h3>
-        <p class="plans-mega-v2-intro">
+        <h3>PLANS GO EXPLORIA - NEXT LEVEL</h3>
+        <!-- <p class="plans-mega-v2-intro">
             GO EXPLORIA BUSINESS - NEXT LEVEL, c'est :
         </p>
         <ul class="plans-mega-v2-points">
@@ -107,11 +107,15 @@
             <li>✔ Une visibilité internationale immédiate</li>
             <li>✔ Des performances mesurables et rentables</li>
             <li>✔ Une solution conçue pour propulser les entreprises vers une croissance rapide et durable à l'échelle mondiale.</li>
-        </ul>
-        <p class="plans-mega-v2-cta-main">PASSEZ AU NIVEAU SUPÉRIEURE</p>
+        </ul> -->
+        <!-- <p class="plans-mega-v2-cta-main">PASSEZ AU NIVEAU SUPÉRIEURE</p>
         <p class="plans-mega-v2-cta-title">GO EXPLORIA BUSINESS - NEXT LEVEL</p>
-        <p>Plateforme marketing régional, national et internationale, votre croissance au cœur de nos offres!</p>
-        <p class="plans-mega-v2-cta-end">ET OBTENEZ DES RÉSULTATS CONCRET.</p>
+        <p>Plateforme marketing régional, national et internationale, votre croissance au cœur de nos offres!</p> -->
+        <p class="plans-mega-v2-cta-end"> OBTENEZ DES RÉSULTATS CONCRET.</p>
+        <a href="{{ url('espace-next-level/plans') }}" class="plans-mega-v2-cta-link" target="_blank" rel="noopener noreferrer">
+            <span class="plans-mega-v2-cta-button">
+                <i class="fas fa-external-link-alt"></i> En savoir plus 
+            </span>
     </div>
 
     <div class="plans-mega-v2-grid">
