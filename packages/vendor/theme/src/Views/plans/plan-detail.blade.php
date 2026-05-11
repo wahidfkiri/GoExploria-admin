@@ -749,7 +749,7 @@
   <!-- Section Vision Stratégique -->
   <section class="vision-section" style="padding: 80px 0; background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);">
     <div class="container">
-      <div class="vision-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+      <div class="vision-grid" style="display: grid; grid-template-columns: 1fr; gap: 60px; align-items: center;">
         <div>
           <span class="section-tag-premium" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); display: inline-block;">🎯 NOTRE VISION</span>
           <h2 style="font-size: 2.2rem; font-weight: 700; margin: 24px 0 16px;"><span class="gradient-premium">Notre plan en détail</span></h2>
@@ -763,7 +763,7 @@
           </div> -->
         </div>
         <div>
-          <div style="background: linear-gradient(135deg, #f1f5f9, #ffffff); border-radius: 32px; padding: 32px; border: 1px solid #e2e8f0;">
+          <!-- <div style="background: linear-gradient(135deg, #f1f5f9, #ffffff); border-radius: 32px; padding: 32px; border: 1px solid #e2e8f0;">
             <i class="fas fa-quote-right" style="font-size: 3rem; color: #4f46e5; opacity: 0.3; display: block; text-align: right;"></i>
             <p style="font-size: 1.1rem; line-height: 1.7; color: #334155; margin: 20px 0;">
               "{{ $plan->vision_quote ?? 'Une solution conçue pour propulser les entreprises vers une croissance rapide et durable à l\'échelle mondiale.' }}"
@@ -777,7 +777,7 @@
                 <p style="color: #64748b; font-size: 0.8rem;">Next Level — La croissance au cœur de nos offres</p>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
