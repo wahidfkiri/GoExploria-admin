@@ -116,6 +116,7 @@
             <span class="plans-mega-v2-cta-button">
                 <i class="fas fa-external-link-alt"></i> En savoir plus 
             </span>
+        </a>
     </div>
 
     <div class="plans-mega-v2-grid">
