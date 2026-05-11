@@ -22,8 +22,7 @@ class ForceHttps
         $isHttps = $request->secure() || $isForwardedHttps;
 
         $currentHost = $request->getHost();
-        $appUrlHost = parse_url((string) config('app.url'), PHP_URL_HOST);
-        $canonicalHost = $appUrlHost ?: preg_replace('/^www\./i', '', $currentHost);
+        $canonicalHost = preg_replace('/^www\./i', '', $currentHost);
 
         $needsHostRedirect = ! empty($canonicalHost) && strcasecmp($currentHost, $canonicalHost) !== 0;
 
