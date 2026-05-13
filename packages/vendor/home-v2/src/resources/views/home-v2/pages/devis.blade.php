@@ -365,8 +365,11 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('devis.submit') }}">
+            <form method="POST" action="{{ route('devis.submit') }}" enctype="multipart/form-data">
                 @csrf
+                @if(request()->filled('etablissement_id'))
+                    <input type="hidden" name="etablissement_id" value="{{ request('etablissement_id') }}">
+                @endif
 
                 <div class="form-block">
                     <h2 class="block-title"><span class="step">1</span> Informations client</h2>
@@ -504,6 +507,17 @@
                         <span>J’accepte que mes informations soient utilisées pour le traitement de ma demande de devis.</span>
                     </label>
                     @error('consent')<span class="field-error">{{ $message }}</span>@enderror
+                </div>
+
+                <div class="form-block">
+                    <h2 class="block-title"><span class="step">4</span> Médias et documents</h2>
+                    <div class="form-group">
+                        <label for="media_files">Fichiers joints (images, PDF, XLSX, CSV, DOC...)</label>
+                        <input id="media_files" name="media_files[]" type="file" multiple accept=".jpg,.jpeg,.png,.gif,.webp,.bmp,.svg,.pdf,.csv,.txt,.xls,.xlsx,.ods,.doc,.docx,.ppt,.pptx,.zip,.rar">
+                        <small style="color:#6a7a95;">Maximum 10 fichiers, 20 Mo par fichier.</small>
+                        @error('media_files')<span class="field-error">{{ $message }}</span>@enderror
+                        @error('media_files.*')<span class="field-error">{{ $message }}</span>@enderror
+                    </div>
                 </div>
 
                 <button type="submit" class="submit-btn">

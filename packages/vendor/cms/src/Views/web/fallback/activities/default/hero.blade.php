@@ -32,7 +32,7 @@
             <div class="video-slide {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}">
                 @if($slider->type === 'image' && $slider->image_url)
                     <img class="video-background" src="{{ $slider->image_url }}" alt="{{ $slider->name }}">
-                @elseif($slider->video_type === 'youtube' || $slider->video_type === 'vimeo')
+                @elseif($slider->video_type === 'youtube' || $slider->video_type === 'vimeo' || $slider->video_type === 'iframe')
                     {{-- VidÃ©o YouTube/Vimeo avec iframe --}}
                     <iframe 
                         class="video-background" 
@@ -76,7 +76,7 @@
                 @foreach($orderedSliders as $index => $slider)
                 <div class="hero-video-card {{ $index === 0 ? 'active' : '' }}" data-video="{{ $index }}">
                     @php($isImageSlide = $slider->type === 'image')
-                    @php($isExternalVideo = $slider->video_type === 'youtube' || $slider->video_type === 'vimeo')
+                    @php($isExternalVideo = $slider->video_type === 'youtube' || $slider->video_type === 'vimeo' || $slider->video_type === 'iframe')
                     @php($hasCardImage = !empty($slider->thumbnail_path) || !empty($slider->image_path))
                     @if($isImageSlide)
                         <img class="hero-video-card-thumbnail" src="{{ $slider->thumbnail_url ?: $slider->image_url }}" alt="{{ $slider->name }}">
@@ -662,5 +662,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
 
 

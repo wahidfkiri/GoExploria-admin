@@ -1,6 +1,7 @@
 @php
     $brandName = trim((string) ($etablissement->name ?? 'GO EXPLORIA BUSINESS'));
     $devisLink = $devisUrl ?? route('devis');
+    $brandLogo = $brandLogoUrl ?? (function_exists('get_logo_url') ? get_logo_url($etablissement->id ?? null) : null);
 @endphp
 
 <style>
@@ -26,10 +27,27 @@
 
     .fb-brand {
         min-width: 0;
-        display: grid;
-        gap: 2px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
         text-decoration: none;
         color: #fff;
+    }
+
+    .fb-brand-logo {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        object-fit: cover;
+        border: 1px solid rgba(255,255,255,0.18);
+        background: rgba(255,255,255,0.07);
+        flex: 0 0 auto;
+    }
+
+    .fb-brand-text {
+        min-width: 0;
+        display: grid;
+        gap: 2px;
     }
 
     .fb-brand-top {
@@ -136,8 +154,13 @@
 <header class="fb-header">
     <div class="fb-header-wrap">
         <a href="#section-hero" class="fb-brand">
-            <span class="fb-brand-top">Go Exploria Business</span>
-            <span class="fb-brand-name">{{ $brandName }}</span>
+            @if(!empty($brandLogo))
+                <img src="{{ $brandLogo }}" alt="{{ $brandName }}" class="fb-brand-logo">
+            @endif
+            <span class="fb-brand-text">
+                <span class="fb-brand-top">Go Exploria Business</span>
+                <span class="fb-brand-name">{{ $brandName }}</span>
+            </span>
         </a>
 
         <button class="fb-mobile-toggle" id="fbHeaderToggle" type="button" aria-label="Menu">

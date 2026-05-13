@@ -999,11 +999,16 @@
 
         $galleryImages = [];
 
-        if (isset($ads) && $ads->count() >= 4) {
-            $galleryImages = $ads->take(4)->pluck('url')->filter()->values()->all();
+        if (isset($galleryMedia) && collect($galleryMedia)->isNotEmpty()) {
+            $galleryImages = collect($galleryMedia)
+                ->pluck('thumbnail')
+                ->filter()
+                ->take(4)
+                ->values()
+                ->all();
         }
 
-        if (count($galleryImages) < 4) {
+        if (count($galleryImages) === 0) {
             $chosen = 'default';
             if (str_contains($activityText, 'restaurant') || str_contains($activityText, 'alimentation') || str_contains($activityText, 'cuisine')) {
                 $chosen = 'restaurant';
@@ -1015,7 +1020,7 @@
                 $chosen = 'immobilier';
             }
 
-            $galleryImages = array_values(array_unique(array_merge($galleryImages, $galleryByActivity[$chosen])));
+            $galleryImages = $galleryByActivity[$chosen];
         }
 
         $galleryImages = array_slice($galleryImages, 0, 4);

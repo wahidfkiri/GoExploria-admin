@@ -562,7 +562,8 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             ->orderBy('id')
             ->get(['id', 'name', 'slug', 'description', 'icon', 'price', 'currency']);
 
-        $sliders = Slider::query()
+        $sliders = $this->getLandingCmsSliders();
+        $defaultSliders = Slider::query()
             ->where('is_active', true)
             ->orderBy('order')
             ->get();
@@ -585,6 +586,10 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             ->filter(fn ($item) => !empty($item['url']))
             ->values();
 
+        if ($sliders->isEmpty() && $defaultSliders->isNotEmpty()) {
+            $sliders = $defaultSliders->values();
+        }
+
         if ($sliders->isEmpty() && $ads->isNotEmpty()) {
             $sliders = $ads->take(5)->values()->map(function ($ad, $index) {
                 $slider = new Slider();
@@ -597,6 +602,8 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 return $slider;
             });
         }
+
+        $galleryMedia = $this->getLandingGalleryMedia();
 
         $activitySections = $this->buildActivitySections($activities);
         $hasRestaurantActivity = $this->hasActivityKeyword($activities, [
@@ -667,6 +674,8 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         return [
             'etablissement' => $this->etablissement,
             'sliders' => $sliders,
+            'galleryMedia' => $galleryMedia,
+            'brandLogoUrl' => get_logo_url($this->etablissement->id),
             'plans' => $plans,
             'ads' => $ads,
             'activities' => $activities,
@@ -681,6 +690,180 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'devisUrl' => route('devis'),
             'message' => $message,
         ];
+    }
+
+    /**
+     * Get slider data for landing from cms_media with fallback-ready format for Hero component.
+     */
+    protected function getLandingCmsSliders(): Collection
+    {
+        try {
+            $items = collect(get_slider_media($this->etablissement->id));
+            if ($items->isEmpty()) {
+                return collect();
+            }
+
+            return $items->map(function ($item, $index) {
+                $row = (array) $item;
+                $videoRaw = trim((string) ($row['video_url'] ?? ''));
+                $imageRaw = trim((string) ($row['image_url'] ?? ''));
+
+                $videoSrc = $this->extractIframeSrc($videoRaw) ?: $videoRaw;
+                $youtubeId = $this->extractYoutubeId($videoSrc);
+                $vimeoId = $this->extractVimeoId($videoSrc);
+
+                $videoType = 'upload';
+                if ($this->extractIframeSrc($videoRaw)) {
+                    $videoType = 'iframe';
+                } elseif ($youtubeId) {
+                    $videoType = 'youtube';
+                } elseif ($vimeoId) {
+                    $videoType = 'vimeo';
+                }
+
+                $videoEmbed = null;
+                if ($videoType === 'youtube' && $youtubeId) {
+                    $videoEmbed = 'https://www.youtube.com/embed/' . $youtubeId;
+                } elseif ($videoType === 'vimeo' && $vimeoId) {
+                    $videoEmbed = 'https://player.vimeo.com/video/' . $vimeoId;
+                } elseif ($videoType === 'iframe') {
+                    $videoEmbed = $videoSrc;
+                } elseif ($videoSrc !== '') {
+                    $videoEmbed = $videoSrc;
+                }
+
+                $type = strtolower((string) ($row['type'] ?? 'image')) === 'image'
+                    ? 'image'
+                    : 'video';
+
+                if ($videoEmbed && $type !== 'image') {
+                    $type = 'video';
+                }
+
+                $thumbnail = trim((string) ($row['thumbnail_url'] ?? ''));
+                if ($thumbnail === '' && $youtubeId) {
+                    $thumbnail = 'https://i.ytimg.com/vi/' . $youtubeId . '/hqdefault.jpg';
+                }
+                if ($thumbnail === '' && $imageRaw !== '') {
+                    $thumbnail = $imageRaw;
+                }
+
+                return (object) [
+                    'id' => (int) ($row['id'] ?? 0),
+                    'name' => (string) ($row['name'] ?? ('Slide ' . ($index + 1))),
+                    'description' => $row['description'] ?? null,
+                    'type' => $type,
+                    'order' => (int) ($row['order'] ?? ($index + 1)),
+                    'is_active' => true,
+                    'image_url' => $imageRaw !== '' ? $imageRaw : null,
+                    'image_path' => $imageRaw !== '' ? $imageRaw : null,
+                    'thumbnail_url' => $thumbnail !== '' ? $thumbnail : null,
+                    'thumbnail_path' => $thumbnail !== '' ? $thumbnail : null,
+                    'video_url' => $videoSrc !== '' ? $videoSrc : null,
+                    'video_type' => $type === 'video' ? $videoType : null,
+                    'video_embed_url' => $type === 'video' ? $videoEmbed : null,
+                    'button_text' => $row['button_text'] ?? null,
+                    'button_url' => $row['button_url'] ?? null,
+                ];
+            })->values();
+        } catch (\Throwable $e) {
+            Log::warning('Unable to map landing CMS sliders: ' . $e->getMessage(), [
+                'etablissement_id' => $this->etablissement->id,
+            ]);
+
+            return collect();
+        }
+    }
+
+    /**
+     * Load gallery media from cms_media for current etablissement.
+     */
+    protected function getLandingGalleryMedia(): Collection
+    {
+        try {
+            return Media::query()
+                ->where('etablissement_id', $this->etablissement->id)
+                ->where('is_public', true)
+                ->whereNull('deleted_at')
+                ->ordered()
+                ->limit(24)
+                ->get()
+                ->map(function (Media $media) {
+                    $videoUrl = trim((string) ($media->video_url ?? ''));
+                    $youtubeId = $this->extractYoutubeId($videoUrl);
+                    $thumbnail = null;
+
+                    if ($youtubeId) {
+                        $thumbnail = 'https://i.ytimg.com/vi/' . $youtubeId . '/hqdefault.jpg';
+                    } elseif ($media->isImage()) {
+                        $thumbnail = $media->url;
+                    } elseif (!empty($media->path) && preg_match('/\.(jpg|jpeg|png|gif|webp|avif|svg)(\?.*)?$/i', (string) $media->path)) {
+                        $thumbnail = $media->url;
+                    }
+
+                    return [
+                        'id' => $media->id,
+                        'name' => $media->title ?: $media->name,
+                        'thumbnail' => $thumbnail,
+                        'url' => $media->url,
+                        'type' => $media->type,
+                    ];
+                })
+                ->filter(fn ($item) => !empty($item['thumbnail']))
+                ->values();
+        } catch (\Throwable $e) {
+            Log::warning('Unable to load landing gallery media: ' . $e->getMessage(), [
+                'etablissement_id' => $this->etablissement->id,
+            ]);
+
+            return collect();
+        }
+    }
+
+    protected function extractYoutubeId(?string $url): ?string
+    {
+        $value = trim((string) $url);
+        if ($value === '') {
+            return null;
+        }
+
+        if (preg_match('/(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/i', $value, $m)) {
+            return $m[1];
+        }
+
+        return null;
+    }
+
+    protected function extractVimeoId(?string $url): ?string
+    {
+        $value = trim((string) $url);
+        if ($value === '') {
+            return null;
+        }
+
+        if (preg_match('/vimeo\.com\/(?:.*\/)?(\d+)/i', $value, $m)) {
+            return $m[1];
+        }
+
+        if (preg_match('/player\.vimeo\.com\/video\/(\d+)/i', $value, $m)) {
+            return $m[1];
+        }
+
+        return null;
+    }
+
+    protected function extractIframeSrc(?string $value): ?string
+    {
+        $raw = trim((string) $value);
+        if ($raw === '') {
+            return null;
+        }
+
+        if (preg_match('/<iframe[^>]+src=["\']([^"\']+)["\']/i', $raw, $m)) {
+            return trim((string) $m[1]);
+        }
+
+        return null;
     }
 
     /**

@@ -32,7 +32,7 @@
             <div class="video-slide {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}">
                 @if($slider->type === 'image' && $slider->image_url)
                     <img class="video-background" src="{{ $slider->image_url }}" alt="{{ $slider->name }}">
-                @elseif($slider->video_type === 'youtube' || $slider->video_type === 'vimeo')
+                @elseif($slider->video_type === 'youtube' || $slider->video_type === 'vimeo' || $slider->video_type === 'iframe')
                     {{-- VidÃ©o YouTube/Vimeo avec iframe --}}
                     <iframe 
                         class="video-background" 
@@ -76,7 +76,7 @@
                 @foreach($orderedSliders as $index => $slider)
                 <div class="hero-video-card {{ $index === 0 ? 'active' : '' }}" data-video="{{ $index }}">
                     @php($isImageSlide = $slider->type === 'image')
-                    @php($isExternalVideo = $slider->video_type === 'youtube' || $slider->video_type === 'vimeo')
+                    @php($isExternalVideo = $slider->video_type === 'youtube' || $slider->video_type === 'vimeo' || $slider->video_type === 'iframe')
                     @php($hasCardImage = !empty($slider->thumbnail_path) || !empty($slider->image_path))
                     @if($isImageSlide)
                         <img class="hero-video-card-thumbnail" src="{{ $slider->thumbnail_url ?: $slider->image_url }}" alt="{{ $slider->name }}">
@@ -168,7 +168,7 @@
                     <span class="search-bar-v2-destinations-title" id="destinationsBreadcrumb">{{ $tr('Destinations') }}</span>
                     
                     {{-- Mega Menu Destinations Principal --}}
-                    @include('cms::web.fallback.activities.voyage.destinations-mega-menu')
+                    @include('cms::web.fallback.activities.default.destinations-mega-menu')
                 </div>
 
                
@@ -281,13 +281,13 @@
 </section>
 
 {{-- INFO MEGA MENU - Hors de tout overflow parent pour un positionnement correct --}}
-@include('cms::web.fallback.activities.voyage.info-mega-menu')
+@include('cms::web.fallback.activities.default.info-mega-menu')
 
 {{-- CATEGORIES MEGA MENU - Panel fixed, positionnÃ© par JS sous le trigger --}}
-@include('cms::web.fallback.activities.voyage.categories-mega-menu')
+@include('cms::web.fallback.activities.default.categories-mega-menu')
 
 {{-- QUICK LINKS MEGA MENUS â€” Panels pour MP, EE, ED, Voiture, Avion, Plan & GO --}}
-@include('cms::web.fallback.activities.voyage.hero-quick-mega-menus')
+@include('cms::web.fallback.activities.default.hero-quick-mega-menus')
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -662,5 +662,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
 
 

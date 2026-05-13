@@ -37,7 +37,25 @@
             <th align="left">Détails du projet</th>
             <td>{!! nl2br(e($data['project_details'])) !!}</td>
         </tr>
+        <tr>
+            <th align="left">Médias joints</th>
+            <td>
+                @if(!empty($mediaFiles) && count($mediaFiles) > 0)
+                    <ul style="margin: 0; padding-left: 16px;">
+                        @foreach($mediaFiles as $file)
+                            <li>
+                                {{ $file['original_name'] ?? 'fichier' }}
+                                @if(!empty($file['size']))
+                                    ({{ number_format(((int) $file['size']) / 1024, 0, ',', ' ') }} Ko)
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                @else
+                    —
+                @endif
+            </td>
+        </tr>
     </table>
 </body>
 </html>
-
