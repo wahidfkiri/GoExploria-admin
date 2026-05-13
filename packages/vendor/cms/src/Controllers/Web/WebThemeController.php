@@ -6,12 +6,17 @@ use App\Http\Controllers\Controller;
 use Vendor\Cms\Models\Theme;
 use Vendor\Cms\Models\Page;
 use Vendor\Cms\Models\Setting;
+use Vendor\Cms\Models\Media;
 use App\Models\Etablissement;
+use App\Models\Activity;
+use App\Models\Plan;
+use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collection;
 
 class WebThemeController extends Controller
 {
@@ -84,7 +89,7 @@ class WebThemeController extends Controller
         }
         
         if (!$theme) {
-            return $this->renderFallback('Aucun thème actif. Veuillez activer un thème.');
+            return $this->renderNoThemeLanding('Aucun thème actif ou installé pour cet établissement.');
         }
         
         // Récupérer la page d'accueil
@@ -122,7 +127,7 @@ class WebThemeController extends Controller
         $theme = $this->getThemeToUse();
         
         if (!$theme) {
-            return $this->renderFallback('Aucun thème actif. Veuillez activer un thème.');
+            return $this->renderNoThemeLanding('Aucun thème actif ou installé pour cet établissement.');
         }
         
         $page = Page::where('etablissement_id', $this->etablissement->id)
@@ -534,6 +539,326 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     }
 
     /**
+     * Render a commercial landing page when no active theme is available.
+     */
+    protected function renderNoThemeLanding(?string $message = null)
+    {
+        $data = $this->prepareNoThemeLandingData($message);
+        $html = view('cms::web.fallback.landing-activity', $data)->render();
+
+        return $this->buildResponse($html);
+    }
+
+    /**
+     * Build data for the no-theme landing page.
+     */
+    protected function prepareNoThemeLandingData(?string $message = null): array
+    {
+        $activities = $this->getEtablissementActivities();
+
+        $plans = Plan::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get(['id', 'name', 'slug', 'description', 'icon', 'price', 'currency']);
+
+        $sliders = Slider::query()
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->get();
+
+        $ads = Media::query()
+            ->where('etablissement_id', $this->etablissement->id)
+            ->where('is_public', true)
+            ->images()
+            ->ordered()
+            ->limit(10)
+            ->get()
+            ->map(function ($media) {
+                return [
+                    'id' => $media->id,
+                    'name' => $media->title ?: $media->name,
+                    'url' => $media->url,
+                    'button_url' => $media->button_url ?: route('devis'),
+                ];
+            })
+            ->filter(fn ($item) => !empty($item['url']))
+            ->values();
+
+        if ($sliders->isEmpty() && $ads->isNotEmpty()) {
+            $sliders = $ads->take(5)->values()->map(function ($ad, $index) {
+                $slider = new Slider();
+                $slider->name = $ad['name'] ?: 'GoExploria';
+                $slider->type = 'image';
+                $slider->image_path = $ad['url'];
+                $slider->order = $index + 1;
+                $slider->button_text = 'Découvrir';
+                $slider->button_url = $ad['button_url'];
+                return $slider;
+            });
+        }
+
+        $activitySections = $this->buildActivitySections($activities);
+        $hasRestaurantActivity = $this->hasActivityKeyword($activities, [
+            'restaurant', 'restaurants', 'restauration', 'alimentation', 'food', 'cuisine', 'terroir'
+        ]);
+        $coordinates = $this->resolveEtablissementCoordinates();
+
+        $restaurantSection = [
+            'name' => 'Restaurant',
+            'headline' => 'Expériences culinaires et terroir en vedette',
+            'items' => [
+                'Menus vedettes, ambiance et storytelling de marque.',
+                'Promotions ciblées et mise en avant de vos spécialités.',
+                'Parcours client orienté réservation et demande de devis.',
+            ],
+            'cta' => route('devis'),
+        ];
+
+        $workingHours = [
+            ['day' => 'Lundi', 'hours' => '08:30 - 18:00'],
+            ['day' => 'Mardi', 'hours' => '08:30 - 18:00'],
+            ['day' => 'Mercredi', 'hours' => '08:30 - 18:00'],
+            ['day' => 'Jeudi', 'hours' => '08:30 - 20:00'],
+            ['day' => 'Vendredi', 'hours' => '08:30 - 20:00'],
+            ['day' => 'Samedi', 'hours' => '09:30 - 17:00'],
+            ['day' => 'Dimanche', 'hours' => 'Sur rendez-vous'],
+        ];
+
+        $commercialBlocks = [
+            [
+                'title' => 'Activez votre espace destination maintenant',
+                'text' => 'Augmentez votre visibilité locale et internationale avec une présence géociblée sur la plateforme Go Exploria.',
+                'cta' => route('devis'),
+                'icon' => 'fas fa-map-marked-alt',
+            ],
+            [
+                'title' => 'Activez votre espace entreprise',
+                'text' => 'Présentez vos offres, services et médias en une seule vitrine professionnelle orientée conversion.',
+                'cta' => route('devis'),
+                'icon' => 'fas fa-building',
+            ],
+            [
+                'title' => 'Activez votre espace personnel',
+                'text' => 'Centralisez votre profil, vos favoris et vos interactions clients dans un espace moderne prêt à performer.',
+                'cta' => route('devis'),
+                'icon' => 'fas fa-user-circle',
+            ],
+        ];
+
+        $reviews = [
+            [
+                'author' => 'Marie D.',
+                'role' => 'Direction Marketing',
+                'text' => 'La nouvelle visibilité de notre établissement a généré plus de demandes qualifiées en quelques semaines.',
+            ],
+            [
+                'author' => 'Simon L.',
+                'role' => 'Gestionnaire Opérations',
+                'text' => 'Une présentation moderne, claire et orientée résultats. L’équipe a gagné du temps et de nouveaux clients.',
+            ],
+            [
+                'author' => 'Nadia R.',
+                'role' => 'Responsable Commerciale',
+                'text' => 'Excellent levier pour combiner image de marque, contenu vidéo et formulaires de contact performants.',
+            ],
+        ];
+
+        return [
+            'etablissement' => $this->etablissement,
+            'sliders' => $sliders,
+            'plans' => $plans,
+            'ads' => $ads,
+            'activities' => $activities,
+            'activitySections' => $activitySections,
+            'hasRestaurantActivity' => $hasRestaurantActivity,
+            'restaurantSection' => $restaurantSection,
+            'mapLatitude' => $coordinates['lat'],
+            'mapLongitude' => $coordinates['lng'],
+            'workingHours' => $workingHours,
+            'commercialBlocks' => $commercialBlocks,
+            'reviews' => $reviews,
+            'devisUrl' => route('devis'),
+            'message' => $message,
+        ];
+    }
+
+    /**
+     * Resolve active activities for the current etablissement.
+     */
+    protected function getEtablissementActivities(): Collection
+    {
+        $activities = collect();
+
+        try {
+            $activities = $this->etablissement->activities()
+                ->where('activities.is_active', true)
+                ->get(['activities.id', 'activities.name', 'activities.slug', 'activities.description']);
+        } catch (\Throwable $e) {
+            Log::warning('Unable to load etablissement activities: ' . $e->getMessage(), [
+                'etablissement_id' => $this->etablissement->id,
+            ]);
+        }
+
+        $primaryActivity = $this->etablissement->primaryActivity()
+            ->where('is_active', true)
+            ->first(['id', 'name', 'slug', 'description']);
+
+        if ($primaryActivity && !$activities->contains('id', $primaryActivity->id)) {
+            $activities->prepend($primaryActivity);
+        }
+
+        if ($activities->isEmpty() && !empty($this->etablissement->other_activity_label)) {
+            $fallback = new Activity();
+            $fallback->name = (string) $this->etablissement->other_activity_label;
+            $fallback->description = 'Activité principale de cet établissement.';
+            $activities = collect([$fallback]);
+        }
+
+        return $activities->values();
+    }
+
+    /**
+     * Build dynamic sections according to activities.
+     */
+    protected function buildActivitySections(Collection $activities): array
+    {
+        $sections = [];
+
+        foreach ($activities as $activity) {
+            $name = (string) ($activity->name ?? 'Activité');
+            $lower = mb_strtolower($name, 'UTF-8');
+
+            $section = [
+                'name' => $name,
+                'headline' => 'Développez votre présence sur ce marché',
+                'icon' => 'fas fa-bullseye',
+                'items' => [
+                    'Optimisation de votre visibilité locale et internationale.',
+                    'Diffusion multi-canaux de vos contenus et offres.',
+                    'Acquisition de contacts qualifiés via vos espaces dédiés.',
+                ],
+                'cta' => route('devis'),
+            ];
+
+            if (str_contains($lower, 'restaurant') || str_contains($lower, 'alimentation') || str_contains($lower, 'café') || str_contains($lower, 'bar')) {
+                $section['headline'] = 'Expériences culinaires et terroir en vedette';
+                $section['icon'] = 'fas fa-utensils';
+                $section['items'] = [
+                    'Menus vedettes, ambiance et storytelling de marque.',
+                    'Promotions ciblées et mise en avant de vos spécialités.',
+                    'Parcours client orienté réservation et demande de devis.',
+                ];
+            } elseif (str_contains($lower, 'hotel') || str_contains($lower, 'hôtel') || str_contains($lower, 'auberge') || str_contains($lower, 'hébergement') || str_contains($lower, 'hebergement')) {
+                $section['headline'] = 'Hébergement premium et conversion directe';
+                $section['icon'] = 'fas fa-bed';
+                $section['items'] = [
+                    'Présentation immersive de vos chambres et services.',
+                    'Mise en confiance avec avis clients et preuves sociales.',
+                    'Tunnel de conversion vers demande d’information rapide.',
+                ];
+            } elseif (str_contains($lower, 'voyage') || str_contains($lower, 'tourisme') || str_contains($lower, 'destination') || str_contains($lower, 'forfait')) {
+                $section['headline'] = 'Destination et forfaits à fort impact commercial';
+                $section['icon'] = 'fas fa-plane-departure';
+                $section['items'] = [
+                    'Séquences visuelles et offres saisonnières engageantes.',
+                    'Parcours multilingue pour marchés nationaux et internationaux.',
+                    'Liens directs vers devis et activations marketing.',
+                ];
+            } elseif (str_contains($lower, 'location') || str_contains($lower, 'auto') || str_contains($lower, 'transport') || str_contains($lower, 'véhicule') || str_contains($lower, 'vehicule')) {
+                $section['headline'] = 'Mobilité 4 saisons et offres de location';
+                $section['icon'] = 'fas fa-car-side';
+                $section['items'] = [
+                    'Catalogue clair de vos solutions auto, bus et VR.',
+                    'Arguments commerciaux prêts à convertir rapidement.',
+                    'Intégration de campagnes ponctuelles et promotions.',
+                ];
+            } elseif (str_contains($lower, 'immobilier') || str_contains($lower, 'chalet') || str_contains($lower, 'maison')) {
+                $section['headline'] = 'Immobilier et résidences touristiques';
+                $section['icon'] = 'fas fa-home';
+                $section['items'] = [
+                    'Mise en scène premium de vos biens et projets.',
+                    'Fiches détaillées avec médias engageants.',
+                    'Contact qualifié orienté vente et investissement.',
+                ];
+            }
+
+            $sections[] = $section;
+        }
+
+        if (empty($sections)) {
+            $sections[] = [
+                'name' => 'Activités de votre établissement',
+                'headline' => 'Construisez une présence digitale moderne et rentable',
+                'icon' => 'fas fa-rocket',
+                'items' => [
+                    'Page professionnelle prête à convertir vos visiteurs.',
+                    'Sections commerciales personnalisées selon votre marché.',
+                    'Accès direct aux plans pour accélérer votre croissance.',
+                ],
+                'cta' => route('devis'),
+            ];
+        }
+
+        return $sections;
+    }
+
+    /**
+     * Check if activity list contains one of the given keywords.
+     */
+    protected function hasActivityKeyword(Collection $activities, array $keywords): bool
+    {
+        foreach ($activities as $activity) {
+            $haystack = mb_strtolower((string) ($activity->name ?? ''), 'UTF-8');
+            foreach ($keywords as $keyword) {
+                if (str_contains($haystack, mb_strtolower($keyword, 'UTF-8'))) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Resolve best coordinates from etablissement geo hierarchy.
+     */
+    protected function resolveEtablissementCoordinates(): array
+    {
+        $fallback = ['lat' => 46.8139, 'lng' => -71.2082];
+
+        try {
+            $this->etablissement->loadMissing(['villeRelation', 'region', 'province', 'country', 'continent']);
+            $sources = [
+                $this->etablissement->villeRelation,
+                $this->etablissement->region,
+                $this->etablissement->province,
+                $this->etablissement->country,
+                $this->etablissement->continent,
+            ];
+
+            foreach ($sources as $source) {
+                if (!$source) {
+                    continue;
+                }
+
+                $lat = isset($source->latitude) ? (float) $source->latitude : null;
+                $lng = isset($source->longitude) ? (float) $source->longitude : null;
+
+                if ($lat !== null && $lng !== null && $lat !== 0.0 && $lng !== 0.0) {
+                    return ['lat' => $lat, 'lng' => $lng];
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Unable to resolve establishment coordinates: ' . $e->getMessage(), [
+                'etablissement_id' => $this->etablissement->id,
+            ]);
+        }
+
+        return $fallback;
+    }
+
+    /**
      * HTML fallback
      */
     protected function getFallbackHtml($errorMessage = null)
@@ -601,11 +926,6 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $activeTheme = $this->etablissement->themes()
             ->wherePivot('is_active', true)
             ->first();
-        
-        // Fallback: premier thème lié à l'établissement
-        if (!$activeTheme) {
-            $activeTheme = $this->etablissement->themes()->first();
-        }
         
         return $activeTheme;
     }

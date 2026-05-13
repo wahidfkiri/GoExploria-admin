@@ -25,6 +25,14 @@ class Etablissement extends Model
         'email_contact',
         'website',
         'is_active',
+        'continent_id',
+        'country_id',
+        'province_id',
+        'region_id',
+        'ville_id',
+        'secteur_id',
+        'primary_activity_id',
+        'other_activity_label',
     ];
 
     protected $casts = [
@@ -40,6 +48,41 @@ class Etablissement extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function continent(): BelongsTo
+    {
+        return $this->belongsTo(Continent::class);
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class);
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::class);
+    }
+
+    public function villeRelation(): BelongsTo
+    {
+        return $this->belongsTo(Ville::class, 'ville_id');
+    }
+
+    public function secteur(): BelongsTo
+    {
+        return $this->belongsTo(Secteur::class);
+    }
+
+    public function primaryActivity(): BelongsTo
+    {
+        return $this->belongsTo(Activity::class, 'primary_activity_id');
     }
     
     /**
@@ -60,6 +103,19 @@ class Etablissement extends Model
         return $this->belongsToMany(Activity::class)
                     ->wherePivot('is_active', true)
                     ->withTimestamps();
+    }
+
+    /**
+     * Mediatheque CMS.
+     */
+    public function media()
+    {
+        return $this->hasMany(\Vendor\Cms\Models\Media::class, 'etablissement_id');
+    }
+
+    public function rendezVous()
+    {
+        return $this->hasMany(\Vendor\Etablissement\Models\RendezVous::class, 'etablissement_id');
     }
     
     /**
