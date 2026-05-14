@@ -1890,13 +1890,14 @@
                             <li><a href="#section-services">Services</a></li>
                             <li><a href="#section-gallery">Realisations</a></li>
                             <li><a href="#section-products">Produits</a></li>
-                            <li><a href="#section-reviews">Avis</a></li>
+                            <!-- <li><a href="#section-reviews">Avis</a></li> -->
                             <li><a href="#section-videos">Videos</a></li>
                             <li><a href="#section-social">Social Media</a></li>
                             <li><a href="#section-hours">Horaire</a></li>
                             <li><a href="#section-contact">Contact</a></li>
+                             <a href="{{ $devisLink }}" class="boids-fb-cta" target="_blank" rel="noopener noreferrer">Soumission Gratuite</a>
+
                         </ul>
-                        <a href="{{ $devisLink }}" class="boids-fb-cta" target="_blank" rel="noopener noreferrer">Soumission Gratuite</a>
                     </article>
 
                     <article class="boids-section boids-hero-embed" id="section-hero">
