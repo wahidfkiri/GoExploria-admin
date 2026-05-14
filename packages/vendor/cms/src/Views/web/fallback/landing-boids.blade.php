@@ -163,7 +163,7 @@
         }
 
         .boids-site-logo img {
-            width: 132px;
+            width: 200px;
             max-width: 100%;
             height: auto;
             object-fit: contain;
