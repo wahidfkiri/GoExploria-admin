@@ -1219,8 +1219,10 @@
                         <a href="#section-hero" class="boids-fb-brand">
                             @if(!empty($brandLogoUrl))
                                 <img src="{{ $brandLogoUrl }}" alt="{{ $siteName }}">
-                            @endif
+                                @else
                             <span>{{ $siteName }}</span>
+                            @endif
+
                         </a>
                         <ul class="boids-fb-links">
                             <li><a href="#section-stats">Stats</a></li>
