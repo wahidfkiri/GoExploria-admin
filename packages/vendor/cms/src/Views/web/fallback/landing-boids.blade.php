@@ -1593,7 +1593,8 @@
         $siteDescription = $etablissement->getSetting('description', null, 'general')
             ?: get_site_description($etablissement->id)
             ?: 'Description du site en cours de configuration.';
-        $phone = $etablissement->getSetting('phone', null, 'general')
+        $phone = $etablissement->getSetting('phone', null, 'company')
+            ?: $etablissement->getSetting('phone', null, 'general')
             ?: $etablissement->getSetting('telephone', null, 'general')
             ?: $etablissement->phone
             ?: $etablissement->telephone
@@ -1605,7 +1606,9 @@
             ?: $etablissement->email
             ?: null;
 
-        $address = $etablissement->getSetting('adress', null, 'general')
+        $address = $etablissement->getSetting('address', null, 'company')
+            ?: $etablissement->getSetting('adress', null, 'company')
+            ?: $etablissement->getSetting('adress', null, 'general')
             ?: $etablissement->getSetting('address', null, 'general')
             ?: $etablissement->getSetting('adresse', null, 'general')
             ?: $etablissement->adresse
