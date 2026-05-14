@@ -70,6 +70,7 @@
             text-decoration: none;
             font-weight: 700;
             font-size: 1rem;
+            display:none;
         }
 
         .boids-fb-brand img {
@@ -160,7 +161,6 @@
             align-items: center;
             justify-content: center;
             margin: 2px auto 12px;
-            display:none;
         }
 
         .boids-site-logo img {
