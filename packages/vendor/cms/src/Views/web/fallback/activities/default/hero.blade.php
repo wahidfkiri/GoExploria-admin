@@ -1,5 +1,5 @@
 ﻿{{-- Hero Section Component --}}
-<section class="hero-v2">
+<section class="hero-v2" style="margin-top:0px !important;">
     @php
         $tr = static function (string $text): string {
             $locale = app()->getLocale();

@@ -544,7 +544,10 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     protected function renderNoThemeLanding(?string $message = null)
     {
         $data = $this->prepareNoThemeLandingData($message);
-        $html = view('cms::web.fallback.landing-activity', $data)->render();
+        $view = $this->shouldUseBoidsFallback($data['activities'] ?? collect())
+            ? 'cms::web.fallback.landing-boids'
+            : 'cms::web.fallback.landing-activity';
+        $html = view($view, $data)->render();
 
         return $this->buildResponse($html);
     }
@@ -864,6 +867,41 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         }
 
         return null;
+    }
+
+    /**
+     * Detect if the establishment should use the custom "Boids/Bois" fallback landing.
+     */
+    protected function shouldUseBoidsFallback(Collection $activities): bool
+    {
+        $haystack = $activities
+            ->pluck('name')
+            ->filter()
+            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
+            ->implode(' ');
+
+        if ($haystack === '') {
+            $haystack = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
+        }
+
+        $keywords = [
+            'boids',
+            'bois',
+            'wood',
+            'scierie',
+            'moulin',
+            'sciage',
+            'lumber',
+            'timber',
+        ];
+
+        foreach ($keywords as $keyword) {
+            if (str_contains($haystack, $keyword)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

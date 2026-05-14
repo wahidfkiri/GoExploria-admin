@@ -818,8 +818,12 @@ if (!function_exists('get_site_name')) {
             return $default;
         }
         
-        $siteName = $etablissement->getSetting('site_name', null, 'general');
-        
+        // Priority requested: cms_settings (group=general, key=name) by etablissement_id.
+        $siteName = $etablissement->getSetting('name', null, 'general');
+        if (empty($siteName)) {
+            $siteName = $etablissement->getSetting('site_name', null, 'general');
+        }
+
         return $siteName ?: ($etablissement->name ?: $default);
     }
 }
