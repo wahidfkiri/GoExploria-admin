@@ -1593,9 +1593,23 @@
         $siteDescription = $etablissement->getSetting('description', null, 'general')
             ?: get_site_description($etablissement->id)
             ?: 'Description du site en cours de configuration.';
-        $phone = $etablissement->phone ?? $etablissement->telephone ?? null;
-        $email = $etablissement->email_contact ?? $etablissement->email ?? null;
-        $address = $etablissement->adresse ?? 'Adresse en cours de configuration';
+        $phone = $etablissement->getSetting('phone', null, 'general')
+            ?: $etablissement->getSetting('telephone', null, 'general')
+            ?: $etablissement->phone
+            ?: $etablissement->telephone
+            ?: null;
+
+        $email = $etablissement->getSetting('email', null, 'general')
+            ?: $etablissement->getSetting('email_contact', null, 'general')
+            ?: $etablissement->email_contact
+            ?: $etablissement->email
+            ?: null;
+
+        $address = $etablissement->getSetting('adress', null, 'general')
+            ?: $etablissement->getSetting('address', null, 'general')
+            ?: $etablissement->getSetting('adresse', null, 'general')
+            ?: $etablissement->adresse
+            ?: 'Adresse en cours de configuration';
 
         $gallery = collect($galleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
         $galleryFallback = collect([
