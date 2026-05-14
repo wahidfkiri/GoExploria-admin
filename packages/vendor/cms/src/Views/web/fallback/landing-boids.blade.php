@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
@@ -39,8 +39,8 @@
             --boids-card: #fff;
             --boids-ink: #1e1610;
             --boids-muted: #6b6254;
-            --boids-forest: #1a3a1e;
-            --boids-forest-mid: #2d5a34;
+            --boids-forest: #000000;
+            --boids-forest-mid: #1a1a1a;
             --boids-gold: #e65216;
             --boids-gold-light: #ff8a5d;
             --boids-radius: 16px;
@@ -50,7 +50,7 @@
         body { background: var(--boids-bg); color: var(--boids-ink); }
 
         .boids-fb-header {
-            background: rgba(26, 58, 30, 0.97);
+            background: rgba(0, 0, 0, 0.97);
             border: 1px solid rgba(230, 82, 22, 0.35);
             border-radius: 14px;
             padding: 12px 16px;
@@ -173,7 +173,7 @@
             margin: 0;
             font-size: 1.08rem;
             font-weight: 800;
-            color: #1f2d1f;
+            color: #1f1f1f;
         }
 
         .boids-sub {
@@ -207,9 +207,9 @@
             gap: 6px;
             padding: 6px 10px;
             border-radius: 999px;
-            background: #eef5ee;
-            border: 1px solid #cfe1cf;
-            color: #2e4a2f;
+            background: #f4f4f4;
+            border: 1px solid #d8d8d8;
+            color: #1f1f1f;
             font-size: 0.8rem;
             font-weight: 700;
         }
@@ -257,7 +257,7 @@
             border-bottom: 1px dashed #e6dccd;
             padding-bottom: 5px;
             font-size: 0.86rem;
-            color: #4a4f43;
+            color: #4a4a4a;
         }
 
         .boids-hour:last-child {
@@ -293,7 +293,7 @@
             margin: 0;
             font-family: "Playfair Display", serif;
             font-size: 1.7rem;
-            color: #223523;
+            color: #111111;
             line-height: 1.15;
         }
 
@@ -310,9 +310,9 @@
             gap: 8px;
             padding: 5px 12px;
             border-radius: 999px;
-            border: 1px solid #c9dbc9;
+            border: 1px solid #d6d6d6;
             background: #edf6ed;
-            color: #2b4b2e;
+            color: #1f1f1f;
             font-size: 0.78rem;
             font-weight: 800;
             letter-spacing: .04em;
@@ -396,6 +396,35 @@
             gap: 12px;
         }
 
+        .boids-stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .boids-stat {
+            border: 1px solid #ddd5c8;
+            border-radius: 12px;
+            padding: 14px 12px;
+            background: #fffdf9;
+            text-align: center;
+        }
+
+        .boids-stat strong {
+            display: block;
+            font-family: "Playfair Display", serif;
+            font-size: 1.9rem;
+            line-height: 1;
+            color: #111111;
+        }
+
+        .boids-stat span {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.82rem;
+            color: #5d564a;
+        }
+
         .boids-service {
             border-radius: 14px;
             overflow: hidden;
@@ -415,7 +444,7 @@
         .boids-service-body h4 {
             margin: 0 0 6px;
             font-family: "Playfair Display", serif;
-            color: #2a3728;
+            color: #1d1d1d;
             font-size: 1.12rem;
         }
 
@@ -426,11 +455,79 @@
             font-size: 0.89rem;
         }
 
+        .boids-products {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .boids-product {
+            border: 1px solid #ddd5c8;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #fffdfa;
+        }
+
+        .boids-product img {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .boids-product-body {
+            padding: 12px;
+        }
+
+        .boids-product-tag {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #ffd2c0;
+            color: #bb3c0c;
+            background: #fff2ec;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 4px 8px;
+            margin-bottom: 8px;
+        }
+
+        .boids-product-body h4 {
+            margin: 0 0 6px;
+            font-family: "Playfair Display", serif;
+            color: #161616;
+            font-size: 1.1rem;
+        }
+
+        .boids-product-body p {
+            margin: 0;
+            color: #625b4e;
+            font-size: 0.88rem;
+            line-height: 1.55;
+        }
+
         .boids-gallery {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             grid-auto-rows: 170px;
             gap: 8px;
+        }
+
+        .boids-filter-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .boids-filter-pill {
+            border: 1px solid #dadada;
+            background: #f6f6f6;
+            color: #1f1f1f;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            font-weight: 700;
         }
 
         .boids-media {
@@ -468,9 +565,14 @@
         }
 
         .boids-reviews {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .boids-reviews-track {
+            display: flex;
+            gap: 12px;
+            transition: transform .35s ease;
         }
 
         .boids-review {
@@ -478,6 +580,8 @@
             border-radius: 12px;
             padding: 12px;
             background: #fff;
+            min-width: min(360px, 100%);
+            flex: 0 0 min(360px, 100%);
         }
 
         .boids-stars {
@@ -495,9 +599,205 @@
         }
 
         .boids-review strong {
-            color: #2f3f2f;
+            color: #232323;
             font-size: .85rem;
         }
+
+        .boids-reviews-controls {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .boids-reviews-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid #cbcbcb;
+            background: #fff;
+            color: #111;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .boids-videos {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .boids-video-featured {
+            grid-column: span 3;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #ddd5c8;
+            min-height: 330px;
+            background: #000;
+        }
+
+        .boids-video-featured iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 330px;
+            border: 0;
+        }
+
+        .boids-video-card {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #ddd5c8;
+            position: relative;
+            cursor: pointer;
+            min-height: 180px;
+        }
+
+        .boids-video-card img {
+            width: 100%;
+            height: 100%;
+            min-height: 180px;
+            object-fit: cover;
+            display: block;
+            filter: brightness(0.72);
+        }
+
+        .boids-video-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .boids-video-play {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(230, 82, 22, 0.92);
+            color: #fff;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255,255,255,.45);
+        }
+
+        .boids-video-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .boids-social-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .boids-social-card {
+            border: 1px solid #ddd5c8;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .boids-social-head {
+            padding: 10px 12px;
+            border-bottom: 1px solid #efe6d9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #1d1d1d;
+        }
+
+        .boids-social-body {
+            padding: 10px 12px 12px;
+        }
+
+        .boids-social-post {
+            border: 1px solid #efe6d9;
+            border-radius: 10px;
+            background: #fbf8f2;
+            padding: 9px;
+            font-size: 0.82rem;
+            color: #4a4338;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .boids-social-post:last-child {
+            margin-bottom: 0;
+        }
+
+        .boids-social-pics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+        }
+
+        .boids-social-pics img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #ece3d7;
+        }
+
+        .boids-social-videos {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .boids-social-videos a {
+            position: relative;
+            display: block;
+        }
+
+        .boids-social-videos img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #ece3d7;
+            filter: brightness(.78);
+        }
+
+        .boids-social-videos span {
+            position: absolute;
+            inset: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1rem;
+            text-shadow: 0 1px 4px rgba(0,0,0,.45);
+        }
+
+        .boids-social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .boids-social-btn--fb { background: #1877f2; }
+        .boids-social-btn--ig { background: #25292e; }
+        .boids-social-btn--yt { background: #ff0000; }
 
         .boids-hours-contact {
             display: grid;
@@ -533,14 +833,14 @@
         .boids-contact-item:last-child { margin-bottom: 0; }
 
         .boids-contact-item i {
-            color: var(--boids-forest-mid);
+            color: #1f1f1f;
             margin-top: 2px;
         }
 
         .boids-cta-band {
             border-radius: 15px;
-            border: 1px solid #244325;
-            background: linear-gradient(130deg, #1a3a1e 0%, #264f2c 50%, #35653c 100%);
+            border: 1px solid #1f1f1f;
+            background: linear-gradient(130deg, #000000 0%, #111111 50%, #222222 100%);
             color: #fff;
             padding: 24px;
             text-align: center;
@@ -581,19 +881,20 @@
             border: 1px solid #dad4c7;
             border-radius: 12px;
             overflow: hidden;
+            height: 100%;
             min-height: 300px;
             position: relative;
             background: #f8fbff;
         }
 
-        .boids-map { width: 100%; height: 300px; }
+        .boids-map { width: 100%; height: 100%; min-height: 300px; }
 
         .lf-marker-wrap {
             width: 34px;
             height: 34px;
             border-radius: 50% 50% 50% 0;
             transform: rotate(-45deg);
-            background: #2f5e36;
+            background: #1a1a1a;
             border: 2px solid #fff;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             position: relative;
@@ -617,7 +918,7 @@
 
         .boids-form h4 {
             margin: 0 0 6px;
-            color: #2c3a2b;
+            color: #1f1f1f;
             font-family: "Playfair Display", serif;
             font-size: 1.5rem;
         }
@@ -641,7 +942,7 @@
             background: #fbf8f2;
             padding: 10px 11px;
             font: inherit;
-            color: #1f2c1f;
+            color: #1f1f1f;
         }
 
         .boids-textarea { min-height: 120px; resize: vertical; }
@@ -650,7 +951,7 @@
         .boids-submit {
             border: 0;
             border-radius: 10px;
-            background: linear-gradient(135deg, #1f4625, #315f38);
+            background: linear-gradient(135deg, #000000, #1a1a1a);
             color: #fff;
             font-weight: 800;
             font-size: .9rem;
@@ -666,7 +967,7 @@
             height: 52px;
             border-radius: 50%;
             border: 0;
-            background: linear-gradient(135deg, #1f4625, #315f38);
+            background: linear-gradient(135deg, #000000, #1a1a1a);
             color: #fff;
             box-shadow: 0 12px 24px rgba(16, 38, 84, 0.28);
             display: inline-flex;
@@ -725,11 +1026,21 @@
             .boids-hours-contact,
             .boids-contact-grid { grid-template-columns: 1fr; }
             .boids-services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .boids-reviews { grid-template-columns: 1fr; }
+            .boids-products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .boids-videos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .boids-video-featured { grid-column: span 2; }
+            .boids-social-grid { grid-template-columns: 1fr 1fr; }
+            .boids-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
 
         @media (max-width: 860px) {
             .boids-services { grid-template-columns: 1fr; }
+            .boids-products { grid-template-columns: 1fr; }
+            .boids-videos { grid-template-columns: 1fr; }
+            .boids-video-featured { grid-column: span 1; min-height: 260px; }
+            .boids-video-featured iframe { min-height: 260px; }
+            .boids-social-grid { grid-template-columns: 1fr; }
+            .boids-stats { grid-template-columns: 1fr; }
             .boids-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .boids-media--wide, .boids-media--tall { grid-column: span 1; grid-row: span 1; }
             .boids-form-grid { grid-template-columns: 1fr; }
@@ -745,7 +1056,7 @@
         $activityViewFolder = 'default';
         if (str_contains($activityNamesForViews, 'restaurant') || str_contains($activityNamesForViews, 'alimentation') || str_contains($activityNamesForViews, 'cuisine')) {
             $activityViewFolder = 'restaurant';
-        } elseif (str_contains($activityNamesForViews, 'hotel') || str_contains($activityNamesForViews, 'hébergement') || str_contains($activityNamesForViews, 'hebergement')) {
+        } elseif (str_contains($activityNamesForViews, 'hotel') || str_contains($activityNamesForViews, 'hebergement') || str_contains($activityNamesForViews, 'hebergement')) {
             $activityViewFolder = 'hotel';
         } elseif (str_contains($activityNamesForViews, 'voyage') || str_contains($activityNamesForViews, 'tourisme') || str_contains($activityNamesForViews, 'forfait')) {
             $activityViewFolder = 'voyage';
@@ -779,6 +1090,49 @@
 
         $mainImage = $gallery->first()['thumbnail'] ?? null;
         $secondImage = $gallery->skip(1)->first()['thumbnail'] ?? $mainImage;
+
+        if ($gallery->count() < 16 && $gallery->isNotEmpty()) {
+            $seed = $gallery->values();
+            while ($gallery->count() < 16) {
+                foreach ($seed as $item) {
+                    $gallery->push($item);
+                    if ($gallery->count() >= 16) {
+                        break;
+                    }
+                }
+            }
+            $gallery = $gallery->values();
+        }
+
+        $serviceTitles = [
+            'Sciage Haute Precision',
+            'Poutres Piece sur Piece',
+            'Revetement en Bois',
+            'Affutage de Lames',
+            'Planage & Emboutement',
+            'Transport & Recuperation',
+        ];
+
+        $productCards = [
+            ['tag' => 'Populaire', 'title' => 'Poutres Structurales', 'desc' => 'Poutres taillees sur mesure pour vos constructions residentielles et commerciales.'],
+            ['tag' => 'Bestseller', 'title' => 'Bardage a Clin', 'desc' => 'Revetement exterieur en bois massif, durable et esthetique, pret a installer.'],
+            ['tag' => 'Nouveau', 'title' => 'Planches Rabotees', 'desc' => 'Planches sciees et planees avec precision pour des finitions interieures et exterieures.'],
+        ];
+
+        $reviewCards = [
+            ['text' => 'Je vous le recommande fortement. Rapidité, efficacité et sécurité. Service très professionnel.', 'author' => 'François Robitaille · Google'],
+            ['text' => 'Travail de qualité, équipe ponctuelle et excellente communication. Résultat au-delà des attentes.', 'author' => 'Stéphane St-Aubin · Facebook'],
+            ['text' => 'Très bon rapport qualité-prix, service fiable et précis. Idéal pour les projets résidentiels.', 'author' => 'Jérémie Auger Laforce · Google'],
+            ['text' => 'Service impeccable du début à la fin. Équipe organisée et très respectueuse des délais.', 'author' => 'Marie-Lise Tremblay · Facebook'],
+            ['text' => 'Découpe parfaite de mes billots. Je recommande à 100 % pour la qualité du rendu final.', 'author' => 'Pierre Gagnon · Google'],
+        ];
+
+        $videoChannelUrl = 'https://www.youtube.com/@Moulin_%C3%A0_Scie_Lanaudi%C3%A8re';
+        $videoThumbs = [
+            'https://img.youtube.com/vi/0edALYi7_Qs/hqdefault.jpg',
+            'https://img.youtube.com/vi/7Wq5hRTvN5g/hqdefault.jpg',
+            'https://img.youtube.com/vi/6M4f5HXQYvQ/hqdefault.jpg',
+        ];
     @endphp
 
     @include("cms::web.fallback.activities.$activityViewFolder.vertical-menu")
@@ -813,7 +1167,7 @@
                                 @forelse($activities as $activity)
                                     <span class="boids-pill"><i class="fas fa-tag"></i> {{ $activity->name }}</span>
                                 @empty
-                                    <span class="boids-pill"><i class="fas fa-tag"></i> Activité en configuration</span>
+                                    <span class="boids-pill"><i class="fas fa-tag"></i> Activite en configuration</span>
                                 @endforelse
                             </div>
                         </div>
@@ -822,7 +1176,7 @@
                     <article class="boids-card">
                         <div class="boids-head">
                             <h3 class="boids-title">Promotions</h3>
-                            <p class="boids-sub">Visuels publicitaires associés à l'établissement.</p>
+                            <p class="boids-sub">Visuels publicitaires associes a l'etablissement.</p>
                         </div>
                         <div class="boids-body">
                             <div class="boids-ads">
@@ -834,7 +1188,7 @@
                                 @empty
                                     @foreach($gallery->take(3) as $media)
                                         <a class="boids-ad" href="{{ $devisLink }}" target="_blank" rel="noopener noreferrer">
-                                            <img src="{{ $media['thumbnail'] }}" alt="{{ $media['name'] ?? 'Publicité' }}">
+                                            <img src="{{ $media['thumbnail'] }}" alt="{{ $media['name'] ?? 'Publicite' }}">
                                             <span>Espace promotionnel</span>
                                         </a>
                                     @endforeach
@@ -869,9 +1223,13 @@
                             <span>{{ $siteName }}</span>
                         </a>
                         <ul class="boids-fb-links">
+                            <li><a href="#section-stats">Stats</a></li>
                             <li><a href="#section-services">Services</a></li>
-                            <li><a href="#section-gallery">Réalisations</a></li>
+                            <li><a href="#section-gallery">Realisations</a></li>
+                            <li><a href="#section-products">Produits</a></li>
                             <li><a href="#section-reviews">Avis</a></li>
+                            <li><a href="#section-videos">Videos</a></li>
+                            <li><a href="#section-social">Reseaux</a></li>
                             <li><a href="#section-hours">Horaire</a></li>
                             <li><a href="#section-contact">Contact</a></li>
                         </ul>
@@ -883,105 +1241,209 @@
                     </article>
 
                     <article class="boids-section" id="section-about">
-                        <span class="boids-kicker"><i class="fas fa-tree"></i> À propos</span>
-                        <div class="boids-row-head">
-                            <h3>Votre Bois, Notre Expertise</h3>
-                            <p>Un positionnement premium pour votre activité de sciage, transformation, revêtement et services techniques bois.</p>
-                        </div>
-                        <div class="boids-about">
-                            <div class="boids-about-stack">
-                                <img class="boids-about-main" src="https://admin.goexploriabusiness.com/storage/tasks/149/1778594478_img-11.jpg" alt="Projet principal">
-                                <img class="boids-about-second" src="https://admin.goexploriabusiness.com/storage/tasks/149/1778594478_689226330-122292149624252522-6781939564791356671-n.jpg" alt="Projet secondaire">
-                                <div class="boids-badge">
-                                    <strong>100%</strong>
-                                    Mobile & Sur place
-                                </div>
-                            </div>
-                            <div>
-                                <ul class="boids-feature-list">
-                                    <li>Équipement hydraulique informatisé pour des coupes précises.</li>
-                                    <li>Service mobile régional avec intervention rapide.</li>
-                                    <li>Valorisation du bois local et production sur mesure.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </article>
+    <span class="boids-kicker"><i class="fas fa-tree"></i> À propos</span>
+    <div class="boids-row-head">
+        <h3>Votre Bois, Notre Expertise</h3>
+        <p>Un positionnement premium pour votre activité de sciage, transformation, revêtement et services techniques bois.</p>
+    </div>
+    <div class="boids-about">
+        <div class="boids-about-stack">
+            <img class="boids-about-main" src="{{ $mainImage }}" alt="Projet principal">
+            <img class="boids-about-second" src="{{ $secondImage }}" alt="Projet secondaire">
+            <div class="boids-badge">
+                <strong>100%</strong>
+                Mobile & Sur place
+            </div>
+        </div>
+        <div>
+            <ul class="boids-feature-list">
+                <li>Équipement hydraulique informatisé pour des coupes précises.</li>
+                <li>Service mobile régional avec intervention rapide.</li>
+                <li>Valorisation du bois local et production sur mesure.</li>
+            </ul>
+        </div>
+    </div>
+</article>
 
-                    <article class="boids-section" id="section-services">
-                        <span class="boids-kicker"><i class="fas fa-screwdriver-wrench"></i> Services</span>
-                        <div class="boids-row-head">
-                            <h3>Sciage & Transformation du Bois</h3>
-                        </div>
-                        <div class="boids-services">
-                            @foreach($gallery->take(6)->values() as $index => $media)
-                                <div class="boids-service">
-                                    <img src="{{ $media['thumbnail'] }}" alt="{{ $media['name'] ?? 'Service' }}">
-                                    <div class="boids-service-body">
-                                        <h4>
-                                            @if($index === 0) Sciage Haute Précision
-                                            @elseif($index === 1) Poutres Pièce sur Pièce
-                                            @elseif($index === 2) Revêtement en Bois
-                                            @elseif($index === 3) Affûtage de Lames
-                                            @elseif($index === 4) Planage & Emboutement
-                                            @else Transport & Récupération
-                                            @endif
-                                        </h4>
-                                        <p>Présentation optimisée de vos prestations avec visuels forts et message commercial clair.</p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </article>
+<article class="boids-section" id="section-stats">
+    <span class="boids-kicker"><i class="fas fa-chart-column"></i> Chiffres clés</span>
+    <div class="boids-stats">
+        <div class="boids-stat"><strong>38″</strong><span>Diamètre max. de billots</span></div>
+        <div class="boids-stat"><strong>20′</strong><span>Longueur max. de coupe</span></div>
+        <div class="boids-stat"><strong>7/7</strong><span>Jours de service</span></div>
+        <div class="boids-stat"><strong>3</strong><span>Régions desservies</span></div>
+    </div>
+</article>
 
-                    <article class="boids-section" id="section-gallery">
-                        <span class="boids-kicker"><i class="fas fa-images"></i> Réalisations</span>
-                        <div class="boids-row-head">
-                            <h3>Galerie de Projets</h3>
-                            <p>La galerie se remplit automatiquement depuis la médiathèque CMS quand des médias existent.</p>
-                        </div>
-                        <div class="boids-gallery" id="boidsGallery">
-                            @foreach($gallery->take(16)->values() as $index => $media)
-                                @php
-                                    $galleryClass = 'boids-media';
-                                    if ($index === 0) {
-                                        $galleryClass .= ' boids-media--wide boids-media--tall';
-                                    } elseif (in_array($index, [5, 11], true)) {
-                                        $galleryClass .= ' boids-media--wide';
-                                    }
-                                @endphp
-                                <div class="{{ $galleryClass }}" data-src="{{ $media['thumbnail'] }}">
-                                    <img src="{{ $media['thumbnail'] }}" alt="{{ $media['name'] ?? ('Projet ' . ($index + 1)) }}">
-                                    <div class="boids-media-label">{{ $media['name'] ?? ('Projet ' . ($index + 1)) }}</div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </article>
+<article class="boids-section" id="section-services">
+    <span class="boids-kicker"><i class="fas fa-screwdriver-wrench"></i> Services</span>
+    <div class="boids-row-head">
+        <h3>Sciage & Transformation du Bois</h3>
+    </div>
+    <div class="boids-services">
+        @foreach($gallery->take(6)->values() as $index => $media)
+            <div class="boids-service">
+                <img src="{{ $media['thumbnail'] }}" alt="{{ $media['name'] ?? 'Service' }}">
+                <div class="boids-service-body">
+                    <h4>{{ $serviceTitles[$index] ?? 'Service spécialisé' }}</h4>
+                    <p>Présentation optimisée de vos prestations avec visuels forts et message commercial clair.</p>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</article>
 
-                    <article class="boids-section" id="section-reviews">
-                        <span class="boids-kicker"><i class="fas fa-star"></i> Avis Clients</span>
-                        <div class="boids-row-head">
-                            <h3>Votre Confiance, Notre Fierté</h3>
-                        </div>
-                        <div class="boids-reviews">
-                            <div class="boids-review">
-                                <div class="boids-stars">★★★★★</div>
-                                <p>Service rapide, efficace et professionnel. Très bonne qualité de coupe.</p>
-                                <strong>François R. · Google</strong>
-                            </div>
-                            <div class="boids-review">
-                                <div class="boids-stars">★★★★★</div>
-                                <p>Équipe ponctuelle et communication claire. Résultat au-delà des attentes.</p>
-                                <strong>Stéphane S. · Facebook</strong>
-                            </div>
-                            <div class="boids-review">
-                                <div class="boids-stars">★★★★★</div>
-                                <p>Excellent rapport qualité-prix. Je recommande pour projets résidentiels et pro.</p>
-                                <strong>Jérémie A. · Google</strong>
-                            </div>
-                        </div>
-                    </article>
+<article class="boids-section" id="section-gallery">
+    <span class="boids-kicker"><i class="fas fa-images"></i> Réalisations</span>
+    <div class="boids-row-head">
+        <h3>Galerie de Projets</h3>
+        <p>La galerie se remplit automatiquement depuis la médiathèque CMS quand des médias existent.</p>
+    </div>
+    <div class="boids-filter-pills">
+        <span class="boids-filter-pill">Tous</span>
+        <span class="boids-filter-pill">Sciage</span>
+        <span class="boids-filter-pill">Poutres</span>
+        <span class="boids-filter-pill">Bardage</span>
+        <span class="boids-filter-pill">Planage</span>
+    </div>
+    <div class="boids-gallery" id="boidsGallery">
+        @foreach($gallery->take(16)->values() as $index => $media)
+            @php
+                $galleryClass = 'boids-media';
+                if ($index === 0) {
+                    $galleryClass .= ' boids-media--wide boids-media--tall';
+                } elseif (in_array($index, [5, 11], true)) {
+                    $galleryClass .= ' boids-media--wide';
+                }
+            @endphp
+            <div class="{{ $galleryClass }}" data-src="{{ $media['thumbnail'] }}">
+                <img src="{{ $media['thumbnail'] }}" alt="{{ $media['name'] ?? ('Projet ' . ($index + 1)) }}">
+                <div class="boids-media-label">{{ $media['name'] ?? ('Projet ' . ($index + 1)) }}</div>
+            </div>
+        @endforeach
+    </div>
+</article>
 
-                    <article class="boids-section" id="section-hours">
+<article class="boids-section" id="section-products">
+    <span class="boids-kicker"><i class="fas fa-box-open"></i> Produits Vedette</span>
+    <div class="boids-row-head">
+        <h3>Nos Matériaux Phares</h3>
+        <p>Des matériaux de qualité supérieure issus de notre expertise en transformation du bois.</p>
+    </div>
+    <div class="boids-products">
+        @foreach($productCards as $index => $product)
+            @php $media = $gallery->get(($index + 1) % $gallery->count()); @endphp
+            <div class="boids-product">
+                <img src="{{ $media['thumbnail'] }}" alt="{{ $product['title'] }}">
+                <div class="boids-product-body">
+                    <span class="boids-product-tag">{{ $product['tag'] }}</span>
+                    <h4>{{ $product['title'] }}</h4>
+                    <p>{{ $product['desc'] }}</p>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</article>
+
+<article class="boids-section" id="section-reviews">
+    <span class="boids-kicker"><i class="fas fa-star"></i> Avis Clients</span>
+    <div class="boids-row-head">
+        <h3>Votre Confiance, Notre Fierté</h3>
+        <p>Basé sur les retours clients Google et Facebook.</p>
+    </div>
+    <div class="boids-reviews">
+        <div class="boids-reviews-track" id="boidsReviewsTrack">
+            @foreach($reviewCards as $review)
+                <div class="boids-review">
+                    <div class="boids-stars">★★★★★</div>
+                    <p>{{ $review['text'] }}</p>
+                    <strong>{{ $review['author'] }}</strong>
+                </div>
+            @endforeach
+        </div>
+    </div>
+    <div class="boids-reviews-controls">
+        <button type="button" class="boids-reviews-btn" id="boidsReviewPrev" aria-label="Précédent">‹</button>
+        <button type="button" class="boids-reviews-btn" id="boidsReviewNext" aria-label="Suivant">›</button>
+    </div>
+</article>
+
+<article class="boids-section" id="section-videos">
+    <span class="boids-kicker"><i class="fas fa-video"></i> Vidéos</span>
+    <div class="boids-row-head">
+        <h3>Voyez Notre Expertise en Vidéo</h3>
+        <p>Présentez vos réalisations en action avec un bloc vidéo premium.</p>
+    </div>
+    <div class="boids-videos">
+        <div class="boids-video-featured">
+            <iframe
+                src="https://www.youtube.com/embed/0edALYi7_Qs?autoplay=0&mute=1&rel=0"
+                title="Vidéo vedette"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+        @foreach($videoThumbs as $index => $thumb)
+            <a class="boids-video-card" href="{{ $videoChannelUrl }}" target="_blank" rel="noopener noreferrer">
+                <img src="{{ $thumb }}" alt="Vidéo {{ $index + 1 }}">
+                <div class="boids-video-overlay">
+                    <span class="boids-video-play"><i class="fas fa-play"></i></span>
+                    <span class="boids-video-title">Séquence vidéo {{ $index + 1 }}</span>
+                </div>
+            </a>
+        @endforeach
+    </div>
+</article>
+
+<article class="boids-section" id="section-social">
+    <span class="boids-kicker"><i class="fas fa-share-nodes"></i> Réseaux Sociaux</span>
+    <div class="boids-row-head">
+        <h3>Suivez-Nous En Ligne</h3>
+        <p>Restez connectés et valorisez vos contenus sur tous les canaux.</p>
+    </div>
+    <div class="boids-social-grid">
+        <div class="boids-social-card">
+            <div class="boids-social-head"><i class="fab fa-facebook"></i> Facebook</div>
+            <div class="boids-social-body">
+                <div class="boids-social-post">Nouveau projet de sciage complété avec succès. Résultat précis et client satisfait.</div>
+                <div class="boids-social-post">Service mobile rapide sur site avec découpe personnalisée selon les besoins.</div>
+                <a class="boids-social-btn boids-social-btn--fb" href="https://www.facebook.com/MoulinaciesLanaudiere" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-facebook"></i> Suivre sur Facebook
+                </a>
+            </div>
+        </div>
+        <div class="boids-social-card">
+            <div class="boids-social-head"><i class="fab fa-instagram"></i> Galerie Sociale</div>
+            <div class="boids-social-body">
+                <div class="boids-social-pics">
+                    @foreach($gallery->take(6) as $media)
+                        <img src="{{ $media['thumbnail'] }}" alt="{{ $media['name'] ?? 'Photo' }}">
+                    @endforeach
+                </div>
+                <a class="boids-social-btn boids-social-btn--ig" href="{{ $devisLink }}" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-images"></i> Voir plus de photos
+                </a>
+            </div>
+        </div>
+        <div class="boids-social-card">
+            <div class="boids-social-head"><i class="fab fa-youtube"></i> YouTube</div>
+            <div class="boids-social-body">
+                <div class="boids-social-videos">
+                    @foreach($videoThumbs as $thumb)
+                        <a href="{{ $videoChannelUrl }}" target="_blank" rel="noopener noreferrer">
+                            <img src="{{ $thumb }}" alt="Vignette vidéo">
+                            <span><i class="fas fa-play-circle"></i></span>
+                        </a>
+                    @endforeach
+                </div>
+                <a class="boids-social-btn boids-social-btn--yt" href="{{ $videoChannelUrl }}" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-youtube"></i> S'abonner sur YouTube
+                </a>
+            </div>
+        </div>
+    </div>
+</article>
+<article class="boids-section" id="section-hours">
                         <span class="boids-kicker"><i class="fas fa-clock"></i> Horaire & Contact</span>
                         <div class="boids-hours-contact">
                             <div class="boids-hours-card">
@@ -996,7 +1458,7 @@
                                 </div>
                             </div>
                             <div class="boids-contact-card">
-                                <div class="boids-hours-title">Coordonnées</div>
+                                <div class="boids-hours-title">Coordonnees</div>
                                 <div class="boids-contact-body">
                                     <div class="boids-contact-item"><i class="fas fa-location-dot"></i><span>{{ $address }}</span></div>
                                     @if($phone)<div class="boids-contact-item"><i class="fas fa-phone"></i><span>{{ $phone }}</span></div>@endif
@@ -1008,8 +1470,8 @@
 
                     <article class="boids-section">
                         <div class="boids-cta-band">
-                            <h3>Prêt à Transformer Votre Bois ?</h3>
-                            <p>Recevez une soumission claire, rapide et adaptée à votre projet.</p>
+                            <h3>Pret a Transformer Votre Bois ?</h3>
+                            <p>Recevez une soumission claire, rapide et adaptee a votre projet.</p>
                             <a href="{{ $devisLink }}" class="boids-cta-btn" target="_blank" rel="noopener noreferrer"><i class="fas fa-paper-plane"></i> Demander ma Soumission</a>
                         </div>
                     </article>
@@ -1018,24 +1480,24 @@
                         <span class="boids-kicker"><i class="fas fa-envelope-open-text"></i> Soumission</span>
                         <div class="boids-contact-grid">
                             <div class="boids-map-wrap">
-                                <div id="boidsMap" class="boids-map"></div>
+                                <div id="boidsMap" class="boids-map" style="height:100%;"></div>
                             </div>
                             <form id="boidsLandingContactForm" class="boids-form">
                                 <h4>Soumission Gratuite</h4>
-                                <p>Décrivez votre projet et nous vous recontactons rapidement.</p>
+                                <p>Decrivez votre projet et nous vous recontactons rapidement.</p>
                                 <div class="boids-form-grid">
-                                    <input class="boids-input" type="text" name="first_name" placeholder="Prénom">
+                                    <input class="boids-input" type="text" name="first_name" placeholder="Prenom">
                                     <input class="boids-input" type="text" name="last_name" placeholder="Nom">
                                     <input class="boids-input boids-col-full" type="email" name="email" placeholder="Courriel">
-                                    <input class="boids-input boids-col-full" type="text" name="phone" placeholder="Téléphone">
+                                    <input class="boids-input boids-col-full" type="text" name="phone" placeholder="Telephone">
                                     <select class="boids-select boids-col-full" name="service">
                                         <option value="">Type de service</option>
-                                        <option value="Sciage haute précision">Sciage haute précision</option>
-                                        <option value="Poutres pièce sur pièce">Poutres pièce sur pièce</option>
-                                        <option value="Revêtement en bois">Revêtement en bois</option>
+                                        <option value="Sciage haute precision">Sciage haute precision</option>
+                                        <option value="Poutres piece sur piece">Poutres piece sur piece</option>
+                                        <option value="Revetement en bois">Revetement en bois</option>
                                         <option value="Planage et emboutement">Planage et emboutement</option>
                                     </select>
-                                    <textarea class="boids-textarea boids-col-full" name="message" placeholder="Décrivez vos besoins"></textarea>
+                                    <textarea class="boids-textarea boids-col-full" name="message" placeholder="Decrivez vos besoins"></textarea>
                                     <button class="boids-submit boids-col-full" type="submit">Envoyer ma demande de soumission</button>
                                 </div>
                             </form>
@@ -1132,8 +1594,38 @@
                 });
             }
 
+            const reviewsTrack = document.getElementById('boidsReviewsTrack');
+            const reviewPrev = document.getElementById('boidsReviewPrev');
+            const reviewNext = document.getElementById('boidsReviewNext');
+            if (reviewsTrack && reviewPrev && reviewNext) {
+                let offset = 0;
+                const step = function () {
+                    const card = reviewsTrack.querySelector('.boids-review');
+                    return card ? (card.getBoundingClientRect().width + 12) : 372;
+                };
+
+                reviewNext.addEventListener('click', function () {
+                    const max = Math.max(0, reviewsTrack.scrollWidth - reviewsTrack.parentElement.clientWidth);
+                    offset = Math.min(offset + step(), max);
+                    reviewsTrack.style.transform = 'translateX(-' + offset + 'px)';
+                });
+
+                reviewPrev.addEventListener('click', function () {
+                    offset = Math.max(offset - step(), 0);
+                    reviewsTrack.style.transform = 'translateX(-' + offset + 'px)';
+                });
+
+                window.addEventListener('resize', function () {
+                    const max = Math.max(0, reviewsTrack.scrollWidth - reviewsTrack.parentElement.clientWidth);
+                    if (offset > max) {
+                        offset = max;
+                        reviewsTrack.style.transform = 'translateX(-' + offset + 'px)';
+                    }
+                });
+            }
+
             if (window.L && document.getElementById('boidsMap')) {
-                // Adresse exacte demandée: St-Alphonse Rodriguez, Quebec J0K 1W0
+                // Adresse exacte demandee: St-Alphonse Rodriguez, Quebec J0K 1W0
                 const lat = 46.18506;
                 const lng = -73.692169;
                 const exactAddress = 'St-Alphonse Rodriguez, Quebec J0K 1W0';
@@ -1183,3 +1675,5 @@
     </script>
 </body>
 </html>
+
+
