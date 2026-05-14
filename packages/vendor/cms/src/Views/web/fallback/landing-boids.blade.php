@@ -219,6 +219,59 @@
             gap: 10px;
         }
 
+        .boids-products-mini {
+            display: grid;
+            gap: 10px;
+        }
+
+        .boids-product-mini {
+            border: 1px solid #ddd5c8;
+            border-radius: 10px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            background: #fffdfa;
+            display: block;
+        }
+
+        .boids-product-mini img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .boids-product-mini-body {
+            padding: 8px 10px 10px;
+        }
+
+        .boids-product-mini-body strong {
+            display: block;
+            font-size: 0.86rem;
+            line-height: 1.35;
+            color: #151515;
+            margin-bottom: 3px;
+        }
+
+        .boids-product-mini-body span {
+            display: block;
+            font-size: 0.76rem;
+            color: #666055;
+            line-height: 1.4;
+        }
+
+        .boids-product-mini-price {
+            display: inline-flex;
+            margin-top: 6px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid #ffd2c0;
+            background: #fff2ec;
+            color: #bb3c0c;
+            font-size: 0.74rem;
+            font-weight: 800;
+        }
+
         .boids-ad {
             position: relative;
             border-radius: 12px;
@@ -504,6 +557,18 @@
             color: #625b4e;
             font-size: 0.88rem;
             line-height: 1.55;
+        }
+
+        .boids-product-price {
+            display: inline-flex;
+            margin-top: 9px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid #ffd2c0;
+            background: #fff2ec;
+            color: #bb3c0c;
+            font-size: 0.8rem;
+            font-weight: 800;
         }
 
         .boids-gallery {
@@ -799,6 +864,328 @@
         .boids-social-btn--ig { background: #25292e; }
         .boids-social-btn--yt { background: #ff0000; }
 
+        /* Instagram slider section */
+        .insta-section {
+            padding: 18px 0 6px;
+            background: linear-gradient(145deg, #faf7f2 0%, #ffffff 100%);
+            border-radius: 16px;
+        }
+
+        .insta-container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 6px;
+        }
+
+        .insta-header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .insta-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf, #4f5bd5);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+        }
+
+        .insta-header h2 {
+            font-family: "Playfair Display", serif;
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            color: #222;
+            margin: 0 0 8px;
+        }
+
+        .insta-header p {
+            font-size: 0.95rem;
+            color: #676767;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .insta-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .insta-card {
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 14px 28px -12px rgba(0,0,0,0.22);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            cursor: pointer;
+            position: relative;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .insta-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 22px 34px -12px rgba(0,0,0,0.28);
+        }
+
+        .insta-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .insta-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .insta-icon i {
+            color: #d62976;
+            font-size: 1.1rem;
+        }
+
+        .insta-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.72));
+            color: #fff;
+            padding: 18px 12px 12px;
+        }
+
+        .insta-overlay p {
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        .insta-overlay .likes {
+            font-weight: 700;
+            font-size: 0.86rem;
+        }
+
+        .insta-overlay .likes i {
+            color: #ff3040;
+        }
+
+        .insta-overlay .hashtag {
+            margin-top: 4px;
+            font-size: 0.8rem;
+            opacity: 0.95;
+        }
+
+        .insta-cta {
+            text-align: center;
+            margin-top: 18px;
+        }
+
+        .insta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #f09433, #d62976, #962fbf);
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 10px 22px rgba(214, 41, 118, 0.3);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .insta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 26px rgba(214, 41, 118, 0.38);
+        }
+
+        /* Facebook section */
+        .facebook-section {
+            padding: 20px 0 8px;
+            background: #f0f2f5;
+            border-radius: 16px;
+            font-family: "DM Sans", sans-serif;
+        }
+
+        .facebook-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        .facebook-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .facebook-badge {
+            display: inline-block;
+            background: #1877f2;
+            color: #fff;
+            padding: 8px 22px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            box-shadow: 0 10px 20px rgba(24, 119, 242, 0.3);
+        }
+
+        .facebook-header h2 {
+            font-family: "Playfair Display", serif;
+            font-size: clamp(1.9rem, 3.2vw, 2.9rem);
+            color: #1c2e4a;
+            margin: 0 0 8px;
+        }
+
+        .facebook-header p {
+            font-size: 0.95rem;
+            color: #4a5568;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .facebook-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .fb-post {
+            background: #fff;
+            border-radius: 18px;
+            padding: 14px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border: 1px solid #e4e6eb;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .fb-post:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 24px rgba(0,0,0,0.1);
+        }
+
+        .fb-post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .fb-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 2px solid #eef2fa;
+        }
+
+        .fb-post-header h4 {
+            font-size: 1.02rem;
+            margin: 0;
+            color: #1f2937;
+        }
+
+        .fb-post-header p {
+            color: #6b7280;
+            margin: 0;
+            font-size: 0.82rem;
+        }
+
+        .fb-post p {
+            margin: 0;
+            color: #283141;
+            font-size: 0.9rem;
+            line-height: 1.45;
+        }
+
+        .fb-post-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 10px 0;
+            display: block;
+        }
+
+        .fb-stats {
+            display: flex;
+            gap: 18px;
+            color: #65676b;
+            font-size: 0.86rem;
+            font-weight: 600;
+        }
+
+        .fb-albums-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .fb-album {
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.25s ease;
+        }
+
+        .fb-album:hover {
+            transform: scale(1.03);
+        }
+
+        .fb-album img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .fb-album-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: #fff;
+            padding: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .fb-cta {
+            text-align: center;
+            margin-top: 14px;
+        }
+
+        .fb-button {
+            display: inline-block;
+            background: #1877f2;
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 12px 22px rgba(24, 119, 242, 0.35);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .fb-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 30px rgba(24, 119, 242, 0.45);
+        }
+
         .boids-hours-contact {
             display: grid;
             grid-template-columns: .95fr 1.05fr;
@@ -1031,6 +1418,8 @@
             .boids-video-featured { grid-column: span 2; }
             .boids-social-grid { grid-template-columns: 1fr 1fr; }
             .boids-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .insta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .fb-albums-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
 
         @media (max-width: 860px) {
@@ -1041,6 +1430,9 @@
             .boids-video-featured iframe { min-height: 260px; }
             .boids-social-grid { grid-template-columns: 1fr; }
             .boids-stats { grid-template-columns: 1fr; }
+            .insta-grid { grid-template-columns: 1fr; }
+            .facebook-grid { grid-template-columns: 1fr; }
+            .fb-albums-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .boids-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .boids-media--wide, .boids-media--tall { grid-column: span 1; grid-row: span 1; }
             .boids-form-grid { grid-template-columns: 1fr; }
@@ -1114,9 +1506,9 @@
         ];
 
         $productCards = [
-            ['tag' => 'Populaire', 'title' => 'Poutres Structurales', 'desc' => 'Poutres taillees sur mesure pour vos constructions residentielles et commerciales.'],
-            ['tag' => 'Bestseller', 'title' => 'Bardage a Clin', 'desc' => 'Revetement exterieur en bois massif, durable et esthetique, pret a installer.'],
-            ['tag' => 'Nouveau', 'title' => 'Planches Rabotees', 'desc' => 'Planches sciees et planees avec precision pour des finitions interieures et exterieures.'],
+            ['tag' => 'Populaire', 'title' => 'Poutres Structurales', 'desc' => 'Poutres taillees sur mesure pour vos constructions residentielles et commerciales.', 'price' => 189, 'currency' => 'CAD'],
+            ['tag' => 'Bestseller', 'title' => 'Bardage a Clin', 'desc' => 'Revetement exterieur en bois massif, durable et esthetique, pret a installer.', 'price' => 129, 'currency' => 'CAD'],
+            ['tag' => 'Nouveau', 'title' => 'Planches Rabotees', 'desc' => 'Planches sciees et planees avec precision pour des finitions interieures et exterieures.', 'price' => 89, 'currency' => 'CAD'],
         ];
 
         $reviewCards = [
@@ -1132,6 +1524,94 @@
             'https://img.youtube.com/vi/0edALYi7_Qs/hqdefault.jpg',
             'https://img.youtube.com/vi/7Wq5hRTvN5g/hqdefault.jpg',
             'https://img.youtube.com/vi/6M4f5HXQYvQ/hqdefault.jpg',
+        ];
+
+        $instagramUrl = $etablissement->instagram_url ?? $etablissement->instagram ?? '#';
+        $instagramHandle = '@notre_compte';
+        if (is_string($instagramUrl) && str_contains($instagramUrl, 'instagram.com')) {
+            $path = trim((string) parse_url($instagramUrl, PHP_URL_PATH), '/');
+            if (!empty($path)) {
+                $segment = explode('/', $path)[0] ?? '';
+                if (!empty($segment)) {
+                    $instagramHandle = '@' . $segment;
+                }
+            }
+        }
+
+        $instagramBase = collect($galleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
+        if ($instagramBase->isEmpty()) {
+            $instagramBase = $gallery->values();
+        }
+        $instagramPosts = $instagramBase->take(-4)->values();
+        if ($instagramPosts->count() < 4 && $instagramBase->isNotEmpty()) {
+            $seedPosts = $instagramBase->values();
+            while ($instagramPosts->count() < 4) {
+                foreach ($seedPosts as $item) {
+                    $instagramPosts->push($item);
+                    if ($instagramPosts->count() >= 4) {
+                        break;
+                    }
+                }
+            }
+            $instagramPosts = $instagramPosts->values();
+        }
+
+        $instagramLikes = [2345, 1892, 3567, 4210];
+        $instagramTags = ['#instant-creatif', '#naturelovers', '#shoplocal', '#explore'];
+
+        $facebookUrl = $etablissement->facebook_url ?? $etablissement->facebook ?? '#';
+        $facebookPageLabel = '/notrepage';
+        if (is_string($facebookUrl) && str_contains($facebookUrl, 'facebook.com')) {
+            $path = trim((string) parse_url($facebookUrl, PHP_URL_PATH), '/');
+            if (!empty($path)) {
+                $segment = explode('/', $path)[0] ?? '';
+                if (!empty($segment)) {
+                    $facebookPageLabel = '/' . $segment;
+                }
+            }
+        }
+
+        $facebookBase = collect($galleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
+        if ($facebookBase->isEmpty()) {
+            $facebookBase = $gallery->values();
+        }
+
+        $facebookPostsMedia = $facebookBase->take(-2)->values();
+        if ($facebookPostsMedia->count() < 2 && $facebookBase->isNotEmpty()) {
+            while ($facebookPostsMedia->count() < 2) {
+                foreach ($facebookBase as $item) {
+                    $facebookPostsMedia->push($item);
+                    if ($facebookPostsMedia->count() >= 2) {
+                        break;
+                    }
+                }
+            }
+            $facebookPostsMedia = $facebookPostsMedia->values();
+        }
+
+        $facebookAlbums = $facebookBase->take(-4)->values();
+        if ($facebookAlbums->count() < 4 && $facebookBase->isNotEmpty()) {
+            while ($facebookAlbums->count() < 4) {
+                foreach ($facebookBase as $item) {
+                    $facebookAlbums->push($item);
+                    if ($facebookAlbums->count() >= 4) {
+                        break;
+                    }
+                }
+            }
+            $facebookAlbums = $facebookAlbums->values();
+        }
+
+        $facebookPostMeta = [
+            ['time' => 'il y a 2 heures', 'text' => 'Découvrez les coulisses de notre nouveau projet !', 'likes' => 234, 'comments' => 18, 'shares' => 7],
+            ['time' => 'hier', 'text' => 'Événement spécial cette fin de semaine ! Venez nombreux.', 'likes' => 567, 'comments' => 42, 'shares' => 15],
+        ];
+
+        $facebookAlbumLabels = [
+            '<i class="fas fa-video"></i> 5 vidéos',
+            '<i class="fas fa-images"></i> 24 photos',
+            '<i class="fas fa-calendar"></i> Événements',
+            '<i class="fas fa-users"></i> Communauté',
         ];
     @endphp
 
@@ -1199,6 +1679,28 @@
 
                     <article class="boids-card">
                         <div class="boids-head">
+                            <h3 class="boids-title">Produits en vedette</h3>
+                            <p class="boids-sub">Sélection de produits mis en avant pour vos visiteurs.</p>
+                        </div>
+                        <div class="boids-body">
+                            <div class="boids-products-mini">
+                                @foreach($productCards as $index => $product)
+                                    @php $media = $gallery->get(($index + 2) % $gallery->count()); @endphp
+                                    <a class="boids-product-mini" href="{{ $devisLink }}" target="_blank" rel="noopener noreferrer">
+                                        <img src="{{ $media['thumbnail'] }}" alt="{{ $product['title'] }}">
+                                        <div class="boids-product-mini-body">
+                                            <strong>{{ $product['title'] }}</strong>
+                                            <span>{{ $product['tag'] }} · {{ $product['desc'] }}</span>
+                                            <span class="boids-product-mini-price">À partir de {{ number_format((float) ($product['price'] ?? 0), 0, ',', ' ') }} {{ $product['currency'] ?? 'CAD' }}</span>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="boids-card">
+                        <div class="boids-head">
                             <h3 class="boids-title">Business Hours</h3>
                         </div>
                         <div class="boids-body">
@@ -1232,6 +1734,8 @@
                             <li><a href="#section-reviews">Avis</a></li>
                             <li><a href="#section-videos">Videos</a></li>
                             <li><a href="#section-social">Reseaux</a></li>
+                            <li><a href="#section-facebook">Facebook</a></li>
+                            <li><a href="#section-instagram">Instagram</a></li>
                             <li><a href="#section-hours">Horaire</a></li>
                             <li><a href="#section-contact">Contact</a></li>
                         </ul>
@@ -1341,6 +1845,7 @@
                     <span class="boids-product-tag">{{ $product['tag'] }}</span>
                     <h4>{{ $product['title'] }}</h4>
                     <p>{{ $product['desc'] }}</p>
+                    <span class="boids-product-price">À partir de {{ number_format((float) ($product['price'] ?? 0), 0, ',', ' ') }} {{ $product['currency'] ?? 'CAD' }}</span>
                 </div>
             </div>
         @endforeach
@@ -1444,6 +1949,107 @@
             </div>
         </div>
     </div>
+</article>
+<article class="boids-section" id="section-facebook">
+    <section class="facebook-section" data-gjs-type="section">
+        <div class="facebook-container">
+            <div class="facebook-header" data-gjs-type="header">
+                <div class="facebook-badge" data-gjs-type="badge">
+                    <i class="fab fa-facebook" style="margin-right: 10px;"></i>
+                    <span data-gjs-type="text">{{ $facebookPageLabel }}</span>
+                </div>
+                <h2 data-gjs-type="text">Rejoignez notre communauté Facebook</h2>
+                <p data-gjs-type="text">Actualités, événements et échanges avec notre communauté.</p>
+            </div>
+
+            <div class="facebook-grid" data-gjs-type="grid">
+                @foreach($facebookPostsMedia as $index => $media)
+                    @php
+                        $meta = $facebookPostMeta[$index] ?? $facebookPostMeta[0];
+                    @endphp
+                    <div class="fb-post" data-gjs-type="facebook-post">
+                        <div class="fb-post-header">
+                            <img src="{{ $media['thumbnail'] }}" alt="avatar" class="fb-avatar" data-gjs-type="image">
+                            <div>
+                                <h4 data-gjs-type="text">{{ $siteName }}</h4>
+                                <p data-gjs-type="text">{{ $meta['time'] }}</p>
+                            </div>
+                        </div>
+                        <p data-gjs-type="text">{{ $meta['text'] }}</p>
+                        <img src="{{ $media['thumbnail'] }}" alt="post" class="fb-post-image" data-gjs-type="image">
+                        <div class="fb-stats">
+                            <span data-gjs-type="text"><i class="far fa-heart"></i> {{ number_format((int) $meta['likes'], 0, ',', ' ') }}</span>
+                            <span data-gjs-type="text"><i class="far fa-comment"></i> {{ number_format((int) $meta['comments'], 0, ',', ' ') }}</span>
+                            <span data-gjs-type="text"><i class="far fa-share-square"></i> {{ number_format((int) $meta['shares'], 0, ',', ' ') }}</span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="fb-albums-grid" data-gjs-type="albums">
+                @foreach($facebookAlbums as $index => $album)
+                    <a class="fb-album" data-gjs-type="album" href="{{ $facebookUrl !== '#' ? $facebookUrl : $devisLink }}" target="_blank" rel="noopener noreferrer">
+                        <img src="{{ $album['thumbnail'] }}" alt="album" data-gjs-type="image">
+                        <div class="fb-album-overlay" data-gjs-type="text">
+                            {!! $facebookAlbumLabels[$index] ?? '<i class="fas fa-images"></i> Album' !!}
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+
+            <div class="fb-cta" data-gjs-type="cta">
+                <a href="{{ $facebookUrl !== '#' ? $facebookUrl : $devisLink }}" class="fb-button" data-gjs-type="button" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-facebook" style="margin-right: 10px;"></i>
+                    <span data-gjs-type="text">Suivre sur Facebook</span>
+                </a>
+            </div>
+        </div>
+    </section>
+</article>
+<article class="boids-section" id="section-instagram">
+    <section class="insta-section" data-gjs-type="section">
+        <div class="insta-container">
+            <div class="insta-header" data-gjs-type="header">
+                <div class="insta-badge" data-gjs-type="badge">
+                    <i class="fab fa-instagram" style="margin-right: 10px;"></i>
+                    <span data-gjs-type="text">{{ $instagramHandle }}</span>
+                </div>
+                <h2 data-gjs-type="text">Suivez-nous sur Instagram</h2>
+                <p data-gjs-type="text">Decouvrez nos coulisses, nos creations et nos inspirations au quotidien.</p>
+            </div>
+
+            <div class="insta-grid" data-gjs-type="grid">
+                @foreach($instagramPosts as $index => $post)
+                    @php
+                        $likes = $instagramLikes[$index] ?? 1200;
+                        $tag = $instagramTags[$index] ?? '#goexploria';
+                        $postName = trim((string) ($post['name'] ?? 'Instagram post'));
+                    @endphp
+                    <a
+                        class="insta-card"
+                        data-gjs-type="social-post"
+                        href="{{ $instagramUrl !== '#' ? $instagramUrl : $devisLink }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <img src="{{ $post['thumbnail'] }}" alt="{{ $postName }}" data-gjs-type="image">
+                        <div class="insta-icon"><i class="fab fa-instagram"></i></div>
+                        <div class="insta-overlay" data-gjs-type="text">
+                            <p class="likes"><i class="fas fa-heart"></i> <span data-gjs-type="text">{{ number_format((int) $likes, 0, ',', ' ') }}</span> likes</p>
+                            <p class="hashtag" data-gjs-type="text">{{ $tag }}</p>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+
+            <div class="insta-cta" data-gjs-type="cta">
+                <a href="{{ $instagramUrl !== '#' ? $instagramUrl : $devisLink }}" class="insta-button" data-gjs-type="button" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-instagram" style="margin-right: 10px;"></i>
+                    <span data-gjs-type="text">Suivre sur Instagram</span>
+                </a>
+            </div>
+        </div>
+    </section>
 </article>
 <article class="boids-section" id="section-hours">
                         <span class="boids-kicker"><i class="fas fa-clock"></i> Horaire & Contact</span>
@@ -1677,5 +2283,3 @@
     </script>
 </body>
 </html>
-
-
