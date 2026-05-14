@@ -160,6 +160,7 @@
             align-items: center;
             justify-content: center;
             margin: 2px auto 12px;
+            display:none;
         }
 
         .boids-site-logo img {
