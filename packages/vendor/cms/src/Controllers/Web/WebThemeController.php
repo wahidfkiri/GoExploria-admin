@@ -701,6 +701,71 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     protected function getLandingCmsSliders(): Collection
     {
         try {
+            // Priority: CMS sliders stored in settings (group=slider, value JSON)
+            // Example payload:
+            // {"type":"image","title":"...","subtitle":"...","button_text":"...","button_link":"...","is_active":true,"url":"..."}
+            // {"type":"video","title":"...","subtitle":"...","button_text":"...","button_link":"...","is_active":true,"url":"...mp4"}
+            $settingsItems = collect(get_slider_items($this->etablissement->id));
+            if ($settingsItems->isNotEmpty()) {
+                return $settingsItems
+                    ->filter(fn ($item) => (bool) ($item->is_active ?? true))
+                    ->map(function ($item, $index) {
+                        $row = (array) $item;
+                        $type = strtolower((string) ($row['type'] ?? 'image')) === 'video' ? 'video' : 'image';
+                        $rawUrl = trim((string) ($row['url'] ?? ''));
+                        $iframeSrc = $this->extractIframeSrc($rawUrl);
+                        $mediaUrl = $iframeSrc ?: $rawUrl;
+
+                        $youtubeId = $this->extractYoutubeId($mediaUrl);
+                        $vimeoId = $this->extractVimeoId($mediaUrl);
+                        $videoType = null;
+                        $videoEmbed = null;
+
+                        if ($type === 'video') {
+                            if ($iframeSrc) {
+                                $videoType = 'iframe';
+                                $videoEmbed = $mediaUrl;
+                            } elseif ($youtubeId) {
+                                $videoType = 'youtube';
+                                $videoEmbed = 'https://www.youtube.com/embed/' . $youtubeId;
+                            } elseif ($vimeoId) {
+                                $videoType = 'vimeo';
+                                $videoEmbed = 'https://player.vimeo.com/video/' . $vimeoId;
+                            } else {
+                                $videoType = 'upload';
+                                $videoEmbed = $mediaUrl !== '' ? $mediaUrl : null;
+                            }
+                        }
+
+                        $thumbnail = null;
+                        if ($type === 'video' && $youtubeId) {
+                            $thumbnail = 'https://i.ytimg.com/vi/' . $youtubeId . '/hqdefault.jpg';
+                        } elseif ($mediaUrl !== '') {
+                            $thumbnail = $mediaUrl;
+                        }
+
+                        return (object) [
+                            'id' => (int) ($row['id'] ?? 0),
+                            'name' => (string) ($row['title'] ?? ('Slide ' . ($index + 1))),
+                            'description' => (string) ($row['subtitle'] ?? ''),
+                            'type' => $type,
+                            'order' => (int) ($row['order'] ?? ($index + 1)),
+                            'is_active' => true,
+                            'image_url' => $type === 'image' ? ($mediaUrl !== '' ? $mediaUrl : null) : null,
+                            'image_path' => $type === 'image' ? ($mediaUrl !== '' ? $mediaUrl : null) : null,
+                            'thumbnail_url' => $thumbnail,
+                            'thumbnail_path' => $thumbnail,
+                            'video_url' => $type === 'video' ? ($mediaUrl !== '' ? $mediaUrl : null) : null,
+                            'video_type' => $type === 'video' ? $videoType : null,
+                            'video_embed_url' => $type === 'video' ? $videoEmbed : null,
+                            'button_text' => $row['button_text'] ?? null,
+                            'button_url' => $row['button_link'] ?? null,
+                        ];
+                    })
+                    ->values();
+            }
+
+            // Fallback: slider media from cms_media helper
             $items = collect(get_slider_media($this->etablissement->id));
             if ($items->isEmpty()) {
                 return collect();

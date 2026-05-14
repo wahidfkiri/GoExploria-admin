@@ -1,667 +1,400 @@
-﻿{{-- Hero Section Component --}}
-<section class="hero-v2" style="margin-top:0px !important;">
-    @php
-        $tr = static function (string $text): string {
-            $locale = app()->getLocale();
-            if ($locale === 'fr') {
-                return $text;
-            }
+@php
+    $siteName = get_site_name($etablissement->id ?? null);
+    $devisLink = $devisUrl ?? route('devis');
 
-            static $maps = [];
-            if (! array_key_exists($locale, $maps)) {
-                $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');
-                $maps[$locale] = is_file($path) ? (require $path) : [];
-            }
+    $heroSlides = collect($sliders ?? [])
+        ->sortBy('order')
+        ->map(function ($slide) {
+            $type = strtolower((string) ($slide->type ?? 'image')) === 'video' ? 'video' : 'image';
+            $image = $slide->image_url ?? $slide->image_path ?? $slide->thumbnail_url ?? $slide->thumbnail_path ?? null;
+            $video = $slide->video_embed_url ?? $slide->video_url ?? null;
+            $mediaUrl = $type === 'video' ? $video : $image;
+            return [
+                'title' => $slide->name ?? null,
+                'description' => $slide->description ?? null,
+                'type' => $type,
+                'video_type' => $slide->video_type ?? null,
+                'media_url' => $mediaUrl,
+                'image' => $image,
+                'button_text' => $slide->button_text ?? null,
+                'button_url' => $slide->button_url ?? null,
+            ];
+        })
+        ->filter(fn ($row) => !empty($row['media_url']))
+        ->values();
 
-            return $maps[$locale][$text] ?? $text;
-        };
+    if ($heroSlides->isEmpty()) {
+        $heroSlides = collect([
+            ['title' => $siteName, 'description' => null, 'type' => 'image', 'video_type' => null, 'media_url' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/IMG-01.jpg', 'image' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/IMG-01.jpg', 'button_text' => null, 'button_url' => null],
+            ['title' => $siteName, 'description' => null, 'type' => 'image', 'video_type' => null, 'media_url' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/IMG-15.jpg', 'image' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/IMG-15.jpg', 'button_text' => null, 'button_url' => null],
+            ['title' => $siteName, 'description' => null, 'type' => 'image', 'video_type' => null, 'media_url' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/IMG-11.jpg', 'image' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/IMG-11.jpg', 'button_text' => null, 'button_url' => null],
+            ['title' => $siteName, 'description' => null, 'type' => 'image', 'video_type' => null, 'media_url' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/IMG-08.jpg', 'image' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/IMG-08.jpg', 'button_text' => null, 'button_url' => null],
+            ['title' => $siteName, 'description' => null, 'type' => 'image', 'video_type' => null, 'media_url' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/IMG-17.jpg', 'image' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/IMG-17.jpg', 'button_text' => null, 'button_url' => null],
+        ]);
+    }
 
-        $heroPlaceholderPhrases = [
-            $tr('Explorez le mondeâ€¦'),
-            $tr('Rechercher une destinationâ€¦'),
-            $tr('DÃ©couvrez des activitÃ©sâ€¦'),
-            $tr('Trouvez un hÃ©bergementâ€¦'),
-        ];
-    @endphp
-    @php($orderedSliders = collect($sliders ?? [])->sortBy('order')->values())
-    @php($showCarouselNav = $orderedSliders->count() > 5)
-    {{-- Video Carousel Background - ConfinÃ© au Hero --}}
-    <div class="video-carousel-background">
-        <div class="video-carousel-container">
-            @foreach($orderedSliders as $index => $slider)
-            <div class="video-slide {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}">
-                @if($slider->type === 'image' && $slider->image_url)
-                    <img class="video-background" src="{{ $slider->image_url }}" alt="{{ $slider->name }}">
-                @elseif($slider->video_type === 'youtube' || $slider->video_type === 'vimeo' || $slider->video_type === 'iframe')
-                    {{-- VidÃ©o YouTube/Vimeo avec iframe --}}
-                    <iframe 
-                        class="video-background" 
-                        src="{{ $slider->video_embed_url }}{{ str_contains($slider->video_embed_url ?? '', '?') ? '&' : '?' }}autoplay={{ $index === 0 ? '1' : '0' }}&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&vq=hd1080&origin={{ urlencode(url('/')) }}" 
-                        frameborder="0" 
-                        allow="autoplay; encrypted-media" 
-                        allowfullscreen
-                    ></iframe>
-                @else
-                    {{-- VidÃ©o uploadÃ©e avec balise video HTML5 --}}
-                    <video class="video-background" {{ $index === 0 ? 'autoplay' : '' }} muted loop playsinline>
-                        <source src="{{ $slider->video_embed_url }}" type="video/mp4">
-                    </video>
-                @endif
-                
-                {{-- Overlay avec titre et bouton sur la vidÃ©o principale --}}
-                <div class="hero-video-overlay">
-                    <div class="hero-video-info">
-                        <h2 class="hero-video-main-title">{{ $slider->name }}</h2>
-                        @if($slider->button_text && $slider->button_url)
-                            <a href="{{ $slider->button_url }}" class="hero-video-main-button" target="_blank" rel="noopener noreferrer">
-                                {{ $slider->button_text }}
-                            </a>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            @endforeach
-        </div>
-        
-        {{-- Cartes vidÃ©o miniatures sur la vidÃ©o principale --}}
-        <div class="hero-video-cards-overlay">
-            @if($showCarouselNav)
-            <button class="carousel-nav-btn prev" aria-label="{{ $tr('PrÃ©cÃ©dent') }}">
-                <svg viewBox="0 0 24 24">
-                    <path d="M15 18l-6-6 6-6"/>
-                </svg>
-            </button>
-            @endif
-            <div class="hero-video-cards">
-                @foreach($orderedSliders as $index => $slider)
-                <div class="hero-video-card {{ $index === 0 ? 'active' : '' }}" data-video="{{ $index }}">
-                    @php($isImageSlide = $slider->type === 'image')
-                    @php($isExternalVideo = $slider->video_type === 'youtube' || $slider->video_type === 'vimeo' || $slider->video_type === 'iframe')
-                    @php($hasCardImage = !empty($slider->thumbnail_path) || !empty($slider->image_path))
-                    @if($isImageSlide)
-                        <img class="hero-video-card-thumbnail" src="{{ $slider->thumbnail_url ?: $slider->image_url }}" alt="{{ $slider->name }}">
-                    @elseif($isExternalVideo && $hasCardImage)
-                        <img class="hero-video-card-thumbnail" src="{{ $slider->thumbnail_url }}" alt="{{ $slider->name }}">
-                    @elseif($isExternalVideo)
-                        @php($iframeSeparator = str_contains($slider->video_embed_url ?? '', '?') ? '&' : '?')
+    $firstSlide = $heroSlides->first();
+    $firstTitle = trim((string) ($firstSlide['title'] ?? ''));
+    $firstSubtitle = trim((string) ($firstSlide['description'] ?? ''));
+    $firstButtonText = trim((string) ($firstSlide['button_text'] ?? ''));
+    $firstButtonUrl = trim((string) ($firstSlide['button_url'] ?? ''));
+@endphp
+
+<section class="default-landing-hero" id="section-hero">
+    <div class="dlh-slides" id="dlhSlides">
+        @foreach($heroSlides as $index => $slide)
+            <div
+                class="dlh-slide {{ $index === 0 ? 'active' : '' }}"
+                data-slide="{{ $index }}"
+                data-type="{{ $slide['type'] }}"
+                data-title="{{ e((string) ($slide['title'] ?? '')) }}"
+                data-subtitle="{{ e((string) ($slide['description'] ?? '')) }}"
+                data-button-text="{{ e((string) ($slide['button_text'] ?? '')) }}"
+                data-button-url="{{ e((string) ($slide['button_url'] ?? '')) }}"
+            >
+                @if($slide['type'] === 'video')
+                    @if(in_array($slide['video_type'], ['youtube', 'vimeo', 'iframe'], true))
                         <iframe
-                            class="hero-video-card-thumbnail"
-                            src="{{ $slider->video_embed_url }}{{ $iframeSeparator }}autoplay=0&mute=1&controls=0&loop=1&playsinline=1&rel=0&modestbranding=1"
+                            class="dlh-media dlh-iframe"
+                            src="{{ $slide['media_url'] }}{{ str_contains((string) $slide['media_url'], '?') ? '&' : '?' }}autoplay=1&mute=1&loop=1&controls=0&playsinline=1&rel=0&modestbranding=1"
                             frameborder="0"
                             allow="autoplay; encrypted-media"
                             allowfullscreen
-                            style="pointer-events: none;"
                         ></iframe>
                     @else
-                        <video class="hero-video-card-thumbnail" muted>
-                            <source src="{{ $slider->video_embed_url }}" type="video/mp4">
+                        <video class="dlh-media dlh-video" muted loop playsinline preload="metadata">
+                            <source src="{{ $slide['media_url'] }}" type="video/mp4">
                         </video>
                     @endif
-                    <div class="hero-video-card-overlay">
-                        <div class="hero-video-card-play">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="hero-video-card-title">{{ $slider->name }}</div>
-                </div>
-                @endforeach
+                @else
+                    <div class="dlh-media dlh-image" style="background-image:url('{{ $slide['media_url'] }}')"></div>
+                @endif
+                <div class="dlh-overlay"></div>
             </div>
-            @if($showCarouselNav)
-            <button class="carousel-nav-btn next" aria-label="{{ $tr('Suivant') }}">
-                <svg viewBox="0 0 24 24">
-                    <path d="M9 18l6-6-6-6"/>
-                </svg>
-            </button>
-            @endif
-        </div>
-        
-        <div class="carousel-controls">
-            @foreach($orderedSliders as $index => $slider)
-            <button class="carousel-dot" data-slide="{{ $index }}" aria-label="{{ $tr('VidÃ©o') }} {{ $index + 1 }}"></button>
-            @endforeach
-        </div>
-
-        {{-- Bouton son vidÃ©o (mute/unmute) â€” gauche du Hero --}}
-        <button type="button" class="hero-sound-toggle" id="heroSoundToggle" aria-label="{{ $tr('Activer le son') }}" title="{{ $tr('Activer le son') }}">
-            <svg class="hero-sound-icon-muted" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <line x1="23" y1="9" x2="17" y2="15"></line>
-                <line x1="17" y1="9" x2="23" y2="15"></line>
-            </svg>
-            <svg class="hero-sound-icon-on" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-            </svg>
-        </button>
+        @endforeach
     </div>
 
-    {{-- Section mobile uniquement : Email + Logo + Map --}}
-    <div class="hero-mobile-header">
-        <div class="hero-mobile-email">
-            <a href="mailto:{{ __('home-v2.common.email') }}">{{ __('home-v2.common.email') }}</a>
-        </div>
-        <div class="hero-mobile-logo-container">
-            <a href="#" class="hero-mobile-logo">
-                <img src="{{ asset('logo.png') }}" alt="GO EXPLORIA" class="hero-mobile-logo-img">
+    <div class="dlh-content">
+        <div class="dlh-badge">Sciage Mobile Professionnel · Lanaudière</div>
+        <h1 id="dlhTitle">{!! $firstTitle !== '' ? nl2br(e($firstTitle)) : 'Votre Bois,<br><em>Notre Expertise</em>' !!}</h1>
+        <p class="dlh-sub" id="dlhSubtitle">
+            {{ $firstSubtitle !== '' ? $firstSubtitle : 'Moulin à scie hydraulique informatisé pour transformer votre bois brut en matériaux de qualité supérieure. Précision. Fiabilité. Satisfaction garantie.' }}
+        </p>
+        <div class="dlh-buttons">
+            <a
+                href="{{ $firstButtonUrl !== '' ? $firstButtonUrl : $devisLink }}"
+                class="dlh-btn-primary"
+                target="_blank"
+                rel="noopener noreferrer"
+                id="dlhPrimaryCta"
+            >
+                {{ $firstButtonText !== '' ? $firstButtonText : 'Soumission Gratuite' }}
             </a>
-            <img src="{{ asset('header_info/map2.png') }}" alt="Map" class="hero-mobile-map">
+            <a href="#section-gallery" class="dlh-btn-outline">Voir les Réalisations</a>
         </div>
     </div>
-    
-    <div class="hero-content">
-        <!-- <div class="hero-text">
-            <h1 class="hero-title">
-                <span class="hero-main">GO EXPLORIA</span>
-            </h1>
-        </div> -->
-        
-        {{-- Barre horizontale complÃ¨te avec destinations + recherche --}}
-        @if(!($hideSearchBarV2 ?? false))
-        <div class="search-bar-v2">
-            <div class="search-bar-v2-container">
-                {{-- Globe Destinations --}}
-                <div class="search-bar-v2-destinations" style="position: relative; flex-direction: column; gap: 2px; align-items: center;">
-                    <img src="{{ asset('REDI.png') }}" alt="Destinations" class="search-bar-v2-globe-icon" id="destinationsMainTrigger" style="cursor:pointer;">
-                    <span class="search-bar-v2-destinations-title" id="destinationsBreadcrumb">{{ $tr('Destinations') }}</span>
-                    
-                    {{-- Mega Menu Destinations Principal --}}
-                    @include('cms::web.fallback.activities.default.destinations-mega-menu')
-                </div>
 
-               
-                {{-- 3 Pictos ronds bleus : i Â· iT Â· iB --}}
-                <div class="search-bar-v2-quick-links">
-                    {{-- Info i --}}
-                    <div class="quick-link-item info-trigger" id="infoTrigger" title="{{ $tr('Informations') }}">
-                        <div class="icon-circle icon-blue">
-                            <span class="picto-label">i</span>
-                        </div>
-                    </div>
-                    
-                    {{-- iT Tourisme --}}
-                    <div class="quick-link-item" id="catMegaTriggerTourisme" style="cursor:pointer;" title="{{ $tr('ActivitÃ©s Tourisme') }}">
-                        <div class="icon-circle icon-blue">
-                            <span class="picto-label">iT</span>
-                        </div>
-                    </div>
-
-                    {{-- iB Business --}}
-                    <div class="quick-link-item" id="catMegaTriggerBusiness" style="cursor:pointer;" title="{{ $tr('ActivitÃ©s Business') }}">
-                        <div class="icon-circle icon-blue">
-                            <span class="picto-label">iB</span>
-                        </div>
-                    </div>
-                </div>
-
-                 {{-- Barre de recherche --}}
-                <div class="search-bar-v2-search">
-                    <div class="search-bar-v2-input-wrapper">
-                        <svg class="search-bar-v2-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <path d="m21 21-4.35-4.35"></path>
-                        </svg>
-                        <input 
-                            type="text" 
-                            class="search-bar-v2-input" 
-                            id="searchBarInput"
-                            placeholder="{{ $tr('Rechercher une destination, activitÃ©, hÃ©bergement...') }}"
-                            aria-label="{{ $tr('Rechercher une destination') }}"
-                            autocomplete="off"
-                        >
-                        <button class="search-bar-v2-clear-btn" id="searchBarClearBtn" aria-label="{{ $tr('Effacer') }}">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
-                    </div>
-
-                    {{-- Dropdown des rÃ©sultats --}}
-                    <div class="search-bar-v2-results" id="searchBarResults">
-                        <div class="search-bar-v2-results-header">
-                            <h4 class="search-bar-v2-results-title">{{ $tr('RÃ©sultats de la recherche') }}</h4>
-                        </div>
-                        <ul class="search-bar-v2-results-list" id="searchBarResultsList">
-                            {{-- Les rÃ©sultats seront injectÃ©s ici par JavaScript --}}
-                        </ul>
-                    </div>
-                </div>
-
-
-                {{-- Boutons rapides aprÃ¨s la barre de recherche : EE Â· ED Â· MP Â· Voiture Â· Avion --}}
-                <div class="search-bar-v2-quick-links search-bar-v2-quick-links--post">
-                    {{-- EE â€” Espace Entreprise --}}
-                    <div class="quick-link-item" id="quickLinkEE" style="cursor:pointer;" title="{{ $tr('Espace Entreprise') }}">
-                        <div class="icon-circle icon-blue">
-                            <span class="picto-label">EE</span>
-                        </div>
-                    </div>
-
-                    {{-- ED â€” Espace Destination --}}
-                    <div class="quick-link-item" id="quickLinkED" style="cursor:pointer;" title="{{ $tr('Espace Destination') }}">
-                        <div class="icon-circle icon-blue">
-                            <span class="picto-label">ED</span>
-                        </div>
-                    </div>
-
-                    {{-- MP â€” Marketplace --}}
-                    <div class="quick-link-item" id="quickLinkMP" style="cursor:pointer;" title="{{ $tr('Marketplace') }}">
-                        <div class="icon-circle icon-blue">
-                            <span class="picto-label">MP</span>
-                        </div>
-                    </div>
-
-                    {{-- Voiture â€” Location VÃ©hicule --}}
-                    <div class="quick-link-item" id="quickLinkCar" style="cursor:pointer;" title="{{ $tr('Location VÃ©hicule') }}">
-                        <div class="icon-circle icon-blue">
-                            <i class="fas fa-car picto-icon"></i>
-                        </div>
-                    </div>
-
-                    {{-- Avion â€” Billets Avion --}}
-                    <div class="quick-link-item" id="quickLinkPlane" style="cursor:pointer;" title="{{ $tr('Billets Avion') }}">
-                        <div class="icon-circle icon-blue">
-                            <i class="fas fa-plane picto-icon"></i>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Logo Plan-n-go â€” dÃ©clencheur du mÃ©ga-menu Plan & GO --}}
-                <div class="search-bar-v2-brand" id="planNGoTrigger" style="cursor:pointer;" title="{{ $tr('Plan & GO') }}">
-                    <img src="{{ asset('plan-n-go.png') }}" alt="PLAN-N-GO" class="search-bar-v2-logo">
-                </div>
-            </div>
-        </div>
-        @endif
-        
+    <div class="dlh-dots" id="dlhDots">
+        @foreach($heroSlides as $index => $slide)
+            <button class="dlh-dot {{ $index === 0 ? 'active' : '' }}" type="button" data-slide="{{ $index }}" aria-label="Slide {{ $index + 1 }}"></button>
+        @endforeach
     </div>
 </section>
 
-{{-- INFO MEGA MENU - Hors de tout overflow parent pour un positionnement correct --}}
-@include('cms::web.fallback.activities.default.info-mega-menu')
+<div class="dlh-stats-bar">
+    <div class="dlh-stat-item">
+        <div class="dlh-stat-num">38″</div>
+        <div class="dlh-stat-label">Diamètre max. de billots</div>
+    </div>
+    <div class="dlh-stat-item">
+        <div class="dlh-stat-num">20′</div>
+        <div class="dlh-stat-label">Longueur max. de coupe</div>
+    </div>
+    <div class="dlh-stat-item">
+        <div class="dlh-stat-num">7/7</div>
+        <div class="dlh-stat-label">Jours de service</div>
+    </div>
+    <div class="dlh-stat-item">
+        <div class="dlh-stat-num">3</div>
+        <div class="dlh-stat-label">Régions desservies</div>
+    </div>
+</div>
 
-{{-- CATEGORIES MEGA MENU - Panel fixed, positionnÃ© par JS sous le trigger --}}
-@include('cms::web.fallback.activities.default.categories-mega-menu')
+<style>
+    .default-landing-hero {
+        position: relative;
+        height: 100vh;
+        min-height: 600px;
+        overflow: hidden;
+        border-radius: 16px 16px 0 0;
+    }
 
-{{-- QUICK LINKS MEGA MENUS â€” Panels pour MP, EE, ED, Voiture, Avion, Plan & GO --}}
-@include('cms::web.fallback.activities.default.hero-quick-mega-menus')
+    .dlh-slides {
+        position: absolute;
+        inset: 0;
+    }
+
+    .dlh-slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 1.2s ease;
+    }
+
+    .dlh-slide.active { opacity: 1; }
+
+    .dlh-media {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    .dlh-image {
+        background-size: cover;
+        background-position: center;
+    }
+
+    .dlh-video {
+        object-fit: cover;
+    }
+
+    .dlh-iframe {
+        border: 0;
+    }
+
+    .dlh-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(26,58,30,.75) 0%, rgba(10,20,12,.5) 60%, rgba(0,0,0,.3) 100%);
+    }
+
+    .dlh-content {
+        position: relative;
+        z-index: 2;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 0 8%;
+        padding-top: 72px;
+    }
+
+    .dlh-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(212,168,83,.2);
+        border: 1px solid rgba(212,168,83,.5);
+        color: #f0c97f;
+        padding: 6px 16px;
+        border-radius: 40px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+    }
+
+    .dlh-badge::before { content: '🌲'; font-size: 14px; }
+
+    .dlh-content h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3rem, 7vw, 6rem);
+        font-weight: 900;
+        color: #fff;
+        line-height: 1.05;
+        max-width: 700px;
+        margin-bottom: 16px;
+    }
+
+    .dlh-content h1 em { color: #f0c97f; font-style: italic; }
+
+    .dlh-sub {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        color: rgba(255,255,255,.82);
+        max-width: 620px;
+        margin-bottom: 40px;
+        font-weight: 300;
+        line-height: 1.6;
+    }
+
+    .dlh-buttons {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .dlh-btn-primary {
+        background: #d4a853;
+        color: #3d2b1a;
+        padding: 16px 36px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: .04em;
+        border: 2px solid #d4a853;
+    }
+
+    .dlh-btn-outline {
+        background: transparent;
+        color: #fff;
+        padding: 14px 34px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 15px;
+        border: 2px solid rgba(255,255,255,.6);
+    }
+
+    .dlh-btn-primary:hover { background: #f0c97f; border-color: #f0c97f; }
+    .dlh-btn-outline:hover { border-color: #fff; background: rgba(255,255,255,.1); }
+
+    .dlh-dots {
+        position: absolute;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+        z-index: 3;
+    }
+
+    .dlh-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.4);
+        cursor: pointer;
+        border: none;
+    }
+
+    .dlh-dot.active {
+        background: #d4a853;
+        width: 24px;
+        border-radius: 4px;
+    }
+
+    .dlh-stats-bar {
+        background: #1a3a1e;
+        padding: 28px 5%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-bottom: 3px solid #d4a853;
+    }
+
+    .dlh-stat-item {
+        text-align: center;
+        padding: 0 20px;
+        border-right: 1px solid rgba(255,255,255,.15);
+    }
+
+    .dlh-stat-item:last-child { border-right: none; }
+
+    .dlh-stat-num {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #f0c97f;
+    }
+
+    .dlh-stat-label {
+        font-size: 13px;
+        color: rgba(255,255,255,.7);
+        font-weight: 400;
+        margin-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+        .default-landing-hero { min-height: 520px; border-radius: 12px 12px 0 0; }
+        .dlh-content { padding: 0 5%; padding-top: 72px; }
+        .dlh-stats-bar { grid-template-columns: repeat(2, 1fr); }
+        .dlh-stat-item {
+            border-right: none;
+            border-bottom: 1px solid rgba(255,255,255,.15);
+            padding: 16px;
+        }
+    }
+</style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const infoBtn = document.getElementById('infoTrigger');
-    const megaMenu = document.getElementById('infoMegaMenuV2');
-    if (!infoBtn || !megaMenu) return;
+    document.addEventListener('DOMContentLoaded', function () {
+        const slides = Array.from(document.querySelectorAll('#dlhSlides .dlh-slide'));
+        const dots = Array.from(document.querySelectorAll('#dlhDots .dlh-dot'));
+        if (!slides.length) return;
 
-    // Fonction pour positionner le menu dynamiquement sous le bouton sur desktop
-    function positionMegaMenu() {
-        if (window.innerWidth > 1025 && megaMenu.classList.contains('active')) {
-            const rect = infoBtn.getBoundingClientRect();
-            megaMenu.style.top = (rect.bottom + 15) + 'px';
-        } else {
-            megaMenu.style.top = ''; // Laisse CSS gÃ©rer sur mobile
-        }
-    }
+        const titleEl = document.getElementById('dlhTitle');
+        const subtitleEl = document.getElementById('dlhSubtitle');
+        const primaryCta = document.getElementById('dlhPrimaryCta');
 
-    // Toggle au clic
-    infoBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const isOpen = megaMenu.classList.contains('active');
-        megaMenu.classList.toggle('active', !isOpen);
-        infoBtn.classList.toggle('active', !isOpen);
-        if (!isOpen) positionMegaMenu();
-    });
+        let current = 0;
+        let timer = null;
 
-    // Gestion du survol dynamique sur desktop (avec pont temporel pour l'Ã©cart de 15px)
-    let hoverTimeout;
-    const handleMouseLeave = () => {
-        if (window.innerWidth > 1025) {
-            hoverTimeout = setTimeout(() => {
-                if (!megaMenu.matches(':hover') && !infoBtn.matches(':hover')) {
-                    megaMenu.classList.remove('active');
-                    infoBtn.classList.remove('active');
-                }
-            }, 250); // Espace de tolÃ©rance pour traverser le gap de 15px
-        }
-    };
+        function updateContent(index) {
+            const slide = slides[index];
+            if (!slide) return;
+            const title = (slide.dataset.title || '').trim();
+            const subtitle = (slide.dataset.subtitle || '').trim();
+            const buttonText = (slide.dataset.buttonText || '').trim();
+            const buttonUrl = (slide.dataset.buttonUrl || '').trim();
 
-    const handleMouseEnter = () => {
-        if (window.innerWidth > 1025) {
-            clearTimeout(hoverTimeout);
-            megaMenu.classList.add('active');
-            infoBtn.classList.add('active');
-            positionMegaMenu();
-        }
-    };
-
-    infoBtn.addEventListener('mouseenter', handleMouseEnter);
-    infoBtn.addEventListener('mouseleave', handleMouseLeave);
-    megaMenu.addEventListener('mouseenter', handleMouseEnter);
-    megaMenu.addEventListener('mouseleave', handleMouseLeave);
-
-    // Fermer si clic ailleurs (fonctionne car clics en dehors, incluant la marge vide au dessus sur mobile)
-    document.addEventListener('click', function(e) {
-        if (!infoBtn.contains(e.target) && !megaMenu.contains(e.target)) {
-            megaMenu.classList.remove('active');
-            infoBtn.classList.remove('active');
-        }
-    });
-
-    window.addEventListener('resize', positionMegaMenu);
-    window.addEventListener('scroll', positionMegaMenu);
-});
-
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   Animation dactylographique du placeholder
-   Boucle : Ã©criture â†’ pause â†’ effacement
-   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-document.addEventListener('DOMContentLoaded', function() {
-    const input = document.getElementById('searchBarInput');
-    if (!input) return;
-
-    const phrases = @json($heroPlaceholderPhrases ?? []);
-
-    let phraseIdx = 0;
-    let charIdx = 0;
-    let isDeleting = false;
-    const typeSpeed = 70;     // ms par caractÃ¨re (Ã©criture)
-    const eraseSpeed = 40;    // ms par caractÃ¨re (effacement)
-    const holdDelay = 2000;   // pause Ã  la fin de chaque phrase
-    const startDelay = 500;   // avant de dÃ©marrer l'effacement / mot suivant
-
-    function tick() {
-        // Stop l'animation dÃ¨s que l'utilisateur saisit quelque chose
-        if (input.value && !input.dataset.animating) return;
-
-        const phrase = phrases[phraseIdx];
-        if (!isDeleting) {
-            charIdx++;
-            input.placeholder = phrase.substring(0, charIdx);
-            if (charIdx === phrase.length) {
-                isDeleting = true;
-                return setTimeout(tick, holdDelay);
+            if (titleEl) {
+                titleEl.innerHTML = title !== '' ? title.replace(/\n/g, '<br>') : 'Votre Bois,<br><em>Notre Expertise</em>';
             }
-            setTimeout(tick, typeSpeed);
-        } else {
-            charIdx--;
-            input.placeholder = phrase.substring(0, charIdx);
-            if (charIdx === 0) {
-                isDeleting = false;
-                phraseIdx = (phraseIdx + 1) % phrases.length;
-                return setTimeout(tick, startDelay);
+            if (subtitleEl) {
+                subtitleEl.textContent = subtitle !== ''
+                    ? subtitle
+                    : 'Moulin à scie hydraulique informatisé pour transformer votre bois brut en matériaux de qualité supérieure. Précision. Fiabilité. Satisfaction garantie.';
             }
-            setTimeout(tick, eraseSpeed);
-        }
-    }
-
-    // DÃ©marrer au chargement
-    input.dataset.animating = '1';
-    tick();
-
-    // Stopper l'animation dÃ¨s que l'utilisateur tape
-    input.addEventListener('input', function() {
-        if (input.value.length > 0) {
-            delete input.dataset.animating;
-            input.placeholder = @json($tr('Rechercherâ€¦'));
-        }
-    });
-});
-
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   Bouton mute/unmute vidÃ©o Hero
-   GÃ¨re <video> HTML5 + iframes YouTube/Vimeo
-   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-document.addEventListener('DOMContentLoaded', function() {
-    const btn = document.getElementById('heroSoundToggle');
-    if (!btn) return;
-
-    const labelSoundOn = @json($tr('Activer le son'));
-    const labelSoundOff = @json($tr('Couper le son'));
-
-    const iconMuted = btn.querySelector('.hero-sound-icon-muted');
-    const iconOn = btn.querySelector('.hero-sound-icon-on');
-    let isMuted = true;
-
-    function isYouTubeIframe(el) {
-        if (!el || el.tagName !== 'IFRAME') return false;
-        const src = (el.getAttribute('src') || '').toLowerCase();
-        return src.includes('youtube.com/embed') || src.includes('youtube-nocookie.com/embed');
-    }
-
-    function requestYouTubeHd(el) {
-        if (!isYouTubeIframe(el)) return;
-        try {
-            el.contentWindow.postMessage(JSON.stringify({
-                event: 'command',
-                func: 'setPlaybackQualityRange',
-                args: ['hd1080']
-            }), '*');
-            el.contentWindow.postMessage(JSON.stringify({
-                event: 'command',
-                func: 'setPlaybackQuality',
-                args: ['hd1080']
-            }), '*');
-        } catch (e) { /* ignore */ }
-    }
-
-    function boostActiveYouTubeQuality() {
-        const el = getActiveVideoEl();
-        if (!el) return;
-        [250, 800, 1600, 3000].forEach(function(delay) {
-            setTimeout(function() {
-                requestYouTubeHd(el);
-            }, delay);
-        });
-    }
-
-    function getActiveVideoEl() {
-        const active = document.querySelector('.video-slide.active');
-        if (!active) return null;
-        return active.querySelector('video.video-background, iframe.video-background');
-    }
-
-    function setMuteState(muted) {
-        isMuted = muted;
-        const el = getActiveVideoEl();
-        if (!el) return;
-
-        if (el.tagName === 'VIDEO') {
-            el.muted = muted;
-            if (!muted) {
-                const p = el.play();
-                if (p && typeof p.catch === 'function') p.catch(() => {});
-            }
-        } else if (el.tagName === 'IFRAME') {
-            // YouTube postMessage API
-            const cmd = muted ? 'mute' : 'unMute';
-            try {
-                el.contentWindow.postMessage(JSON.stringify({
-                    event: 'command',
-                    func: cmd,
-                    args: []
-                }), '*');
-            } catch (e) { /* ignore */ }
-
-            // Vimeo postMessage API
-            try {
-                el.contentWindow.postMessage(JSON.stringify({
-                    method: 'setVolume',
-                    value: muted ? 0 : 1
-                }), '*');
-            } catch (e) { /* ignore */ }
-
-            if (!muted) {
-                requestYouTubeHd(el);
+            if (primaryCta) {
+                primaryCta.textContent = buttonText !== '' ? buttonText : 'Soumission Gratuite';
+                primaryCta.setAttribute('href', buttonUrl !== '' ? buttonUrl : '{{ $devisLink }}');
             }
         }
 
-        // UI
-        btn.classList.toggle('is-unmuted', !muted);
-        btn.setAttribute('aria-label', muted ? labelSoundOn : labelSoundOff);
-        btn.setAttribute('title', muted ? labelSoundOn : labelSoundOff);
-        if (iconMuted) iconMuted.style.display = muted ? '' : 'none';
-        if (iconOn) iconOn.style.display = muted ? 'none' : '';
-    }
-
-    btn.addEventListener('click', function() {
-        setMuteState(!isMuted);
-    });
-
-    // Re-synchroniser l'Ã©tat mute Ã  chaque changement de slide
-    document.querySelectorAll('.carousel-dot, .hero-video-card, .carousel-nav-btn').forEach(function(el) {
-        el.addEventListener('click', function() {
-            setTimeout(function() {
-                setMuteState(isMuted);
-                boostActiveYouTubeQuality();
-            }, 400);
-        });
-    });
-
-    const carouselContainer = document.querySelector('.video-carousel-container');
-    if (carouselContainer) {
-        const observer = new MutationObserver(function(mutations) {
-            let hasActiveChange = false;
-            mutations.forEach(function(mutation) {
-                if (mutation.type === 'attributes' &&
-                    mutation.attributeName === 'class' &&
-                    mutation.target.classList &&
-                    mutation.target.classList.contains('video-slide')) {
-                    hasActiveChange = true;
+        function syncVideos() {
+            slides.forEach(function (slide, index) {
+                const video = slide.querySelector('video');
+                if (!video) return;
+                if (index === current) {
+                    video.currentTime = 0;
+                    video.play().catch(function () {});
+                } else {
+                    video.pause();
                 }
             });
-            if (hasActiveChange) {
-                setTimeout(function() {
-                    setMuteState(isMuted);
-                    boostActiveYouTubeQuality();
-                }, 300);
-            }
+        }
+
+        function goTo(index) {
+            slides[current].classList.remove('active');
+            if (dots[current]) dots[current].classList.remove('active');
+            current = (index + slides.length) % slides.length;
+            slides[current].classList.add('active');
+            if (dots[current]) dots[current].classList.add('active');
+            updateContent(current);
+            syncVideos();
+        }
+
+        function start() {
+            if (slides.length <= 1) return;
+            timer = setInterval(function () {
+                goTo(current + 1);
+            }, 5000);
+        }
+
+        dots.forEach(function (dot, index) {
+            dot.addEventListener('click', function () {
+                if (timer) clearInterval(timer);
+                goTo(index);
+                start();
+            });
         });
-        observer.observe(carouselContainer, {
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['class']
-        });
-    }
 
-    boostActiveYouTubeQuality();
-});
-
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   Fit prÃ©cis des iframes YouTube/Vimeo du Hero
-   RÃ©duit le zoom tout en Ã©vitant les bandes noires
-   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-document.addEventListener('DOMContentLoaded', function() {
-    const VIDEO_RATIO = 16 / 9;
-    const VERTICAL_FOCUS_TOP = 54;
-
-    function fitHeroIframes() {
-        document.querySelectorAll('.video-slide iframe.video-background').forEach(function(iframe) {
-            const container = iframe.closest('.video-slide');
-            if (!container) return;
-
-            const cw = container.clientWidth;
-            const ch = container.clientHeight;
-            if (!cw || !ch) return;
-
-            const containerRatio = cw / ch;
-
-            iframe.style.left = '50%';
-            // Favorise la zone haute de la vidÃ©o (moins de coupe en haut)
-            iframe.style.top = VERTICAL_FOCUS_TOP + '%';
-            iframe.style.transform = 'translate(-50%, -50%)';
-
-            if (containerRatio > VIDEO_RATIO) {
-                // Conteneur plus large : on ajuste sur la largeur, hauteur auto 16:9
-                iframe.style.width = cw + 'px';
-                iframe.style.height = (cw / VIDEO_RATIO) + 'px';
-            } else {
-                // Conteneur plus haut : on ajuste sur la hauteur, largeur auto 16:9
-                iframe.style.width = (ch * VIDEO_RATIO) + 'px';
-                iframe.style.height = ch + 'px';
-            }
-        });
-    }
-
-    fitHeroIframes();
-    window.addEventListener('resize', fitHeroIframes);
-    window.addEventListener('orientationchange', fitHeroIframes);
-
-    document.querySelectorAll('.carousel-dot, .hero-video-card, .carousel-nav-btn').forEach(function(el) {
-        el.addEventListener('click', function() {
-            setTimeout(fitHeroIframes, 420);
-        });
+        updateContent(0);
+        syncVideos();
+        start();
     });
-});
-
-/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
-   Search-bar sticky : reste visible au scroll (comme le header)
-   Garde sa position normale au chargement dans le Hero
-   Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
-document.addEventListener('DOMContentLoaded', function() {
-    const searchBar = document.querySelector('.hero-v2 .search-bar-v2');
-    const header = document.querySelector('.header-v2');
-    if (!searchBar || !header) return;
-
-    const spacer = document.createElement('div');
-    spacer.style.display = 'none';
-    searchBar.insertAdjacentElement('afterend', spacer);
-
-    let stickyStart = 0;
-
-    function measureStickyStart() {
-        const wasFloating = searchBar.classList.contains('search-bar-v2-floating');
-        if (wasFloating) {
-            searchBar.classList.remove('search-bar-v2-floating');
-            searchBar.style.top = '';
-            spacer.style.display = 'none';
-            spacer.style.height = '0px';
-        }
-
-        stickyStart = searchBar.getBoundingClientRect().top + window.scrollY;
-
-        if (wasFloating) {
-            searchBar.classList.add('search-bar-v2-floating');
-        }
-    }
-
-    function updateStickySearchBar() {
-        if (window.innerWidth <= 1024) {
-            searchBar.classList.remove('search-bar-v2-floating');
-            searchBar.style.top = '';
-            spacer.style.display = 'none';
-            spacer.style.height = '0px';
-            return;
-        }
-
-        const headerBottom = Math.max(0, header.getBoundingClientRect().bottom);
-        const shouldFloat = (window.scrollY + headerBottom + 8) >= stickyStart;
-
-        if (shouldFloat) {
-            searchBar.classList.add('search-bar-v2-floating');
-            searchBar.style.top = (headerBottom + 8) + 'px';
-            spacer.style.display = 'block';
-            spacer.style.height = searchBar.offsetHeight + 'px';
-        } else {
-            searchBar.classList.remove('search-bar-v2-floating');
-            searchBar.style.top = '';
-            spacer.style.display = 'none';
-            spacer.style.height = '0px';
-        }
-    }
-
-    measureStickyStart();
-    updateStickySearchBar();
-
-    window.addEventListener('scroll', updateStickySearchBar, { passive: true });
-    window.addEventListener('resize', function() {
-        measureStickyStart();
-        updateStickySearchBar();
-    });
-});
 </script>
-
-
-

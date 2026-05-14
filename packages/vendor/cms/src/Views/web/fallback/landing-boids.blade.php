@@ -151,6 +151,24 @@
             border-bottom: 1px solid #ebe3d6;
         }
 
+        .boids-head--primary {
+            text-align: center;
+        }
+
+        .boids-site-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2px auto 12px;
+        }
+
+        .boids-site-logo img {
+            width: 132px;
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
         .boids-title {
             margin: 0;
             font-size: 1.08rem;
@@ -737,6 +755,9 @@
 
         $devisLink = $devisUrl ?? route('devis');
         $siteName = get_site_name($etablissement->id);
+        $siteDescription = $etablissement->getSetting('description', null, 'general')
+            ?: get_site_description($etablissement->id)
+            ?: 'Description du site en cours de configuration.';
         $phone = $etablissement->phone ?? $etablissement->telephone ?? null;
         $email = $etablissement->email_contact ?? $etablissement->email ?? null;
         $address = $etablissement->adresse ?? 'Adresse en cours de configuration';
@@ -768,9 +789,14 @@
             <div class="boids-grid">
                 <aside class="boids-left">
                     <article class="boids-card">
-                        <div class="boids-head">
+                        <div class="boids-head boids-head--primary">
+                            @if(!empty($brandLogoUrl))
+                                <div class="boids-site-logo">
+                                    <img src="{{ $brandLogoUrl }}" alt="{{ $siteName }}">
+                                </div>
+                            @endif
                             <h2 class="boids-title">{{ $siteName }}</h2>
-                            <p class="boids-sub">Landing activité Boids: structure standard, contenu optimisé pour le secteur bois.</p>
+                            <p class="boids-sub">{{ $siteDescription }}</p>
                         </div>
                         <div class="boids-body">
                             @if($address)
@@ -1107,17 +1133,15 @@
             }
 
             if (window.L && document.getElementById('boidsMap')) {
-                const fallbackLat = 46.8139;
-                const fallbackLng = -71.2082;
-                const rawLat = Number('{{ $mapLatitude ?? 0 }}');
-                const rawLng = Number('{{ $mapLongitude ?? 0 }}');
-                const lat = Number.isFinite(rawLat) && rawLat !== 0 ? rawLat : fallbackLat;
-                const lng = Number.isFinite(rawLng) && rawLng !== 0 ? rawLng : fallbackLng;
+                // Adresse exacte demandée: St-Alphonse Rodriguez, Quebec J0K 1W0
+                const lat = 46.18506;
+                const lng = -73.692169;
+                const exactAddress = 'St-Alphonse Rodriguez, Quebec J0K 1W0';
 
                 const map = L.map('boidsMap', {
                     zoomControl: true,
                     scrollWheelZoom: false
-                }).setView([lat, lng], 12);
+                }).setView([lat, lng], 13);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
@@ -1131,9 +1155,25 @@
                     iconAnchor: [17, 32]
                 });
 
+                const mapVideoHtml = `
+                    <div style="width:320px;max-width:100%;">
+                        <div style="font-weight:700;margin-bottom:8px;">{{ addslashes($siteName) }}</div>
+                        <iframe
+                            width="320"
+                            height="180"
+                            src="https://www.youtube.com/embed/0edALYi7_Qs?autoplay=1&mute=1&playsinline=1&rel=0"
+                            title="Video map"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen
+                            style="display:block;width:100%;border-radius:8px;">
+                        </iframe>
+                    </div>
+                `;
+
                 L.marker([lat, lng], { icon: markerIcon })
                     .addTo(map)
-                    .bindPopup('<strong>{{ addslashes($siteName) }}</strong><br>{{ addslashes((string) ($etablissement->adresse ?? 'Adresse non précisée')) }}');
+                    .bindPopup(mapVideoHtml, { maxWidth: 360, minWidth: 260 });
 
                 setTimeout(function () {
                     map.invalidateSize();
