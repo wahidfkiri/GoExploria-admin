@@ -167,7 +167,7 @@
     .dlh-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg, rgba(26,58,30,.75) 0%, rgba(10,20,12,.5) 60%, rgba(0,0,0,.3) 100%);
+        background: linear-gradient(135deg, rgba(0,0,0,.78) 0%, rgba(0,0,0,.58) 60%, rgba(0,0,0,.35) 100%);
     }
 
     .dlh-content {
@@ -186,9 +186,9 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: rgba(212,168,83,.2);
-        border: 1px solid rgba(212,168,83,.5);
-        color: #f0c97f;
+        background: rgba(230,82,22,.2);
+        border: 1px solid rgba(230,82,22,.55);
+        color: #ff8a5d;
         padding: 6px 16px;
         border-radius: 40px;
         font-size: 12px;
@@ -210,7 +210,7 @@
         margin-bottom: 16px;
     }
 
-    .dlh-content h1 em { color: #f0c97f; font-style: italic; }
+    .dlh-content h1 em { color: #ff8a5d; font-style: italic; }
 
     .dlh-sub {
         font-size: clamp(1rem, 2vw, 1.25rem);
@@ -228,7 +228,7 @@
     }
 
     .dlh-btn-primary {
-        background: #d4a853;
+        background: #e65216;
         color: #3d2b1a;
         padding: 16px 36px;
         border-radius: 50px;
@@ -236,7 +236,7 @@
         font-weight: 700;
         font-size: 15px;
         letter-spacing: .04em;
-        border: 2px solid #d4a853;
+        border: 2px solid #e65216;
     }
 
     .dlh-btn-outline {
@@ -250,7 +250,7 @@
         border: 2px solid rgba(255,255,255,.6);
     }
 
-    .dlh-btn-primary:hover { background: #f0c97f; border-color: #f0c97f; }
+    .dlh-btn-primary:hover { background: #ff8a5d; border-color: #ff8a5d; }
     .dlh-btn-outline:hover { border-color: #fff; background: rgba(255,255,255,.1); }
 
     .dlh-dots {
@@ -273,17 +273,17 @@
     }
 
     .dlh-dot.active {
-        background: #d4a853;
+        background: #e65216;
         width: 24px;
         border-radius: 4px;
     }
 
     .dlh-stats-bar {
-        background: #1a3a1e;
+        background: #000000;
         padding: 28px 5%;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        border-bottom: 3px solid #d4a853;
+        border-bottom: 3px solid #e65216;
     }
 
     .dlh-stat-item {
@@ -298,7 +298,7 @@
         font-family: 'Playfair Display', serif;
         font-size: 2.2rem;
         font-weight: 700;
-        color: #f0c97f;
+        color: #ff8a5d;
     }
 
     .dlh-stat-label {

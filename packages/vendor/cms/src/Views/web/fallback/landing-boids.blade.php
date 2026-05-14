@@ -41,8 +41,8 @@
             --boids-muted: #6b6254;
             --boids-forest: #1a3a1e;
             --boids-forest-mid: #2d5a34;
-            --boids-gold: #d4a853;
-            --boids-gold-light: #f0c97f;
+            --boids-gold: #e65216;
+            --boids-gold-light: #ff8a5d;
             --boids-radius: 16px;
             --boids-border: #ded4c3;
         }
@@ -51,7 +51,7 @@
 
         .boids-fb-header {
             background: rgba(26, 58, 30, 0.97);
-            border: 1px solid rgba(212, 168, 83, 0.28);
+            border: 1px solid rgba(230, 82, 22, 0.35);
             border-radius: 14px;
             padding: 12px 16px;
             margin-top:0px !important;
@@ -890,8 +890,8 @@
                         </div>
                         <div class="boids-about">
                             <div class="boids-about-stack">
-                                <img class="boids-about-main" src="{{ $mainImage }}" alt="Projet principal">
-                                <img class="boids-about-second" src="{{ $secondImage }}" alt="Projet secondaire">
+                                <img class="boids-about-main" src="https://admin.goexploriabusiness.com/storage/tasks/149/1778594478_img-11.jpg" alt="Projet principal">
+                                <img class="boids-about-second" src="https://admin.goexploriabusiness.com/storage/tasks/149/1778594478_689226330-122292149624252522-6781939564791356671-n.jpg" alt="Projet secondaire">
                                 <div class="boids-badge">
                                     <strong>100%</strong>
                                     Mobile & Sur place
