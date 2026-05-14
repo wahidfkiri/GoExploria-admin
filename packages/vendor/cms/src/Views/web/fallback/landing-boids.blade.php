@@ -1186,6 +1186,135 @@
             box-shadow: 0 18px 30px rgba(24, 119, 242, 0.45);
         }
 
+        /* Pinterest section */
+        .pinterest-section {
+            padding: 20px 0 8px;
+            background: #f0e9e0;
+            border-radius: 16px;
+            font-family: "DM Sans", sans-serif;
+        }
+
+        .pinterest-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        .pinterest-header {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .pinterest-badge {
+            display: inline-block;
+            background: #bd081c;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            box-shadow: 0 10px 20px rgba(189, 8, 28, 0.2);
+        }
+
+        .pinterest-header h2 {
+            font-family: "Playfair Display", serif;
+            font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+            color: #4a2c2c;
+            margin: 0 0 8px;
+        }
+
+        .pinterest-header p {
+            font-size: 0.95rem;
+            color: #6b4f4f;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .pinterest-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .pin-card {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            position: relative;
+            transition: transform 0.25s ease;
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            min-height: 180px;
+        }
+
+        .pin-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .pin-card.large {
+            grid-column: span 2;
+            grid-row: span 2;
+            min-height: 380px;
+        }
+
+        .pin-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .pin-label {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: #fff;
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            color: #2a2a2a;
+        }
+
+        .pin-category {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: #fff;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            color: #2a2a2a;
+        }
+
+        .pinterest-cta {
+            text-align: center;
+            margin-top: 14px;
+        }
+
+        .pinterest-button {
+            display: inline-block;
+            background: #bd081c;
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 15px 25px rgba(189, 8, 28, 0.3);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .pinterest-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 30px rgba(189, 8, 28, 0.4);
+        }
+
         .boids-hours-contact {
             display: grid;
             grid-template-columns: .95fr 1.05fr;
@@ -1420,6 +1549,8 @@
             .boids-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .insta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .fb-albums-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .pinterest-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .pin-card.large { grid-column: span 1; grid-row: span 1; min-height: 220px; }
         }
 
         @media (max-width: 860px) {
@@ -1433,6 +1564,7 @@
             .insta-grid { grid-template-columns: 1fr; }
             .facebook-grid { grid-template-columns: 1fr; }
             .fb-albums-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .pinterest-grid { grid-template-columns: 1fr; }
             .boids-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .boids-media--wide, .boids-media--tall { grid-column: span 1; grid-row: span 1; }
             .boids-form-grid { grid-template-columns: 1fr; }
@@ -1613,6 +1745,33 @@
             '<i class="fas fa-calendar"></i> Événements',
             '<i class="fas fa-users"></i> Communauté',
         ];
+
+        $pinterestUrl = $etablissement->pinterest_url ?? $etablissement->pinterest ?? '#';
+        $pinterestBoardLabel = '@notre_tableau';
+        if (is_string($pinterestUrl) && str_contains($pinterestUrl, 'pinterest.')) {
+            $path = trim((string) parse_url($pinterestUrl, PHP_URL_PATH), '/');
+            if (!empty($path)) {
+                $segment = explode('/', $path)[0] ?? '';
+                if (!empty($segment)) {
+                    $pinterestBoardLabel = '@' . $segment;
+                }
+            }
+        }
+
+        $pinterestPins = $facebookBase->take(-6)->values();
+        if ($pinterestPins->count() < 6 && $facebookBase->isNotEmpty()) {
+            while ($pinterestPins->count() < 6) {
+                foreach ($facebookBase as $item) {
+                    $pinterestPins->push($item);
+                    if ($pinterestPins->count() >= 6) {
+                        break;
+                    }
+                }
+            }
+            $pinterestPins = $pinterestPins->values();
+        }
+
+        $pinterestCategories = ['🍽️ Cuisine', '🛋️ Déco', '🌿 Jardin', '👗 Mode', '👜 Accessoires'];
     @endphp
 
     @include("cms::web.fallback.activities.$activityViewFolder.vertical-menu")
@@ -1733,9 +1892,7 @@
                             <li><a href="#section-products">Produits</a></li>
                             <li><a href="#section-reviews">Avis</a></li>
                             <li><a href="#section-videos">Videos</a></li>
-                            <li><a href="#section-social">Reseaux</a></li>
-                            <li><a href="#section-facebook">Facebook</a></li>
-                            <li><a href="#section-instagram">Instagram</a></li>
+                            <li><a href="#section-social">Social Media</a></li>
                             <li><a href="#section-hours">Horaire</a></li>
                             <li><a href="#section-contact">Contact</a></li>
                         </ul>
@@ -2046,6 +2203,47 @@
                 <a href="{{ $instagramUrl !== '#' ? $instagramUrl : $devisLink }}" class="insta-button" data-gjs-type="button" target="_blank" rel="noopener noreferrer">
                     <i class="fab fa-instagram" style="margin-right: 10px;"></i>
                     <span data-gjs-type="text">Suivre sur Instagram</span>
+                </a>
+            </div>
+        </div>
+    </section>
+</article>
+<article class="boids-section" id="section-pinterest">
+    <section class="pinterest-section" data-gjs-type="section">
+        <div class="pinterest-container">
+            <div class="pinterest-header" data-gjs-type="header">
+                <div class="pinterest-badge" data-gjs-type="badge">
+                    <i class="fab fa-pinterest" style="margin-right: 10px;"></i>
+                    <span data-gjs-type="text">{{ $pinterestBoardLabel }}</span>
+                </div>
+                <h2 data-gjs-type="text">Trouvez l'inspiration sur Pinterest</h2>
+                <p data-gjs-type="text">Des idées, des styles, des ambiances... épinglez vos coups de cœur.</p>
+            </div>
+
+            <div class="pinterest-grid" data-gjs-type="grid">
+                @foreach($pinterestPins as $index => $pin)
+                    @php
+                        $isLarge = $index === 0;
+                        $category = $pinterestCategories[$index - 1] ?? '✨ Inspiration';
+                    @endphp
+                    <a class="pin-card{{ $isLarge ? ' large' : '' }}" data-gjs-type="pin" href="{{ $pinterestUrl !== '#' ? $pinterestUrl : $devisLink }}" target="_blank" rel="noopener noreferrer">
+                        <img src="{{ $pin['thumbnail'] }}" alt="Pinterest pin" data-gjs-type="image">
+                        @if($isLarge)
+                            <div class="pin-label" data-gjs-type="text">
+                                <i class="fab fa-pinterest" style="color: #bd081c; margin-right: 8px;"></i>
+                                <span data-gjs-type="text">5,2k épingles</span>
+                            </div>
+                        @else
+                            <div class="pin-category" data-gjs-type="text">{{ $category }}</div>
+                        @endif
+                    </a>
+                @endforeach
+            </div>
+
+            <div class="pinterest-cta" data-gjs-type="cta">
+                <a href="{{ $pinterestUrl !== '#' ? $pinterestUrl : $devisLink }}" class="pinterest-button" data-gjs-type="button" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-pinterest" style="margin-right: 10px;"></i>
+                    <span data-gjs-type="text">Suivre sur Pinterest</span>
                 </a>
             </div>
         </div>
