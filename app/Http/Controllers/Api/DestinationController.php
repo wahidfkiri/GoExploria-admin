@@ -266,7 +266,7 @@ class DestinationController extends Controller
     {
         $request->validate([
             'query' => 'required|string|min:2',
-            'type' => 'nullable|in:continent,country,province,region,ville,secteur'
+            'type' => 'nullable|in:continent,country,province,region,ville,secteur,etablissement'
         ]);
 
         $results = $this->destinationService->search(

@@ -21,13 +21,14 @@ class SearchBarV2 {
         this.minQueryLength = 2;
         this.endpoint = '/api/v1/destinations/search';
 
-        this.typeOrder = ['continent', 'country', 'province', 'region', 'ville', 'secteur'];
+        this.typeOrder = ['continent', 'country', 'province', 'region', 'ville', 'etablissement', 'secteur'];
         this.typeLabel = {
             continent: 'Continent',
             country: 'Pays',
             province: 'Province',
             region: 'Region',
             ville: 'Ville',
+            etablissement: 'Etablissement',
             secteur: 'Secteur'
         };
 
@@ -92,6 +93,7 @@ class SearchBarV2 {
             provinces: 'province',
             regions: 'region',
             villes: 'ville',
+            etablissements: 'etablissement',
             secteurs: 'secteur'
         };
 
@@ -106,12 +108,22 @@ class SearchBarV2 {
                 if (item.is_active !== true) return;
 
                 var showImage = (type === 'continent' || type === 'country');
+                var computedName = item.name || '';
+                if (type === 'etablissement' && item.lname) {
+                    computedName = (computedName + ' ' + item.lname).trim();
+                }
+
+                var computedDescription = item.description || '';
+                if (type === 'etablissement') {
+                    computedDescription = item.ville || item.adresse || '';
+                }
+
                 results.push({
                     id: item.id,
                     type: type,
-                    name: item.name || '',
+                    name: computedName,
                     slug: item.slug || '',
-                    description: item.description || '',
+                    description: computedDescription,
                     showImage: showImage,
                     image: showImage ? this.normalizeImageUrl(item.image) : null
                 });
@@ -190,22 +202,33 @@ class SearchBarV2 {
             case 'province': return 'fas fa-map';
             case 'region': return 'fas fa-mountain';
             case 'ville': return 'fas fa-city';
+            case 'etablissement': return 'fas fa-store';
             case 'secteur': return 'fas fa-location-dot';
             default: return 'fas fa-location-dot';
         }
     }
 
     getDestinationUrl(dest) {
-        var slug = dest.slug || (dest.name || '').toLowerCase().replace(/\s+/g, '-');
+        var slug = dest.slug || this.slugify(dest.name || '');
         switch (dest.type) {
             case 'continent': return '/destinations/continent/' + slug;
             case 'country': return '/destinations/pays/' + slug;
             case 'province': return '/destinations/province/' + slug;
             case 'region': return '/destinations/region/' + slug;
             case 'ville': return '/destinations/ville/' + slug;
+            case 'etablissement': return '/company/' + dest.id + '/' + (slug || ('etablissement-' + dest.id));
             case 'secteur': return '/destinations/secteur/' + slug;
             default: return '#';
         }
+    }
+
+    slugify(value) {
+        return String(value || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
     }
 
     selectDestination(dest) {

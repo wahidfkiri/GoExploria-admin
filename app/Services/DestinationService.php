@@ -8,6 +8,7 @@ use App\Models\Province;
 use App\Models\Region;
 use App\Models\Ville;
 use App\Models\Secteur;
+use App\Models\Etablissement;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -376,6 +377,24 @@ class DestinationService
             }
         } catch (\Exception $e) {
             $results['secteurs'] = collect([]);
+        }
+
+        try {
+            if (!$type || $type === 'etablissement') {
+                $results['etablissements'] = Etablissement::query()
+                    ->where('is_active', true)
+                    ->where(function ($builder) use ($query) {
+                        $builder->where('name', 'like', "%{$query}%")
+                            ->orWhere('lname', 'like', "%{$query}%")
+                            ->orWhere('other_activity_label', 'like', "%{$query}%")
+                            ->orWhere('ville', 'like', "%{$query}%");
+                    })
+                    ->orderBy('name')
+                    ->limit(10)
+                    ->get(['id', 'name', 'lname', 'ville', 'adresse', 'is_active']);
+            }
+        } catch (\Exception $e) {
+            $results['etablissements'] = collect([]);
         }
         
         return $results;

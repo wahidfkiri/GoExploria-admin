@@ -68,6 +68,10 @@ Route::middleware(['web'])->group(function () {
         // Nettoyer la prévisualisation
         Route::get('/clear-preview', [WebThemeController::class, 'clearPreview'])->name('clear-preview');
 
+        // URL SEO: /company/{etablissementId}/{slug}
+        // Le slug est informatif; le rendu reste celui de la page d'accueil.
+        Route::get('/{slug}', [WebThemeController::class, 'home'])->name('home.slug');
+
         // Route pour l'affichage du thème en iframe (sans layout parent)
         Route::get('/preview/iframe/{themeId?}/{slug?}', [App\Http\Controllers\ThemeIframeController::class, 'show'])
          ->name('cms.company.theme.iframe');

@@ -15,6 +15,7 @@ class Etablissement extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'lname',
         'ville',
         'user_id',
