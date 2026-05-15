@@ -108,22 +108,22 @@ const menuData = {
         tag: 'Gastronomie & Terroir',
         icon: 'fas fa-utensils',
         categories: [
-            { icon: 'fas fa-cocktail',        name: 'ESPACES AMBIANCES RESTAURANTS',                    desc: 'Atmosphère & Décor',              link: '#ambiances-restaurants' },
-            { icon: 'fas fa-wine-glass-alt',  name: 'ESPACES MENU ACCORD METS & VINS',                  desc: 'Suggestions harmonieuses',        link: '#mets-vins' },
-            { icon: 'fas fa-wine-bottle',     name: 'ESPACE CARTES DES VINS',                           desc: 'Sélection de vins',               link: '#cartes-vins' },
-            { icon: 'fas fa-network-wired',   name: 'ESPACES RÉSEAUTAGES RESTO, HÉBERGEMENT, ACTIVITÉS', desc: 'Partenariats & Collaborations',  link: '#reseautage' },
+            { icon: 'fas fa-cocktail',        name: 'ESPACES AMBIANCES RESTAURANTS',                    desc: 'Atmosphère & Décor',              link: '#resto-ambiance-vedette-v2' },
+            { icon: 'fas fa-wine-glass-alt',  name: 'ESPACES MENU ACCORD METS & VINS',                  desc: 'Suggestions harmonieuses',        link: '#resto-ambiance-vedette-v2' },
+            { icon: 'fas fa-wine-bottle',     name: 'ESPACE CARTES DES VINS',                           desc: 'Sélection de vins',               link: '#resto-ambiance-vedette-v2' },
+            { icon: 'fas fa-network-wired',   name: 'ESPACES RÉSEAUTAGES RESTO, HÉBERGEMENT, ACTIVITÉS', desc: 'Partenariats & Collaborations',  link: '#resto-ambiance-vedette-v2' },
             {
                 icon: 'fas fa-bread-slice',
                 name: 'ESPACES BOULANGERIES, ÉPICERIE FINE, TERROIR',
                 desc: 'Produits du terroir',
-                link: '#boulangeries',
+                link: '#resto-ambiance-vedette-v2',
                 grandchildren: ['Boulangeries', 'Épicerie fine', 'Terroir']
             },
             {
                 icon: 'fas fa-store-alt',
                 name: 'ESPACES BANNIÈRES ALIMENTATIONS',
                 desc: 'Réseaux alimentaires',
-                link: '#bannieres',
+                link: '#resto-ambiance-vedette-v2',
                 grandchildren: ['RÉSEAU IGA', 'MÉTRO', 'SUPER C']
             }
         ]

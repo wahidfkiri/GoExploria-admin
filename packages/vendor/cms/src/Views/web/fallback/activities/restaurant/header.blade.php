@@ -8,7 +8,7 @@
     .fb-header {
         position: sticky;
         top: 0;
-        z-index: 10050;
+        /* z-index: 10050; */
         background: #050505;
         color: #fff;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);

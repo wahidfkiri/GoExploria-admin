@@ -10,7 +10,8 @@ use App\Http\Controllers\{
     HomeController,
     LandingPageController,
     DestinationPageController,
-    DevisController
+    DevisController,
+    SitemapController
 };
 use Vendor\HomeV2\Http\Controllers\HomeV2Controller;
 
@@ -30,6 +31,25 @@ use Illuminate\Support\Facades\Mail;
 Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
 Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
 Route::post('/chat/clear-history', [ChatController::class, 'clearHistory'])->name('chat.clear-history');
+
+// Sitemaps dynamiques (Google Search Console)
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.index');
+Route::prefix('sitemaps')->name('sitemaps.')->group(function () {
+    Route::get('/core.xml', [SitemapController::class, 'core'])->name('core');
+    Route::get('/destinations.xml', [SitemapController::class, 'destinations'])->name('destinations');
+    Route::get('/companies.xml', [SitemapController::class, 'companies'])->name('companies');
+});
+Route::get('/robots.txt', function () {
+    $content = "User-agent: *\n";
+    $content .= "Allow: /\n";
+    $content .= "Sitemap: " . url('/sitemap.xml') . "\n";
+
+    return response($content, 200, [
+        'Content-Type' => 'text/plain; charset=UTF-8',
+        'Cache-Control' => 'public, max-age=3600',
+    ]);
+})->name('robots');
+
 // Page de login
 Route::get('/', [HomeV2Controller::class, 'index'])->name('home-v2');
 
