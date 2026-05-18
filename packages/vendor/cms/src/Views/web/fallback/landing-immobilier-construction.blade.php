@@ -1,8 +1,8 @@
-@php
+﻿@php
     $siteName = get_site_name($etablissement->id);
     $siteDescription = $etablissement->getSetting('site_description', null, 'general')
         ?: get_site_description($etablissement->id)
-        ?: 'Landing activité Immobilier & Construction.';
+        ?: 'Landing activitÃ© Immobilier & Construction.';
 
     $logoUrl = get_logo_url($etablissement->id);
     $phone = $etablissement->getSetting('phone', null, 'company')
@@ -13,7 +13,7 @@
         ?: 'info@goexploria.com';
     $address = $etablissement->getSetting('address', null, 'company')
         ?: $etablissement->getSetting('address', null, 'general')
-        ?: 'Québec, Canada';
+        ?: 'QuÃ©bec, Canada';
 
     $devisLink = $devisUrl ?? route('devis');
     $phoneHref = preg_replace('/[^\d\+]/', '', (string) $phone);
@@ -24,8 +24,8 @@
             'media_url' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DSC06735-HDR.jpg',
             'thumb' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DSC06735-HDR.jpg',
             'title' => 'Maisons & Chalets en Bois Rond',
-            'subtitle' => 'Chaque réalisation est l'expression d'une passion pour le bois massif et d'un engagement constant envers l'excellence artisanale.',
-            'button_text' => 'Découvrir nos modèles',
+            'subtitle' => 'Chaque rÃ©alisation est l\'expression d\'une passion pour le bois massif et d\'un engagement constant envers l\'excellence artisanale.',
+            'button_text' => 'DÃ©couvrir nos modÃ¨les',
             'button_url' => '#products',
             'video_type' => null,
             'video_embed_url' => null,
@@ -34,9 +34,9 @@
             'type' => 'image',
             'media_url' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DJI_0237.jpg',
             'thumb' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DJI_0237.jpg',
-            'title' => 'Design Moderne, Âme Naturelle',
-            'subtitle' => 'La série Contemporaine allie lignes épurées et chaleur intemporelle du bois massif.',
-            'button_text' => 'Explorer la série',
+            'title' => 'Design Moderne, Ã‚me Naturelle',
+            'subtitle' => 'La sÃ©rie Contemporaine allie lignes Ã©purÃ©es et chaleur intemporelle du bois massif.',
+            'button_text' => 'Explorer la sÃ©rie',
             'button_url' => '#products',
             'video_type' => null,
             'video_embed_url' => null,
@@ -45,8 +45,8 @@
             'type' => 'image',
             'media_url' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/SaveInsta.App_327015499_693241832530188_5777615420000727358_n.jpg',
             'thumb' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/SaveInsta.App_327015499_693241832530188_5777615420000727358_n.jpg',
-            'title' => 'Charme Rustique, Design Épuré',
-            'subtitle' => 'Nos chalets scandinaves fusionnent l'authenticité du bois rond avec l'esthétique nordique.',
+            'title' => 'Charme Rustique, Design Ã‰purÃ©',
+            'subtitle' => 'Nos chalets scandinaves fusionnent l\'authenticitÃ© du bois rond avec l\'esthÃ©tique nordique.',
             'button_text' => 'Galerie photos',
             'button_url' => '#gallery',
             'video_type' => null,
@@ -68,7 +68,7 @@
                 'media_url' => $mediaUrl,
                 'thumb' => data_get($slide, 'thumbnail_url') ?: data_get($slide, 'thumbnail_path') ?: $mediaUrl,
                 'title' => data_get($slide, 'name') ?: 'Immobilier & Construction',
-                'subtitle' => data_get($slide, 'description') ?: 'Valorisez votre établissement avec une page moderne et performante.',
+                'subtitle' => data_get($slide, 'description') ?: 'Valorisez votre Ã©tablissement avec une page moderne et performante.',
                 'button_text' => data_get($slide, 'button_text') ?: 'En savoir plus',
                 'button_url' => data_get($slide, 'button_url') ?: $devisLink,
                 'video_type' => data_get($slide, 'video_type'),
@@ -83,9 +83,9 @@
     }
 
     $fallbackGallery = collect([
-        ['thumbnail' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DSC06735-HDR.jpg', 'name' => 'Réalisation Prestige'],
+        ['thumbnail' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DSC06735-HDR.jpg', 'name' => 'RÃ©alisation Prestige'],
         ['thumbnail' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/SaveInsta.App_327015499_693241832530188_5777615420000727358_n.jpg', 'name' => 'Chalet Scandinave'],
-        ['thumbnail' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DJI_0237.jpg', 'name' => 'Vue Aérienne'],
+        ['thumbnail' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DJI_0237.jpg', 'name' => 'Vue AÃ©rienne'],
         ['thumbnail' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/IMG-20250628-WA0010.jpg', 'name' => 'Construction Signature'],
         ['thumbnail' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/Gestion-complete-par-nos-experts-image-.jpg', 'name' => 'Gestion Experte'],
         ['thumbnail' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/Client-auto-constructeur-image.jpg', 'name' => 'Auto-construction'],
@@ -95,7 +95,7 @@
         ->map(function ($item) {
             return [
                 'thumbnail' => data_get($item, 'thumbnail') ?: data_get($item, 'url'),
-                'name' => data_get($item, 'name') ?: 'Média',
+                'name' => data_get($item, 'name') ?: 'MÃ©dia',
             ];
         })
         ->filter(fn ($item) => !empty($item['thumbnail']))
@@ -622,34 +622,34 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
     </div>
     <ul class="nav-links">
       <li>
-        <a href="#products">Maisons & Chalets ▾</a>
+        <a href="#products">Maisons & Chalets â–¾</a>
         <ul class="dropdown">
-          <li><a href="#products">Tous nos modèles</a></li>
-          <li><a href="#products">Série Prestige</a></li>
-          <li><a href="#products">Série Scandinave</a></li>
-          <li><a href="#products">Série Contemporaine</a></li>
+          <li><a href="#products">Tous nos modÃ¨les</a></li>
+          <li><a href="#products">SÃ©rie Prestige</a></li>
+          <li><a href="#products">SÃ©rie Scandinave</a></li>
+          <li><a href="#products">SÃ©rie Contemporaine</a></li>
           <li><a href="#products">Maison en bois rond</a></li>
           <li><a href="#products">Chalet en bois rond</a></li>
         </ul>
       </li>
       <li>
-        <a href="#services">Services ▾</a>
+        <a href="#services">Services â–¾</a>
         <ul class="dropdown">
           <li><a href="#services">Plans</a></li>
           <li><a href="#services">Soutien technique</a></li>
           <li><a href="#services">Auto-construction</a></li>
           <li><a href="#services">Surveillance de chantier</a></li>
-          <li><a href="#services">Ajouts et rénovations</a></li>
+          <li><a href="#services">Ajouts et rÃ©novations</a></li>
           <li><a href="#services">Transport</a></li>
         </ul>
       </li>
-      <li><a href="#gallery">Réalisations</a></li>
-      <li><a href="#about">À propos</a></li>
+      <li><a href="#gallery">RÃ©alisations</a></li>
+      <li><a href="#about">Ã€ propos</a></li>
       <li><a href="#blog">Blogue</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="theme-btn" id="themeToggle" title="Changer de thème"><i class="fa fa-sun" id="themeIcon"></i></button>
+      <button class="theme-btn" id="themeToggle" title="Changer de thÃ¨me"><i class="fa fa-sun" id="themeIcon"></i></button>
       <a href="{{ $devisLink }}" class="btn-nav-cta" target="_blank" rel="noopener noreferrer">Soumission gratuite</a>
       <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
     </div>
@@ -661,8 +661,8 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
   <ul class="mobile-nav-links">
     <li><a href="#products" onclick="closeMobileNav()">Maisons & Chalets</a></li>
     <li><a href="#services" onclick="closeMobileNav()">Services</a></li>
-    <li><a href="#gallery" onclick="closeMobileNav()">Réalisations</a></li>
-    <li><a href="#about" onclick="closeMobileNav()">À propos</a></li>
+    <li><a href="#gallery" onclick="closeMobileNav()">RÃ©alisations</a></li>
+    <li><a href="#about" onclick="closeMobileNav()">Ã€ propos</a></li>
     <li><a href="#blog" onclick="closeMobileNav()">Blogue</a></li>
     <li><a href="#contact" onclick="closeMobileNav()">Contact</a></li>
     <li><a href="{{ $devisLink }}" target="_blank" rel="noopener noreferrer" onclick="closeMobileNav()" style="color:var(--gold);font-weight:600">Soumission gratuite</a></li>
@@ -682,7 +682,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
                   <source src="{{ $slide['video_embed_url'] ?? $slide['media_url'] }}">
                 </video>
               @else
-                <iframe src="{{ ($slide['video_embed_url'] ?? $slide['media_url']) . (str_contains((string) ($slide['video_embed_url'] ?? $slide['media_url']), '?') ? '&' : '?') . 'autoplay=1&mute=1&loop=1&background=1&controls=0' }}" title="Slide vidéo" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                <iframe src="{{ ($slide['video_embed_url'] ?? $slide['media_url']) . (str_contains((string) ($slide['video_embed_url'] ?? $slide['media_url']), '?') ? '&' : '?') . 'autoplay=1&mute=1&loop=1&background=1&controls=0' }}" title="Slide vidÃ©o" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
               @endif
             @else
               <img src="{{ $slide['media_url'] }}" alt="{{ $slide['title'] }}">
@@ -694,7 +694,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
             <p>{{ $slide['subtitle'] }}</p>
             <div class="hero-btns">
               <a href="{{ $slide['button_url'] }}" class="btn-primary" target="_blank" rel="noopener noreferrer">{{ $slide['button_text'] }}</a>
-              <a href="#gallery" class="btn-ghost">Voir nos réalisations</a>
+              <a href="#gallery" class="btn-ghost">Voir nos rÃ©alisations</a>
             </div>
           </div>
         </div>
@@ -703,12 +703,12 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
     <div class="swiper-pagination" style="bottom:1.5rem;left:5%;width:auto;text-align:left;z-index:4;"></div>
 
     <div class="hero-stats">
-      <div class="hero-stat"><span class="num">100+</span><span class="lbl">Réalisations</span></div>
-      <div class="hero-stat"><span class="num">25+</span><span class="lbl">Années</span></div>
+      <div class="hero-stat"><span class="num">100+</span><span class="lbl">RÃ©alisations</span></div>
+      <div class="hero-stat"><span class="num">25+</span><span class="lbl">AnnÃ©es</span></div>
       <div class="hero-stat"><span class="num">100%</span><span class="lbl">Satisfaction</span></div>
     </div>
 
-    <div class="hero-scroll"><i class="fa fa-chevron-down"></i><span>Défiler</span></div>
+    <div class="hero-scroll"><i class="fa fa-chevron-down"></i><span>DÃ©filer</span></div>
 
     <div class="hero-selector" id="heroSelector">
       @foreach($heroSlides as $index => $slide)
@@ -737,10 +737,10 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 <!-- STATS -->
 <section id="stats">
   <div class="stats-grid">
-    <div class="stat-item reveal"><span class="num">100+</span><span class="lbl">Réalisations complétées</span></div>
-    <div class="stat-item reveal delay-1"><span class="num">25+</span><span class="lbl">Années d'expertise</span></div>
-    <div class="stat-item reveal delay-2"><span class="num">3</span><span class="lbl">Séries exclusives</span></div>
-    <div class="stat-item reveal delay-3"><span class="num">∞</span><span class="lbl">Possibilités sur mesure</span></div>
+    <div class="stat-item reveal"><span class="num">100+</span><span class="lbl">RÃ©alisations complÃ©tÃ©es</span></div>
+    <div class="stat-item reveal delay-1"><span class="num">25+</span><span class="lbl">AnnÃ©es d'expertise</span></div>
+    <div class="stat-item reveal delay-2"><span class="num">3</span><span class="lbl">SÃ©ries exclusives</span></div>
+    <div class="stat-item reveal delay-3"><span class="num">âˆž</span><span class="lbl">PossibilitÃ©s sur mesure</span></div>
   </div>
 </section>
 
@@ -750,18 +750,18 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
     <div class="about-grid">
       <div class="about-img-wrap reveal">
         <img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/DSC06735-HDR.jpg" alt="Maison bois rond Prestige" class="about-img-main">
-        <div class="about-badge"><span class="big">25+</span><span class="small">Années d'excellence</span></div>
+        <div class="about-badge"><span class="big">25+</span><span class="small">AnnÃ©es d'excellence</span></div>
       </div>
       <div class="reveal delay-1">
         <div class="sec-eyebrow">Notre histoire</div>
         <h2 class="sec-title">Une <em style="font-style:italic;color:var(--gold)">passion</em> pour le bois massif</h2>
-        <p style="color:var(--text-muted);line-height:1.85;margin-bottom:1.5rem">Chez Prestige Bois Rond, chaque maison et chalet que nous concevons est l'expression d'une passion profonde pour le bois massif et d'un engagement constant envers l'excellence artisanale.</p>
-        <p style="color:var(--text-muted);line-height:1.85;margin-bottom:2rem">Fondée au Québec, notre entreprise accompagne ses clients de la conception jusqu'à la livraison, en offrant un service personnalisé et un savoir-faire exceptionnel reconnu à travers la province.</p>
+        <p style="color:var(--text-muted);line-height:1.85;margin-bottom:1.5rem">Chez Prestige Bois Rond, chaque maison et chalet que nous concevons est l\'expression d'une passion profonde pour le bois massif et d'un engagement constant envers l'excellence artisanale.</p>
+        <p style="color:var(--text-muted);line-height:1.85;margin-bottom:2rem">FondÃ©e au QuÃ©bec, notre entreprise accompagne ses clients de la conception jusqu'Ã  la livraison, en offrant un service personnalisÃ© et un savoir-faire exceptionnel reconnu Ã  travers la province.</p>
         <div class="about-feats">
-          <div class="feat-item"><i class="fa fa-leaf"></i><div><h4>Matériaux durables</h4><p>Bois massif sélectionné pour sa qualité et sa durabilité.</p></div></div>
-          <div class="feat-item"><i class="fa fa-tools"></i><div><h4>Artisanat expert</h4><p>Chaque pièce usinée avec précision par nos artisans.</p></div></div>
-          <div class="feat-item"><i class="fa fa-snowflake"></i><div><h4>Normes énergétiques</h4><p>Conformes aux plus hautes normes d'efficacité.</p></div></div>
-          <div class="feat-item"><i class="fa fa-handshake"></i><div><h4>Accompagnement complet</h4><p>De la conception jusqu'à la livraison, avec vous.</p></div></div>
+          <div class="feat-item"><i class="fa fa-leaf"></i><div><h4>MatÃ©riaux durables</h4><p>Bois massif sÃ©lectionnÃ© pour sa qualitÃ© et sa durabilitÃ©.</p></div></div>
+          <div class="feat-item"><i class="fa fa-tools"></i><div><h4>Artisanat expert</h4><p>Chaque piÃ¨ce usinÃ©e avec prÃ©cision par nos artisans.</p></div></div>
+          <div class="feat-item"><i class="fa fa-snowflake"></i><div><h4>Normes Ã©nergÃ©tiques</h4><p>Conformes aux plus hautes normes d'efficacitÃ©.</p></div></div>
+          <div class="feat-item"><i class="fa fa-handshake"></i><div><h4>Accompagnement complet</h4><p>De la conception jusqu'Ã  la livraison, avec vous.</p></div></div>
         </div>
         <div style="margin-top:2.5rem"><a href="#contact" class="btn-primary">Parlez-nous de votre projet</a></div>
       </div>
@@ -781,38 +781,38 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
     </div>
     <div class="products-grid">
       <div class="product-card reveal">
-        <img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/DSC06735-HDR.jpg" alt="Série Prestige">
+        <img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/DSC06735-HDR.jpg" alt="SÃ©rie Prestige">
         <div class="product-overlay">
-          <span class="product-tag">Série Prestige</span>
-          <h3>Luxe & Durabilité</h3>
+          <span class="product-tag">SÃ©rie Prestige</span>
+          <h3>Luxe & DurabilitÃ©</h3>
           <p>Habitations en bois rond alliant luxe, confort et savoir-faire exceptionnel.</p>
-          <a href="#" class="product-link">Découvrir <i class="fa fa-arrow-right"></i></a>
+          <a href="#" class="product-link">DÃ©couvrir <i class="fa fa-arrow-right"></i></a>
         </div>
       </div>
       <div class="product-card reveal delay-1">
-        <img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/SaveInsta.App_327015499_693241832530188_5777615420000727358_n.jpg" alt="Série Scandinave">
+        <img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/SaveInsta.App_327015499_693241832530188_5777615420000727358_n.jpg" alt="SÃ©rie Scandinave">
         <div class="product-overlay">
-          <span class="product-tag">Série Scandinave</span>
+          <span class="product-tag">SÃ©rie Scandinave</span>
           <h3>Charme Nordique</h3>
-          <p>Alliant charme rustique et design épuré, fabriqués avec passion.</p>
+          <p>Alliant charme rustique et design Ã©purÃ©, fabriquÃ©s avec passion.</p>
           <a href="#" class="product-link">Explorer <i class="fa fa-arrow-right"></i></a>
         </div>
       </div>
       <div class="product-card reveal delay-2">
-        <img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/DJI_0237.jpg" alt="Série Contemporaine">
+        <img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/DJI_0237.jpg" alt="SÃ©rie Contemporaine">
         <div class="product-overlay">
-          <span class="product-tag">Série Contemporaine</span>
+          <span class="product-tag">SÃ©rie Contemporaine</span>
           <h3>Hybride Moderne</h3>
           <p>Un mariage parfait entre design moderne et charme du bois rond.</p>
-          <a href="#" class="product-link">Découvrir <i class="fa fa-arrow-right"></i></a>
+          <a href="#" class="product-link">DÃ©couvrir <i class="fa fa-arrow-right"></i></a>
         </div>
       </div>
       <div class="product-card reveal delay-3">
-        <img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/IMG-20250628-WA0010.jpg" alt="Ajouts et rénovations">
+        <img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/IMG-20250628-WA0010.jpg" alt="Ajouts et rÃ©novations">
         <div class="product-overlay">
           <span class="product-tag">Services</span>
-          <h3>Ajouts & Rénovations</h3>
-          <p>Agrandissements et rénovations en bois massif adaptés à vos besoins.</p>
+          <h3>Ajouts & RÃ©novations</h3>
+          <p>Agrandissements et rÃ©novations en bois massif adaptÃ©s Ã  vos besoins.</p>
           <a href="#" class="product-link">En savoir plus <i class="fa fa-arrow-right"></i></a>
         </div>
       </div>
@@ -824,10 +824,10 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 <section id="video-section">
   <div class="container">
     <div class="sec-eyebrow" style="justify-content:center">Notre univers</div>
-    <h2 class="sec-title" style="text-align:center;margin-bottom:.5rem">Visitez nos <span class="text-gold">réalisations</span></h2>
-    <p style="text-align:center;color:var(--text-muted);margin-bottom:0">Découvrez l'artisanat et la passion derrière chaque projet Prestige Bois Rond.</p>
+    <h2 class="sec-title" style="text-align:center;margin-bottom:.5rem">Visitez nos <span class="text-gold">rÃ©alisations</span></h2>
+    <p style="text-align:center;color:var(--text-muted);margin-bottom:0">DÃ©couvrez l'artisanat et la passion derriÃ¨re chaque projet Prestige Bois Rond.</p>
     <div class="video-wrap reveal">
-      <img src="https://prestigeboisrond.ca/wp-content/uploads/2025/07/bg-dji.jpg" alt="Vidéo" class="video-thumb">
+      <img src="https://prestigeboisrond.ca/wp-content/uploads/2025/07/bg-dji.jpg" alt="VidÃ©o" class="video-thumb">
       <button class="video-play" onclick="openVideo()"><i class="fa fa-play"></i></button>
     </div>
   </div>
@@ -837,8 +837,8 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 <section id="gallery">
   <div class="container">
     <div class="sec-eyebrow reveal">Galerie photos</div>
-    <h2 class="sec-title reveal">Nos <span class="text-gold">Réalisations</span></h2>
-    <p class="sec-sub reveal" style="margin-bottom:2rem">Parcourez notre galerie et laissez-vous inspirer par l'authenticité et la beauté de nos constructions.</p>
+    <h2 class="sec-title reveal">Nos <span class="text-gold">RÃ©alisations</span></h2>
+    <p class="sec-sub reveal" style="margin-bottom:2rem">Parcourez notre galerie et laissez-vous inspirer par l\'authenticitÃ© et la beautÃ© de nos constructions.</p>
     <div class="gallery-filter reveal">
       <button class="filter-btn active" data-filter="all">Tout</button>
       <button class="filter-btn" data-filter="prestige">Prestige</button>
@@ -853,7 +853,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
         </div>
       @endforeach
     </div>
-    <div style="text-align:center;margin-top:2.5rem"><a href="{{ $devisLink }}" target="_blank" rel="noopener noreferrer" class="btn-primary">Voir toutes nos réalisations</a></div>
+    <div style="text-align:center;margin-top:2.5rem"><a href="{{ $devisLink }}" target="_blank" rel="noopener noreferrer" class="btn-primary">Voir toutes nos rÃ©alisations</a></div>
   </div>
 </section>
 
@@ -862,14 +862,14 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
   <div class="container">
     <div class="sec-eyebrow reveal">Ce que nous offrons</div>
     <h2 class="sec-title reveal">Nos <span class="text-gold">Services</span></h2>
-    <p class="sec-sub reveal">Un accompagnement complet du début à la fin de votre projet.</p>
+    <p class="sec-sub reveal">Un accompagnement complet du dÃ©but Ã  la fin de votre projet.</p>
     <div class="services-grid">
-      <div class="svc-card reveal"><div class="svc-icon"><i class="fa fa-drafting-compass"></i></div><h3>Plans & Conception</h3><p>Nos architectes et techniciens créent des plans sur mesure adaptés à votre terrain, votre style et votre budget.</p><a href="#" class="svc-link">En savoir plus <i class="fa fa-arrow-right"></i></a></div>
-      <div class="svc-card reveal delay-1"><div class="svc-icon"><i class="fa fa-hard-hat"></i></div><h3>Surveillance de chantier</h3><p>Notre équipe supervise chaque étape de votre construction pour garantir qualité et conformité aux normes.</p><a href="#" class="svc-link">En savoir plus <i class="fa fa-arrow-right"></i></a></div>
-      <div class="svc-card reveal delay-2"><div class="svc-icon"><i class="fa fa-hammer"></i></div><h3>Auto-construction</h3><p>Envie de participer à la construction de votre rêve ? Nous vous fournissons les kits, documents et l'assistance nécessaires.</p><a href="#" class="svc-link">En savoir plus <i class="fa fa-arrow-right"></i></a></div>
-      <div class="svc-card reveal"><div class="svc-icon"><i class="fa fa-home"></i></div><h3>Ajouts & Rénovations</h3><p>Peu importe l'ampleur de vos rénovations en bois massif, nous avons la solution adaptée à vos besoins.</p><a href="#" class="svc-link">En savoir plus <i class="fa fa-arrow-right"></i></a></div>
-      <div class="svc-card reveal delay-1"><div class="svc-icon"><i class="fa fa-truck"></i></div><h3>Transport</h3><p>Ne vous cassez pas la tête — nous nous occupons de la livraison de votre structure partout au Québec.</p><a href="#" class="svc-link">En savoir plus <i class="fa fa-arrow-right"></i></a></div>
-      <div class="svc-card reveal delay-2"><div class="svc-icon"><i class="fa fa-headset"></i></div><h3>Soutien technique</h3><p>Notre équipe d'experts est disponible pour répondre à toutes vos questions techniques tout au long du projet.</p><a href="#" class="svc-link">En savoir plus <i class="fa fa-arrow-right"></i></a></div>
+      <div class="svc-card reveal"><div class="svc-icon"><i class="fa fa-drafting-compass"></i></div><h3>Plans & Conception</h3><p>Nos architectes et techniciens crÃ©ent des plans sur mesure adaptÃ©s Ã  votre terrain, votre style et votre budget.</p><a href="#" class="svc-link">En savoir plus <i class="fa fa-arrow-right"></i></a></div>
+      <div class="svc-card reveal delay-1"><div class="svc-icon"><i class="fa fa-hard-hat"></i></div><h3>Surveillance de chantier</h3><p>Notre Ã©quipe supervise chaque Ã©tape de votre construction pour garantir qualitÃ© et conformitÃ© aux normes.</p><a href="#" class="svc-link">En savoir plus <i class="fa fa-arrow-right"></i></a></div>
+      <div class="svc-card reveal delay-2"><div class="svc-icon"><i class="fa fa-hammer"></i></div><h3>Auto-construction</h3><p>Envie de participer Ã  la construction de votre rÃªve ? Nous vous fournissons les kits, documents et l'assistance nÃ©cessaires.</p><a href="#" class="svc-link">En savoir plus <i class="fa fa-arrow-right"></i></a></div>
+      <div class="svc-card reveal"><div class="svc-icon"><i class="fa fa-home"></i></div><h3>Ajouts & RÃ©novations</h3><p>Peu importe l'ampleur de vos rÃ©novations en bois massif, nous avons la solution adaptÃ©e Ã  vos besoins.</p><a href="#" class="svc-link">En savoir plus <i class="fa fa-arrow-right"></i></a></div>
+      <div class="svc-card reveal delay-1"><div class="svc-icon"><i class="fa fa-truck"></i></div><h3>Transport</h3><p>Ne vous cassez pas la tÃªte â€” nous nous occupons de la livraison de votre structure partout au QuÃ©bec.</p><a href="#" class="svc-link">En savoir plus <i class="fa fa-arrow-right"></i></a></div>
+      <div class="svc-card reveal delay-2"><div class="svc-icon"><i class="fa fa-headset"></i></div><h3>Soutien technique</h3><p>Notre Ã©quipe d'experts est disponible pour rÃ©pondre Ã  toutes vos questions techniques tout au long du projet.</p><a href="#" class="svc-link">En savoir plus <i class="fa fa-arrow-right"></i></a></div>
     </div>
   </div>
 </section>
@@ -877,14 +877,14 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 <!-- PROCESS -->
 <section id="process">
   <div class="container">
-    <div class="sec-eyebrow reveal" style="justify-content:center">Étapes du projet</div>
-    <h2 class="sec-title reveal" style="text-align:center">Comment ça <span class="text-gold">fonctionne</span></h2>
+    <div class="sec-eyebrow reveal" style="justify-content:center">Ã‰tapes du projet</div>
+    <h2 class="sec-title reveal" style="text-align:center">Comment Ã§a <span class="text-gold">fonctionne</span></h2>
     <div class="process-steps">
-      <div class="proc-step reveal"><div class="proc-num">1</div><h3>Consultation</h3><p>Discussion de vos besoins, budget et style de vie pour définir votre projet idéal.</p></div>
-      <div class="proc-step reveal delay-1"><div class="proc-num">2</div><h3>Conception</h3><p>Élaboration des plans et soumission personnalisée selon vos spécifications.</p></div>
-      <div class="proc-step reveal delay-2"><div class="proc-num">3</div><h3>Fabrication</h3><p>Usinage précis de votre structure en bois rond dans nos installations au Québec.</p></div>
+      <div class="proc-step reveal"><div class="proc-num">1</div><h3>Consultation</h3><p>Discussion de vos besoins, budget et style de vie pour dÃ©finir votre projet idÃ©al.</p></div>
+      <div class="proc-step reveal delay-1"><div class="proc-num">2</div><h3>Conception</h3><p>Ã‰laboration des plans et soumission personnalisÃ©e selon vos spÃ©cifications.</p></div>
+      <div class="proc-step reveal delay-2"><div class="proc-num">3</div><h3>Fabrication</h3><p>Usinage prÃ©cis de votre structure en bois rond dans nos installations au QuÃ©bec.</p></div>
       <div class="proc-step reveal delay-3"><div class="proc-num">4</div><h3>Livraison</h3><p>Transport et livraison de votre kit directement sur votre terrain.</p></div>
-      <div class="proc-step reveal delay-4"><div class="proc-num">5</div><h3>Emménagement</h3><p>Votre maison de rêve est prête. Bienvenue dans votre nouveau chez-vous!</p></div>
+      <div class="proc-step reveal delay-4"><div class="proc-num">5</div><h3>EmmÃ©nagement</h3><p>Votre maison de rÃªve est prÃªte. Bienvenue dans votre nouveau chez-vous!</p></div>
     </div>
   </div>
 </section>
@@ -896,10 +896,10 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
     <h2 class="sec-title reveal" style="text-align:center">Ce que nos clients <span class="text-gold">disent</span></h2>
     <div class="swiper testimonials-swiper" style="margin-top:3rem;padding:1rem 0 3rem">
       <div class="swiper-wrapper">
-        <div class="swiper-slide testi-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p>"Prestige Bois Rond a réalisé le chalet de nos rêves. Du premier contact jusqu'à la livraison, l'équipe a été professionnelle, à l'écoute et d'une précision remarquable. Le résultat dépasse toutes nos attentes."</p><div class="testi-author"><div class="testi-avatar">ML</div><div><h4>Marie-Lise Tremblay</h4><span>Laurentides, Québec • Série Prestige</span></div></div></div></div>
-        <div class="swiper-slide testi-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p>"Nous avons opté pour l'auto-construction avec le soutien de Prestige Bois Rond. L'accompagnement était exceptionnel! Ils ont répondu à chacune de nos questions avec patience et expertise. Notre maison est magnifique!"</p><div class="testi-author"><div class="testi-avatar">PL</div><div><h4>Pierre & Lucie Bergeron</h4><span>Lanaudière, Québec • Auto-construction</span></div></div></div></div>
-        <div class="swiper-slide testi-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p>"La qualité du bois et le soin apporté à chaque détail est impressionnant. Notre chalet scandinave est une pure merveille — chaleureux l'hiver, frais l'été. On recommande Prestige Bois Rond à 100%!"</p><div class="testi-author"><div class="testi-avatar">JF</div><div><h4>Jean-François Côté</h4><span>Estrie, Québec • Série Scandinave</span></div></div></div></div>
-        <div class="swiper-slide testi-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p>"Notre maison contemporaine hybride est à la fois moderne et chaleureuse. Le service après-vente est également irréprochable. Une équipe passionnée et compétente de bout en bout."</p><div class="testi-author"><div class="testi-avatar">SB</div><div><h4>Sophie Beaumont</h4><span>Charlevoix, Québec • Série Contemporaine</span></div></div></div></div>
+        <div class="swiper-slide testi-slide"><div class="testi-card"><div class="testi-stars">â˜…â˜…â˜…â˜…â˜…</div><p>"Prestige Bois Rond a rÃ©alisÃ© le chalet de nos rÃªves. Du premier contact jusqu'Ã  la livraison, l'Ã©quipe a Ã©tÃ© professionnelle, Ã  l'Ã©coute et d'une prÃ©cision remarquable. Le rÃ©sultat dÃ©passe toutes nos attentes."</p><div class="testi-author"><div class="testi-avatar">ML</div><div><h4>Marie-Lise Tremblay</h4><span>Laurentides, QuÃ©bec â€¢ SÃ©rie Prestige</span></div></div></div></div>
+        <div class="swiper-slide testi-slide"><div class="testi-card"><div class="testi-stars">â˜…â˜…â˜…â˜…â˜…</div><p>"Nous avons optÃ© pour l'auto-construction avec le soutien de Prestige Bois Rond. L'accompagnement Ã©tait exceptionnel! Ils ont rÃ©pondu Ã  chacune de nos questions avec patience et expertise. Notre maison est magnifique!"</p><div class="testi-author"><div class="testi-avatar">PL</div><div><h4>Pierre & Lucie Bergeron</h4><span>LanaudiÃ¨re, QuÃ©bec â€¢ Auto-construction</span></div></div></div></div>
+        <div class="swiper-slide testi-slide"><div class="testi-card"><div class="testi-stars">â˜…â˜…â˜…â˜…â˜…</div><p>"La qualitÃ© du bois et le soin apportÃ© Ã  chaque dÃ©tail est impressionnant. Notre chalet scandinave est une pure merveille â€” chaleureux l'hiver, frais l'Ã©tÃ©. On recommande Prestige Bois Rond Ã  100%!"</p><div class="testi-author"><div class="testi-avatar">JF</div><div><h4>Jean-FranÃ§ois CÃ´tÃ©</h4><span>Estrie, QuÃ©bec â€¢ SÃ©rie Scandinave</span></div></div></div></div>
+        <div class="swiper-slide testi-slide"><div class="testi-card"><div class="testi-stars">â˜…â˜…â˜…â˜…â˜…</div><p>"Notre maison contemporaine hybride est Ã  la fois moderne et chaleureuse. Le service aprÃ¨s-vente est Ã©galement irrÃ©prochable. Une Ã©quipe passionnÃ©e et compÃ©tente de bout en bout."</p><div class="testi-author"><div class="testi-avatar">SB</div><div><h4>Sophie Beaumont</h4><span>Charlevoix, QuÃ©bec â€¢ SÃ©rie Contemporaine</span></div></div></div></div>
       </div>
       <div class="swiper-pagination"></div>
     </div>
@@ -910,7 +910,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 <section id="social-feed">
   <div class="container">
     <div class="sec-eyebrow reveal">Suivez-nous</div>
-    <h2 class="sec-title reveal">Nos <span class="text-gold">Médias Sociaux</span></h2>
+    <h2 class="sec-title reveal">Nos <span class="text-gold">MÃ©dias Sociaux</span></h2>
     <div class="social-tabs reveal" style="margin-top:1.5rem">
       <button class="social-tab active" data-social="instagram"><i class="fab fa-instagram"></i> Instagram</button>
       <button class="social-tab" data-social="facebook"><i class="fab fa-facebook"></i> Facebook</button>
@@ -932,21 +932,21 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
   <div class="container">
     <div class="map-wrap">
       <div class="reveal">
-        <div class="sec-eyebrow">Où nous trouver</div>
+        <div class="sec-eyebrow">OÃ¹ nous trouver</div>
         <h2 class="sec-title">Visitez <span class="text-gold">nos installations</span></h2>
-        <p>Venez découvrir notre usine et nos modèles en exposition au Québec. Notre équipe sera ravie de vous accueillir.</p>
+        <p>Venez dÃ©couvrir notre usine et nos modÃ¨les en exposition au QuÃ©bec. Notre Ã©quipe sera ravie de vous accueillir.</p>
         <div class="map-details">
           <div class="map-detail"><i class="fa fa-map-marker-alt"></i><span>{{ $address }}</span></div>
           <div class="map-detail"><i class="fa fa-phone"></i><span><a href="tel:{{ $phoneHref }}" style="color:var(--gold)">{{ $phone }}</a></span></div>
-          <div class="map-detail"><i class="fa fa-clock"></i><span>Lun–Ven : 8h00 – 17h00<br>Sam : Sur rendez-vous</span></div>
+          <div class="map-detail"><i class="fa fa-clock"></i><span>Lunâ€“Ven : 8h00 â€“ 17h00<br>Sam : Sur rendez-vous</span></div>
           <div class="map-detail"><i class="fa fa-envelope"></i><span>{{ $email }}</span></div>
         </div>
-        <div style="margin-top:2rem"><a href="https://maps.google.com/?q={{ urlencode($address) }}" target="_blank" class="btn-primary">Obtenir l'itinéraire <i class="fa fa-external-link-alt" style="margin-left:6px"></i></a></div>
+        <div style="margin-top:2rem"><a href="https://maps.google.com/?q={{ urlencode($address) }}" target="_blank" class="btn-primary">Obtenir l'itinÃ©raire <i class="fa fa-external-link-alt" style="margin-left:6px"></i></a></div>
       </div>
       <div class="reveal delay-1">
         <div id="map-container">
           <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2796183.7428278717!2d-76.45055!3d46.82555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb896d35a5ce50f%3A0x15d88dd3c9001f1d!2sQu%C3%A9bec!5e0!3m2!1sfr!2sca!4v1699000000000!5m2!1sfr!2sca" width="100%" height="500" style="border:0;display:block;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-          <div class="map-video-ov" onclick="openVideo()"><i class="fa fa-play-circle"></i><span>Voir la vidéo de l'usine</span></div>
+          <div class="map-video-ov" onclick="openVideo()"><i class="fa fa-play-circle"></i><span>Voir la vidÃ©o de l'usine</span></div>
         </div>
       </div>
     </div>
@@ -957,21 +957,21 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 <section id="blog">
   <div class="container">
     <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem">
-      <div><div class="sec-eyebrow reveal">Actualités</div><h2 class="sec-title reveal">Blogue & <span class="text-gold">Nouvelles</span></h2></div>
+      <div><div class="sec-eyebrow reveal">ActualitÃ©s</div><h2 class="sec-title reveal">Blogue & <span class="text-gold">Nouvelles</span></h2></div>
       <a href="#" class="btn-outline reveal" style="border-color:var(--gold);color:var(--gold)">Tous les articles</a>
     </div>
     <div class="blog-grid">
       <div class="blog-card featured reveal">
         <div class="blog-card-img"><img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/DSC06735-HDR.jpg" alt="Blog"></div>
-        <div class="blog-card-body"><div class="blog-meta"><span class="cat">Construction</span><span>15 avril 2025</span></div><h3>Les avantages du bois rond massif : pourquoi c'est le meilleur choix pour votre chalet</h3><p>Découvrez pourquoi de plus en plus de Québécois choisissent le bois rond pour leur résidence secondaire ou principale.</p><a href="#" class="blog-more">Lire l'article <i class="fa fa-arrow-right"></i></a></div>
+        <div class="blog-card-body"><div class="blog-meta"><span class="cat">Construction</span><span>15 avril 2025</span></div><h3>Les avantages du bois rond massif : pourquoi c'est le meilleur choix pour votre chalet</h3><p>DÃ©couvrez pourquoi de plus en plus de QuÃ©bÃ©cois choisissent le bois rond pour leur rÃ©sidence secondaire ou principale.</p><a href="#" class="blog-more">Lire l'article <i class="fa fa-arrow-right"></i></a></div>
       </div>
       <div class="blog-card reveal delay-1">
         <div class="blog-card-img"><img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/SaveInsta.App_327015499_693241832530188_5777615420000727358_n.jpg" alt="Blog"></div>
-        <div class="blog-card-body"><div class="blog-meta"><span class="cat">Design</span><span>2 mars 2025</span></div><h3>Série Scandinave : l'art de vivre nordique au Québec</h3><p>Notre nouvelle série scandinave apporte le meilleur du design nordique.</p><a href="#" class="blog-more">Lire l'article <i class="fa fa-arrow-right"></i></a></div>
+        <div class="blog-card-body"><div class="blog-meta"><span class="cat">Design</span><span>2 mars 2025</span></div><h3>SÃ©rie Scandinave : l'art de vivre nordique au QuÃ©bec</h3><p>Notre nouvelle sÃ©rie scandinave apporte le meilleur du design nordique.</p><a href="#" class="blog-more">Lire l'article <i class="fa fa-arrow-right"></i></a></div>
       </div>
       <div class="blog-card reveal delay-2">
         <div class="blog-card-img"><img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/DJI_0237.jpg" alt="Blog"></div>
-        <div class="blog-card-body"><div class="blog-meta"><span class="cat">Conseils</span><span>18 fév 2025</span></div><h3>Auto-construction : guide complet pour réussir votre projet</h3><p>Tout ce que vous devez savoir avant de vous lancer dans l'auto-construction.</p><a href="#" class="blog-more">Lire l'article <i class="fa fa-arrow-right"></i></a></div>
+        <div class="blog-card-body"><div class="blog-meta"><span class="cat">Conseils</span><span>18 fÃ©v 2025</span></div><h3>Auto-construction : guide complet pour rÃ©ussir votre projet</h3><p>Tout ce que vous devez savoir avant de vous lancer dans l'auto-construction.</p><a href="#" class="blog-more">Lire l'article <i class="fa fa-arrow-right"></i></a></div>
       </div>
     </div>
   </div>
@@ -981,9 +981,9 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 <section id="cta-banner">
   <div class="cta-bg"></div>
   <div class="cta-inner reveal">
-    <div class="sec-eyebrow" style="justify-content:center;color:#fff;opacity:.7">Passez à l'action</div>
-    <h2>Bâtissez votre projet<br>de <em style="color:var(--gold);font-style:italic">rêve</em> avec nous</h2>
-    <p>Des projets pour tous les budgets. Accompagnement sur-mesure du début à la fin. Contactez-nous dès aujourd'hui.</p>
+    <div class="sec-eyebrow" style="justify-content:center;color:#fff;opacity:.7">Passez Ã  l'action</div>
+    <h2>BÃ¢tissez votre projet<br>de <em style="color:var(--gold);font-style:italic">rÃªve</em> avec nous</h2>
+    <p>Des projets pour tous les budgets. Accompagnement sur-mesure du dÃ©but Ã  la fin. Contactez-nous dÃ¨s aujourd'hui.</p>
     <div class="cta-btns">
       <a href="{{ $devisLink }}" target="_blank" rel="noopener noreferrer" class="btn-primary">Obtenir une soumission gratuite</a>
       <a href="tel:{{ $phoneHref }}" class="btn-ghost">{{ $phone }}</a>
@@ -998,30 +998,30 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
       <div class="reveal">
         <div class="sec-eyebrow">Contactez-nous</div>
         <h2 style="font-family:var(--font-serif);font-size:2.2rem;margin-bottom:.5rem">Parlez-nous de votre <span class="text-gold">projet</span></h2>
-        <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:2rem">Remplissez le formulaire ci-dessous et notre équipe vous contactera dans les 24 heures.</p>
+        <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:2rem">Remplissez le formulaire ci-dessous et notre Ã©quipe vous contactera dans les 24 heures.</p>
         <form onsubmit="handleSubmit(event)">
           <div class="form-row">
-            <div class="form-group"><label>Prénom</label><input type="text" placeholder="Votre prénom" required></div>
+            <div class="form-group"><label>PrÃ©nom</label><input type="text" placeholder="Votre prÃ©nom" required></div>
             <div class="form-group"><label>Nom</label><input type="text" placeholder="Votre nom" required></div>
           </div>
           <div class="form-row">
             <div class="form-group"><label>Courriel</label><input type="email" placeholder="votre@email.com" required></div>
-            <div class="form-group"><label>Téléphone</label><input type="tel" placeholder="(438) 000-0000"></div>
+            <div class="form-group"><label>TÃ©lÃ©phone</label><input type="tel" placeholder="(438) 000-0000"></div>
           </div>
           <div class="form-group">
-            <label>Série d'intérêt</label>
-            <select><option value="">Sélectionnez une série</option><option>Série Prestige</option><option>Série Scandinave</option><option>Série Contemporaine (Hybride)</option><option>Ajouts & Rénovations</option><option>Autre</option></select>
+            <label>SÃ©rie d'intÃ©rÃªt</label>
+            <select><option value="">SÃ©lectionnez une sÃ©rie</option><option>SÃ©rie Prestige</option><option>SÃ©rie Scandinave</option><option>SÃ©rie Contemporaine (Hybride)</option><option>Ajouts & RÃ©novations</option><option>Autre</option></select>
           </div>
-          <div class="form-group"><label>Message</label><textarea placeholder="Décrivez votre projet : superficie souhaitée, terrain, budget approximatif..."></textarea></div>
+          <div class="form-group"><label>Message</label><textarea placeholder="DÃ©crivez votre projet : superficie souhaitÃ©e, terrain, budget approximatif..."></textarea></div>
           <button type="submit" class="btn-primary" style="width:100%;padding:1rem;font-size:.85rem;border:none;cursor:pointer">Envoyer ma demande <i class="fa fa-arrow-right" style="margin-left:8px"></i></button>
         </form>
       </div>
       <div class="reveal delay-1">
         <h3 style="font-family:var(--font-serif);font-size:1.5rem;margin-bottom:1.5rem">Informations de contact</h3>
-        <div class="contact-card"><i class="fa fa-phone-alt"></i><div><h4>Téléphone</h4><p><a href="tel:{{ $phoneHref }}" style="color:var(--gold)">{{ $phone }}</a></p></div></div>
+        <div class="contact-card"><i class="fa fa-phone-alt"></i><div><h4>TÃ©lÃ©phone</h4><p><a href="tel:{{ $phoneHref }}" style="color:var(--gold)">{{ $phone }}</a></p></div></div>
         <div class="contact-card"><i class="fa fa-envelope"></i><div><h4>Courriel</h4><p>{{ $email }}</p></div></div>
         <div class="contact-card"><i class="fa fa-map-marker-alt"></i><div><h4>Localisation</h4><p>{{ $address }}</p></div></div>
-        <div class="contact-card"><i class="fa fa-clock"></i><div><h4>Heures d'ouverture</h4><p>Lun–Ven : 8h00 – 17h00<br>Samedi : Sur rendez-vous</p></div></div>
+        <div class="contact-card"><i class="fa fa-clock"></i><div><h4>Heures d'ouverture</h4><p>Lunâ€“Ven : 8h00 â€“ 17h00<br>Samedi : Sur rendez-vous</p></div></div>
         <div style="margin-top:2rem">
           <h4 style="font-family:var(--font-sans);font-size:.75rem;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:1rem;color:var(--gold)">Suivez-nous</h4>
           <div class="social-links">
@@ -1044,7 +1044,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
         <div class="logo-mark">@if($logoUrl)<img src="{{ $logoUrl }}" alt="{{ $siteName }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">@else<i class="fa fa-tree"></i>@endif</div>
         <div class="logo-text" style="color:#fff">{{ $siteName }} <span>{{ $address }}</span></div>
       </div>
-      <p>Chaque maison et chalet que nous concevons est l'expression d'une passion pour le bois massif et d'un engagement constant envers l'excellence artisanale.</p>
+      <p>Chaque maison et chalet que nous concevons est l\'expression d'une passion pour le bois massif et d'un engagement constant envers l'excellence artisanale.</p>
       <div class="social-links">
         <a href="https://www.facebook.com/prestigeboisrond" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
         <a href="https://www.instagram.com/prestigeboisrond/" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
@@ -1052,13 +1052,13 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
         <a href="https://www.youtube.com/@prestigeboisrond" target="_blank" class="social-link"><i class="fab fa-youtube"></i></a>
       </div>
     </div>
-    <div class="footer-col"><h4>Maisons & Chalets</h4><ul><li><a href="#">Tous nos modèles</a></li><li><a href="#">Série Prestige</a></li><li><a href="#">Série Scandinave</a></li><li><a href="#">Série Contemporaine</a></li><li><a href="#">Maison en bois rond</a></li><li><a href="#">Chalet en bois rond</a></li></ul></div>
-    <div class="footer-col"><h4>Services</h4><ul><li><a href="#">Plans</a></li><li><a href="#">Soutien technique</a></li><li><a href="#">Auto-construction</a></li><li><a href="#">Surveillance chantier</a></li><li><a href="#">Ajouts & rénovations</a></li><li><a href="#">Transport</a></li></ul></div>
-    <div class="footer-col"><h4>À propos</h4><ul><li><a href="#">Notre histoire</a></li><li><a href="#">Avantages</a></li><li><a href="#">Normes énergétiques</a></li><li><a href="#">Réalisations</a></li><li><a href="#">Blogue</a></li><li><a href="#">FAQ</a></li><li><a href="#">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Maisons & Chalets</h4><ul><li><a href="#">Tous nos modÃ¨les</a></li><li><a href="#">SÃ©rie Prestige</a></li><li><a href="#">SÃ©rie Scandinave</a></li><li><a href="#">SÃ©rie Contemporaine</a></li><li><a href="#">Maison en bois rond</a></li><li><a href="#">Chalet en bois rond</a></li></ul></div>
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="#">Plans</a></li><li><a href="#">Soutien technique</a></li><li><a href="#">Auto-construction</a></li><li><a href="#">Surveillance chantier</a></li><li><a href="#">Ajouts & rÃ©novations</a></li><li><a href="#">Transport</a></li></ul></div>
+    <div class="footer-col"><h4>Ã€ propos</h4><ul><li><a href="#">Notre histoire</a></li><li><a href="#">Avantages</a></li><li><a href="#">Normes Ã©nergÃ©tiques</a></li><li><a href="#">RÃ©alisations</a></li><li><a href="#">Blogue</a></li><li><a href="#">FAQ</a></li><li><a href="#">Contact</a></li></ul></div>
   </div>
   <div class="footer-bottom">
-    <p>© {{ date('Y') }} {{ $siteName }}. Tous droits réservés.</p>
-    <div class="footer-bottom-links"><a href="#">Confidentialité</a><a href="#">Conditions</a><a href="#">Plan du site</a></div>
+    <p>Â© {{ date('Y') }} {{ $siteName }}. Tous droits rÃ©servÃ©s.</p>
+    <div class="footer-bottom-links"><a href="#">ConfidentialitÃ©</a><a href="#">Conditions</a><a href="#">Plan du site</a></div>
   </div>
 </footer>
 
@@ -1132,12 +1132,12 @@ new Swiper('.testimonials-swiper', {
 /* ============ SOCIAL FEED ============ */
 const socialImages = @json($socialImages);
 const socialCaptions = [
-  'Notre dernière réalisation en Série Prestige — l\'art du bois rond au sommet 🏡 #PrestigeBoisRond',
-  'Chalet scandinave livré cette semaine! Merci à nos clients pour leur confiance ❤️ #BoisRond',
-  'Vue de drone sur notre plus récente construction contemporaine #Québec #Chalet',
-  'Avant/Après: transformation magnifique avec nos services d\'ajout et rénovation 🔨',
-  'Notre équipe d\'experts sur le chantier — la qualité avant tout! #Artisanat',
-  'Auto-construction réussie! Nos clients ont bâti leur rêve avec notre soutien 💪',
+  'Notre derniÃ¨re rÃ©alisation en SÃ©rie Prestige â€” l\'art du bois rond au sommet ðŸ¡ #PrestigeBoisRond',
+  'Chalet scandinave livrÃ© cette semaine! Merci Ã  nos clients pour leur confiance â¤ï¸ #BoisRond',
+  'Vue de drone sur notre plus rÃ©cente construction contemporaine #QuÃ©bec #Chalet',
+  'Avant/AprÃ¨s: transformation magnifique avec nos services d\'ajout et rÃ©novation ðŸ”¨',
+  'Notre Ã©quipe d\'experts sur le chantier â€” la qualitÃ© avant tout! #Artisanat',
+  'Auto-construction rÃ©ussie! Nos clients ont bÃ¢ti leur rÃªve avec notre soutien ðŸ’ª',
 ];
 const socialPlat = {
   instagram: { label: 'Instagram', icon: 'fab fa-instagram' },
@@ -1244,7 +1244,7 @@ window.addEventListener('scroll', () => {
 function handleSubmit(e){
   e.preventDefault();
   const btn = e.target.querySelector('button[type=submit]');
-  btn.textContent = '✓ Message envoyé! Nous vous contacterons bientôt.';
+  btn.textContent = 'âœ“ Message envoyÃ©! Nous vous contacterons bientÃ´t.';
   btn.style.background = '#2C4234'; btn.style.borderColor = '#2C4234';
   setTimeout(() => { btn.textContent = 'Envoyer ma demande'; btn.style.background = ''; btn.style.borderColor = ''; e.target.reset(); }, 4000);
 }
@@ -1270,3 +1270,6 @@ if(statsSection)statsObs.observe(statsSection);
 </script>
 </body>
 </html>
+
+
+
