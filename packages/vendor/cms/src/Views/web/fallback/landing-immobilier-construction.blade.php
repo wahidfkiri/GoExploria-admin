@@ -270,7 +270,7 @@
 /* ====================== RESET ====================== */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;font-size:16px;}
-body{font-family:var(--font-sans);background:var(--bg);color:var(--text);transition:background .5s,color .5s;overflow-x:hidden;}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);transition:background .5s,color .5s;overflow-x:hidden;width:100%;}
 h1,h2,h3,h4{font-family:var(--font-serif);}
 a{text-decoration:none;color:inherit;}
 img{max-width:100%;display:block;}
@@ -289,8 +289,8 @@ img{max-width:100%;display:block;}
 /* ====================== NAVBAR ====================== */
 #navbar{position:fixed;top:var(--global-header-offset);left:0;right:0;z-index:9990;background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:var(--transition);}
 .nav-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:78px;}
-.logo{display:flex;align-items:center;gap:14px;min-width:220px;}
-.logo-wide{display:block;max-height:52px;width:auto;max-width:260px;object-fit:contain;}
+.logo{display:flex;align-items:center;gap:14px;min-width:0;}
+.logo-wide{display:block;width:200px;max-width:200px;height:auto;max-height:none;object-fit:contain;}
 .logo-text{font-family:var(--font-serif);font-size:1.15rem;font-weight:600;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px;}
 .logo-text span{display:block;font-size:0.6rem;font-family:var(--font-sans);font-weight:500;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);margin-top:1px;}
 .nav-links{display:flex;list-style:none;align-items:center;}
@@ -615,8 +615,8 @@ section{padding:6rem 2.5rem;}
 .map-video-ov:hover{background:var(--gold);}
 .map-video-ov i{color:var(--gold);}
 .map-video-ov:hover i{color:#fff;}
-.lf-marker-wrap{width:36px;height:36px;border-radius:999px;background:var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.35);}
-.lf-marker-wrap i{color:#fff;font-size:16px;}
+.lf-marker-wrap{width:38px;height:38px;border-radius:999px;background:linear-gradient(135deg,#2faa4a 0%,#1e7c35 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.35);border:2px solid rgba(255,255,255,.38);}
+.lf-marker-wrap i{color:#fff;font-size:17px;}
 .leaflet-popup-content-wrapper{border-radius:10px;}
 .leaflet-popup-content{margin:12px;}
 
@@ -693,6 +693,41 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 @media(max-width:768px){
   .nav-links,.btn-nav-cta{display:none;}
   .hamburger{display:flex;}
+  .theme-btn{display:none;}
+  .nav-inner{
+    padding:0 1rem;
+    justify-content:center;
+    position:relative;
+    width:100%;
+  }
+  .logo{
+    width:100%;
+    justify-content:center;
+    margin:0 auto;
+  }
+  .logo-wide{
+    width:200px;
+    max-width:70vw;
+  }
+  .nav-actions{
+    position:absolute;
+    right:1rem;
+    top:50%;
+    transform:translateY(-50%);
+    margin:0;
+  }
+  .hero-content{
+    margin:0 auto;
+    padding:0 1.5rem;
+    max-width:680px;
+    text-align:center;
+  }
+  .hero-eyebrow{
+    justify-content:center;
+  }
+  .hero-btns{
+    justify-content:center;
+  }
   section{padding:4rem 1.5rem;}
   .products-grid{grid-template-columns:1fr;}
   .gallery-grid{columns:2;}
@@ -1394,7 +1429,7 @@ function initImmoMap() {
   immoMap = L.map('immoLeafletMap', {
     zoomControl: true,
     scrollWheelZoom: false
-  }).setView([lat, lng], 13);
+  }).setView([lat, lng], 15);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -1403,9 +1438,9 @@ function initImmoMap() {
 
   const markerIcon = L.divIcon({
     className: 'lf-marker',
-    html: '<div class="lf-marker-wrap"><i class="fas fa-location-dot"></i></div>',
-    iconSize: [36, 36],
-    iconAnchor: [18, 34]
+    html: '<div class="lf-marker-wrap"><i class="fas fa-seedling"></i></div>',
+    iconSize: [38, 38],
+    iconAnchor: [19, 36]
   });
 
   const mapVideoHtml = `
@@ -1434,7 +1469,7 @@ function initImmoMap() {
 
 function openMapVideoPopup() {
   if (!immoMap || !immoMapMarker) return;
-  immoMap.setView(immoMapMarker.getLatLng(), 14, { animate: true });
+  immoMap.setView(immoMapMarker.getLatLng(), 16, { animate: true });
   immoMapMarker.openPopup();
 }
 

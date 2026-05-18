@@ -109,6 +109,7 @@ class SearchBarV2 {
 
                 var showImage = (type === 'continent' || type === 'country');
                 var computedName = item.name || '';
+                var computedSiteName = item.site_name || '';
                 if (type === 'etablissement' && item.lname) {
                     computedName = (computedName + ' ' + item.lname).trim();
                 }
@@ -122,6 +123,7 @@ class SearchBarV2 {
                     id: item.id,
                     type: type,
                     name: computedName,
+                    siteName: computedSiteName,
                     slug: item.slug || '',
                     description: computedDescription,
                     showImage: showImage,
@@ -170,6 +172,12 @@ class SearchBarV2 {
                 mediaHtml +
                 '<div class="search-bar-v2-result-content">' +
                     '<h5 class="search-bar-v2-result-name">' + this.highlightMatch(this.escapeHtml(dest.name), query) + '</h5>' +
+                    ((dest.type === 'etablissement' && dest.siteName)
+                        ? ('<div class="search-bar-v2-result-site">' + this.highlightMatch(this.escapeHtml(dest.siteName), query) + '</div>')
+                        : '') +
+                    (dest.description
+                        ? ('<div class="search-bar-v2-result-description">' + this.escapeHtml(dest.description) + '</div>')
+                        : '') +
                     '<div class="search-bar-v2-result-type">' + (this.typeLabel[dest.type] || dest.type) + '</div>' +
                 '</div>' +
                 '<span class="search-bar-v2-result-badge">' + (this.typeLabel[dest.type] || dest.type) + '</span>';

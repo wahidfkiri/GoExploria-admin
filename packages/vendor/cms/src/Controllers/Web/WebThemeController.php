@@ -387,7 +387,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     
     if (!$preview && config('cms.cache_pages', false) && Cache::has($cacheKey)) {
         $html = Cache::get($cacheKey);
-        return $this->buildResponse($html);
+        return $this->buildResponse($html, $this->buildSeoContext($page, $preview));
     }
     
     // Récupérer le chemin du thème avec l'ID de l'établissement
@@ -444,7 +444,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             Cache::put($cacheKey, $html, now()->addMinutes(config('cms.page_cache_lifetime', 60)));
         }
         
-        return $this->buildResponse($html);
+        return $this->buildResponse($html, $this->buildSeoContext($page, $preview));
         
     } catch (\Exception $e) {
         Log::error('Theme rendering error: ' . $e->getMessage(), [
@@ -535,7 +535,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     protected function renderFallback($errorMessage = null)
     {
         $html = $this->getFallbackHtml($errorMessage);
-        return $this->buildResponse($html);
+        return $this->buildResponse($html, $this->buildSeoContext(null, false));
     }
 
     /**
@@ -552,7 +552,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 : 'cms::web.fallback.landing-activity');
         $html = view($view, $data)->render();
 
-        return $this->buildResponse($html);
+        return $this->buildResponse($html, $this->buildSeoContext(null, false));
     }
 
     /**
@@ -1228,11 +1228,121 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     /**
      * Construit la réponse HTTP
      */
-    protected function buildResponse($html)
+    protected function buildResponse($html, array $seoContext = [])
     {
+        $html = $this->injectSeoMeta($html, $seoContext);
+
         return response($html, 200, [
             'Content-Type' => 'text/html; charset=utf-8',
         ]);
+    }
+
+    protected function buildSeoContext($page = null, bool $isPreview = false): array
+    {
+        $siteName = trim((string) get_site_name($this->etablissement->id));
+        if ($siteName === '') {
+            $siteName = trim((string) ($this->etablissement->name ?? 'GoExploria'));
+        }
+
+        $meta = (array) (($page && is_array($page->meta ?? null)) ? $page->meta : []);
+        $title = trim((string) ($meta['seo_title'] ?? ($page->title ?? $siteName)));
+        if ($title === '') {
+            $title = $siteName;
+        }
+
+        $description = trim((string) ($meta['seo_description'] ?? ''));
+        if ($description === '') {
+            $description = trim((string) ($this->etablissement->getSetting('site_description', null, 'general') ?? ''));
+        }
+        if ($description === '') {
+            $description = trim((string) get_site_description($this->etablissement->id));
+        }
+        if ($description === '') {
+            $description = $siteName . ' - GoExploria';
+        }
+
+        $keywords = trim((string) ($meta['seo_keywords'] ?? ''));
+        if ($keywords === '') {
+            $keywords = trim((string) ($this->etablissement->getSetting('seo_keywords', null, 'seo') ?? ''));
+        }
+
+        $canonical = trim((string) ($meta['canonical_url'] ?? ''));
+        if ($canonical === '') {
+            $canonical = url()->current();
+        }
+
+        $image = trim((string) get_logo_url($this->etablissement->id));
+        if ($image === '') {
+            $slider = $this->getLandingCmsSliders()->first();
+            $image = trim((string) (
+                data_get($slider, 'image_url')
+                ?: data_get($slider, 'thumbnail_url')
+                ?: data_get($slider, 'image_path')
+                ?: data_get($slider, 'thumbnail_path')
+                ?: ''
+            ));
+        }
+
+        return [
+            'title' => $title,
+            'description' => $description,
+            'keywords' => $keywords,
+            'canonical' => $canonical,
+            'image' => $image,
+            'site_name' => $siteName,
+            'robots' => $isPreview ? 'noindex, nofollow' : 'index, follow',
+        ];
+    }
+
+    protected function injectSeoMeta(string $html, array $seoContext = []): string
+    {
+        if (stripos($html, '<head') === false) {
+            return $html;
+        }
+
+        $title = e((string) ($seoContext['title'] ?? 'GoExploria'));
+        $description = e((string) ($seoContext['description'] ?? ''));
+        $keywords = e((string) ($seoContext['keywords'] ?? ''));
+        $canonical = e((string) ($seoContext['canonical'] ?? url()->current()));
+        $image = e((string) ($seoContext['image'] ?? ''));
+        $siteName = e((string) ($seoContext['site_name'] ?? 'GoExploria'));
+        $robots = e((string) ($seoContext['robots'] ?? 'index, follow'));
+
+        $html = preg_replace('/\s*<!--\s*CMS SEO START\s*-->.*?<!--\s*CMS SEO END\s*-->\s*/is', "\n", $html);
+        $html = preg_replace('/<link[^>]*rel=["\']canonical["\'][^>]*>/i', '', $html);
+
+        $seoBlock = [];
+        $seoBlock[] = '<!-- CMS SEO START -->';
+        $seoBlock[] = '<title>' . $title . '</title>';
+        $seoBlock[] = '<link rel="canonical" href="' . $canonical . '">';
+        $seoBlock[] = '<meta name="description" content="' . $description . '">';
+        if ($keywords !== '') {
+            $seoBlock[] = '<meta name="keywords" content="' . $keywords . '">';
+        }
+        $seoBlock[] = '<meta name="robots" content="' . $robots . '">';
+        $seoBlock[] = '<meta property="og:type" content="website">';
+        $seoBlock[] = '<meta property="og:site_name" content="' . $siteName . '">';
+        $seoBlock[] = '<meta property="og:title" content="' . $title . '">';
+        $seoBlock[] = '<meta property="og:description" content="' . $description . '">';
+        $seoBlock[] = '<meta property="og:url" content="' . $canonical . '">';
+        if ($image !== '') {
+            $seoBlock[] = '<meta property="og:image" content="' . $image . '">';
+        }
+        $seoBlock[] = '<meta name="twitter:card" content="' . ($image !== '' ? 'summary_large_image' : 'summary') . '">';
+        $seoBlock[] = '<meta name="twitter:title" content="' . $title . '">';
+        $seoBlock[] = '<meta name="twitter:description" content="' . $description . '">';
+        if ($image !== '') {
+            $seoBlock[] = '<meta name="twitter:image" content="' . $image . '">';
+        }
+        $seoBlock[] = '<!-- CMS SEO END -->';
+
+        $seoHtml = implode("\n", $seoBlock) . "\n";
+
+        if (preg_match('/<\/head>/i', $html)) {
+            return preg_replace('/<\/head>/i', $seoHtml . '</head>', $html, 1);
+        }
+
+        return $html;
     }
 
     /**
@@ -1520,3 +1630,4 @@ protected function getThemePath($theme)
         ];
     }
 }
+

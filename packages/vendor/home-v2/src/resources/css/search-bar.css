@@ -404,6 +404,15 @@
     letter-spacing: 0.5px;
 }
 
+.search-bar-v2-result-site {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a2942;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .search-bar-v2-result-description {
     font-size: 12px;
     color: rgba(10, 22, 40, 0.6);

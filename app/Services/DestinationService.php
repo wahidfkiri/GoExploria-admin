@@ -9,6 +9,7 @@ use App\Models\Region;
 use App\Models\Ville;
 use App\Models\Secteur;
 use App\Models\Etablissement;
+use Vendor\Cms\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -381,17 +382,57 @@ class DestinationService
 
         try {
             if (!$type || $type === 'etablissement') {
-                $results['etablissements'] = Etablissement::query()
+                $etablissementIdsBySiteName = Setting::query()
+                    ->where('group', 'general')
+                    ->whereIn('key', ['name', 'site_name'])
+                    ->where('value', 'like', "%{$query}%")
+                    ->pluck('etablissement_id')
+                    ->filter()
+                    ->unique()
+                    ->values();
+
+                $etablissements = Etablissement::query()
                     ->where('is_active', true)
-                    ->where(function ($builder) use ($query) {
+                    ->where(function ($builder) use ($query, $etablissementIdsBySiteName) {
                         $builder->where('name', 'like', "%{$query}%")
                             ->orWhere('lname', 'like', "%{$query}%")
                             ->orWhere('other_activity_label', 'like', "%{$query}%")
-                            ->orWhere('ville', 'like', "%{$query}%");
+                            ->orWhere('ville', 'like', "%{$query}%")
+                            ->orWhereIn('id', $etablissementIdsBySiteName);
                     })
                     ->orderBy('name')
                     ->limit(10)
                     ->get(['id', 'name', 'lname', 'ville', 'adresse', 'is_active']);
+
+                if ($etablissements->isNotEmpty()) {
+                    $ids = $etablissements->pluck('id')->all();
+                    $rawSettings = Setting::query()
+                        ->whereIn('etablissement_id', $ids)
+                        ->where('group', 'general')
+                        ->whereIn('key', ['name', 'site_name'])
+                        ->get(['etablissement_id', 'key', 'value']);
+
+                    $siteNamesById = [];
+                    foreach ($rawSettings as $setting) {
+                        $eid = (int) $setting->etablissement_id;
+                        $value = trim((string) $setting->value);
+                        if ($value === '') {
+                            continue;
+                        }
+
+                        // Priority: key=name, fallback key=site_name.
+                        if (($setting->key === 'name') || !isset($siteNamesById[$eid])) {
+                            $siteNamesById[$eid] = $value;
+                        }
+                    }
+
+                    $etablissements->transform(function ($item) use ($siteNamesById) {
+                        $item->site_name = $siteNamesById[(int) $item->id] ?? null;
+                        return $item;
+                    });
+                }
+
+                $results['etablissements'] = $etablissements;
             }
         } catch (\Exception $e) {
             $results['etablissements'] = collect([]);
