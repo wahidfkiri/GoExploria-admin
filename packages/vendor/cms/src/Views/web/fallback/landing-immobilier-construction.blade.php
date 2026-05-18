@@ -290,7 +290,7 @@ img{max-width:100%;display:block;}
 #navbar{position:fixed;top:var(--global-header-offset);left:0;right:0;z-index:9990;background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:var(--transition);}
 .nav-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:78px;}
 .logo{display:flex;align-items:center;gap:14px;min-width:0;}
-.logo-wide{display:block;width:min(200px,100%);max-width:100%;height:auto;max-height:none;object-fit:contain;}
+.logo-wide{display:block;width:200px;max-width:200px;height:auto;max-height:none;object-fit:contain;}
 .logo-text{font-family:var(--font-serif);font-size:1.15rem;font-weight:600;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px;}
 .logo-text span{display:block;font-size:0.6rem;font-family:var(--font-sans);font-weight:500;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);margin-top:1px;}
 .nav-links{display:flex;list-style:none;align-items:center;}
@@ -707,7 +707,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
   }
   .logo-wide{
     width:min(200px,70vw);
-    max-width:100%;
+    max-width:200px;
   }
   .nav-actions{
     position:absolute;
