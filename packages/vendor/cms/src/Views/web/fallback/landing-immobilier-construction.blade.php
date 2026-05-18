@@ -212,6 +212,7 @@
 :root {
   --global-header-offset: 108px;
   --template-header-height: 78px;
+  --hero-top-offset: 186px;
   --gold:         #C9A84C;
   --gold-light:   #E8C97A;
   --gold-pale:    rgba(201,168,76,0.12);
@@ -327,7 +328,7 @@ section{padding:6rem 2.5rem;}
 .hero-media img,.hero-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
 .hero-media iframe{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:177.78vh;height:56.25vw;min-width:100%;min-height:100%;border:0;pointer-events:none;}
 
-#hero{height:calc(100vh - (var(--global-header-offset) + var(--template-header-height)));min-height:620px;position:relative;overflow:hidden;margin-top:calc(var(--global-header-offset) + var(--template-header-height));}
+#hero{height:calc(100vh - var(--hero-top-offset));min-height:620px;position:relative;overflow:hidden;margin-top:var(--hero-top-offset);padding:0;}
 .hero-swiper{width:100%;height:100%;}
 .hero-slide{position:relative;display:flex;align-items:center;}
 .hero-slide::before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.18) 55%,rgba(0,0,0,.38) 100%);z-index:1;}
@@ -684,8 +685,8 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
   .process-steps{grid-template-columns:1fr;}
   .process-steps::before{display:none;}
   #hero{
-    margin-top:calc(var(--global-header-offset) + 68px);
-    height:calc(100vh - (var(--global-header-offset) + 68px));
+    margin-top:var(--hero-top-offset);
+    height:calc(100vh - var(--hero-top-offset));
     min-height:560px;
   }
 }
@@ -1182,14 +1183,15 @@ function syncHeaderStackOffsets() {
   const templateNavbar = document.getElementById('navbar');
   const globalHeight = globalHeader ? Math.ceil(globalHeader.getBoundingClientRect().height) : 0;
   const navbarHeight = templateNavbar ? Math.ceil(templateNavbar.getBoundingClientRect().height) : 78;
+  const navbarBottom = templateNavbar ? Math.ceil(templateNavbar.getBoundingClientRect().bottom) : (globalHeight + navbarHeight);
 
   document.documentElement.style.setProperty('--global-header-offset', `${globalHeight}px`);
   document.documentElement.style.setProperty('--template-header-height', `${navbarHeight}px`);
+  document.documentElement.style.setProperty('--hero-top-offset', `${Math.max(navbarBottom, globalHeight + navbarHeight)}px`);
 }
 
 window.addEventListener('load', syncHeaderStackOffsets);
 window.addEventListener('resize', syncHeaderStackOffsets);
-window.addEventListener('scroll', syncHeaderStackOffsets, { passive: true });
 
 /* ============ THEME ============ */
 const themeToggle = document.getElementById('themeToggle');
