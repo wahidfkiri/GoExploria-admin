@@ -12,6 +12,7 @@ use App\Models\Etablissement;
 use Vendor\Cms\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -409,14 +410,20 @@ class DestinationService
                     $rawSettings = Setting::query()
                         ->whereIn('etablissement_id', $ids)
                         ->where('group', 'general')
-                        ->whereIn('key', ['name', 'site_name'])
+                        ->whereIn('key', ['name', 'site_name', 'site_logo'])
                         ->get(['etablissement_id', 'key', 'value']);
 
                     $siteNamesById = [];
+                    $logosById = [];
                     foreach ($rawSettings as $setting) {
                         $eid = (int) $setting->etablissement_id;
                         $value = trim((string) $setting->value);
                         if ($value === '') {
+                            continue;
+                        }
+
+                        if ($setting->key === 'site_logo') {
+                            $logosById[$eid] = $value;
                             continue;
                         }
 
@@ -426,8 +433,20 @@ class DestinationService
                         }
                     }
 
-                    $etablissements->transform(function ($item) use ($siteNamesById) {
+                    $etablissements->transform(function ($item) use ($siteNamesById, $logosById) {
                         $item->site_name = $siteNamesById[(int) $item->id] ?? null;
+
+                        $rawLogo = trim((string) ($logosById[(int) $item->id] ?? ''));
+                        if ($rawLogo !== '') {
+                            if (filter_var($rawLogo, FILTER_VALIDATE_URL)) {
+                                $item->logo_url = $rawLogo;
+                            } else {
+                                $item->logo_url = Storage::disk('public')->url($rawLogo);
+                            }
+                        } else {
+                            $item->logo_url = null;
+                        }
+
                         return $item;
                     });
                 }

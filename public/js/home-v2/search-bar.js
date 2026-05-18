@@ -107,7 +107,10 @@ class SearchBarV2 {
                 // Explicit safety: only active destinations
                 if (item.is_active !== true) return;
 
-                var showImage = (type === 'continent' || type === 'country');
+                var normalizedImage = this.normalizeImageUrl(
+                    item.logo_url || item.image || item.image_url || item.thumbnail || item.thumbnail_url || null
+                );
+                var showImage = !!normalizedImage;
                 var computedName = item.name || '';
                 var computedSiteName = item.site_name || '';
                 if (type === 'etablissement' && item.lname) {
@@ -127,7 +130,7 @@ class SearchBarV2 {
                     slug: item.slug || '',
                     description: computedDescription,
                     showImage: showImage,
-                    image: showImage ? this.normalizeImageUrl(item.image) : null
+                    image: normalizedImage
                 });
             });
         });
