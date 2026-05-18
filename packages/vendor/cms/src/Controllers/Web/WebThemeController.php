@@ -544,9 +544,12 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     protected function renderNoThemeLanding(?string $message = null)
     {
         $data = $this->prepareNoThemeLandingData($message);
-        $view = $this->shouldUseBoidsFallback($data['activities'] ?? collect())
+        $activities = $data['activities'] ?? collect();
+        $view = $this->shouldUseBoidsFallback($activities)
             ? 'cms::web.fallback.landing-boids'
-            : 'cms::web.fallback.landing-activity';
+            : ($this->shouldUseImmobilierConstructionFallback($activities)
+                ? 'cms::web.fallback.landing-immobilier-construction'
+                : 'cms::web.fallback.landing-activity');
         $html = view($view, $data)->render();
 
         return $this->buildResponse($html);
@@ -958,6 +961,42 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'sciage',
             'lumber',
             'timber',
+        ];
+
+        foreach ($keywords as $keyword) {
+            if (str_contains($haystack, $keyword)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Detect if the establishment should use the "immobilier & construction" fallback landing.
+     */
+    protected function shouldUseImmobilierConstructionFallback(Collection $activities): bool
+    {
+        $haystack = $activities
+            ->pluck('name')
+            ->filter()
+            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
+            ->implode(' ');
+
+        if ($haystack === '') {
+            $haystack = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
+        }
+
+        $keywords = [
+            'immobilier',
+            'immo',
+            'construction',
+            'constructeur',
+            'habitation',
+            'maison',
+            'chalet',
+            'résidentiel',
+            'residentiel',
         ];
 
         foreach ($keywords as $keyword) {
