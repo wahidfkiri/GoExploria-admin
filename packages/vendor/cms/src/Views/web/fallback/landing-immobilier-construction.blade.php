@@ -1,10 +1,18 @@
 ﻿@php
     $siteName = get_site_name($etablissement->id);
+    $siteNameDisplay = trim((string) $siteName);
+    if ($siteNameDisplay === '') {
+        $siteNameDisplay = trim((string) ($etablissement->name ?? ''));
+    }
+    if ($siteNameDisplay === '') {
+        $siteNameDisplay = 'GoExploria Business';
+    }
     $siteDescription = $etablissement->getSetting('site_description', null, 'general')
         ?: get_site_description($etablissement->id)
         ?: 'Landing activité Immobilier & Construction.';
 
     $logoUrl = get_logo_url($etablissement->id);
+    $hasWideLogo = !empty(trim((string) $logoUrl));
     $phone = $etablissement->getSetting('phone', null, 'company')
         ?: $etablissement->getSetting('phone', null, 'general')
         ?: '(438) 525-2063';
@@ -14,6 +22,10 @@
     $address = $etablissement->getSetting('address', null, 'company')
         ?: $etablissement->getSetting('address', null, 'general')
         ?: 'Québec, Canada';
+    $mapAddress = '220 Rue Olivier, Issoudun, QC G0S 1L0, Canada';
+    $mapLat = 46.5467987;
+    $mapLng = -71.6160686;
+    $mapVideoEmbedUrl = 'https://www.youtube.com/embed/arobhFZJRE4?autoplay=1&mute=1&playsinline=1&rel=0';
 
     $devisLink = $devisUrl ?? route('devis');
     $phoneHref = preg_replace('/[^\d\+]/', '', (string) $phone);
@@ -188,6 +200,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <link rel="stylesheet" href="{{ asset('css/home-v2/styles.css') }}">
 <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-menu.css') }}">
 <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-menu-videos.css') }}">
@@ -276,9 +289,9 @@ img{max-width:100%;display:block;}
 /* ====================== NAVBAR ====================== */
 #navbar{position:fixed;top:var(--global-header-offset);left:0;right:0;z-index:9990;background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:var(--transition);}
 .nav-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:78px;}
-.logo{display:flex;align-items:center;gap:14px;}
-.logo-mark{width:42px;height:42px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;}
-.logo-text{font-family:var(--font-serif);font-size:1.15rem;font-weight:600;line-height:1.15;}
+.logo{display:flex;align-items:center;gap:14px;min-width:220px;}
+.logo-wide{display:block;max-height:52px;width:auto;max-width:260px;object-fit:contain;}
+.logo-text{font-family:var(--font-serif);font-size:1.15rem;font-weight:600;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px;}
 .logo-text span{display:block;font-size:0.6rem;font-family:var(--font-sans);font-weight:500;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);margin-top:1px;}
 .nav-links{display:flex;list-style:none;align-items:center;}
 .nav-links>li{position:relative;}
@@ -602,6 +615,10 @@ section{padding:6rem 2.5rem;}
 .map-video-ov:hover{background:var(--gold);}
 .map-video-ov i{color:var(--gold);}
 .map-video-ov:hover i{color:#fff;}
+.lf-marker-wrap{width:36px;height:36px;border-radius:999px;background:var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.35);}
+.lf-marker-wrap i{color:#fff;font-size:16px;}
+.leaflet-popup-content-wrapper{border-radius:10px;}
+.leaflet-popup-content{margin:12px;}
 
 /* ====================== BLOG ====================== */
 #blog{background:var(--bg-2);}
@@ -717,8 +734,11 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 <nav id="navbar">
   <div class="nav-inner">
     <div class="logo">
-      <div class="logo-mark">@if($logoUrl)<img src="{{ $logoUrl }}" alt="{{ $siteName }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">@else<i class="fa fa-tree"></i>@endif</div>
-      <div class="logo-text">{{ $siteName }} <span>{{ $siteDescription }}</span></div>
+      @if($hasWideLogo)
+        <img class="logo-wide" src="{{ $logoUrl }}" alt="{{ $siteNameDisplay }}">
+      @else
+        <div class="logo-text">{{ $siteNameDisplay }} <span>{{ $siteDescription }}</span></div>
+      @endif
     </div>
     <ul class="nav-links">
       <li>
@@ -1036,17 +1056,17 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
         <h2 class="sec-title">Visitez <span class="text-gold">nos installations</span></h2>
         <p>Venez découvrir notre usine et nos modèles en exposition au Québec. Notre équipe sera ravie de vous accueillir.</p>
         <div class="map-details">
-          <div class="map-detail"><i class="fa fa-map-marker-alt"></i><span>{{ $address }}</span></div>
+          <div class="map-detail"><i class="fa fa-map-marker-alt"></i><span>{{ $mapAddress }}</span></div>
           <div class="map-detail"><i class="fa fa-phone"></i><span><a href="tel:{{ $phoneHref }}" style="color:var(--gold)">{{ $phone }}</a></span></div>
           <div class="map-detail"><i class="fa fa-clock"></i><span>Lun–Ven : 8h00 – 17h00<br>Sam : Sur rendez-vous</span></div>
           <div class="map-detail"><i class="fa fa-envelope"></i><span>{{ $email }}</span></div>
         </div>
-        <div style="margin-top:2rem"><a href="https://maps.google.com/?q={{ urlencode($address) }}" target="_blank" class="btn-primary">Obtenir l'itinéraire <i class="fa fa-external-link-alt" style="margin-left:6px"></i></a></div>
+        <div style="margin-top:2rem"><a href="https://maps.google.com/?q={{ urlencode($mapAddress) }}" target="_blank" class="btn-primary">Obtenir l'itinéraire <i class="fa fa-external-link-alt" style="margin-left:6px"></i></a></div>
       </div>
       <div class="reveal delay-1">
         <div id="map-container">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2796183.7428278717!2d-76.45055!3d46.82555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb896d35a5ce50f%3A0x15d88dd3c9001f1d!2sQu%C3%A9bec!5e0!3m2!1sfr!2sca!4v1699000000000!5m2!1sfr!2sca" width="100%" height="500" style="border:0;display:block;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-          <div class="map-video-ov" onclick="openVideo()"><i class="fa fa-play-circle"></i><span>Voir la vidéo de l'usine</span></div>
+          <div id="immoLeafletMap" style="height:100%;width:100%;"></div>
+          <div class="map-video-ov" onclick="openMapVideoPopup()"><i class="fa fa-play-circle"></i><span>Voir la vidéo sur la carte</span></div>
         </div>
       </div>
     </div>
@@ -1141,8 +1161,11 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
   <div class="footer-grid">
     <div class="footer-brand">
       <div class="logo" style="margin-bottom:1rem">
-        <div class="logo-mark">@if($logoUrl)<img src="{{ $logoUrl }}" alt="{{ $siteName }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">@else<i class="fa fa-tree"></i>@endif</div>
-        <div class="logo-text" style="color:#fff">{{ $siteName }} <span>{{ $address }}</span></div>
+        @if($hasWideLogo)
+          <img class="logo-wide" src="{{ $logoUrl }}" alt="{{ $siteNameDisplay }}">
+        @else
+          <div class="logo-text" style="color:#fff">{{ $siteNameDisplay }} <span>{{ $address }}</span></div>
+        @endif
       </div>
       <p>Chaque maison et chalet que nous concevons est l\'expression d'une passion pour le bois massif et d'un engagement constant envers l'excellence artisanale.</p>
       <div class="social-links">
@@ -1157,7 +1180,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
     <div class="footer-col"><h4>À propos</h4><ul><li><a href="#">Notre histoire</a></li><li><a href="#">Avantages</a></li><li><a href="#">Normes énergétiques</a></li><li><a href="#">Réalisations</a></li><li><a href="#">Blogue</a></li><li><a href="#">FAQ</a></li><li><a href="#">Contact</a></li></ul></div>
   </div>
   <div class="footer-bottom">
-    <p>© {{ date('Y') }} {{ $siteName }}. Tous droits réservés.</p>
+    <p>© {{ date('Y') }} {{ $siteNameDisplay }}. Tous droits réservés.</p>
     <div class="footer-bottom-links"><a href="#">Confidentialité</a><a href="#">Conditions</a><a href="#">Plan du site</a></div>
   </div>
 </footer>
@@ -1176,22 +1199,32 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
 <script src="{{ asset('js/home-v2/videos-dropdown.js') }}"></script>
 <script src="{{ asset('js/home-v2/slideshows.js') }}"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
 /* ============ STACKED HEADERS OFFSET ============ */
 function syncHeaderStackOffsets() {
   const globalHeader = document.querySelector('.header-v2');
   const templateNavbar = document.getElementById('navbar');
-  const globalHeight = globalHeader ? Math.ceil(globalHeader.getBoundingClientRect().height) : 0;
+  const globalRect = globalHeader ? globalHeader.getBoundingClientRect() : null;
+  const globalHeight = globalRect ? Math.max(0, Math.ceil(globalRect.bottom)) : 0;
   const navbarHeight = templateNavbar ? Math.ceil(templateNavbar.getBoundingClientRect().height) : 78;
-  const navbarBottom = templateNavbar ? Math.ceil(templateNavbar.getBoundingClientRect().bottom) : (globalHeight + navbarHeight);
+  const heroOffset = globalHeight + navbarHeight;
 
   document.documentElement.style.setProperty('--global-header-offset', `${globalHeight}px`);
   document.documentElement.style.setProperty('--template-header-height', `${navbarHeight}px`);
-  document.documentElement.style.setProperty('--hero-top-offset', `${Math.max(navbarBottom, globalHeight + navbarHeight)}px`);
+  document.documentElement.style.setProperty('--hero-top-offset', `${heroOffset}px`);
 }
 
 window.addEventListener('load', syncHeaderStackOffsets);
 window.addEventListener('resize', syncHeaderStackOffsets);
+let headerOffsetRaf = null;
+window.addEventListener('scroll', () => {
+  if (headerOffsetRaf) return;
+  headerOffsetRaf = window.requestAnimationFrame(() => {
+    syncHeaderStackOffsets();
+    headerOffsetRaf = null;
+  });
+}, { passive: true });
 
 /* ============ THEME ============ */
 const themeToggle = document.getElementById('themeToggle');
@@ -1347,6 +1380,64 @@ function closeVideo(){
   document.body.style.overflow='';
 }
 
+/* ============ LEAFLET MAP ============ */
+let immoMap = null;
+let immoMapMarker = null;
+
+function initImmoMap() {
+  if (!window.L || !document.getElementById('immoLeafletMap') || immoMap) return;
+
+  const lat = {{ $mapLat }};
+  const lng = {{ $mapLng }};
+  const exactAddress = @json($mapAddress);
+
+  immoMap = L.map('immoLeafletMap', {
+    zoomControl: true,
+    scrollWheelZoom: false
+  }).setView([lat, lng], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(immoMap);
+
+  const markerIcon = L.divIcon({
+    className: 'lf-marker',
+    html: '<div class="lf-marker-wrap"><i class="fas fa-location-dot"></i></div>',
+    iconSize: [36, 36],
+    iconAnchor: [18, 34]
+  });
+
+  const mapVideoHtml = `
+    <div style="width:320px;max-width:100%;">
+      <div style="font-weight:700;margin-bottom:8px;">{{ addslashes($siteNameDisplay) }}</div>
+      <div style="font-size:12px;color:#666;margin-bottom:10px;">${exactAddress}</div>
+      <iframe
+        width="320"
+        height="180"
+        src="{{ $mapVideoEmbedUrl }}"
+        title="Vidéo sur la carte"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        style="display:block;width:100%;border-radius:8px;">
+      </iframe>
+    </div>
+  `;
+
+  immoMapMarker = L.marker([lat, lng], { icon: markerIcon })
+    .addTo(immoMap)
+    .bindPopup(mapVideoHtml, { maxWidth: 360, minWidth: 260 });
+
+  setTimeout(() => immoMap.invalidateSize(), 250);
+}
+
+function openMapVideoPopup() {
+  if (!immoMap || !immoMapMarker) return;
+  immoMap.setView(immoMapMarker.getLatLng(), 14, { animate: true });
+  immoMapMarker.openPopup();
+}
+
 /* ============ MOBILE NAV ============ */
 const hamburger = document.getElementById('hamburger');
 const mobileNav = document.getElementById('mobileNav');
@@ -1396,6 +1487,7 @@ const statsObs = new IntersectionObserver(entries=>{
 },{threshold:.5});
 const statsSection=document.getElementById('stats');
 if(statsSection)statsObs.observe(statsSection);
+window.addEventListener('load', initImmoMap);
 </script>
 </body>
 </html>
