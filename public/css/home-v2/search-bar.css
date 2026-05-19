@@ -38,13 +38,18 @@
 /* Section Destinations (Globe + Texte + Liens) */
 .search-bar-v2-destinations {
     display: flex;
-    align-items: center; 
-    gap: 6px;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
     flex-shrink: 0;
+    min-width: 185px;
+    max-width: 340px;
 }
 
 .search-bar-v2-globe-icon {
-    width: 40;
+    width: 40px;
     height: 40px;
     object-fit: contain;
     flex-shrink: 0;
@@ -78,7 +83,8 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-    max-width: 280px;
+    width: 100%;
+    max-width: min(340px, 22vw);
     color: rgba(255, 255, 255, 0.78);
     font-size: 11px;
     font-weight: 700;
@@ -93,8 +99,15 @@
 }
 
 .search-bar-v2-destination-breadcrumb a {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: #ffffff;
     text-decoration: none;
+}
+
+.search-bar-v2-destination-breadcrumb a:last-of-type {
+    color: #2d9cff;
 }
 
 .search-bar-v2-destination-breadcrumb a:hover {
@@ -102,6 +115,7 @@
 }
 
 .search-bar-v2-destination-breadcrumb span {
+    flex: 0 0 auto;
     color: rgba(255, 255, 255, 0.46);
 }
 
@@ -631,10 +645,18 @@
     .search-bar-v2-destinations {
         order: 1;
         width: 100%;
+        max-width: 100%;
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
         padding: 0 5px;
+    }
+
+    .search-bar-v2-destination-breadcrumb {
+        justify-content: flex-start;
+        max-width: 100%;
+        font-size: 10px;
+        text-align: left;
     }
 
     .search-bar-v2-destinations-title {
@@ -746,6 +768,11 @@
 
     .search-bar-v2-destinations-title {
         font-size: 12px;
+    }
+
+    .search-bar-v2-destination-breadcrumb {
+        font-size: 9px;
+        gap: 4px;
     }
 
     .search-bar-v2-destinations-link {

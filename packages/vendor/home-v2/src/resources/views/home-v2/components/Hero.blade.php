@@ -174,7 +174,7 @@
         <div class="search-bar-v2">
             <div class="search-bar-v2-container">
                 {{-- Globe Destinations --}}
-                <div class="search-bar-v2-destinations" style="position: relative; flex-direction: column; gap: 2px; align-items: center;">
+                <div class="search-bar-v2-destinations">
                     @if($destinationBreadcrumbItems->isNotEmpty())
                         <nav class="search-bar-v2-destination-breadcrumb" aria-label="{{ $tr('Fil d’Ariane destination') }}">
                             @foreach($destinationBreadcrumbItems as $breadcrumbItem)
