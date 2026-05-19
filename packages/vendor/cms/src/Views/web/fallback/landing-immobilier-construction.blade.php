@@ -13,12 +13,8 @@
 
     $logoUrl = get_logo_url($etablissement->id);
     $hasWideLogo = !empty(trim((string) $logoUrl));
-    $phone = $etablissement->getSetting('phone', null, 'company')
-        ?: $etablissement->getSetting('phone', null, 'general')
-        ?: '(438) 525-2063';
-    $email = $etablissement->getSetting('email', null, 'general')
-        ?: $etablissement->getSetting('email_contact', null, 'general')
-        ?: 'info@goexploria.com';
+    $phone = '(418) 525-7748';
+    $email = 'info@goexploriabusiness.com';
     $address = $etablissement->getSetting('address', null, 'company')
         ?: $etablissement->getSetting('address', null, 'general')
         ?: 'Québec, Canada';
@@ -271,6 +267,7 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;font-size:16px;}
 body{font-family:var(--font-sans);background:var(--bg);color:var(--text);transition:background .5s,color .5s;overflow-x:hidden;width:100%;}
+.header-v2{transform:translateY(0)!important;}
 h1,h2,h3,h4{font-family:var(--font-serif);}
 a{text-decoration:none;color:inherit;}
 img{max-width:100%;display:block;}
@@ -287,7 +284,7 @@ img{max-width:100%;display:block;}
 #navbar,.mobile-nav{display:block;}
 
 /* ====================== NAVBAR ====================== */
-#navbar{position:fixed;top:var(--global-header-offset);left:0;right:0;z-index:9990;background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:var(--transition);}
+#navbar{position:fixed;top:var(--global-header-offset);left:0;right:0;z-index:9990;background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:background .3s ease,border-color .3s ease,box-shadow .3s ease,color .3s ease;}
 .nav-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:78px;}
 .logo{display:flex;align-items:center;gap:14px;min-width:0;}
 .logo-wide{display:block;width:200px;max-width:200px;height:auto;max-height:none;object-fit:contain;}
@@ -1174,7 +1171,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
       <div class="reveal delay-1">
         <h3 style="font-family:var(--font-serif);font-size:1.5rem;margin-bottom:1.5rem">Informations de contact</h3>
         <div class="contact-card"><i class="fa fa-phone-alt"></i><div><h4>Téléphone</h4><p><a href="tel:{{ $phoneHref }}" style="color:var(--gold)">{{ $phone }}</a></p></div></div>
-        <div class="contact-card"><i class="fa fa-envelope"></i><div><h4>Courriel</h4><p>{{ $email }}</p></div></div>
+        <div class="contact-card"><i class="fa fa-envelope"></i><div><h4>Courriel</h4><p><a href="mailto:{{ $email }}" style="color:var(--gold)">{{ $email }}</a></p></div></div>
         <div class="contact-card"><i class="fa fa-map-marker-alt"></i><div><h4>Localisation</h4><p>{{ $address }}</p></div></div>
         <div class="contact-card"><i class="fa fa-clock"></i><div><h4>Heures d'ouverture</h4><p>Lun–Ven : 8h00 – 17h00<br>Samedi : Sur rendez-vous</p></div></div>
         <div style="margin-top:2rem">
@@ -1203,6 +1200,14 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
         @endif
       </div>
       <p>Chaque maison et chalet que nous concevons est l\'expression d'une passion pour le bois massif et d'un engagement constant envers l'excellence artisanale.</p>
+      <div style="display:grid;gap:.55rem;margin:1rem 0 1.2rem;color:rgba(255,255,255,.72);font-size:.86rem">
+        <a href="tel:{{ $phoneHref }}" style="display:inline-flex;align-items:center;gap:.65rem;color:var(--gold)">
+          <i class="fa fa-phone-alt"></i> {{ $phone }}
+        </a>
+        <a href="mailto:{{ $email }}" style="display:inline-flex;align-items:center;gap:.65rem;color:var(--gold)">
+          <i class="fa fa-envelope"></i> {{ $email }}
+        </a>
+      </div>
       <div class="social-links">
         <a href="https://www.facebook.com/prestigeboisrond" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
         <a href="https://www.instagram.com/prestigeboisrond/" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
@@ -1240,9 +1245,8 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 function syncHeaderStackOffsets() {
   const globalHeader = document.querySelector('.header-v2');
   const templateNavbar = document.getElementById('navbar');
-  const globalRect = globalHeader ? globalHeader.getBoundingClientRect() : null;
-  const globalHeight = globalRect ? Math.max(0, Math.ceil(globalRect.bottom)) : 0;
-  const navbarHeight = templateNavbar ? Math.ceil(templateNavbar.getBoundingClientRect().height) : 78;
+  const globalHeight = globalHeader ? Math.max(0, Math.ceil(globalHeader.offsetHeight || 0)) : 0;
+  const navbarHeight = templateNavbar ? Math.ceil(templateNavbar.offsetHeight || 78) : 78;
   const heroOffset = globalHeight + navbarHeight;
 
   document.documentElement.style.setProperty('--global-header-offset', `${globalHeight}px`);
@@ -1250,16 +1254,17 @@ function syncHeaderStackOffsets() {
   document.documentElement.style.setProperty('--hero-top-offset', `${heroOffset}px`);
 }
 
+syncHeaderStackOffsets();
+window.addEventListener('DOMContentLoaded', syncHeaderStackOffsets);
 window.addEventListener('load', syncHeaderStackOffsets);
 window.addEventListener('resize', syncHeaderStackOffsets);
-let headerOffsetRaf = null;
-window.addEventListener('scroll', () => {
-  if (headerOffsetRaf) return;
-  headerOffsetRaf = window.requestAnimationFrame(() => {
-    syncHeaderStackOffsets();
-    headerOffsetRaf = null;
-  });
-}, { passive: true });
+if ('ResizeObserver' in window) {
+  const globalHeader = document.querySelector('.header-v2');
+  const templateNavbar = document.getElementById('navbar');
+  const headerResizeObserver = new ResizeObserver(syncHeaderStackOffsets);
+  if (globalHeader) headerResizeObserver.observe(globalHeader);
+  if (templateNavbar) headerResizeObserver.observe(templateNavbar);
+}
 
 /* ============ THEME ============ */
 const themeToggle = document.getElementById('themeToggle');
