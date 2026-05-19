@@ -19,12 +19,13 @@ class VideoPlayerV2 {
         
         this.currentIndex = 0;
         this.isMuted = false;
+        this.isReady = !!(this.videoPlayer && this.playlistItems.length);
         
         this.init();
     }
     
     init() {
-        if (!this.videoPlayer || !this.playlistItems.length) return;
+        if (!this.isReady) return;
         
         // Événements de clic sur les items de la playlist
         this.playlistItems.forEach((item, index) => {
@@ -78,6 +79,7 @@ class VideoPlayerV2 {
     }
     
     playMedia(index) {
+        if (!this.isReady) return;
         if (index < 0 || index >= this.playlistItems.length) return;
         
         const item = this.playlistItems[index];
@@ -97,7 +99,9 @@ class VideoPlayerV2 {
         item.classList.add('active');
         
         // Mettre à jour le titre et la description
-        this.videoTitle.textContent = title;
+        if (this.videoTitle) {
+            this.videoTitle.textContent = title;
+        }
         if (this.videoDescription) {
             this.videoDescription.textContent = description;
         }
@@ -165,6 +169,7 @@ class VideoPlayerV2 {
     }
     
     togglePlayPause() {
+        if (!this.videoPlayer) return;
         if (this.videoPlayer.paused) {
             this.videoPlayer.play();
             this.updatePlayPauseIcon(false);
@@ -175,8 +180,10 @@ class VideoPlayerV2 {
     }
     
     updatePlayPauseIcon(isPaused) {
+        if (!this.playPauseBtn) return;
         const playIcon = this.playPauseBtn.querySelector('.play-icon');
         const pauseIcon = this.playPauseBtn.querySelector('.pause-icon');
+        if (!playIcon || !pauseIcon) return;
         
         if (isPaused) {
             playIcon.style.display = 'block';
@@ -188,11 +195,13 @@ class VideoPlayerV2 {
     }
     
     toggleMute() {
+        if (!this.videoPlayer || !this.volumeBtn) return;
         this.isMuted = !this.isMuted;
         this.videoPlayer.muted = this.isMuted;
         
         const volumeOnIcon = this.volumeBtn.querySelector('.volume-on-icon');
         const volumeOffIcon = this.volumeBtn.querySelector('.volume-off-icon');
+        if (!volumeOnIcon || !volumeOffIcon) return;
         
         if (this.isMuted) {
             volumeOnIcon.style.display = 'none';
@@ -204,6 +213,7 @@ class VideoPlayerV2 {
     }
     
     toggleFullscreen() {
+        if (!this.videoPlayer || !this.videoPlayer.parentElement) return;
         if (!document.fullscreenElement) {
             this.videoPlayer.parentElement.requestFullscreen();
         } else {
@@ -212,18 +222,21 @@ class VideoPlayerV2 {
     }
     
     seek(e) {
+        if (!this.progressBar || !this.videoPlayer || !this.videoPlayer.duration) return;
         const rect = this.progressBar.getBoundingClientRect();
         const percent = (e.clientX - rect.left) / rect.width;
         this.videoPlayer.currentTime = percent * this.videoPlayer.duration;
     }
     
     updateProgress() {
+        if (!this.videoPlayer || !this.progressFilled) return;
         const percent = (this.videoPlayer.currentTime / this.videoPlayer.duration) * 100;
         this.progressFilled.style.width = percent + '%';
         this.updateTime();
     }
     
     updateTime() {
+        if (!this.videoPlayer || !this.timeDisplay) return;
         const current = this.formatTime(this.videoPlayer.currentTime);
         const duration = this.formatTime(this.videoPlayer.duration);
         this.timeDisplay.textContent = `${current} / ${duration}`;
@@ -254,6 +267,7 @@ class VideoPlayerV2 {
 // Initialiser le lecteur vidéo au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
     const player = new VideoPlayerV2();
+    if (!player.isReady) return;
     
     // Charger le premier média automatiquement
     const visible = player.getVisibleIndices();

@@ -187,7 +187,13 @@ class Slider extends Model
             return $this->extractVimeoEmbedUrl($this->video_url);
         } elseif ($this->video_type === 'upload' && $this->video_path) {
             if (filter_var($this->video_path, FILTER_VALIDATE_URL)) {
+                if (str_contains($this->video_path, 'videos.pexels.com/video-files/3571264/')) {
+                    return asset('home2/videos/hero-video-4.mp4');
+                }
                 return $this->video_path;
+            }
+            if (str_starts_with($this->video_path, 'home2/')) {
+                return asset($this->video_path);
             }
             return asset('storage/' . $this->video_path);
         }
@@ -202,7 +208,13 @@ class Slider extends Model
     {
         if ($this->thumbnail_path) {
             if (filter_var($this->thumbnail_path, FILTER_VALIDATE_URL)) {
+                if (str_contains($this->thumbnail_path, 'images.pexels.com/videos/3571264/')) {
+                    return asset('header_info/map1.jpg');
+                }
                 return $this->thumbnail_path;
+            }
+            if (str_starts_with($this->thumbnail_path, 'header_info/')) {
+                return asset($this->thumbnail_path);
             }
             return asset('storage/' . $this->thumbnail_path);
         } elseif ($this->image_path) {

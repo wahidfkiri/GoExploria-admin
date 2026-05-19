@@ -64,8 +64,16 @@ class BusinessTourismApp {
     }
     
     initMap() {
+        const mapContainer = document.getElementById('map');
+        if (!mapContainer || typeof L === 'undefined') return;
+
+        if (mapContainer._leaflet_id) {
+            mapContainer._leaflet_id = null;
+            mapContainer.innerHTML = '';
+        }
+
         // Centrer sur le Canada
-        this.map = L.map('map').setView([56.1304, -106.3468], 4);
+        this.map = L.map(mapContainer).setView([56.1304, -106.3468], 4);
         
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributeurs',
@@ -80,6 +88,7 @@ class BusinessTourismApp {
     }
     
     addMarkers() {
+        if (!this.map) return;
         Object.values(this.markers).forEach(m => m.remove());
         this.markers = {};
         
