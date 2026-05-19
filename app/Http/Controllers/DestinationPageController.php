@@ -410,12 +410,15 @@ class DestinationPageController extends Controller
             ],
             'filters' => [
                 'label' => $this->filterLabelFor($currentType),
+                'all_label' => $this->filterAllLabelFor($currentType),
+                'child_type' => $this->childTypeFor($currentType),
                 'items' => $children->map(fn ($item) => [
                     'code' => Str::slug($this->modelName($item)),
                     'name' => $this->modelName($item),
+                    'type' => $this->childTypeFor($currentType),
                     'lat' => $this->coordinate($item, 'latitude'),
                     'lng' => $this->coordinate($item, 'longitude'),
-                ])->filter(fn ($item) => $item['lat'] !== null && $item['lng'] !== null)->values()->all(),
+                ])->values()->all(),
             ],
             'breadcrumb' => $this->buildDestinationContext($resolved)['breadcrumb'],
             'places' => $places,
@@ -638,11 +641,38 @@ class DestinationPageController extends Controller
     {
         return match ($type) {
             'continent' => 'Pays (Zoom) :',
-            'country' => 'Province/Région (Zoom) :',
-            'province' => 'Région (Zoom) :',
+            'country' => 'Provinces (Zoom) :',
+            'province' => 'Régions (Zoom) :',
             'region' => 'Ville (Zoom) :',
             'ville' => 'Secteur/Quartier (Zoom) :',
+            'secteur' => 'Ville/Quartier (Zoom) :',
             default => 'Destination liée (Zoom) :',
+        };
+    }
+
+    private function filterAllLabelFor(string $type): string
+    {
+        return match ($type) {
+            'continent' => 'Tous les pays',
+            'country' => 'Toutes les provinces',
+            'province' => 'Toutes les régions',
+            'region' => 'Toutes les villes',
+            'ville' => 'Tous les secteurs/quartiers',
+            'secteur' => 'Toutes les villes/quartiers',
+            default => 'Toutes les destinations',
+        };
+    }
+
+    private function childTypeFor(string $type): string
+    {
+        return match ($type) {
+            'continent' => 'country',
+            'country' => 'province',
+            'province' => 'region',
+            'region' => 'ville',
+            'ville' => 'secteur',
+            'secteur' => 'ville',
+            default => 'destination',
         };
     }
 }

@@ -1,4 +1,4 @@
-﻿{{-- Hero Section Component --}}
+{{-- Hero Section Component --}}
 <section class="hero-v2" style="margin-top:0px !important;">
     @php
         $tr = static function (string $text): string {
@@ -36,7 +36,7 @@
                     {{-- VidÃ©o YouTube/Vimeo avec iframe --}}
                     <iframe 
                         class="video-background" 
-                        src="{{ $slider->video_embed_url }}{{ str_contains($slider->video_embed_url ?? '', '?') ? '&' : '?' }}autoplay={{ $index === 0 ? '1' : '0' }}&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&vq=hd1080&origin={{ urlencode(url('/')) }}" 
+                        src="{{ $slider->video_embed_url }}{{ str_contains($slider->video_embed_url ?? '', '?') ? '&' : '?' }}autoplay={{ $index === 0 ? '1' : '0' }}&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" 
                         frameborder="0" 
                         allow="autoplay; encrypted-media" 
                         allowfullscreen
@@ -432,19 +432,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function requestYouTubeHd(el) {
-        if (!isYouTubeIframe(el)) return;
-        try {
-            el.contentWindow.postMessage(JSON.stringify({
-                event: 'command',
-                func: 'setPlaybackQualityRange',
-                args: ['hd1080']
-            }), '*');
-            el.contentWindow.postMessage(JSON.stringify({
-                event: 'command',
-                func: 'setPlaybackQuality',
-                args: ['hd1080']
-            }), '*');
-        } catch (e) { /* ignore */ }
+        // The YouTube iframe API can throw internal errors on some embeds.
+        // Keep playback stable by avoiding postMessage quality commands.
+        return;
     }
 
     function boostActiveYouTubeQuality() {
@@ -475,26 +465,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (p && typeof p.catch === 'function') p.catch(() => {});
             }
         } else if (el.tagName === 'IFRAME') {
-            // YouTube postMessage API
-            const cmd = muted ? 'mute' : 'unMute';
-            try {
-                el.contentWindow.postMessage(JSON.stringify({
-                    event: 'command',
-                    func: cmd,
-                    args: []
-                }), '*');
-            } catch (e) { /* ignore */ }
-
-            // Vimeo postMessage API
-            try {
-                el.contentWindow.postMessage(JSON.stringify({
-                    method: 'setVolume',
-                    value: muted ? 0 : 1
-                }), '*');
-            } catch (e) { /* ignore */ }
-
-            if (!muted) {
-                requestYouTubeHd(el);
+            if (isYouTubeIframe(el)) {
+                // Avoid YouTube iframe postMessage API; update URL params instead.
+                try {
+                    const currentSrc = new URL(el.getAttribute('src'), window.location.href);
+                    currentSrc.searchParams.set('mute', muted ? '1' : '0');
+                    currentSrc.searchParams.set('autoplay', '1');
+                    el.setAttribute('src', currentSrc.toString());
+                } catch (e) { /* ignore */ }
+            } else {
+                // Vimeo postMessage API
+                try {
+                    el.contentWindow.postMessage(JSON.stringify({
+                        method: 'setVolume',
+                        value: muted ? 0 : 1
+                    }), '*');
+                } catch (e) { /* ignore */ }
             }
         }
 

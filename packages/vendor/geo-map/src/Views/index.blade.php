@@ -1,4 +1,4 @@
-﻿@php
+@php
     $geoMapDestinationContext = $geoMapDestinationContext ?? null;
 @endphp
 <!-- Font Awesome -->
@@ -369,7 +369,7 @@
                     <div class="filters-section">
                         <div class="filter-group">
                             <label for="province-filter"><i class="fas fa-map-marker-alt"></i> Province/Région (Zoom) :</label>
-                            <select id="province-filter" class="form-select"><option value="">Toutes les provinces</option></select>
+                            <select id="province-filter" class="form-select"><option value="">Toutes les destinations</option></select>
                         </div>
                         <div class="filter-group">
                             <label for="category-filter"><i class="fas fa-tag"></i> Catégorie (Filtre) :</label>
@@ -501,9 +501,21 @@ class InteractiveMap {
                 label.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${DESTINATION_MAP_CONTEXT.filters.label}`;
             }
 
-            pf.innerHTML = '<option value="">Toutes les destinations</option>';
+            pf.innerHTML = '';
+            const allOption = document.createElement('option');
+            allOption.value = '';
+            allOption.textContent = DESTINATION_MAP_CONTEXT?.filters?.all_label || 'Toutes les destinations';
+            pf.appendChild(allOption);
             const filterItems = dynamicFilters.length ? dynamicFilters : provinces;
-            filterItems.forEach(p => { const o=document.createElement('option'); o.value=p.code; o.textContent=p.name; o.dataset.lat=p.lat; o.dataset.lng=p.lng; pf.appendChild(o); });
+            filterItems.forEach(p => {
+                const o = document.createElement('option');
+                o.value = p.code;
+                o.textContent = p.name;
+                o.dataset.type = p.type || DESTINATION_MAP_CONTEXT?.filters?.child_type || '';
+                if (p.lat !== null && p.lat !== undefined && p.lat !== '') o.dataset.lat = p.lat;
+                if (p.lng !== null && p.lng !== undefined && p.lng !== '') o.dataset.lng = p.lng;
+                pf.appendChild(o);
+            });
         }
         const cf = document.getElementById('category-filter');
         if (cf) {
@@ -564,7 +576,10 @@ class InteractiveMap {
             const zoom = DESTINATION_MAP_CONTEXT?.destination?.zoom ? DESTINATION_MAP_CONTEXT.destination.zoom + 1 : 6;
             this.map.setView([Number(p.lat), Number(p.lng)], zoom);
             this.showNotification(`Zoom sur ${p.name}`,'success');
+            return;
         }
+
+        this.showNotification(`${p?.name || 'Destination'} est affichée dans le filtre, mais ses coordonnées ne sont pas encore renseignées.`, 'info');
     }
     addMarkersToMap() { this.clearMarkers(); this.places.forEach(p=>this.createMarker(p)); }
     clearMarkers() {
