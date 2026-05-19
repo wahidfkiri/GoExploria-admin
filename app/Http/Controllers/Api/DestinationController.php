@@ -3,13 +3,26 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Continent;
+use App\Models\Country;
+use App\Models\Etablissement;
+use App\Models\Province;
+use App\Models\Region;
+use App\Models\Secteur;
+use App\Models\Ville;
 use App\Services\DestinationService;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
- * API Controller pour les destinations géographiques
- * Fournit des endpoints RESTful en lecture seule
+ * API Controller pour les destinations géographiques.
+ * Les réponses exposent aussi path/url afin que la recherche et les menus
+ * pointent vers les pages destinations hiérarchiques.
  */
 class DestinationController extends Controller
 {
@@ -20,253 +33,134 @@ class DestinationController extends Controller
         $this->destinationService = $destinationService;
     }
 
-    /**
-     * GET /api/destinations/continents
-     * Récupérer tous les continents
-     */
     public function continents(Request $request): JsonResponse
     {
-        $withRelations = $request->boolean('with_relations', false);
-        $continents = $this->destinationService->getContinents($withRelations);
+        $continents = $this->destinationService->getContinents($request->boolean('with_relations', false));
 
-        return response()->json([
-            'success' => true,
-            'data' => $continents,
-            'count' => $continents->count()
-        ]);
+        return $this->collectionResponse($continents, 'continent');
     }
 
-    /**
-     * GET /api/destinations/continents/{identifier}
-     * Récupérer un continent par ID ou code
-     */
     public function continent(Request $request, $identifier): JsonResponse
     {
-        $withRelations = $request->boolean('with_relations', false);
-        $continent = $this->destinationService->getContinent($identifier, $withRelations);
+        $continent = $this->destinationService->getContinent($identifier, $request->boolean('with_relations', false));
 
         if (!$continent) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Continent non trouvé'
-            ], 404);
+            return $this->notFound('Continent non trouvé');
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $continent
-        ]);
+        return $this->itemResponse($continent, 'continent');
     }
 
-    /**
-     * GET /api/destinations/countries
-     * Récupérer tous les pays (optionnel: filtrer par continent)
-     */
     public function countries(Request $request): JsonResponse
     {
-        $continentId = $request->input('continent_id');
-        $withRelations = $request->boolean('with_relations', false);
-        
-        $countries = $this->destinationService->getCountries($continentId, $withRelations);
+        $countries = $this->destinationService->getCountries(
+            $request->input('continent_id'),
+            $request->boolean('with_relations', false)
+        );
 
-        return response()->json([
-            'success' => true,
-            'data' => $countries,
-            'count' => $countries->count()
-        ]);
+        return $this->collectionResponse($countries, 'country');
     }
 
-    /**
-     * GET /api/destinations/countries/{identifier}
-     * Récupérer un pays par ID ou code
-     */
     public function country(Request $request, $identifier): JsonResponse
     {
-        $withRelations = $request->boolean('with_relations', false);
-        $country = $this->destinationService->getCountry($identifier, $withRelations);
+        $country = $this->destinationService->getCountry($identifier, $request->boolean('with_relations', false));
 
         if (!$country) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pays non trouvé'
-            ], 404);
+            return $this->notFound('Pays non trouvé');
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $country
-        ]);
+        return $this->itemResponse($country, 'country');
     }
 
-    /**
-     * GET /api/destinations/provinces
-     * Récupérer toutes les provinces (optionnel: filtrer par pays)
-     */
     public function provinces(Request $request): JsonResponse
     {
-        $countryId = $request->input('country_id');
-        $withRelations = $request->boolean('with_relations', false);
-        
-        $provinces = $this->destinationService->getProvinces($countryId, $withRelations);
+        $provinces = $this->destinationService->getProvinces(
+            $request->input('country_id'),
+            $request->boolean('with_relations', false)
+        );
 
-        return response()->json([
-            'success' => true,
-            'data' => $provinces,
-            'count' => $provinces->count()
-        ]);
+        return $this->collectionResponse($provinces, 'province');
     }
 
-    /**
-     * GET /api/destinations/provinces/{identifier}
-     * Récupérer une province par ID ou code
-     */
     public function province(Request $request, $identifier): JsonResponse
     {
-        $withRelations = $request->boolean('with_relations', false);
-        $province = $this->destinationService->getProvince($identifier, $withRelations);
+        $province = $this->destinationService->getProvince($identifier, $request->boolean('with_relations', false));
 
         if (!$province) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Province non trouvée'
-            ], 404);
+            return $this->notFound('Province non trouvée');
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $province
-        ]);
+        return $this->itemResponse($province, 'province');
     }
 
-    /**
-     * GET /api/destinations/regions
-     * Récupérer toutes les régions (optionnel: filtrer par province)
-     */
     public function regions(Request $request): JsonResponse
     {
-        $provinceId = $request->input('province_id');
-        $withRelations = $request->boolean('with_relations', false);
-        
-        $regions = $this->destinationService->getRegions($provinceId, $withRelations);
+        $regions = $this->destinationService->getRegions(
+            $request->input('province_id'),
+            $request->boolean('with_relations', false)
+        );
 
-        return response()->json([
-            'success' => true,
-            'data' => $regions,
-            'count' => $regions->count()
-        ]);
+        return $this->collectionResponse($regions, 'region');
     }
 
-    /**
-     * GET /api/destinations/regions/{identifier}
-     * Récupérer une région par ID ou code
-     */
     public function region(Request $request, $identifier): JsonResponse
     {
-        $withRelations = $request->boolean('with_relations', false);
-        $region = $this->destinationService->getRegion($identifier, $withRelations);
+        $region = $this->destinationService->getRegion($identifier, $request->boolean('with_relations', false));
 
         if (!$region) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Région non trouvée'
-            ], 404);
+            return $this->notFound('Région non trouvée');
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $region
-        ]);
+        return $this->itemResponse($region, 'region');
     }
 
-    /**
-     * GET /api/destinations/villes
-     * Récupérer toutes les villes (optionnel: filtrer par région)
-     */
     public function villes(Request $request): JsonResponse
     {
-        $regionId = $request->input('region_id');
-        $withRelations = $request->boolean('with_relations', false);
-        
-        $villes = $this->destinationService->getVilles($regionId, $withRelations);
+        $villes = $this->destinationService->getVilles(
+            $request->input('region_id'),
+            $request->boolean('with_relations', false)
+        );
 
-        return response()->json([
-            'success' => true,
-            'data' => $villes,
-            'count' => $villes->count()
-        ]);
+        return $this->collectionResponse($villes, 'ville');
     }
 
-    /**
-     * GET /api/destinations/villes/{identifier}
-     * Récupérer une ville par ID ou code
-     */
     public function ville(Request $request, $identifier): JsonResponse
     {
-        $withRelations = $request->boolean('with_relations', false);
-        $ville = $this->destinationService->getVille($identifier, $withRelations);
+        $ville = $this->destinationService->getVille($identifier, $request->boolean('with_relations', false));
 
         if (!$ville) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ville non trouvée'
-            ], 404);
+            return $this->notFound('Ville non trouvée');
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $ville
-        ]);
+        return $this->itemResponse($ville, 'ville');
     }
 
-    /**
-     * GET /api/destinations/secteurs
-     * Récupérer tous les secteurs (optionnel: filtrer par région)
-     */
     public function secteurs(Request $request): JsonResponse
     {
-        $regionId = $request->input('region_id');
-        $withRelations = $request->boolean('with_relations', false);
-        
-        $secteurs = $this->destinationService->getSecteurs($regionId, $withRelations);
+        $secteurs = $this->destinationService->getSecteurs(
+            $request->input('region_id'),
+            $request->boolean('with_relations', false)
+        );
 
-        return response()->json([
-            'success' => true,
-            'data' => $secteurs,
-            'count' => $secteurs->count()
-        ]);
+        return $this->collectionResponse($secteurs, 'secteur');
     }
 
-    /**
-     * GET /api/destinations/secteurs/{identifier}
-     * Récupérer un secteur par ID ou code
-     */
     public function secteur(Request $request, $identifier): JsonResponse
     {
-        $withRelations = $request->boolean('with_relations', false);
-        $secteur = $this->destinationService->getSecteur($identifier, $withRelations);
+        $secteur = $this->destinationService->getSecteur($identifier, $request->boolean('with_relations', false));
 
         if (!$secteur) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Secteur non trouvé'
-            ], 404);
+            return $this->notFound('Secteur non trouvé');
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $secteur
-        ]);
+        return $this->itemResponse($secteur, 'secteur');
     }
 
-    /**
-     * GET /api/destinations/search
-     * Rechercher des destinations par nom
-     */
     public function search(Request $request): JsonResponse
     {
         $request->validate([
             'query' => 'required|string|min:2',
-            'type' => 'nullable|in:continent,country,province,region,ville,secteur,etablissement'
+            'type' => 'nullable|in:continent,country,province,region,ville,secteur,etablissement',
         ]);
 
         $results = $this->destinationService->search(
@@ -276,118 +170,327 @@ class DestinationController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $results,
-            'query' => $request->input('query')
+            'data' => $this->enrichSearchResults($results),
+            'query' => $request->input('query'),
         ]);
     }
 
-    /**
-     * GET /api/destinations/hierarchy/{type}/{identifier}
-     * Récupérer la hiérarchie complète d'une destination
-     */
     public function hierarchy(string $type, $identifier): JsonResponse
     {
         $validTypes = ['ville', 'secteur', 'region', 'province', 'country'];
-        
-        if (!in_array($type, $validTypes)) {
+
+        if (!in_array($type, $validTypes, true)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Type invalide. Types valides: ' . implode(', ', $validTypes)
+                'message' => 'Type invalide. Types valides: ' . implode(', ', $validTypes),
             ], 400);
         }
 
         $hierarchy = $this->destinationService->getHierarchy($type, $identifier);
 
         if (!$hierarchy) {
-            return response()->json([
-                'success' => false,
-                'message' => ucfirst($type) . ' non trouvé(e)'
-            ], 404);
+            return $this->notFound(ucfirst($type) . ' non trouvé(e)');
         }
 
         return response()->json([
             'success' => true,
-            'data' => $hierarchy
+            'data' => collect($hierarchy)
+                ->filter(fn ($item) => $item instanceof Model)
+                ->map(fn (Model $item, string $itemType) => $this->destinationPayload($item, $itemType))
+                ->all(),
         ]);
     }
 
-    /**
-     * GET /api/destinations/continents/{identifier}/countries
-     * Récupérer les pays d'un continent
-     */
     public function countriesByContinent(Request $request, $identifier): JsonResponse
     {
-        $withRelations = $request->boolean('with_relations', false);
-        $countries = $this->destinationService->getCountriesByContinent($identifier, $withRelations);
+        $countries = $this->destinationService->getCountriesByContinent($identifier, $request->boolean('with_relations', false));
 
-        return response()->json([
-            'success' => true,
-            'data' => $countries,
-            'count' => $countries->count()
-        ]);
+        return $this->collectionResponse($countries, 'country');
     }
 
-    /**
-     * GET /api/destinations/countries/{identifier}/provinces
-     * Récupérer les provinces d'un pays
-     */
     public function provincesByCountry(Request $request, $identifier): JsonResponse
     {
-        $withRelations = $request->boolean('with_relations', false);
-        $provinces = $this->destinationService->getProvincesByCountry($identifier, $withRelations);
+        $provinces = $this->destinationService->getProvincesByCountry($identifier, $request->boolean('with_relations', false));
 
-        return response()->json([
-            'success' => true,
-            'data' => $provinces,
-            'count' => $provinces->count()
-        ]);
+        return $this->collectionResponse($provinces, 'province');
     }
 
-    /**
-     * GET /api/destinations/provinces/{identifier}/regions
-     * Récupérer les régions d'une province
-     */
     public function regionsByProvince(Request $request, $identifier): JsonResponse
     {
-        $withRelations = $request->boolean('with_relations', false);
-        $regions = $this->destinationService->getRegionsByProvince($identifier, $withRelations);
+        $regions = $this->destinationService->getRegionsByProvince($identifier, $request->boolean('with_relations', false));
 
-        return response()->json([
-            'success' => true,
-            'data' => $regions,
-            'count' => $regions->count()
-        ]);
+        return $this->collectionResponse($regions, 'region');
     }
 
-    /**
-     * GET /api/destinations/regions/{identifier}/villes
-     * Récupérer les villes d'une région
-     */
     public function villesByRegion(Request $request, $identifier): JsonResponse
     {
-        $withRelations = $request->boolean('with_relations', false);
-        $villes = $this->destinationService->getVillesByRegion($identifier, $withRelations);
+        $villes = $this->destinationService->getVillesByRegion($identifier, $request->boolean('with_relations', false));
+
+        return $this->collectionResponse($villes, 'ville');
+    }
+
+    public function secteursByVille(Request $request, $identifier): JsonResponse
+    {
+        $ville = $this->destinationService->getVille($identifier);
+        $parentPath = $ville ? $this->destinationPath($ville, 'ville') : null;
+        $secteurs = $this->destinationService->getSecteursByVille($identifier, $request->boolean('with_relations', false));
+
+        return $this->collectionResponse($secteurs, 'secteur', $parentPath);
+    }
+
+    private function collectionResponse($items, string $type, ?string $parentPath = null): JsonResponse
+    {
+        $data = $this->enrichCollection($items, $type, $parentPath);
 
         return response()->json([
             'success' => true,
-            'data' => $villes,
-            'count' => $villes->count()
+            'data' => $data,
+            'count' => $data->count(),
         ]);
     }
 
-    /**
-     * GET /api/destinations/villes/{identifier}/secteurs
-     * Récupérer les secteurs d'une ville
-     */
-    public function secteursByVille(Request $request, $identifier): JsonResponse
+    private function itemResponse(Model $item, string $type): JsonResponse
     {
-        $withRelations = $request->boolean('with_relations', false);
-        $secteurs = $this->destinationService->getSecteursByVille($identifier, $withRelations);
-
         return response()->json([
             'success' => true,
-            'data' => $secteurs,
-            'count' => $secteurs->count()
+            'data' => $this->destinationPayload($item, $type),
         ]);
+    }
+
+    private function notFound(string $message): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+        ], 404);
+    }
+
+    private function enrichSearchResults(array $results): array
+    {
+        return [
+            'continents' => $this->enrichCollection($results['continents'] ?? collect(), 'continent'),
+            'countries' => $this->enrichCollection($results['countries'] ?? collect(), 'country'),
+            'provinces' => $this->enrichCollection($results['provinces'] ?? collect(), 'province'),
+            'regions' => $this->enrichCollection($results['regions'] ?? collect(), 'region'),
+            'villes' => $this->enrichCollection($results['villes'] ?? collect(), 'ville'),
+            'secteurs' => $this->enrichCollection($results['secteurs'] ?? collect(), 'secteur'),
+            'etablissements' => collect($results['etablissements'] ?? [])->map(fn ($item) => $this->establishmentPayload($item))->values(),
+        ];
+    }
+
+    private function enrichCollection($items, string $type, ?string $parentPath = null): Collection
+    {
+        return collect($items)
+            ->filter(fn ($item) => $item instanceof Model)
+            ->map(fn (Model $item) => $this->destinationPayload($item, $type, $parentPath))
+            ->values();
+    }
+
+    private function destinationPayload(Model $item, string $type, ?string $parentPath = null): array
+    {
+        $slug = $this->destinationSlug($item);
+        $path = $parentPath ? trim($parentPath, '/') . '/' . $slug : $this->destinationPath($item, $type);
+        $payload = $item->toArray();
+
+        return array_merge($payload, [
+            'id' => $item->getKey(),
+            'name' => $this->modelName($item),
+            'slug' => $slug,
+            'type' => $type,
+            'path' => $path,
+            'url' => '/' . ltrim($path, '/'),
+            'is_active' => (bool) ($item->is_active ?? true),
+            'description' => $item->description ?? null,
+            'latitude' => $this->numericValue($item->latitude ?? null),
+            'longitude' => $this->numericValue($item->longitude ?? null),
+            'image_url' => $this->imageUrl($item),
+        ]);
+    }
+
+    private function establishmentPayload($item): array
+    {
+        $name = trim((string) (($item->site_name ?? '') ?: ($item->name ?? 'Établissement')));
+        $slug = Str::slug($name ?: ($item->name ?? 'etablissement-' . $item->id));
+        $payload = $item instanceof Model ? $item->toArray() : (array) $item;
+
+        return array_merge($payload, [
+            'id' => $item->id ?? null,
+            'name' => $item->name ?? $name,
+            'site_name' => $item->site_name ?? null,
+            'slug' => $slug,
+            'type' => 'etablissement',
+            'url' => '/company/' . ($item->id ?? '') . '/' . $slug,
+            'is_active' => (bool) ($item->is_active ?? true),
+            'logo_url' => $item->logo_url ?? null,
+        ]);
+    }
+
+    private function destinationSlug(Model $item): string
+    {
+        foreach (['slug', 'name', 'code', 'iso2'] as $field) {
+            $value = trim((string) ($item->{$field} ?? ''));
+            if ($value !== '') {
+                return Str::slug($value);
+            }
+        }
+
+        return Str::slug(class_basename($item) . '-' . $item->getKey());
+    }
+
+    private function destinationPath(Model $item, string $type): string
+    {
+        $slug = $this->destinationSlug($item);
+
+        return match ($type) {
+            'continent' => $slug,
+            'country' => $this->joinPath($this->pathForContinent($this->continentForCountry($item)), $slug),
+            'province' => $this->joinPath($this->pathForCountry($this->countryForProvince($item)), $slug),
+            'region' => $this->joinPath($this->pathForProvince($this->provinceForRegion($item)), $slug),
+            'ville' => $this->joinPath($this->pathForVilleParent($item), $slug),
+            'secteur' => $this->joinPath($this->pathForRegion($this->regionForSecteur($item)), $slug),
+            default => $slug,
+        };
+    }
+
+    private function pathForContinent(?Model $continent): ?string
+    {
+        return $continent ? $this->destinationSlug($continent) : null;
+    }
+
+    private function pathForCountry(?Model $country): ?string
+    {
+        return $country ? $this->destinationPath($country, 'country') : null;
+    }
+
+    private function pathForProvince(?Model $province): ?string
+    {
+        return $province ? $this->destinationPath($province, 'province') : null;
+    }
+
+    private function pathForRegion(?Model $region): ?string
+    {
+        return $region ? $this->destinationPath($region, 'region') : null;
+    }
+
+    private function pathForVilleParent(Model $ville): ?string
+    {
+        if ($region = $this->regionForVille($ville)) {
+            return $this->pathForRegion($region);
+        }
+
+        if ($province = $this->provinceForVille($ville)) {
+            return $this->pathForProvince($province);
+        }
+
+        if ($country = $this->countryForVille($ville)) {
+            return $this->pathForCountry($country);
+        }
+
+        return null;
+    }
+
+    private function continentForCountry(Model $country): ?Model
+    {
+        if ($country->relationLoaded('continent')) {
+            return $country->continent;
+        }
+
+        return $country->continent_id ? Continent::active()->find($country->continent_id) : null;
+    }
+
+    private function countryForProvince(Model $province): ?Model
+    {
+        if ($province->relationLoaded('country')) {
+            return $province->country;
+        }
+
+        return $province->country_id ? Country::active()->find($province->country_id) : null;
+    }
+
+    private function provinceForRegion(Model $region): ?Model
+    {
+        if ($region->relationLoaded('province')) {
+            return $region->province;
+        }
+
+        return $region->province_id ? Province::active()->find($region->province_id) : null;
+    }
+
+    private function regionForVille(Model $ville): ?Model
+    {
+        if ($ville->relationLoaded('region')) {
+            return $ville->region;
+        }
+
+        return $ville->region_id ? Region::active()->find($ville->region_id) : null;
+    }
+
+    private function provinceForVille(Model $ville): ?Model
+    {
+        if ($ville->relationLoaded('province')) {
+            return $ville->province;
+        }
+
+        return $ville->province_id ? Province::active()->find($ville->province_id) : null;
+    }
+
+    private function countryForVille(Model $ville): ?Model
+    {
+        if ($ville->relationLoaded('country')) {
+            return $ville->country;
+        }
+
+        return $ville->country_id ? Country::active()->find($ville->country_id) : null;
+    }
+
+    private function regionForSecteur(Model $secteur): ?Model
+    {
+        if ($secteur->relationLoaded('region')) {
+            return $secteur->region;
+        }
+
+        return $secteur->region_id ? Region::active()->find($secteur->region_id) : null;
+    }
+
+    private function joinPath(?string ...$parts): string
+    {
+        return collect($parts)
+            ->filter(fn ($part) => is_string($part) && trim($part, '/') !== '')
+            ->map(fn ($part) => trim($part, '/'))
+            ->implode('/');
+    }
+
+    private function imageUrl(Model $item): ?string
+    {
+        foreach (['image_url', 'image', 'flag', 'thumbnail', 'thumbnail_url'] as $field) {
+            $value = trim((string) ($item->{$field} ?? ''));
+            if ($value === '') {
+                continue;
+            }
+
+            if (Str::startsWith($value, ['http://', 'https://'])) {
+                return $value;
+            }
+
+            $path = preg_replace('#^(?:/)?storage/#', '', ltrim($value, '/')) ?: ltrim($value, '/');
+
+            if (!Storage::disk('cdn')->exists($path)) {
+                return null;
+            }
+
+            return route('cdn.public-file', ['path' => $path], false);
+        }
+
+        return null;
+    }
+
+    private function modelName(Model $item): string
+    {
+        return (string) ($item->name ?? $item->title ?? $item->code ?? 'Destination');
+    }
+
+    private function numericValue($value): ?float
+    {
+        return is_numeric($value) ? (float) $value : null;
     }
 }

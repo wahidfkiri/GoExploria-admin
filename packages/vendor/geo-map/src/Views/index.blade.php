@@ -1,4 +1,7 @@
-﻿<!-- Font Awesome -->
+﻿@php
+    $geoMapDestinationContext = $geoMapDestinationContext ?? null;
+@endphp
+<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -403,6 +406,7 @@
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['Accept']            = 'application/json';
 const API_BASE_URL = window.location.origin + '/geo-map';
+const DESTINATION_MAP_CONTEXT = @json($geoMapDestinationContext);
 
 class InteractiveMap {
     constructor() {
@@ -472,7 +476,12 @@ class InteractiveMap {
     }
 
     initMap() {
-        this.map = L.map('map').setView([52.0,-85.0], 4);
+        const destination = DESTINATION_MAP_CONTEXT?.destination;
+        const center = destination?.latitude && destination?.longitude
+            ? [Number(destination.latitude), Number(destination.longitude)]
+            : [52.0, -85.0];
+        const zoom = destination?.zoom || 4;
+        this.map = L.map('map').setView(center, zoom);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributeurs',
             maxZoom:19, detectRetina:true
@@ -485,9 +494,16 @@ class InteractiveMap {
         const provinces  = this.getStaticProvinces();
         const categories = this.getStaticCategories();
         const pf = document.getElementById('province-filter');
+        const dynamicFilters = DESTINATION_MAP_CONTEXT?.filters?.items || [];
         if (pf) {
-            pf.innerHTML = '<option value="">Toutes les provinces</option>';
-            provinces.forEach(p => { const o=document.createElement('option'); o.value=p.code; o.textContent=p.name; o.dataset.lat=p.lat; o.dataset.lng=p.lng; pf.appendChild(o); });
+            const label = document.querySelector('label[for="province-filter"]');
+            if (label && DESTINATION_MAP_CONTEXT?.filters?.label) {
+                label.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${DESTINATION_MAP_CONTEXT.filters.label}`;
+            }
+
+            pf.innerHTML = '<option value="">Toutes les destinations</option>';
+            const filterItems = dynamicFilters.length ? dynamicFilters : provinces;
+            filterItems.forEach(p => { const o=document.createElement('option'); o.value=p.code; o.textContent=p.name; o.dataset.lat=p.lat; o.dataset.lng=p.lng; pf.appendChild(o); });
         }
         const cf = document.getElementById('category-filter');
         if (cf) {
@@ -511,6 +527,17 @@ class InteractiveMap {
 
     /* -- Load places -- */
     async loadPlaces() {
+        if (DESTINATION_MAP_CONTEXT?.places?.length) {
+            const allPlaces = DESTINATION_MAP_CONTEXT.places;
+            this.places = this.selectedCategory === 'all'
+                ? allPlaces
+                : allPlaces.filter((place) => place.category === this.selectedCategory);
+            this.updatePlacesCount();
+            this.renderPlacesList();
+            this.addMarkersToMap();
+            return;
+        }
+
         if (this.isLoading) return;
         this.isLoading = true;
         try {
@@ -531,8 +558,13 @@ class InteractiveMap {
 
     /* -- Map helpers -- */
     zoomToProvince(code) {
-        const p = this.getStaticProvinces().find(p=>p.code===code);
-        if (p) { this.map.setView([p.lat,p.lng],6); this.showNotification(`Zoom sur ${p.name}`,'success'); }
+        const dynamicFilters = DESTINATION_MAP_CONTEXT?.filters?.items || [];
+        const p = dynamicFilters.find(p=>p.code===code) || this.getStaticProvinces().find(p=>p.code===code);
+        if (p?.lat && p?.lng) {
+            const zoom = DESTINATION_MAP_CONTEXT?.destination?.zoom ? DESTINATION_MAP_CONTEXT.destination.zoom + 1 : 6;
+            this.map.setView([Number(p.lat), Number(p.lng)], zoom);
+            this.showNotification(`Zoom sur ${p.name}`,'success');
+        }
     }
     addMarkersToMap() { this.clearMarkers(); this.places.forEach(p=>this.createMarker(p)); }
     clearMarkers() {
@@ -925,7 +957,12 @@ class InteractiveMap {
 
     /* -- Event listeners -- */
     setupEventListeners() {
-        document.getElementById('province-filter')?.addEventListener('change', e=>{ e.target.value?this.zoomToProvince(e.target.value):this.map.setView([56.1304,-106.3468],4); });
+        document.getElementById('province-filter')?.addEventListener('change', e=>{
+            if (e.target.value) { this.zoomToProvince(e.target.value); return; }
+            const destination = DESTINATION_MAP_CONTEXT?.destination;
+            if (destination?.latitude && destination?.longitude) this.map.setView([Number(destination.latitude), Number(destination.longitude)], destination.zoom || 4);
+            else this.map.setView([56.1304,-106.3468],4);
+        });
         document.getElementById('category-filter')?.addEventListener('change', e=>{ this.selectedCategory=e.target.value; this.loadPlaces(); });
         document.getElementById('locate-me')?.addEventListener('click', ()=>this.locateUser());
         document.querySelector('.close-modal')?.addEventListener('click', ()=>this.closeModal());
@@ -994,6 +1031,16 @@ function initDestinationBreadcrumb() {
     const regionSelect = document.getElementById('dest-region-select');
 
     if (!continentSelect || !countrySelect || !provinceSelect || !regionSelect) {
+        return;
+    }
+
+    const dynamicBreadcrumb = DESTINATION_MAP_CONTEXT?.breadcrumb || [];
+    if (dynamicBreadcrumb.length) {
+        const selects = [continentSelect, countrySelect, provinceSelect, regionSelect];
+        selects.forEach((select, index) => {
+            const item = dynamicBreadcrumb[index] || dynamicBreadcrumb[dynamicBreadcrumb.length - 1];
+            select.innerHTML = `<option value="${item.slug}">${item.name}</option>`;
+        });
         return;
     }
 

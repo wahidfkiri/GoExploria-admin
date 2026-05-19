@@ -127,6 +127,7 @@ class VerticalDestinationsMegaMenu {
     
     createContinentSection(continent, countries) {
         const imageUrl = continent.image_url || continent.image || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400';
+        const continentUrl = this.service.getDestinationUrl({...continent, type: 'continent'});
         
         // Si countries est null, c'est du lazy loading
         const isLazyLoad = countries === null;
@@ -138,7 +139,7 @@ class VerticalDestinationsMegaMenu {
                     <img src="${imageUrl}" alt="${continent.name}" class="vmenu-dest-section-image" onerror="this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400'">
                     <div class="vmenu-dest-section-info">
                         <h4 class="vmenu-dest-section-name">
-                            ${continent.name}
+                            <a href="${continentUrl}" class="vmenu-dest-name-link">${continent.name}</a>
                         </h4>
                         <p class="vmenu-dest-section-count">
                             ${isLazyLoad ? 'Cliquez pour explorer' : `${countryCount} pays`}
@@ -296,9 +297,7 @@ class VerticalDestinationsMegaMenu {
                     children = await this.service.getVillesByRegion(destinationId);
                     break;
                 case 'ville':
-                    // Pour les villes, on pourrait charger les secteurs si l'API le supporte
-                    // Pour l'instant, on considère que les villes n'ont pas d'enfants
-                    children = [];
+                    children = await this.service.getSecteursByVille(destinationId);
                     break;
                 default:
                     children = [];

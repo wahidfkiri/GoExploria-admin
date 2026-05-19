@@ -751,10 +751,22 @@ class DestinationService
         $cacheKey = "destinations.ville.{$villeId}.secteurs." . ($withRelations ? 'with_relations' : 'simple');
         
         return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($villeId, $withRelations) {
-            $query = Secteur::active()->where('ville_id', $villeId)->orderBy('name');
+            $ville = Ville::active()->find($villeId);
+            $query = Secteur::active()->orderBy('name');
+            $secteurTable = (new Secteur())->getTable();
+
+            if (Schema::hasColumn($secteurTable, 'ville_id')) {
+                $query->where('ville_id', $villeId);
+            } elseif ($ville && $ville->region_id) {
+                $query->where('region_id', $ville->region_id);
+            } else {
+                return collect();
+            }
             
             if ($withRelations) {
-                $query->with(['ville']);
+                $query->with(['region', 'villes' => function ($q) {
+                    $q->active()->orderBy('name');
+                }]);
             }
             
             return $query->get();

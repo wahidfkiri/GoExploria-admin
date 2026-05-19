@@ -50,6 +50,10 @@ Route::get('/robots.txt', function () {
     ]);
 })->name('robots');
 
+Route::get('/cdn-storage/{path}', [CDNController::class, 'getFile'])
+    ->where('path', '.*')
+    ->name('cdn.public-file');
+
 // Page de login
 Route::get('/', [HomeV2Controller::class, 'index'])->name('home-v2');
 
@@ -99,6 +103,9 @@ Route::prefix('destinations')->name('destinations.')->group(function () {
     Route::get('/region/{slug}', [DestinationPageController::class, 'region'])->name('region');
     Route::get('/ville/{slug}', [DestinationPageController::class, 'ville'])->name('ville');
     Route::get('/secteur/{slug}', [DestinationPageController::class, 'secteur'])->name('secteur');
+    Route::get('/{path}', [DestinationPageController::class, 'hierarchy'])
+        ->where('path', '.*')
+        ->name('hierarchy');
 });
 
 // Landing Pages Routes
@@ -233,14 +240,19 @@ Route::prefix('api')->group(function () {
     Route::prefix('v1/destinations')->group(function () {
         Route::get('/continents', [App\Http\Controllers\Api\DestinationController::class, 'continents']);
         Route::get('/continents/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'continent']);
+        Route::get('/continents/{identifier}/countries', [App\Http\Controllers\Api\DestinationController::class, 'countriesByContinent']);
         Route::get('/countries', [App\Http\Controllers\Api\DestinationController::class, 'countries']);
         Route::get('/countries/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'country']);
+        Route::get('/countries/{identifier}/provinces', [App\Http\Controllers\Api\DestinationController::class, 'provincesByCountry']);
         Route::get('/provinces', [App\Http\Controllers\Api\DestinationController::class, 'provinces']);
         Route::get('/provinces/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'province']);
+        Route::get('/provinces/{identifier}/regions', [App\Http\Controllers\Api\DestinationController::class, 'regionsByProvince']);
         Route::get('/regions', [App\Http\Controllers\Api\DestinationController::class, 'regions']);
         Route::get('/regions/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'region']);
+        Route::get('/regions/{identifier}/villes', [App\Http\Controllers\Api\DestinationController::class, 'villesByRegion']);
         Route::get('/villes', [App\Http\Controllers\Api\DestinationController::class, 'villes']);
         Route::get('/villes/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'ville']);
+        Route::get('/villes/{identifier}/secteurs', [App\Http\Controllers\Api\DestinationController::class, 'secteursByVille']);
         Route::get('/secteurs', [App\Http\Controllers\Api\DestinationController::class, 'secteurs']);
         Route::get('/secteurs/{identifier}', [App\Http\Controllers\Api\DestinationController::class, 'secteur']);
         Route::get('/search', [App\Http\Controllers\Api\DestinationController::class, 'search']);
@@ -394,3 +406,9 @@ Route::get('/evenement-vedette', fn() => view('home-v2.pages.espace_evenement_vi
 
 // Route forfaits & voyages
 Route::get('/forfaits-voyages', fn() => view('home-v2.pages.espace_forfaits.page_forfaits_voyages'))->name('forfaits-voyages');
+
+// Chemins publics de destinations: amerique-du-nord/canada/quebec/...
+// La route est volontairement placée en dernier et rend une page seulement si le chemin correspond à une destination active.
+Route::get('/{destinationPath}', [DestinationPageController::class, 'hierarchyFromRoot'])
+    ->where('destinationPath', '^(?!.*\.(?:css|js|png|jpg|jpeg|gif|svg|ico|webp|map|json|xml)$)(?!(?:api|admin|cms|company|destination|destinations|landing|pages|categories|activites|contact|devis|valeurs|inscription|mon-compte|favoris|panier|sitemaps|sitemap\.xml|robots\.txt|health)(?:/|$)).+')
+    ->name('destinations.hierarchy-root');

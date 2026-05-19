@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Search Bar V2
  * - Source: API destinations
  * - Rules:
@@ -26,9 +26,9 @@ class SearchBarV2 {
             continent: 'Continent',
             country: 'Pays',
             province: 'Province',
-            region: 'Region',
+            region: 'Région',
             ville: 'Ville',
-            etablissement: 'Etablissement',
+            etablissement: 'Établissement',
             secteur: 'Secteur'
         };
 
@@ -83,6 +83,7 @@ class SearchBarV2 {
             this.displayResults(flattened, query);
         } catch (error) {
             this.showNoResults(query);
+            this.showResults();
         }
     }
 
@@ -128,6 +129,8 @@ class SearchBarV2 {
                     name: computedName,
                     siteName: computedSiteName,
                     slug: item.slug || '',
+                    path: item.path || '',
+                    url: item.url || '',
                     description: computedDescription,
                     showImage: showImage,
                     image: normalizedImage
@@ -142,7 +145,19 @@ class SearchBarV2 {
         if (!raw) return null;
         var value = String(raw).trim();
         if (!value) return null;
-        if (/^(https?:)?\/\//i.test(value)) return value;
+        if (/^https?:\/\//i.test(value)) {
+            try {
+                var url = new URL(value);
+                if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+                    return url.pathname + url.search;
+                }
+            } catch (e) {
+                return value;
+            }
+
+            return value;
+        }
+        if (/^\/\//i.test(value)) return value;
         if (value.startsWith('/')) return value;
         return '/' + value.replace(/^\/+/, '');
     }
@@ -201,8 +216,8 @@ class SearchBarV2 {
                     '<circle cx="11" cy="11" r="8"></circle>' +
                     '<path d="m21 21-4.35-4.35"></path>' +
                 '</svg>' +
-                '<p class="search-bar-v2-no-results-text">Aucun resultat pour "' + this.escapeHtml(query) + '"</p>' +
-                '<p class="search-bar-v2-no-results-suggestion">Essayez avec d autres mots-cles</p>' +
+                '<p class="search-bar-v2-no-results-text">Aucun résultat pour "' + this.escapeHtml(query) + '"</p>' +
+                '<p class="search-bar-v2-no-results-suggestion">Essayez avec d\'autres mots-clés</p>' +
             '</div>';
     }
 
@@ -220,6 +235,9 @@ class SearchBarV2 {
     }
 
     getDestinationUrl(dest) {
+        if (dest.url) return dest.url;
+        if (dest.path) return '/' + String(dest.path).replace(/^\/+/, '');
+
         var slug = dest.slug || this.slugify(dest.name || '');
         switch (dest.type) {
             case 'continent': return '/destinations/continent/' + slug;
@@ -329,3 +347,4 @@ class SearchBarV2 {
 document.addEventListener('DOMContentLoaded', function () {
     new SearchBarV2();
 });
+

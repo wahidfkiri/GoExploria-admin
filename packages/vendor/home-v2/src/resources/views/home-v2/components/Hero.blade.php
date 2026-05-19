@@ -22,6 +22,17 @@
             $tr('Découvrez des activités…'),
             $tr('Trouvez un hébergement…'),
         ];
+
+        $destinationContext = $destinationContext ?? null;
+        $destinationBreadcrumbPath = [];
+        $destinationBreadcrumbItems = collect($destinationContext['breadcrumb'] ?? [])->map(function ($item) use (&$destinationBreadcrumbPath) {
+            $destinationBreadcrumbPath[] = $item['slug'] ?? \Illuminate\Support\Str::slug($item['name'] ?? '');
+
+            return [
+                'name' => $item['name'] ?? '',
+                'url' => url('/' . implode('/', array_filter($destinationBreadcrumbPath))),
+            ];
+        })->filter(fn ($item) => ! empty($item['name']))->values();
     @endphp
     @php($orderedSliders = collect($sliders ?? [])->sortBy('order')->values())
     @php($showCarouselNav = $orderedSliders->count() > 5)
@@ -164,6 +175,16 @@
             <div class="search-bar-v2-container">
                 {{-- Globe Destinations --}}
                 <div class="search-bar-v2-destinations" style="position: relative; flex-direction: column; gap: 2px; align-items: center;">
+                    @if($destinationBreadcrumbItems->isNotEmpty())
+                        <nav class="search-bar-v2-destination-breadcrumb" aria-label="{{ $tr('Fil d’Ariane destination') }}">
+                            @foreach($destinationBreadcrumbItems as $breadcrumbItem)
+                                <a href="{{ $breadcrumbItem['url'] }}">{{ $breadcrumbItem['name'] }}</a>
+                                @if(! $loop->last)
+                                    <span>/</span>
+                                @endif
+                            @endforeach
+                        </nav>
+                    @endif
                     <img src="{{ asset('REDI.png') }}" alt="Destinations" class="search-bar-v2-globe-icon" id="destinationsMainTrigger" style="cursor:pointer;">
                     <span class="search-bar-v2-destinations-title" id="destinationsBreadcrumb">{{ $tr('Destinations') }}</span>
                     
@@ -596,10 +617,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   Search-bar sticky : reste visible au scroll (comme le header)
-   Garde sa position normale au chargement dans le Hero
-   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Search-bar sticky : reste visible au scroll tout en gardant sa position normale au chargement. */
 document.addEventListener('DOMContentLoaded', function() {
     const searchBar = document.querySelector('.hero-v2 .search-bar-v2');
     const header = document.querySelector('.header-v2');
@@ -662,4 +680,3 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-

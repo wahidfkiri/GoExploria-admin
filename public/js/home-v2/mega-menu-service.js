@@ -1,228 +1,149 @@
 /**
- * Service pour gérer le mega menu des destinations
- * Charge les données depuis l'API Destinations
+ * Service pour gérer le méga menu des destinations.
+ * Charge les données depuis l'API et privilégie les URLs hiérarchiques.
  */
-
 class MegaMenuService {
     constructor() {
         this.baseURL = '/api/v1/destinations';
         this.cache = new Map();
-        this.cacheDuration = 10 * 60 * 1000; // 10 minutes
+        this.cacheDuration = 10 * 60 * 1000;
     }
 
-    /**
-     * Vérifier si le cache est valide
-     */
     isCacheValid(key) {
         if (!this.cache.has(key)) return false;
         const cached = this.cache.get(key);
         return (Date.now() - cached.timestamp) < this.cacheDuration;
     }
 
-    /**
-     * Mettre en cache
-     */
     setCache(key, data) {
-        this.cache.set(key, {
-            data: data,
-            timestamp: Date.now()
-        });
+        this.cache.set(key, { data, timestamp: Date.now() });
     }
 
-    /**
-     * Récupérer tous les continents
-     */
-    async getContinents() {
-        const cacheKey = 'continents';
-        if (this.isCacheValid(cacheKey)) {
-            return this.cache.get(cacheKey).data;
-        }
+    async fetchList(cacheKey, url, type) {
+        if (this.isCacheValid(cacheKey)) return this.cache.get(cacheKey).data;
 
         try {
-            const response = await fetch(`${this.baseURL}/continents`);
+            const response = await fetch(url, { headers: { Accept: 'application/json' } });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
+
             const result = await response.json();
             if (result.success) {
-                this.setCache(cacheKey, result.data);
-                return result.data;
+                const data = Array.isArray(result.data)
+                    ? result.data.map((item) => this.normalizeDestination(item, type))
+                    : [];
+                this.setCache(cacheKey, data);
+                return data;
             }
-            return [];
         } catch (error) {
-            console.error('Erreur lors du chargement des continents:', error);
-            return [];
+            console.error('Erreur lors du chargement des destinations:', error);
         }
+
+        return [];
     }
 
-    /**
-     * Récupérer les pays d'un continent
-     */
-    async getCountriesByContinent(continentId) {
-        const cacheKey = `countries_${continentId}`;
-        if (this.isCacheValid(cacheKey)) {
-            return this.cache.get(cacheKey).data;
-        }
-
-        try {
-            const response = await fetch(`${this.baseURL}/continents/${continentId}/countries`);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
-            const result = await response.json();
-            if (result.success) {
-                this.setCache(cacheKey, result.data);
-                return result.data;
-            }
-            return [];
-        } catch (error) {
-            console.error('Erreur lors du chargement des pays:', error);
-            return [];
-        }
+    getContinents() {
+        return this.fetchList('continents', `${this.baseURL}/continents`, 'continent');
     }
 
-    /**
-     * Récupérer les provinces d'un pays
-     */
-    async getProvincesByCountry(countryId) {
-        const cacheKey = `provinces_${countryId}`;
-        if (this.isCacheValid(cacheKey)) {
-            return this.cache.get(cacheKey).data;
-        }
-
-        try {
-            const response = await fetch(`${this.baseURL}/countries/${countryId}/provinces`);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
-            const result = await response.json();
-            if (result.success) {
-                this.setCache(cacheKey, result.data);
-                return result.data;
-            }
-            return [];
-        } catch (error) {
-            console.error('Erreur lors du chargement des provinces:', error);
-            return [];
-        }
+    getCountriesByContinent(continentId) {
+        return this.fetchList(`countries_${continentId}`, `${this.baseURL}/continents/${continentId}/countries`, 'country');
     }
 
-    /**
-     * Récupérer les régions d'une province
-     */
-    async getRegionsByProvince(provinceId) {
-        const cacheKey = `regions_${provinceId}`;
-        if (this.isCacheValid(cacheKey)) {
-            return this.cache.get(cacheKey).data;
-        }
-
-        try {
-            const response = await fetch(`${this.baseURL}/provinces/${provinceId}/regions`);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
-            const result = await response.json();
-            if (result.success) {
-                this.setCache(cacheKey, result.data);
-                return result.data;
-            }
-            return [];
-        } catch (error) {
-            console.error('Erreur lors du chargement des régions:', error);
-            return [];
-        }
+    getProvincesByCountry(countryId) {
+        return this.fetchList(`provinces_${countryId}`, `${this.baseURL}/countries/${countryId}/provinces`, 'province');
     }
 
-    /**
-     * Récupérer les villes d'une région
-     */
-    async getVillesByRegion(regionId) {
-        const cacheKey = `villes_${regionId}`;
-        if (this.isCacheValid(cacheKey)) {
-            return this.cache.get(cacheKey).data;
-        }
-
-        try {
-            const response = await fetch(`${this.baseURL}/regions/${regionId}/villes`);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
-            const result = await response.json();
-            if (result.success) {
-                this.setCache(cacheKey, result.data);
-                return result.data;
-            }
-            return [];
-        } catch (error) {
-            console.error('Erreur lors du chargement des villes:', error);
-            return [];
-        }
+    getRegionsByProvince(provinceId) {
+        return this.fetchList(`regions_${provinceId}`, `${this.baseURL}/provinces/${provinceId}/regions`, 'region');
     }
 
-    /**
-     * Rechercher des destinations
-     */
+    getVillesByRegion(regionId) {
+        return this.fetchList(`villes_${regionId}`, `${this.baseURL}/regions/${regionId}/villes`, 'ville');
+    }
+
+    getSecteursByVille(villeId) {
+        return this.fetchList(`secteurs_${villeId}`, `${this.baseURL}/villes/${villeId}/secteurs`, 'secteur');
+    }
+
     async searchDestinations(query) {
         if (!query || query.length < 2) return [];
 
         try {
-            const response = await fetch(`${this.baseURL}/search?query=${encodeURIComponent(query)}`);
+            const response = await fetch(`${this.baseURL}/search?query=${encodeURIComponent(query)}`, {
+                headers: { Accept: 'application/json' }
+            });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
+
             const result = await response.json();
-            if (result.success) {
-                const grouped = result.data || {};
-                const map = {
-                    continents: 'continent',
-                    countries: 'country',
-                    provinces: 'province',
-                    regions: 'region',
-                    villes: 'ville',
-                    secteurs: 'secteur'
-                };
+            if (!result.success) return [];
 
-                const flat = [];
-                Object.entries(map).forEach(([groupKey, type]) => {
-                    const items = Array.isArray(grouped[groupKey]) ? grouped[groupKey] : [];
-                    items.forEach((item) => flat.push({ ...item, type }));
-                });
+            const grouped = result.data || {};
+            const map = {
+                continents: 'continent',
+                countries: 'country',
+                provinces: 'province',
+                regions: 'region',
+                villes: 'ville',
+                secteurs: 'secteur',
+                etablissements: 'etablissement'
+            };
 
-                return flat;
-            }
-            return [];
+            const flat = [];
+            Object.entries(map).forEach(([groupKey, type]) => {
+                const items = Array.isArray(grouped[groupKey]) ? grouped[groupKey] : [];
+                items.forEach((item) => flat.push(this.normalizeDestination(item, type)));
+            });
+
+            return flat;
         } catch (error) {
             console.error('Erreur lors de la recherche:', error);
             return [];
         }
     }
 
-    /**
-     * Générer l'URL d'une destination
-     */
-    getDestinationUrl(destination) {
-        const type = destination.type || 'continent';
-        const slug = destination.slug || destination.name.toLowerCase().replace(/\s+/g, '-');
-        
-        switch(type) {
-            case 'continent':
-                return `/destinations/continent/${slug}`;
-            case 'country':
-                return `/destinations/pays/${slug}`;
-            case 'province':
-                return `/destinations/province/${slug}`;
-            case 'region':
-                return `/destinations/region/${slug}`;
-            case 'ville':
-                return `/destinations/ville/${slug}`;
-            case 'secteur':
-                return `/destinations/secteur/${slug}`;
-            default:
-                return `/destinations/${slug}`;
-        }
+    normalizeDestination(item, type) {
+        const normalized = { ...item, type: item.type || type };
+        normalized.slug = normalized.slug || this.slugify(normalized.name || normalized.code || '');
+        normalized.url = this.getDestinationUrl(normalized);
+        return normalized;
     }
 
-    /**
-     * Vider le cache
-     */
+    getDestinationUrl(destination) {
+        if (!destination) return '#';
+        if (destination.url) return destination.url;
+        if (destination.path) return '/' + String(destination.path).replace(/^\/+/, '');
+
+        const type = destination.type || 'continent';
+        const slug = destination.slug || this.slugify(destination.name || destination.code || '');
+
+        if (type === 'etablissement') {
+            return `/company/${destination.id}/${slug || ('etablissement-' + destination.id)}`;
+        }
+
+        const legacy = {
+            continent: 'continent',
+            country: 'pays',
+            province: 'province',
+            region: 'region',
+            ville: 'ville',
+            secteur: 'secteur'
+        };
+
+        return `/destinations/${legacy[type] || type}/${slug}`;
+    }
+
+    slugify(value) {
+        return String(value || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    }
+
     clearCache() {
         this.cache.clear();
     }
 }
 
-// Exporter une instance unique (singleton)
 window.megaMenuService = new MegaMenuService();

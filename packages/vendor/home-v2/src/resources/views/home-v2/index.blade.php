@@ -1,16 +1,21 @@
-﻿<!DOCTYPE html>
+@php
+    $destinationContext = $destinationContext ?? null;
+    $destinationName = $destinationContext['name'] ?? null;
+    $destinationTitleSuffix = $destinationContext['title_suffix'] ?? ($destinationName ? ' pour ' . $destinationName : '');
+@endphp
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{ __('home-v2.home.meta_description') }}">
-    <title>{{ __('home-v2.home.meta_title') }}</title>
+    <meta name="description" content="{{ $destinationName ? __('home-v2.home.meta_description') . ' - ' . $destinationName : __('home-v2.home.meta_description') }}">
+    <title>{{ $destinationName ? __('home-v2.home.meta_title') . ' - ' . $destinationName : __('home-v2.home.meta_title') }}</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome pour les icÃ´nes -->
+    <!-- Font Awesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="{{ asset('css/home-v2/styles.css') }}">
@@ -57,13 +62,30 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/resa-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/nos-plans.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/footer.css') }}">
+    @if($destinationName)
+        <style>
+            .destination-title-suffix {
+                display: inline-block;
+                color: #1677ff;
+                margin-left: 10px;
+                font-weight: 900;
+            }
+        </style>
+    @endif
 </head>
 <body>
     @include('home-v2.components.VerticalMenu')
     @include('home-v2.components.Header')
     
     <main class="main-content">
-        @include('home-v2.components.Hero')
+        <div class="{{ $destinationContext ? 'destination-hero-wrapper' : '' }}">
+            @include('home-v2.components.Hero')
+        </div>
+
+        @if($destinationContext)
+            @include('geo-map::index')
+        @endif
+
         @include('home-v2.components.SectionsNavBar')
 
         <div id="section-medias" class="snb-anchor"></div>
@@ -73,7 +95,9 @@
             @include('home-v2.components.SectionNavbarEspaceMedia')
         
         @include('home-v2.components.espace_media.BusinessTourism')
-        @include('geo-map::index')
+        @unless($destinationContext)
+            @include('geo-map::index')
+        @endunless
         @include('home-v2.components.espace_media.VideoPlayer')
         @include('home-v2.components.espace_media.ViewingCarousel')
         @include('home-v2.components.espace_media.TikTokCarousel')
@@ -163,7 +187,7 @@
     {{-- Modal réservation global Table & Vin --}}
     @include('home-v2.components.ResaModal')
 
-    {{-- Modal vidÃ©o rÃ©utilisable pour toute la plateforme --}}
+    {{-- Modal vidéo réutilisable pour toute la plateforme --}}
     @include('components.VideoModal')
     
     @include('components.front.call-action')
@@ -179,7 +203,7 @@
     <script src="{{ asset('js/home-v2/mega-menu-service.js') }}"></script>
     {{-- Charger le menu vertical dynamique --}}
     <script src="{{ asset('js/home-v2/vertical-menu-dynamic.js') }}"></script>
-    {{-- Charger le contrÃ´leur du menu vertical (gestion accordÃ©on et vidÃ©os) --}}
+    {{-- Charger le contrôleur du menu vertical (gestion accordéon et vidéos) --}}
     <script src="{{ asset('js/home-v2/vertical-menu.js') }}"></script>
     {{-- Charger le mega menu Destinations pour le menu vertical --}}
     <script src="{{ asset('js/home-v2/vertical-destinations-mega.js') }}"></script>
@@ -188,7 +212,7 @@
     <script src="{{ asset('js/home-v2/destinations-search.js') }}"></script>
     <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
     {{-- Charger le service API pour la carte interactive --}}
-    {{-- Charger video-modal.js EN PREMIER car les autres composants en dÃ©pendent --}}
+    {{-- Charger video-modal.js EN PREMIER car les autres composants en dépendent --}}
     <script src="{{ asset('js/video-modal.js') }}"></script>
     <script src="{{ asset('js/home-v2/viewing-carousel.js') }}"></script>
     <script src="{{ asset('js/home-v2/videos-dropdown.js') }}"></script>
@@ -201,5 +225,21 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="{{ asset('js/home-v2/business-tourism.js') }}"></script>
     <script src="{{ asset('js/home-v2/partners-master.js') }}"></script>
+    @if($destinationName)
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const destinationName = @json($destinationName);
+                document.querySelectorAll('.resto-header-title').forEach(function (title) {
+                    const text = title.textContent.trim();
+                    if (text && !title.querySelector('.destination-title-suffix')) {
+                        const suffix = document.createElement('span');
+                        suffix.className = 'destination-title-suffix';
+                        suffix.textContent = ' pour ' + destinationName;
+                        title.appendChild(suffix);
+                    }
+                });
+            });
+        </script>
+    @endif
 </body>
 </html>

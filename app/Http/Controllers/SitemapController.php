@@ -68,6 +68,7 @@ class SitemapController extends Controller
         $urls = array_merge($urls, $this->buildDestinationUrls(Region::class, 'region'));
         $urls = array_merge($urls, $this->buildDestinationUrls(Ville::class, 'ville'));
         $urls = array_merge($urls, $this->buildDestinationUrls(Secteur::class, 'secteur'));
+        $urls = array_merge($urls, $this->buildHierarchicalDestinationUrls());
 
         return $this->buildUrlset($urls);
     }
@@ -154,6 +155,87 @@ class SitemapController extends Controller
         }
 
         return $urls;
+    }
+
+    private function buildHierarchicalDestinationUrls(): array
+    {
+        $urls = [];
+
+        $continents = Continent::query()
+            ->where('is_active', true)
+            ->with(['countries' => function ($countryQuery) {
+                $countryQuery->where('is_active', true)
+                    ->with(['provinces' => function ($provinceQuery) {
+                        $provinceQuery->where('is_active', true)
+                            ->with(['regions' => function ($regionQuery) {
+                                $regionQuery->where('is_active', true)
+                                    ->with([
+                                        'villes' => function ($villeQuery) {
+                                            $villeQuery->where('is_active', true);
+                                        },
+                                        'secteurs' => function ($secteurQuery) {
+                                            $secteurQuery->where('is_active', true);
+                                        },
+                                    ]);
+                            }]);
+                    }]);
+            }])
+            ->get();
+
+        foreach ($continents as $continent) {
+            $continentPath = $this->destinationSlug($continent);
+            $urls[] = $this->destinationUrlPayload($continentPath, $continent, '0.8');
+
+            foreach ($continent->countries as $country) {
+                $countryPath = $continentPath . '/' . $this->destinationSlug($country);
+                $urls[] = $this->destinationUrlPayload($countryPath, $country, '0.8');
+
+                foreach ($country->provinces as $province) {
+                    $provincePath = $countryPath . '/' . $this->destinationSlug($province);
+                    $urls[] = $this->destinationUrlPayload($provincePath, $province, '0.7');
+
+                    foreach ($province->regions as $region) {
+                        $regionPath = $provincePath . '/' . $this->destinationSlug($region);
+                        $urls[] = $this->destinationUrlPayload($regionPath, $region, '0.7');
+
+                        foreach ($region->villes as $ville) {
+                            $villePath = $regionPath . '/' . $this->destinationSlug($ville);
+                            $urls[] = $this->destinationUrlPayload($villePath, $ville, '0.6');
+
+                            $villeSecteurs = $region->secteurs->filter(function ($secteur) use ($ville) {
+                                return !isset($secteur->ville_id) || (int) $secteur->ville_id === (int) $ville->id;
+                            });
+
+                            foreach ($villeSecteurs as $secteur) {
+                                $urls[] = $this->destinationUrlPayload($villePath . '/' . $this->destinationSlug($secteur), $secteur, '0.6');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $urls;
+    }
+
+    private function destinationUrlPayload(string $path, $model, string $priority): array
+    {
+        return [
+            'loc' => url('/' . ltrim($path, '/')),
+            'lastmod' => optional($model->updated_at)->toAtomString(),
+            'priority' => $priority,
+        ];
+    }
+
+    private function destinationSlug($model): string
+    {
+        $slug = trim((string) ($model->slug ?? ''));
+
+        if ($slug !== '') {
+            return Str::slug($slug);
+        }
+
+        return Str::slug((string) ($model->name ?? $model->code ?? ('destination-' . $model->id)));
     }
 
     private function buildUrlset(array $urls): Response
