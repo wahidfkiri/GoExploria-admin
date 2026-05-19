@@ -12,6 +12,10 @@ class BusinessTourismApp {
         this.selectedProvince = '';
         this.userMarker = null;
         this.activePlace = null;
+        this.root = document.getElementById('business-tourism');
+        this.mapContainer = this.root
+            ? this.root.querySelector('[data-business-tourism-map], #business-tourism-map, .bt-map')
+            : null;
         
         // Provinces & Territoires Canada
         this.provinces = [
@@ -48,6 +52,11 @@ class BusinessTourismApp {
             }
         ];
         
+        if (!this.root || !this.mapContainer) {
+            this.animateCounters();
+            return;
+        }
+
         this.init();
     }
     
@@ -64,12 +73,11 @@ class BusinessTourismApp {
     }
     
     initMap() {
-        const mapContainer = document.getElementById('map');
+        const mapContainer = this.mapContainer;
         if (!mapContainer || typeof L === 'undefined') return;
 
         if (mapContainer._leaflet_id) {
-            mapContainer._leaflet_id = null;
-            mapContainer.innerHTML = '';
+            return;
         }
 
         // Centrer sur le Canada
@@ -133,7 +141,7 @@ class BusinessTourismApp {
     
     centerOnPlace(id) {
         const place = this.staticPlaces.find(p => p.id === id);
-        if (place) {
+        if (place && this.map) {
             this.map.setView([place.latitude, place.longitude], 12);
             this.highlightPlace(id);
         }
@@ -141,7 +149,8 @@ class BusinessTourismApp {
     
     showModal(place) {
         const modal = document.getElementById('place-modal');
-        const body = document.getElementById('modal-content-body');
+        const body = document.getElementById('modal-content-body') || document.getElementById('modal-content');
+        if (!modal || !body) return;
         
         body.innerHTML = `
             <div style="background:#fff; padding:40px;">
@@ -163,8 +172,10 @@ class BusinessTourismApp {
     }
     
     closeModal() {
-        document.getElementById('place-modal').style.display = 'none';
-        document.getElementById('modal-content-body').innerHTML = '';
+        const modal = document.getElementById('place-modal');
+        const body = document.getElementById('modal-content-body') || document.getElementById('modal-content');
+        if (modal) modal.style.display = 'none';
+        if (body) body.innerHTML = '';
     }
     
     getCategoryColor(cat) {
@@ -202,13 +213,14 @@ class BusinessTourismApp {
         this.renderPlaces();
         this.addMarkers();
         
-        if (this.places.length > 0) {
+        if (this.map && this.places.length > 0 && typeof L !== 'undefined') {
             const bounds = L.latLngBounds(this.places.map(p => [p.latitude, p.longitude]));
             this.map.fitBounds(bounds, { padding: [50, 50] });
         }
     }
     
     locateUser() {
+        if (!this.map) return;
         if (!navigator.geolocation) return alert('Géolocalisation non supportée');
         
         navigator.geolocation.getCurrentPosition(pos => {

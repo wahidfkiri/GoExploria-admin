@@ -80,8 +80,10 @@
     .place-item { background:white; border-radius:12px; overflow:hidden; margin-bottom:20px; box-shadow:0 3px 10px rgba(0,0,0,0.08); transition:var(--transition); cursor:pointer; }
     .place-item:hover { transform:translateY(-5px); box-shadow:0 10px 25px rgba(0,0,0,0.15); }
     .place-item.active { border:2px solid var(--primary); box-shadow:0 5px 20px rgba(42,91,215,0.3); }
-    .place-image { height:150px; overflow:hidden; background:var(--light-gray); }
-    .place-image img { width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease; }
+    .place-image { height:150px; overflow:hidden; background:var(--light-gray); position:relative; }
+    .place-image img,
+    .place-image iframe,
+    .place-image video { width:100%; height:100%; object-fit:cover; display:block; border:0; transition:transform 0.5s ease; }
     .place-item:hover .place-image img { transform:scale(1.05); }
     .place-info { padding:15px; }
     .place-info h4 { margin:0 0 10px 0; font-size:1.2rem; color:var(--dark); }
@@ -929,9 +931,9 @@ class InteractiveMap {
     createPlaceElement(place) {
         const div = document.createElement('div');
         div.className = 'place-item'; div.dataset.id = place.id;
-        const thumb = place.thumbnail||place.main_image||'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=150&fit=crop';
+        const mediaHtml = this.createPlaceListMedia(place);
         div.innerHTML = `
-            <div class="place-image"><img src="${thumb}" alt="${this.escapeHtml(place.name)}" loading="lazy"></div>
+            ${mediaHtml}
             <div class="place-info">
                 <h4>${this.escapeHtml(place.name)}</h4>
                 <span class="place-category" style="background:${this.getCategoryColor(place.category)}">${this.capitalizeFirstLetter(place.category)}</span>
@@ -952,6 +954,36 @@ class InteractiveMap {
     centerOnPlace(place) {
         this.map.setView([place.latitude,place.longitude],this.map.getZoom());
         const md=this.markers[place.id]; if(md?.popup) md.popup.setLatLng([place.latitude,place.longitude]).openOn(this.map);
+    }
+
+    createPlaceListMedia(place) {
+        const title = this.escapeHtml(place.name || 'Vidéo');
+        const youtubeId = this.extractYoutubeId(place.youtube_id || place.video_id || place.video_url || place.video);
+        if (youtubeId) {
+            return `
+                <div class="place-image place-image--video">
+                    <iframe
+                        src="https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=0&mute=1&controls=1&modestbranding=1&rel=0&playsinline=1"
+                        title="${title}"
+                        loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>`;
+        }
+
+        const directVideo = place.video_url || place.video || place.media_video || place.details?.video_url;
+        if (directVideo && /\.(mp4|webm|ogg)(\?.*)?$/i.test(directVideo)) {
+            return `
+                <div class="place-image place-image--video">
+                    <video controls muted playsinline preload="metadata">
+                        <source src="${directVideo}">
+                    </video>
+                </div>`;
+        }
+
+        const thumb = place.thumbnail || place.main_image || 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=150&fit=crop';
+        return `<div class="place-image"><img src="${thumb}" alt="${title}" loading="lazy"></div>`;
     }
 
     /* â”€â”€ Geolocation â”€â”€ */

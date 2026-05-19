@@ -143,7 +143,7 @@ function initCatMegaPanel(triggerId, panelId, viewAllId) {
         var rect   = trigger.getBoundingClientRect();
         var viewW  = window.innerWidth;
         var viewH  = window.innerHeight;
-        var panelW = panel.offsetWidth || 680;
+        var panelW = panel ? (panel.offsetWidth || 680) : 680;
         var left   = rect.left + rect.width / 2 - panelW / 2;
         if (left + panelW > viewW - 12) left = viewW - panelW - 12;
         if (left < 12) left = 12;

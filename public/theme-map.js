@@ -832,11 +832,10 @@
             const div = document.createElement('div');
             div.className = 'place-item';
             div.dataset.id = place.id;
+            const mediaHtml = this.createPlaceListMedia(place);
             
             div.innerHTML = `
-                <div class="place-image">
-                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=150&fit=crop" alt="${place.name}">
-                </div>
+                ${mediaHtml}
                 <div class="place-info">
                     <h4>${place.name}</h4>
                     <span class="place-category" style="background:${this.getCategoryColor(place.category)}">
@@ -903,6 +902,36 @@
             });
             
             return div;
+        }
+
+        createPlaceListMedia(place) {
+            const title = this.escapeHtml(place.name || 'Vidéo');
+            const youtubeId = this.extractYoutubeId(place.video_id || place.youtube_id || place.video_url || place.video);
+            if (youtubeId) {
+                return `
+                    <div class="place-image place-image--video">
+                        <iframe
+                            src="https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=0&mute=1&controls=1&modestbranding=1&rel=0&playsinline=1"
+                            title="${title}"
+                            loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>`;
+            }
+
+            const directVideo = place.video_url || place.video || place.media_video;
+            if (directVideo && /\.(mp4|webm|ogg)(\?.*)?$/i.test(directVideo)) {
+                return `
+                    <div class="place-image place-image--video">
+                        <video controls muted playsinline preload="metadata">
+                            <source src="${directVideo}">
+                        </video>
+                    </div>`;
+            }
+
+            const thumb = place.thumbnail || place.main_image || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=150&fit=crop';
+            return `<div class="place-image"><img src="${thumb}" alt="${title}" loading="lazy"></div>`;
         }
         
         centerOnPlace(place) {
@@ -1128,6 +1157,32 @@
         
         capitalizeFirstLetter(string) {
             return string ? string.charAt(0).toUpperCase() + string.slice(1) : '';
+        }
+
+        extractYoutubeId(value) {
+            if (!value || typeof value !== 'string') return '';
+            const v = value.trim();
+            if (!v) return '';
+            if (/^[a-zA-Z0-9_-]{11}$/.test(v)) return v;
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/i,
+                /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/i,
+                /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/i,
+                /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/i
+            ];
+            for (const re of patterns) {
+                const match = v.match(re);
+                if (match && match[1]) return match[1];
+            }
+            const qp = v.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+            return qp && qp[1] ? qp[1] : '';
+        }
+
+        escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
         setupEventListeners() {

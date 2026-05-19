@@ -388,6 +388,7 @@
         var vc = vis();
         if (busy || vc.length < 2) return;
         busy = true;
+        if (!vc[0]) { busy = false; return; }
         var shift = vc[0].offsetWidth + GAP;
         wrapper.style.transition = 'transform ' + ANIM + 'ms cubic-bezier(0.4,0,0.2,1)';
         wrapper.style.transform = 'translateX(-' + shift + 'px)';
@@ -405,11 +406,12 @@
         if (busy || vc.length < 2) return;
         busy = true;
         var last = vc[vc.length - 1];
+        if (!last) { busy = false; return; }
         var shift = last.offsetWidth + GAP;
         wrapper.style.transition = 'none';
         wrapper.insertBefore(last, wrapper.firstChild);
         wrapper.style.transform = 'translateX(-' + shift + 'px)';
-        wrapper.offsetWidth;
+        if (wrapper) wrapper.offsetWidth;
         wrapper.style.transition = 'transform ' + ANIM + 'ms cubic-bezier(0.4,0,0.2,1)';
         wrapper.style.transform = 'translateX(0)';
         setTimeout(function () { busy = false; resetBar(); }, ANIM + 20);
@@ -423,7 +425,7 @@
         if (!bar) return;
         bar.style.transition = 'none';
         bar.style.width = '0%';
-        bar.offsetWidth;
+        if (bar) bar.offsetWidth;
         bar.style.transition = 'width ' + PAUSE + 'ms linear';
         bar.style.width = '100%';
     }

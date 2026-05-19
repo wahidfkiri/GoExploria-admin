@@ -204,8 +204,12 @@ class GalleryPreview {
     }
     
     navigateMiniSlider(slider, direction) {
-        const track = this.elements.miniSliders[slider].querySelector('.mini-slider-track');
+        const sliderEl = this.elements.miniSliders[slider];
+        if (!sliderEl) return;
+        const track = sliderEl.querySelector('.mini-slider-track');
+        if (!track) return;
         const slides = track.querySelectorAll('.mini-slide');
+        if (!slides.length) return;
         const slideWidth = slides[0].offsetWidth;
         const maxPosition = (slides.length - 1) * slideWidth;
         

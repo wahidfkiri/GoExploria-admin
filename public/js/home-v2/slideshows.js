@@ -18,6 +18,7 @@ class SlideshowsV2 {
         this.nextBtn = document.getElementById('slideshowsV2NextBtn');
         // La modal est gérée par ViewingCarouselV2, pas besoin de références locales
         this.container = document.querySelector('.slideshows-v2-container');
+        if (!this.track || !this.dotsContainer) return;
         
         this.loadSlides();
         this.init();
@@ -366,6 +367,7 @@ class SlideshowsV2 {
             this.currentSlide = this.slides.length;
             this.updateSlider();
             
+            if (!this.track) { this.isTransitioning = false; return; }
             void this.track.offsetWidth;
             
             this.track.style.transition = `transform ${this.transitionDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
@@ -404,6 +406,7 @@ class SlideshowsV2 {
             this.currentSlide = this.slides.length * 2 - 2;
             this.updateSlider();
             
+            if (!this.track) { this.isTransitioning = false; return; }
             void this.track.offsetWidth;
             
             this.track.style.transition = `transform ${this.transitionDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
@@ -428,6 +431,7 @@ class SlideshowsV2 {
     }
     
     updateSlider() {
+        if (!this.track) return;
         const translateX = -this.currentSlide * 100;
         this.track.style.transform = `translateX(${translateX}%)`;
     }
