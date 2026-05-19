@@ -110,9 +110,16 @@
 
 
         <div id="section-vedettes" class="snb-anchor"></div>
-         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> GO EXPLORIA ESPACES VEDETTES </h1>
+        <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> GO EXPLORIA ESPACES VEDETTES </h1>
         <hr></hr>
         @include('home-v2.components.espace_evenement_vidette.EventsVedette')
+        @include('home-v2.components.espace_evenement_vidette.VideoVedette')
+        @include('home-v2.components.espace_evenement_vidette.RestaurantVedette')
+        @include('home-v2.components.espace_evenement_vidette.DestinationVedette')
+        @include('home-v2.components.espace_evenement_vidette.HebergementVedette')
+        @include('home-v2.components.espace_evenement_vidette.ProduitVedette')
+        @include('home-v2.components.espace_evenement_vidette.EntrepriseVedette')
+        @include('home-v2.components.espace_evenement_vidette.GallerieVedette')
 
         <div id="section-marketplace" class="snb-anchor"></div>
         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES GO EXPLORIA MARKETPLACE </h1>
@@ -120,19 +127,29 @@
 
         @include('home-v2.components.espace_marketplace.RealEstateSection')
         @include('home-v2.components.espace_marketplace.ProductsVedette')
-        @include('home-v2.components.espace_marketplace.MarketFoodVedette')
-        @include('home-v2.components.espace_marketplace.LocationVehiculesVedette')
-        @include('home-v2.components.espace_marketplace.ChassePecheVedette')
+        @include('home-v2.components.espace_marketplace.CertificatsCartesCadeaux')
 
-        
+           
         <div id="section-voyages" class="snb-anchor"></div>
-         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES GO EXPLORIA ESPACES SPECIALISÉS </h1>
+         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES GO EXPLORIA ESPACES VOYAGES & FORFAITS TOURISTIQUE INTERNATIONAL </h1>
         <hr></hr>
 
         @include('home-v2.components.espace_forfait.TravelPackages')
         @include('home-v2.components.espace_forfait.TravelInfos')
         @include('home-v2.components.espace_forfait.TourismSection')
-        @include('home-v2.components.espace_forfait.SpecializedSpacesSection')
+
+
+        <div id="section-specialises" class="snb-anchor"></div>
+         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES GO EXPLORIA ESPACES SPECIALISÉS </h1>
+        <hr></hr>
+
+        @include('home-v2.components.espace_specialisés.ImmobiliersQuebec')
+        @include('home-v2.components.espace_specialisés.ChaletsAVendre')
+        @include('home-v2.components.espace_specialisés.MaisonsChaletsAVendre')
+        @include('home-v2.components.espace_specialisés.ImmobilierTouristique')
+        @include('home-v2.components.espace_marketplace.MarketFoodVedette')
+        @include('home-v2.components.espace_marketplace.LocationVehiculesVedette')
+        @include('home-v2.components.espace_marketplace.ChassePecheVedette')
 
         <div id="section-a-la-une" class="snb-anchor"></div>
          <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ZONE GO EXPLORIA INFO </h1>

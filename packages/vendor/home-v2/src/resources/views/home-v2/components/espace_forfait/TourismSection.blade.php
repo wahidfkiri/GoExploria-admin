@@ -15,7 +15,7 @@
     };
 @endphp
 
-<section class="tourism-section" id="tourisme-business">
+<section class="tourism-section" id="explorez-inattendu">
 
     {{-- EN-TÊTE STANDARD --}}
     <div class="resto-header-block">
@@ -89,7 +89,7 @@
 
       <!-- PARTIE 1 : IDÉES AVENTURES -->
       <div>
-        <div class="section-header">
+        <div class="section-header" id="idees-aventures">
           <div class="section-header-left">
             <h3><i class="fas fa-hiking" style="color:#00CC99; margin-right:10px;"></i> {{ $tr('Idées aventures') }}</h3>
             <p>{{ $tr('Pour les âmes libres et les explorateurs modernes') }}</p>
@@ -142,7 +142,7 @@
 
       <!-- PARTIE 2 : ACTIVITÉS 4 SAISONS -->
       <div>
-        <div class="section-header">
+        <div class="section-header" id="activites-4-saisons">
           <div class="section-header-left">
             <h3><i class="fas fa-calendar-alt" style="color:#00CC99; margin-right:10px;"></i> {{ $tr('Activités 4 saisons') }}</h3>
             <p>{{ $tr('Chaque moment de l\'année a son aventure') }}</p>
@@ -186,7 +186,7 @@
       </div>
 
       <!-- PARTIE 3 : ACTIVITÉS HIVERNALES -->
-      <div class="hiver-section">
+      <div class="hiver-section" id="activites-hiver">
         <div class="hiver-header">
           <div class="hiver-icon"><i class="fas fa-snowflake" style="color:#3399FF;"></i></div>
           <div>

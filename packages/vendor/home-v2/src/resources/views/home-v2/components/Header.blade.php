@@ -113,7 +113,7 @@
 </header>
 
 <script>
-    // DÃ©clencheur JS pour le dropdown VidÃ©os
+    // Déclencheur JS pour le dropdown Vidéos
     (function() {
         const trigger = document.getElementById('videosMenuItem');
         const dropdown = document.getElementById('videosDropdown');

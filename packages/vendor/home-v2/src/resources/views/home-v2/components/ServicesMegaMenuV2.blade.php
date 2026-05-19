@@ -134,21 +134,21 @@ const menuData = {
         tag: 'tous les espaces',
         icon: 'fas fa-star',
         categories: [
-            { icon: 'fas fa-video',           name: 'ESPACES VIDÉOS VEDETTES',       desc: 'Contenus vidéo sélectionnés',   link: '#videos-vedettes' },
-            { icon: 'fas fa-utensils',        name: 'ESPACES RESTAURANTS VEDETTES',  desc: 'Meilleurs établissements',      link: '#restaurants-vedettes' },
-            { icon: 'fas fa-bed',             name: 'ESPACES HÉBERGEMENTS VEDETTES', desc: 'Hôtels & Auberges',             link: '#hebergements-vedettes' },
-            { icon: 'fas fa-map-marker-alt',  name: 'ESPACES DESTINATIONS VEDETTES', desc: 'Lieux incontournables',         link: '#destinations-vedettes' },
             { icon: 'fas fa-calendar-alt',    name: 'ESPACES ÉVÉNEMENTS VEDETTES',   desc: 'Festivals & Activités',         link: '#evenements-vedettes' },
+            { icon: 'fas fa-video',           name: 'ESPACES VIDÉOS VEDETTES',       desc: 'Contenus vidéo sélectionnés',   link: '#video-vedette' },
+            { icon: 'fas fa-utensils',        name: 'ESPACES RESTAURANTS VEDETTES',  desc: 'Meilleurs établissements',      link: '#restaurant-vedette' },
+            { icon: 'fas fa-bed',             name: 'ESPACES HÉBERGEMENTS VEDETTES', desc: 'Hôtels & Auberges',             link: '#hebergement-vedette' },
+            { icon: 'fas fa-map-marker-alt',  name: 'ESPACES DESTINATIONS VEDETTES', desc: 'Lieux incontournables',         link: '#destination-vedette' },
             {
                 icon: 'fas fa-box',
                 name: 'ESPACES PRODUITS VEDETTES',
                 desc: 'Produits en vedette',
-                link: '#produits-vedettes',
+                link: '#produit-vedette-evenement',
                 grandchildren: ['TERROIR', 'PETITES ANNONCES']
             },
-            { icon: 'fas fa-building',        name: 'ESPACES ENTREPRISES VEDETTES', desc: 'Partenaires certifiés',          link: '#entreprises-vedettes' },
-            { icon: 'fas fa-images',          name: 'ESPACES GALERIES VEDETTES',    desc: 'Photos exceptionnelles',         link: '#galeries-vedettes' },
-            { icon: 'fas fa-link',            name: 'ESPACES GRANDES CHAÎNES',      desc: 'Réseaux internationaux',         link: '#grandes-chaines' }
+            { icon: 'fas fa-building',        name: 'ESPACES ENTREPRISES VEDETTES', desc: 'Partenaires certifiés',          link: '#entreprise-vedette' },
+            { icon: 'fas fa-images',          name: 'ESPACES GALERIES VEDETTES',    desc: 'Photos exceptionnelles',         link: '#gallerie-vedette' },
+            // { icon: 'fas fa-link',            name: 'ESPACES GRANDES CHAÎNES',      desc: 'Réseaux internationaux',         link: '#grandes-chaines' }
         ]
     },
 
@@ -161,7 +161,7 @@ const menuData = {
             { icon: 'fas fa-star',            name: 'ESPACES NOUVEAUX FORFAITS',                           desc: 'Offres récentes',               link: '#nouveaux-forfaits' },
             { icon: 'fas fa-globe-europe',    name: 'ESPACES FORFAITS EUROPE',                             desc: 'Voyages européens',             link: '#forfaits-europe' },
             { icon: 'fas fa-upload',          name: 'ESPACES AFFICHEZ VOTRE FORFAITS',                     desc: 'Publiez vos offres',            link: '#affichez-forfaits' },
-            { icon: 'fas fa-pencil-alt',      name: 'ESPACES CRÉEZ VOS FORFAITS',                          desc: 'Outil de création',             link: '#creez-forfaits' },
+            // { icon: 'fas fa-pencil-alt',      name: 'ESPACES CRÉEZ VOS FORFAITS',                          desc: 'Outil de création',             link: '#creez-forfaits' },
             { icon: 'fas fa-bell',            name: 'ESPACES ALERTES VOYAGES',                             desc: 'Notifications & Conseils',      link: '#alertes-voyages' },
             {
                 icon: 'fas fa-plane',
@@ -192,8 +192,8 @@ const menuData = {
         categories: [
             { icon: 'fas fa-tag',             name: 'ESPACES MES PETITES ANNONCES',                       desc: 'Achats & Ventes locales',       link: '#petites-annonces' },
             { icon: 'fas fa-box-open',        name: 'ESPACES AFFICHEZ VOS PRODUITS D\'ICI ET D\'AILLEURS', desc: 'Terroir & Artisanat',           link: '#produits-marketplace' },
-            { icon: 'fas fa-gift',            name: 'ESPACES CERTIFICATS-CARTES-PRODUITS CADEAUX',         desc: 'Cartes & Bons cadeaux',         link: '#certificats' },
-            { icon: 'fas fa-cubes',           name: 'ESPACES PACKAGES CADEAUX',                            desc: 'Coffrets & Forfaits',           link: '#packages-cadeaux' }
+            { icon: 'fas fa-gift',            name: 'ESPACES CERTIFICATS-CARTES-PRODUITS CADEAUX',         desc: 'Cartes & Bons cadeaux',         link: '#certificats-cartes-cadeaux' },
+            // { icon: 'fas fa-cubes',           name: 'ESPACES PACKAGES CADEAUX',                            desc: 'Coffrets & Forfaits',           link: '#packages-cadeaux' }
         ]
     },
 
@@ -217,9 +217,9 @@ const menuData = {
         tag: 'Actualités & Nouvelles',
         icon: 'fas fa-newspaper',
         categories: [
-            { icon: 'fas fa-clock',           name: 'ESPACES NOUVELLES DE L\'HEURE',  desc: 'Info en temps réel',           link: '#nouvelles-heure' },
-            { icon: 'fas fa-rss',             name: 'DERNIÈRE NOUVELLE',              desc: 'Actualités récentes',          link: '#dernieres-nouvelles' },
-            { icon: 'fas fa-map',             name: 'NOUVELLE PAR RÉGIONS',           desc: 'Info locale & régionale',      link: '#nouvelles-regions' }
+            { icon: 'fas fa-clock',           name: 'ESPACES NOUVELLES DE L\'HEURE',  desc: 'Info en temps réel',           link: '#news-section' },
+            { icon: 'fas fa-rss',             name: 'DERNIÈRE NOUVELLE',              desc: 'Actualités récentes',          link: '#nv-nouvelles' },
+            { icon: 'fas fa-map',             name: 'NOUVELLE PAR RÉGIONS',           desc: 'Info locale & régionale',      link: '#nv-regions' }
         ]
     }
 };

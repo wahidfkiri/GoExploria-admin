@@ -185,7 +185,7 @@ $pkgEurope = [
     <div class="pkg-content-area">
 
         {{-- â”€â”€ Forfaits Québec â”€â”€ --}}
-        <div class="pkg-category-section" id="pkg-quebec">
+        <div class="pkg-category-section" id="forfaits-quebec">
             <div class="pkg-category-header">
                 <div class="pkg-cat-icon pkg-cat-icon--quebec">
                     <i class="fas fa-maple-leaf"></i>
@@ -228,86 +228,8 @@ $pkgEurope = [
                 @endforeach
             </div>
         </div>
-
-        {{-- â”€â”€ Forfaits Europe â”€â”€ --}}
-        <div class="pkg-category-section" id="pkg-europe">
-            <div class="pkg-category-header">
-                <div class="pkg-cat-icon pkg-cat-icon--europe">
-                    <i class="fas fa-globe-europe"></i>
-                </div>
-                <div class="pkg-cat-titles">
-                    <h2 class="pkg-category-title">Forfaits Europe</h2>
-                    <p class="pkg-category-subtitle">Voyagez à travers l'Europe</p>
-                </div>
-                <span class="pkg-category-count">{{ count($pkgEurope) }} forfaits</span>
-            </div>
-
-            <div class="packages-grid" id="pkg-grid-europe">
-                @foreach($pkgEurope as $pkg)
-                <article class="package-card" data-filter="{{ $pkg['category'] }}">
-                    <div class="package-image">
-                        <img src="{{ $pkg['img'] }}" alt="{{ $pkg['title'] }}" loading="lazy">
-                        <div class="package-badge {{ $pkg['badge_cls'] }}">{{ $pkg['badge'] }}</div>
-                    </div>
-                    <div class="package-content">
-                        <div class="package-header">
-                            <h3>{{ $pkg['title'] }}</h3>
-                            <div class="package-price">{{ $pkg['price'] }}<span>/pers.</span></div>
-                        </div>
-                        <div class="package-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>{{ $pkg['location'] }}</span>
-                        </div>
-                        <p class="package-description">{{ $pkg['desc'] }}</p>
-                        <div class="package-features">
-                            @foreach($pkg['features'] as $feat)
-                            <div class="feature"><i class="fas fa-check"></i> {{ $feat }}</div>
-                            @endforeach
-                        </div>
-                        <a href="#" class="pkg-btn-primary">
-                            <i class="fas fa-calendar-check"></i>
-                            Voir le forfait
-                        </a>
-                    </div>
-                </article>
-                @endforeach
-            </div>
-        </div>
-
-        {{-- â”€â”€ Showcase compact â”€â”€ --}}
-        <section class="showcase-packages">
-            <div class="showcase-header">
-                <h2>Afficher vos forfaits ici</h2>
-                <p>Découvrez tous nos forfaits exclusifs en un coup d'œil</p>
-            </div>
-            <div class="showcase-grid">
-                @foreach($pkgQuebec as $pkg)
-                <div class="showcase-item">
-                    <span class="showcase-badge quebec"><i class="fas fa-maple-leaf"></i> Québec</span>
-                    <h4>{{ $pkg['title'] }}</h4>
-                    <p>{{ \Illuminate\Support\Str::limit($pkg['desc'], 70) }}</p>
-                    <div class="showcase-item-footer">
-                        <div class="showcase-price">{{ $pkg['price'] }}<span>/pers.</span></div>
-                        <a href="#" class="showcase-details-btn"><i class="fas fa-eye"></i> Voir détails</a>
-                    </div>
-                </div>
-                @endforeach
-                @foreach($pkgEurope as $pkg)
-                <div class="showcase-item">
-                    <span class="showcase-badge europe"><i class="fas fa-globe-europe"></i> Europe</span>
-                    <h4>{{ $pkg['title'] }}</h4>
-                    <p>{{ \Illuminate\Support\Str::limit($pkg['desc'], 70) }}</p>
-                    <div class="showcase-item-footer">
-                        <div class="showcase-price">{{ $pkg['price'] }}<span>/pers.</span></div>
-                        <a href="#" class="showcase-details-btn"><i class="fas fa-eye"></i> Voir détails</a>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </section>
-
         {{-- â”€â”€ Création de forfait â”€â”€ --}}
-        <section class="creation-section">
+        <section class="creation-section" id="nouveaux-forfaits">
             <div class="creation-card">
                 <div class="creation-info">
                     <div class="creation-slider" id="creationSlider">
@@ -371,6 +293,84 @@ $pkgEurope = [
                 </div>
             </div>
         </section>
+
+        {{-- â”€â”€ Forfaits Europe â”€â”€ --}}
+        <div class="pkg-category-section" id="forfaits-europe">
+            <div class="pkg-category-header">
+                <div class="pkg-cat-icon pkg-cat-icon--europe">
+                    <i class="fas fa-globe-europe"></i>
+                </div>
+                <div class="pkg-cat-titles">
+                    <h2 class="pkg-category-title">Forfaits Europe</h2>
+                    <p class="pkg-category-subtitle">Voyagez à travers l'Europe</p>
+                </div>
+                <span class="pkg-category-count">{{ count($pkgEurope) }} forfaits</span>
+            </div>
+
+            <div class="packages-grid" id="pkg-grid-europe">
+                @foreach($pkgEurope as $pkg)
+                <article class="package-card" data-filter="{{ $pkg['category'] }}">
+                    <div class="package-image">
+                        <img src="{{ $pkg['img'] }}" alt="{{ $pkg['title'] }}" loading="lazy">
+                        <div class="package-badge {{ $pkg['badge_cls'] }}">{{ $pkg['badge'] }}</div>
+                    </div>
+                    <div class="package-content">
+                        <div class="package-header">
+                            <h3>{{ $pkg['title'] }}</h3>
+                            <div class="package-price">{{ $pkg['price'] }}<span>/pers.</span></div>
+                        </div>
+                        <div class="package-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{{ $pkg['location'] }}</span>
+                        </div>
+                        <p class="package-description">{{ $pkg['desc'] }}</p>
+                        <div class="package-features">
+                            @foreach($pkg['features'] as $feat)
+                            <div class="feature"><i class="fas fa-check"></i> {{ $feat }}</div>
+                            @endforeach
+                        </div>
+                        <a href="#" class="pkg-btn-primary">
+                            <i class="fas fa-calendar-check"></i>
+                            Voir le forfait
+                        </a>
+                    </div>
+                </article>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- â”€â”€ Showcase compact â”€â”€ --}}
+        <section class="showcase-packages" id="affichez-forfaits">
+            <div class="showcase-header">
+                <h2>Afficher vos forfaits ici</h2>
+                <p>Découvrez tous nos forfaits exclusifs en un coup d'œil</p>
+            </div>
+            <div class="showcase-grid">
+                @foreach($pkgQuebec as $pkg)
+                <div class="showcase-item">
+                    <span class="showcase-badge quebec"><i class="fas fa-maple-leaf"></i> Québec</span>
+                    <h4>{{ $pkg['title'] }}</h4>
+                    <p>{{ \Illuminate\Support\Str::limit($pkg['desc'], 70) }}</p>
+                    <div class="showcase-item-footer">
+                        <div class="showcase-price">{{ $pkg['price'] }}<span>/pers.</span></div>
+                        <a href="#" class="showcase-details-btn"><i class="fas fa-eye"></i> Voir détails</a>
+                    </div>
+                </div>
+                @endforeach
+                @foreach($pkgEurope as $pkg)
+                <div class="showcase-item">
+                    <span class="showcase-badge europe"><i class="fas fa-globe-europe"></i> Europe</span>
+                    <h4>{{ $pkg['title'] }}</h4>
+                    <p>{{ \Illuminate\Support\Str::limit($pkg['desc'], 70) }}</p>
+                    <div class="showcase-item-footer">
+                        <div class="showcase-price">{{ $pkg['price'] }}<span>/pers.</span></div>
+                        <a href="#" class="showcase-details-btn"><i class="fas fa-eye"></i> Voir détails</a>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </section>
+
 
     </div>{{-- /.pkg-content-area --}}
 

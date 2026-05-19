@@ -39,6 +39,12 @@
                 </a>
             </li>
             <li>
+                <a href="#section-specialises" class="snb-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>GO EXPLORIA Espace Spécialisé</span>
+                </a>
+            </li>
+            <li>
                 <a href="#section-a-la-une" class="snb-link">
                     <i class="fas fa-newspaper"></i>
                     <span>ZONE GO EXPLORIA INFO</span>

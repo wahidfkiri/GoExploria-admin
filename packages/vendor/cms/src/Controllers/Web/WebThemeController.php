@@ -549,7 +549,9 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             ? 'cms::web.fallback.landing-boids'
             : ($this->shouldUseImmobilierConstructionFallback($activities)
                 ? 'cms::web.fallback.landing-immobilier-construction'
-                : 'cms::web.fallback.landing-activity');
+                : ($this->shouldUseCommerceAlimentaireFallback($activities)
+                    ? 'cms::web.fallback.landing-commerce-alimentaire'
+                    : 'cms::web.fallback.landing-activity'));
         $html = view($view, $data)->render();
 
         return $this->buildResponse($html, $this->buildSeoContext(null, false));
@@ -997,6 +999,52 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'chalet',
             'résidentiel',
             'residentiel',
+        ];
+
+        foreach ($keywords as $keyword) {
+            if (str_contains($haystack, $keyword)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Detect if the establishment should use the "commerce alimentaire" fallback landing.
+     */
+    protected function shouldUseCommerceAlimentaireFallback(Collection $activities): bool
+    {
+        $haystack = $activities
+            ->pluck('name')
+            ->filter()
+            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
+            ->implode(' ');
+
+        if ($haystack === '') {
+            $haystack = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
+        }
+
+        $keywords = [
+            'commerce alimentaire',
+            'alimentaire',
+            'alimentation',
+            'epicerie',
+            'épicerie',
+            'marche',
+            'marché',
+            'supermarche',
+            'supermarché',
+            'poissonnerie',
+            'boucherie',
+            'fromagerie',
+            'boulangerie',
+            'patisserie',
+            'pâtisserie',
+            'terroir',
+            'traiteur',
+            'gourmet',
+            'fine food',
         ];
 
         foreach ($keywords as $keyword) {

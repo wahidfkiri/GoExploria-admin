@@ -117,7 +117,7 @@
     <div class="travel-container">
         
         <!-- COLONNE GAUCHE : ALERTS VOYAGE -->
-        <div class="travel-alerts">
+        <div class="travel-alerts" id="alertes-voyages">
             <div class="info-section-header">
                 <div class="info-section-icon">
                     <i class="fas fa-exclamation-triangle"></i>
