@@ -1221,6 +1221,12 @@
                         </div>
                     </article>
 
+                    @include('cms::web.fallback.partials.establishment-products', [
+                        'etablissement' => $etablissement,
+                        'devisLink' => $devisLink,
+                        'cmsProductsTitle' => "Produits à vendre de l'établissement",
+                    ])
+
                     <article id="section-reviews" class="lf-section">
                         <div class="lf-row-head">
                             <h3>Avis clients</h3>

@@ -972,6 +972,13 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
   </div>
 </section>
 
+@include('cms::web.fallback.partials.establishment-products', [
+  'etablissement' => $etablissement,
+  'devisLink' => $devisLink,
+  'cmsProductsTitle' => "Produits à vendre de l'établissement",
+  'cmsProductsSubtitle' => "Maisons, chalets, services ou offres configurés dans le catalogue de cet établissement.",
+])
+
 <!-- VIDEO -->
 <section id="video-section">
   <div class="container">

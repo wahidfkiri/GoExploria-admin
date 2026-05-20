@@ -582,17 +582,7 @@ class InteractiveMap {
 
     /* â”€â”€ Popup â”€â”€ */
     createPopupContent(place) {
-        const yt = this.extractYoutubeId(place.youtube_id) || this.defaultYoutubeId;
-        const videoHtml = `
-            <div class="youtube-video-container">
-                <iframe src="https://www.youtube.com/embed/${yt}?autoplay=0&mute=1&controls=1&modestbranding=1&rel=0"
-                    title="VidÃ©o de ${place.name}" frameborder="0"
-                    allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen
-                    style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"></iframe>
-                <div style="position:absolute;top:8px;right:8px;background:rgba(255,0,0,0.9);color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;z-index:10;display:flex;align-items:center;gap:4px;">
-                    <i class="fab fa-youtube"></i> YouTube
-                </div>
-            </div>`;
+        const videoHtml = this.createPopupVideoHtml(place);
         return `
             <div class="hover-popup-content" data-place-id="${place.id}">
                 <div style="padding:12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
@@ -602,7 +592,7 @@ class InteractiveMap {
                         </div>
                         <div style="flex:1;min-width:0;">
                             <h4 style="margin:0;font-size:14px;font-weight:600;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${this.escapeHtml(place.name)}</h4>
-                            <div style="font-size:11px;color:#666;">${this.capitalizeFirstLetter(place.category)} â€¢ ${place.province||'Canada'}</div>
+                            <div style="font-size:11px;color:#666;">${this.capitalizeFirstLetter(place.category)} • ${place.province||'Canada'}</div>
                         </div>
                     </div>
                     ${videoHtml}
@@ -610,10 +600,39 @@ class InteractiveMap {
                         ${place.description||'Aucune description disponible'}
                     </p>
                     <button class="popup-details-btn" onclick="event.stopPropagation();window.mapApp.showPlaceModal(${JSON.stringify(place).replace(/"/g,'&quot;')})">
-                        <i class="fas fa-info-circle"></i> Voir les dÃ©tails
+                        <i class="fas fa-info-circle"></i> Voir les détails
                     </button>
                 </div>
             </div>`;
+    }
+
+    createPopupVideoHtml(place) {
+        const title = this.escapeHtml(place.name || 'Vidéo');
+        const youtubeId = this.extractYoutubeId(place.youtube_id || place.video_id || place.video_url || place.video) || this.defaultYoutubeId;
+        if (youtubeId) {
+            return `
+                <div class="youtube-video-container">
+                    <iframe src="https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=0&mute=1&controls=1&modestbranding=1&rel=0&playsinline=1"
+                        title="${title}" frameborder="0"
+                        allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen
+                        style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"></iframe>
+                    <div style="position:absolute;top:8px;right:8px;background:rgba(255,0,0,0.9);color:white;padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600;z-index:10;display:flex;align-items:center;gap:4px;">
+                        <i class="fab fa-youtube"></i> YouTube
+                    </div>
+                </div>`;
+        }
+
+        const directVideo = place.video_url || place.video || place.media_video || place.details?.video_url;
+        if (directVideo && /\.(mp4|webm|ogg)(\?.*)?$/i.test(directVideo)) {
+            return `
+                <div class="youtube-video-container">
+                    <video controls muted playsinline preload="metadata" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;object-fit:cover;">
+                        <source src="${directVideo}">
+                    </video>
+                </div>`;
+        }
+
+        return '';
     }
 
     /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•

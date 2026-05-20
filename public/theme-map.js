@@ -755,6 +755,7 @@
         }
         
         createPopupContent(place) {
+            const videoHtml = this.createPopupVideoHtml(place);
             return `
                 <div class="hover-popup-content" data-place-id="${place.id}" style="padding:15px;">
                     <div style="display:flex; align-items:center; gap:12px; margin-bottom:15px;">
@@ -762,7 +763,7 @@
                             <i class="${this.getCategoryIcon(place.category)}" style="color:white; font-size:18px;"></i>
                         </div>
                         <div style="flex:1; min-width:0;">
-                            <h4 style="margin:0 0 4px 0; font-size:15px; font-weight:600; color:#1a1a1a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${place.name}</h4>
+                            <h4 style="margin:0 0 4px 0; font-size:15px; font-weight:600; color:#1a1a1a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${this.escapeHtml(place.name)}</h4>
                             <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#666;">
                                 <span>${this.capitalizeFirstLetter(place.category)}</span>
                                 <span>•</span>
@@ -770,32 +771,10 @@
                             </div>
                         </div>
                     </div>
-                    
-                    ${place.video_id ? `
-                        <div class="popup-video-container" style="margin-bottom:12px; border-radius:8px; overflow:hidden; position:relative; background:#000;">
-                            <div style="position:relative; padding-bottom:56.25%; height:0;">
-                                <iframe src="https://www.youtube.com/embed/${place.video_id}?autoplay=0&mute=1&controls=1&enablejsapi=1"
-                                        style="position:absolute; top:0; left:0; width:100%; height:100%;"
-                                        frameborder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowfullscreen></iframe>
-                            </div>
-                            <div style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.7); color:white; padding:4px 8px; border-radius:4px; font-size:11px; display:flex; align-items:center; gap:4px; pointer-events:none;">
-                                <i class="fab fa-youtube" style="color:#ff0000;"></i>
-                                <span>Vidéo disponible</span>
-                            </div>
-                        </div>
-                    ` : `
-                        <div style="margin-bottom:12px; height:140px; border-radius:8px; background:linear-gradient(135deg, #f5f5f5, #e0e0e0); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px;">
-                            <i class="fas fa-home" style="font-size:40px; color:#999;"></i>
-                            <span style="font-size:12px; color:#666;">Aperçu disponible</span>
-                        </div>
-                    `}
-                    
-                    <p style="margin:0 0 15px 0; font-size:12px; color:#666; line-height:1.5;">${place.description}</p>
-                    
+                    ${videoHtml}
+                    <p style="margin:0 0 15px 0; font-size:12px; color:#666; line-height:1.5;">${this.escapeHtml(place.description || '')}</p>
                     <div style="display:flex; gap:10px;">
-                        <button class="popup-detail-btn" 
+                        <button class="popup-detail-btn"
                                 style="flex:1; background:#1b4f6b; color:white; border:none; border-radius:6px; padding:10px; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;">
                             <i class="fas fa-info-circle"></i>
                             Voir détails
@@ -804,7 +783,47 @@
                 </div>
             `;
         }
-        
+
+        createPopupVideoHtml(place) {
+            const title = this.escapeHtml(place.name || 'Vidéo');
+            const youtubeId = this.extractYoutubeId(place.video_id || place.youtube_id || place.video_url || place.video);
+            if (youtubeId) {
+                return `
+                    <div class="popup-video-container" style="margin-bottom:12px; border-radius:8px; overflow:hidden; position:relative; background:#000;">
+                        <div style="position:relative; padding-bottom:56.25%; height:0;">
+                            <iframe src="https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=0&mute=1&controls=1&modestbranding=1&rel=0&playsinline=1"
+                                    title="${title}"
+                                    style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
+                        </div>
+                        <div style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.7); color:white; padding:4px 8px; border-radius:4px; font-size:11px; display:flex; align-items:center; gap:4px; pointer-events:none;">
+                            <i class="fab fa-youtube" style="color:#ff0000;"></i>
+                            <span>Vidéo disponible</span>
+                        </div>
+                    </div>`;
+            }
+
+            const directVideo = place.video_url || place.video || place.media_video;
+            if (directVideo && /\.(mp4|webm|ogg)(\?.*)?$/i.test(directVideo)) {
+                return `
+                    <div class="popup-video-container" style="margin-bottom:12px; border-radius:8px; overflow:hidden; position:relative; background:#000;">
+                        <div style="position:relative; padding-bottom:56.25%; height:0;">
+                            <video controls muted playsinline preload="metadata" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; border:0;">
+                                <source src="${directVideo}">
+                            </video>
+                        </div>
+                    </div>`;
+            }
+
+            return `
+                <div style="margin-bottom:12px; height:140px; border-radius:8px; background:linear-gradient(135deg, #f5f5f5, #e0e0e0); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px;">
+                    <i class="fas fa-home" style="font-size:40px; color:#999;"></i>
+                    <span style="font-size:12px; color:#666;">Aperçu disponible</span>
+                </div>`;
+        }
+
         renderPlacesList() {
             const container = document.getElementById('places-list');
             if (!container) return;

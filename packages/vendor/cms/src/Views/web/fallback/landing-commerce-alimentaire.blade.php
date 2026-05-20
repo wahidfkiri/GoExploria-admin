@@ -1595,6 +1595,13 @@
                         </div>
                     </section>
 
+                    @include('cms::web.fallback.partials.establishment-products', [
+                        'etablissement' => $etablissement,
+                        'devisLink' => $devisLink,
+                        'cmsProductsTitle' => "Produits à vendre de l'établissement",
+                        'cmsProductsSubtitle' => "Catalogue connecté au CMS : produits publics, disponibles et associés à cet établissement.",
+                    ])
+
                     <section class="food-section food-section-pad food-feature-section" id="specialites">
                         <div class="food-feature-grid">
                             <div>

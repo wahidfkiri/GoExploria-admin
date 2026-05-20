@@ -2028,6 +2028,13 @@
     </div>
 </article>
 
+@include('cms::web.fallback.partials.establishment-products', [
+    'etablissement' => $etablissement,
+    'devisLink' => $devisLink,
+    'cmsProductsTitle' => "Produits à vendre de l'établissement",
+    'cmsProductsSubtitle' => "Les produits réellement configurés dans le CMS pour cet établissement.",
+])
+
 <article class="boids-section" id="section-reviews">
     <span class="boids-kicker"><i class="fas fa-star"></i> Avis Clients</span>
     <div class="boids-row-head">
