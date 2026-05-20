@@ -25,6 +25,26 @@
 
     $devisLink = $devisUrl ?? route('devis');
     $phoneHref = preg_replace('/[^\d\+]/', '', (string) $phone);
+    $cmsLandingProducts = collect();
+    try {
+        if (
+            isset($etablissement)
+            && !empty($etablissement->id)
+            && class_exists(\App\Models\Product::class)
+            && \Illuminate\Support\Facades\Schema::hasTable('products')
+        ) {
+            $cmsLandingProducts = \App\Models\Product::query()
+                ->with(['category:id,name', 'family:id,name'])
+                ->where('etablissement_id', $etablissement->id)
+                ->where('is_available_for_sale', true)
+                ->latest('updated_at')
+                ->limit(8)
+                ->get();
+        }
+    } catch (\Throwable $e) {
+        $cmsLandingProducts = collect();
+    }
+    $cmsHasLiveProducts = $cmsLandingProducts->isNotEmpty();
 
     $fallbackHeroSlides = collect([
         [
@@ -922,6 +942,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 </section>
 
 <!-- PRODUCTS -->
+@if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
 <section id="products">
   <div class="container">
     <div class="products-hdr reveal">
@@ -971,12 +992,14 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
     </div>
   </div>
 </section>
+@endif
 
 @include('cms::web.fallback.partials.establishment-products', [
   'etablissement' => $etablissement,
   'devisLink' => $devisLink,
   'cmsProductsTitle' => "Produits à vendre de l'établissement",
   'cmsProductsSubtitle' => "Maisons, chalets, services ou offres configurés dans le catalogue de cet établissement.",
+  'cmsProductsSectionId' => 'products',
 ])
 
 <!-- VIDEO -->

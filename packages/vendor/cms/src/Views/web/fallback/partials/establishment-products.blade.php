@@ -1,6 +1,7 @@
 @php
-    $cmsLandingProducts = collect();
+    $cmsLandingProducts = isset($cmsLandingProducts) ? collect($cmsLandingProducts) : collect();
     $cmsProductsLimit = (int) ($cmsProductsLimit ?? 8);
+    $cmsProductsSectionId = $cmsProductsSectionId ?? 'produits-a-vendre';
     $cmsProductsTitle = $cmsProductsTitle ?? "Produits à vendre";
     $cmsProductsSubtitle = $cmsProductsSubtitle ?? "Découvrez les produits, services et offres disponibles directement auprès de cet établissement.";
     $cmsProductsDevisLink = $devisLink ?? ($devisUrl ?? url('/devis'));
@@ -51,6 +52,8 @@
 
     try {
         if (
+            $cmsLandingProducts->isEmpty()
+            &&
             isset($etablissement)
             && !empty($etablissement->id)
             && class_exists(\App\Models\Product::class)
@@ -59,7 +62,6 @@
             $cmsLandingProducts = \App\Models\Product::query()
                 ->with(['category:id,name', 'family:id,name'])
                 ->where('etablissement_id', $etablissement->id)
-                ->where('is_public', true)
                 ->where('is_available_for_sale', true)
                 ->latest('updated_at')
                 ->limit(max(1, $cmsProductsLimit))
@@ -71,7 +73,7 @@
 @endphp
 
 @if($cmsLandingProducts->isNotEmpty())
-    <section class="cms-live-products" id="produits-a-vendre">
+    <section class="cms-live-products" id="{{ $cmsProductsSectionId }}">
         <style>
             .cms-live-products {
                 margin: 18px 0;

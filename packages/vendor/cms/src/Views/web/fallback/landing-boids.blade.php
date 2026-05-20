@@ -1590,6 +1590,26 @@
         }
 
         $devisLink = $devisUrl ?? route('devis');
+        $cmsLandingProducts = collect();
+        try {
+            if (
+                isset($etablissement)
+                && !empty($etablissement->id)
+                && class_exists(\App\Models\Product::class)
+                && \Illuminate\Support\Facades\Schema::hasTable('products')
+            ) {
+                $cmsLandingProducts = \App\Models\Product::query()
+                    ->with(['category:id,name', 'family:id,name'])
+                    ->where('etablissement_id', $etablissement->id)
+                    ->where('is_available_for_sale', true)
+                    ->latest('updated_at')
+                    ->limit(8)
+                    ->get();
+            }
+        } catch (\Throwable $e) {
+            $cmsLandingProducts = collect();
+        }
+        $cmsHasLiveProducts = $cmsLandingProducts->isNotEmpty();
         $siteName = get_site_name($etablissement->id);
         $siteDescription = $etablissement->getSetting('description', null, 'general')
             ?: get_site_description($etablissement->id)
@@ -1854,6 +1874,7 @@
                         </div>
                     </article>
 
+                    @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
                     <article class="boids-card">
                         <div class="boids-head">
                             <h3 class="boids-title">Produits en vedette</h3>
@@ -1875,6 +1896,7 @@
                             </div>
                         </div>
                     </article>
+                    @endif
 
                     <article class="boids-card">
                         <div class="boids-head">
@@ -2006,6 +2028,7 @@
     </div>
 </article>
 
+@if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
 <article class="boids-section" id="section-products">
     <span class="boids-kicker"><i class="fas fa-box-open"></i> Produits Vedette</span>
     <div class="boids-row-head">
@@ -2027,12 +2050,14 @@
         @endforeach
     </div>
 </article>
+@endif
 
 @include('cms::web.fallback.partials.establishment-products', [
     'etablissement' => $etablissement,
     'devisLink' => $devisLink,
     'cmsProductsTitle' => "Produits à vendre de l'établissement",
     'cmsProductsSubtitle' => "Les produits réellement configurés dans le CMS pour cet établissement.",
+    'cmsProductsSectionId' => 'section-products',
 ])
 
 <article class="boids-section" id="section-reviews">

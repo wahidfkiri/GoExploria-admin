@@ -1,6 +1,26 @@
 @php
     $activityViewFolder = 'restaurant';
     $devisLink = $devisUrl ?? url('/devis');
+    $cmsLandingProducts = collect();
+    try {
+        if (
+            isset($etablissement)
+            && !empty($etablissement->id)
+            && class_exists(\App\Models\Product::class)
+            && \Illuminate\Support\Facades\Schema::hasTable('products')
+        ) {
+            $cmsLandingProducts = \App\Models\Product::query()
+                ->with(['category:id,name', 'family:id,name'])
+                ->where('etablissement_id', $etablissement->id)
+                ->where('is_available_for_sale', true)
+                ->latest('updated_at')
+                ->limit(8)
+                ->get();
+        }
+    } catch (\Throwable $e) {
+        $cmsLandingProducts = collect();
+    }
+    $cmsHasLiveProducts = $cmsLandingProducts->isNotEmpty();
     $siteName = get_site_name($etablissement->id);
     $siteDescription = $etablissement->getSetting('description', null, 'general')
         ?: get_site_description($etablissement->id)
@@ -1464,6 +1484,7 @@
                         </div>
                     </section>
 
+                    @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
                     <section class="food-card food-card-pad">
                         <h2 class="food-side-title">Produits en vedette</h2>
                         @foreach(array_slice($productCards, 0, 4) as $product)
@@ -1476,6 +1497,7 @@
                             </div>
                         @endforeach
                     </section>
+                    @endif
 
                     <section class="food-card food-card-pad">
                         <h2 class="food-side-title">Horaire</h2>
@@ -1576,6 +1598,7 @@
                         </div>
                     </section>
 
+                    @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
                     <section class="food-section food-section-pad" id="produits">
                         <span class="food-kicker">Produits</span>
                         <h2 class="food-title">Comptoirs et produits <em>vedettes</em></h2>
@@ -1594,12 +1617,14 @@
                             @endforeach
                         </div>
                     </section>
+                    @endif
 
                     @include('cms::web.fallback.partials.establishment-products', [
                         'etablissement' => $etablissement,
                         'devisLink' => $devisLink,
                         'cmsProductsTitle' => "Produits à vendre de l'établissement",
                         'cmsProductsSubtitle' => "Catalogue connecté au CMS : produits publics, disponibles et associés à cet établissement.",
+                        'cmsProductsSectionId' => 'produits',
                     ])
 
                     <section class="food-section food-section-pad food-feature-section" id="specialites">
@@ -1654,7 +1679,7 @@
                             @foreach($reviewCards as $review)
                                 <article class="food-review">
                                     <div class="food-stars">★★★★★</div>
-                                    <p>“{{ $review['text'] }}”</p>
+                                    <p>"{{ $review['text'] }}"</p>
                                     <strong>{{ $review['author'] }}</strong>
                                 </article>
                             @endforeach

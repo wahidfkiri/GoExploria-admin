@@ -851,6 +851,26 @@
 
     @php
         $devisLink = $devisUrl ?? route('devis');
+        $cmsLandingProducts = collect();
+        try {
+            if (
+                isset($etablissement)
+                && !empty($etablissement->id)
+                && class_exists(\App\Models\Product::class)
+                && \Illuminate\Support\Facades\Schema::hasTable('products')
+            ) {
+                $cmsLandingProducts = \App\Models\Product::query()
+                    ->with(['category:id,name', 'family:id,name'])
+                    ->where('etablissement_id', $etablissement->id)
+                    ->where('is_available_for_sale', true)
+                    ->latest('updated_at')
+                    ->limit(8)
+                    ->get();
+            }
+        } catch (\Throwable $e) {
+            $cmsLandingProducts = collect();
+        }
+        $cmsHasLiveProducts = $cmsLandingProducts->isNotEmpty();
 
         $eventCards = [
             [
