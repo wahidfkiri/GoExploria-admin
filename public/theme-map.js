@@ -62,11 +62,8 @@
         { code: 'sr', name: 'Suriname', lat: 3.9193, lng: -56.0278 },
         { code: 'gf', name: 'Guyane Française', lat: 3.9339, lng: -53.1258 }
     ];
-            // Catégories immobilières
-            this.categories = [
-                'résidentiel', 'commercial', 'terrain', 'luxe', 
-                'condo', 'maison', 'chalet', 'investissement'
-            ];
+            // Catégories normalisées des markers
+            this.categories = this.getStaticCategories().map(category => category.value);
             
             // Données des propriétés
             this.staticPlaces = this.generatePropertiesData();
@@ -547,7 +544,7 @@
             this.categories.forEach(category => {
                 const option = document.createElement('option');
                 option.value = category;
-                option.textContent = this.capitalizeFirstLetter(category);
+                option.textContent = this.getCategoryLabel(category);
                 categoryFilter.appendChild(option);
             });
         }
@@ -765,7 +762,7 @@
                         <div style="flex:1; min-width:0;">
                             <h4 style="margin:0 0 4px 0; font-size:15px; font-weight:600; color:#1a1a1a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${this.escapeHtml(place.name)}</h4>
                             <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#666;">
-                                <span>${this.capitalizeFirstLetter(place.category)}</span>
+                                <span>${this.getCategoryLabel(place.category)}</span>
                                 <span>•</span>
                                 <span style="font-weight:600; color:#1b4f6b;">$${place.price?.toLocaleString()}</span>
                             </div>
@@ -858,7 +855,7 @@
                 <div class="place-info">
                     <h4>${place.name}</h4>
                     <span class="place-category" style="background:${this.getCategoryColor(place.category)}">
-                        ${this.capitalizeFirstLetter(place.category)}
+                        ${this.getCategoryLabel(place.category)}
                     </span>
                     <div style="font-size:1.2rem; font-weight:700; color:#1b4f6b; margin:8px 0;">
                         $${place.price?.toLocaleString()}
@@ -981,7 +978,7 @@
                         <h2 style="margin:0 0 10px 0; color:#1a1a1a; font-size:1.8rem;">${place.name}</h2>
                         <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
                             <span style="background:${this.getCategoryColor(place.category)}; color:white; padding:6px 16px; border-radius:20px; font-size:14px;">
-                                ${this.capitalizeFirstLetter(place.category)}
+                                ${this.getCategoryLabel(place.category)}
                             </span>
                             <span style="color:#666; font-size:14px;">
                                 <i class="fas fa-map-marker-alt"></i> ${this.getProvinceName(place.province)}
@@ -1061,35 +1058,55 @@
             this.activePlace = null;
         }
         
-        getCategoryColor(category) {
-            const colors = {
-                résidentiel: '#1b4f6b',
-                commercial: '#e53e3e',
-                terrain: '#38a169',
-                luxe: '#805ad5',
-                condo: '#3182ce',
-                maison: '#d69e2e',
-                chalet: '#48bb78',
-                investissement: '#ed64a6',
-                default: '#718096'
-            };
-            return colors[category] || colors.default;
+        getStaticCategories() {
+            return [
+                {value:'tourism',    label:'Tourisme',    icon:'fas fa-route',              color:'#00a6a6'},
+                {value:'culture',    label:'Culture',     icon:'fas fa-palette',            color:'#8b5cf6'},
+                {value:'history',    label:'Histoire',    icon:'fas fa-landmark',           color:'#92400e'},
+                {value:'nature',     label:'Nature',      icon:'fas fa-tree',               color:'#16a34a'},
+                {value:'adventure',  label:'Aventure',    icon:'fas fa-person-hiking',      color:'#f97316'},
+                {value:'shopping',   label:'Shopping',    icon:'fas fa-bag-shopping',       color:'#db2777'},
+                {value:'science',    label:'Science',     icon:'fas fa-flask',              color:'#2563eb'},
+                {value:'beach',      label:'Plage',       icon:'fas fa-umbrella-beach',     color:'#0ea5e9'},
+                {value:'family',     label:'Famille',     icon:'fas fa-people-roof',        color:'#f59e0b'},
+                {value:'restaurant', label:'Restaurant',  icon:'fas fa-utensils',           color:'#ef4444'},
+                {value:'hotel',      label:'Hôtel',       icon:'fas fa-hotel',              color:'#7c3aed'},
+                {value:'commerce',   label:'Commerce',    icon:'fas fa-store',              color:'#0891b2'},
+                {value:'sante',      label:'Santé',       icon:'fas fa-heart-pulse',        color:'#dc2626'},
+                {value:'education',  label:'Éducation',   icon:'fas fa-graduation-cap',     color:'#4f46e5'},
+                {value:'sport',      label:'Sport',       icon:'fas fa-dumbbell',           color:'#059669'},
+                {value:'loisirs',    label:'Loisirs',     icon:'fas fa-gamepad',            color:'#c026d3'},
+                {value:'transport',  label:'Transport',   icon:'fas fa-bus',                color:'#475569'},
+                {value:'immobilier', label:'Immobilier',  icon:'fas fa-house-chimney',      color:'#b45309'},
+                {value:'service',    label:'Service',     icon:'fas fa-screwdriver-wrench', color:'#334155'},
+                {value:'autre',      label:'Autre',       icon:'fas fa-location-dot',       color:'#64748b'}
+            ];
         }
-        
-        getCategoryIcon(category) {
-            const icons = {
-                résidentiel: 'fas fa-home',
-                commercial: 'fas fa-building',
-                terrain: 'fas fa-tree',
-                luxe: 'fas fa-crown',
-                condo: 'fas fa-city',
-                maison: 'fas fa-home',
-                chalet: 'fas fa-mountain',
-                investissement: 'fas fa-chart-line',
-                default: 'fas fa-map-marker-alt'
+        getCategoryAliases() {
+            return {
+                business: 'service', museum: 'culture', musee: 'culture', park: 'nature', parc: 'nature',
+                monument: 'history', event: 'loisirs', evenement: 'loisirs', airport: 'transport', aeroport: 'transport',
+                university: 'education', universite: 'education', hospital: 'sante', hopital: 'sante', mountain: 'nature',
+                montagne: 'nature', lake: 'nature', lac: 'nature', residential: 'immobilier', residentiel: 'immobilier',
+                condo: 'immobilier', maison: 'immobilier', chalet: 'immobilier', terrain: 'immobilier', luxe: 'immobilier',
+                investissement: 'immobilier', commercial: 'commerce', 'santé': 'sante', health: 'sante', sports: 'sport',
+                leisure: 'loisirs', loisirs: 'loisirs', services: 'service', other: 'autre', divers: 'autre'
             };
-            return icons[category] || icons.default;
         }
+        normalizeCategory(category) {
+            if (!category) return 'autre';
+            const raw = String(category).trim().toLowerCase();
+            const normalized = raw.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            const aliases = this.getCategoryAliases();
+            return aliases[raw] || aliases[normalized] || (this.getStaticCategories().some(c => c.value === normalized) ? normalized : 'autre');
+        }
+        getCategoryDefinition(category) {
+            const normalized = this.normalizeCategory(category);
+            return this.getStaticCategories().find(c => c.value === normalized) || this.getStaticCategories().find(c => c.value === 'autre');
+        }
+        getCategoryColor(category) { return this.getCategoryDefinition(category).color; }
+        getCategoryIcon(category)  { return this.getCategoryDefinition(category).icon; }
+        getCategoryLabel(category) { return this.getCategoryDefinition(category).label; }
         
         getProvinceName(code) {
             const province = this.provinces.find(p => p.code === code);
@@ -1109,7 +1126,7 @@
             
             if (this.selectedCategory !== 'all') {
                 filteredPlaces = filteredPlaces.filter(place => 
-                    place.category === this.selectedCategory
+                    this.normalizeCategory(place.category) === this.selectedCategory
                 );
             }
             

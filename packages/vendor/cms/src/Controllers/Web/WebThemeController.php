@@ -1408,6 +1408,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         // Récupérer le thème actif via la relation de l'établissement
         $activeTheme = $this->etablissement->themes()
             ->wherePivot('is_active', true)
+            ->where('cms_themes.is_active', true)
             ->first();
         
         return $activeTheme;

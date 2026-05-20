@@ -425,21 +425,26 @@ class InteractiveMap {
     }
     getStaticCategories() {
         return [
-            {value:'business',  label:'Business',   icon:'fas fa-briefcase',      color:'#2a5bd7'},
-            {value:'tourism',   label:'Tourisme',   icon:'fas fa-globe-americas', color:'#00c9b7'},
-            {value:'restaurant',label:'Restaurant', icon:'fas fa-utensils',       color:'#e53e3e'},
-            {value:'hotel',     label:'HÃ´tel',      icon:'fas fa-hotel',          color:'#38a169'},
-            {value:'museum',    label:'MusÃ©e',      icon:'fas fa-landmark',       color:'#805ad5'},
-            {value:'shopping',  label:'Shopping',   icon:'fas fa-shopping-bag',   color:'#3182ce'},
-            {value:'park',      label:'Parc',       icon:'fas fa-tree',           color:'#d69e2e'},
-            {value:'monument',  label:'Monument',   icon:'fas fa-monument',       color:'#dd6b20'},
-            {value:'event',     label:'Ã‰vÃ©nement',  icon:'fas fa-calendar-alt',   color:'#ed64a6'},
-            {value:'airport',   label:'AÃ©roport',   icon:'fas fa-plane',          color:'#667eea'},
-            {value:'university',label:'UniversitÃ©', icon:'fas fa-graduation-cap', color:'#9f7aea'},
-            {value:'hospital',  label:'HÃ´pital',    icon:'fas fa-hospital',       color:'#f56565'},
-            {value:'beach',     label:'Plage',      icon:'fas fa-umbrella-beach', color:'#4299e1'},
-            {value:'mountain',  label:'Montagne',   icon:'fas fa-mountain',       color:'#48bb78'},
-            {value:'lake',      label:'Lac',        icon:'fas fa-water',          color:'#0bc5ea'}
+            {value:'tourism',    label:'Tourisme',    icon:'fas fa-route',              color:'#00a6a6'},
+            {value:'culture',    label:'Culture',     icon:'fas fa-palette',            color:'#8b5cf6'},
+            {value:'history',    label:'Histoire',    icon:'fas fa-landmark',           color:'#92400e'},
+            {value:'nature',     label:'Nature',      icon:'fas fa-tree',               color:'#16a34a'},
+            {value:'adventure',  label:'Aventure',    icon:'fas fa-person-hiking',      color:'#f97316'},
+            {value:'shopping',   label:'Shopping',    icon:'fas fa-bag-shopping',       color:'#db2777'},
+            {value:'science',    label:'Science',     icon:'fas fa-flask',              color:'#2563eb'},
+            {value:'beach',      label:'Plage',       icon:'fas fa-umbrella-beach',     color:'#0ea5e9'},
+            {value:'family',     label:'Famille',     icon:'fas fa-people-roof',        color:'#f59e0b'},
+            {value:'restaurant', label:'Restaurant',  icon:'fas fa-utensils',           color:'#ef4444'},
+            {value:'hotel',      label:'Hôtel',       icon:'fas fa-hotel',              color:'#7c3aed'},
+            {value:'commerce',   label:'Commerce',    icon:'fas fa-store',              color:'#0891b2'},
+            {value:'sante',      label:'Santé',       icon:'fas fa-heart-pulse',        color:'#dc2626'},
+            {value:'education',  label:'Éducation',   icon:'fas fa-graduation-cap',     color:'#4f46e5'},
+            {value:'sport',      label:'Sport',       icon:'fas fa-dumbbell',           color:'#059669'},
+            {value:'loisirs',    label:'Loisirs',     icon:'fas fa-gamepad',            color:'#c026d3'},
+            {value:'transport',  label:'Transport',   icon:'fas fa-bus',                color:'#475569'},
+            {value:'immobilier', label:'Immobilier',  icon:'fas fa-house-chimney',      color:'#b45309'},
+            {value:'service',    label:'Service',     icon:'fas fa-screwdriver-wrench', color:'#334155'},
+            {value:'autre',      label:'Autre',       icon:'fas fa-location-dot',       color:'#64748b'}
         ];
     }
 
@@ -519,7 +524,6 @@ class InteractiveMap {
         let remotePlaces = [];
         try {
             const params = {per_page:200};
-            if (this.selectedCategory !== 'all') params.category = this.selectedCategory;
             const r = await axios.get(`${API_BASE_URL}/points`, {params});
             if (r.data.success) {
                 remotePlaces = Array.isArray(r.data.data) ? r.data.data : [];
@@ -531,7 +535,7 @@ class InteractiveMap {
             const staticPlaces = this.getGrandeSereniteStaticPlaces();
             this.places = this.mergePlaces(remotePlaces, staticPlaces);
             if (this.selectedCategory !== 'all') {
-                this.places = this.places.filter(p => p.category === this.selectedCategory);
+                this.places = this.places.filter(p => this.normalizeCategory(p.category) === this.selectedCategory);
             }
             this.updatePlacesCount();
             this.renderPlacesList();
@@ -592,7 +596,7 @@ class InteractiveMap {
                         </div>
                         <div style="flex:1;min-width:0;">
                             <h4 style="margin:0;font-size:14px;font-weight:600;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${this.escapeHtml(place.name)}</h4>
-                            <div style="font-size:11px;color:#666;">${this.capitalizeFirstLetter(place.category)} • ${place.province||'Canada'}</div>
+                            <div style="font-size:11px;color:#666;">${this.getCategoryLabel(place.category)} • ${place.province||'Canada'}</div>
                         </div>
                     </div>
                     ${videoHtml}
@@ -640,7 +644,7 @@ class InteractiveMap {
     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     createOtherPlacesVideoSlider(currentPlace) {
         const others = this.places.filter(p =>
-            p.id !== currentPlace.id && p.youtube_id && p.category === currentPlace.category
+            p.id !== currentPlace.id && p.youtube_id && this.normalizeCategory(p.category) === this.normalizeCategory(currentPlace.category)
         );
         if (others.length === 0) return '';
 
@@ -712,7 +716,7 @@ class InteractiveMap {
             <div class="ops-slider-wrapper">
                 <div class="ops-slider-header">
                     <h4><i class="fab fa-youtube" style="color:#FF0000;"></i> DÃ©couvrez aussi</h4>
-                    <span class="ops-badge">${this.capitalizeFirstLetter(currentPlace.category)}</span>
+                    <span class="ops-badge">${this.getCategoryLabel(currentPlace.category)}</span>
                 </div>
 
                 <div class="swiper ops-swiper" id="${swId}">
@@ -853,7 +857,7 @@ class InteractiveMap {
             event:     {label:'RÃ©server', icon:'fa-calendar-alt',  color:'#ed64a6'},
             business:  {label:'Contacter',icon:'fa-briefcase',     color:'#2a5bd7'},
         };
-        const cta = ctaMap[place.category]||{label:'Visiter',icon:'fa-external-link-alt',color:'#2a5bd7'};
+        const cta = ctaMap[this.normalizeCategory(place.category)]||{label:'Visiter',icon:'fa-external-link-alt',color:'#2a5bd7'};
         const ctaHtml = contactWebsite ? `
             <a href="${contactWebsite}" target="_blank" rel="noopener"
                style="flex:1;padding:14px;background:${cta.color};color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;transition:opacity .2s;"
@@ -867,7 +871,7 @@ class InteractiveMap {
                 <div style="margin-bottom:30px;">
                     <h2 style="margin:0 0 10px 0;color:#1a1a1a;font-size:1.8rem;">${this.escapeHtml(place.name)}</h2>
                     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                        <span style="background:${this.getCategoryColor(place.category)};color:white;padding:6px 16px;border-radius:20px;font-size:14px;font-weight:500;">${this.capitalizeFirstLetter(place.category)}</span>
+                        <span style="background:${this.getCategoryColor(place.category)};color:white;padding:6px 16px;border-radius:20px;font-size:14px;font-weight:500;">${this.getCategoryLabel(place.category)}</span>
                         ${place.details?.rating?`<span style="background:#fbbf24;color:#333;padding:6px 12px;border-radius:20px;font-size:14px;"><i class="fas fa-star"></i> ${place.details.rating} (${place.details.reviews_count||0} avis)</span>`:''}
                         <span style="color:#666;font-size:14px;"><i class="fas fa-map-marker-alt"></i> ${place.province||'Canada'}</span>
                     </div>
@@ -955,7 +959,7 @@ class InteractiveMap {
             ${mediaHtml}
             <div class="place-info">
                 <h4>${this.escapeHtml(place.name)}</h4>
-                <span class="place-category" style="background:${this.getCategoryColor(place.category)}">${this.capitalizeFirstLetter(place.category)}</span>
+                <span class="place-category" style="background:${this.getCategoryColor(place.category)}">${this.getCategoryLabel(place.category)}</span>
                 <span style="display:block;font-size:11px;color:#666;margin-top:5px;"><i class="fas fa-map-marker-alt"></i> ${place.province||'Canada'}</span>
                 <p class="place-description">${this.escapeHtml(place.description?.substring(0,80)||'Aucune description disponible')}...</p>
                 ${place.youtube_id?`<div style="font-size:12px;color:#666;margin-bottom:10px;display:flex;align-items:center;gap:5px;"><i class="fab fa-youtube" style="color:#ff0000;"></i> VidÃ©o disponible</div>`:''}
@@ -1059,10 +1063,10 @@ class InteractiveMap {
                 } else {
                     this.places.forEach(p=>{
                         const md=this.markers[p.id]; if(!md) return;
-                        if(cats.includes(p.category)) md.marker.addTo(this.map);
+                        if(cats.includes(this.normalizeCategory(p.category))) md.marker.addTo(this.map);
                         else md.marker.remove();
                     });
-                    const filtered = this.places.filter(p=>cats.includes(p.category));
+                    const filtered = this.places.filter(p=>cats.includes(this.normalizeCategory(p.category)));
                     const c=document.getElementById('places-list'); if(c){ c.innerHTML=''; filtered.forEach(p=>c.appendChild(this.createPlaceElement(p))); }
                     const el=document.getElementById('places-count'); if(el) el.textContent=filtered.length;
                 }
@@ -1090,8 +1094,31 @@ class InteractiveMap {
         let cur=start; const step=Math.ceil((end-start)/50);
         const timer=setInterval(()=>{ cur+=step; if(cur>=end){cur=end;clearInterval(timer);} el.textContent=cur; },40);
     }
-    getCategoryColor(cat) { return this.getStaticCategories().find(c=>c.value===cat)?.color||'#718096'; }
-    getCategoryIcon(cat)  { return this.getStaticCategories().find(c=>c.value===cat)?.icon ||'fas fa-map-marker-alt'; }
+    getCategoryAliases() {
+        return {
+            business: 'service', museum: 'culture', musee: 'culture', park: 'nature', parc: 'nature',
+            monument: 'history', event: 'loisirs', evenement: 'loisirs', airport: 'transport', aeroport: 'transport',
+            university: 'education', universite: 'education', hospital: 'sante', hopital: 'sante', mountain: 'nature',
+            montagne: 'nature', lake: 'nature', lac: 'nature', residential: 'immobilier', residentiel: 'immobilier',
+            condo: 'immobilier', maison: 'immobilier', chalet: 'immobilier', terrain: 'immobilier', luxe: 'immobilier',
+            investissement: 'immobilier', commercial: 'commerce', 'santé': 'sante', health: 'sante', sports: 'sport',
+            leisure: 'loisirs', loisirs: 'loisirs', services: 'service', other: 'autre', divers: 'autre'
+        };
+    }
+    normalizeCategory(cat) {
+        if (!cat) return 'autre';
+        const raw = String(cat).trim().toLowerCase();
+        const normalized = raw.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        const aliases = this.getCategoryAliases();
+        return aliases[raw] || aliases[normalized] || (this.getStaticCategories().some(c => c.value === normalized) ? normalized : 'autre');
+    }
+    getCategoryDefinition(cat) {
+        const normalized = this.normalizeCategory(cat);
+        return this.getStaticCategories().find(c => c.value === normalized) || this.getStaticCategories().find(c => c.value === 'autre');
+    }
+    getCategoryColor(cat) { return this.getCategoryDefinition(cat).color; }
+    getCategoryIcon(cat)  { return this.getCategoryDefinition(cat).icon; }
+    getCategoryLabel(cat) { return this.getCategoryDefinition(cat).label; }
     extractYoutubeId(value) {
         if (!value || typeof value !== 'string') return '';
         const v = value.trim();
