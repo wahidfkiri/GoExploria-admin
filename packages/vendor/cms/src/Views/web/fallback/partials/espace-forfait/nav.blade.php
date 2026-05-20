@@ -18,7 +18,7 @@
       <a href="#contact">Contact</a>
     </div>
     <div class="nav-cta">
-      <a href="tel:{{ preg_replace('/\s+/', '', $phone) }}" class="phone-link"><i class="fa-solid fa-phone"></i> {{ $phone }}</a>
+      <a href="tel:{{ $phoneDial }}" class="phone-link"><i class="fa-solid fa-phone"></i> {{ $phone }}</a>
       <a href="#contact" class="btn btn-primary">Réserver</a>
     </div>
     <button type="button" class="hamburger" onclick="toggleMenu()" aria-label="Menu mobile"><span></span><span></span><span></span></button>

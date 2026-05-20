@@ -7,7 +7,9 @@
         ?: get_site_description($etablissement->id)
         ?: 'Location de motoneige, quad, côte-à-côte et forfaits d’aventure avec une expérience de réservation moderne.';
     $brandLogo = get_logo_url($etablissement->id) ?: ($brandLogoUrl ?? null);
-    $phone = $etablissement->getSetting('phone', null, 'company') ?: $etablissement->getSetting('phone', null, 'general') ?: $etablissement->getSetting('telephone', null, 'general') ?: ($etablissement->phone ?? null) ?: ($etablissement->telephone ?? null) ?: '418-665-1531';
+    $phone = $etablissement->getSetting('phone', null, 'company') ?: $etablissement->getSetting('phone', null, 'general') ?: $etablissement->getSetting('telephone', null, 'general') ?: ($etablissement->phone ?? null) ?: ($etablissement->telephone ?? null) ?: '(418) 525-7748';
+    $phoneDial = preg_replace('/\D+/', '', $phone);
+    $phoneDial = strlen($phoneDial) === 10 ? '+1' . $phoneDial : $phoneDial;
     $email = $etablissement->getSetting('email', null, 'general') ?: $etablissement->getSetting('email_contact', null, 'general') ?: ($etablissement->email_contact ?? null) ?: ($etablissement->email ?? null) ?: 'info@goexploriabusiness.com';
     $address = $etablissement->getSetting('address', null, 'company') ?: $etablissement->getSetting('adress', null, 'company') ?: $etablissement->getSetting('address', null, 'general') ?: $etablissement->getSetting('adresse', null, 'general') ?: ($etablissement->adresse ?? null) ?: '1000-B Chemin des Loisirs, La Malbaie, QC';
     $facebookUrl = $etablissement->getSetting('facebook', null, 'social') ?: $etablissement->getSetting('facebook_url', null, 'general') ?: '#';
