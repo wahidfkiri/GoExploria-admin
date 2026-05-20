@@ -1,4 +1,4 @@
-@php
+﻿@php
     $siteName = get_site_name($etablissement->id ?? null);
     $devisLink = $devisUrl ?? route('devis');
 
@@ -75,7 +75,7 @@
     </div>
 
     <div class="dlh-content">
-        <div class="dlh-badge">Sciage Mobile Professionnel · Lanaudière</div>
+       
         <h1 id="dlhTitle">{!! $firstTitle !== '' ? nl2br(e($firstTitle)) : 'Votre Bois,<br><em>Notre Expertise</em>' !!}</h1>
         <p class="dlh-sub" id="dlhSubtitle">
             {{ $firstSubtitle !== '' ? $firstSubtitle : 'Moulin à scie hydraulique informatisé pour transformer votre bois brut en matériaux de qualité supérieure. Précision. Fiabilité. Satisfaction garantie.' }}
@@ -101,7 +101,7 @@
     </div>
 </section>
 
-<div class="dlh-stats-bar">
+<div class="dlh-stats-bar" style="display:none;">
     <div class="dlh-stat-item">
         <div class="dlh-stat-num">38″</div>
         <div class="dlh-stat-label">Diamètre max. de billots</div>
