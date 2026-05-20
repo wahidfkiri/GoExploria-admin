@@ -1,6 +1,6 @@
 /**
  * Mega Menu V2 Controller
- * Gère l'ouverture/fermeture du mega menu au hover de "Nos Services"
+ * Gère l'ouverture/fermeture du mega menu au clic de "Nos Services"
  */
 
 class MegaMenuV2 {
@@ -8,7 +8,6 @@ class MegaMenuV2 {
         this.menuItem = document.getElementById('servicesMenuItem');
         this.megaMenu = document.querySelector('.mega-menu-v2');
         this.isMobile = window.innerWidth <= 768;
-        this.hoverTimeout = null;
         this.isOpen = false;
         
         this.init();
@@ -56,34 +55,24 @@ class MegaMenuV2 {
     }
     
     initDesktop() {
-        // Ouvrir au hover
-        this.menuItem.addEventListener('mouseenter', () => {
-            clearTimeout(this.hoverTimeout);
-            this.openMegaMenu();
+        const serviceLink = this.menuItem.querySelector('a');
+        const clickTarget = serviceLink || this.menuItem;
+
+        clickTarget.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.toggleMegaMenu();
         });
-        
-        // Fermer avec un délai au mouseleave
-        this.menuItem.addEventListener('mouseleave', () => {
-            this.hoverTimeout = setTimeout(() => {
-                this.closeMegaMenu();
-            }, 300);
-        });
-        
-        // Garder ouvert si on survole le mega menu
-        this.megaMenu.addEventListener('mouseenter', () => {
-            clearTimeout(this.hoverTimeout);
-        });
-        
-        // Fermer quand on quitte le mega menu
-        this.megaMenu.addEventListener('mouseleave', () => {
-            this.hoverTimeout = setTimeout(() => {
-                this.closeMegaMenu();
-            }, 300);
-        });
-        
-        // Fermer au clic en dehors (sur l'overlay)
+
+        // Fermer au clic en dehors (sur l'overlay ou la page)
         this.megaMenu.addEventListener('click', (e) => {
             if (e.target === this.megaMenu) {
+                this.closeMegaMenu();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!this.megaMenu.contains(e.target) && !this.menuItem.contains(e.target)) {
                 this.closeMegaMenu();
             }
         });

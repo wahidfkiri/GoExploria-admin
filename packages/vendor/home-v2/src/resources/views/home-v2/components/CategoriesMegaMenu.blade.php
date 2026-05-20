@@ -177,13 +177,6 @@ function initCatMegaPanel(triggerId, panelId, viewAllId) {
         closeTimer = setTimeout(function() { panel.classList.remove('open'); }, 120);
     }
 
-    if (window.innerWidth > 768) {
-        trigger.addEventListener('mouseenter', openPanel);
-        trigger.addEventListener('mouseleave', closePanel);
-        panel.addEventListener('mouseenter', function() { clearTimeout(closeTimer); });
-        panel.addEventListener('mouseleave', closePanel);
-    }
-
     trigger.addEventListener('click', function(e) {
         e.stopPropagation();
         panel.classList.contains('open') ? panel.classList.remove('open') : openPanel();

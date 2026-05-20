@@ -327,19 +327,14 @@ function cancelClose() {
     clearTimeout(smmCloseTimer);
 }
 
-// Hover + clic sur "NOS SERVICES"
+// Ouverture uniquement au clic sur "NOS SERVICES"
 if (smmTrigger) {
-    smmTrigger.addEventListener('mouseenter', function() { cancelClose(); openMenu(); });
-    smmTrigger.addEventListener('mouseleave', scheduleClose);
-    smmTrigger.addEventListener('click', function(e) { e.preventDefault(); cancelClose(); openMenu(); });
+    smmTrigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        cancelClose();
+        smmContainer.classList.contains('active') ? closeMenu() : openMenu();
+    });
 }
-
-// Hover sur le container — annule la fermeture
-smmContainer.addEventListener('mouseenter', cancelClose);
-smmContainer.addEventListener('mouseleave', scheduleClose);
-
-// Hover sur l'overlay — annule aussi la fermeture (espace entre trigger et panel)
-smmOverlay.addEventListener('mouseenter', cancelClose);
 
 if (smmClose)   smmClose.addEventListener('click', closeMenu);
 if (smmOverlay) smmOverlay.addEventListener('click', closeMenu);
@@ -349,19 +344,6 @@ smmContainer.addEventListener('click', function(e) {
     const cardLink = e.target.closest('.smm-v4-card-link');
     if (!cardLink) return;
     closeMenu();
-});
-
-// Hover sur un bloc dans la sidebar (plus réactif que le clic)
-document.addEventListener('mouseover', function(e) {
-    const catItem = e.target.closest('.smm-v4-cat');
-    if (catItem && smmContainer.classList.contains('active')) {
-        const catKey = catItem.getAttribute('data-cat');
-        if (catKey) {
-            document.querySelectorAll('.smm-v4-cat').forEach(function(c) { c.classList.remove('active'); });
-            catItem.classList.add('active');
-            generateMainContent(catKey);
-        }
-    }
 });
 
 // Clic sur un bloc dans la sidebar

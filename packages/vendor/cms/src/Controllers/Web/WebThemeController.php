@@ -551,7 +551,9 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 ? 'cms::web.fallback.landing-immobilier-construction'
                 : ($this->shouldUseCommerceAlimentaireFallback($activities)
                     ? 'cms::web.fallback.landing-commerce-alimentaire'
-                    : 'cms::web.fallback.landing-activity'));
+                    : ($this->shouldUseEspaceForfaitFallback($activities)
+                        ? 'cms::web.fallback.landing-espace-forfait'
+                        : 'cms::web.fallback.landing-activity')));
         $html = view($view, $data)->render();
 
         return $this->buildResponse($html, $this->buildSeoContext(null, false));
@@ -1045,6 +1047,50 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'traiteur',
             'gourmet',
             'fine food',
+        ];
+
+        foreach ($keywords as $keyword) {
+            if (str_contains($haystack, $keyword)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Detect if the establishment should use the "Espace Forfait" fallback landing.
+     */
+    protected function shouldUseEspaceForfaitFallback(Collection $activities): bool
+    {
+        $haystack = $activities
+            ->pluck('name')
+            ->filter()
+            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
+            ->implode(' ');
+
+        if ($haystack === '') {
+            $haystack = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
+        }
+
+        $keywords = [
+            'espace forfait',
+            'forfait',
+            'forfaits',
+            'package',
+            'packages',
+            'circuit',
+            'expedition',
+            'expédition',
+            'location',
+            'motoneige',
+            'quad',
+            'vtt',
+            'côte-à-côte',
+            'cote-a-cote',
+            'cote à cote',
+            'ssv',
+            'aventure',
         ];
 
         foreach ($keywords as $keyword) {

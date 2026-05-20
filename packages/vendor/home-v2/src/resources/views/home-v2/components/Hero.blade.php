@@ -336,32 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isOpen) positionMegaMenu();
     });
 
-    // Gestion du survol dynamique sur desktop (avec pont temporel pour l'écart de 15px)
-    let hoverTimeout;
-    const handleMouseLeave = () => {
-        if (window.innerWidth > 1025) {
-            hoverTimeout = setTimeout(() => {
-                if (!megaMenu.matches(':hover') && !infoBtn.matches(':hover')) {
-                    megaMenu.classList.remove('active');
-                    infoBtn.classList.remove('active');
-                }
-            }, 250); // Espace de tolérance pour traverser le gap de 15px
-        }
-    };
-
-    const handleMouseEnter = () => {
-        if (window.innerWidth > 1025) {
-            clearTimeout(hoverTimeout);
-            megaMenu.classList.add('active');
-            infoBtn.classList.add('active');
-            positionMegaMenu();
-        }
-    };
-
-    infoBtn.addEventListener('mouseenter', handleMouseEnter);
-    infoBtn.addEventListener('mouseleave', handleMouseLeave);
-    megaMenu.addEventListener('mouseenter', handleMouseEnter);
-    megaMenu.addEventListener('mouseleave', handleMouseLeave);
+    // Ouverture du mega menu uniquement au clic.
 
     // Fermer si clic ailleurs (fonctionne car clics en dehors, incluant la marge vide au dessus sur mobile)
     document.addEventListener('click', function(e) {

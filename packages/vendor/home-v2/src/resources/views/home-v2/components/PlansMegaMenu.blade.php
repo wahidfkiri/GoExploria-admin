@@ -451,29 +451,19 @@
             clearTimeout(closeTimer);
         }
 
-        // Logique identique à "Nos services"
-        trigger.addEventListener('mouseenter', function() {
-            cancelClose();
-            openPlansMenu();
-        });
-        trigger.addEventListener('mouseleave', scheduleClose);
-
-        menu.addEventListener('mouseenter', cancelClose);
-        menu.addEventListener('mouseleave', scheduleClose);
-
-        overlay.addEventListener('mouseenter', cancelClose);
-        overlay.addEventListener('mouseleave', scheduleClose);
-
+        // Ouverture uniquement au clic, jamais au survol.
         if (triggerLink) {
             triggerLink.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 cancelClose();
-                if (window.innerWidth <= 900 && menu.classList.contains('active')) {
-                    closePlansMenu();
-                    return;
-                }
-                openPlansMenu();
+                menu.classList.contains('active') ? closePlansMenu() : openPlansMenu();
+            });
+        } else {
+            trigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                cancelClose();
+                menu.classList.contains('active') ? closePlansMenu() : openPlansMenu();
             });
         }
 

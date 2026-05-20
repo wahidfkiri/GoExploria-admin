@@ -30,25 +30,23 @@ class VerticalDestinationsMegaMenu {
             return;
         }
         
-        // Événements sur le trigger
-        this.trigger.addEventListener('mouseenter', () => {
-            this.cancelHide();
-            this.show();
+        // Ouverture uniquement au clic sur le trigger
+        this.trigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.isOpen ? this.hide() : this.show();
         });
-        
-        this.trigger.addEventListener('mouseleave', () => {
-            this.scheduleHide();
+
+        document.addEventListener('click', (e) => {
+            if (!this.megaMenu.contains(e.target) && !this.trigger.contains(e.target)) {
+                this.hide();
+            }
         });
-        
-        // Événements sur le mega menu
-        this.megaMenu.addEventListener('mouseenter', () => {
-            this.cancelHide();
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') this.hide();
         });
-        
-        this.megaMenu.addEventListener('mouseleave', () => {
-            this.scheduleHide();
-        });
-        
+
         // Bouton de fermeture
         if (this.closeBtn) {
             this.closeBtn.addEventListener('click', () => {

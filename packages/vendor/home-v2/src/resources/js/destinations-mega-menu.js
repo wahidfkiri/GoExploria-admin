@@ -41,15 +41,22 @@ class DestinationsMegaMenu {
         console.log('📍 Trigger trouvé:', !!this.trigger);
         
         if (this.trigger) {
-            // Événements sur le trigger
-            this.trigger.addEventListener('mouseenter', () => {
-                this.show();
+            // Ouverture uniquement au clic sur le trigger Destinations.
+            this.trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.isOpen ? this.hide() : this.show();
             });
-            this.trigger.addEventListener('mouseleave', () => this.scheduleHide());
-            
-            // Événements sur le mega menu
-            this.megaMenu.addEventListener('mouseenter', () => this.cancelHide());
-            this.megaMenu.addEventListener('mouseleave', () => this.scheduleHide());
+
+            document.addEventListener('click', (e) => {
+                if (!this.megaMenu.contains(e.target) && !this.trigger.contains(e.target)) {
+                    this.hide();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') this.hide();
+            });
         } else {
             console.error('Trigger non trouvé (.search-bar-v2-destinations)');
         }
@@ -119,7 +126,7 @@ class DestinationsMegaMenu {
             // Sélectionner "Amérique du Nord" par défaut
             const ameriqueDuNord = continents.find(c => c.name.toLowerCase().includes('amérique du nord') || c.name.toLowerCase().includes('north america'));
             if (ameriqueDuNord) {
-                // Simuler un hover sur Amérique du Nord
+                // Sélectionner Amérique du Nord par défaut
                 const continentItems = this.grid.querySelectorAll('.destinations-mega-continent-item');
                 continentItems.forEach(item => {
                     if (item.dataset.continentId == ameriqueDuNord.id) {
@@ -157,7 +164,7 @@ class DestinationsMegaMenu {
         // Colonne droite: Contenu dynamique
         const rightColumn = document.createElement('div');
         rightColumn.className = 'destinations-mega-right-column';
-        rightColumn.innerHTML = '<div class="destinations-mega-placeholder">Survolez un continent pour voir les destinations</div>';
+        rightColumn.innerHTML = '<div class="destinations-mega-placeholder">Cliquez sur un continent pour voir les destinations</div>';
         
         container.appendChild(leftColumn);
         container.appendChild(rightColumn);
@@ -173,20 +180,17 @@ class DestinationsMegaMenu {
         item.dataset.loaded = 'false';
         item.textContent = continent.name;
         
-        // Événement hover pour charger et afficher les pays
-        item.addEventListener('mouseenter', async () => {
-            // Retirer la sélection des autres continents
+        // Clic pour charger et afficher les pays
+        item.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             const siblings = item.parentElement.querySelectorAll('.destinations-mega-continent-item');
             siblings.forEach(sibling => sibling.classList.remove('active'));
             item.classList.add('active');
-            
-            // Mettre à jour le fil d'Ariane
             this.updateBreadcrumb([continent]);
-            
-            // Charger et afficher les pays dans la colonne droite
             await this.loadContinentDetails(continent);
         });
-        
+
         return item;
     }
     
@@ -257,15 +261,10 @@ class DestinationsMegaMenu {
         link.appendChild(img);
         link.appendChild(nameSpan);
         
-        // Mettre à jour le fil d'Ariane au hover sur le pays
-        link.addEventListener('mouseenter', () => {
+        // Mettre à jour le fil d'Ariane au focus clavier, sans ouverture au survol.
+        link.addEventListener('focus', () => {
             this.updateBreadcrumb([continent, country]);
         });
-        
-        link.addEventListener('mouseleave', () => {
-            this.updateBreadcrumb([continent]);
-        });
-        
         item.appendChild(link);
         
         // Charger directement les provinces/villes
@@ -300,15 +299,10 @@ class DestinationsMegaMenu {
         link.className = 'destinations-mega-province-link';
         link.textContent = province.name;
         
-        // Mettre à jour le fil d'Ariane au hover sur la province/ville
-        link.addEventListener('mouseenter', () => {
+        // Mettre à jour le fil d'Ariane au focus clavier, sans ouverture au survol.
+        link.addEventListener('focus', () => {
             this.updateBreadcrumb([continent, country, province]);
         });
-        
-        link.addEventListener('mouseleave', () => {
-            this.updateBreadcrumb([continent, country]);
-        });
-        
         item.appendChild(link);
         return item;
     }
@@ -385,7 +379,7 @@ class DestinationsMegaMenu {
         this.currentBreadcrumb = path;
         
         if (path.length === 0) {
-            this.breadcrumb.innerHTML = '<span class="search-bar-v2-destinations-link">Survolez pour explorer</span>';
+            this.breadcrumb.innerHTML = '<span class="search-bar-v2-destinations-link">Cliquez pour explorer</span>';
             return;
         }
         
@@ -400,7 +394,7 @@ class DestinationsMegaMenu {
     
     resetBreadcrumb() {
         if (!this.breadcrumb) return;
-        this.breadcrumb.innerHTML = '<span class="search-bar-v2-destinations-link">Survolez pour explorer</span>';
+        this.breadcrumb.innerHTML = '<span class="search-bar-v2-destinations-link">Cliquez pour explorer</span>';
     }
 }
 
