@@ -126,12 +126,12 @@ if (snow) { for(let i=0;i<28;i++){ const s=document.createElement('div'); s.clas
 const mapNode=document.getElementById('tlMap');
 if(mapNode && window.L){
   const lat=Number(mapNode.dataset.lat||47.6577); const lng=Number(mapNode.dataset.lng||-70.1526); const title=mapNode.dataset.title||tlConfig.siteName||''; const address=mapNode.dataset.address||tlConfig.address||''; const videoUrl=tlConfig.mapVideoUrl||'';
-  const map=L.map(mapNode,{zoomControl:true,scrollWheelZoom:false}).setView([lat,lng],19);
+  const map=L.map(mapNode,{zoomControl:true,scrollWheelZoom:false}).setView([lat,lng],6);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
   const icon=L.divIcon({className:'lf-marker',html:'<div class="lf-marker-wrap"><i class="fas fa-seedling"></i></div>',iconSize:[42,42],iconAnchor:[21,40],popupAnchor:[0,-36]});
   const popupHtml='<div style="width:320px;max-width:100%;"><div style="font-weight:800;margin-bottom:8px;color:#0d2137;">'+title+'</div><div style="font-size:12px;color:#666;margin-bottom:10px;line-height:1.45;">'+address+'</div><iframe width="320" height="180" src="'+videoUrl+'" title="Vidéo sur la carte" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display:block;width:100%;border-radius:8px;"></iframe></div>';
   const marker=L.marker([lat,lng],{icon}).addTo(map).bindPopup(popupHtml,{maxWidth:360,minWidth:260});
-  document.getElementById('tlMapVideoBtn')?.addEventListener('click',function(){map.setView(marker.getLatLng(),19,{animate:true});marker.openPopup();});
+  document.getElementById('tlMapVideoBtn')?.addEventListener('click',function(){map.setView(marker.getLatLng(),6,{animate:true});marker.openPopup();});
   setTimeout(()=>map.invalidateSize(),250);
 }
 

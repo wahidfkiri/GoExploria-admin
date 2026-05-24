@@ -283,7 +283,6 @@ public function asset($etablissementId, $themeId, $path)
         abort(404);
     }
 }
-
     /**
      * Téléchargement d'un thème
      */
@@ -547,13 +546,15 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $activities = $data['activities'] ?? collect();
         $view = $this->shouldUseBoidsFallback($activities)
             ? 'cms::web.fallback.landing-boids'
-            : ($this->shouldUseImmobilierConstructionFallback($activities)
-                ? 'cms::web.fallback.landing-immobilier-construction'
-                : ($this->shouldUseCommerceAlimentaireFallback($activities)
-                    ? 'cms::web.fallback.landing-commerce-alimentaire'
-                    : ($this->shouldUseEspaceForfaitFallback($activities)
-                        ? 'cms::web.fallback.landing-espace-forfait'
-                        : 'cms::web.fallback.landing-activity')));
+            : ($this->shouldUseImmoblierFallback($activities)
+                ? 'cms::web.fallback.landing-immoblier'
+                : ($this->shouldUseImmobilierConstructionFallback($activities)
+                    ? 'cms::web.fallback.landing-immobilier-construction'
+                    : ($this->shouldUseCommerceAlimentaireFallback($activities)
+                        ? 'cms::web.fallback.landing-commerce-alimentaire'
+                        : ($this->shouldUseEspaceForfaitFallback($activities)
+                            ? 'cms::web.fallback.landing-espace-forfait'
+                            : 'cms::web.fallback.landing-activity'))));
         $html = view($view, $data)->render();
 
         return $this->buildResponse($html, $this->buildSeoContext(null, false));
@@ -965,6 +966,52 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'sciage',
             'lumber',
             'timber',
+        ];
+
+        foreach ($keywords as $keyword) {
+            if (str_contains($haystack, $keyword)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Detect if the establishment should use the apartment/rental immobilier fallback.
+     *
+     * The misspelled "Immoblier" label is kept intentionally because it is the
+     * requested activity name in the CMS.
+     */
+    protected function shouldUseImmoblierFallback(Collection $activities): bool
+    {
+        $haystack = $activities
+            ->pluck('name')
+            ->filter()
+            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
+            ->implode(' ');
+
+        $otherActivity = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
+        $haystack = trim($haystack . ' ' . $otherActivity);
+
+        if ($haystack === '') {
+            return false;
+        }
+
+        $keywords = [
+            'immoblier',
+            'appartement',
+            'appartements',
+            'logement',
+            'logements',
+            'location appartement',
+            'location residentielle',
+            'immeuble locatif',
+            'immeubles locatifs',
+            'residence',
+            'condo',
+            'condos',
+            'place des cerisiers',
         ];
 
         foreach ($keywords as $keyword) {
@@ -1725,4 +1772,5 @@ protected function getThemePath($theme)
         ];
     }
 }
+
 
