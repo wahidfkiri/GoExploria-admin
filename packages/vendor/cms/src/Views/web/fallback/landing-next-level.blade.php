@@ -206,11 +206,54 @@ nav.scrolled {
 .nav-logo { display: flex; flex-direction: column; line-height: 1; }
 .nav-logo span:first-child { font-family: 'Bebas Neue'; font-size: 28px; color: var(--gold); letter-spacing: 3px; }
 .nav-logo span:last-child { font-size: 10px; letter-spacing: 8px; color: var(--text); opacity: 0.6; text-transform: uppercase; }
-.nav-links { display: flex; gap: 32px; list-style: none; }
-.nav-links a { color: var(--text); text-decoration: none; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.75; transition: var(--transition); position: relative; }
-.nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--gold); transition: var(--transition); }
-.nav-links a:hover { opacity: 1; color: var(--gold); }
-.nav-links a:hover::after { width: 100%; }
+.nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+.nav-links > li { position: relative; }
+.nav-links a,
+.templates-mega-toggle { color: var(--text); text-decoration: none; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.75; transition: var(--transition); position: relative; }
+.templates-mega-toggle { border: 0; background: transparent; font-family: 'Outfit', sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+.nav-links a::after,
+.templates-mega-toggle::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--gold); transition: var(--transition); }
+.nav-links a:hover,
+.templates-mega-toggle:hover,
+.templates-mega.is-open .templates-mega-toggle { opacity: 1; color: var(--gold); }
+.nav-links a:hover::after,
+.templates-mega-toggle:hover::after,
+.templates-mega.is-open .templates-mega-toggle::after { width: 100%; }
+.templates-mega-panel {
+  position: fixed; top: 76px; left: 50%; transform: translate(-50%, 12px);
+  width: min(1380px, calc(100vw - 64px));
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  background: rgba(10,10,10,0.96);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 24px;
+  padding: 22px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  box-shadow: 0 28px 80px rgba(0,0,0,0.58);
+  backdrop-filter: blur(20px);
+  transition: var(--transition);
+}
+nav.scrolled .templates-mega-panel { top: 64px; }
+.templates-mega.is-open .templates-mega-panel { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, 0); }
+.templates-mega-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 18px; margin-bottom: 18px; }
+.templates-mega-kicker { color: var(--gold); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 6px; }
+.templates-mega-title { font-family: 'Bebas Neue'; font-size: 36px; letter-spacing: 2px; line-height: 0.95; }
+.templates-mega-copy { max-width: 380px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.templates-mega-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+.template-card { position: relative; overflow: hidden; min-height: 260px; border-radius: 18px; padding: 12px; color: var(--text); text-decoration: none; background: linear-gradient(145deg, rgba(201,168,76,0.13), rgba(255,255,255,0.035)); border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; justify-content: space-between; transition: var(--transition); }
+.template-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at top right, rgba(201,168,76,0.32), transparent 48%); opacity: 0.7; transition: var(--transition); }
+.template-card:hover { transform: translateY(-6px); border-color: rgba(201,168,76,0.45); box-shadow: 0 18px 48px rgba(0,0,0,0.42); }
+.template-card:hover::before { opacity: 1; transform: scale(1.18); }
+.template-card > * { position: relative; z-index: 1; }
+.template-media { position: relative; height: 92px; border-radius: 14px; overflow: hidden; margin-bottom: 14px; background: var(--dark3); }
+.template-media img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(0.95) contrast(1.08); transition: var(--transition); }
+.template-card:hover .template-media img { transform: scale(1.08); }
+.template-icon { position: absolute; left: 10px; bottom: 10px; width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--gold); color: var(--dark); font-size: 15px; box-shadow: 0 10px 22px rgba(0,0,0,0.35); }
+.template-card h4 { font-family: 'Bebas Neue'; font-size: 20px; line-height: 1; letter-spacing: 1.2px; margin-bottom: 8px; }
+.template-card p { color: rgba(240,237,230,0.68); font-size: 11.5px; line-height: 1.48; }
+.template-cta { margin-top: 14px; color: var(--gold); font-size: 10.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; }
 .nav-actions { display: flex; align-items: center; gap: 14px; }
 .nav-cta { background: var(--gold); color: var(--dark); padding: 10px 24px; border-radius: 50px; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-decoration: none; transition: var(--transition); }
 .nav-cta:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201,168,76,0.4); }
@@ -363,16 +406,40 @@ section { padding: 100px 40px; }
 .testi-count { font-size: 13px; color: var(--muted); letter-spacing: 1px; }
 .testi-platforms { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
 .platform-badge { background: var(--dark4); border: 1px solid rgba(255,255,255,0.08); border-radius: 50px; padding: 8px 16px; font-size: 12px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-.testi-right { flex: 1; }
-.testi-swiper { overflow: hidden; }
-.testi-card { background: var(--dark4); border: 1px solid rgba(201,168,76,0.1); border-radius: var(--radius); padding: 36px; height: auto; }
+.testi-right { flex: 1; min-width: 0; width: 100%; position: relative; }
+.testi-swiper { overflow: hidden; width: 100%; padding: 6px 6px 58px !important; margin: -6px; }
+.testi-swiper .swiper-wrapper { align-items: stretch; }
+.testi-swiper .swiper-slide { height: auto; display: flex; }
+.testi-card {
+  position: relative;
+  width: 100%;
+  min-height: 360px;
+  background: linear-gradient(145deg, var(--dark4), rgba(26,26,26,0.92));
+  border: 1px solid rgba(201,168,76,0.14);
+  border-radius: var(--radius);
+  padding: 38px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.24);
+}
+.testi-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(201,168,76,0.18), transparent 42%);
+  pointer-events: none;
+}
+.testi-card > * { position: relative; z-index: 1; }
 .testi-quote { font-size: 40px; color: var(--gold); line-height: 1; margin-bottom: 16px; font-family: 'Playfair Display'; }
-.testi-text { font-size: 15px; line-height: 1.9; color: rgba(255,255,255,0.8); margin-bottom: 28px; font-style: italic; }
-.testi-author { display: flex; align-items: center; gap: 16px; }
+.testi-text { font-size: 15px; line-height: 1.9; color: rgba(255,255,255,0.8); margin-bottom: 28px; font-style: italic; flex: 1; }
+.testi-author { display: flex; align-items: center; gap: 16px; margin-top: auto; }
 .testi-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); }
 .testi-name { font-weight: 600; font-size: 15px; }
 .testi-dest { font-size: 12px; color: var(--gold); letter-spacing: 1px; margin-top: 2px; }
 .testi-stars { font-size: 13px; color: var(--gold); margin-bottom: 4px; }
+.testi-swiper .swiper-pagination { bottom: 10px !important; }
 .testi-swiper .swiper-pagination-bullet { background: var(--gold); }
 .testi-swiper .swiper-pagination-bullet-active { background: var(--gold); opacity: 1; }
 
@@ -525,17 +592,20 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
   .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; }
   .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 1; }
   .gallery-item:nth-child(5) { grid-column: span 1; }
+  .templates-mega-grid { grid-template-columns: repeat(3, 1fr); }
   .blog-grid { grid-template-columns: 1fr 1fr; }
   .blog-card.featured { grid-column: span 2; }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
   .testimonials-wrap { flex-direction: column; gap: 40px; }
   .testi-left { flex: none; width: 100%; }
+  .testi-right { width: 100%; max-width: 100%; }
   .contact-grid { grid-template-columns: 1fr; gap: 60px; }
 }
 @media (max-width: 768px) {
   nav { padding: 16px 20px; }
   nav.scrolled { padding: 12px 20px; }
   .nav-links, .nav-cta { display: none; }
+  .templates-mega-panel { display: none; }
   .nav-actions { gap: 8px; margin-left: auto; margin-right: 14px; }
   .lang-current { padding: 8px 10px; font-size: 11px; }
   .lang-menu { right: -4px; }
@@ -550,6 +620,7 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
   .blog-card.featured { grid-column: span 1; }
   .footer-grid { grid-template-columns: 1fr; }
   .form-row { grid-template-columns: 1fr; }
+  .testi-card { min-height: 0; padding: 30px 24px; }
   .footer-bottom { flex-direction: column; text-align: center; }
   .map-overlay { display: none; }
 }
@@ -566,6 +637,154 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
   </a>
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
+    <li class="templates-mega" id="templatesMega">
+      <button type="button" class="templates-mega-toggle" id="templatesMegaToggle" aria-expanded="false">
+        Nos templates <i class="fas fa-chevron-down" aria-hidden="true"></i>
+      </button>
+      <div class="templates-mega-panel" role="menu" aria-label="Nos templates">
+        <div class="templates-mega-head">
+          <div>
+            <p class="templates-mega-kicker">Templates premium</p>
+            <div class="templates-mega-title">Choisissez votre univers digital</div>
+          </div>
+          <p class="templates-mega-copy">Des bases visuelles prêtes à personnaliser pour lancer rapidement une présence web moderne, professionnelle et orientée conversion.</p>
+        </div>
+        <div class="templates-mega-grid">
+          <a href="#contact" class="template-card" role="menuitem">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80" alt="Agence marketing digitale">
+                <div class="template-icon"><i class="fas fa-bullhorn" aria-hidden="true"></i></div>
+              </div>
+              <h4>Agence marketing digitale</h4>
+              <p>Landing dynamique pour agences, consultants, campagnes et services de croissance.</p>
+            </div>
+            <span class="template-cta">Demander ce template</span>
+          </a>
+          <a href="#contact" class="template-card" role="menuitem">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=500&q=80" alt="Travel & tourism">
+                <div class="template-icon"><i class="fas fa-plane-departure" aria-hidden="true"></i></div>
+              </div>
+              <h4>Travel & tourism</h4>
+              <p>Expériences, destinations, cartes vidéo et storytelling immersif pour le tourisme.</p>
+            </div>
+            <span class="template-cta">Demander ce template</span>
+          </a>
+          <a href="#contact" class="template-card" role="menuitem">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=500&q=80" alt="Médias & news">
+                <div class="template-icon"><i class="fas fa-newspaper" aria-hidden="true"></i></div>
+              </div>
+              <h4>Médias & news</h4>
+              <p>Format éditorial moderne pour articles, actualités, vidéos et contenus sociaux.</p>
+            </div>
+            <span class="template-cta">Demander ce template</span>
+          </a>
+          <a href="#contact" class="template-card" role="menuitem">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500&q=80" alt="Commerce local premium">
+                <div class="template-icon"><i class="fas fa-store" aria-hidden="true"></i></div>
+              </div>
+              <h4>Commerce local premium</h4>
+              <p>Vitrine élégante pour produits, services, avis clients et demandes de devis.</p>
+            </div>
+            <span class="template-cta">Demander ce template</span>
+          </a>
+          <a href="#contact" class="template-card" role="menuitem">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=500&q=80" alt="Cabinet conseil">
+                <div class="template-icon"><i class="fas fa-briefcase" aria-hidden="true"></i></div>
+              </div>
+              <h4>Cabinet conseil</h4>
+              <p>Présentation premium pour consultants, coachs, experts et services professionnels.</p>
+            </div>
+            <span class="template-cta">Demander ce template</span>
+          </a>
+          <a href="#contact" class="template-card" role="menuitem">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&q=80" alt="SaaS & startup">
+                <div class="template-icon"><i class="fas fa-rocket" aria-hidden="true"></i></div>
+              </div>
+              <h4>SaaS & startup</h4>
+              <p>Hero produit, fonctionnalités, preuves sociales et conversion pour logiciels et apps.</p>
+            </div>
+            <span class="template-cta">Demander ce template</span>
+          </a>
+          <a href="#contact" class="template-card" role="menuitem">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=500&q=80" alt="Formation & coaching">
+                <div class="template-icon"><i class="fas fa-chalkboard-user" aria-hidden="true"></i></div>
+              </div>
+              <h4>Formation & coaching</h4>
+              <p>Parcours clair pour programmes, cours, ateliers, inscriptions et accompagnement.</p>
+            </div>
+            <span class="template-cta">Demander ce template</span>
+          </a>
+          <a href="#contact" class="template-card" role="menuitem">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=500&q=80" alt="Immobilier premium">
+                <div class="template-icon"><i class="fas fa-house-chimney-window" aria-hidden="true"></i></div>
+              </div>
+              <h4>Immobilier premium</h4>
+              <p>Biens vedettes, visites vidéo, cartes, galerie et demandes de visite ou de devis.</p>
+            </div>
+            <span class="template-cta">Demander ce template</span>
+          </a>
+          <a href="#contact" class="template-card" role="menuitem">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80" alt="Restaurant & food">
+                <div class="template-icon"><i class="fas fa-utensils" aria-hidden="true"></i></div>
+              </div>
+              <h4>Restaurant & food</h4>
+              <p>Menus, ambiance, avis clients, galerie gourmande et parcours réservation/devis.</p>
+            </div>
+            <span class="template-cta">Demander ce template</span>
+          </a>
+          <a href="#contact" class="template-card" role="menuitem">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80" alt="Portfolio créatif">
+                <div class="template-icon"><i class="fas fa-palette" aria-hidden="true"></i></div>
+              </div>
+              <h4>Portfolio créatif</h4>
+              <p>Showcase visuel pour designers, photographes, artistes, studios et freelances.</p>
+            </div>
+            <span class="template-cta">Demander ce template</span>
+          </a>
+          <a href="#contact" class="template-card" role="menuitem">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80" alt="Santé & bien-être">
+                <div class="template-icon"><i class="fas fa-heart-pulse" aria-hidden="true"></i></div>
+              </div>
+              <h4>Santé & bien-être</h4>
+              <p>Services, horaires, équipe, témoignages et prise de contact pour professionnels santé.</p>
+            </div>
+            <span class="template-cta">Demander ce template</span>
+          </a>
+          <a href="#contact" class="template-card" role="menuitem">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80" alt="Finance & assurance">
+                <div class="template-icon"><i class="fas fa-chart-pie" aria-hidden="true"></i></div>
+              </div>
+              <h4>Finance & assurance</h4>
+              <p>Structure fiable pour services financiers, assurances, rendez-vous et formulaires qualifiés.</p>
+            </div>
+            <span class="template-cta">Demander ce template</span>
+          </a>
+        </div>
+      </div>
+    </li>
     <li><a href="#gallery">Galerie</a></li>
     <li><a href="#testimonials">Avis</a></li>
     <li><a href="#social">Social</a></li>
@@ -596,6 +815,7 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
   <a href="#services" onclick="closeMobile()">Services</a>
+  <a href="#contact" onclick="closeMobile()">Nos templates</a>
   <a href="#gallery" onclick="closeMobile()">Galerie</a>
   <a href="#testimonials" onclick="closeMobile()">Avis</a>
   <a href="#social" onclick="closeMobile()">Social</a>
@@ -1143,6 +1363,35 @@ const nextLevelTranslations = {
   fr: {},
   en: {
     'Services': 'Services',
+    'Nos templates': 'Our templates',
+    'Templates premium': 'Premium templates',
+    'Choisissez votre univers digital': 'Choose your digital universe',
+    'Des bases visuelles prêtes à personnaliser pour lancer rapidement une présence web moderne, professionnelle et orientée conversion.': 'Visual foundations ready to customize so you can quickly launch a modern, professional and conversion-focused web presence.',
+    'Agence marketing digitale': 'Digital marketing agency',
+    'Landing dynamique pour agences, consultants, campagnes et services de croissance.': 'Dynamic landing page for agencies, consultants, campaigns and growth services.',
+    'Travel & tourism': 'Travel & tourism',
+    'Expériences, destinations, cartes vidéo et storytelling immersif pour le tourisme.': 'Experiences, destinations, video maps and immersive storytelling for tourism.',
+    'Médias & news': 'Media & news',
+    'Format éditorial moderne pour articles, actualités, vidéos et contenus sociaux.': 'Modern editorial format for articles, news, videos and social content.',
+    'Commerce local premium': 'Premium local commerce',
+    'Vitrine élégante pour produits, services, avis clients et demandes de devis.': 'Elegant showcase for products, services, client reviews and quote requests.',
+    'Cabinet conseil': 'Consulting firm',
+    'Présentation premium pour consultants, coachs, experts et services professionnels.': 'Premium presentation for consultants, coaches, experts and professional services.',
+    'SaaS & startup': 'SaaS & startup',
+    'Hero produit, fonctionnalités, preuves sociales et conversion pour logiciels et apps.': 'Product hero, features, social proof and conversion for software and apps.',
+    'Formation & coaching': 'Training & coaching',
+    'Parcours clair pour programmes, cours, ateliers, inscriptions et accompagnement.': 'Clear journey for programs, courses, workshops, signups and support.',
+    'Immobilier premium': 'Premium real estate',
+    'Biens vedettes, visites vidéo, cartes, galerie et demandes de visite ou de devis.': 'Featured properties, video tours, maps, gallery and visit or quote requests.',
+    'Restaurant & food': 'Restaurant & food',
+    'Menus, ambiance, avis clients, galerie gourmande et parcours réservation/devis.': 'Menus, atmosphere, client reviews, food gallery and booking or quote path.',
+    'Portfolio créatif': 'Creative portfolio',
+    'Showcase visuel pour designers, photographes, artistes, studios et freelances.': 'Visual showcase for designers, photographers, artists, studios and freelancers.',
+    'Santé & bien-être': 'Health & wellness',
+    'Services, horaires, équipe, témoignages et prise de contact pour professionnels santé.': 'Services, opening hours, team, testimonials and contact path for health professionals.',
+    'Finance & assurance': 'Finance & insurance',
+    'Structure fiable pour services financiers, assurances, rendez-vous et formulaires qualifiés.': 'Reliable structure for financial services, insurance, appointments and qualified forms.',
+    'Demander ce template': 'Request this template',
     'Galerie': 'Gallery',
     'Avis': 'Reviews',
     'Social': 'Social',
@@ -1252,6 +1501,35 @@ const nextLevelTranslations = {
   },
   es: {
     'Services': 'Servicios',
+    'Nos templates': 'Nuestras plantillas',
+    'Templates premium': 'Plantillas premium',
+    'Choisissez votre univers digital': 'Elija su universo digital',
+    'Des bases visuelles prêtes à personnaliser pour lancer rapidement une présence web moderne, professionnelle et orientée conversion.': 'Bases visuales listas para personalizar y lanzar rápidamente una presencia web moderna, profesional y orientada a la conversión.',
+    'Agence marketing digitale': 'Agencia de marketing digital',
+    'Landing dynamique pour agences, consultants, campagnes et services de croissance.': 'Landing dinámica para agencias, consultores, campañas y servicios de crecimiento.',
+    'Travel & tourism': 'Viajes y turismo',
+    'Expériences, destinations, cartes vidéo et storytelling immersif pour le tourisme.': 'Experiencias, destinos, mapas de video y storytelling inmersivo para turismo.',
+    'Médias & news': 'Medios y noticias',
+    'Format éditorial moderne pour articles, actualités, vidéos et contenus sociaux.': 'Formato editorial moderno para artículos, noticias, videos y contenido social.',
+    'Commerce local premium': 'Comercio local premium',
+    'Vitrine élégante pour produits, services, avis clients et demandes de devis.': 'Vitrina elegante para productos, servicios, reseñas y solicitudes de presupuesto.',
+    'Cabinet conseil': 'Consultoría',
+    'Présentation premium pour consultants, coachs, experts et services professionnels.': 'Presentación premium para consultores, coaches, expertos y servicios profesionales.',
+    'SaaS & startup': 'SaaS y startup',
+    'Hero produit, fonctionnalités, preuves sociales et conversion pour logiciels et apps.': 'Hero de producto, funcionalidades, prueba social y conversión para software y apps.',
+    'Formation & coaching': 'Formación y coaching',
+    'Parcours clair pour programmes, cours, ateliers, inscriptions et accompagnement.': 'Recorrido claro para programas, cursos, talleres, inscripciones y acompañamiento.',
+    'Immobilier premium': 'Inmobiliaria premium',
+    'Biens vedettes, visites vidéo, cartes, galerie et demandes de visite ou de devis.': 'Propiedades destacadas, visitas en video, mapas, galería y solicitudes de visita o presupuesto.',
+    'Restaurant & food': 'Restaurante y gastronomía',
+    'Menus, ambiance, avis clients, galerie gourmande et parcours réservation/devis.': 'Menús, ambiente, reseñas, galería gastronómica y recorrido de reserva o presupuesto.',
+    'Portfolio créatif': 'Portafolio creativo',
+    'Showcase visuel pour designers, photographes, artistes, studios et freelances.': 'Showcase visual para diseñadores, fotógrafos, artistas, estudios y freelancers.',
+    'Santé & bien-être': 'Salud y bienestar',
+    'Services, horaires, équipe, témoignages et prise de contact pour professionnels santé.': 'Servicios, horarios, equipo, testimonios y contacto para profesionales de salud.',
+    'Finance & assurance': 'Finanzas y seguros',
+    'Structure fiable pour services financiers, assurances, rendez-vous et formulaires qualifiés.': 'Estructura fiable para servicios financieros, seguros, citas y formularios cualificados.',
+    'Demander ce template': 'Solicitar esta plantilla',
     'Galerie': 'Galería',
     'Avis': 'Reseñas',
     'Social': 'Social',
@@ -1362,6 +1640,35 @@ const nextLevelTranslations = {
   de: {
     'Choisir la langue': 'Sprache wählen',
     'Services': 'Services',
+    'Nos templates': 'Unsere Templates',
+    'Templates premium': 'Premium-Templates',
+    'Choisissez votre univers digital': 'Wählen Sie Ihre digitale Welt',
+    'Des bases visuelles prêtes à personnaliser pour lancer rapidement une présence web moderne, professionnelle et orientée conversion.': 'Visuelle Grundlagen, die schnell angepasst werden können, um eine moderne, professionelle und conversion-orientierte Webpräsenz zu starten.',
+    'Agence marketing digitale': 'Digitale Marketingagentur',
+    'Landing dynamique pour agences, consultants, campagnes et services de croissance.': 'Dynamische Landingpage für Agenturen, Berater, Kampagnen und Wachstumsservices.',
+    'Travel & tourism': 'Travel & Tourism',
+    'Expériences, destinations, cartes vidéo et storytelling immersif pour le tourisme.': 'Erlebnisse, Reiseziele, Videokarten und immersives Storytelling für den Tourismus.',
+    'Médias & news': 'Medien & News',
+    'Format éditorial moderne pour articles, actualités, vidéos et contenus sociaux.': 'Modernes redaktionelles Format für Artikel, Nachrichten, Videos und Social Content.',
+    'Commerce local premium': 'Premium lokaler Handel',
+    'Vitrine élégante pour produits, services, avis clients et demandes de devis.': 'Elegantes Schaufenster für Produkte, Services, Kundenbewertungen und Angebotsanfragen.',
+    'Cabinet conseil': 'Beratungsfirma',
+    'Présentation premium pour consultants, coachs, experts et services professionnels.': 'Premium-Präsentation für Berater, Coaches, Experten und professionelle Dienstleistungen.',
+    'SaaS & startup': 'SaaS & Startup',
+    'Hero produit, fonctionnalités, preuves sociales et conversion pour logiciels et apps.': 'Produkt-Hero, Funktionen, Social Proof und Conversion für Software und Apps.',
+    'Formation & coaching': 'Training & Coaching',
+    'Parcours clair pour programmes, cours, ateliers, inscriptions et accompagnement.': 'Klarer Ablauf für Programme, Kurse, Workshops, Anmeldungen und Betreuung.',
+    'Immobilier premium': 'Premium-Immobilien',
+    'Biens vedettes, visites vidéo, cartes, galerie et demandes de visite ou de devis.': 'Top-Immobilien, Videotouren, Karten, Galerie und Anfragen für Besichtigungen oder Angebote.',
+    'Restaurant & food': 'Restaurant & Food',
+    'Menus, ambiance, avis clients, galerie gourmande et parcours réservation/devis.': 'Menüs, Atmosphäre, Kundenbewertungen, Food-Galerie und Reservierungs- oder Angebotsstrecke.',
+    'Portfolio créatif': 'Kreativportfolio',
+    'Showcase visuel pour designers, photographes, artistes, studios et freelances.': 'Visuelles Showcase für Designer, Fotografen, Künstler, Studios und Freelancer.',
+    'Santé & bien-être': 'Gesundheit & Wellness',
+    'Services, horaires, équipe, témoignages et prise de contact pour professionnels santé.': 'Services, Öffnungszeiten, Team, Referenzen und Kontaktaufnahme für Gesundheitsprofis.',
+    'Finance & assurance': 'Finanzen & Versicherung',
+    'Structure fiable pour services financiers, assurances, rendez-vous et formulaires qualifiés.': 'Zuverlässige Struktur für Finanzservices, Versicherungen, Termine und qualifizierte Formulare.',
+    'Demander ce template': 'Dieses Template anfragen',
     'Galerie': 'Galerie',
     'Avis': 'Bewertungen',
     'Social': 'Social',
@@ -1478,6 +1785,35 @@ const nextLevelTranslations = {
   it: {
     'Choisir la langue': 'Scegli la lingua',
     'Services': 'Servizi',
+    'Nos templates': 'I nostri template',
+    'Templates premium': 'Template premium',
+    'Choisissez votre univers digital': 'Scegli il tuo universo digitale',
+    'Des bases visuelles prêtes à personnaliser pour lancer rapidement une présence web moderne, professionnelle et orientée conversion.': 'Basi visive pronte da personalizzare per lanciare rapidamente una presenza web moderna, professionale e orientata alla conversione.',
+    'Agence marketing digitale': 'Agenzia di marketing digitale',
+    'Landing dynamique pour agences, consultants, campagnes et services de croissance.': 'Landing dinamica per agenzie, consulenti, campagne e servizi di crescita.',
+    'Travel & tourism': 'Travel & tourism',
+    'Expériences, destinations, cartes vidéo et storytelling immersif pour le tourisme.': 'Esperienze, destinazioni, mappe video e storytelling immersivo per il turismo.',
+    'Médias & news': 'Media e news',
+    'Format éditorial moderne pour articles, actualités, vidéos et contenus sociaux.': 'Formato editoriale moderno per articoli, notizie, video e contenuti social.',
+    'Commerce local premium': 'Commercio locale premium',
+    'Vitrine élégante pour produits, services, avis clients et demandes de devis.': 'Vetrina elegante per prodotti, servizi, recensioni clienti e richieste di preventivo.',
+    'Cabinet conseil': 'Studio di consulenza',
+    'Présentation premium pour consultants, coachs, experts et services professionnels.': 'Presentazione premium per consulenti, coach, esperti e servizi professionali.',
+    'SaaS & startup': 'SaaS e startup',
+    'Hero produit, fonctionnalités, preuves sociales et conversion pour logiciels et apps.': 'Hero prodotto, funzionalità, prove sociali e conversione per software e app.',
+    'Formation & coaching': 'Formazione e coaching',
+    'Parcours clair pour programmes, cours, ateliers, inscriptions et accompagnement.': 'Percorso chiaro per programmi, corsi, workshop, iscrizioni e accompagnamento.',
+    'Immobilier premium': 'Immobiliare premium',
+    'Biens vedettes, visites vidéo, cartes, galerie et demandes de visite ou de devis.': 'Immobili in evidenza, visite video, mappe, galleria e richieste di visita o preventivo.',
+    'Restaurant & food': 'Ristorante e food',
+    'Menus, ambiance, avis clients, galerie gourmande et parcours réservation/devis.': 'Menu, atmosfera, recensioni, galleria food e percorso prenotazione/preventivo.',
+    'Portfolio créatif': 'Portfolio creativo',
+    'Showcase visuel pour designers, photographes, artistes, studios et freelances.': 'Showcase visivo per designer, fotografi, artisti, studi e freelance.',
+    'Santé & bien-être': 'Salute e benessere',
+    'Services, horaires, équipe, témoignages et prise de contact pour professionnels santé.': 'Servizi, orari, team, testimonianze e contatto per professionisti della salute.',
+    'Finance & assurance': 'Finanza e assicurazioni',
+    'Structure fiable pour services financiers, assurances, rendez-vous et formulaires qualifiés.': 'Struttura affidabile per servizi finanziari, assicurazioni, appuntamenti e moduli qualificati.',
+    'Demander ce template': 'Richiedi questo template',
     'Galerie': 'Galleria',
     'Avis': 'Recensioni',
     'Social': 'Social',
@@ -1594,6 +1930,35 @@ const nextLevelTranslations = {
   ar: {
     'Choisir la langue': 'اختر اللغة',
     'Services': 'الخدمات',
+    'Nos templates': 'قوالبنا',
+    'Templates premium': 'قوالب مميزة',
+    'Choisissez votre univers digital': 'اختر عالمك الرقمي',
+    'Des bases visuelles prêtes à personnaliser pour lancer rapidement une présence web moderne, professionnelle et orientée conversion.': 'أساسات بصرية جاهزة للتخصيص لإطلاق حضور ويب حديث واحترافي وموجه للتحويل بسرعة.',
+    'Agence marketing digitale': 'وكالة تسويق رقمي',
+    'Landing dynamique pour agences, consultants, campagnes et services de croissance.': 'صفحة هبوط ديناميكية للوكالات والمستشارين والحملات وخدمات النمو.',
+    'Travel & tourism': 'السفر والسياحة',
+    'Expériences, destinations, cartes vidéo et storytelling immersif pour le tourisme.': 'تجارب ووجهات وخرائط فيديو وسرد قصصي تفاعلي للسياحة.',
+    'Médias & news': 'الإعلام والأخبار',
+    'Format éditorial moderne pour articles, actualités, vidéos et contenus sociaux.': 'تنسيق تحريري حديث للمقالات والأخبار والفيديوهات والمحتوى الاجتماعي.',
+    'Commerce local premium': 'تجارة محلية مميزة',
+    'Vitrine élégante pour produits, services, avis clients et demandes de devis.': 'واجهة أنيقة للمنتجات والخدمات وآراء العملاء وطلبات عروض الأسعار.',
+    'Cabinet conseil': 'مكتب استشارات',
+    'Présentation premium pour consultants, coachs, experts et services professionnels.': 'عرض احترافي للمستشارين والمدربين والخبراء والخدمات المهنية.',
+    'SaaS & startup': 'SaaS والشركات الناشئة',
+    'Hero produit, fonctionnalités, preuves sociales et conversion pour logiciels et apps.': 'واجهة منتج ومزايا وإثبات اجتماعي وتحويل للبرامج والتطبيقات.',
+    'Formation & coaching': 'تدريب وكوتشينغ',
+    'Parcours clair pour programmes, cours, ateliers, inscriptions et accompagnement.': 'مسار واضح للبرامج والدورات والورشات والتسجيل والمرافقة.',
+    'Immobilier premium': 'عقارات مميزة',
+    'Biens vedettes, visites vidéo, cartes, galerie et demandes de visite ou de devis.': 'عقارات مميزة وجولات فيديو وخرائط ومعرض وطلبات زيارة أو عرض سعر.',
+    'Restaurant & food': 'مطاعم ومأكولات',
+    'Menus, ambiance, avis clients, galerie gourmande et parcours réservation/devis.': 'قوائم وأجواء وآراء عملاء ومعرض مأكولات ومسار حجز أو طلب عرض سعر.',
+    'Portfolio créatif': 'معرض أعمال إبداعي',
+    'Showcase visuel pour designers, photographes, artistes, studios et freelances.': 'واجهة بصرية للمصممين والمصورين والفنانين والاستوديوهات والمستقلين.',
+    'Santé & bien-être': 'الصحة والعافية',
+    'Services, horaires, équipe, témoignages et prise de contact pour professionnels santé.': 'خدمات وساعات عمل وفريق وشهادات وتواصل لمهنيي الصحة.',
+    'Finance & assurance': 'المالية والتأمين',
+    'Structure fiable pour services financiers, assurances, rendez-vous et formulaires qualifiés.': 'هيكل موثوق للخدمات المالية والتأمين والمواعيد والنماذج المؤهلة.',
+    'Demander ce template': 'اطلب هذا القالب',
     'Galerie': 'المعرض',
     'Avis': 'آراء العملاء',
     'Social': 'الشبكات',
@@ -1800,6 +2165,35 @@ document.querySelectorAll('.lang-btn').forEach((btn) => {
     }
   });
 });
+
+// ── TEMPLATES MEGA MENU ──
+const templatesMega = document.getElementById('templatesMega');
+const templatesMegaToggle = document.getElementById('templatesMegaToggle');
+if (templatesMega && templatesMegaToggle) {
+  templatesMegaToggle.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const isOpen = templatesMega.classList.toggle('is-open');
+    templatesMegaToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+  document.addEventListener('click', (event) => {
+    if (!templatesMega.contains(event.target)) {
+      templatesMega.classList.remove('is-open');
+      templatesMegaToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      templatesMega.classList.remove('is-open');
+      templatesMegaToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+  templatesMega.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      templatesMega.classList.remove('is-open');
+      templatesMegaToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
 
 // ── HERO SWIPER ──
 const heroSwiper = new Swiper('.hero-swiper', {
