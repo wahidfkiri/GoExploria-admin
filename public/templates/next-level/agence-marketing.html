@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA — Agence Marketing Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<style>
+:root {
+  --orange: #FF4D00;
+  --orange-soft: #FF6B35;
+  --orange-pale: #FFF0EB;
+  --ink: #0F0A00;
+  --ink2: #1E1A13;
+  --ink-soft: #4A4035;
+  --muted: #9A9080;
+  --cream: #FAFAF7;
+  --cream2: #F4F2EE;
+  --cream3: #EDE9E3;
+  --white: #FFFFFF;
+  --border: rgba(15,10,0,0.08);
+  --radius: 20px;
+  --radius-sm: 10px;
+  --tr: all 0.5s cubic-bezier(0.23,1,0.32,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none}
+
+/* ── CUSTOM CURSOR ── */
+.cursor{position:fixed;width:12px;height:12px;background:var(--orange);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s}
+.cursor-ring{position:fixed;width:40px;height:40px;border:1.5px solid var(--orange);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .12s ease;opacity:0.5}
+body:hover .cursor{opacity:1}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--cream2)}
+::-webkit-scrollbar-thumb{background:var(--orange);border-radius:2px}
+
+/* ── NAVBAR ── */
+nav{
+  position:fixed;top:0;width:100%;z-index:990;
+  padding:22px 60px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:var(--tr);
+}
+nav.scrolled{
+  background:rgba(250,250,247,0.92);
+  backdrop-filter:blur(20px);
+  padding:14px 60px;
+  border-bottom:1px solid var(--border);
+  box-shadow:0 4px 40px rgba(0,0,0,0.06);
+}
+.nav-logo{display:flex;align-items:baseline;gap:4px}
+.nav-logo-main{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--ink);letter-spacing:-1px}
+.nav-logo-dot{width:8px;height:8px;background:var(--orange);border-radius:50%;margin-bottom:6px}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{color:var(--ink-soft);text-decoration:none;font-size:14px;font-weight:500;letter-spacing:0.3px;transition:var(--tr);position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:2px;background:var(--orange);border-radius:1px;transition:var(--tr)}
+.nav-links a:hover{color:var(--orange)}
+.nav-links a:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-tel{font-size:13px;color:var(--muted);letter-spacing:0.5px}
+.nav-cta{background:var(--orange);color:var(--white);padding:10px 24px;border-radius:50px;font-size:13px;font-weight:600;text-decoration:none;letter-spacing:0.3px;transition:var(--tr)}
+.nav-cta:hover{background:var(--ink);transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,77,0,0.3)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none}
+.hamburger span{width:24px;height:2px;background:var(--ink);border-radius:1px;transition:var(--tr)}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;padding:0 60px;
+  display:grid;grid-template-columns:1fr 1fr;align-items:center;
+  position:relative;overflow:hidden;
+  background:var(--cream);
+  padding-top:100px;
+}
+.hero-bg-shape{
+  position:absolute;top:-100px;right:-200px;
+  width:700px;height:700px;
+  background:radial-gradient(circle at 40% 40%,#FFD4C2 0%,#FFE8DF 40%,transparent 70%);
+  border-radius:50%;
+  animation:floatshape 8s ease-in-out infinite;
+}
+.hero-bg-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:60px 60px;
+  opacity:0.4;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--orange-pale);border:1px solid rgba(255,77,0,0.2);
+  border-radius:50px;padding:6px 16px 6px 8px;
+  margin-bottom:28px;
+}
+.hero-badge-dot{width:8px;height:8px;background:var(--orange);border-radius:50%;animation:pulse 2s infinite}
+.hero-badge span{font-size:12px;font-weight:600;color:var(--orange);letter-spacing:1px;text-transform:uppercase}
+.hero-left{position:relative;z-index:2;padding:80px 0}
+.hero-title{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(52px,6.5vw,86px);
+  line-height:1.0;
+  color:var(--ink);
+  letter-spacing:-2px;
+  margin-bottom:24px;
+}
+.hero-title em{font-style:italic;color:var(--orange)}
+.hero-title .outline{
+  -webkit-text-stroke:2px var(--ink);
+  color:transparent;
+}
+.hero-desc{
+  font-size:17px;line-height:1.8;color:var(--ink-soft);
+  max-width:460px;margin-bottom:44px;font-weight:300;
+}
+.hero-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.btn-fill{
+  background:var(--orange);color:var(--white);
+  padding:16px 36px;border-radius:50px;
+  font-size:15px;font-weight:600;text-decoration:none;
+  display:inline-flex;align-items:center;gap:10px;
+  transition:var(--tr);
+  box-shadow:0 4px 20px rgba(255,77,0,0.25);
+}
+.btn-fill:hover{background:var(--ink);transform:translateY(-3px);box-shadow:0 12px 40px rgba(255,77,0,0.35)}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:10px;
+  color:var(--ink);font-size:15px;font-weight:500;text-decoration:none;transition:var(--tr);
+}
+.btn-ghost .arrow-circle{
+  width:46px;height:46px;border:1.5px solid var(--border);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:var(--tr);
+}
+.btn-ghost:hover{color:var(--orange)}
+.btn-ghost:hover .arrow-circle{background:var(--orange);border-color:var(--orange);color:var(--white);transform:rotate(45deg)}
+.hero-kpis{display:flex;gap:0;margin-top:56px;border-top:1px solid var(--border);padding-top:36px}
+.hero-kpi{flex:1;padding-right:32px;border-right:1px solid var(--border)}
+.hero-kpi:last-child{border-right:none;padding-left:32px;padding-right:0}
+.hero-kpi:not(:first-child){padding-left:32px}
+.hero-kpi-num{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--ink);letter-spacing:-1px}
+.hero-kpi-num span{color:var(--orange)}
+.hero-kpi-label{font-size:12px;color:var(--muted);margin-top:2px;letter-spacing:0.5px}
+.hero-right{position:relative;z-index:2;height:100vh;display:flex;align-items:center;justify-content:center}
+.hero-visual-wrap{position:relative;width:100%;max-width:540px}
+.hero-main-card{
+  background:var(--white);border-radius:24px;overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,0.12);
+  position:relative;
+}
+.hero-main-card-img{width:100%;height:380px;object-fit:cover;display:block}
+.hero-main-card-img-placeholder{
+  width:100%;height:380px;
+  background:linear-gradient(135deg,#FF4D00 0%,#FF8C66 40%,#FFD4C2 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:80px;
+}
+.hero-float-card{
+  position:absolute;bottom:-20px;left:-40px;
+  background:var(--white);border-radius:16px;
+  padding:18px 22px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.12);
+  width:200px;
+  animation:floatcard 4s ease-in-out infinite;
+}
+.hero-float-card2{
+  position:absolute;top:40px;right:-30px;
+  background:var(--orange);border-radius:16px;
+  padding:18px 22px;color:var(--white);
+  box-shadow:0 20px 60px rgba(255,77,0,0.35);
+  width:180px;
+  animation:floatcard2 5s ease-in-out infinite;
+}
+.float-card-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;opacity:0.6;margin-bottom:6px}
+.float-card-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1}
+.float-card-sub{font-size:11px;opacity:0.7;margin-top:4px}
+.float-card-bar{display:flex;gap:3px;margin-top:10px}
+.float-bar-seg{height:4px;border-radius:2px;flex:1;background:rgba(255,77,0,0.15)}
+.float-bar-seg.filled{background:var(--orange)}
+.float-bar-seg2{height:4px;border-radius:2px;flex:1;background:rgba(255,255,255,0.3)}
+.float-bar-seg2.filled{background:var(--white)}
+@keyframes floatshape{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,20px) scale(1.05)}}
+@keyframes floatcard{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes floatcard2{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:0.6}}
+
+/* ── TICKER ── */
+.ticker{background:var(--ink);overflow:hidden;padding:14px 0}
+.ticker-track{display:flex;animation:ticker 25s linear infinite;white-space:nowrap}
+.ticker-item{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cream3);padding:0 48px;opacity:0.7}
+.ticker-sep{color:var(--orange);opacity:1}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SECTION BASE ── */
+section{padding:120px 60px}
+.container{max-width:1320px;margin:0 auto}
+.s-label{font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--orange);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.s-label::before{content:'';width:24px;height:2px;background:var(--orange);border-radius:1px}
+.s-title{font-family:'DM Serif Display',serif;font-size:clamp(36px,5vw,62px);line-height:1.05;letter-spacing:-1.5px;color:var(--ink);margin-bottom:18px}
+.s-title em{font-style:italic;color:var(--orange)}
+.s-sub{font-size:16px;color:var(--muted);line-height:1.8;max-width:520px;font-weight:300}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px;gap:40px;flex-wrap:wrap}
+
+/* ── SERVICES ── */
+#services{background:var(--cream2)}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 40px rgba(0,0,0,0.05)}
+.svc-card{background:var(--white);padding:44px 40px;position:relative;overflow:hidden;transition:var(--tr);cursor:pointer}
+.svc-card::after{content:'';position:absolute;inset:0;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(0.23,1,0.32,1);z-index:0}
+.svc-card:hover::after{transform:scaleX(1)}
+.svc-card *{position:relative;z-index:1;transition:color .4s ease}
+.svc-card:hover *{color:var(--white) !important}
+.svc-num{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--orange);letter-spacing:3px;margin-bottom:24px}
+.svc-icon{font-size:32px;margin-bottom:20px;display:block}
+.svc-card h3{font-family:'DM Serif Display',serif;font-size:24px;letter-spacing:-0.5px;color:var(--ink);margin-bottom:14px}
+.svc-card p{font-size:14px;color:var(--muted);line-height:1.8}
+.svc-arrow{display:inline-flex;align-items:center;gap:8px;color:var(--orange);font-size:13px;font-weight:600;margin-top:24px;text-decoration:none}
+.svc-card:hover .svc-arrow{color:var(--white) !important}
+.svc-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.svc-tag{background:var(--cream2);border-radius:50px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:0.5px;color:var(--ink-soft)}
+.svc-card:hover .svc-tag{background:rgba(255,255,255,0.2);color:var(--white) !important}
+
+/* ── PROCESS ── */
+#process{background:var(--white)}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.process-steps::before{content:'';position:absolute;top:52px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--orange),transparent);opacity:0.3}
+.proc-step{text-align:center;padding:0 20px}
+.proc-step-num{
+  width:56px;height:56px;border-radius:50%;
+  border:2px solid var(--orange);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:16px;font-weight:800;
+  color:var(--orange);margin:0 auto 28px;
+  background:var(--white);
+  position:relative;z-index:1;
+  transition:var(--tr);
+}
+.proc-step:hover .proc-step-num{background:var(--orange);color:var(--white);transform:scale(1.15)}
+.proc-step-icon{font-size:24px;margin-bottom:12px}
+.proc-step h4{font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:-0.3px;color:var(--ink);margin-bottom:10px}
+.proc-step p{font-size:13px;color:var(--muted);line-height:1.8}
+
+/* ── ABOUT ── */
+#about{background:var(--cream)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
+.about-visual{position:relative}
+.about-main-img{
+  width:100%;aspect-ratio:4/5;border-radius:24px;overflow:hidden;
+  background:linear-gradient(135deg,var(--cream3),var(--cream2));
+  display:flex;align-items:center;justify-content:center;font-size:100px;
+  box-shadow:0 40px 100px rgba(0,0,0,0.1);
+  position:relative;
+}
+.about-main-img img{width:100%;height:100%;object-fit:cover}
+.about-float-stat{
+  position:absolute;bottom:40px;right:-40px;
+  background:var(--orange);color:var(--white);
+  border-radius:20px;padding:24px 28px;
+  box-shadow:0 20px 60px rgba(255,77,0,0.35);
+  min-width:160px;
+  animation:floatcard 5s ease-in-out infinite;
+}
+.about-float-stat .big-num{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;line-height:1}
+.about-float-stat .stat-text{font-size:12px;opacity:0.8;margin-top:4px;letter-spacing:0.5px}
+.about-float-award{
+  position:absolute;top:40px;left:-30px;
+  background:var(--white);border-radius:16px;padding:18px 20px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.1);
+  display:flex;align-items:center;gap:12px;
+}
+.award-icon{font-size:28px}
+.award-text strong{font-size:13px;font-weight:700;color:var(--ink);display:block}
+.award-text span{font-size:11px;color:var(--muted)}
+.about-values{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px}
+.about-val{background:var(--cream2);border-radius:14px;padding:22px;border:1px solid var(--border);transition:var(--tr)}
+.about-val:hover{border-color:var(--orange);background:var(--orange-pale)}
+.about-val-icon{font-size:22px;margin-bottom:10px}
+.about-val h5{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:4px}
+.about-val p{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ── PORTFOLIO ── */
+#portfolio{background:var(--ink);color:var(--cream)}
+#portfolio .s-label{color:var(--orange)}
+#portfolio .s-title{color:var(--cream)}
+#portfolio .s-sub{color:rgba(250,250,247,0.5)}
+.portfolio-filter{display:flex;gap:8px;margin-bottom:48px;flex-wrap:wrap}
+.pf-btn{padding:8px 20px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.5);transition:var(--tr)}
+.pf-btn.active,.pf-btn:hover{background:var(--orange);border-color:var(--orange);color:var(--white)}
+.portfolio-grid{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:240px;gap:16px}
+.port-item{border-radius:16px;overflow:hidden;position:relative;cursor:pointer}
+.port-item:nth-child(1){grid-column:span 7;grid-row:span 2}
+.port-item:nth-child(2){grid-column:span 5}
+.port-item:nth-child(3){grid-column:span 5}
+.port-item:nth-child(4){grid-column:span 4}
+.port-item:nth-child(5){grid-column:span 8}
+.port-img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(0.23,1,0.32,1);display:block}
+.port-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;transition:transform .7s cubic-bezier(0.23,1,0.32,1)}
+.port-item:nth-child(odd) .port-placeholder{background:linear-gradient(135deg,#1a1400,#2d2010)}
+.port-item:nth-child(even) .port-placeholder{background:linear-gradient(135deg,#FF4D00,#FF8C66)}
+.port-item:hover .port-placeholder,.port-item:hover .port-img{transform:scale(1.05)}
+.port-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85),transparent 50%);opacity:0;transition:var(--tr);padding:24px;display:flex;flex-direction:column;justify-content:flex-end}
+.port-item:hover .port-overlay{opacity:1}
+.port-cat{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:6px}
+.port-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--white);letter-spacing:-0.5px}
+.port-link{display:inline-flex;align-items:center;gap:6px;color:var(--white);font-size:12px;margin-top:8px;font-weight:600}
+
+/* ── NUMBERS ── */
+#numbers{background:var(--orange)}
+.numbers-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.2)}
+.num-card{background:var(--orange);padding:60px 40px;text-align:center}
+.num-big{font-family:'Syne',sans-serif;font-size:64px;font-weight:800;color:var(--white);letter-spacing:-2px;line-height:1}
+.num-label{font-size:14px;color:rgba(255,255,255,0.7);margin-top:8px;letter-spacing:0.5px}
+.num-desc{font-size:12px;color:rgba(255,255,255,0.5);margin-top:6px;line-height:1.6;max-width:160px;margin-left:auto;margin-right:auto}
+
+/* ── TESTIMONIALS ── */
+#testimonials{background:var(--cream2)}
+.testi-layout{display:grid;grid-template-columns:340px 1fr;gap:80px;align-items:start}
+.testi-sidebar .rating-big{font-family:'Syne',sans-serif;font-size:72px;font-weight:800;color:var(--ink);letter-spacing:-3px;line-height:1}
+.testi-sidebar .rating-stars{color:var(--orange);font-size:20px;letter-spacing:4px;margin:8px 0}
+.testi-sidebar p{font-size:13px;color:var(--muted)}
+.testi-brands{margin-top:36px;display:flex;flex-direction:column;gap:12px}
+.testi-brand-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--white);border-radius:10px;border:1px solid var(--border)}
+.testi-brand-icon{font-size:20px}
+.testi-brand-name{font-size:13px;font-weight:600;color:var(--ink)}
+.testi-brand-score{margin-left:auto;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--orange)}
+.testi-swiper-wrap .swiper{overflow:hidden;padding-bottom:60px!important}
+.testi-card{background:var(--white);border-radius:20px;padding:40px;border:1px solid var(--border);transition:var(--tr)}
+.testi-card:hover{border-color:var(--orange);box-shadow:0 20px 60px rgba(255,77,0,0.1)}
+.testi-card-quote{font-size:36px;font-family:'DM Serif Display',serif;color:var(--orange);line-height:1;margin-bottom:16px}
+.testi-card-text{font-size:15px;line-height:1.9;color:var(--ink-soft);font-style:italic;margin-bottom:28px}
+.testi-card-author{display:flex;align-items:center;gap:14px}
+.testi-card-avatar{width:48px;height:48px;border-radius:50%;overflow:hidden;background:var(--cream3);display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid var(--border)}
+.testi-card-name{font-weight:700;font-size:15px;color:var(--ink)}
+.testi-card-role{font-size:12px;color:var(--orange);margin-top:2px;font-weight:600}
+.testi-card-stars{font-size:13px;color:var(--orange);margin-bottom:6px}
+.swiper-pagination-bullet{background:var(--muted)!important;opacity:.3!important}
+.swiper-pagination-bullet-active{background:var(--orange)!important;opacity:1!important}
+
+/* ── TEAM ── */
+#team{background:var(--white)}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.team-card{border-radius:20px;overflow:hidden;position:relative;background:var(--cream2);border:1px solid var(--border);transition:var(--tr);cursor:pointer}
+.team-card:hover{transform:translateY(-8px);box-shadow:0 30px 80px rgba(0,0,0,0.1);border-color:var(--orange)}
+.team-img{height:280px;display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--cream3),var(--cream2))}
+.team-img img{width:100%;height:100%;object-fit:cover}
+.team-social-overlay{position:absolute;inset:0;background:rgba(255,77,0,0.9);display:flex;align-items:center;justify-content:center;gap:16px;opacity:0;transition:var(--tr)}
+.team-card:hover .team-social-overlay{opacity:1}
+.team-social-btn{width:44px;height:44px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;color:var(--white);transition:var(--tr)}
+.team-social-btn:hover{background:var(--white);color:var(--orange)}
+.team-body{padding:24px}
+.team-name{font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:-0.3px;color:var(--ink);margin-bottom:4px}
+.team-role{font-size:12px;color:var(--orange);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.team-bio{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ── PRICING ── */
+#pricing{background:var(--cream)}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start}
+.price-card{background:var(--white);border-radius:24px;padding:44px 40px;border:1.5px solid var(--border);transition:var(--tr);position:relative;overflow:hidden}
+.price-card.featured{background:var(--ink);border-color:var(--ink);transform:scale(1.04)}
+.price-card.featured *{color:var(--cream)!important}
+.price-featured-badge{position:absolute;top:24px;right:24px;background:var(--orange);color:var(--white)!important;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:50px}
+.price-card:hover:not(.featured){border-color:var(--orange);box-shadow:0 20px 60px rgba(255,77,0,0.1);transform:translateY(-4px)}
+.price-plan{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.price-featured .price-plan{color:rgba(250,250,247,0.5)!important}
+.price-amount{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;color:var(--ink);letter-spacing:-2px;line-height:1;margin-bottom:6px}
+.price-amount sup{font-size:24px;vertical-align:top;margin-top:10px;display:inline-block}
+.price-period{font-size:13px;color:var(--muted);margin-bottom:24px}
+.price-desc{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid var(--border)}
+.price-card.featured .price-desc{border-bottom-color:rgba(255,255,255,0.1)}
+.price-features{display:flex;flex-direction:column;gap:12px;margin-bottom:36px}
+.price-feat{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink-soft)}
+.price-check{width:20px;height:20px;background:var(--orange-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--orange);flex-shrink:0}
+.price-card.featured .price-check{background:rgba(255,77,0,0.2);color:var(--orange)}
+.price-cta{display:block;text-align:center;padding:14px 28px;border-radius:50px;font-size:14px;font-weight:700;text-decoration:none;transition:var(--tr);border:1.5px solid var(--border)}
+.price-cta:hover{background:var(--orange);border-color:var(--orange);color:var(--white)!important}
+.price-card.featured .price-cta{background:var(--orange);border-color:var(--orange);color:var(--white)!important}
+.price-card.featured .price-cta:hover{background:var(--orange-soft)}
+
+/* ── BLOG ── */
+#blog{background:var(--cream2)}
+.blog-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:24px}
+.blog-card{background:var(--white);border-radius:20px;overflow:hidden;border:1px solid var(--border);transition:var(--tr);cursor:pointer}
+.blog-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,0.1);border-color:var(--orange)}
+.blog-img{overflow:hidden;position:relative}
+.blog-img-placeholder{height:220px;display:flex;align-items:center;justify-content:center;font-size:48px;background:var(--cream2);transition:transform .5s ease}
+.blog-card.featured .blog-img-placeholder{height:300px;font-size:72px}
+.blog-card:hover .blog-img-placeholder{transform:scale(1.04)}
+.blog-tag-badge{position:absolute;top:16px;left:16px;background:var(--orange);color:var(--white);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:50px}
+.blog-body{padding:28px}
+.blog-meta{display:flex;align-items:center;gap:16px;font-size:11px;color:var(--muted);letter-spacing:0.5px;margin-bottom:12px}
+.blog-meta-dot{width:3px;height:3px;background:var(--muted);border-radius:50%}
+.blog-card h3{font-family:'DM Serif Display',serif;font-size:22px;letter-spacing:-0.5px;color:var(--ink);line-height:1.25;margin-bottom:10px;transition:var(--tr)}
+.blog-card.featured h3{font-size:28px}
+.blog-card:hover h3{color:var(--orange)}
+.blog-card p{font-size:13px;color:var(--muted);line-height:1.8}
+.blog-read-more{display:inline-flex;align-items:center;gap:8px;color:var(--orange);font-size:13px;font-weight:700;margin-top:20px;text-decoration:none;letter-spacing:0.3px;transition:var(--tr)}
+.blog-read-more:hover{gap:14px}
+.blog-author{display:flex;align-items:center;gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+.blog-author-ava{width:32px;height:32px;border-radius:50%;background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:14px}
+.blog-author-name{font-size:12px;font-weight:600;color:var(--ink-soft)}
+
+/* ── CONTACT ── */
+#contact{background:var(--cream)}
+.contact-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:100px;align-items:start}
+.contact-info-title{font-family:'DM Serif Display',serif;font-size:36px;letter-spacing:-1px;color:var(--ink);margin-bottom:20px;line-height:1.2}
+.contact-info-title em{color:var(--orange);font-style:italic}
+.contact-info-desc{font-size:15px;color:var(--muted);line-height:1.9;margin-bottom:40px;font-weight:300}
+.contact-items{display:flex;flex-direction:column;gap:20px;margin-bottom:40px}
+.c-item{display:flex;align-items:flex-start;gap:16px}
+.c-icon-wrap{width:48px;height:48px;background:var(--orange-pale);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;transition:var(--tr)}
+.c-item:hover .c-icon-wrap{background:var(--orange)}
+.c-item-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:3px}
+.c-item-value{font-size:14px;color:var(--ink-soft)}
+.contact-socials{display:flex;gap:10px}
+.c-social{width:44px;height:44px;border:1.5px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;text-decoration:none;color:var(--ink-soft);transition:var(--tr)}
+.c-social:hover{background:var(--orange);border-color:var(--orange);color:var(--white);transform:translateY(-3px)}
+.contact-form{background:var(--white);border-radius:24px;padding:48px;border:1px solid var(--border);box-shadow:0 20px 80px rgba(0,0,0,0.06)}
+.form-title{font-family:'DM Serif Display',serif;font-size:26px;letter-spacing:-0.5px;color:var(--ink);margin-bottom:32px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fg{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.fg label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.fg input,.fg select,.fg textarea{
+  background:var(--cream);border:1.5px solid var(--border);color:var(--ink);
+  padding:14px 18px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;
+  transition:var(--tr);outline:none;resize:none;
+}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--muted)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--orange);background:var(--white);box-shadow:0 0 0 4px rgba(255,77,0,0.08)}
+.fg select option{background:var(--white)}
+.form-submit{width:100%;background:var(--orange);color:var(--white);border:none;padding:16px;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:10px;letter-spacing:0.3px}
+.form-submit:hover{background:var(--ink);transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,77,0,0.3)}
+.form-note{font-size:12px;color:var(--muted);text-align:center;margin-top:12px}
+.form-success{display:none;background:#F0FDF4;border:1px solid #86EFAC;border-radius:12px;padding:14px 20px;color:#16A34A;font-size:14px;font-weight:500;margin-top:12px;text-align:center}
+
+/* ── MAP ── */
+#map-sec{height:480px;position:relative;overflow:hidden}
+#map-sec iframe{width:100%;height:100%;border:none;filter:sepia(20%) contrast(1.1)}
+.map-card{position:absolute;top:40px;right:60px;background:var(--white);border-radius:20px;padding:28px 32px;box-shadow:0 20px 60px rgba(0,0,0,0.12);min-width:240px;border:1px solid var(--border)}
+.map-card-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.map-card-logo span{color:var(--orange)}
+.map-card p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px}
+.map-card-open{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--orange)}
+.open-dot{width:8px;height:8px;background:#22C55E;border-radius:50%;animation:pulse 2s infinite}
+
+/* ── FAQ ── */
+#faq{background:var(--white)}
+.faq-layout{display:grid;grid-template-columns:1fr 1.4fr;gap:100px;align-items:start}
+.faq-list{display:flex;flex-direction:column;gap:0}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:22px 0;cursor:pointer;gap:16px}
+.faq-q-text{font-size:16px;font-weight:600;color:var(--ink);transition:var(--tr)}
+.faq-q:hover .faq-q-text{color:var(--orange)}
+.faq-icon{width:32px;height:32px;border:1.5px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted);transition:var(--tr);flex-shrink:0}
+.faq-item.open .faq-icon{background:var(--orange);border-color:var(--orange);color:var(--white);transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.faq-item.open .faq-a{max-height:200px}
+.faq-a p{padding:0 0 20px;font-size:14px;color:var(--muted);line-height:1.8}
+
+/* ── FOOTER ── */
+footer{background:var(--ink2);padding:80px 60px 40px;color:var(--cream3)}
+.footer-grid{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:60px;margin-bottom:60px}
+.footer-logo-wrap{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--cream);letter-spacing:-1px;margin-bottom:16px;display:flex;align-items:center;gap:6px}
+.footer-logo-wrap span{color:var(--orange)}
+.footer-desc{font-size:14px;color:rgba(250,250,247,0.45);line-height:1.8;margin-bottom:24px;max-width:280px}
+.footer-socials{display:flex;gap:10px}
+.f-social{width:40px;height:40px;border:1px solid rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;color:rgba(255,255,255,0.5);transition:var(--tr)}
+.f-social:hover{background:var(--orange);border-color:var(--orange);color:var(--white)}
+.footer-col h5{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(250,250,247,0.4);margin-bottom:20px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-col ul li a{color:rgba(250,250,247,0.55);text-decoration:none;font-size:14px;transition:var(--tr)}
+.footer-col ul li a:hover{color:var(--orange);padding-left:6px}
+.footer-newsletter-wrap{margin-top:16px}
+.footer-newsletter{display:flex;gap:0;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)}
+.footer-newsletter input{flex:1;background:transparent;border:none;color:var(--cream);padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none}
+.footer-newsletter input::placeholder{color:rgba(255,255,255,0.3)}
+.footer-newsletter button{background:var(--orange);border:none;color:var(--white);padding:12px 16px;font-size:16px;cursor:pointer;transition:var(--tr)}
+.footer-newsletter button:hover{background:var(--orange-soft)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.06);padding-top:28px;flex-wrap:wrap;gap:16px}
+.footer-bottom p{font-size:13px;color:rgba(255,255,255,0.3)}
+.footer-bottom-links{display:flex;gap:24px}
+.footer-bottom-links a{font-size:13px;color:rgba(255,255,255,0.3);text-decoration:none;transition:var(--tr)}
+.footer-bottom-links a:hover{color:var(--orange)}
+
+/* ── FLOATING WHATSAPP ── */
+.float-wa{position:fixed;bottom:32px;right:32px;z-index:980;width:58px;height:58px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 8px 30px rgba(37,211,102,0.5);transition:var(--tr);text-decoration:none;animation:wapulse 3s ease-in-out infinite}
+.float-wa:hover{transform:scale(1.15);box-shadow:0 14px 50px rgba(37,211,102,0.7)}
+@keyframes wapulse{0%,100%{box-shadow:0 8px 30px rgba(37,211,102,0.4)}50%{box-shadow:0 8px 50px rgba(37,211,102,0.7),0 0 0 10px rgba(37,211,102,0.1)}}
+
+/* ── REVEALS ── */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .8s ease,transform .8s ease}
+.reveal-l{opacity:0;transform:translateX(-32px);transition:opacity .8s ease,transform .8s ease}
+.reveal-r{opacity:0;transform:translateX(32px);transition:opacity .8s ease,transform .8s ease}
+.reveal.on,.reveal-l.on,.reveal-r.on{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1200px){
+  #hero{grid-template-columns:1fr;padding-top:140px;min-height:auto}
+  .hero-right{display:none}
+  .about-grid{grid-template-columns:1fr;gap:60px}
+  .portfolio-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:auto}
+  .port-item{grid-column:span 1!important;grid-row:span 1!important;height:240px}
+  .team-grid{grid-template-columns:repeat(2,1fr)}
+  .blog-grid{grid-template-columns:1fr 1fr}
+  .blog-card.featured{grid-column:span 2}
+  .contact-layout{grid-template-columns:1fr;gap:60px}
+  .faq-layout{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:40px}
+  .numbers-grid{grid-template-columns:repeat(2,1fr)}
+  .testi-layout{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr}
+  .price-card.featured{transform:none}
+}
+@media(max-width:768px){
+  nav{padding:16px 24px}
+  nav.scrolled{padding:12px 24px}
+  .nav-links,.nav-right{display:none}
+  .hamburger{display:flex}
+  section{padding:80px 24px}
+  #hero{padding-left:24px;padding-right:24px}
+  .hero-kpis{flex-direction:column;gap:24px}
+  .hero-kpi{border-right:none;border-bottom:1px solid var(--border);padding:0 0 20px}
+  .hero-kpi:last-child{border-bottom:none;padding-bottom:0}
+  .section-head{flex-direction:column;align-items:flex-start}
+  .services-grid{grid-template-columns:1fr}
+  .process-steps{grid-template-columns:1fr 1fr;gap:32px}
+  .team-grid{grid-template-columns:1fr 1fr}
+  .blog-grid{grid-template-columns:1fr}
+  .blog-card.featured{grid-column:span 1}
+  .footer-grid{grid-template-columns:1fr}
+  .footer{padding:60px 24px 32px}
+  .map-card{right:20px;top:20px}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- MOBILE MENU -->
+<div id="mobileMenu" style="display:none;position:fixed;inset:0;background:var(--white);z-index:988;flex-direction:column;align-items:center;justify-content:center;gap:28px">
+  <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--ink);margin-bottom:20px">NOVA<span style="color:var(--orange)">.</span></div>
+  <a href="#services" onclick="closeMob()" style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--ink);text-decoration:none;transition:var(--tr)">Services</a>
+  <a href="#portfolio" onclick="closeMob()" style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--ink);text-decoration:none">Portfolio</a>
+  <a href="#about" onclick="closeMob()" style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--ink);text-decoration:none">À propos</a>
+  <a href="#pricing" onclick="closeMob()" style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--ink);text-decoration:none">Tarifs</a>
+  <a href="#blog" onclick="closeMob()" style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--ink);text-decoration:none">Blog</a>
+  <a href="#contact" onclick="closeMob()" style="margin-top:10px;background:var(--orange);color:var(--white);padding:14px 36px;border-radius:50px;font-size:15px;font-weight:700;text-decoration:none">Nous contacter</a>
+  <button onclick="closeMob()" style="position:absolute;top:24px;right:28px;font-size:28px;background:none;border:none;cursor:pointer;color:var(--ink)">×</button>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-logo">
+    <span class="nav-logo-main">NOVA</span>
+    <div class="nav-logo-dot"></div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#team">Équipe</a></li>
+    <li><a href="#pricing">Tarifs</a></li>
+    <li><a href="#blog">Blog</a></li>
+  </ul>
+  <div class="nav-right">
+    <span class="nav-tel">+33 1 00 00 00 00</span>
+    <a href="#contact" class="nav-cta">Démarrer un projet →</a>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMob()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-bg-shape"></div>
+  <div class="hero-left">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      <span>Agence #1 en croissance digitale</span>
+    </div>
+    <h1 class="hero-title">
+      On propulse<br>
+      vos marques<br>
+      vers l'<em>avant.</em>
+    </h1>
+    <p class="hero-desc">
+      Stratégie, création, performance. NOVA est l'agence marketing digital qui transforme vos ambitions en résultats mesurables et durables.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-fill">Démarrer maintenant <span>→</span></a>
+      <a href="#portfolio" class="btn-ghost">
+        <div class="arrow-circle">▶</div>
+        Voir nos projets
+      </a>
+    </div>
+    <div class="hero-kpis">
+      <div class="hero-kpi">
+        <div class="hero-kpi-num">240<span>+</span></div>
+        <div class="hero-kpi-label">Clients satisfaits</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-num">8<span>x</span></div>
+        <div class="hero-kpi-label">ROI moyen généré</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-num">12<span>ans</span></div>
+        <div class="hero-kpi-label">D'expertise digitale</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-visual-wrap">
+      <div class="hero-main-card">
+        <div class="hero-main-card-img-placeholder">📈</div>
+      </div>
+      <div class="hero-float-card">
+        <div class="float-card-label">Trafic organique</div>
+        <div class="float-card-num" style="color:var(--ink)">+312%</div>
+        <div class="float-card-sub" style="color:var(--muted)">vs mois précédent</div>
+        <div class="float-card-bar">
+          <div class="float-bar-seg filled"></div>
+          <div class="float-bar-seg filled"></div>
+          <div class="float-bar-seg filled"></div>
+          <div class="float-bar-seg"></div>
+        </div>
+      </div>
+      <div class="hero-float-card2">
+        <div class="float-card-label">Conversions</div>
+        <div class="float-card-num">94%</div>
+        <div class="float-card-sub">Taux de succès</div>
+        <div class="float-card-bar">
+          <div class="float-bar-seg2 filled"></div>
+          <div class="float-bar-seg2 filled"></div>
+          <div class="float-bar-seg2 filled"></div>
+          <div class="float-bar-seg2 filled"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">SEO & Référencement</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Google Ads</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Social Media</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Email Marketing</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Branding & Identité</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Web Design</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Analytics & Data</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Content Marketing</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">SEO & Référencement</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Google Ads</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Social Media</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Email Marketing</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Branding & Identité</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Web Design</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Analytics & Data</span><span class="ticker-item ticker-sep">✦</span>
+    <span class="ticker-item">Content Marketing</span><span class="ticker-item ticker-sep">✦</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="s-label reveal">Ce que nous faisons</div>
+        <h2 class="s-title reveal d1">Nos <em>expertises</em><br>au service de votre<br>croissance</h2>
+      </div>
+      <div>
+        <p class="s-sub reveal d2">Des solutions digitales complètes et intégrées pour maximiser votre présence en ligne et votre retour sur investissement.</p>
+        <a href="#contact" class="btn-fill reveal d3" style="margin-top:20px;display:inline-flex">Voir tous les services →</a>
+      </div>
+    </div>
+    <div class="services-grid reveal d2">
+      <div class="svc-card">
+        <div class="svc-num">01</div>
+        <div class="svc-icon">🔍</div>
+        <h3>SEO & Visibilité</h3>
+        <p>Dominez les premières positions Google. Audit complet, optimisation technique, stratégie de contenu et netlinking pour une croissance organique durable.</p>
+        <div class="svc-tags">
+          <span class="svc-tag">Audit SEO</span>
+          <span class="svc-tag">On-page</span>
+          <span class="svc-tag">Backlinks</span>
+        </div>
+        <a href="#" class="svc-arrow">En savoir plus →</a>
+      </div>
+      <div class="svc-card">
+        <div class="svc-num">02</div>
+        <div class="svc-icon">📣</div>
+        <h3>Publicité Digitale</h3>
+        <p>Campagnes Google Ads, Meta Ads, LinkedIn Ads ultra-ciblées. Chaque euro investi est optimisé pour un ROI maximum et mesurable.</p>
+        <div class="svc-tags">
+          <span class="svc-tag">Google Ads</span>
+          <span class="svc-tag">Meta Ads</span>
+          <span class="svc-tag">Remarketing</span>
+        </div>
+        <a href="#" class="svc-arrow">En savoir plus →</a>
+      </div>
+      <div class="svc-card">
+        <div class="svc-num">03</div>
+        <div class="svc-icon">📱</div>
+        <h3>Social Media</h3>
+        <p>Stratégie éditoriale, création de contenu engageant, community management et influence marketing pour des communautés authentiques.</p>
+        <div class="svc-tags">
+          <span class="svc-tag">Instagram</span>
+          <span class="svc-tag">LinkedIn</span>
+          <span class="svc-tag">TikTok</span>
+        </div>
+        <a href="#" class="svc-arrow">En savoir plus →</a>
+      </div>
+      <div class="svc-card">
+        <div class="svc-num">04</div>
+        <div class="svc-icon">🎨</div>
+        <h3>Branding & Design</h3>
+        <p>Identité visuelle forte, charte graphique, logo et UI/UX design. Créez une marque inoubliable qui se démarque dans son marché.</p>
+        <div class="svc-tags">
+          <span class="svc-tag">Logo</span>
+          <span class="svc-tag">Charte</span>
+          <span class="svc-tag">UI/UX</span>
+        </div>
+        <a href="#" class="svc-arrow">En savoir plus →</a>
+      </div>
+      <div class="svc-card">
+        <div class="svc-num">05</div>
+        <div class="svc-icon">✉️</div>
+        <h3>Email Marketing</h3>
+        <p>Automatisation, segmentation avancée et nurturing. Transformez vos prospects en clients fidèles grâce à des séquences emails intelligentes.</p>
+        <div class="svc-tags">
+          <span class="svc-tag">Automation</span>
+          <span class="svc-tag">Newsletter</span>
+          <span class="svc-tag">CRM</span>
+        </div>
+        <a href="#" class="svc-arrow">En savoir plus →</a>
+      </div>
+      <div class="svc-card">
+        <div class="svc-num">06</div>
+        <div class="svc-icon">📊</div>
+        <h3>Analytics & Data</h3>
+        <p>Tableaux de bord personnalisés, tracking avancé, attribution multi-touch. Prenez des décisions éclairées basées sur des données fiables.</p>
+        <div class="svc-tags">
+          <span class="svc-tag">GA4</span>
+          <span class="svc-tag">Looker Studio</span>
+          <span class="svc-tag">A/B Tests</span>
+        </div>
+        <a href="#" class="svc-arrow">En savoir plus →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="s-label reveal">Comment on travaille</div>
+        <h2 class="s-title reveal d1">Notre <em>méthode</em><br>en 4 étapes</h2>
+      </div>
+      <p class="s-sub reveal d2">Un processus éprouvé, transparent et collaboratif pour garantir le succès de chaque projet digital.</p>
+    </div>
+    <div class="process-steps">
+      <div class="proc-step reveal">
+        <div class="proc-step-num">01</div>
+        <div class="proc-step-icon">🔎</div>
+        <h4>Audit & Découverte</h4>
+        <p>Analyse de votre situation, de vos concurrents et de vos objectifs pour définir la meilleure stratégie.</p>
+      </div>
+      <div class="proc-step reveal d1">
+        <div class="proc-step-num">02</div>
+        <div class="proc-step-icon">🗺️</div>
+        <h4>Stratégie & Plan</h4>
+        <p>Conception d'une roadmap personnalisée avec des KPIs clairs et des jalons mesurables.</p>
+      </div>
+      <div class="proc-step reveal d2">
+        <div class="proc-step-num">03</div>
+        <div class="proc-step-icon">⚡</div>
+        <h4>Exécution & Création</h4>
+        <p>Déploiement rapide et agile de toutes les actions, campagnes et contenus définis.</p>
+      </div>
+      <div class="proc-step reveal d3">
+        <div class="proc-step-num">04</div>
+        <div class="proc-step-icon">📈</div>
+        <h4>Mesure & Optimisation</h4>
+        <p>Analyse continue des résultats et optimisation permanente pour maximiser votre ROI.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-visual reveal-l">
+        <div class="about-main-img">🏢</div>
+        <div class="about-float-stat">
+          <div class="big-num">12+</div>
+          <div class="stat-text">Années d'expertise</div>
+        </div>
+        <div class="about-float-award">
+          <div class="award-icon">🏆</div>
+          <div class="award-text">
+            <strong>Agence certifiée</strong>
+            <span>Google Premier Partner 2024</span>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div class="s-label">Notre histoire</div>
+        <h2 class="s-title">Nous sommes<br><em>NOVA.</em> L'agence<br>qui fait la différence.</h2>
+        <p style="font-size:15px;color:var(--muted);line-height:1.9;margin-bottom:28px;font-weight:300">
+          Fondée en 2013 à Paris, NOVA est née d'une conviction simple : le marketing digital doit créer de la valeur réelle, pas du bruit. Aujourd'hui, notre équipe de 32 experts passionnés accompagne des PME, startups et grands groupes dans leur transformation digitale.
+        </p>
+        <p style="font-size:15px;color:var(--muted);line-height:1.9;margin-bottom:36px;font-weight:300">
+          Nous croyons en la transparence totale, les résultats mesurables et les partenariats durables. Chaque client est unique, chaque stratégie est sur-mesure.
+        </p>
+        <div class="about-values">
+          <div class="about-val">
+            <div class="about-val-icon">🎯</div>
+            <h5>Orienté résultats</h5>
+            <p>Chaque action est mesurée, analysée et optimisée pour un ROI maximum.</p>
+          </div>
+          <div class="about-val">
+            <div class="about-val-icon">🤝</div>
+            <h5>Partenariat long terme</h5>
+            <p>Nous construisons des relations solides basées sur la confiance et la transparence.</p>
+          </div>
+          <div class="about-val">
+            <div class="about-val-icon">💡</div>
+            <h5>Innovation constante</h5>
+            <p>Nous maîtrisons les dernières technologies et tendances du digital.</p>
+          </div>
+          <div class="about-val">
+            <div class="about-val-icon">⚡</div>
+            <h5>Agilité & rapidité</h5>
+            <p>Nous nous adaptons vite et livrons rapidement des résultats concrets.</p>
+          </div>
+        </div>
+        <a href="#contact" class="btn-fill" style="margin-top:36px;display:inline-flex">Discuter de votre projet →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="s-label reveal">Nos réalisations</div>
+        <h2 class="s-title reveal d1">Des projets<br>qui <em>parlent</em><br>d'eux-mêmes.</h2>
+      </div>
+      <div>
+        <p class="s-sub reveal d2">Plus de 240 projets livrés depuis 2013. Voici une sélection de nos meilleures réalisations.</p>
+        <div class="portfolio-filter reveal d3">
+          <button class="pf-btn active">Tous</button>
+          <button class="pf-btn">SEO</button>
+          <button class="pf-btn">Pub Digitale</button>
+          <button class="pf-btn">Social Media</button>
+          <button class="pf-btn">Branding</button>
+        </div>
+      </div>
+    </div>
+    <div class="portfolio-grid reveal">
+      <div class="port-item">
+        <div class="port-placeholder">🛍️</div>
+        <div class="port-overlay">
+          <div class="port-cat">E-commerce · SEO</div>
+          <div class="port-title">FashionStore — +420% trafic organique</div>
+          <a href="#" class="port-link">Voir le projet ↗</a>
+        </div>
+      </div>
+      <div class="port-item">
+        <div class="port-placeholder">🏨</div>
+        <div class="port-overlay">
+          <div class="port-cat">Hôtellerie · Pub Digitale</div>
+          <div class="port-title">Hotel Lumière — ROI 6x sur Google Ads</div>
+          <a href="#" class="port-link">Voir le projet ↗</a>
+        </div>
+      </div>
+      <div class="port-item">
+        <div class="port-placeholder">💊</div>
+        <div class="port-overlay">
+          <div class="port-cat">Santé · Social Media</div>
+          <div class="port-title">PharmaPlus — 80K abonnés en 6 mois</div>
+          <a href="#" class="port-link">Voir le projet ↗</a>
+        </div>
+      </div>
+      <div class="port-item">
+        <div class="port-placeholder">🏠</div>
+        <div class="port-overlay">
+          <div class="port-cat">Immobilier · Branding</div>
+          <div class="port-title">ImmoNext — Refonte identité complète</div>
+          <a href="#" class="port-link">Voir le projet ↗</a>
+        </div>
+      </div>
+      <div class="port-item">
+        <div class="port-placeholder">🍕</div>
+        <div class="port-overlay">
+          <div class="port-cat">Food & Drink · Local SEO</div>
+          <div class="port-title">Pizzéria Soleil — #1 Google Maps</div>
+          <a href="#" class="port-link">Voir le projet ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NUMBERS -->
+<section id="numbers" style="padding:0">
+  <div class="numbers-grid">
+    <div class="num-card reveal">
+      <div class="num-big">240<sup style="font-size:32px">+</sup></div>
+      <div class="num-label">Clients actifs</div>
+      <div class="num-desc">Des PME aux grands groupes, nous accompagnons tout profil</div>
+    </div>
+    <div class="num-card reveal d1">
+      <div class="num-big">8x</div>
+      <div class="num-label">ROI moyen</div>
+      <div class="num-desc">Retour sur investissement mesuré sur nos campagnes payantes</div>
+    </div>
+    <div class="num-card reveal d2">
+      <div class="num-big">98%</div>
+      <div class="num-label">Satisfaction client</div>
+      <div class="num-desc">Taux de renouvellement de contrat après la première année</div>
+    </div>
+    <div class="num-card reveal d3">
+      <div class="num-big">32</div>
+      <div class="num-label">Experts passionnés</div>
+      <div class="num-desc">Une équipe multidisciplinaire aux certifications reconnues</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="s-label reveal">Témoignages</div>
+        <h2 class="s-title reveal d1">Ils nous font<br><em>confiance.</em></h2>
+      </div>
+    </div>
+    <div class="testi-layout">
+      <div class="testi-sidebar reveal-l">
+        <div class="rating-big">4.9</div>
+        <div class="rating-stars">★★★★★</div>
+        <p>Basé sur 186 avis vérifiés</p>
+        <div class="testi-brands">
+          <div class="testi-brand-row">
+            <div class="testi-brand-icon">🌍</div>
+            <span class="testi-brand-name">Google Reviews</span>
+            <span class="testi-brand-score">4.9 ★</span>
+          </div>
+          <div class="testi-brand-row">
+            <div class="testi-brand-icon">📘</div>
+            <span class="testi-brand-name">Facebook</span>
+            <span class="testi-brand-score">4.8 ★</span>
+          </div>
+          <div class="testi-brand-row">
+            <div class="testi-brand-icon">💼</div>
+            <span class="testi-brand-name">Clutch</span>
+            <span class="testi-brand-score">5.0 ★</span>
+          </div>
+          <div class="testi-brand-row">
+            <div class="testi-brand-icon">🔗</div>
+            <span class="testi-brand-name">LinkedIn</span>
+            <span class="testi-brand-score">4.9 ★</span>
+          </div>
+        </div>
+      </div>
+      <div class="testi-swiper-wrap reveal-r">
+        <div class="swiper testi-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="testi-card">
+                <div class="testi-card-stars">★★★★★</div>
+                <div class="testi-card-quote">"</div>
+                <p class="testi-card-text">En 6 mois avec NOVA, notre trafic organique a explosé de 380% et nos ventes en ligne ont triplé. Leur approche data-driven et leur transparence sont vraiment différentes de toutes les agences qu'on a testées avant.</p>
+                <div class="testi-card-author">
+                  <div class="testi-card-avatar">👨‍💼</div>
+                  <div>
+                    <div class="testi-card-name">Thomas Lefèvre</div>
+                    <div class="testi-card-role">CEO — FashionStore.fr</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="testi-card">
+                <div class="testi-card-stars">★★★★★</div>
+                <div class="testi-card-quote">"</div>
+                <p class="testi-card-text">Les campagnes Google Ads gérées par NOVA nous rapportent un ROI de 9x. L'équipe est réactive, pro, et les reportings mensuels sont ultra-clairs. Je recommande sans hésiter à n'importe quelle entreprise sérieuse.</p>
+                <div class="testi-card-author">
+                  <div class="testi-card-avatar">👩‍💼</div>
+                  <div>
+                    <div class="testi-card-name">Sophie Mercier</div>
+                    <div class="testi-card-role">Directrice Marketing — Hotel Lumière</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="testi-card">
+                <div class="testi-card-stars">★★★★★</div>
+                <div class="testi-card-quote">"</div>
+                <p class="testi-card-text">NOVA a complètement transformé notre présence sur les réseaux sociaux. De 2 000 à 80 000 abonnés en 6 mois, avec une communauté vraiment engagée. Ce n'est pas de la magie, c'est de l'expertise pure.</p>
+                <div class="testi-card-author">
+                  <div class="testi-card-avatar">👨‍⚕️</div>
+                  <div>
+                    <div class="testi-card-name">Dr. Karim Benali</div>
+                    <div class="testi-card-role">Directeur — PharmaPlus</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-pagination" style="bottom:-40px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="s-label reveal">Notre équipe</div>
+        <h2 class="s-title reveal d1">Les <em>talents</em><br>derrière vos<br>succès.</h2>
+      </div>
+      <p class="s-sub reveal d2">32 experts passionnés, certifiés Google, Meta et HubSpot, dédiés à faire croître votre business.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div class="team-img">👨‍💻
+          <div class="team-social-overlay">
+            <a href="#" class="team-social-btn">💼</a>
+            <a href="#" class="team-social-btn">𝕏</a>
+          </div>
+        </div>
+        <div class="team-body">
+          <div class="team-name">Alexandre Martin</div>
+          <div class="team-role">CEO & Fondateur</div>
+          <div class="team-bio">12 ans d'expérience, ex-Google. Stratège digital visionnaire et speaker international.</div>
+        </div>
+      </div>
+      <div class="team-card reveal d1">
+        <div class="team-img">👩‍🎨
+          <div class="team-social-overlay">
+            <a href="#" class="team-social-btn">💼</a>
+            <a href="#" class="team-social-btn">🎨</a>
+          </div>
+        </div>
+        <div class="team-body">
+          <div class="team-name">Camille Rousseau</div>
+          <div class="team-role">Directrice Créative</div>
+          <div class="team-bio">Ancienne de BETC. Prix Cannes Lions 2022. Experte en brand storytelling et UX.</div>
+        </div>
+      </div>
+      <div class="team-card reveal d2">
+        <div class="team-img">👨‍📊
+          <div class="team-social-overlay">
+            <a href="#" class="team-social-btn">💼</a>
+            <a href="#" class="team-social-btn">📊</a>
+          </div>
+        </div>
+        <div class="team-body">
+          <div class="team-name">Nicolas Dupont</div>
+          <div class="team-role">Head of Performance</div>
+          <div class="team-bio">Google Premier Partner. Spécialiste acquisition payante avec +€10M de budget géré.</div>
+        </div>
+      </div>
+      <div class="team-card reveal d3">
+        <div class="team-img">👩‍💼
+          <div class="team-social-overlay">
+            <a href="#" class="team-social-btn">💼</a>
+            <a href="#" class="team-social-btn">📱</a>
+          </div>
+        </div>
+        <div class="team-body">
+          <div class="team-name">Léa Bernard</div>
+          <div class="team-role">Responsable Social Media</div>
+          <div class="team-bio">7 ans d'expertise, 50+ communautés gérées. Spécialiste TikTok et contenu viral.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="section-head" style="flex-direction:column;align-items:center;text-align:center;margin-bottom:64px">
+      <div class="s-label reveal">Investissement</div>
+      <h2 class="s-title reveal d1">Des offres<br>pensées pour<br>votre <em>croissance.</em></h2>
+      <p class="s-sub reveal d2" style="max-width:480px;margin:0 auto">Pas d'engagement annuel imposé. Commencez, testez, et montez en puissance à votre rythme.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-plan">Starter</div>
+        <div class="price-amount"><sup>€</sup>890</div>
+        <div class="price-period">/ mois · sans engagement</div>
+        <div class="price-desc">Idéal pour les TPE et indépendants qui démarrent leur présence digitale.</div>
+        <div class="price-features">
+          <div class="price-feat"><div class="price-check">✓</div>Audit SEO initial complet</div>
+          <div class="price-feat"><div class="price-check">✓</div>Gestion 1 réseau social</div>
+          <div class="price-feat"><div class="price-check">✓</div>Campagne Google Ads (budget ≤1000€)</div>
+          <div class="price-feat"><div class="price-check">✓</div>Rapport mensuel</div>
+          <div class="price-feat"><div class="price-check">✓</div>Support email</div>
+        </div>
+        <a href="#contact" class="price-cta" style="color:var(--ink)">Démarrer →</a>
+      </div>
+      <div class="price-card featured reveal d1">
+        <div class="price-featured-badge">⭐ Populaire</div>
+        <div class="price-plan">Growth</div>
+        <div class="price-amount"><sup>€</sup>1990</div>
+        <div class="price-period">/ mois · sans engagement</div>
+        <div class="price-desc">Pour les PME ambitieuses qui veulent une croissance digitale accélérée.</div>
+        <div class="price-features">
+          <div class="price-feat"><div class="price-check">✓</div>Stratégie SEO & content avancée</div>
+          <div class="price-feat"><div class="price-check">✓</div>Gestion 3 réseaux sociaux</div>
+          <div class="price-feat"><div class="price-check">✓</div>Campagnes multi-plateformes</div>
+          <div class="price-feat"><div class="price-check">✓</div>Email marketing automation</div>
+          <div class="price-feat"><div class="price-check">✓</div>Dashboard Analytics temps réel</div>
+          <div class="price-feat"><div class="price-check">✓</div>Compte dédié + réunion bi-mensuelle</div>
+        </div>
+        <a href="#contact" class="price-cta">Démarrer →</a>
+      </div>
+      <div class="price-card reveal d2">
+        <div class="price-plan">Enterprise</div>
+        <div class="price-amount" style="font-size:36px;letter-spacing:-1px;padding-top:10px">Sur mesure</div>
+        <div class="price-period">Devis personnalisé</div>
+        <div class="price-desc">Pour les grandes entreprises avec des besoins digitaux complexes et multi-canaux.</div>
+        <div class="price-features">
+          <div class="price-feat"><div class="price-check">✓</div>Stratégie 360° sur-mesure</div>
+          <div class="price-feat"><div class="price-check">✓</div>Équipe dédiée (4+ experts)</div>
+          <div class="price-feat"><div class="price-check">✓</div>Budgets publicitaires illimités</div>
+          <div class="price-feat"><div class="price-check">✓</div>Intégration CRM & outils internes</div>
+          <div class="price-feat"><div class="price-check">✓</div>SLA & support prioritaire 24/7</div>
+          <div class="price-feat"><div class="price-check">✓</div>Formations équipes incluses</div>
+        </div>
+        <a href="#contact" class="price-cta" style="color:var(--ink)">Demander un devis →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section id="blog">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="s-label reveal">Ressources & Insights</div>
+        <h2 class="s-title reveal d1">Le blog<br><em>NOVA.</em></h2>
+      </div>
+      <div>
+        <p class="s-sub reveal d2">Conseils, tendances et études de cas pour vous aider à maîtriser le marketing digital.</p>
+        <a href="#" class="btn-fill reveal d3" style="margin-top:20px;display:inline-flex">Voir tous les articles →</a>
+      </div>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card featured reveal">
+        <div class="blog-img">
+          <div class="blog-img-placeholder">🚀</div>
+          <span class="blog-tag-badge">SEO</span>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta">
+            <span>15 Jan 2025</span>
+            <div class="blog-meta-dot"></div>
+            <span>10 min de lecture</span>
+          </div>
+          <h3>Les 12 facteurs SEO qui feront la différence en 2025 pour votre classement Google</h3>
+          <p>L'algorithme de Google évolue constamment. Découvrez les leviers les plus impactants pour dominer les SERPs cette année...</p>
+          <div class="blog-author">
+            <div class="blog-author-ava">👨‍💻</div>
+            <span class="blog-author-name">Alexandre Martin · CEO</span>
+          </div>
+          <a href="#" class="blog-read-more">Lire l'article →</a>
+        </div>
+      </div>
+      <div class="blog-card reveal d1">
+        <div class="blog-img">
+          <div class="blog-img-placeholder">📱</div>
+          <span class="blog-tag-badge">Social Media</span>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>8 Fév 2025</span><div class="blog-meta-dot"></div><span>5 min</span></div>
+          <h3>TikTok pour les entreprises B2B : mythe ou réalité en 2025 ?</h3>
+          <a href="#" class="blog-read-more">Lire →</a>
+        </div>
+      </div>
+      <div class="blog-card reveal d2">
+        <div class="blog-img">
+          <div class="blog-img-placeholder">💰</div>
+          <span class="blog-tag-badge">Ads</span>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>22 Fév 2025</span><div class="blog-meta-dot"></div><span>7 min</span></div>
+          <h3>Comment calculer votre ROAS cible avant de lancer vos campagnes</h3>
+          <a href="#" class="blog-read-more">Lire →</a>
+        </div>
+      </div>
+      <div class="blog-card reveal d1">
+        <div class="blog-img">
+          <div class="blog-img-placeholder">🤖</div>
+          <span class="blog-tag-badge">IA & Marketing</span>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>5 Mar 2025</span><div class="blog-meta-dot"></div><span>8 min</span></div>
+          <h3>L'IA générative change-t-elle vraiment le SEO ? Notre analyse terrain</h3>
+          <a href="#" class="blog-read-more">Lire →</a>
+        </div>
+      </div>
+      <div class="blog-card reveal d2">
+        <div class="blog-img">
+          <div class="blog-img-placeholder">📧</div>
+          <span class="blog-tag-badge">Email</span>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>18 Mar 2025</span><div class="blog-meta-dot"></div><span>6 min</span></div>
+          <h3>5 séquences email qui convertissent à plus de 35% en moyenne</h3>
+          <a href="#" class="blog-read-more">Lire →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="faq-layout">
+      <div class="reveal-l">
+        <div class="s-label">FAQ</div>
+        <h2 class="s-title">Vos<br><em>questions,</em><br>nos réponses.</h2>
+        <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-top:20px">Vous ne trouvez pas la réponse que vous cherchez ? Contactez-nous directement.</p>
+        <a href="#contact" class="btn-fill" style="margin-top:28px;display:inline-flex">Nous écrire →</a>
+      </div>
+      <div class="faq-list reveal-r">
+        <div class="faq-item open">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Combien de temps avant de voir des résultats ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Les premiers résultats SEO apparaissent généralement entre 3 et 6 mois. Pour les campagnes payantes (Google Ads, Meta Ads), les résultats sont immédiats — souvent dès les premières 48-72h. Nous vous partageons des rapports hebdomadaires pour suivre chaque indicateur.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Proposez-vous des contrats sans engagement ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Oui ! Toutes nos offres sont sans engagement minimum. Nous préférons vous garder par la qualité de nos résultats, pas par des clauses contractuelles contraignantes. Vous pouvez arrêter à tout moment avec un préavis de 30 jours.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Travaillez-vous avec tous types d'entreprises ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Nous travaillons avec des TPE, PME, startups et grands groupes dans des secteurs variés : e-commerce, BtoB, retail, santé, immobilier, tourisme, finance... Notre méthodologie s'adapte à chaque secteur et à chaque objectif.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Comment se passe le suivi et le reporting ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Chaque client dispose d'un tableau de bord temps réel accessible 24/7. Nous faisons un rapport mensuel détaillé et une réunion de suivi avec votre account manager dédié. La transparence totale est non-négociable chez NOVA.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Quel budget pub recommandez-vous en plus de vos honoraires ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Nous recommandons un budget publicitaire minimum de 500€/mois pour commencer à obtenir des données significatives. Pour des résultats optimaux, nous conseillons entre 1 500€ et 5 000€/mois selon votre marché et vos objectifs de croissance.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-layout">
+      <div class="reveal-l">
+        <div class="s-label">Parlons-en</div>
+        <h3 class="contact-info-title">Prêt à passer au<br><em>niveau supérieur ?</em></h3>
+        <p class="contact-info-desc">Décrivez-nous votre projet, vos objectifs et vos défis. Nous revenons vers vous sous 24h avec une analyse gratuite et des premières recommandations.</p>
+        <div class="contact-items">
+          <div class="c-item">
+            <div class="c-icon-wrap">📍</div>
+            <div>
+              <div class="c-item-label">Adresse</div>
+              <div class="c-item-value">42 Rue du Faubourg Saint-Antoine, 75012 Paris</div>
+            </div>
+          </div>
+          <div class="c-item">
+            <div class="c-icon-wrap">📞</div>
+            <div>
+              <div class="c-item-label">Téléphone</div>
+              <div class="c-item-value">+33 1 00 00 00 00</div>
+            </div>
+          </div>
+          <div class="c-item">
+            <div class="c-icon-wrap">✉️</div>
+            <div>
+              <div class="c-item-label">Email</div>
+              <div class="c-item-value">hello@novaagency.fr</div>
+            </div>
+          </div>
+          <div class="c-item">
+            <div class="c-icon-wrap">⏰</div>
+            <div>
+              <div class="c-item-label">Disponibilité</div>
+              <div class="c-item-value">Lun – Ven : 9h00 – 18h30</div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-socials">
+          <a href="#" class="c-social">📘</a>
+          <a href="#" class="c-social">📸</a>
+          <a href="#" class="c-social">💼</a>
+          <a href="#" class="c-social">𝕏</a>
+          <a href="#" class="c-social">▶</a>
+        </div>
+      </div>
+      <div class="contact-form reveal-r">
+        <div class="form-title">Envoyez-nous<br>votre brief</div>
+        <form onsubmit="return submitForm(event)">
+          <div class="form-row">
+            <div class="fg">
+              <label>Prénom *</label>
+              <input type="text" placeholder="Jean" required>
+            </div>
+            <div class="fg">
+              <label>Nom *</label>
+              <input type="text" placeholder="Dupont" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="fg">
+              <label>Email *</label>
+              <input type="email" placeholder="jean@entreprise.fr" required>
+            </div>
+            <div class="fg">
+              <label>Téléphone</label>
+              <input type="tel" placeholder="+33 6 00 00 00 00">
+            </div>
+          </div>
+          <div class="fg">
+            <label>Entreprise</label>
+            <input type="text" placeholder="Nom de votre entreprise">
+          </div>
+          <div class="fg">
+            <label>Service recherché</label>
+            <select>
+              <option>Choisir un service...</option>
+              <option>SEO & Référencement</option>
+              <option>Publicité Digitale (Ads)</option>
+              <option>Social Media Management</option>
+              <option>Branding & Design</option>
+              <option>Email Marketing</option>
+              <option>Analytics & Data</option>
+              <option>Stratégie digitale complète</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Budget mensuel envisagé</label>
+            <select>
+              <option>Moins de 1 000 €/mois</option>
+              <option>1 000 – 3 000 €/mois</option>
+              <option>3 000 – 5 000 €/mois</option>
+              <option>Plus de 5 000 €/mois</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Votre message *</label>
+            <textarea rows="4" placeholder="Décrivez votre projet, vos objectifs et vos challenges actuels..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit">Envoyer ma demande ✦</button>
+          <p class="form-note">🔒 Vos données sont confidentielles. Nous vous répondons sous 24h ouvrées.</p>
+          <div id="form-ok" class="form-success">✅ Message envoyé ! Nous vous contacterons sous 24h.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAP -->
+<div id="map-sec">
+  <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=2.34%2C48.84%2C2.40%2C48.87&layer=mapnik&marker=48.853%2C2.369" style="width:100%;height:100%;border:none"></iframe>
+  <div class="map-card">
+    <div class="map-card-logo">NOVA<span>.</span></div>
+    <p>42 Rue du Faubourg Saint-Antoine<br>75012 Paris, France</p>
+    <div class="map-card-open">
+      <div class="open-dot"></div>
+      Ouvert — Ferme à 18h30
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo-wrap">NOVA<span>.</span></div>
+        <p class="footer-desc">L'agence marketing digital qui transforme vos ambitions en résultats mesurables. Stratégie, création, performance.</p>
+        <div class="footer-socials">
+          <a href="#" class="f-social">📘</a>
+          <a href="#" class="f-social">📸</a>
+          <a href="#" class="f-social">💼</a>
+          <a href="#" class="f-social">𝕏</a>
+          <a href="#" class="f-social">▶</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="#">SEO & Référencement</a></li>
+          <li><a href="#">Publicité Digitale</a></li>
+          <li><a href="#">Social Media</a></li>
+          <li><a href="#">Branding & Design</a></li>
+          <li><a href="#">Email Marketing</a></li>
+          <li><a href="#">Analytics & Data</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Agence</h5>
+        <ul>
+          <li><a href="#">À propos</a></li>
+          <li><a href="#">Notre équipe</a></li>
+          <li><a href="#">Portfolio</a></li>
+          <li><a href="#">Témoignages</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Carrières</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Newsletter</h5>
+        <p style="font-size:13px;color:rgba(250,250,247,0.4);line-height:1.7;margin-bottom:16px">Recevez chaque semaine nos meilleurs conseils marketing directement dans votre boîte.</p>
+        <div class="footer-newsletter-wrap">
+          <div class="footer-newsletter">
+            <input type="email" placeholder="votre@email.fr">
+            <button>→</button>
+          </div>
+        </div>
+        <p style="font-size:11px;color:rgba(255,255,255,0.2);margin-top:10px">+4 200 marketeurs déjà abonnés</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 NOVA Agence Marketing Digital. Tous droits réservés.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Mentions légales</a>
+        <a href="#">Politique de confidentialité</a>
+        <a href="#">CGV</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- FLOATING WHATSAPP -->
+<a href="#" class="float-wa" title="WhatsApp">💬</a>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+// ── CURSOR ──
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+  setTimeout(() => {
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  }, 60);
+});
+document.querySelectorAll('a,button,.svc-card,.port-item,.team-card,.blog-card,.faq-q').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.width = '20px'; cursor.style.height = '20px';
+    ring.style.width = '60px'; ring.style.height = '60px'; ring.style.opacity = '0.8';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.width = '12px'; cursor.style.height = '12px';
+    ring.style.width = '40px'; ring.style.height = '40px'; ring.style.opacity = '0.5';
+  });
+});
+
+// ── NAVBAR ──
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ── MOBILE MENU ──
+function toggleMob() {
+  const m = document.getElementById('mobileMenu');
+  m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+}
+function closeMob() { document.getElementById('mobileMenu').style.display = 'none'; }
+
+// ── SWIPER ──
+new Swiper('.testi-swiper', {
+  loop: true, autoplay: { delay: 5000 }, speed: 800,
+  pagination: { el: '.testi-swiper .swiper-pagination', clickable: true },
+  spaceBetween: 24,
+});
+
+// ── PORTFOLIO FILTER ──
+document.querySelectorAll('.pf-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// ── FAQ ──
+function toggleFaq(q) {
+  const item = q.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// ── SCROLL REVEAL ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); }});
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el => obs.observe(el));
+
+// ── COUNTER ANIMATION ──
+function animateCounters() {
+  document.querySelectorAll('.num-big').forEach(el => {
+    const target = parseFloat(el.textContent.replace(/[^0-9.]/g, ''));
+    const suffix = el.textContent.replace(/[0-9.]/g, '');
+    if (!target) return;
+    let current = 0;
+    const step = target / 60;
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = (Number.isInteger(target) ? Math.round(current) : current.toFixed(1)) + suffix;
+      if (current >= target) clearInterval(timer);
+    }, 20);
+  });
+}
+const numObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { animateCounters(); numObs.disconnect(); }});
+}, { threshold: 0.3 });
+const numSec = document.getElementById('numbers');
+if (numSec) numObs.observe(numSec);
+
+// ── FORM ──
+function submitForm(e) {
+  e.preventDefault();
+  document.getElementById('form-ok').style.display = 'block';
+  e.target.reset();
+  setTimeout(() => document.getElementById('form-ok').style.display = 'none', 6000);
+  return false;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WANDERLUX — Voyages d'Exception</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<style>
+/* ═══════════════════════════════════════════
+   THEME TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --gold: #C8A96E;
+  --gold-lt: #E8CFA0;
+  --gold-pale: rgba(200,169,110,0.12);
+  --tr: all 0.55s cubic-bezier(0.23,1,0.32,1);
+  --radius: 20px;
+}
+
+/* DARK */
+[data-theme="dark"] {
+  --bg: #080808;
+  --bg2: #0f0f0f;
+  --bg3: #161616;
+  --bg4: #1e1e1e;
+  --surface: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.07);
+  --text: #F2EDE4;
+  --text2: #9A8E7E;
+  --text3: #5C5248;
+  --nav-bg: rgba(8,8,8,0.85);
+  --card-bg: #111111;
+  --input-bg: rgba(255,255,255,0.05);
+  --shadow: 0 30px 80px rgba(0,0,0,0.6);
+}
+
+/* LIGHT */
+[data-theme="light"] {
+  --bg: #FAF8F5;
+  --bg2: #F2EDE4;
+  --bg3: #EAE4D8;
+  --bg4: #E0D8C8;
+  --surface: rgba(0,0,0,0.03);
+  --border: rgba(0,0,0,0.08);
+  --text: #1A1410;
+  --text2: #6A5D4D;
+  --text3: #A0907E;
+  --nav-bg: rgba(250,248,245,0.9);
+  --card-bg: #FFFFFF;
+  --input-bg: rgba(0,0,0,0.04);
+  --shadow: 0 30px 80px rgba(0,0,0,0.1);
+}
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Jost',sans-serif;
+  overflow-x:hidden;
+  transition:background .5s ease, color .5s ease;
+}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+
+/* ═══════════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  height:72px;padding:0 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:var(--tr);
+}
+nav.solid{
+  background:var(--nav-bg);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 8px 40px rgba(0,0,0,0.08);
+}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--text)}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text2);transition:var(--tr);font-weight:400}
+.nav-links a:hover{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:16px}
+.theme-toggle{
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--border);background:var(--surface);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;transition:var(--tr);
+  color:var(--text2);
+}
+.theme-toggle:hover{border-color:var(--gold);color:var(--gold);transform:rotate(20deg)}
+.nav-btn{
+  background:var(--gold);color:#0a0800;
+  padding:10px 22px;border-radius:50px;
+  font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  font-weight:600;transition:var(--tr);white-space:nowrap;
+}
+.nav-btn:hover{background:var(--gold-lt);transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,169,110,0.4)}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.hamburger span{width:24px;height:1.5px;background:var(--text);border-radius:1px;transition:var(--tr)}
+.mob-menu{
+  display:none;position:fixed;inset:0;z-index:999;
+  background:var(--bg);
+  flex-direction:column;align-items:center;justify-content:center;gap:32px;
+}
+.mob-menu.open{display:flex}
+.mob-menu a{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--text);letter-spacing:2px;transition:var(--tr)}
+.mob-menu a:hover{color:var(--gold)}
+.mob-close{position:absolute;top:24px;right:32px;font-size:32px;background:none;border:none;color:var(--text);cursor:pointer}
+
+/* ═══════════════════════════════════════════
+   HERO — FULLSCREEN VIDEO
+═══════════════════════════════════════════ */
+#hero{position:relative;height:100vh;overflow:hidden;display:flex;align-items:flex-end}
+.hero-video-wrap{position:absolute;inset:0;z-index:0}
+.hero-video-wrap video{width:100%;height:100%;object-fit:cover}
+.hero-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(
+    to top,
+    rgba(0,0,0,0.88) 0%,
+    rgba(0,0,0,0.3) 50%,
+    rgba(0,0,0,0.15) 100%
+  );
+}
+.hero-content{
+  position:relative;z-index:2;
+  padding:0 80px 80px;
+  width:100%;
+  display:grid;grid-template-columns:1fr 400px;align-items:flex-end;gap:60px;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:10px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:20px;
+}
+.hero-eyebrow::before{content:'';width:30px;height:1px;background:var(--gold)}
+.hero-h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(64px,8vw,110px);
+  font-weight:300;line-height:0.92;
+  color:#FFFFFF;letter-spacing:-1px;
+  margin-bottom:28px;
+}
+.hero-h1 em{font-style:italic;color:var(--gold)}
+.hero-desc{font-size:15px;color:rgba(255,255,255,0.6);line-height:1.9;font-weight:300;max-width:460px;margin-bottom:40px}
+.hero-actions{display:flex;align-items:center;gap:20px}
+.btn-hero-primary{
+  background:var(--gold);color:#0a0800;
+  padding:15px 36px;border-radius:50px;
+  font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:600;
+  display:inline-flex;align-items:center;gap:10px;transition:var(--tr);
+}
+.btn-hero-primary:hover{background:var(--gold-lt);transform:translateY(-3px);box-shadow:0 12px 40px rgba(200,169,110,0.5)}
+.btn-hero-ghost{
+  display:inline-flex;align-items:center;gap:10px;
+  color:rgba(255,255,255,0.7);font-size:12px;letter-spacing:2px;text-transform:uppercase;
+  transition:var(--tr);
+}
+.btn-hero-ghost .play-ring{
+  width:46px;height:46px;border:1px solid rgba(255,255,255,0.3);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  transition:var(--tr);
+}
+.btn-hero-ghost:hover{color:#fff}
+.btn-hero-ghost:hover .play-ring{border-color:var(--gold);background:var(--gold);color:#0a0800}
+.hero-right-panel{text-align:right}
+.hero-weather{
+  background:rgba(255,255,255,0.08);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.12);border-radius:16px;
+  padding:20px 24px;display:inline-block;margin-bottom:20px;
+}
+.hero-weather-city{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px}
+.hero-weather-temp{font-family:'Cormorant Garamond',serif;font-size:42px;color:#fff;line-height:1}
+.hero-weather-desc{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px}
+.hero-stats-mini{display:flex;gap:24px;justify-content:flex-end;margin-top:20px}
+.hero-stat-mini .n{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);line-height:1}
+.hero-stat-mini .l{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:2px}
+.hero-scroll{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.hero-scroll span{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.4)}
+.scroll-bar{width:1px;height:52px;background:linear-gradient(to bottom,rgba(200,169,110,0.8),transparent);animation:scrolldown 2s ease-in-out infinite}
+@keyframes scrolldown{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ═══════════════════════════════════════════
+   SEARCH BAR
+═══════════════════════════════════════════ */
+.search-section{
+  background:var(--bg2);padding:0;
+  position:relative;z-index:10;
+}
+.search-bar{
+  max-width:1200px;margin:0 auto;
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:8px 8px 8px 32px;
+  display:flex;align-items:center;gap:0;
+  box-shadow:var(--shadow);
+  transform:translateY(-40px);
+  transition:var(--tr);
+}
+.search-bar:hover{box-shadow:0 40px 100px rgba(0,0,0,0.2)}
+.sb-field{flex:1;padding:16px 24px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:3px;cursor:pointer}
+.sb-field:last-of-type{border-right:none}
+.sb-label{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);font-weight:600}
+.sb-val{font-size:14px;color:var(--text);font-weight:400}
+.sb-val select{background:none;border:none;color:var(--text);font-family:'Jost',sans-serif;font-size:14px;outline:none;cursor:pointer;width:100%}
+.sb-val select option{background:var(--card-bg);color:var(--text)}
+.sb-val input{background:none;border:none;color:var(--text);font-family:'Jost',sans-serif;font-size:14px;outline:none;width:100%}
+.sb-val input::placeholder{color:var(--text2)}
+.sb-submit{
+  background:var(--gold);color:#0a0800;
+  padding:18px 32px;border-radius:12px;border:none;
+  font-family:'Jost',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;
+  font-weight:600;cursor:pointer;white-space:nowrap;transition:var(--tr);
+  display:flex;align-items:center;gap:10px;
+}
+.sb-submit:hover{background:var(--gold-lt);transform:translateY(-1px)}
+
+/* ═══════════════════════════════════════════
+   SECTIONS BASE
+═══════════════════════════════════════════ */
+section{padding:110px 80px}
+.container{max-width:1400px;margin:0 auto}
+.sec-label{
+  display:inline-flex;align-items:center;gap:12px;
+  font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);
+  margin-bottom:16px;
+}
+.sec-label::before{content:'';width:28px;height:1px;background:var(--gold)}
+.sec-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(38px,5.5vw,68px);
+  font-weight:300;line-height:1.05;
+  letter-spacing:-1px;color:var(--text);
+  margin-bottom:20px;
+}
+.sec-title em{font-style:italic;color:var(--gold)}
+.sec-sub{font-size:15px;color:var(--text2);line-height:1.9;font-weight:300;max-width:520px}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px;gap:40px;flex-wrap:wrap}
+.link-more{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);
+  border-bottom:1px solid var(--gold);padding-bottom:2px;transition:var(--tr);
+}
+.link-more:hover{gap:18px}
+
+/* ═══════════════════════════════════════════
+   DESTINATIONS — MOSAIC
+═══════════════════════════════════════════ */
+#destinations{background:var(--bg)}
+.dest-mosaic{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  grid-auto-rows:220px;
+  gap:14px;
+}
+.dest-card{
+  border-radius:16px;overflow:hidden;position:relative;cursor:pointer;
+  background:var(--bg3);
+}
+.dest-card:nth-child(1){grid-column:span 5;grid-row:span 2}
+.dest-card:nth-child(2){grid-column:span 4}
+.dest-card:nth-child(3){grid-column:span 3}
+.dest-card:nth-child(4){grid-column:span 3}
+.dest-card:nth-child(5){grid-column:span 4}
+.dest-card:nth-child(6){grid-column:span 5}
+.dest-img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(0.23,1,0.32,1)}
+.dest-card:hover .dest-img{transform:scale(1.06)}
+.dest-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.1) 60%,transparent 100%);
+  display:flex;flex-direction:column;justify-content:flex-end;padding:24px;
+}
+.dest-tag{
+  position:absolute;top:16px;right:16px;
+  background:rgba(200,169,110,0.9);color:#0a0800;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  padding:4px 12px;border-radius:50px;
+}
+.dest-country{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:5px}
+.dest-name{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.5vw,28px);color:#fff;font-weight:400;letter-spacing:-0.3px}
+.dest-price{font-size:12px;color:var(--gold);margin-top:4px}
+.dest-card:nth-child(1) .dest-name{font-size:clamp(24px,3.5vw,38px)}
+.dest-arrow{
+  position:absolute;bottom:22px;right:22px;
+  width:36px;height:36px;border:1px solid rgba(255,255,255,0.3);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;
+  opacity:0;transform:scale(0.8);transition:var(--tr);
+}
+.dest-card:hover .dest-arrow{opacity:1;transform:scale(1)}
+
+/* ═══════════════════════════════════════════
+   EXPERIENCES — HORIZONTAL SCROLL
+═══════════════════════════════════════════ */
+#experiences{background:var(--bg2);overflow:hidden}
+.exp-swiper{overflow:visible!important;padding-bottom:60px!important}
+.exp-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;transition:var(--tr);cursor:pointer;
+  width:340px!important;
+}
+.exp-card:hover{transform:translateY(-10px);box-shadow:var(--shadow);border-color:rgba(200,169,110,0.3)}
+.exp-img-wrap{position:relative;height:240px;overflow:hidden}
+.exp-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.exp-card:hover .exp-img-wrap img{transform:scale(1.06)}
+.exp-badge{
+  position:absolute;top:16px;left:16px;
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.15);
+  color:#fff;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  padding:5px 12px;border-radius:50px;
+}
+.exp-body{padding:28px}
+.exp-rating{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.exp-stars{color:var(--gold);font-size:12px;letter-spacing:2px}
+.exp-rev{font-size:11px;color:var(--text3)}
+.exp-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text);letter-spacing:-0.3px;margin-bottom:8px;line-height:1.2}
+.exp-loc{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;margin-bottom:16px}
+.exp-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:16px}
+.exp-price-label{font-size:10px;letter-spacing:1px;color:var(--text3);text-transform:uppercase}
+.exp-price{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);font-weight:400;line-height:1}
+.exp-book{
+  background:var(--gold-pale);border:1px solid rgba(200,169,110,0.3);
+  color:var(--gold);padding:8px 18px;border-radius:50px;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:600;
+  transition:var(--tr);
+}
+.exp-book:hover{background:var(--gold);color:#0a0800}
+
+/* ═══════════════════════════════════════════
+   VIDEO SHOWCASE
+═══════════════════════════════════════════ */
+#video-showcase{
+  background:var(--bg);position:relative;
+  padding:0;height:85vh;overflow:hidden;
+  display:flex;align-items:center;
+}
+.video-bg{position:absolute;inset:0;z-index:0}
+.video-bg video{width:100%;height:100%;object-fit:cover}
+.video-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.2) 100%)}
+.video-content{position:relative;z-index:2;padding:0 80px;max-width:700px}
+.video-eyebrow{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.video-eyebrow::before{content:'';width:28px;height:1px;background:var(--gold)}
+.video-title{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,7vw,90px);font-weight:300;color:#fff;line-height:0.9;letter-spacing:-2px;margin-bottom:28px}
+.video-title em{font-style:italic;color:var(--gold)}
+.video-desc{font-size:15px;color:rgba(255,255,255,0.65);line-height:1.9;font-weight:300;margin-bottom:36px}
+.video-play-btn{
+  width:72px;height:72px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,0.4);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:22px;color:#fff;cursor:pointer;transition:var(--tr);
+  background:rgba(255,255,255,0.08);backdrop-filter:blur(10px);
+}
+.video-play-btn:hover{background:var(--gold);border-color:var(--gold);color:#0a0800;transform:scale(1.1)}
+.video-counter{
+  position:absolute;bottom:40px;right:80px;z-index:2;
+  display:flex;align-items:center;gap:16px;
+}
+.video-dots{display:flex;gap:8px}
+.v-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.3);cursor:pointer;transition:var(--tr)}
+.v-dot.active{background:var(--gold);width:24px;border-radius:3px}
+.video-timer{font-size:11px;letter-spacing:2px;color:rgba(255,255,255,0.4)}
+
+/* ═══════════════════════════════════════════
+   GALLERY MASONRY
+═══════════════════════════════════════════ */
+#gallery{background:var(--bg2)}
+.gallery-grid{
+  columns:4;column-gap:14px;
+}
+.gal-item{
+  break-inside:avoid;margin-bottom:14px;
+  border-radius:14px;overflow:hidden;position:relative;cursor:pointer;
+}
+.gal-item img{width:100%;display:block;transition:transform .6s cubic-bezier(0.23,1,0.32,1)}
+.gal-item:hover img{transform:scale(1.04)}
+.gal-overlay{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0.55);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:var(--tr);
+}
+.gal-item:hover .gal-overlay{opacity:1}
+.gal-icon{font-size:28px;color:#fff}
+
+/* ═══════════════════════════════════════════
+   TESTIMONIALS
+═══════════════════════════════════════════ */
+#testimonials{background:var(--bg)}
+.testi-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.testi-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:20px;padding:36px;transition:var(--tr);
+  position:relative;overflow:hidden;
+}
+.testi-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  opacity:0;transition:var(--tr);
+}
+.testi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:rgba(200,169,110,0.2)}
+.testi-card:hover::before{opacity:1}
+.testi-card.featured{background:var(--gold);border-color:var(--gold)}
+.testi-card.featured .testi-quote,.testi-card.featured .testi-text,.testi-card.featured .testi-name{color:#0a0800!important}
+.testi-card.featured .testi-stars{color:rgba(10,8,0,0.7)}
+.testi-card.featured .testi-dest{color:rgba(10,8,0,0.6)}
+.testi-stars{font-size:14px;letter-spacing:3px;color:var(--gold);margin-bottom:16px}
+.testi-quote{font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--gold);line-height:1;margin-bottom:8px}
+.testi-text{font-size:14px;line-height:1.9;color:var(--text2);font-style:italic;margin-bottom:24px}
+.testi-author{display:flex;align-items:center;gap:14px}
+.testi-ava{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(200,169,110,0.3)}
+.testi-name{font-weight:600;font-size:14px;color:var(--text)}
+.testi-dest{font-size:11px;color:var(--gold);letter-spacing:1px;margin-top:2px}
+
+/* ═══════════════════════════════════════════
+   PACKAGES / TOURS
+═══════════════════════════════════════════ */
+#packages{background:var(--bg2)}
+.pkg-swiper{overflow:hidden;padding-bottom:50px!important}
+.pkg-card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:22px;overflow:hidden;cursor:pointer;transition:var(--tr);
+}
+.pkg-card:hover{transform:translateY(-8px);box-shadow:var(--shadow);border-color:rgba(200,169,110,0.3)}
+.pkg-img-wrap{position:relative;height:300px;overflow:hidden}
+.pkg-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
+.pkg-card:hover .pkg-img-wrap img{transform:scale(1.05)}
+.pkg-tag{
+  position:absolute;top:16px;left:16px;
+  background:var(--gold);color:#0a0800;
+  font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:5px 14px;border-radius:50px;
+}
+.pkg-wishlist{
+  position:absolute;top:14px;right:14px;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;transition:var(--tr);color:#fff;
+}
+.pkg-wishlist:hover{background:var(--gold);border-color:var(--gold);color:#0a0800}
+.pkg-body{padding:28px}
+.pkg-meta{display:flex;gap:16px;margin-bottom:12px}
+.pkg-meta-item{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:5px}
+.pkg-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--text);letter-spacing:-0.3px;margin-bottom:10px}
+.pkg-desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px}
+.pkg-incl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.pkg-incl-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:50px;padding:4px 12px;font-size:10px;color:var(--text2);letter-spacing:1px;
+}
+.pkg-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:18px}
+.pkg-price-box{}
+.pkg-from{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3)}
+.pkg-price{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);line-height:1}
+.pkg-per{font-size:11px;color:var(--text3)}
+.pkg-cta{
+  background:var(--gold);color:#0a0800;
+  padding:12px 24px;border-radius:50px;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  transition:var(--tr);
+}
+.pkg-cta:hover{background:var(--gold-lt);transform:scale(1.04)}
+.swiper-pagination-bullet{background:var(--text3)!important;opacity:.5!important}
+.swiper-pagination-bullet-active{background:var(--gold)!important;opacity:1!important}
+
+/* ═══════════════════════════════════════════
+   WHY US — SPLIT
+═══════════════════════════════════════════ */
+#whyus{background:var(--bg);display:grid;grid-template-columns:1fr 1fr;min-height:80vh;padding:0}
+.whyus-left{
+  position:relative;overflow:hidden;
+}
+.whyus-left img{width:100%;height:100%;object-fit:cover}
+.whyus-left-overlay{position:absolute;inset:0;background:linear-gradient(to right,transparent 60%,var(--bg))}
+.whyus-right{padding:100px 80px;display:flex;flex-direction:column;justify-content:center}
+.why-items{display:flex;flex-direction:column;gap:32px;margin-top:40px}
+.why-item{display:flex;align-items:flex-start;gap:20px;padding:24px;border-radius:16px;border:1px solid transparent;transition:var(--tr)}
+.why-item:hover{background:var(--surface);border-color:var(--border)}
+.why-icon{
+  width:48px;height:48px;border-radius:14px;
+  background:var(--gold-pale);border:1px solid rgba(200,169,110,0.2);
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+  flex-shrink:0;transition:var(--tr);
+}
+.why-item:hover .why-icon{background:var(--gold);transform:rotate(-5deg)}
+.why-item-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px}
+.why-item-desc{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* ═══════════════════════════════════════════
+   BLOG
+═══════════════════════════════════════════ */
+#blog{background:var(--bg2)}
+.blog-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:20px}
+.blog-card{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:var(--tr)}
+.blog-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:rgba(200,169,110,0.2)}
+.blog-img{overflow:hidden;position:relative}
+.blog-img img{width:100%;object-fit:cover;transition:transform .6s ease}
+.blog-card:hover .blog-img img{transform:scale(1.05)}
+.blog-img img.featured-h{height:280px}
+.blog-img img.card-h{height:180px}
+.blog-cat{position:absolute;top:14px;left:14px;background:var(--gold);color:#0a0800;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:50px}
+.blog-body{padding:24px}
+.blog-meta{font-size:11px;color:var(--text3);letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.blog-meta-dot{width:2px;height:2px;border-radius:50%;background:var(--text3)}
+.blog-title{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.5vw,26px);font-weight:400;color:var(--text);letter-spacing:-0.3px;line-height:1.25;margin-bottom:10px;transition:var(--tr)}
+.blog-card:hover .blog-title{color:var(--gold)}
+.blog-excerpt{font-size:13px;color:var(--text2);line-height:1.8}
+.blog-read{display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-top:18px;transition:var(--tr)}
+.blog-read:hover{gap:14px}
+
+/* ═══════════════════════════════════════════
+   NEWSLETTER
+═══════════════════════════════════════════ */
+#newsletter{
+  background:var(--bg);
+  padding:100px 80px;
+}
+.nl-wrap{
+  background:linear-gradient(135deg,var(--bg3) 0%,var(--bg2) 100%);
+  border:1px solid var(--border);border-radius:28px;
+  padding:80px;
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+  position:relative;overflow:hidden;
+}
+.nl-deco{
+  position:absolute;top:-80px;right:-80px;
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(200,169,110,0.12),transparent 70%);
+}
+.nl-form{display:flex;gap:12px;margin-top:32px}
+.nl-input{
+  flex:1;background:var(--input-bg);border:1px solid var(--border);
+  color:var(--text);padding:16px 20px;border-radius:50px;
+  font-family:'Jost',sans-serif;font-size:14px;outline:none;transition:var(--tr);
+}
+.nl-input:focus{border-color:var(--gold);background:var(--surface)}
+.nl-input::placeholder{color:var(--text3)}
+.nl-btn{
+  background:var(--gold);color:#0a0800;
+  padding:16px 28px;border-radius:50px;border:none;
+  font-family:'Jost',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  font-weight:700;cursor:pointer;white-space:nowrap;transition:var(--tr);
+}
+.nl-btn:hover{background:var(--gold-lt);transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,169,110,0.4)}
+.nl-features{display:flex;flex-direction:column;gap:16px}
+.nl-feat{display:flex;align-items:center;gap:14px}
+.nl-feat-icon{width:36px;height:36px;border-radius:10px;background:var(--gold-pale);display:flex;align-items:center;justify-content:center;font-size:16px}
+.nl-feat-text{font-size:13px;color:var(--text2)}
+
+/* ═══════════════════════════════════════════
+   CONTACT
+═══════════════════════════════════════════ */
+#contact{background:var(--bg2)}
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:100px;align-items:start}
+.contact-info-title{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--text);letter-spacing:-1px;margin-bottom:20px;line-height:1.1}
+.contact-info-title em{font-style:italic;color:var(--gold)}
+.c-items{display:flex;flex-direction:column;gap:20px;margin:32px 0}
+.c-item{display:flex;align-items:flex-start;gap:16px}
+.c-icon{width:44px;height:44px;border-radius:12px;background:var(--gold-pale);border:1px solid rgba(200,169,110,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;transition:var(--tr);flex-shrink:0}
+.c-item:hover .c-icon{background:var(--gold)}
+.c-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:3px;font-weight:600}
+.c-val{font-size:14px;color:var(--text2)}
+.contact-socials{display:flex;gap:10px;margin-top:32px}
+.cs-btn{width:42px;height:42px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text2);transition:var(--tr)}
+.cs-btn:hover{background:var(--gold);border-color:var(--gold);color:#0a0800;transform:translateY(-3px)}
+.contact-form-wrap{background:var(--card-bg);border:1px solid var(--border);border-radius:24px;padding:44px}
+.contact-form-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--text);letter-spacing:-0.5px;margin-bottom:28px}
+.cf-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.cf-group{display:flex;flex-direction:column;gap:8px}
+.cf-group label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-weight:600}
+.cf-group input,.cf-group select,.cf-group textarea{
+  background:var(--input-bg);border:1px solid var(--border);color:var(--text);
+  padding:13px 16px;border-radius:12px;font-family:'Jost',sans-serif;font-size:14px;
+  outline:none;resize:none;transition:var(--tr);
+}
+.cf-group input::placeholder,.cf-group textarea::placeholder{color:var(--text3)}
+.cf-group input:focus,.cf-group select:focus,.cf-group textarea:focus{border-color:var(--gold);background:var(--surface);box-shadow:0 0 0 3px rgba(200,169,110,0.1)}
+.cf-group select option{background:var(--card-bg);color:var(--text)}
+.cf-submit{
+  width:100%;background:var(--gold);color:#0a0800;border:none;
+  padding:16px;border-radius:14px;font-family:'Jost',sans-serif;
+  font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700;
+  cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:10px;
+  margin-top:20px;
+}
+.cf-submit:hover{background:var(--gold-lt);transform:translateY(-2px);box-shadow:0 12px 40px rgba(200,169,110,0.4)}
+.cf-success{display:none;background:rgba(200,169,110,0.1);border:1px solid rgba(200,169,110,0.3);border-radius:12px;padding:14px 20px;color:var(--gold);font-size:13px;text-align:center;margin-top:14px}
+
+/* ═══════════════════════════════════════════
+   MAP
+═══════════════════════════════════════════ */
+#map-sec{height:420px;position:relative;overflow:hidden}
+#map-sec iframe{width:100%;height:100%;border:none}
+[data-theme="dark"] #map-sec iframe{filter:invert(90%) hue-rotate(190deg) saturate(0.7) brightness(0.85)}
+.map-info-card{position:absolute;top:32px;left:60px;background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:24px 28px;box-shadow:var(--shadow)}
+.map-card-name{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);font-weight:400;margin-bottom:6px}
+.map-card-addr{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:80px 80px 40px}
+.footer-grid{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:60px;margin-bottom:60px}
+.footer-logo-wrap{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--text);margin-bottom:16px}
+.footer-logo-wrap span{color:var(--gold)}
+.footer-desc{font-size:13px;color:var(--text2);line-height:1.9;margin-bottom:24px;max-width:280px}
+.footer-socials{display:flex;gap:10px}
+.f-social{width:38px;height:38px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);transition:var(--tr)}
+.f-social:hover{background:var(--gold);border-color:var(--gold);color:#0a0800}
+.f-col h5{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:20px;font-weight:600}
+.f-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.f-col ul li a{font-size:14px;color:var(--text2);transition:var(--tr)}
+.f-col ul li a:hover{color:var(--gold);padding-left:4px}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:28px;flex-wrap:wrap;gap:14px}
+.footer-bottom p{font-size:12px;color:var(--text3)}
+.footer-bottom-links{display:flex;gap:24px}
+.footer-bottom-links a{font-size:12px;color:var(--text3);transition:var(--tr)}
+.footer-bottom-links a:hover{color:var(--gold)}
+
+/* ═══════════════════════════════════════════
+   STATS BANNER
+═══════════════════════════════════════════ */
+.stats-banner{background:var(--gold);padding:60px 80px}
+.stats-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(10,8,0,0.15)}
+.stat-box{background:var(--gold);padding:40px;text-align:center}
+.stat-n{font-family:'Cormorant Garamond',serif;font-size:58px;font-weight:300;color:#0a0800;line-height:1;letter-spacing:-1px}
+.stat-lbl{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(10,8,0,0.6);margin-top:6px}
+
+/* ═══════════════════════════════════════════
+   REVEAL ANIMATIONS
+═══════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease}
+.reveal-l{opacity:0;transform:translateX(-30px);transition:opacity .8s ease,transform .8s ease}
+.reveal-r{opacity:0;transform:translateX(30px);transition:opacity .8s ease,transform .8s ease}
+.reveal.on,.reveal-l.on,.reveal-r.on{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* ═══════════════════════════════════════════
+   FLOATING BOOK
+═══════════════════════════════════════════ */
+.float-book{
+  position:fixed;bottom:32px;right:32px;z-index:900;
+  background:var(--gold);color:#0a0800;
+  width:56px;height:56px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;box-shadow:0 8px 30px rgba(200,169,110,0.5);
+  transition:var(--tr);cursor:pointer;
+}
+.float-book:hover{transform:scale(1.12) rotate(-8deg);box-shadow:0 14px 50px rgba(200,169,110,0.7)}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:1200px){
+  .hero-content{grid-template-columns:1fr;padding:0 40px 60px}
+  .hero-right-panel{display:none}
+  .dest-mosaic{grid-template-columns:repeat(2,1fr);grid-auto-rows:auto}
+  .dest-card{grid-column:span 1!important;grid-row:span 1!important;height:260px}
+  .gallery-grid{columns:3}
+  .testi-grid{grid-template-columns:1fr 1fr}
+  .blog-grid{grid-template-columns:1fr 1fr}
+  .blog-card:first-child{grid-column:span 2}
+  .contact-grid{grid-template-columns:1fr;gap:60px}
+  #whyus{grid-template-columns:1fr;min-height:auto}
+  .whyus-left{height:400px}
+  .nl-wrap{grid-template-columns:1fr;gap:40px;padding:50px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:40px}
+  section{padding:80px 40px}
+  .stats-banner{padding:50px 40px}
+}
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .nav-links,.nav-right{display:none}
+  .hamburger{display:flex}
+  section{padding:70px 24px}
+  .hero-content{padding:0 24px 50px}
+  .hero-h1{font-size:52px}
+  .search-bar{flex-direction:column;border-radius:16px;padding:16px;transform:translateY(-20px)}
+  .sb-field{border-right:none;border-bottom:1px solid var(--border);padding:12px 0}
+  .gallery-grid{columns:2}
+  .testi-grid{grid-template-columns:1fr}
+  .blog-grid{grid-template-columns:1fr}
+  .blog-card:first-child{grid-column:span 1}
+  .footer-grid{grid-template-columns:1fr}
+  footer{padding:60px 24px 32px}
+  .map-info-card{left:20px;top:20px}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  #whyus{display:flex;flex-direction:column}
+  .whyus-right{padding:60px 24px}
+  .nl-wrap{padding:36px 24px}
+  .nl-form{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <button class="mob-close" onclick="closeMob()">✕</button>
+  <a href="#destinations" onclick="closeMob()">Destinations</a>
+  <a href="#experiences" onclick="closeMob()">Expériences</a>
+  <a href="#packages" onclick="closeMob()">Forfaits</a>
+  <a href="#gallery" onclick="closeMob()">Galerie</a>
+  <a href="#blog" onclick="closeMob()">Blog</a>
+  <a href="#contact" onclick="closeMob()">Contact</a>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="logo">WANDER<span>LUX</span></div>
+  <ul class="nav-links">
+    <li><a href="#destinations">Destinations</a></li>
+    <li><a href="#experiences">Expériences</a></li>
+    <li><a href="#packages">Forfaits</a></li>
+    <li><a href="#gallery">Galerie</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Changer le thème"></div>
+    <a href="#contact" class="nav-btn">Réserver</a>
+  </div>
+  <button class="hamburger" onclick="openMob()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-video-wrap">
+    <video autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80">
+      <source src="https://videos.pexels.com/video-files/1466210/1466210-uhd_2560_1440_24fps.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-eyebrow">Voyages d'exception depuis 2008</div>
+      <h1 class="hero-h1">
+        Le monde<br>s'offre à<br>ceux qui <em>osent.</em>
+      </h1>
+      <p class="hero-desc">Des expériences de voyage soigneusement orchestrées pour les âmes curieuses. Luxe discret, authenticité totale, souvenirs éternels.</p>
+      <div class="hero-actions">
+        <a href="#packages" class="btn-hero-primary">Explorer les forfaits →</a>
+        <a href="#video-showcase" class="btn-hero-ghost">
+          <div class="play-ring">▶</div>
+          Regarder
+        </a>
+      </div>
+    </div>
+    <div class="hero-right-panel">
+      <div class="hero-weather">
+        <div class="hero-weather-city">Santorini, Grèce</div>
+        <div class="hero-weather-temp">26°</div>
+        <div class="hero-weather-desc">☀️ Ensoleillé</div>
+      </div>
+      <div class="hero-stats-mini">
+        <div class="hero-stat-mini"><div class="n">48</div><div class="l">Destinations</div></div>
+        <div class="hero-stat-mini"><div class="n">4.9</div><div class="l">Note moy.</div></div>
+        <div class="hero-stat-mini"><div class="n">12K+</div><div class="l">Voyageurs</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll"><span>Défiler</span><div class="scroll-bar"></div></div>
+</section>
+
+<!-- ═══ SEARCH BAR ═══ -->
+<div class="search-section">
+  <div style="max-width:1400px;margin:0 auto;padding:0 80px">
+    <div class="search-bar">
+      <div class="sb-field">
+        <div class="sb-label">Destination</div>
+        <div class="sb-val">
+          <select>
+            <option>Toutes les destinations</option>
+            <option>Santorini, Grèce</option>
+            <option>Kyoto, Japon</option>
+            <option>Marrakech, Maroc</option>
+            <option>Patagonie, Argentine</option>
+            <option>Maldives</option>
+            <option>Safari Kenya</option>
+          </select>
+        </div>
+      </div>
+      <div class="sb-field">
+        <div class="sb-label">Date de départ</div>
+        <div class="sb-val"><input type="date" style="color-scheme:dark"></div>
+      </div>
+      <div class="sb-field">
+        <div class="sb-label">Durée</div>
+        <div class="sb-val">
+          <select>
+            <option>7 jours</option>
+            <option>10 jours</option>
+            <option>14 jours</option>
+            <option>21 jours</option>
+            <option>Sur mesure</option>
+          </select>
+        </div>
+      </div>
+      <div class="sb-field">
+        <div class="sb-label">Voyageurs</div>
+        <div class="sb-val">
+          <select>
+            <option>2 personnes</option>
+            <option>1 personne</option>
+            <option>Famille (4)</option>
+            <option>Groupe</option>
+          </select>
+        </div>
+      </div>
+      <button class="sb-submit">🔍 Rechercher</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DESTINATIONS ═══ -->
+<section id="destinations">
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="sec-label reveal">Nos destinations</div>
+        <h2 class="sec-title reveal d1">Des horizons<br>qui <em>coupent</em><br>le souffle</h2>
+      </div>
+      <div style="text-align:right">
+        <p class="sec-sub reveal d2" style="margin-left:auto">48 destinations soigneusement sélectionnées pour leur beauté, leur authenticité et leurs émotions uniques.</p>
+        <a href="#" class="link-more reveal d3" style="margin-top:24px;display:inline-flex">Voir toutes les destinations</a>
+      </div>
+    </div>
+    <div class="dest-mosaic reveal d2">
+      <div class="dest-card">
+        <img class="dest-img" src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=900&q=80" alt="Santorini">
+        <div class="dest-overlay">
+          <div class="dest-tag">Coup de cœur</div>
+          <div class="dest-country">Grèce · Méditerranée</div>
+          <div class="dest-name">Santorini</div>
+          <div class="dest-price">À partir de 2 890 € / pers.</div>
+          <div class="dest-arrow">→</div>
+        </div>
+      </div>
+      <div class="dest-card">
+        <img class="dest-img" src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=700&q=80" alt="Japon">
+        <div class="dest-overlay">
+          <div class="dest-country">Asie · Japon</div>
+          <div class="dest-name">Kyoto</div>
+          <div class="dest-price">À partir de 3 490 €</div>
+          <div class="dest-arrow">→</div>
+        </div>
+      </div>
+      <div class="dest-card">
+        <img class="dest-img" src="https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=600&q=80" alt="Islande">
+        <div class="dest-overlay">
+          <div class="dest-tag">Insolite</div>
+          <div class="dest-country">Europe · Islande</div>
+          <div class="dest-name">Reykjavik</div>
+          <div class="dest-price">À partir de 2 190 €</div>
+          <div class="dest-arrow">→</div>
+        </div>
+      </div>
+      <div class="dest-card">
+        <img class="dest-img" src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=600&q=80" alt="Sahara">
+        <div class="dest-overlay">
+          <div class="dest-country">Afrique · Maroc</div>
+          <div class="dest-name">Marrakech</div>
+          <div class="dest-price">À partir de 1 490 €</div>
+          <div class="dest-arrow">→</div>
+        </div>
+      </div>
+      <div class="dest-card">
+        <img class="dest-img" src="https://images.unsplash.com/photo-1483683804023-6ccdb62f86ef?w=700&q=80" alt="Maldives">
+        <div class="dest-overlay">
+          <div class="dest-tag">Luxe</div>
+          <div class="dest-country">Océan Indien · Maldives</div>
+          <div class="dest-name">Maldives</div>
+          <div class="dest-price">À partir de 5 990 €</div>
+          <div class="dest-arrow">→</div>
+        </div>
+      </div>
+      <div class="dest-card">
+        <img class="dest-img" src="https://images.unsplash.com/photo-1467780741311-61892dc5b7e1?w=800&q=80" alt="Patagonie">
+        <div class="dest-overlay">
+          <div class="dest-country">Amérique du Sud · Argentine</div>
+          <div class="dest-name">Patagonie</div>
+          <div class="dest-price">À partir de 4 290 €</div>
+          <div class="dest-arrow">→</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EXPERIENCES ═══ -->
+<section id="experiences">
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="sec-label reveal">Vivre autrement</div>
+        <h2 class="sec-title reveal d1">Des <em>expériences</em><br>qui marquent<br>une vie</h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Toutes les expériences</a>
+    </div>
+    <div class="swiper exp-swiper reveal d2">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <div class="exp-card">
+            <div class="exp-img-wrap">
+              <img src="https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80" alt="Safari">
+              <div class="exp-badge">Signature</div>
+            </div>
+            <div class="exp-body">
+              <div class="exp-rating"><div class="exp-stars">★★★★★</div><div class="exp-rev">214 avis</div></div>
+              <div class="exp-title">Safari Privé au Kenya</div>
+              <div class="exp-loc">📍 Masai Mara, Kenya · 10 jours</div>
+              <div class="exp-footer">
+                <div><div class="exp-price-label">Dès</div><div class="exp-price">4 890 €</div></div>
+                <div class="exp-book">Réserver</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="exp-card">
+            <div class="exp-img-wrap">
+              <img src="https://images.unsplash.com/photo-1559628233-100c798642f8?w=600&q=80" alt="Bali">
+              <div class="exp-badge">Bien-être</div>
+            </div>
+            <div class="exp-body">
+              <div class="exp-rating"><div class="exp-stars">★★★★★</div><div class="exp-rev">189 avis</div></div>
+              <div class="exp-title">Retraite Yoga à Bali</div>
+              <div class="exp-loc">📍 Ubud, Bali · 7 jours</div>
+              <div class="exp-footer">
+                <div><div class="exp-price-label">Dès</div><div class="exp-price">2 390 €</div></div>
+                <div class="exp-book">Réserver</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="exp-card">
+            <div class="exp-img-wrap">
+              <img src="https://images.unsplash.com/photo-1531761535209-180857e963b9?w=600&q=80" alt="Laponie">
+              <div class="exp-badge">Hivernal</div>
+            </div>
+            <div class="exp-body">
+              <div class="exp-rating"><div class="exp-stars">★★★★★</div><div class="exp-rev">97 avis</div></div>
+              <div class="exp-title">Aurores Boréales Laponie</div>
+              <div class="exp-loc">📍 Rovaniemi, Finlande · 5 jours</div>
+              <div class="exp-footer">
+                <div><div class="exp-price-label">Dès</div><div class="exp-price">3 190 €</div></div>
+                <div class="exp-book">Réserver</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="exp-card">
+            <div class="exp-img-wrap">
+              <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80" alt="Patagonie">
+              <div class="exp-badge">Aventure</div>
+            </div>
+            <div class="exp-body">
+              <div class="exp-rating"><div class="exp-stars">★★★★★</div><div class="exp-rev">143 avis</div></div>
+              <div class="exp-title">Trek Torres del Paine</div>
+              <div class="exp-loc">📍 Patagonie, Chili · 14 jours</div>
+              <div class="exp-footer">
+                <div><div class="exp-price-label">Dès</div><div class="exp-price">5 690 €</div></div>
+                <div class="exp-book">Réserver</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="exp-card">
+            <div class="exp-img-wrap">
+              <img src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=600&q=80" alt="Thaïlande">
+              <div class="exp-badge">Culture</div>
+            </div>
+            <div class="exp-body">
+              <div class="exp-rating"><div class="exp-stars">★★★★☆</div><div class="exp-rev">276 avis</div></div>
+              <div class="exp-title">Temples et Plages Thaïlande</div>
+              <div class="exp-loc">📍 Chiang Mai & Ko Samui · 12 jours</div>
+              <div class="exp-footer">
+                <div><div class="exp-price-label">Dès</div><div class="exp-price">2 890 €</div></div>
+                <div class="exp-book">Réserver</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-pagination" style="bottom:-40px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VIDEO SHOWCASE ═══ -->
+<section id="video-showcase">
+  <div class="video-bg">
+    <video autoplay muted loop playsinline id="showcaseVid" poster="https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?w=1920&q=80">
+      <source src="https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="video-overlay"></div>
+  <div class="video-content">
+    <div class="video-eyebrow">Notre vision du voyage</div>
+    <h2 class="video-title">Voyager,<br>c'est <em>vivre</em><br>pleinement.</h2>
+    <p class="video-desc">Chaque voyage WANDERLUX est une œuvre unique, façonnée par des experts passionnés qui connaissent chaque recoin de la planète.</p>
+    <button class="video-play-btn">▶</button>
+  </div>
+  <div class="video-counter">
+    <div class="video-dots">
+      <div class="v-dot active"></div>
+      <div class="v-dot"></div>
+      <div class="v-dot"></div>
+    </div>
+    <div class="video-timer">01 / 03</div>
+  </div>
+</section>
+
+<!-- ═══ GALLERY ═══ -->
+<section id="gallery">
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="sec-label reveal">Notre univers</div>
+        <h2 class="sec-title reveal d1">La <em>beauté</em><br>du monde<br>en images</h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Voir la galerie complète</a>
+    </div>
+    <div class="gallery-grid reveal d2">
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=500&q=80" alt="voyage">
+        <div class="gal-overlay"><div class="gal-icon">🔍</div></div>
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=500&q=80" alt="culture">
+        <div class="gal-overlay"><div class="gal-icon">🔍</div></div>
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?w=500&q=80" alt="montagne">
+        <div class="gal-overlay"><div class="gal-icon">🔍</div></div>
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&q=80" alt="alpes">
+        <div class="gal-overlay"><div class="gal-icon">🔍</div></div>
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?w=500&q=80" alt="plage">
+        <div class="gal-overlay"><div class="gal-icon">🔍</div></div>
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1509233725247-49e657c54213?w=500&q=80" alt="desertt">
+        <div class="gal-overlay"><div class="gal-icon">🔍</div></div>
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=500&q=80" alt="bali">
+        <div class="gal-overlay"><div class="gal-icon">🔍</div></div>
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=500&q=80" alt="patagonie">
+        <div class="gal-overlay"><div class="gal-icon">🔍</div></div>
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=500&q=80" alt="ocean">
+        <div class="gal-overlay"><div class="gal-icon">🔍</div></div>
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&q=80" alt="mer">
+        <div class="gal-overlay"><div class="gal-icon">🔍</div></div>
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1516655855035-d521ea71a08c?w=500&q=80" alt="santorini2">
+        <div class="gal-overlay"><div class="gal-icon">🔍</div></div>
+      </div>
+      <div class="gal-item">
+        <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=500&q=80" alt="inde">
+        <div class="gal-overlay"><div class="gal-icon">🔍</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═══ -->
+<section id="testimonials">
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="sec-label reveal">Ils nous font confiance</div>
+        <h2 class="sec-title reveal d1">Des voyages<br>qui <em>changent</em><br>les gens.</h2>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;color:var(--gold);line-height:1">4.9</div>
+        <div style="font-size:18px;letter-spacing:3px;color:var(--gold)">★★★★★</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:6px">Basé sur 1 240 avis</div>
+      </div>
+    </div>
+    <div class="testi-grid reveal d2">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"</div>
+        <p class="testi-text">Le safari au Kenya était absolument magique. Voir une lionne et ses lionceaux à quelques mètres de nous, au lever du soleil... des images qui restent gravées à vie. WANDERLUX a tout orchestré à la perfection.</p>
+        <div class="testi-author">
+          <img class="testi-ava" src="https://i.pravatar.cc/100?img=32" alt="Marie">
+          <div>
+            <div class="testi-name">Marie-Claire D.</div>
+            <div class="testi-dest">Safari Kenya · Juin 2024</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card featured">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"</div>
+        <p class="testi-text">Notre voyage de noces à Bali était au-delà de toutes nos espérances. Les hôtels, les expériences, les surprises planifiées par l'équipe... un niveau de service que je n'avais jamais vécu nulle part.</p>
+        <div class="testi-author">
+          <img class="testi-ava" src="https://i.pravatar.cc/100?img=45" alt="Sophie">
+          <div>
+            <div class="testi-name">Sophie & Thomas R.</div>
+            <div class="testi-dest">Bali Voyage de Noces · Avril 2024</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"</div>
+        <p class="testi-text">Troisième voyage avec WANDERLUX et c'est toujours la même magie. Cette fois-ci en Patagonie — des paysages incroyables, une logistique impeccable et un guide exceptionnel. Je reviens l'an prochain!</p>
+        <div class="testi-author">
+          <img class="testi-ava" src="https://i.pravatar.cc/100?img=11" alt="Pierre">
+          <div>
+            <div class="testi-name">Pierre M.</div>
+            <div class="testi-dest">Trek Patagonie · Novembre 2024</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS BANNER ═══ -->
+<div class="stats-banner">
+  <div class="stats-inner">
+    <div class="stat-box reveal"><div class="stat-n" data-target="12000">0</div><div class="stat-lbl">Voyageurs heureux</div></div>
+    <div class="stat-box reveal d1"><div class="stat-n" data-target="48">0</div><div class="stat-lbl">Destinations</div></div>
+    <div class="stat-box reveal d2"><div class="stat-n" data-target="16">0</div><div class="stat-lbl">Années d'expertise</div></div>
+    <div class="stat-box reveal d3"><div class="stat-n" data-target="98">0</div><div class="stat-lbl">% satisfaction</div></div>
+  </div>
+</div>
+
+<!-- ═══ PACKAGES ═══ -->
+<section id="packages">
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="sec-label reveal">Nos meilleures offres</div>
+        <h2 class="sec-title reveal d1">Forfaits <em>clé en main</em><br>pour tous les rêves</h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Tous les forfaits</a>
+    </div>
+    <div class="swiper pkg-swiper reveal d2">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <div class="pkg-card">
+            <div class="pkg-img-wrap">
+              <img src="https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=800&q=80" alt="Maldives">
+              <div class="pkg-tag">🔥 Bestseller</div>
+              <div class="pkg-wishlist">♡</div>
+            </div>
+            <div class="pkg-body">
+              <div class="pkg-meta">
+                <div class="pkg-meta-item">📅 7 nuits</div>
+                <div class="pkg-meta-item">✈️ Vol inclus</div>
+                <div class="pkg-meta-item">⭐ 5 étoiles</div>
+              </div>
+              <div class="pkg-title">Maldives — Overwater Bungalow</div>
+              <p class="pkg-desc">7 nuits en villa sur l'eau avec petit-déjeuner, plongée, spa et excursion privée au coucher du soleil.</p>
+              <div class="pkg-incl">
+                <div class="pkg-incl-item">✈ Vols A/R</div>
+                <div class="pkg-incl-item">🍳 Petit-déj.</div>
+                <div class="pkg-incl-item">🤿 Plongée</div>
+                <div class="pkg-incl-item">🧖 Spa</div>
+              </div>
+              <div class="pkg-footer">
+                <div class="pkg-price-box">
+                  <div class="pkg-from">Dès</div>
+                  <div class="pkg-price">5 990 €</div>
+                  <div class="pkg-per">/ personne</div>
+                </div>
+                <div class="pkg-cta">Réserver</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="pkg-card">
+            <div class="pkg-img-wrap">
+              <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80" alt="Kyoto">
+              <div class="pkg-tag">✨ Coup de cœur</div>
+              <div class="pkg-wishlist">♡</div>
+            </div>
+            <div class="pkg-body">
+              <div class="pkg-meta">
+                <div class="pkg-meta-item">📅 10 nuits</div>
+                <div class="pkg-meta-item">✈️ Vol inclus</div>
+                <div class="pkg-meta-item">⭐ 4 étoiles</div>
+              </div>
+              <div class="pkg-title">Japon Impérial — Tokyo & Kyoto</div>
+              <p class="pkg-desc">Immersion au cœur du Japon éternel. Temples, geishas, gastronomie Kaiseki et cerisiers en fleurs.</p>
+              <div class="pkg-incl">
+                <div class="pkg-incl-item">✈ Vols A/R</div>
+                <div class="pkg-incl-item">🚅 Shinkansen</div>
+                <div class="pkg-incl-item">🍱 Kaiseki</div>
+                <div class="pkg-incl-item">🗺️ Guide</div>
+              </div>
+              <div class="pkg-footer">
+                <div class="pkg-price-box">
+                  <div class="pkg-from">Dès</div>
+                  <div class="pkg-price">4 290 €</div>
+                  <div class="pkg-per">/ personne</div>
+                </div>
+                <div class="pkg-cta">Réserver</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="pkg-card">
+            <div class="pkg-img-wrap">
+              <img src="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=80" alt="Venise">
+              <div class="pkg-tag">💑 Romantique</div>
+              <div class="pkg-wishlist">♡</div>
+            </div>
+            <div class="pkg-body">
+              <div class="pkg-meta">
+                <div class="pkg-meta-item">📅 5 nuits</div>
+                <div class="pkg-meta-item">✈️ Vol inclus</div>
+                <div class="pkg-meta-item">⭐ 5 étoiles</div>
+              </div>
+              <div class="pkg-title">Venise & Côte Amalfitaine</div>
+              <p class="pkg-desc">La dolce vita à son sommet. Gondole privée, déjeuner en terrasse sur la mer, Positano et Capri.</p>
+              <div class="pkg-incl">
+                <div class="pkg-incl-item">✈ Vols A/R</div>
+                <div class="pkg-incl-item">🚤 Bateau priv.</div>
+                <div class="pkg-incl-item">🍷 Wine tour</div>
+                <div class="pkg-incl-item">🏛️ Musées</div>
+              </div>
+              <div class="pkg-footer">
+                <div class="pkg-price-box">
+                  <div class="pkg-from">Dès</div>
+                  <div class="pkg-price">3 490 €</div>
+                  <div class="pkg-per">/ personne</div>
+                </div>
+                <div class="pkg-cta">Réserver</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="pkg-card">
+            <div class="pkg-img-wrap">
+              <img src="https://images.unsplash.com/photo-1488085061387-422e29b40080?w=800&q=80" alt="Kenya">
+              <div class="pkg-tag">🌿 Nature</div>
+              <div class="pkg-wishlist">♡</div>
+            </div>
+            <div class="pkg-body">
+              <div class="pkg-meta">
+                <div class="pkg-meta-item">📅 12 nuits</div>
+                <div class="pkg-meta-item">✈️ Vol inclus</div>
+                <div class="pkg-meta-item">⭐ 5 étoiles</div>
+              </div>
+              <div class="pkg-title">Grand Safari Kenya & Rwanda</div>
+              <p class="pkg-desc">Les Big 5 au Kenya, les gorilles des montagnes au Rwanda. Le sommet de l'expérience africaine.</p>
+              <div class="pkg-incl">
+                <div class="pkg-incl-item">✈ Vols inclus</div>
+                <div class="pkg-incl-item">🦁 Safari</div>
+                <div class="pkg-incl-item">🦍 Gorilles</div>
+                <div class="pkg-incl-item">🏕️ Lodge</div>
+              </div>
+              <div class="pkg-footer">
+                <div class="pkg-price-box">
+                  <div class="pkg-from">Dès</div>
+                  <div class="pkg-price">7 890 €</div>
+                  <div class="pkg-per">/ personne</div>
+                </div>
+                <div class="pkg-cta">Réserver</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-pagination" style="bottom:-40px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHY US ═══ -->
+<section id="whyus">
+  <div class="whyus-left">
+    <img src="https://images.unsplash.com/photo-1539635278303-d4002c07eae3?w=900&q=80" alt="Voyageurs">
+    <div class="whyus-left-overlay"></div>
+  </div>
+  <div class="whyus-right">
+    <div class="sec-label reveal">Pourquoi WANDERLUX</div>
+    <h2 class="sec-title reveal d1">L'excellence<br>à chaque<br><em>étape.</em></h2>
+    <p class="sec-sub reveal d2">Depuis 2008, nous créons des voyages qui dépassent les attentes. Notre engagement : le détail parfait, l'attention totale.</p>
+    <div class="why-items">
+      <div class="why-item reveal">
+        <div class="why-icon">🎯</div>
+        <div>
+          <div class="why-item-title">Voyages 100% personnalisés</div>
+          <div class="why-item-desc">Chaque itinéraire est conçu sur-mesure selon vos désirs, votre rythme et vos passions. Aucun voyage n'est identique.</div>
+        </div>
+      </div>
+      <div class="why-item reveal d1">
+        <div class="why-icon">🌐</div>
+        <div>
+          <div class="why-item-title">Experts locaux partout</div>
+          <div class="why-item-desc">Un réseau de 200+ guides locaux passionnés dans 48 pays. Des insider tips impossibles à trouver seul.</div>
+        </div>
+      </div>
+      <div class="why-item reveal d2">
+        <div class="why-icon">🛡️</div>
+        <div>
+          <div class="why-item-title">Sécurité & sérénité</div>
+          <div class="why-item-desc">Assurances complètes, assistance 24/7, backup plans. Voyagez l'esprit totalement libre et serein.</div>
+        </div>
+      </div>
+      <div class="why-item reveal d3">
+        <div class="why-icon">🌱</div>
+        <div>
+          <div class="why-item-title">Voyage responsable</div>
+          <div class="why-item-desc">Compensation carbone systématique, partenaires éco-responsables et soutien aux communautés locales.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BLOG ═══ -->
+<section id="blog">
+  <div class="container">
+    <div class="sec-head">
+      <div>
+        <div class="sec-label reveal">Inspirations</div>
+        <h2 class="sec-title reveal d1">Le magazine<br>du <em>voyage</em></h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Tous les articles</a>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card reveal">
+        <div class="blog-img">
+          <img class="featured-h" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="blog1">
+          <div class="blog-cat">Reportage</div>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>12 Jan 2025</span><div class="blog-meta-dot"></div><span>12 min de lecture</span></div>
+          <h3 class="blog-title">Norvège : Sur la Route des Fjords, Entre Ciel et Glacier</h3>
+          <p class="blog-excerpt">Un voyage en kayak au cœur des fjords norvégiens. Des paysages tellement beaux qu'ils semblent irréels...</p>
+          <a href="#" class="blog-read">Lire le reportage →</a>
+        </div>
+      </div>
+      <div class="blog-card reveal d1">
+        <div class="blog-img">
+          <img class="card-h" src="https://images.unsplash.com/photo-1538970272646-f61fabb3a8a2?w=600&q=80" alt="blog2">
+          <div class="blog-cat">Guide pratique</div>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>28 Jan 2025</span><div class="blog-meta-dot"></div><span>7 min</span></div>
+          <h3 class="blog-title">Japon en 14 Jours : L'Itinéraire Parfait Hors Sentiers Battus</h3>
+          <a href="#" class="blog-read">Lire →</a>
+        </div>
+      </div>
+      <div class="blog-card reveal d2">
+        <div class="blog-img">
+          <img class="card-h" src="https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=600&q=80" alt="blog3">
+          <div class="blog-cat">Tendances</div>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>15 Fév 2025</span><div class="blog-meta-dot"></div><span>5 min</span></div>
+          <h3 class="blog-title">Les 10 Destinations les Plus Désirées pour 2025</h3>
+          <a href="#" class="blog-read">Lire →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ NEWSLETTER ═══ -->
+<section id="newsletter" style="padding:0 80px 100px">
+  <div class="container">
+    <div class="nl-wrap reveal">
+      <div class="nl-deco"></div>
+      <div>
+        <div class="sec-label">Restez inspiré</div>
+        <h2 class="sec-title">Recevez nos<br><em>inspirations</em><br>de voyage</h2>
+        <p class="sec-sub">Offres exclusives, destinations secrètes et conseils de nos experts. Rejoignez 28 000 voyageurs inspirés.</p>
+        <div class="nl-form">
+          <input class="nl-input" type="email" placeholder="votre@email.com">
+          <button class="nl-btn">S'inscrire →</button>
+        </div>
+        <p style="font-size:12px;color:var(--text3);margin-top:12px">🔒 Zéro spam. Désinscription en 1 clic.</p>
+      </div>
+      <div class="nl-features">
+        <div class="nl-feat">
+          <div class="nl-feat-icon">✈️</div>
+          <div class="nl-feat-text"><strong style="color:var(--text)">Offres flash exclusives</strong> — avant tout le monde</div>
+        </div>
+        <div class="nl-feat">
+          <div class="nl-feat-icon">🗺️</div>
+          <div class="nl-feat-text"><strong style="color:var(--text)">Guides de destinations</strong> — par nos experts</div>
+        </div>
+        <div class="nl-feat">
+          <div class="nl-feat-icon">🎁</div>
+          <div class="nl-feat-text"><strong style="color:var(--text)">Cadeaux & surprises</strong> — pour nos abonnés</div>
+        </div>
+        <div class="nl-feat">
+          <div class="nl-feat-icon">📸</div>
+          <div class="nl-feat-text"><strong style="color:var(--text)">Galeries photos</strong> — destinations de rêve</div>
+        </div>
+        <div class="nl-feat">
+          <div class="nl-feat-icon">💡</div>
+          <div class="nl-feat-text"><strong style="color:var(--text)">Conseils de voyage</strong> — pratiques et insolites</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="reveal-l">
+        <div class="sec-label">Nous contacter</div>
+        <h2 class="contact-info-title">Parlons de<br>votre prochain<br><em>grand voyage.</em></h2>
+        <p style="font-size:14px;color:var(--text2);line-height:1.9;font-weight:300;margin-bottom:8px">Notre équipe de conseillers-voyageurs est disponible pour construire avec vous l'itinéraire de vos rêves, répondre à toutes vos questions et transformer vos envies en réalité.</p>
+        <div class="c-items">
+          <div class="c-item">
+            <div class="c-icon">📍</div>
+            <div>
+              <div class="c-label">Agence</div>
+              <div class="c-val">14 Rue du Voyageur, 75008 Paris</div>
+            </div>
+          </div>
+          <div class="c-item">
+            <div class="c-icon">📞</div>
+            <div>
+              <div class="c-label">Téléphone</div>
+              <div class="c-val">+33 1 00 00 00 00</div>
+            </div>
+          </div>
+          <div class="c-item">
+            <div class="c-icon">✉️</div>
+            <div>
+              <div class="c-label">Email</div>
+              <div class="c-val">bonjour@wanderlux.fr</div>
+            </div>
+          </div>
+          <div class="c-item">
+            <div class="c-icon">⏰</div>
+            <div>
+              <div class="c-label">Disponibilité</div>
+              <div class="c-val">Lun–Sam 9h–19h · Urgences 24/7</div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-socials">
+          <a href="#" class="cs-btn">📘</a>
+          <a href="#" class="cs-btn">📸</a>
+          <a href="#" class="cs-btn">📌</a>
+          <a href="#" class="cs-btn">▶</a>
+          <a href="#" class="cs-btn">🐦</a>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div class="contact-form-wrap">
+          <div class="contact-form-title">Demande de devis gratuit</div>
+          <form onsubmit="return doSubmit(event)">
+            <div class="cf-grid">
+              <div class="cf-group">
+                <label>Prénom *</label>
+                <input type="text" placeholder="Jean" required>
+              </div>
+              <div class="cf-group">
+                <label>Nom *</label>
+                <input type="text" placeholder="Martin" required>
+              </div>
+            </div>
+            <div class="cf-grid" style="margin-bottom:16px">
+              <div class="cf-group">
+                <label>Email *</label>
+                <input type="email" placeholder="jean@email.fr" required>
+              </div>
+              <div class="cf-group">
+                <label>Téléphone</label>
+                <input type="tel" placeholder="+33 6 00 00 00 00">
+              </div>
+            </div>
+            <div class="cf-group" style="margin-bottom:16px">
+              <label>Destination souhaitée</label>
+              <select>
+                <option>Choisir une destination...</option>
+                <option>Maldives</option>
+                <option>Japon</option>
+                <option>Safari Afrique</option>
+                <option>Grèce / Méditerranée</option>
+                <option>Amérique du Sud</option>
+                <option>Asie du Sud-Est</option>
+                <option>Autre / Sur mesure</option>
+              </select>
+            </div>
+            <div class="cf-grid" style="margin-bottom:16px">
+              <div class="cf-group">
+                <label>Nombre de voyageurs</label>
+                <select>
+                  <option>2 personnes</option>
+                  <option>1 personne</option>
+                  <option>Famille</option>
+                  <option>Groupe</option>
+                </select>
+              </div>
+              <div class="cf-group">
+                <label>Budget indicatif</label>
+                <select>
+                  <option>2 000 – 4 000 €</option>
+                  <option>4 000 – 7 000 €</option>
+                  <option>7 000 – 10 000 €</option>
+                  <option>Plus de 10 000 €</option>
+                </select>
+              </div>
+            </div>
+            <div class="cf-group" style="margin-bottom:0">
+              <label>Votre rêve de voyage *</label>
+              <textarea rows="4" placeholder="Décrivez vos envies, la saison souhaitée, vos expériences préférées..." required></textarea>
+            </div>
+            <button type="submit" class="cf-submit">Envoyer ma demande ✈</button>
+            <div class="cf-success" id="formOk">✓ Demande envoyée ! Votre conseiller vous contacte sous 24h.</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MAP ═══ -->
+<div id="map-sec">
+  <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=2.29%2C48.85%2C2.36%2C48.88&layer=mapnik&marker=48.874%2C2.310" loading="lazy"></iframe>
+  <div class="map-info-card">
+    <div class="map-card-name">WANDER<span style="color:var(--gold)">LUX</span></div>
+    <div class="map-card-addr">14 Rue du Voyageur, 75008 Paris<br>+33 1 00 00 00 00</div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo-wrap">WANDER<span>LUX</span></div>
+        <p class="footer-desc">Des voyages d'exception pour les âmes curieuses. Depuis 2008, nous faisons du monde votre terrain de jeu.</p>
+        <div class="footer-socials">
+          <a href="#" class="f-social">📘</a>
+          <a href="#" class="f-social">📸</a>
+          <a href="#" class="f-social">📌</a>
+          <a href="#" class="f-social">▶</a>
+        </div>
+      </div>
+      <div class="f-col">
+        <h5>Destinations</h5>
+        <ul>
+          <li><a href="#">Maldives & Océan Indien</a></li>
+          <li><a href="#">Asie & Extrême-Orient</a></li>
+          <li><a href="#">Safari Afrique</a></li>
+          <li><a href="#">Méditerranée</a></li>
+          <li><a href="#">Amérique du Sud</a></li>
+          <li><a href="#">Europe Insolite</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Agence</h5>
+        <ul>
+          <li><a href="#">Notre histoire</a></li>
+          <li><a href="#">Notre équipe</a></li>
+          <li><a href="#">Voyage responsable</a></li>
+          <li><a href="#">Témoignages</a></li>
+          <li><a href="#">Presse</a></li>
+          <li><a href="#">Recrutement</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Informations</h5>
+        <ul>
+          <li><a href="#">Nos forfaits</a></li>
+          <li><a href="#">Assurances voyage</a></li>
+          <li><a href="#">Conditions annulation</a></li>
+          <li><a href="#">Blog & Magazine</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 WANDERLUX — Voyages d'Exception. Tous droits réservés.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Mentions légales</a>
+        <a href="#">Confidentialité</a>
+        <a href="#">CGV</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- FLOATING BUTTON -->
+<a href="#contact" class="float-book" title="Réserver un voyage">✈</a>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+// ── THEME TOGGLE ──
+const themeBtn = document.getElementById('themeBtn');
+let theme = localStorage.getItem('wl-theme') || 'dark';
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('wl-theme',t);
+}
+function toggleTheme(){theme = theme==='dark'?'light':'dark';applyTheme(theme)}
+applyTheme(theme);
+
+// ── NAVBAR ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('solid',window.scrollY>60);
+});
+
+// ── MOBILE MENU ──
+function openMob(){document.getElementById('mobMenu').classList.add('open')}
+function closeMob(){document.getElementById('mobMenu').classList.remove('open')}
+
+// ── SWIPERS ──
+new Swiper('.exp-swiper',{
+  slidesPerView:'auto',spaceBetween:20,loop:true,
+  autoplay:{delay:3500,disableOnInteraction:false},
+  pagination:{el:'.exp-swiper .swiper-pagination',clickable:true},
+  breakpoints:{768:{slidesPerView:2},1200:{slidesPerView:3}}
+});
+new Swiper('.pkg-swiper',{
+  slidesPerView:1,spaceBetween:20,loop:true,
+  autoplay:{delay:4000},
+  pagination:{el:'.pkg-swiper .swiper-pagination',clickable:true},
+  breakpoints:{768:{slidesPerView:2},1200:{slidesPerView:3}}
+});
+
+// ── SCROLL REVEAL ──
+const obs = new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target)}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>obs.observe(el));
+
+// ── COUNTERS ──
+function countUp(el,target){
+  let v=0;const step=target/80;
+  const t=setInterval(()=>{
+    v=Math.min(v+step,target);
+    const disp = target>1000 ? Math.round(v).toLocaleString('fr') : Math.round(v);
+    el.textContent = disp + (target===98?'%':'+' in el.dataset?'':target>1000?'+':'');
+    if(v>=target){
+      el.textContent = (target>1000?target.toLocaleString('fr'):target) + (target>1000||target===48||target===16?'+':target===98?'%':'');
+      clearInterval(t);
+    }
+  },20);
+}
+const cntObs = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      document.querySelectorAll('.stat-n[data-target]').forEach(el=>countUp(el,+el.dataset.target));
+      cntObs.disconnect();
+    }
+  });
+},{threshold:0.3});
+const statsBanner = document.querySelector('.stats-banner');
+if(statsBanner)cntObs.observe(statsBanner);
+
+// ── FORM ──
+function doSubmit(e){
+  e.preventDefault();
+  document.getElementById('formOk').style.display='block';
+  e.target.reset();
+  setTimeout(()=>document.getElementById('formOk').style.display='none',6000);
+  return false;
+}
+
+// ── VIDEO DOTS ──
+const vidSrcs = [
+  'https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4',
+  'https://videos.pexels.com/video-files/1466210/1466210-uhd_2560_1440_24fps.mp4',
+  'https://videos.pexels.com/video-files/1448735/1448735-uhd_2560_1440_25fps.mp4'
+];
+const vDots = document.querySelectorAll('.v-dot');
+const vTimer = document.querySelector('.video-timer');
+const showVid = document.getElementById('showcaseVid');
+let vIdx=0;
+vDots.forEach((d,i)=>{
+  d.addEventListener('click',()=>{
+    vIdx=i;vDots.forEach((x,j)=>x.classList.toggle('active',j===i));
+    vTimer.textContent=`0${i+1} / 03`;
+    if(showVid){showVid.src=vidSrcs[i];showVid.play()}
+  });
+});
+setInterval(()=>{
+  vIdx=(vIdx+1)%3;
+  vDots.forEach((x,j)=>x.classList.toggle('active',j===vIdx));
+  vTimer.textContent=`0${vIdx+1} / 03`;
+  if(showVid){showVid.src=vidSrcs[vIdx];showVid.play()}
+},8000);
+
+// ── WISHLIST HEARTS ──
+document.querySelectorAll('.pkg-wishlist').forEach(btn=>{
+  btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    btn.textContent = btn.textContent==='♡'?'♥':'♡';
+    btn.style.color = btn.textContent==='♥'?'#e53e3e':'#fff';
+  });
+});
+</script>
+</body>
+</html>

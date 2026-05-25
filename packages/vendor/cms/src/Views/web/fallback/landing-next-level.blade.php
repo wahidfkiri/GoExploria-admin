@@ -247,9 +247,14 @@ nav.scrolled .templates-mega-panel { top: 64px; }
 .template-card:hover { transform: translateY(-6px); border-color: rgba(201,168,76,0.45); box-shadow: 0 18px 48px rgba(0,0,0,0.42); }
 .template-card:hover::before { opacity: 1; transform: scale(1.18); }
 .template-card > * { position: relative; z-index: 1; }
+.template-card--inactive { opacity: 0.55; cursor: not-allowed; filter: grayscale(0.25); }
+.template-card--inactive:hover { transform: none; border-color: rgba(255,255,255,0.08); box-shadow: none; }
+.template-card--inactive:hover::before { opacity: 0.7; transform: none; }
+.template-card--inactive .template-cta { color: rgba(240,237,230,0.55); }
 .template-media { position: relative; height: 92px; border-radius: 14px; overflow: hidden; margin-bottom: 14px; background: var(--dark3); }
 .template-media img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(0.95) contrast(1.08); transition: var(--transition); }
 .template-card:hover .template-media img { transform: scale(1.08); }
+.template-card--inactive:hover .template-media img { transform: none; }
 .template-icon { position: absolute; left: 10px; bottom: 10px; width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--gold); color: var(--dark); font-size: 15px; box-shadow: 0 10px 22px rgba(0,0,0,0.35); }
 .template-card h4 { font-family: 'Bebas Neue'; font-size: 20px; line-height: 1; letter-spacing: 1.2px; margin-bottom: 8px; }
 .template-card p { color: rgba(240,237,230,0.68); font-size: 11.5px; line-height: 1.48; }
@@ -650,7 +655,7 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
           <p class="templates-mega-copy">Des bases visuelles prêtes à personnaliser pour lancer rapidement une présence web moderne, professionnelle et orientée conversion.</p>
         </div>
         <div class="templates-mega-grid">
-          <a href="#contact" class="template-card" role="menuitem">
+          <a href="{{ asset('templates/next-level/agence-marketing.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80" alt="Agence marketing digitale">
@@ -659,9 +664,9 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
               <h4>Agence marketing digitale</h4>
               <p>Landing dynamique pour agences, consultants, campagnes et services de croissance.</p>
             </div>
-            <span class="template-cta">Demander ce template</span>
+            <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#contact" class="template-card" role="menuitem">
+          <a href="{{ asset('templates/next-level/travel-tourism.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=500&q=80" alt="Travel & tourism">
@@ -670,9 +675,9 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
               <h4>Travel & tourism</h4>
               <p>Expériences, destinations, cartes vidéo et storytelling immersif pour le tourisme.</p>
             </div>
-            <span class="template-cta">Demander ce template</span>
+            <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#contact" class="template-card" role="menuitem">
+          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=500&q=80" alt="Médias & news">
@@ -681,9 +686,9 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
               <h4>Médias & news</h4>
               <p>Format éditorial moderne pour articles, actualités, vidéos et contenus sociaux.</p>
             </div>
-            <span class="template-cta">Demander ce template</span>
+            <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#contact" class="template-card" role="menuitem">
+          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500&q=80" alt="Commerce local premium">
@@ -692,9 +697,9 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
               <h4>Commerce local premium</h4>
               <p>Vitrine élégante pour produits, services, avis clients et demandes de devis.</p>
             </div>
-            <span class="template-cta">Demander ce template</span>
+            <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#contact" class="template-card" role="menuitem">
+          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=500&q=80" alt="Cabinet conseil">
@@ -703,9 +708,9 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
               <h4>Cabinet conseil</h4>
               <p>Présentation premium pour consultants, coachs, experts et services professionnels.</p>
             </div>
-            <span class="template-cta">Demander ce template</span>
+            <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#contact" class="template-card" role="menuitem">
+          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&q=80" alt="SaaS & startup">
@@ -714,9 +719,9 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
               <h4>SaaS & startup</h4>
               <p>Hero produit, fonctionnalités, preuves sociales et conversion pour logiciels et apps.</p>
             </div>
-            <span class="template-cta">Demander ce template</span>
+            <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#contact" class="template-card" role="menuitem">
+          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=500&q=80" alt="Formation & coaching">
@@ -725,9 +730,9 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
               <h4>Formation & coaching</h4>
               <p>Parcours clair pour programmes, cours, ateliers, inscriptions et accompagnement.</p>
             </div>
-            <span class="template-cta">Demander ce template</span>
+            <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#contact" class="template-card" role="menuitem">
+          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=500&q=80" alt="Immobilier premium">
@@ -736,9 +741,9 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
               <h4>Immobilier premium</h4>
               <p>Biens vedettes, visites vidéo, cartes, galerie et demandes de visite ou de devis.</p>
             </div>
-            <span class="template-cta">Demander ce template</span>
+            <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#contact" class="template-card" role="menuitem">
+          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80" alt="Restaurant & food">
@@ -747,9 +752,9 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
               <h4>Restaurant & food</h4>
               <p>Menus, ambiance, avis clients, galerie gourmande et parcours réservation/devis.</p>
             </div>
-            <span class="template-cta">Demander ce template</span>
+            <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#contact" class="template-card" role="menuitem">
+          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80" alt="Portfolio créatif">
@@ -758,9 +763,9 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
               <h4>Portfolio créatif</h4>
               <p>Showcase visuel pour designers, photographes, artistes, studios et freelances.</p>
             </div>
-            <span class="template-cta">Demander ce template</span>
+            <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#contact" class="template-card" role="menuitem">
+          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80" alt="Santé & bien-être">
@@ -769,9 +774,9 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
               <h4>Santé & bien-être</h4>
               <p>Services, horaires, équipe, témoignages et prise de contact pour professionnels santé.</p>
             </div>
-            <span class="template-cta">Demander ce template</span>
+            <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#contact" class="template-card" role="menuitem">
+          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80" alt="Finance & assurance">
@@ -780,7 +785,7 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
               <h4>Finance & assurance</h4>
               <p>Structure fiable pour services financiers, assurances, rendez-vous et formulaires qualifiés.</p>
             </div>
-            <span class="template-cta">Demander ce template</span>
+            <span class="template-cta">Voir ce template</span>
           </a>
         </div>
       </div>
@@ -1391,7 +1396,7 @@ const nextLevelTranslations = {
     'Services, horaires, équipe, témoignages et prise de contact pour professionnels santé.': 'Services, opening hours, team, testimonials and contact path for health professionals.',
     'Finance & assurance': 'Finance & insurance',
     'Structure fiable pour services financiers, assurances, rendez-vous et formulaires qualifiés.': 'Reliable structure for financial services, insurance, appointments and qualified forms.',
-    'Demander ce template': 'Request this template',
+    'Voir ce template': 'View this template',
     'Galerie': 'Gallery',
     'Avis': 'Reviews',
     'Social': 'Social',
@@ -1529,7 +1534,7 @@ const nextLevelTranslations = {
     'Services, horaires, équipe, témoignages et prise de contact pour professionnels santé.': 'Servicios, horarios, equipo, testimonios y contacto para profesionales de salud.',
     'Finance & assurance': 'Finanzas y seguros',
     'Structure fiable pour services financiers, assurances, rendez-vous et formulaires qualifiés.': 'Estructura fiable para servicios financieros, seguros, citas y formularios cualificados.',
-    'Demander ce template': 'Solicitar esta plantilla',
+    'Voir ce template': 'Ver esta plantilla',
     'Galerie': 'Galería',
     'Avis': 'Reseñas',
     'Social': 'Social',
@@ -1668,7 +1673,7 @@ const nextLevelTranslations = {
     'Services, horaires, équipe, témoignages et prise de contact pour professionnels santé.': 'Services, Öffnungszeiten, Team, Referenzen und Kontaktaufnahme für Gesundheitsprofis.',
     'Finance & assurance': 'Finanzen & Versicherung',
     'Structure fiable pour services financiers, assurances, rendez-vous et formulaires qualifiés.': 'Zuverlässige Struktur für Finanzservices, Versicherungen, Termine und qualifizierte Formulare.',
-    'Demander ce template': 'Dieses Template anfragen',
+    'Voir ce template': 'Dieses Template ansehen',
     'Galerie': 'Galerie',
     'Avis': 'Bewertungen',
     'Social': 'Social',
@@ -1813,7 +1818,7 @@ const nextLevelTranslations = {
     'Services, horaires, équipe, témoignages et prise de contact pour professionnels santé.': 'Servizi, orari, team, testimonianze e contatto per professionisti della salute.',
     'Finance & assurance': 'Finanza e assicurazioni',
     'Structure fiable pour services financiers, assurances, rendez-vous et formulaires qualifiés.': 'Struttura affidabile per servizi finanziari, assicurazioni, appuntamenti e moduli qualificati.',
-    'Demander ce template': 'Richiedi questo template',
+    'Voir ce template': 'Vedi questo template',
     'Galerie': 'Galleria',
     'Avis': 'Recensioni',
     'Social': 'Social',
@@ -1958,7 +1963,7 @@ const nextLevelTranslations = {
     'Services, horaires, équipe, témoignages et prise de contact pour professionnels santé.': 'خدمات وساعات عمل وفريق وشهادات وتواصل لمهنيي الصحة.',
     'Finance & assurance': 'المالية والتأمين',
     'Structure fiable pour services financiers, assurances, rendez-vous et formulaires qualifiés.': 'هيكل موثوق للخدمات المالية والتأمين والمواعيد والنماذج المؤهلة.',
-    'Demander ce template': 'اطلب هذا القالب',
+    'Voir ce template': 'عرض هذا القالب',
     'Galerie': 'المعرض',
     'Avis': 'آراء العملاء',
     'Social': 'الشبكات',
@@ -2188,7 +2193,11 @@ if (templatesMega && templatesMegaToggle) {
     }
   });
   templatesMega.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => {
+    link.addEventListener('click', (event) => {
+      if (link.classList.contains('template-card--inactive')) {
+        event.preventDefault();
+        return;
+      }
       templatesMega.classList.remove('is-open');
       templatesMegaToggle.setAttribute('aria-expanded', 'false');
     });
@@ -2515,6 +2524,7 @@ function handleForm(e) {
 </script>
 </body>
 </html>
+
 
 
 
