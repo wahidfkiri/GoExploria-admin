@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAISON NOURA — Restaurant Gastronomique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,600&family=Raleway:wght@200;300;400;500;600;700&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<style>
+/* ══════════════════════════════════════════
+   THEME VARIABLES
+══════════════════════════════════════════ */
+:root {
+  --ember:   #C0392B;
+  --ember2:  #E74C3C;
+  --ember-pale: rgba(192,57,43,0.1);
+  --gold:    #D4A843;
+  --gold2:   #F0C96A;
+  --tr: all 0.5s cubic-bezier(0.23,1,0.32,1);
+  --r: 16px;
+}
+[data-theme="dark"] {
+  --bg:      #0D0C0A;
+  --bg2:     #131210;
+  --bg3:     #1A1815;
+  --bg4:     #222018;
+  --card:    #181614;
+  --border:  rgba(255,255,255,0.07);
+  --text:    #F0E8D8;
+  --text2:   #8A7D6A;
+  --text3:   #4A4035;
+  --nav-bg:  rgba(13,12,10,0.92);
+  --input:   rgba(255,255,255,0.05);
+  --shadow:  0 30px 80px rgba(0,0,0,0.7);
+  --grain:   url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+[data-theme="light"] {
+  --bg:      #FAF5EC;
+  --bg2:     #F2EAD8;
+  --bg3:     #E8DEC8;
+  --bg4:     #DDD0B4;
+  --card:    #FFFFFF;
+  --border:  rgba(0,0,0,0.08);
+  --text:    #1A140A;
+  --text2:   #7A6A50;
+  --text3:   #B0A080;
+  --nav-bg:  rgba(250,245,236,0.92);
+  --input:   rgba(0,0,0,0.04);
+  --shadow:  0 20px 60px rgba(0,0,0,0.1);
+  --grain:   url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
+
+/* ══════════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Raleway',sans-serif;
+  overflow-x:hidden;
+  transition:background .5s,color .5s;
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:var(--grain);background-size:256px;opacity:1;
+}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--ember);border-radius:2px}
+a{text-decoration:none;color:inherit}
+img{display:block;width:100%;object-fit:cover}
+
+/* ══════════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:990;
+  height:76px;padding:0 56px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:var(--tr);
+}
+nav.scrolled{
+  background:var(--nav-bg);
+  backdrop-filter:blur(28px);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 4px 40px rgba(0,0,0,0.12);
+}
+.nav-logo{
+  font-family:'Playfair Display',serif;
+  font-size:24px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:var(--text);
+  display:flex;flex-direction:column;line-height:1;
+}
+.nav-logo small{
+  font-family:'Raleway',sans-serif;font-size:8px;
+  letter-spacing:6px;color:var(--ember);font-weight:600;
+  text-transform:uppercase;margin-top:3px;
+}
+.nav-links{display:flex;gap:32px;list-style:none;align-items:center}
+.nav-links a{
+  font-size:11px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--text2);font-weight:500;transition:var(--tr);position:relative;
+}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--ember);transition:var(--tr)}
+.nav-links a:hover{color:var(--ember)}
+.nav-links a:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:14px}
+.theme-btn{
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid var(--border);background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:15px;transition:var(--tr);color:var(--text2);
+}
+.theme-btn:hover{border-color:var(--ember);color:var(--ember);transform:rotate(15deg)}
+.nav-reserve{
+  background:var(--ember);color:#fff;
+  padding:10px 22px;border-radius:50px;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;font-weight:700;
+  transition:var(--tr);white-space:nowrap;
+}
+.nav-reserve:hover{background:var(--ember2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(192,57,43,0.45)}
+.ham{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.ham span{width:24px;height:1.5px;background:var(--text);border-radius:1px;transition:var(--tr);display:block}
+.mob-nav{
+  display:none;position:fixed;inset:0;z-index:989;
+  background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:28px;
+}
+.mob-nav.open{display:flex}
+.mob-nav a{font-family:'Playfair Display',serif;font-size:32px;color:var(--text);letter-spacing:2px;transition:var(--tr)}
+.mob-nav a:hover{color:var(--ember)}
+.mob-close{position:absolute;top:22px;right:28px;font-size:28px;background:none;border:none;color:var(--text);cursor:pointer}
+
+/* ══════════════════════════════════════════
+   HERO SWIPER
+══════════════════════════════════════════ */
+#hero{position:relative;height:100vh;overflow:hidden}
+.hero-swiper{width:100%;height:100%}
+.hero-slide{position:relative;height:100%;overflow:hidden}
+.hero-slide-img{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  transform:scale(1.06);
+  transition:transform 10s ease;
+}
+.swiper-slide-active .hero-slide-img{transform:scale(1)}
+.hero-grad{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(
+    to right,
+    rgba(0,0,0,0.80) 0%,
+    rgba(0,0,0,0.50) 50%,
+    rgba(0,0,0,0.20) 100%
+  );
+}
+.hero-slide-content{
+  position:absolute;bottom:14%;left:10%;z-index:2;max-width:620px;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--ember);
+  margin-bottom:20px;font-weight:600;
+}
+.hero-tag::before{content:'';width:28px;height:1px;background:var(--ember)}
+.hero-h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(52px,8vw,100px);
+  font-weight:700;line-height:.92;
+  color:#fff;letter-spacing:-1px;margin-bottom:24px;
+}
+.hero-h1 em{font-style:italic;color:var(--gold)}
+.hero-p{
+  font-size:15px;color:rgba(255,255,255,0.62);
+  line-height:1.9;font-weight:300;max-width:420px;margin-bottom:38px;
+}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.btn-primary{
+  background:var(--ember);color:#fff;
+  padding:14px 34px;border-radius:50px;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;font-weight:700;
+  display:inline-flex;align-items:center;gap:10px;transition:var(--tr);
+}
+.btn-primary:hover{background:var(--ember2);transform:translateY(-3px);box-shadow:0 12px 36px rgba(192,57,43,0.5)}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:10px;
+  color:rgba(255,255,255,0.7);font-size:10px;letter-spacing:3px;text-transform:uppercase;transition:var(--tr);
+}
+.btn-ghost-ring{
+  width:44px;height:44px;border:1px solid rgba(255,255,255,0.3);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:14px;transition:var(--tr);
+}
+.btn-ghost:hover{color:#fff}
+.btn-ghost:hover .btn-ghost-ring{background:var(--ember);border-color:var(--ember);color:#fff}
+.hero-bottom-bar{
+  position:absolute;bottom:0;left:0;right:0;z-index:3;
+  display:flex;align-items:stretch;
+  background:rgba(0,0,0,0.55);backdrop-filter:blur(20px);
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.hero-info-block{
+  flex:1;padding:20px 32px;border-right:1px solid rgba(255,255,255,0.08);
+  display:flex;flex-direction:column;gap:3px;
+}
+.hero-info-block:last-child{border-right:none}
+.hero-info-label{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.35)}
+.hero-info-val{font-size:14px;color:rgba(255,255,255,0.85);font-weight:400}
+.hero-info-val .hl{color:var(--ember);font-weight:600}
+.hero-slide-num{
+  position:absolute;top:50%;right:6%;transform:translateY(-50%);z-index:3;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.slide-n-cur{font-family:'Playfair Display',serif;font-size:42px;color:rgba(255,255,255,0.9);line-height:1}
+.slide-n-line{width:1px;height:40px;background:rgba(255,255,255,0.2)}
+.slide-n-tot{font-size:12px;color:rgba(255,255,255,0.3);letter-spacing:2px}
+.hero-swiper .swiper-pagination{bottom:90px!important}
+.hero-swiper .swiper-pagination-bullet{background:#fff;opacity:.3;width:5px;height:5px}
+.hero-swiper .swiper-pagination-bullet-active{background:var(--ember);opacity:1;width:20px;border-radius:3px}
+
+/* ══════════════════════════════════════════
+   SECTIONS BASE
+══════════════════════════════════════════ */
+section{padding:110px 80px}
+.container{max-width:1360px;margin:0 auto}
+.s-eyebrow{
+  display:flex;align-items:center;gap:12px;
+  font-size:9px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--ember);font-weight:700;margin-bottom:14px;
+}
+.s-eyebrow::before{content:'';width:24px;height:1px;background:var(--ember)}
+h2.s-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(36px,5.5vw,66px);
+  font-weight:700;line-height:1.05;letter-spacing:-.5px;
+  color:var(--text);margin-bottom:18px;
+}
+h2.s-title em{font-style:italic;color:var(--ember)}
+.s-sub{font-size:14px;color:var(--text2);line-height:2;font-weight:300;max-width:500px}
+.s-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px;gap:40px;flex-wrap:wrap}
+.link-all{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--ember);border-bottom:1px solid var(--ember);
+  padding-bottom:2px;transition:var(--tr);font-weight:600;
+}
+.link-all:hover{gap:16px}
+
+/* ══════════════════════════════════════════
+   MARQUEE RIBBON
+══════════════════════════════════════════ */
+.ribbon{background:var(--ember);overflow:hidden;padding:14px 0}
+.ribbon-track{display:flex;animation:rticker 22s linear infinite;white-space:nowrap}
+.ribbon-item{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:16px;color:rgba(255,255,255,0.9);
+  padding:0 44px;
+}
+.ribbon-dot{color:rgba(255,255,255,0.4);padding:0 4px}
+@keyframes rticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ══════════════════════════════════════════
+   ABOUT — ASYMMETRIC SPLIT
+══════════════════════════════════════════ */
+#about{background:var(--bg2);padding:0}
+.about-grid{display:grid;grid-template-columns:55% 45%;min-height:90vh}
+.about-visual{position:relative;overflow:hidden}
+.about-visual img{width:100%;height:100%;object-fit:cover}
+.about-visual-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to right,transparent 60%,var(--bg2));
+}
+.about-year-badge{
+  position:absolute;bottom:60px;left:60px;
+  background:var(--ember);border-radius:50%;
+  width:120px;height:120px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 16px 50px rgba(192,57,43,0.5);
+}
+.about-year-badge span:first-child{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:#fff;line-height:1}
+.about-year-badge span:last-child{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.7)}
+.about-right{
+  padding:100px 80px 100px 60px;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.about-quote{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(22px,2.8vw,32px);color:var(--text);
+  line-height:1.5;margin:28px 0 36px;
+  border-left:2px solid var(--ember);padding-left:24px;
+}
+.about-desc{font-size:14px;color:var(--text2);line-height:2;font-weight:300;margin-bottom:36px}
+.about-awards{display:flex;gap:28px;flex-wrap:wrap;margin-top:12px}
+.award-badge{
+  display:flex;align-items:center;gap:12px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:12px;padding:14px 18px;transition:var(--tr);
+}
+.award-badge:hover{border-color:var(--ember);transform:translateY(-3px)}
+.award-icon{font-size:24px}
+.award-text strong{font-size:13px;color:var(--text);display:block}
+.award-text span{font-size:10px;color:var(--text3);letter-spacing:1px}
+
+/* ══════════════════════════════════════════
+   MENU — TABS + CARDS
+══════════════════════════════════════════ */
+#menu{background:var(--bg)}
+.menu-tabs{
+  display:flex;gap:0;
+  border:1px solid var(--border);border-radius:50px;
+  width:fit-content;overflow:hidden;margin-bottom:56px;
+  background:var(--bg2);
+}
+.menu-tab{
+  padding:11px 26px;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;
+  font-weight:600;cursor:pointer;border:none;background:transparent;
+  color:var(--text2);transition:var(--tr);white-space:nowrap;
+}
+.menu-tab.active{background:var(--ember);color:#fff}
+.menu-tab:hover:not(.active){color:var(--text);background:var(--bg3)}
+.menu-panel{display:none}
+.menu-panel.active{display:block}
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border-radius:var(--r);overflow:hidden}
+.menu-card{
+  background:var(--card);padding:32px;position:relative;
+  transition:var(--tr);cursor:pointer;overflow:hidden;
+}
+.menu-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(192,57,43,0.06),transparent);
+  opacity:0;transition:var(--tr);
+}
+.menu-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.menu-card:hover::before{opacity:1}
+.menu-card-img{
+  width:100%;height:200px;border-radius:12px;overflow:hidden;
+  margin-bottom:20px;position:relative;
+}
+.menu-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
+.menu-card:hover .menu-card-img img{transform:scale(1.06)}
+.menu-badge{
+  position:absolute;top:10px;right:10px;
+  background:var(--ember);color:#fff;
+  font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 10px;border-radius:50px;
+}
+.menu-badge.new{background:var(--gold);color:#1a0800}
+.menu-badge.vegan{background:#27ae60}
+.menu-card-cat{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--ember);margin-bottom:7px;font-weight:700}
+.menu-card-name{font-family:'Playfair Display',serif;font-size:21px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.25}
+.menu-card-desc{font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:18px}
+.menu-card-allergens{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.allergen{
+  font-size:9px;letter-spacing:1px;color:var(--text3);
+  background:var(--bg2);border:1px solid var(--border);
+  padding:2px 8px;border-radius:50px;
+}
+.menu-card-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:14px;margin-top:4px}
+.menu-price{font-family:'Playfair Display',serif;font-size:26px;color:var(--ember);font-weight:700}
+.menu-price sup{font-size:14px;vertical-align:top;margin-top:6px;display:inline-block}
+.menu-add{
+  width:36px;height:36px;border-radius:50%;background:var(--ember-pale);
+  border:1px solid rgba(192,57,43,0.3);color:var(--ember);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  cursor:pointer;transition:var(--tr);
+}
+.menu-add:hover{background:var(--ember);color:#fff;transform:rotate(90deg)}
+
+/* ══════════════════════════════════════════
+   CHEF
+══════════════════════════════════════════ */
+#chef{background:var(--bg2)}
+.chef-layout{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
+.chef-img-wrap{position:relative}
+.chef-img-frame{
+  border-radius:24px;overflow:hidden;height:580px;
+  box-shadow:var(--shadow);position:relative;
+}
+.chef-img-frame img{width:100%;height:100%;object-fit:cover}
+.chef-sig{
+  position:absolute;bottom:-20px;right:-20px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:20px 24px;box-shadow:var(--shadow);
+}
+.chef-sig-name{font-family:'Playfair Display',serif;font-size:20px;color:var(--text);font-style:italic}
+.chef-sig-title{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--ember);margin-top:4px}
+.chef-stars{color:var(--gold);font-size:14px;letter-spacing:2px;margin-top:6px}
+.chef-deco-num{
+  position:absolute;top:-24px;left:-24px;
+  font-family:'Playfair Display',serif;font-size:80px;font-weight:700;
+  color:var(--ember);opacity:.15;line-height:1;pointer-events:none;
+}
+.chef-right{}
+.chef-philosophy{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(20px,2.5vw,28px);color:var(--text);
+  line-height:1.55;margin:24px 0 32px;
+  border-left:2px solid var(--ember);padding-left:22px;
+}
+.chef-bio{font-size:14px;color:var(--text2);line-height:2;font-weight:300;margin-bottom:32px}
+.chef-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+.chef-stat{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:14px;padding:22px;text-align:center;transition:var(--tr);
+}
+.chef-stat:hover{border-color:var(--ember);background:var(--ember-pale)}
+.chef-stat-n{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--ember)}
+.chef-stat-l{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-top:4px}
+
+/* ══════════════════════════════════════════
+   SPECIALS — FULL-BG
+══════════════════════════════════════════ */
+#specials{
+  padding:0;position:relative;
+  min-height:70vh;display:flex;align-items:center;overflow:hidden;
+}
+.specials-bg{
+  position:absolute;inset:0;
+  background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80');
+  background-size:cover;background-position:center;
+  filter:brightness(0.35);
+  transition:transform 12s ease;
+}
+#specials:hover .specials-bg{transform:scale(1.04)}
+.specials-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.2) 100%)}
+.specials-content{position:relative;z-index:2;padding:100px 80px;width:100%;max-width:1360px;margin:0 auto}
+.specials-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:60px}
+.special-card{
+  background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.12);border-radius:20px;
+  padding:32px;transition:var(--tr);cursor:pointer;
+}
+.special-card:hover{background:rgba(192,57,43,0.2);border-color:rgba(192,57,43,0.4);transform:translateY(-6px)}
+.special-day{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--ember);margin-bottom:8px;font-weight:700}
+.special-name{font-family:'Playfair Display',serif;font-size:22px;color:#fff;font-weight:600;margin-bottom:8px}
+.special-desc{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.8;margin-bottom:18px}
+.special-price{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold)}
+.special-img{width:100%;height:140px;border-radius:12px;overflow:hidden;margin-bottom:20px}
+.special-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.special-card:hover .special-img img{transform:scale(1.08)}
+
+/* ══════════════════════════════════════════
+   GALLERY — MASONRY
+══════════════════════════════════════════ */
+#gallery{background:var(--bg2)}
+.gal-masonry{columns:4;column-gap:12px}
+.gal-item{break-inside:avoid;margin-bottom:12px;border-radius:14px;overflow:hidden;position:relative;cursor:pointer}
+.gal-item img{display:block;width:100%;transition:transform .7s cubic-bezier(0.23,1,0.32,1)}
+.gal-item:hover img{transform:scale(1.05)}
+.gal-lens{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0.5);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:var(--tr);
+}
+.gal-item:hover .gal-lens{opacity:1}
+.gal-lens-icon{
+  width:48px;height:48px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,0.6);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:18px;
+}
+
+/* ══════════════════════════════════════════
+   TESTIMONIALS
+══════════════════════════════════════════ */
+#testimonials{background:var(--bg)}
+.testi-header{display:grid;grid-template-columns:1fr auto;align-items:end;margin-bottom:56px;gap:40px}
+.testi-score-wrap{text-align:right}
+.testi-big-score{font-family:'Playfair Display',serif;font-size:72px;font-weight:700;color:var(--ember);line-height:1}
+.testi-score-stars{color:var(--gold);font-size:18px;letter-spacing:3px}
+.testi-score-label{font-size:11px;color:var(--text3);letter-spacing:1px;margin-top:4px}
+.testi-swiper-wrap .swiper{overflow:hidden;padding-bottom:50px!important}
+.testi-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;padding:36px;height:auto;
+  position:relative;overflow:hidden;transition:var(--tr);
+}
+.testi-card::after{
+  content:'"';font-family:'Playfair Display',serif;
+  font-size:120px;font-weight:700;color:var(--ember);opacity:.06;
+  position:absolute;top:-20px;right:20px;line-height:1;pointer-events:none;
+}
+.testi-card:hover{border-color:rgba(192,57,43,0.25);box-shadow:var(--shadow)}
+.testi-card-stars{color:var(--gold);font-size:13px;letter-spacing:2px;margin-bottom:14px}
+.testi-card-text{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:17px;color:var(--text);line-height:1.8;margin-bottom:24px;
+  position:relative;z-index:1;
+}
+.testi-card-author{display:flex;align-items:center;gap:14px}
+.testi-ava{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+.testi-name{font-weight:600;font-size:14px;color:var(--text)}
+.testi-date{font-size:11px;color:var(--text3);margin-top:2px}
+.testi-platform{margin-left:auto;font-size:11px;color:var(--ember);font-weight:700;letter-spacing:1px}
+.swiper-pagination-bullet{background:var(--text3)!important;opacity:.4!important}
+.swiper-pagination-bullet-active{background:var(--ember)!important;opacity:1!important;width:20px!important;border-radius:2px!important}
+
+/* ══════════════════════════════════════════
+   RESERVATION
+══════════════════════════════════════════ */
+#reservation{background:var(--bg3)}
+.res-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:100px;align-items:start}
+.res-info h3{font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:var(--text);letter-spacing:-.5px;margin-bottom:18px;line-height:1.1}
+.res-info h3 em{font-style:italic;color:var(--ember)}
+.res-info p{font-size:14px;color:var(--text2);line-height:2;font-weight:300;margin-bottom:32px}
+.res-contact-items{display:flex;flex-direction:column;gap:18px;margin-bottom:36px}
+.res-c-item{display:flex;align-items:flex-start;gap:14px}
+.res-c-icon{
+  width:42px;height:42px;border-radius:12px;
+  background:var(--ember-pale);border:1px solid rgba(192,57,43,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;transition:var(--tr);
+}
+.res-c-item:hover .res-c-icon{background:var(--ember)}
+.res-c-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--ember);font-weight:700;margin-bottom:2px}
+.res-c-val{font-size:14px;color:var(--text2)}
+.res-hours{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.res-hour-block{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.res-hour-day{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.res-hour-time{font-size:14px;color:var(--text);font-weight:500}
+.res-form-wrap{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:44px}
+.res-form-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--text);margin-bottom:28px;letter-spacing:-.3px}
+.rf-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.rf-group{display:flex;flex-direction:column;gap:7px}
+.rf-group label{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);font-weight:600}
+.rf-group input,.rf-group select,.rf-group textarea{
+  background:var(--input);border:1px solid var(--border);color:var(--text);
+  padding:13px 16px;border-radius:12px;font-family:'Raleway',sans-serif;
+  font-size:13px;outline:none;resize:none;transition:var(--tr);
+}
+.rf-group input::placeholder,.rf-group textarea::placeholder{color:var(--text3)}
+.rf-group input:focus,.rf-group select:focus,.rf-group textarea:focus{
+  border-color:var(--ember);box-shadow:0 0 0 3px rgba(192,57,43,0.1);background:var(--bg2);
+}
+.rf-group select option{background:var(--card);color:var(--text)}
+.rf-submit{
+  width:100%;background:var(--ember);color:#fff;border:none;
+  padding:16px;border-radius:50px;font-family:'Raleway',sans-serif;
+  font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:700;
+  cursor:pointer;margin-top:20px;transition:var(--tr);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.rf-submit:hover{background:var(--ember2);transform:translateY(-2px);box-shadow:0 12px 36px rgba(192,57,43,0.45)}
+.rf-success{
+  display:none;background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.3);
+  border-radius:12px;padding:14px;color:var(--ember);font-size:13px;
+  text-align:center;margin-top:14px;
+}
+
+/* ══════════════════════════════════════════
+   EVENTS
+══════════════════════════════════════════ */
+#events{background:var(--bg)}
+.events-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:20px}
+.event-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;cursor:pointer;transition:var(--tr);
+}
+.event-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:rgba(192,57,43,0.25)}
+.event-img{overflow:hidden;position:relative}
+.event-img img{transition:transform .6s ease}
+.event-card:hover .event-img img{transform:scale(1.05)}
+.event-img.tall img{height:260px;width:100%}
+.event-img.medium img{height:180px;width:100%}
+.event-tag{
+  position:absolute;top:14px;left:14px;
+  background:var(--ember);color:#fff;
+  font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 12px;border-radius:50px;
+}
+.event-body{padding:24px}
+.event-date{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--ember);margin-bottom:8px;font-weight:700}
+.event-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.25;transition:var(--tr)}
+.event-card:hover .event-title{color:var(--ember)}
+.event-desc{font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:14px}
+.event-meta{display:flex;align-items:center;justify-content:space-between}
+.event-price{font-family:'Playfair Display',serif;font-size:22px;color:var(--ember)}
+.event-book{
+  background:var(--ember-pale);border:1px solid rgba(192,57,43,0.25);
+  color:var(--ember);padding:7px 16px;border-radius:50px;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  transition:var(--tr);
+}
+.event-book:hover{background:var(--ember);color:#fff}
+
+/* ══════════════════════════════════════════
+   STATS
+══════════════════════════════════════════ */
+.stats-strip{background:var(--ember);padding:0}
+.stats-inner{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-left:1px solid rgba(255,255,255,0.15);
+}
+.stat-cell{
+  padding:52px 40px;text-align:center;
+  border-right:1px solid rgba(255,255,255,0.15);
+}
+.stat-n{
+  font-family:'Playfair Display',serif;
+  font-size:56px;font-weight:700;color:#fff;line-height:1;letter-spacing:-1px;
+}
+.stat-l{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-top:8px}
+
+/* ══════════════════════════════════════════
+   BLOG
+══════════════════════════════════════════ */
+#blog{background:var(--bg2)}
+.blog-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:20px}
+.blog-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;cursor:pointer;transition:var(--tr);
+}
+.blog-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:rgba(192,57,43,0.2)}
+.blog-img-wrap{overflow:hidden;position:relative}
+.blog-img-wrap img{transition:transform .6s ease}
+.blog-card:hover .blog-img-wrap img{transform:scale(1.04)}
+.blog-img-wrap img.big-h{height:260px;width:100%}
+.blog-img-wrap img.sm-h{height:170px;width:100%}
+.blog-cat{position:absolute;top:14px;left:14px;background:var(--ember);color:#fff;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:50px}
+.blog-body{padding:24px}
+.blog-meta-row{display:flex;align-items:center;gap:12px;font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:10px}
+.blog-meta-sep{width:2px;height:2px;border-radius:50%;background:var(--text3)}
+.blog-title{font-family:'Playfair Display',serif;font-size:clamp(17px,2vw,22px);color:var(--text);font-weight:600;line-height:1.25;margin-bottom:10px;transition:var(--tr)}
+.blog-card:hover .blog-title{color:var(--ember)}
+.blog-excerpt{font-size:12px;color:var(--text2);line-height:1.8}
+.blog-readmore{display:inline-flex;align-items:center;gap:8px;color:var(--ember);font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-top:16px;transition:var(--tr)}
+.blog-readmore:hover{gap:14px}
+
+/* ══════════════════════════════════════════
+   MAP
+══════════════════════════════════════════ */
+#map-sec{height:440px;position:relative;overflow:hidden}
+#map-sec iframe{width:100%;height:100%;border:none}
+[data-theme="dark"] #map-sec iframe{filter:invert(93%) hue-rotate(170deg) saturate(0.6) brightness(0.82)}
+.map-card-overlay{
+  position:absolute;top:32px;left:56px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:26px 30px;box-shadow:var(--shadow);
+}
+.map-card-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.map-card-addr{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:10px}
+.map-open-badge{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:700;color:#22c55e}
+.open-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:80px 80px 40px}
+.footer-grid{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:56px;margin-bottom:56px}
+.footer-brand-logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text);margin-bottom:6px}
+.footer-brand-tag{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--ember);font-weight:700;margin-bottom:16px;display:block}
+.footer-brand-desc{font-size:13px;color:var(--text2);line-height:1.9;max-width:270px;margin-bottom:24px}
+.footer-socials{display:flex;gap:10px}
+.f-soc{width:38px;height:38px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2);transition:var(--tr)}
+.f-soc:hover{background:var(--ember);border-color:var(--ember);color:#fff;transform:translateY(-3px)}
+.f-col h5{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--text3);margin-bottom:20px;font-weight:700}
+.f-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.f-col ul li a{font-size:13px;color:var(--text2);transition:var(--tr)}
+.f-col ul li a:hover{color:var(--ember);padding-left:6px}
+.f-newsletter-input{display:flex;margin-top:12px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.f-newsletter-input input{flex:1;background:transparent;border:none;color:var(--text);padding:11px 14px;font-family:'Raleway',sans-serif;font-size:12px;outline:none}
+.f-newsletter-input input::placeholder{color:var(--text3)}
+.f-newsletter-input button{background:var(--ember);border:none;color:#fff;padding:11px 16px;font-size:16px;cursor:pointer;transition:var(--tr)}
+.f-newsletter-input button:hover{background:var(--ember2)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:26px;flex-wrap:wrap;gap:12px}
+.footer-bottom p{font-size:11px;color:var(--text3)}
+.footer-bottom-links{display:flex;gap:22px}
+.footer-bottom-links a{font-size:11px;color:var(--text3);transition:var(--tr)}
+.footer-bottom-links a:hover{color:var(--ember)}
+
+/* ══════════════════════════════════════════
+   FLOATING
+══════════════════════════════════════════ */
+.float-res{
+  position:fixed;bottom:32px;right:32px;z-index:900;
+  background:var(--ember);color:#fff;
+  width:58px;height:58px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+  box-shadow:0 8px 30px rgba(192,57,43,0.55);transition:var(--tr);
+}
+.float-res:hover{transform:scale(1.14) rotate(-8deg);box-shadow:0 14px 50px rgba(192,57,43,0.7)}
+
+/* ══════════════════════════════════════════
+   REVEALS
+══════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}
+.reveal-l{opacity:0;transform:translateX(-28px);transition:opacity .8s ease,transform .8s ease}
+.reveal-r{opacity:0;transform:translateX(28px);transition:opacity .8s ease,transform .8s ease}
+.reveal.on,.reveal-l.on,.reveal-r.on{opacity:1;transform:none}
+.d1{transition-delay:.12s}.d2{transition-delay:.22s}.d3{transition-delay:.34s}.d4{transition-delay:.46s}.d5{transition-delay:.58s}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media(max-width:1200px){
+  .about-grid{grid-template-columns:1fr}
+  .about-visual{height:500px}
+  .about-visual-overlay{background:linear-gradient(to bottom,transparent 50%,var(--bg2))}
+  .about-right{padding:60px}
+  .chef-layout{grid-template-columns:1fr;gap:60px}
+  .chef-img-frame{height:420px}
+  .menu-grid{grid-template-columns:1fr 1fr}
+  .specials-grid{grid-template-columns:1fr 1fr}
+  .gal-masonry{columns:3}
+  .events-grid{grid-template-columns:1fr 1fr}
+  .events-grid .event-card:first-child{grid-column:span 2}
+  .blog-grid{grid-template-columns:1fr 1fr}
+  .blog-card:first-child{grid-column:span 2}
+  .res-layout{grid-template-columns:1fr;gap:60px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:40px}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  section{padding:80px 40px}
+}
+@media(max-width:768px){
+  nav{padding:0 20px;height:66px}
+  .nav-links,.nav-right{display:none}
+  .ham{display:flex}
+  section{padding:64px 20px}
+  .hero-slide-num{display:none}
+  .hero-bottom-bar{display:none}
+  .menu-grid{grid-template-columns:1fr}
+  .specials-grid{grid-template-columns:1fr}
+  .gal-masonry{columns:2}
+  .events-grid{grid-template-columns:1fr}
+  .events-grid .event-card:first-child{grid-column:span 1}
+  .blog-grid{grid-template-columns:1fr}
+  .blog-card:first-child{grid-column:span 1}
+  .chef-stats{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr}
+  footer{padding:56px 20px 32px}
+  .map-card-overlay{left:16px;top:16px}
+  .rf-row{grid-template-columns:1fr}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  .testi-header{grid-template-columns:1fr;gap:16px}
+  .testi-score-wrap{text-align:left}
+  .s-head{flex-direction:column;align-items:flex-start}
+  .about-right{padding:48px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE NAV -->
+<div class="mob-nav" id="mobNav">
+  <button class="mob-close" onclick="closeMob()">✕</button>
+  <a href="#menu" onclick="closeMob()">Menu</a>
+  <a href="#chef" onclick="closeMob()">Chef</a>
+  <a href="#specials" onclick="closeMob()">Spéciaux</a>
+  <a href="#events" onclick="closeMob()">Événements</a>
+  <a href="#reservation" onclick="closeMob()">Réservation</a>
+  <a href="#blog" onclick="closeMob()">Blog</a>
+</div>
+
+<!-- ════ NAVBAR ════ -->
+<nav id="navbar">
+  <div class="nav-logo">
+    MAISON NOURA
+    <small>Restaurant Gastronomique</small>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#chef">Notre Chef</a></li>
+    <li><a href="#specials">Spéciaux</a></li>
+    <li><a href="#gallery">Galerie</a></li>
+    <li><a href="#events">Événements</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#reservation">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()"></button>
+    <a href="#reservation" class="nav-reserve">Réserver une table</a>
+  </div>
+  <button class="ham" onclick="openMob()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ════ HERO SWIPER ════ -->
+<section id="hero">
+  <div class="swiper hero-swiper">
+    <div class="swiper-wrapper">
+
+      <!-- Slide 1 -->
+      <div class="swiper-slide">
+        <div class="hero-slide">
+          <div class="hero-slide-img" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=85')"></div>
+          <div class="hero-grad"></div>
+          <div class="hero-slide-content">
+            <div class="hero-tag">Gastronomie Raffinée</div>
+            <h1 class="hero-h1">L'art de<br>la table<br><em>élevé.</em></h1>
+            <p class="hero-p">Où chaque assiette est une œuvre, chaque moment une mémoire. Bienvenue dans l'univers de Maison Noura.</p>
+            <div class="hero-btns">
+              <a href="#reservation" class="btn-primary">Réserver une table ›</a>
+              <a href="#menu" class="btn-ghost"><div class="btn-ghost-ring">▼</div>Découvrir le menu</a>
+            </div>
+          </div>
+          <div class="hero-slide-num">
+            <div class="slide-n-cur">01</div>
+            <div class="slide-n-line"></div>
+            <div class="slide-n-tot">04</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="swiper-slide">
+        <div class="hero-slide">
+          <div class="hero-slide-img" style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920&q=85')"></div>
+          <div class="hero-grad"></div>
+          <div class="hero-slide-content">
+            <div class="hero-tag">Plats Signature</div>
+            <h1 class="hero-h1">Saveurs<br><em>authentiques</em><br>& créatives.</h1>
+            <p class="hero-p">Des ingrédients locaux, une créativité débordante. Chaque plat raconte une histoire de terroir et de passion.</p>
+            <div class="hero-btns">
+              <a href="#menu" class="btn-primary">Voir le menu ›</a>
+              <a href="#chef" class="btn-ghost"><div class="btn-ghost-ring">▼</div>Notre Chef</a>
+            </div>
+          </div>
+          <div class="hero-slide-num">
+            <div class="slide-n-cur">02</div>
+            <div class="slide-n-line"></div>
+            <div class="slide-n-tot">04</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="swiper-slide">
+        <div class="hero-slide">
+          <div class="hero-slide-img" style="background-image:url('https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=1920&q=85')"></div>
+          <div class="hero-grad"></div>
+          <div class="hero-slide-content">
+            <div class="hero-tag">Ambiance Unique</div>
+            <h1 class="hero-h1">Un cadre<br><em>intime</em><br>& élégant.</h1>
+            <p class="hero-p">Un espace pensé pour l'évasion. Lumières tamisées, décor soigné, atmosphère à part. L'endroit idéal pour vos soirées inoubliables.</p>
+            <div class="hero-btns">
+              <a href="#reservation" class="btn-primary">Privatiser la salle ›</a>
+              <a href="#gallery" class="btn-ghost"><div class="btn-ghost-ring">▼</div>La salle</a>
+            </div>
+          </div>
+          <div class="hero-slide-num">
+            <div class="slide-n-cur">03</div>
+            <div class="slide-n-line"></div>
+            <div class="slide-n-tot">04</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4 -->
+      <div class="swiper-slide">
+        <div class="hero-slide">
+          <div class="hero-slide-img" style="background-image:url('https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1920&q=85')"></div>
+          <div class="hero-grad"></div>
+          <div class="hero-slide-content">
+            <div class="hero-tag">Cave à Vins</div>
+            <h1 class="hero-h1">600 vins<br>soigneuse<br><em>ment choisis.</em></h1>
+            <p class="hero-p">Notre cave renferme les plus grandes appellations françaises et internationales, sélectionnées par notre sommelier étoilé.</p>
+            <div class="hero-btns">
+              <a href="#menu" class="btn-primary">La carte des vins ›</a>
+              <a href="#reservation" class="btn-ghost"><div class="btn-ghost-ring">▼</div>Réserver</a>
+            </div>
+          </div>
+          <div class="hero-slide-num">
+            <div class="slide-n-cur">04</div>
+            <div class="slide-n-line"></div>
+            <div class="slide-n-tot">04</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="swiper-pagination"></div>
+  </div>
+
+  <!-- Bottom info bar -->
+  <div class="hero-bottom-bar">
+    <div class="hero-info-block">
+      <div class="hero-info-label">Ouverture</div>
+      <div class="hero-info-val">Mar–Sam <span class="hl">19h–23h</span></div>
+    </div>
+    <div class="hero-info-block">
+      <div class="hero-info-label">Brunch</div>
+      <div class="hero-info-val">Sam–Dim <span class="hl">11h–15h</span></div>
+    </div>
+    <div class="hero-info-block">
+      <div class="hero-info-label">Réservations</div>
+      <div class="hero-info-val"><span class="hl">+33 1 42 00 00 00</span></div>
+    </div>
+    <div class="hero-info-block">
+      <div class="hero-info-label">Adresse</div>
+      <div class="hero-info-val">12 Rue de la Gastronomie, Paris 8e</div>
+    </div>
+    <div class="hero-info-block">
+      <div class="hero-info-label">Distinctions</div>
+      <div class="hero-info-val">⭐⭐ <span class="hl">Michelin</span> · Gault&Millau 17/20</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ RIBBON ════ -->
+<div class="ribbon">
+  <div class="ribbon-track">
+    <span class="ribbon-item">Cuisine Gastronomique</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">Fait Maison</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">Produits Locaux & Saisonniers</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">Cave à Vins Exceptionnelle</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">2 Étoiles Michelin</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">Privatisation de Salle</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">Brunch du Weekend</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">Cuisine Gastronomique</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">Fait Maison</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">Produits Locaux & Saisonniers</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">Cave à Vins Exceptionnelle</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">2 Étoiles Michelin</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">Privatisation de Salle</span><span class="ribbon-dot">✦</span>
+    <span class="ribbon-item">Brunch du Weekend</span><span class="ribbon-dot">✦</span>
+  </div>
+</div>
+
+<!-- ════ ABOUT ════ -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-visual">
+      <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&q=80" alt="Salle du restaurant">
+      <div class="about-visual-overlay"></div>
+      <div class="about-year-badge">
+        <span>2008</span>
+        <span>Fondé en</span>
+      </div>
+    </div>
+    <div class="about-right">
+      <div class="s-eyebrow reveal">Notre histoire</div>
+      <h2 class="s-title reveal d1">Une <em>passion</em><br>née en cuisine.</h2>
+      <blockquote class="about-quote reveal d2">
+        « La gastronomie est l'art de se souvenir d'un repas longtemps après qu'il soit terminé. »
+      </blockquote>
+      <p class="about-desc reveal d3">Fondée en 2008 par le chef Noura Amrani, Maison Noura est née d'un rêve simple : offrir une cuisine d'exception ancrée dans le terroir, sublimée par la créativité. Depuis 15 ans, nous réinventons la gastronomie française à travers le prisme de traditions familiales méditerranéennes.</p>
+      <p class="about-desc reveal d3">Chaque plat est une invitation au voyage, chaque soir une célébration du goût. Deux étoiles Michelin, des produits sourcés auprès de producteurs locaux, et une équipe passionnée au service de votre plaisir.</p>
+      <div class="about-awards reveal d4">
+        <div class="award-badge">
+          <div class="award-icon">⭐</div>
+          <div class="award-text">
+            <strong>2 Étoiles Michelin</strong>
+            <span>Guide 2024</span>
+          </div>
+        </div>
+        <div class="award-badge">
+          <div class="award-icon">🏆</div>
+          <div class="award-text">
+            <strong>17/20 Gault&Millau</strong>
+            <span>2024</span>
+          </div>
+        </div>
+        <div class="award-badge">
+          <div class="award-icon">🌿</div>
+          <div class="award-text">
+            <strong>Label Éco-responsable</strong>
+            <span>Depuis 2020</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ MENU ════ -->
+<section id="menu">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-eyebrow reveal">Notre Carte</div>
+        <h2 class="s-title reveal d1">Menu <em>gastronomique</em><br>& saisonnier</h2>
+      </div>
+      <p class="s-sub reveal d2">Chaque assiette est composée avec des produits de saison, sélectionnés chaque matin auprès de nos producteurs partenaires.</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="menu-tabs reveal d2">
+      <button class="menu-tab active" onclick="switchTab(this,'entrées')">🥗 Entrées</button>
+      <button class="menu-tab" onclick="switchTab(this,'plats')">🍖 Plats</button>
+      <button class="menu-tab" onclick="switchTab(this,'poissons')">🐟 Poissons</button>
+      <button class="menu-tab" onclick="switchTab(this,'desserts')">🍰 Desserts</button>
+      <button class="menu-tab" onclick="switchTab(this,'vins')">🍷 Vins</button>
+      <button class="menu-tab" onclick="switchTab(this,'brunch')">☕ Brunch</button>
+    </div>
+
+    <!-- ENTRÉES -->
+    <div class="menu-panel active" id="panel-entrées">
+      <div class="menu-grid reveal">
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1576402187878-974f70c890a5?w=600&q=80" alt="Foie gras">
+            <div class="menu-badge">Chef</div>
+          </div>
+          <div class="menu-card-cat">Entrée Signature</div>
+          <div class="menu-card-name">Foie Gras Poêlé aux Figues Caramélisées</div>
+          <div class="menu-card-desc">Foie gras du Périgord, compotée de figues au vieux porto, brioche toastée maison, fleur de sel de Guérande.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Gluten</span><span class="allergen">Lait</span><span class="allergen">Œufs</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>32</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80" alt="Tartare">
+            <div class="menu-badge new">Nouveau</div>
+          </div>
+          <div class="menu-card-cat">Entrée Fraîcheur</div>
+          <div class="menu-card-name">Tartare de Thon Snacké, Avocat & Wasabi</div>
+          <div class="menu-card-desc">Thon albacore, avocat cremeux, émulsion wasabi, sésame noir grillé, tuile de riz soufflé.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Poisson</span><span class="allergen">Sésame</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>28</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1608032077018-c9aad9565d29?w=600&q=80" alt="Burrata">
+            <div class="menu-badge vegan">Végétarien</div>
+          </div>
+          <div class="menu-card-cat">Entrée Végétale</div>
+          <div class="menu-card-name">Burrata Crémeuse, Tomates Anciennes & Basilic</div>
+          <div class="menu-card-desc">Burrata d'Apulie, tomates cœur de bœuf & ananas, pesto de basilic, huile d'olive Arbequina, fleur de sel.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Lait</span><span class="allergen">Fruits à coques</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>22</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLATS -->
+    <div class="menu-panel" id="panel-plats">
+      <div class="menu-grid reveal">
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80" alt="Côte de bœuf">
+            <div class="menu-badge">Chef</div>
+          </div>
+          <div class="menu-card-cat">Plat Signature</div>
+          <div class="menu-card-name">Côte de Bœuf Wagyu Maturée 45 Jours</div>
+          <div class="menu-card-desc">Wagyu A5 maturée, jus de viande corsé, pommes dauphines croustillantes, légumes de saison rôtis, beurre maître d'hôtel.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Lait</span><span class="allergen">Gluten</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>68</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1518492104633-130d0cc84637?w=600&q=80" alt="Canard">
+          </div>
+          <div class="menu-card-cat">Plat Terroir</div>
+          <div class="menu-card-name">Magret de Canard, Cerise & Vinaigre Balsamique</div>
+          <div class="menu-card-desc">Magret des Landes, réduction cerise-balsamique, gratin dauphinois à la truffe noire, chips de betterave.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Lait</span><span class="allergen">Sulfites</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>42</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="Risotto">
+            <div class="menu-badge vegan">Végétarien</div>
+          </div>
+          <div class="menu-card-cat">Plat Végétal</div>
+          <div class="menu-card-name">Risotto Crémeux à la Truffe Blanche d'Alba</div>
+          <div class="menu-card-desc">Riz Carnaroli, truffe blanche fraîche, parmesan 36 mois, beurre noisette, copeaux de truffe en finition.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Lait</span><span class="allergen">Céleri</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>48</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POISSONS -->
+    <div class="menu-panel" id="panel-poissons">
+      <div class="menu-grid reveal">
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80" alt="Homard">
+            <div class="menu-badge">Signature</div>
+          </div>
+          <div class="menu-card-cat">Mer & Luxe</div>
+          <div class="menu-card-name">Homard Breton Rôti au Beurre Citronné</div>
+          <div class="menu-card-desc">Homard bleu de Bretagne, beurre de corail émulsionné, bisque légère, fenouil confit, caviar Osciètre.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Crustacés</span><span class="allergen">Lait</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>76</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1535140728325-a4d3707eee61?w=600&q=80" alt="Saumon">
+            <div class="menu-badge new">Nouveau</div>
+          </div>
+          <div class="menu-card-cat">Poisson Noble</div>
+          <div class="menu-card-name">Filet de Bar en Croûte de Sel, Sauce Vierge</div>
+          <div class="menu-card-desc">Bar de ligne, cuisson douce en sel gris, sauce vierge aux herbes fraîches, légumes printaniers, huile de truffe blanche.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Poisson</span><span class="allergen">Céleri</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>44</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=80" alt="Saint-Jacques">
+          </div>
+          <div class="menu-card-cat">Coquillages</div>
+          <div class="menu-card-name">Saint-Jacques Snackées, Velouté de Panais</div>
+          <div class="menu-card-desc">Saint-Jacques de la baie de Brest, velouté onctueux de panais, lard de Colonnata, noisettes torréfiées.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Mollusques</span><span class="allergen">Fruits à coques</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>52</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESSERTS -->
+    <div class="menu-panel" id="panel-desserts">
+      <div class="menu-grid reveal">
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80" alt="Fondant">
+            <div class="menu-badge">Incontournable</div>
+          </div>
+          <div class="menu-card-cat">Dessert Chaud</div>
+          <div class="menu-card-name">Fondant Chocolat Noir 72%, Glace Vanille Bourbon</div>
+          <div class="menu-card-desc">Fondant coulant Valrhona 72%, glace vanille de Madagascar turbinée minute, éclats de cacao torréfié, feuille d'or.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Gluten</span><span class="allergen">Œufs</span><span class="allergen">Lait</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>18</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&q=80" alt="Tarte citron">
+            <div class="menu-badge new">Saison</div>
+          </div>
+          <div class="menu-card-cat">Dessert Fruité</div>
+          <div class="menu-card-name">Tarte au Citron Meringuée & Zestes Confits</div>
+          <div class="menu-card-desc">Pâte sablée bretonne, crème citron de Menton, meringue italienne flambée, zestes confits, sorbet yuzu.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Gluten</span><span class="allergen">Œufs</span><span class="allergen">Lait</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>16</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?w=600&q=80" alt="Crème brûlée">
+          </div>
+          <div class="menu-card-cat">Dessert Classique</div>
+          <div class="menu-card-name">Crème Brûlée à la Lavande & Miel de Thym</div>
+          <div class="menu-card-desc">Crème vanille infusée à la lavande de Provence, caramel croustillant au miel de thym, fraises des bois marinées.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Œufs</span><span class="allergen">Lait</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>14</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VINS -->
+    <div class="menu-panel" id="panel-vins">
+      <div class="menu-grid reveal">
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600&q=80" alt="Vin rouge">
+            <div class="menu-badge">Coup de cœur</div>
+          </div>
+          <div class="menu-card-cat">Vin Rouge · Bordeaux</div>
+          <div class="menu-card-name">Château Pétrus 2018, Pomerol</div>
+          <div class="menu-card-desc">Nez intense de fruits noirs, violette et truffe. Palais soyeux, tannins fondus, finale d'une persistance exceptionnelle.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Sulfites</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>420</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Champagne">
+            <div class="menu-badge new">Arrivage</div>
+          </div>
+          <div class="menu-card-cat">Champagne · Prestige</div>
+          <div class="menu-card-name">Dom Pérignon 2013, Blanc de Blancs</div>
+          <div class="menu-card-desc">Bulles fines et persistantes, fraîcheur citronnée, amandes grillées, pêche blanche. La quintessence du Champagne.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Sulfites</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>280</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=600&q=80" alt="Vin blanc">
+          </div>
+          <div class="menu-card-cat">Vin Blanc · Bourgogne</div>
+          <div class="menu-card-name">Meursault Premier Cru Perrières 2020</div>
+          <div class="menu-card-desc">Robe or pâle brillante, nez de noisette et miel d'acacia. Bouche ample et minérale, longueur remarquable.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Sulfites</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>145</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRUNCH -->
+    <div class="menu-panel" id="panel-brunch">
+      <div class="menu-grid reveal">
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=600&q=80" alt="Brunch complet">
+            <div class="menu-badge">Best-seller</div>
+          </div>
+          <div class="menu-card-cat">Brunch Complet</div>
+          <div class="menu-card-name">Le Grand Brunch Maison Noura</div>
+          <div class="menu-card-desc">Œufs Bénédicte truffés, saumon fumé maison, viennoiseries du four, jus de fruits pressés, café ou thé, plateau de fromages affinés.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Gluten</span><span class="allergen">Œufs</span><span class="allergen">Lait</span><span class="allergen">Poisson</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>58</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=600&q=80" alt="Pancakes">
+            <div class="menu-badge new">Nouveau</div>
+          </div>
+          <div class="menu-card-cat">Brunch Sucré</div>
+          <div class="menu-card-name">Pancakes Moelleux, Coulis de Fruits Rouges</div>
+          <div class="menu-card-desc">Pancakes épais à la ricotta, coulis de fraises & framboises, chantilly légère, sirop d'érable du Québec, éclats de pistache.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Gluten</span><span class="allergen">Œufs</span><span class="allergen">Lait</span><span class="allergen">Fruits à coques</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>22</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-card-img">
+            <img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=600&q=80" alt="Brunch végé">
+            <div class="menu-badge vegan">Végétarien</div>
+          </div>
+          <div class="menu-card-cat">Brunch Veggie</div>
+          <div class="menu-card-name">Bowl Açaï, Granola Maison & Fruits Frais</div>
+          <div class="menu-card-desc">Purée d'açaï, granola artisanal au miel, fruits frais de saison, graines de chia, lait de coco, miel de fleurs de lavande.</div>
+          <div class="menu-card-allergens">
+            <span class="allergen">Fruits à coques</span><span class="allergen">Sésame</span>
+          </div>
+          <div class="menu-card-footer">
+            <div class="menu-price"><sup>€</sup>18</div>
+            <button class="menu-add">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════ CHEF ════ -->
+<section id="chef">
+  <div class="container">
+    <div class="chef-layout">
+      <div class="chef-img-wrap reveal-l">
+        <div class="chef-deco-num">N</div>
+        <div class="chef-img-frame">
+          <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=800&q=80" alt="Chef Noura Amrani">
+        </div>
+        <div class="chef-sig">
+          <div class="chef-sig-name">Noura Amrani</div>
+          <div class="chef-sig-title">Chef Étoilée · Fondatrice</div>
+          <div class="chef-stars">⭐⭐ Michelin</div>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div class="s-eyebrow">Notre Chef</div>
+        <h2 class="s-title">La vision<br>d'une <em>artiste</em><br>de la cuisine.</h2>
+        <blockquote class="chef-philosophy">
+          « Cuisiner, c'est donner de l'amour sous une autre forme. Chaque plat que je crée porte l'empreinte d'une émotion, d'un souvenir, d'un territoire. »
+        </blockquote>
+        <p class="chef-bio">Formée chez Alain Ducasse et Pierre Gagnaire, Noura Amrani a développé une cuisine fusion franco-méditerranéenne à nulle autre pareille. Ses racines algériennes, ses années d'apprentissage en France et ses voyages culinaires à travers 40 pays ont nourri une sensibilité gastronomique unique au monde.</p>
+        <p class="chef-bio">En 2014, elle devient la première femme à obtenir deux étoiles Michelin en France. Aujourd'hui, son restaurant est classé parmi les 50 meilleurs au monde.</p>
+        <div class="chef-stats">
+          <div class="chef-stat">
+            <div class="chef-stat-n">40+</div>
+            <div class="chef-stat-l">Pays visités</div>
+          </div>
+          <div class="chef-stat">
+            <div class="chef-stat-n">⭐⭐</div>
+            <div class="chef-stat-l">Michelin</div>
+          </div>
+          <div class="chef-stat">
+            <div class="chef-stat-n">15</div>
+            <div class="chef-stat-l">Ans d'expérience</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ SPECIALS ════ -->
+<section id="specials">
+  <div class="specials-bg"></div>
+  <div class="specials-overlay"></div>
+  <div class="specials-content">
+    <div class="s-eyebrow" style="color:var(--ember)">Cette semaine</div>
+    <h2 class="s-title" style="color:#fff">Plats <em>du moment</em><br>& suggestions du chef</h2>
+    <div class="specials-grid">
+      <div class="special-card">
+        <div class="special-img">
+          <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500&q=80" alt="Pizza">
+        </div>
+        <div class="special-day">Lundi & Mardi</div>
+        <div class="special-name">Pasta Fraîche à la Truffe Noire</div>
+        <div class="special-desc">Tagliatelles faites maison, truffe noire du Périgord, parmesan 36 mois, beurre noisette, herbes fraîches.</div>
+        <div class="special-price">38 €</div>
+      </div>
+      <div class="special-card">
+        <div class="special-img">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=80" alt="Plat de saison">
+        </div>
+        <div class="special-day">Mercredi & Jeudi</div>
+        <div class="special-name">Agneau de Lait Rôti aux Herbes de Provence</div>
+        <div class="special-desc">Gigot d'agneau de lait confis 6h, jus corsé au romarin, gratin de légumes du soleil, condiment olive.</div>
+        <div class="special-price">54 €</div>
+      </div>
+      <div class="special-card">
+        <div class="special-img">
+          <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=500&q=80" alt="Accord mets vins">
+        </div>
+        <div class="special-day">Vendredi & Samedi</div>
+        <div class="special-name">Menu Dégustation 7 Services + Accord Vins</div>
+        <div class="special-desc">7 plats signature, 7 verres sélectionnés par notre sommelier. Une expérience gustative complète.</div>
+        <div class="special-price">180 € / pers.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ GALLERY ════ -->
+<section id="gallery">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-eyebrow reveal">Notre univers</div>
+        <h2 class="s-title reveal d1">Le restaurant<br>en <em>images</em></h2>
+      </div>
+      <a href="#" class="link-all reveal d3" style="align-self:flex-end">Voir tout</a>
+    </div>
+    <div class="gal-masonry reveal d2">
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=80" alt="g1"><div class="gal-lens"><div class="gal-lens-icon">🔍</div></div></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=80" alt="g2"><div class="gal-lens"><div class="gal-lens-icon">🔍</div></div></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&q=80" alt="g3"><div class="gal-lens"><div class="gal-lens-icon">🔍</div></div></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=500&q=80" alt="g4"><div class="gal-lens"><div class="gal-lens-icon">🔍</div></div></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=500&q=80" alt="g5"><div class="gal-lens"><div class="gal-lens-icon">🔍</div></div></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=500&q=80" alt="g6"><div class="gal-lens"><div class="gal-lens-icon">🔍</div></div></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1548940740-204726a19be3?w=500&q=80" alt="g7"><div class="gal-lens"><div class="gal-lens-icon">🔍</div></div></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1543352634-99a5d50ae78e?w=500&q=80" alt="g8"><div class="gal-lens"><div class="gal-lens-icon">🔍</div></div></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=500&q=80" alt="g9"><div class="gal-lens"><div class="gal-lens-icon">🔍</div></div></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=500&q=80" alt="g10"><div class="gal-lens"><div class="gal-lens-icon">🔍</div></div></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&q=80" alt="g11"><div class="gal-lens"><div class="gal-lens-icon">🔍</div></div></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=500&q=80" alt="g12"><div class="gal-lens"><div class="gal-lens-icon">🔍</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ TESTIMONIALS ════ -->
+<section id="testimonials">
+  <div class="container">
+    <div class="testi-header reveal">
+      <div>
+        <div class="s-eyebrow">Avis clients</div>
+        <h2 class="s-title">Ce que disent<br>nos <em>convives</em></h2>
+      </div>
+      <div class="testi-score-wrap">
+        <div class="testi-big-score">4.9</div>
+        <div class="testi-score-stars">★★★★★</div>
+        <div class="testi-score-label">Sur 2 140 avis vérifiés</div>
+      </div>
+    </div>
+    <div class="testi-swiper-wrap reveal d2">
+      <div class="swiper testi-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <div class="testi-card">
+              <div class="testi-card-stars">★★★★★</div>
+              <p class="testi-card-text">Une expérience gastronomique absolument sublime. Le foie gras poêlé aux figues était d'une perfection rare. Le service, irréprochable. Maison Noura est sans conteste la meilleure adresse parisienne que j'ai eu le bonheur de découvrir.</p>
+              <div class="testi-card-author">
+                <img class="testi-ava" src="https://i.pravatar.cc/100?img=32" alt="Marie">
+                <div>
+                  <div class="testi-name">Marie-Claire Fontaine</div>
+                  <div class="testi-date">Novembre 2024</div>
+                </div>
+                <div class="testi-platform">Google ★</div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="testi-card">
+              <div class="testi-card-stars">★★★★★</div>
+              <p class="testi-card-text">Nous avons fêté notre anniversaire de mariage ici. La table d'hôte, les lumières tamisées, le menu dégustation... chaque détail était pensé. Le chef est venu nous saluer en salle — un geste qui m'a profondément touché. Magique.</p>
+              <div class="testi-card-author">
+                <img class="testi-ava" src="https://i.pravatar.cc/100?img=17" alt="Pierre">
+                <div>
+                  <div class="testi-name">Pierre & Sophie Renaud</div>
+                  <div class="testi-date">Octobre 2024</div>
+                </div>
+                <div class="testi-platform">TripAdvisor ★</div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="testi-card">
+              <div class="testi-card-stars">★★★★★</div>
+              <p class="testi-card-text">En tant que critique gastronomique, j'ai visité des centaines de restaurants. Maison Noura se distingue par une régularité et une créativité exceptionnelles. Le homard breton est un chef-d'œuvre. Mention spéciale à la carte des vins, d'une richesse inouïe.</p>
+              <div class="testi-card-author">
+                <img class="testi-ava" src="https://i.pravatar.cc/100?img=56" alt="Luc">
+                <div>
+                  <div class="testi-name">Jean-Luc Morel</div>
+                  <div class="testi-date">Critique — Le Figaro</div>
+                </div>
+                <div class="testi-platform">Presse ★</div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="testi-card">
+              <div class="testi-card-stars">★★★★★</div>
+              <p class="testi-card-text">Le brunch du dimanche est un rituel pour notre famille depuis 2 ans. Les pancakes, les œufs bénédicte truffés, les viennoiseries... Mes enfants adorent, et la qualité ne faiblit jamais. Une adresse qu'on recommande à tous nos proches sans exception.</p>
+              <div class="testi-card-author">
+                <img class="testi-ava" src="https://i.pravatar.cc/100?img=47" alt="Isabelle">
+                <div>
+                  <div class="testi-name">Isabelle Carpentier</div>
+                  <div class="testi-date">Septembre 2024</div>
+                </div>
+                <div class="testi-platform">Google ★</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-pagination" style="bottom:-40px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ STATS ════ -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat-cell reveal"><div class="stat-n" data-target="15">0</div><div class="stat-l">Années d'excellence</div></div>
+    <div class="stat-cell reveal d1"><div class="stat-n" data-target="600">0</div><div class="stat-l">Références en cave</div></div>
+    <div class="stat-cell reveal d2"><div class="stat-n" data-target="98">0</div><div class="stat-l">% de satisfaction</div></div>
+    <div class="stat-cell reveal d3"><div class="stat-n" data-target="2140">0</div><div class="stat-l">Avis 5 étoiles</div></div>
+  </div>
+</div>
+
+<!-- ════ EVENTS ════ -->
+<section id="events">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-eyebrow reveal">Agenda</div>
+        <h2 class="s-title reveal d1"><em>Événements</em><br>& soirées thématiques</h2>
+      </div>
+      <a href="#" class="link-all reveal d3" style="align-self:flex-end">Tous les événements</a>
+    </div>
+    <div class="events-grid reveal d2">
+      <div class="event-card">
+        <div class="event-img tall">
+          <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=700&q=80" alt="Soirée jazz">
+          <div class="event-tag">Ce soir</div>
+        </div>
+        <div class="event-body">
+          <div class="event-date">Vendredi 31 Jan · 20h00</div>
+          <div class="event-title">Soirée Jazz & Gastronomie</div>
+          <p class="event-desc">Un quartet de jazz live pendant le dîner, un menu 5 services spécialement créé pour l'occasion. Une soirée d'exception à vivre en duo ou entre amis.</p>
+          <div class="event-meta">
+            <div class="event-price">95 € / pers.</div>
+            <div class="event-book">Réserver</div>
+          </div>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-img medium">
+          <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=80" alt="Saint-Valentin">
+          <div class="event-tag">Saint-Valentin</div>
+        </div>
+        <div class="event-body">
+          <div class="event-date">Vendredi 14 Fév · 19h30</div>
+          <div class="event-title">Dîner Saint-Valentin — Table des Amoureux</div>
+          <p class="event-desc">Menu romantique 6 services, champagne d'accueil, rose offerte, table privée avec vue.</p>
+          <div class="event-meta">
+            <div class="event-price">165 € / couple</div>
+            <div class="event-book">Réserver</div>
+          </div>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-img medium">
+          <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600&q=80" alt="Masterclass">
+          <div class="event-tag">Masterclass</div>
+        </div>
+        <div class="event-body">
+          <div class="event-date">Samedi 8 Mar · 10h00</div>
+          <div class="event-title">Masterclass Pâtisserie avec le Chef Noura</div>
+          <p class="event-desc">Apprenez les secrets de nos desserts signature en 3h de cours intensif. Tablier, recettes et dégustation inclus.</p>
+          <div class="event-meta">
+            <div class="event-price">120 € / pers.</div>
+            <div class="event-book">S'inscrire</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ RESERVATION ════ -->
+<section id="reservation">
+  <div class="container">
+    <div class="res-layout">
+      <div class="reveal-l">
+        <div class="s-eyebrow">Réservation</div>
+        <h3 class="res-info"><h3 style="font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:var(--text);letter-spacing:-.5px;margin-bottom:18px;line-height:1.1">Réservez votre<br><em style="color:var(--ember);font-style:italic">table</em> dès maintenant.</h3></h3>
+        <p style="font-size:14px;color:var(--text2);line-height:2;font-weight:300;margin-bottom:32px" class="reveal-l d1">Notre salle accueille jusqu'à 48 couverts dans une ambiance intimiste. Pour les groupes de plus de 8 personnes ou la privatisation, contactez-nous directement.</p>
+        <div class="res-contact-items">
+          <div class="res-c-item">
+            <div class="res-c-icon">📞</div>
+            <div>
+              <div class="res-c-label">Téléphone</div>
+              <div class="res-c-val">+33 1 42 00 00 00</div>
+            </div>
+          </div>
+          <div class="res-c-item">
+            <div class="res-c-icon">✉️</div>
+            <div>
+              <div class="res-c-label">Email</div>
+              <div class="res-c-val">reservation@maisonnoura.fr</div>
+            </div>
+          </div>
+          <div class="res-c-item">
+            <div class="res-c-icon">📍</div>
+            <div>
+              <div class="res-c-label">Adresse</div>
+              <div class="res-c-val">12 Rue de la Gastronomie, 75008 Paris</div>
+            </div>
+          </div>
+        </div>
+        <div class="res-hours reveal-l d2">
+          <div class="res-hour-block">
+            <div class="res-hour-day">Mardi – Jeudi</div>
+            <div class="res-hour-time">19h00 – 22h30</div>
+          </div>
+          <div class="res-hour-block">
+            <div class="res-hour-day">Vendredi – Samedi</div>
+            <div class="res-hour-time">19h00 – 23h00</div>
+          </div>
+          <div class="res-hour-block">
+            <div class="res-hour-day">Brunch Sam – Dim</div>
+            <div class="res-hour-time">11h00 – 15h00</div>
+          </div>
+          <div class="res-hour-block">
+            <div class="res-hour-day">Lundi</div>
+            <div class="res-hour-time" style="color:var(--ember)">Fermé</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal-r">
+        <div class="res-form-wrap">
+          <div class="res-form-title">Demande de réservation</div>
+          <form onsubmit="return sendRes(event)">
+            <div class="rf-row">
+              <div class="rf-group">
+                <label>Prénom *</label>
+                <input type="text" placeholder="Jean" required>
+              </div>
+              <div class="rf-group">
+                <label>Nom *</label>
+                <input type="text" placeholder="Martin" required>
+              </div>
+            </div>
+            <div class="rf-row" style="margin-bottom:14px">
+              <div class="rf-group">
+                <label>Email *</label>
+                <input type="email" placeholder="jean@mail.fr" required>
+              </div>
+              <div class="rf-group">
+                <label>Téléphone</label>
+                <input type="tel" placeholder="+33 6 00 00 00 00">
+              </div>
+            </div>
+            <div class="rf-row" style="margin-bottom:14px">
+              <div class="rf-group">
+                <label>Date souhaitée *</label>
+                <input type="date" required>
+              </div>
+              <div class="rf-group">
+                <label>Heure</label>
+                <select>
+                  <option>19h00</option>
+                  <option>19h30</option>
+                  <option>20h00</option>
+                  <option>20h30</option>
+                  <option>21h00</option>
+                  <option>21h30</option>
+                </select>
+              </div>
+            </div>
+            <div class="rf-row" style="margin-bottom:14px">
+              <div class="rf-group">
+                <label>Nombre de couverts *</label>
+                <select required>
+                  <option>1 personne</option>
+                  <option>2 personnes</option>
+                  <option>3 personnes</option>
+                  <option>4 personnes</option>
+                  <option>5 – 8 personnes</option>
+                  <option>Plus de 8 (privatisation)</option>
+                </select>
+              </div>
+              <div class="rf-group">
+                <label>Occasion</label>
+                <select>
+                  <option>Dîner classique</option>
+                  <option>Anniversaire</option>
+                  <option>Romantique</option>
+                  <option>Repas d'affaires</option>
+                  <option>Brunch weekend</option>
+                  <option>Privatisation</option>
+                </select>
+              </div>
+            </div>
+            <div class="rf-group" style="margin-bottom:0">
+              <label>Demandes particulières</label>
+              <textarea rows="3" placeholder="Allergies, régimes spéciaux, décoration, surprises..."></textarea>
+            </div>
+            <button type="submit" class="rf-submit">Confirmer ma réservation ✦</button>
+            <div class="rf-success" id="resOk">✓ Votre demande est bien enregistrée ! Nous vous confirmons sous 2h.</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ BLOG ════ -->
+<section id="blog">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-eyebrow reveal">Le magazine</div>
+        <h2 class="s-title reveal d1">Histoires de<br><em>saveurs</em> & de tables</h2>
+      </div>
+      <a href="#" class="link-all reveal d3" style="align-self:flex-end">Tous les articles</a>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card reveal">
+        <div class="blog-img-wrap">
+          <img class="big-h" src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&q=80" alt="blog1">
+          <div class="blog-cat">En cuisine</div>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta-row"><span>15 Jan 2025</span><div class="blog-meta-sep"></div><span>8 min</span></div>
+          <div class="blog-title">Les Secrets de la Truffe Noire du Périgord : Sélection, Conservation & Recettes</div>
+          <p class="blog-excerpt">La truffe noire, diamant de la gastronomie. Découvrez comment le chef Noura sélectionne ses truffes chaque matin sur les marchés...</p>
+          <a href="#" class="blog-readmore">Lire l'article →</a>
+        </div>
+      </div>
+      <div class="blog-card reveal d1">
+        <div class="blog-img-wrap">
+          <img class="sm-h" src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600&q=80" alt="blog2">
+          <div class="blog-cat">Oenologie</div>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta-row"><span>3 Fév 2025</span><div class="blog-meta-sep"></div><span>5 min</span></div>
+          <div class="blog-title">Comment Accorder Vins & Fromages comme un Sommelier</div>
+          <a href="#" class="blog-readmore">Lire →</a>
+        </div>
+      </div>
+      <div class="blog-card reveal d2">
+        <div class="blog-img-wrap">
+          <img class="sm-h" src="https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=600&q=80" alt="blog3">
+          <div class="blog-cat">Culture Food</div>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta-row"><span>18 Fév 2025</span><div class="blog-meta-sep"></div><span>6 min</span></div>
+          <div class="blog-title">Le Umami, 5ème Saveur : Tout Comprendre pour Cuisiner Mieux</div>
+          <a href="#" class="blog-readmore">Lire →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ MAP ════ -->
+<div id="map-sec">
+  <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=2.285%2C48.868%2C2.345%2C48.888&layer=mapnik&marker=48.874%2C2.310" loading="lazy"></iframe>
+  <div class="map-card-overlay">
+    <div class="map-card-logo">MAISON NOURA</div>
+    <div class="map-card-addr">12 Rue de la Gastronomie<br>75008 Paris · Métro Madeleine</div>
+    <div class="map-open-badge"><div class="open-dot"></div> Ouvert ce soir</div>
+  </div>
+</div>
+
+<!-- ════ FOOTER ════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-logo">Maison Noura</div>
+        <span class="footer-brand-tag">Restaurant Gastronomique · Paris 8e</span>
+        <p class="footer-brand-desc">Où la gastronomie rencontre l'émotion. Une adresse parisienne d'exception depuis 2008.</p>
+        <div class="footer-socials">
+          <a href="#" class="f-soc">📘</a>
+          <a href="#" class="f-soc">📸</a>
+          <a href="#" class="f-soc">▶</a>
+          <a href="#" class="f-soc">📌</a>
+        </div>
+      </div>
+      <div class="f-col">
+        <h5>Navigation</h5>
+        <ul>
+          <li><a href="#menu">Notre Carte</a></li>
+          <li><a href="#chef">Notre Chef</a></li>
+          <li><a href="#specials">Plats du Jour</a></li>
+          <li><a href="#gallery">Galerie</a></li>
+          <li><a href="#events">Événements</a></li>
+          <li><a href="#blog">Magazine</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Infos Pratiques</h5>
+        <ul>
+          <li><a href="#">Réservation en ligne</a></li>
+          <li><a href="#">Privatisation de salle</a></li>
+          <li><a href="#">Carte des vins PDF</a></li>
+          <li><a href="#">Menu dégustation</a></li>
+          <li><a href="#">Bons cadeaux</a></li>
+          <li><a href="#">Presse & Médias</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Newsletter</h5>
+        <p style="font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:4px">Recevez nos menus du mois, événements exclusifs et inspirations culinaires.</p>
+        <div class="f-newsletter-input">
+          <input type="email" placeholder="votre@email.fr">
+          <button>→</button>
+        </div>
+        <p style="font-size:10px;color:var(--text3);margin-top:10px;letter-spacing:1px">+6 200 abonnés gourmands</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Maison Noura — Restaurant Gastronomique Paris. Tous droits réservés.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Mentions légales</a>
+        <a href="#">Confidentialité</a>
+        <a href="#">CGV</a>
+        <a href="#">Allergènes</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<a href="#reservation" class="float-res" title="Réserver">🍽️</a>
+
+<!-- ════ SCRIPTS ════ -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+/* ── THEME ── */
+let th = localStorage.getItem('mn-theme') || 'dark';
+const tBtn = document.getElementById('themeBtn');
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  tBtn.textContent = t==='dark'?'☀️':'🌙';
+  localStorage.setItem('mn-theme',t);
+}
+function toggleTheme(){th=th==='dark'?'light':'dark';applyTheme(th)}
+applyTheme(th);
+
+/* ── NAVBAR ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>70);
+});
+
+/* ── MOBILE ── */
+function openMob(){document.getElementById('mobNav').classList.add('open')}
+function closeMob(){document.getElementById('mobNav').classList.remove('open')}
+
+/* ── HERO SWIPER ── */
+const heroSw = new Swiper('.hero-swiper',{
+  loop:true,
+  autoplay:{delay:6000,disableOnInteraction:false},
+  effect:'fade',fadeEffect:{crossFade:true},
+  speed:1400,
+  pagination:{el:'.hero-swiper .swiper-pagination',clickable:true},
+  on:{
+    slideChange:function(){
+      const n = document.querySelector('.slide-n-cur');
+      if(n) n.textContent = String(this.realIndex+1).padStart(2,'0');
+    }
+  }
+});
+
+/* ── TESTIMONIALS SWIPER ── */
+new Swiper('.testi-swiper',{
+  loop:true,
+  autoplay:{delay:5000},
+  speed:900,
+  slidesPerView:1,
+  spaceBetween:24,
+  pagination:{el:'.testi-swiper .swiper-pagination',clickable:true},
+  breakpoints:{900:{slidesPerView:2},1200:{slidesPerView:3}}
+});
+
+/* ── MENU TABS ── */
+function switchTab(btn, id){
+  document.querySelectorAll('.menu-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.menu-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel = document.getElementById('panel-'+id);
+  if(panel){panel.classList.add('active');panel.classList.remove('on');setTimeout(()=>panel.classList.add('on'),10)}
+}
+
+/* ── SCROLL REVEAL ── */
+const ro = new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');ro.unobserve(e.target)}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>ro.observe(el));
+
+/* ── COUNTERS ── */
+function animCount(el,target){
+  let v=0;const step=target/70;
+  const sym = el.dataset.sym||'';
+  const t=setInterval(()=>{
+    v=Math.min(v+step,target);
+    const disp = target>=1000?Math.round(v).toLocaleString('fr'):Math.round(v);
+    el.textContent=disp+sym;
+    if(v>=target){
+      el.textContent=(target>=1000?target.toLocaleString('fr'):target)+sym;
+      clearInterval(t);
+    }
+  },18);
+}
+const cob=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      document.querySelectorAll('.stat-n[data-target]').forEach(el=>animCount(el,+el.dataset.target));
+      cob.disconnect();
+    }
+  });
+},{threshold:.3});
+const strip=document.querySelector('.stats-strip');
+if(strip)cob.observe(strip);
+
+/* ── FORM ── */
+function sendRes(e){
+  e.preventDefault();
+  document.getElementById('resOk').style.display='block';
+  e.target.reset();
+  setTimeout(()=>document.getElementById('resOk').style.display='none',7000);
+  return false;
+}
+
+/* ── MENU ADD BUTTONS ── */
+document.querySelectorAll('.menu-add').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    this.textContent='✓';this.style.background='var(--ember)';this.style.color='#fff';
+    setTimeout(()=>{this.textContent='+';this.style.background='';this.style.color=''},1500);
+  });
+});
+
+/* ── WISHLIST (events) ── */
+document.querySelectorAll('.event-book').forEach(btn=>{
+  btn.addEventListener('click',()=>{btn.textContent='✓ Réservé';btn.style.background='var(--ember)';btn.style.color='#fff'});
+});
+</script>
+</body>
+</html>

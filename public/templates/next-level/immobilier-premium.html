@@ -1,0 +1,3220 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumière Estate — Immobilier Premium</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+<!-- Leaflet Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root[data-theme="dark"] {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #111111;
+  --bg-card: #161616;
+  --bg-glass: rgba(255,255,255,0.04);
+  --bg-glass-hover: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.08);
+  --border-gold: rgba(196,165,100,0.3);
+  --text-primary: #f0ece4;
+  --text-secondary: #8a8478;
+  --text-muted: #4a4640;
+  --gold: #c4a564;
+  --gold-light: #e8d5a3;
+  --gold-dark: #8a6d34;
+  --white: #ffffff;
+  --shadow: 0 20px 60px rgba(0,0,0,0.6);
+  --shadow-gold: 0 0 40px rgba(196,165,100,0.15);
+  --navbar-bg: rgba(10,10,10,0.92);
+  --input-bg: rgba(255,255,255,0.05);
+}
+
+:root[data-theme="light"] {
+  --bg-primary: #faf8f5;
+  --bg-secondary: #f3f0ea;
+  --bg-card: #ffffff;
+  --bg-glass: rgba(0,0,0,0.03);
+  --bg-glass-hover: rgba(0,0,0,0.06);
+  --border: rgba(0,0,0,0.08);
+  --border-gold: rgba(160,120,50,0.25);
+  --text-primary: #1a1814;
+  --text-secondary: #6b6457;
+  --text-muted: #b0a99e;
+  --gold: #a07832;
+  --gold-light: #c8a060;
+  --gold-dark: #6b4f1a;
+  --white: #ffffff;
+  --shadow: 0 20px 60px rgba(0,0,0,0.1);
+  --shadow-gold: 0 0 40px rgba(160,120,50,0.12);
+  --navbar-bg: rgba(250,248,245,0.95);
+  --input-bg: rgba(0,0,0,0.04);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+/* ===== CURSOR ===== */
+.cursor {
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease;
+}
+.cursor-follower {
+  width: 30px; height: 30px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transition: all 0.25s ease;
+  opacity: 0.5;
+}
+
+/* ===== NAVBAR ===== */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 60px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+nav.scrolled {
+  height: 65px;
+  box-shadow: var(--shadow);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.logo-mark {
+  width: 36px; height: 36px;
+  border: 1.5px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--gold);
+  font-size: 18px;
+  font-weight: 500;
+  transform: rotate(45deg);
+  transition: transform 0.4s ease;
+}
+
+.nav-logo:hover .logo-mark { transform: rotate(135deg); }
+
+.logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+}
+
+.logo-text span { color: var(--gold); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.theme-toggle {
+  width: 44px; height: 24px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+}
+
+.toggle-knob {
+  width: 18px; height: 18px;
+  background: var(--gold);
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+}
+
+[data-theme="light"] .toggle-knob { transform: translateX(20px); }
+
+.btn-nav {
+  padding: 10px 24px;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-nav:hover {
+  background: var(--gold);
+  color: var(--bg-primary);
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.hamburger span {
+  width: 24px;
+  height: 1.5px;
+  background: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+/* ===== HERO SWIPER ===== */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+}
+
+.hero-swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-slide {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-slide img, .hero-slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.05);
+  transition: transform 6s ease;
+}
+
+.swiper-slide-active img,
+.swiper-slide-active video { transform: scale(1); }
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 60%, transparent 100%),
+              linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%);
+  z-index: 1;
+}
+
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 8%;
+  transform: translateY(-50%);
+  z-index: 2;
+  max-width: 700px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.8s ease 0.2s both;
+}
+
+.hero-badge-dot {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(48px, 6vw, 90px);
+  font-weight: 300;
+  line-height: 1.1;
+  color: #ffffff;
+  margin-bottom: 20px;
+  animation: fadeInUp 0.8s ease 0.4s both;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.hero-subtitle {
+  font-size: 16px;
+  color: rgba(255,255,255,0.7);
+  font-weight: 300;
+  line-height: 1.7;
+  margin-bottom: 40px;
+  max-width: 500px;
+  animation: fadeInUp 0.8s ease 0.6s both;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.8s ease 0.8s both;
+}
+
+.btn-primary {
+  padding: 16px 36px;
+  background: var(--gold);
+  color: #0a0a0a;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(196,165,100,0.4);
+}
+
+.btn-secondary {
+  padding: 16px 36px;
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.4);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.hero-stats {
+  position: absolute;
+  bottom: 40px;
+  right: 8%;
+  z-index: 2;
+  display: flex;
+  gap: 40px;
+  animation: fadeInUp 0.8s ease 1s both;
+}
+
+.hero-stat {
+  text-align: center;
+  color: #ffffff;
+}
+
+.hero-stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 42px;
+  font-weight: 300;
+  color: var(--gold-light);
+  line-height: 1;
+}
+
+.hero-stat-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-top: 4px;
+}
+
+.swiper-pagination {
+  position: absolute;
+  bottom: 40px !important;
+  left: 8% !important;
+  width: auto !important;
+  display: flex;
+  gap: 8px;
+}
+
+.swiper-pagination-bullet {
+  width: 30px !important;
+  height: 2px !important;
+  border-radius: 0 !important;
+  background: rgba(255,255,255,0.3) !important;
+  opacity: 1 !important;
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+  background: var(--gold) !important;
+  width: 60px !important;
+}
+
+/* ===== SEARCH SECTION ===== */
+.search-section {
+  position: relative;
+  z-index: 10;
+  padding: 0 60px;
+  margin-top: -80px;
+}
+
+.search-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  padding: 40px 50px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.search-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+.search-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.search-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-tab {
+  padding: 10px 24px;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.3s ease;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.search-tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 16px;
+  align-items: end;
+}
+
+.search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.search-field label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.search-input {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 12px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+.search-input:focus { border-color: var(--gold); }
+
+.search-input option {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.search-suggestions {
+  position: absolute;
+  top: 100%; left: 0; right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+}
+
+.search-suggestion-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s ease;
+}
+
+.search-suggestion-item:hover {
+  background: var(--bg-glass-hover);
+  color: var(--gold);
+}
+
+.search-field-wrap { position: relative; }
+.search-suggestions.visible { display: block; }
+
+.btn-search {
+  padding: 12px 32px;
+  background: var(--gold);
+  color: #0a0a0a;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-search:hover { background: var(--gold-light); }
+
+/* ===== SECTIONS COMMONS ===== */
+section { padding: 100px 60px; }
+
+.section-label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.section-label::before {
+  content: '';
+  width: 30px; height: 1px;
+  background: var(--gold);
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 4vw, 54px);
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.section-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.section-desc {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.8;
+  max-width: 500px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 60px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== STATS BAR ===== */
+.stats-bar {
+  padding: 50px 60px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 20px;
+  position: relative;
+}
+
+.stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 20%; bottom: 20%;
+  width: 1px;
+  background: var(--border);
+}
+
+.stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ===== LISTINGS ===== */
+.listings { background: var(--bg-primary); }
+
+.filter-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 20px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn.active, .filter-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--border-gold);
+}
+
+.listings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.listing-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.listing-card:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow);
+}
+
+.listing-image {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+}
+
+.listing-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.listing-card:hover .listing-image img { transform: scale(1.08); }
+
+.listing-badge {
+  position: absolute;
+  top: 16px; left: 16px;
+  padding: 5px 12px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.badge-vente { background: var(--gold); color: #0a0a0a; }
+.badge-location { background: #2a6496; color: #fff; }
+.badge-new { background: #2d6a4f; color: #fff; }
+.badge-premium {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+}
+
+.listing-fav {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 34px; height: 34px;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+.listing-fav:hover, .listing-fav.active { color: #e74c3c; border-color: #e74c3c; }
+
+.listing-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.listing-price-overlay {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: #fff;
+}
+
+.listing-body { padding: 24px; }
+
+.listing-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.listing-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.listing-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.listing-features {
+  display: flex;
+  gap: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.listing-feat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.listing-feat i { color: var(--gold); font-size: 12px; }
+
+/* ===== MAP SECTION ===== */
+.map-section { background: var(--bg-secondary); }
+
+.map-container {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 0;
+  height: 600px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+#map {
+  height: 100%;
+  z-index: 1;
+}
+
+.map-sidebar {
+  background: var(--bg-card);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 0;
+}
+
+.map-sidebar-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg-card);
+  z-index: 2;
+}
+
+.map-sidebar-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.map-sidebar-count {
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 1px;
+}
+
+.map-listing-item {
+  display: flex;
+  gap: 14px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.map-listing-item:hover { background: var(--bg-glass-hover); }
+
+.map-listing-img {
+  width: 70px; height: 60px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.map-listing-info { flex: 1; }
+
+.map-listing-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.map-listing-loc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.map-listing-price {
+  font-size: 14px;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* ===== GALLERY ===== */
+.gallery-section { background: var(--bg-primary); }
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 220px);
+  gap: 12px;
+}
+
+.gallery-item {
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+
+.gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+.gallery-item:nth-child(4) { grid-column: span 2; }
+
+.gallery-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.gallery-item:hover img { transform: scale(1.08); }
+
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.gallery-overlay-icon {
+  color: #fff;
+  font-size: 28px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.3s ease;
+}
+
+.gallery-item:hover .gallery-overlay { background: rgba(0,0,0,0.4); }
+.gallery-item:hover .gallery-overlay-icon { opacity: 1; transform: scale(1); }
+
+.gallery-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-gold);
+  cursor: pointer;
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.gallery-more:hover { background: var(--bg-glass-hover); }
+
+/* ===== LIGHTBOX ===== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 9000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox.active { display: flex; }
+
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 24px; right: 24px;
+  color: #fff;
+  font-size: 32px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.lightbox-close:hover { opacity: 1; }
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  width: 48px; height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s;
+}
+
+.lightbox-nav:hover { background: rgba(196,165,100,0.3); border-color: var(--gold); }
+.lightbox-prev { left: 24px; }
+.lightbox-next { right: 24px; }
+
+/* ===== TESTIMONIALS ===== */
+.testimonials { background: var(--bg-secondary); }
+
+.testimonials-swiper { padding-bottom: 50px !important; }
+
+.testimonial-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 40px;
+  position: relative;
+  height: auto;
+}
+
+.testimonial-card::before {
+  content: '"';
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 120px;
+  color: var(--border-gold);
+  position: absolute;
+  top: -20px; left: 24px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.testimonial-stars {
+  display: flex;
+  gap: 4px;
+  color: var(--gold);
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.testimonial-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.testimonial-avatar {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-gold);
+}
+
+.testimonial-name {
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.testimonial-role {
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+/* ===== SOCIAL GALLERY ===== */
+.social-section { background: var(--bg-primary); padding-bottom: 60px; }
+
+.social-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.social-tab {
+  padding: 12px 28px;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.social-tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.social-tab i { font-size: 16px; }
+
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+
+.social-item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+
+.social-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.social-item:hover img { transform: scale(1.12); }
+
+.social-item-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  flex-direction: column;
+}
+
+.social-item:hover .social-item-overlay { background: rgba(0,0,0,0.55); }
+
+.social-item-stat {
+  color: #fff;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.social-item:hover .social-item-stat { opacity: 1; }
+
+.social-follow {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.btn-social {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 32px;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  text-decoration: none;
+  margin: 0 8px;
+}
+
+.btn-social:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.btn-social.instagram:hover { border-color: #e1306c; color: #e1306c; }
+.btn-social.facebook:hover { border-color: #1877f2; color: #1877f2; }
+
+/* ===== CONTACT FORM ===== */
+.contact-section { background: var(--bg-secondary); }
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.contact-info-block { }
+
+.contact-info-items { margin-top: 40px; }
+
+.contact-info-item {
+  display: flex;
+  gap: 16px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.contact-icon {
+  width: 44px; height: 44px;
+  border: 1px solid var(--border-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.contact-item-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.contact-item-value {
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.contact-form {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 40px;
+  position: relative;
+}
+
+.contact-form::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+.form-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 28px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field.full { grid-column: span 2; }
+
+.form-field label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.form-input {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 12px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100%;
+  -webkit-appearance: none;
+}
+
+.form-input:focus { border-color: var(--gold); }
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-select {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 12px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+.form-select option { background: var(--bg-card); }
+
+.form-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  cursor: pointer;
+}
+
+.form-checkbox input { margin-top: 3px; accent-color: var(--gold); }
+
+.form-checkbox-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.form-submit {
+  margin-top: 4px;
+  width: 100%;
+  padding: 16px;
+  background: var(--gold);
+  color: #0a0a0a;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.form-submit:hover { background: var(--gold-light); }
+
+.form-success {
+  display: none;
+  text-align: center;
+  padding: 40px;
+}
+
+.form-success.visible { display: block; }
+.form-success i { font-size: 48px; color: var(--gold); margin-bottom: 16px; }
+.form-success h3 { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--text-primary); margin-bottom: 8px; }
+.form-success p { color: var(--text-secondary); }
+
+/* ===== AGENT SECTION ===== */
+.agents-section { background: var(--bg-primary); }
+
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.agent-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: all 0.4s ease;
+  text-align: center;
+}
+
+.agent-card:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-gold);
+}
+
+.agent-img-wrap {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+}
+
+.agent-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: grayscale(30%);
+  transition: all 0.4s ease;
+}
+
+.agent-card:hover .agent-img-wrap img { filter: grayscale(0); transform: scale(1.05); }
+
+.agent-socials {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.agent-card:hover .agent-socials { transform: translateY(0); }
+
+.agent-social-btn {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.agent-social-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+.agent-info { padding: 24px; }
+
+.agent-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.agent-role {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.agent-stats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.agent-stat { font-size: 12px; color: var(--text-secondary); }
+.agent-stat strong { display: block; font-size: 18px; font-family: 'Cormorant Garamond', serif; color: var(--gold); }
+
+/* ===== WHY US ===== */
+.why-section { background: var(--bg-secondary); }
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.why-card {
+  padding: 40px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  position: relative;
+  transition: all 0.4s ease;
+  overflow: hidden;
+}
+
+.why-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+  transform-origin: left;
+}
+
+.why-card:hover::before { transform: scaleX(1); }
+
+.why-card:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-4px);
+}
+
+.why-icon {
+  width: 56px; height: 56px;
+  border: 1px solid var(--border-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 22px;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+.why-card:hover .why-icon { background: var(--gold); color: #0a0a0a; }
+
+.why-number {
+  position: absolute;
+  top: 20px; right: 24px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 60px;
+  font-weight: 300;
+  color: var(--border);
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+.why-card:hover .why-number { color: var(--border-gold); }
+
+.why-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.why-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+/* ===== NEWSLETTER ===== */
+.newsletter {
+  padding: 80px 60px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.newsletter-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+  max-width: 900px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.newsletter-text h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 300;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.newsletter-text p { color: var(--text-secondary); font-size: 14px; }
+
+.newsletter-form {
+  display: flex;
+  gap: 0;
+  flex: 1;
+  min-width: 320px;
+}
+
+.newsletter-input {
+  flex: 1;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-right: none;
+  color: var(--text-primary);
+  padding: 14px 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+}
+
+.newsletter-input:focus { border-color: var(--gold); }
+
+.newsletter-btn {
+  padding: 14px 28px;
+  background: var(--gold);
+  color: #0a0a0a;
+  border: 1px solid var(--gold);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.newsletter-btn:hover { background: var(--gold-light); }
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  padding: 60px;
+  padding-bottom: 30px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 50px;
+}
+
+.footer-brand p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-top: 16px;
+  max-width: 280px;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.footer-social {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.footer-social:hover { border-color: var(--gold); color: var(--gold); }
+
+.footer-col h4 {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.footer-links { list-style: none; }
+
+.footer-links li { margin-bottom: 10px; }
+
+.footer-links a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-links a::before {
+  content: '';
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.2s ease;
+}
+
+.footer-links a:hover { color: var(--gold); }
+.footer-links a:hover::before { width: 12px; }
+
+.footer-bottom {
+  padding-top: 30px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-bottom p { font-size: 12px; color: var(--text-muted); }
+
+.footer-bottom-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-bottom-links a {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-bottom-links a:hover { color: var(--gold); }
+
+/* ===== MOBILE MENU ===== */
+.mobile-menu {
+  position: fixed;
+  top: 0; right: -100%;
+  width: 300px; height: 100vh;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border);
+  z-index: 1100;
+  padding: 100px 40px 40px;
+  transition: right 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.mobile-menu.open { right: 0; }
+
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1099;
+  display: none;
+  backdrop-filter: blur(4px);
+}
+
+.mobile-menu-overlay.open { display: block; }
+
+.mobile-menu a {
+  display: block;
+  font-size: 22px;
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--text-primary);
+  text-decoration: none;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+
+.mobile-menu a:hover { color: var(--gold); }
+
+.mobile-close {
+  position: absolute;
+  top: 24px; right: 24px;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+}
+
+/* ===== SCROLL TO TOP ===== */
+.scroll-top {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  width: 44px; height: 44px;
+  background: var(--gold);
+  color: #0a0a0a;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 500;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+
+.scroll-top.visible { opacity: 1; transform: translateY(0); }
+.scroll-top:hover { background: var(--gold-light); }
+
+/* ===== REVEAL ANIMATIONS ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1100px) {
+  nav { padding: 0 30px; }
+  .nav-links, .btn-nav { display: none; }
+  .hamburger { display: flex; }
+  section { padding: 70px 30px; }
+  .search-section { padding: 0 30px; }
+  .search-grid { grid-template-columns: 1fr 1fr; }
+  .listings-grid { grid-template-columns: repeat(2, 1fr); }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; }
+  .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 1; }
+  .gallery-item:nth-child(4) { grid-column: span 1; }
+  .agents-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .map-container { grid-template-columns: 1fr; height: auto; }
+  .map-container #map { height: 400px; }
+  .map-sidebar { max-height: 300px; }
+  .social-grid { grid-template-columns: repeat(3, 1fr); }
+  .hero-stats { display: none; }
+  .newsletter { padding: 60px 30px; }
+  footer { padding: 40px 30px 24px; }
+}
+
+@media (max-width: 700px) {
+  .search-grid { grid-template-columns: 1fr; }
+  .listings-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+  .why-grid { grid-template-columns: 1fr; }
+  .agents-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-field.full { grid-column: span 1; }
+  .hero-content { left: 5%; right: 5%; max-width: 100%; }
+  .hero-title { font-size: 38px; }
+  .social-grid { grid-template-columns: repeat(2, 1fr); }
+  .gallery-grid { grid-template-columns: 1fr 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  nav { padding: 0 20px; }
+  section { padding: 60px 20px; }
+  .search-section { padding: 0 20px; }
+  .search-card { padding: 28px 24px; }
+  footer { padding: 40px 20px 20px; }
+  .newsletter { padding: 40px 20px; }
+  .newsletter-form { flex-direction: column; }
+  .newsletter-input { border-right: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="logo-mark">L</div>
+    <span class="logo-text">Lumière <span>Estate</span></span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#listings">Propriétés</a></li>
+    <li><a href="#map-section">Localisation</a></li>
+    <li><a href="#gallery">Galerie</a></li>
+    <li><a href="#testimonials">Avis</a></li>
+    <li><a href="#agents">Équipe</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <div class="toggle-knob" id="toggleKnob">☀️</div>
+    </button>
+    <a href="#contact" class="btn-nav">Estimer</a>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu-overlay" id="menuOverlay"></div>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="menuClose">✕</button>
+  <a href="#listings">Propriétés</a>
+  <a href="#map-section">Localisation</a>
+  <a href="#gallery">Galerie</a>
+  <a href="#testimonials">Avis Clients</a>
+  <a href="#agents">Notre Équipe</a>
+  <a href="#contact">Contact</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="swiper hero-swiper" id="heroSwiper">
+    <div class="swiper-wrapper">
+
+      <div class="swiper-slide hero-slide">
+        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=80" alt="Villa de luxe avec piscine">
+        <div class="hero-overlay"></div>
+      </div>
+
+      <div class="swiper-slide hero-slide">
+        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80" alt="Maison moderne architecturale">
+        <div class="hero-overlay"></div>
+      </div>
+
+      <div class="swiper-slide hero-slide">
+        <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1600&q=80" alt="Appartement premium vue mer">
+        <div class="hero-overlay"></div>
+      </div>
+
+      <div class="swiper-slide hero-slide">
+        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=80" alt="Penthouse luxueux">
+        <div class="hero-overlay"></div>
+      </div>
+
+      <div class="swiper-slide hero-slide">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80" alt="Villa contemporaine">
+        <div class="hero-overlay"></div>
+      </div>
+
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Immobilier Premium — Tunisie
+    </div>
+    <h1 class="hero-title">
+      L'Excellence de<br>
+      <em>Vivre autrement</em>
+    </h1>
+    <p class="hero-subtitle">Des propriétés d'exception sélectionnées pour vous. Villas, appartements et résidences de prestige à travers la Tunisie.</p>
+    <div class="hero-cta">
+      <a href="#listings" class="btn-primary">
+        <i class="fas fa-search"></i>
+        Explorer les Biens
+      </a>
+      <a href="#contact" class="btn-secondary">
+        <i class="fas fa-phone"></i>
+        Nous Contacter
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-number">850+</div>
+      <div class="hero-stat-label">Propriétés</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-number">15</div>
+      <div class="hero-stat-label">Années d'exp.</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-number">98%</div>
+      <div class="hero-stat-label">Satisfaction</div>
+    </div>
+  </div>
+</section>
+
+<!-- SEARCH -->
+<div class="search-section" id="search">
+  <div class="search-card">
+    <div class="search-title">Rechercher une propriété</div>
+    <div class="search-tabs">
+      <button class="search-tab active" data-tab="acheter">Acheter</button>
+      <button class="search-tab" data-tab="louer">Louer</button>
+      <button class="search-tab" data-tab="estimer">Estimer</button>
+      <button class="search-tab" data-tab="neuf">Programmes Neufs</button>
+    </div>
+    <div class="search-grid">
+      <div class="search-field">
+        <label>Ville, Quartier ou Référence</label>
+        <div class="search-field-wrap">
+          <input type="text" class="search-input" id="searchLocation" placeholder="Ex: Carthage, La Marsa, Sidi Bou Saïd…" autocomplete="off">
+          <div class="search-suggestions" id="searchSuggestions"></div>
+        </div>
+      </div>
+      <div class="search-field">
+        <label>Type de bien</label>
+        <select class="search-input">
+          <option value="">Tous les types</option>
+          <option>Villa</option>
+          <option>Appartement</option>
+          <option>Penthouse</option>
+          <option>Duplex</option>
+          <option>Terrain</option>
+          <option>Bureau</option>
+          <option>Commerce</option>
+        </select>
+      </div>
+      <div class="search-field">
+        <label>Budget</label>
+        <select class="search-input">
+          <option value="">Tous les prix</option>
+          <option>< 500 000 DT</option>
+          <option>500k – 1M DT</option>
+          <option>1M – 3M DT</option>
+          <option>3M – 5M DT</option>
+          <option>> 5M DT</option>
+        </select>
+      </div>
+      <div class="search-field">
+        <label>Chambres</label>
+        <select class="search-input">
+          <option value="">Toutes</option>
+          <option>Studio</option>
+          <option>2 pièces</option>
+          <option>3 pièces</option>
+          <option>4+ pièces</option>
+          <option>5+ pièces</option>
+        </select>
+      </div>
+      <button class="btn-search">
+        <i class="fas fa-search"></i>
+        Rechercher
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-grid">
+    <div class="stat-item reveal">
+      <div class="stat-number" data-target="850">0</div>
+      <div class="stat-label">Propriétés en portefeuille</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-number" data-target="1240">0</div>
+      <div class="stat-label">Transactions réalisées</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-number" data-target="15">0</div>
+      <div class="stat-label">Années d'expérience</div>
+    </div>
+    <div class="stat-item reveal">
+      <div class="stat-number" data-target="98">0</div>
+      <div class="stat-label">% Clients satisfaits</div>
+    </div>
+  </div>
+</div>
+
+<!-- LISTINGS -->
+<section class="listings" id="listings">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Nos Propriétés</div>
+      <h2 class="section-title">Biens à Vendre<br>& à <em>Louer</em></h2>
+      <p class="section-desc">Une sélection rigoureuse des plus belles propriétés disponibles sur le marché tunisien.</p>
+    </div>
+    <a href="#" class="btn-nav" style="align-self:flex-end">Voir tout <i class="fas fa-arrow-right" style="margin-left:8px"></i></a>
+  </div>
+
+  <div class="filter-row">
+    <button class="filter-btn active" data-filter="all">Tous</button>
+    <button class="filter-btn" data-filter="vente">À Vendre</button>
+    <button class="filter-btn" data-filter="location">À Louer</button>
+    <button class="filter-btn" data-filter="villa">Villas</button>
+    <button class="filter-btn" data-filter="appartement">Appartements</button>
+    <button class="filter-btn" data-filter="premium">Premium</button>
+  </div>
+
+  <div class="listings-grid">
+
+    <!-- Card 1 -->
+    <div class="listing-card reveal" data-type="villa vente">
+      <div class="listing-image">
+        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Villa Carthage">
+        <div class="listing-badge badge-vente">À Vendre</div>
+        <div class="listing-badge badge-new" style="top:44px">Nouveau</div>
+        <div class="listing-fav"><i class="far fa-heart"></i></div>
+        <div class="listing-overlay">
+          <span class="listing-price-overlay">2 850 000 DT</span>
+        </div>
+      </div>
+      <div class="listing-body">
+        <div class="listing-location"><i class="fas fa-map-marker-alt"></i> Carthage, Tunis</div>
+        <div class="listing-name">Villa Palmeraie — Vue Mer</div>
+        <div class="listing-desc">Somptueuse villa contemporaine avec piscine à débordement, jardin paysager et vue imprenable sur la Méditerranée.</div>
+        <div class="listing-features">
+          <div class="listing-feat"><i class="fas fa-bed"></i> 6 Ch.</div>
+          <div class="listing-feat"><i class="fas fa-bath"></i> 4 SdB</div>
+          <div class="listing-feat"><i class="fas fa-ruler-combined"></i> 680 m²</div>
+          <div class="listing-feat"><i class="fas fa-car"></i> Garage</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="listing-card reveal" data-type="appartement location premium">
+      <div class="listing-image">
+        <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80" alt="Penthouse La Marsa">
+        <div class="listing-badge badge-location">À Louer</div>
+        <div class="listing-badge badge-premium" style="top:44px">Premium</div>
+        <div class="listing-fav"><i class="far fa-heart"></i></div>
+        <div class="listing-overlay">
+          <span class="listing-price-overlay">8 500 DT / mois</span>
+        </div>
+      </div>
+      <div class="listing-body">
+        <div class="listing-location"><i class="fas fa-map-marker-alt"></i> La Marsa, Tunis</div>
+        <div class="listing-name">Penthouse La Marsa Plage</div>
+        <div class="listing-desc">Penthouse d'exception au dernier étage avec terrasse panoramique de 200m², vue mer à 360°, prestations haut de gamme.</div>
+        <div class="listing-features">
+          <div class="listing-feat"><i class="fas fa-bed"></i> 4 Ch.</div>
+          <div class="listing-feat"><i class="fas fa-bath"></i> 3 SdB</div>
+          <div class="listing-feat"><i class="fas fa-ruler-combined"></i> 320 m²</div>
+          <div class="listing-feat"><i class="fas fa-swimming-pool"></i> Piscine</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="listing-card reveal" data-type="villa vente premium">
+      <div class="listing-image">
+        <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80" alt="Villa Sidi Bou Saïd">
+        <div class="listing-badge badge-vente">À Vendre</div>
+        <div class="listing-badge badge-premium" style="top:44px">Premium</div>
+        <div class="listing-fav"><i class="far fa-heart"></i></div>
+        <div class="listing-overlay">
+          <span class="listing-price-overlay">4 200 000 DT</span>
+        </div>
+      </div>
+      <div class="listing-body">
+        <div class="listing-location"><i class="fas fa-map-marker-alt"></i> Sidi Bou Saïd</div>
+        <div class="listing-name">Résidence Les Jasmins</div>
+        <div class="listing-desc">Villa d'architecte dans le village mythique de Sidi Bou Saïd, alliant authenticité tunisienne et luxe contemporain.</div>
+        <div class="listing-features">
+          <div class="listing-feat"><i class="fas fa-bed"></i> 7 Ch.</div>
+          <div class="listing-feat"><i class="fas fa-bath"></i> 5 SdB</div>
+          <div class="listing-feat"><i class="fas fa-ruler-combined"></i> 850 m²</div>
+          <div class="listing-feat"><i class="fas fa-tree"></i> Jardin</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="listing-card reveal" data-type="appartement location">
+      <div class="listing-image">
+        <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80" alt="Appartement Les Berges">
+        <div class="listing-badge badge-location">À Louer</div>
+        <div class="listing-fav"><i class="far fa-heart"></i></div>
+        <div class="listing-overlay">
+          <span class="listing-price-overlay">3 800 DT / mois</span>
+        </div>
+      </div>
+      <div class="listing-body">
+        <div class="listing-location"><i class="fas fa-map-marker-alt"></i> Les Berges du Lac, Tunis</div>
+        <div class="listing-name">Appartement Grand Standing</div>
+        <div class="listing-desc">Bel appartement meublé avec vue lac, sécurité 24h, parking privé et accès piscine de la résidence.</div>
+        <div class="listing-features">
+          <div class="listing-feat"><i class="fas fa-bed"></i> 3 Ch.</div>
+          <div class="listing-feat"><i class="fas fa-bath"></i> 2 SdB</div>
+          <div class="listing-feat"><i class="fas fa-ruler-combined"></i> 180 m²</div>
+          <div class="listing-feat"><i class="fas fa-lock"></i> Sécurisé</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="listing-card reveal" data-type="villa vente">
+      <div class="listing-image">
+        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80" alt="Villa Gammarth">
+        <div class="listing-badge badge-vente">À Vendre</div>
+        <div class="listing-fav"><i class="far fa-heart"></i></div>
+        <div class="listing-overlay">
+          <span class="listing-price-overlay">1 650 000 DT</span>
+        </div>
+      </div>
+      <div class="listing-body">
+        <div class="listing-location"><i class="fas fa-map-marker-alt"></i> Gammarth, Tunis</div>
+        <div class="listing-name">Villa Moderne Gammarth</div>
+        <div class="listing-desc">Magnifique villa moderne sur 3 niveaux, proche plage, avec piscine chauffée, domotique intégrée.</div>
+        <div class="listing-features">
+          <div class="listing-feat"><i class="fas fa-bed"></i> 5 Ch.</div>
+          <div class="listing-feat"><i class="fas fa-bath"></i> 3 SdB</div>
+          <div class="listing-feat"><i class="fas fa-ruler-combined"></i> 480 m²</div>
+          <div class="listing-feat"><i class="fas fa-wifi"></i> Domotique</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="listing-card reveal" data-type="appartement vente premium">
+      <div class="listing-image">
+        <img src="https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=800&q=80" alt="Duplex Ennasr">
+        <div class="listing-badge badge-vente">À Vendre</div>
+        <div class="listing-badge badge-new" style="top:44px">Exclusif</div>
+        <div class="listing-fav"><i class="far fa-heart"></i></div>
+        <div class="listing-overlay">
+          <span class="listing-price-overlay">980 000 DT</span>
+        </div>
+      </div>
+      <div class="listing-body">
+        <div class="listing-location"><i class="fas fa-map-marker-alt"></i> Ennasr, Ariana</div>
+        <div class="listing-name">Duplex Luxe Ennasr II</div>
+        <div class="listing-desc">Superbe duplex en exclusivité, finitions de luxe, grande terrasse et cave à vins. Résidence fermée et sécurisée.</div>
+        <div class="listing-features">
+          <div class="listing-feat"><i class="fas fa-bed"></i> 4 Ch.</div>
+          <div class="listing-feat"><i class="fas fa-bath"></i> 3 SdB</div>
+          <div class="listing-feat"><i class="fas fa-ruler-combined"></i> 260 m²</div>
+          <div class="listing-feat"><i class="fas fa-star"></i> Prestige</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MAP SECTION -->
+<section class="map-section" id="map-section">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Localisation</div>
+      <h2 class="section-title">Nos Biens sur<br>la <em>Carte</em></h2>
+      <p class="section-desc">Retrouvez l'ensemble de nos propriétés disponibles dans toute la Tunisie grâce à notre carte interactive.</p>
+    </div>
+  </div>
+
+  <div class="map-container reveal">
+    <div id="map"></div>
+    <div class="map-sidebar">
+      <div class="map-sidebar-header">
+        <div class="map-sidebar-title">Propriétés à proximité</div>
+        <div class="map-sidebar-count">6 biens disponibles</div>
+      </div>
+
+      <div class="map-listing-item">
+        <img class="map-listing-img" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=200&q=70" alt="">
+        <div class="map-listing-info">
+          <div class="map-listing-name">Villa Palmeraie</div>
+          <div class="map-listing-loc"><i class="fas fa-map-marker-alt"></i> Carthage</div>
+          <div class="map-listing-price">2 850 000 DT</div>
+        </div>
+      </div>
+
+      <div class="map-listing-item">
+        <img class="map-listing-img" src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=200&q=70" alt="">
+        <div class="map-listing-info">
+          <div class="map-listing-name">Penthouse La Marsa</div>
+          <div class="map-listing-loc"><i class="fas fa-map-marker-alt"></i> La Marsa</div>
+          <div class="map-listing-price">8 500 DT/mois</div>
+        </div>
+      </div>
+
+      <div class="map-listing-item">
+        <img class="map-listing-img" src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=200&q=70" alt="">
+        <div class="map-listing-info">
+          <div class="map-listing-name">Résidence Les Jasmins</div>
+          <div class="map-listing-loc"><i class="fas fa-map-marker-alt"></i> Sidi Bou Saïd</div>
+          <div class="map-listing-price">4 200 000 DT</div>
+        </div>
+      </div>
+
+      <div class="map-listing-item">
+        <img class="map-listing-img" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=200&q=70" alt="">
+        <div class="map-listing-info">
+          <div class="map-listing-name">App. Grand Standing</div>
+          <div class="map-listing-loc"><i class="fas fa-map-marker-alt"></i> Lac, Tunis</div>
+          <div class="map-listing-price">3 800 DT/mois</div>
+        </div>
+      </div>
+
+      <div class="map-listing-item">
+        <img class="map-listing-img" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200&q=70" alt="">
+        <div class="map-listing-info">
+          <div class="map-listing-name">Villa Moderne Gammarth</div>
+          <div class="map-listing-loc"><i class="fas fa-map-marker-alt"></i> Gammarth</div>
+          <div class="map-listing-price">1 650 000 DT</div>
+        </div>
+      </div>
+
+      <div class="map-listing-item">
+        <img class="map-listing-img" src="https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=200&q=70" alt="">
+        <div class="map-listing-info">
+          <div class="map-listing-name">Duplex Luxe Ennasr</div>
+          <div class="map-listing-loc"><i class="fas fa-map-marker-alt"></i> Ennasr, Ariana</div>
+          <div class="map-listing-price">980 000 DT</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section" id="gallery">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Galerie</div>
+      <h2 class="section-title">Vivre dans<br>l'<em>Excellence</em></h2>
+    </div>
+    <a href="#" class="btn-nav">Voir toutes les photos</a>
+  </div>
+
+  <div class="gallery-grid reveal">
+    <div class="gallery-item" onclick="openLightbox(0)">
+      <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80" alt="Intérieur villa">
+      <div class="gallery-overlay"><i class="fas fa-expand gallery-overlay-icon"></i></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox(1)">
+      <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&q=80" alt="Salon luxe">
+      <div class="gallery-overlay"><i class="fas fa-expand gallery-overlay-icon"></i></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox(2)">
+      <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=600&q=80" alt="Cuisine design">
+      <div class="gallery-overlay"><i class="fas fa-expand gallery-overlay-icon"></i></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox(3)">
+      <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80" alt="Piscine villa">
+      <div class="gallery-overlay"><i class="fas fa-expand gallery-overlay-icon"></i></div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox(4)">
+      <img src="https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=600&q=80" alt="Chambre parentale">
+      <div class="gallery-overlay"><i class="fas fa-expand gallery-overlay-icon"></i></div>
+    </div>
+    <div class="gallery-item gallery-more" onclick="openLightbox(5)">
+      <i class="fas fa-images" style="font-size:28px;margin-bottom:8px"></i>
+      <span>+48 photos</span>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <span class="lightbox-close" onclick="closeLightbox()">✕</span>
+  <div class="lightbox-nav lightbox-prev" onclick="lightboxPrev()"><i class="fas fa-chevron-left"></i></div>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  <div class="lightbox-nav lightbox-next" onclick="lightboxNext()"><i class="fas fa-chevron-right"></i></div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Témoignages</div>
+      <h2 class="section-title">Ils nous font<br><em>Confiance</em></h2>
+      <p class="section-desc">Plus de 1 200 familles ont confié leur projet immobilier à notre équipe d'experts.</p>
+    </div>
+  </div>
+
+  <div class="swiper testimonials-swiper">
+    <div class="swiper-wrapper">
+
+      <div class="swiper-slide">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">Une équipe d'une professionnalisme exceptionnel. Ils ont su comprendre exactement ce que nous recherchions et nous ont trouvé la villa de nos rêves à Carthage en seulement 3 semaines. Je recommande vivement Lumière Estate.</p>
+          <div class="testimonial-author">
+            <img class="testimonial-avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Leila Ben Ali">
+            <div>
+              <div class="testimonial-name">Leila Ben Youssef</div>
+              <div class="testimonial-role">Directrice, Cabinet Avantage</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swiper-slide">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">Grâce à Lumière Estate, nous avons vendu notre appartement aux Berges du Lac en 10 jours au prix demandé. Un suivi impeccable du début à la fin, une agence vraiment différente des autres. Merci infiniment.</p>
+          <div class="testimonial-author">
+            <img class="testimonial-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Karim Trabelsi">
+            <div>
+              <div class="testimonial-name">Karim Trabelsi</div>
+              <div class="testimonial-role">Entrepreneur</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swiper-slide">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">Service de luxe pour un résultat à la hauteur. L'agent qui s'est occupé de notre dossier était disponible 7j/7, nous a guidés avec expertise et patience. Notre penthouse à La Marsa est absolument magnifique.</p>
+          <div class="testimonial-author">
+            <img class="testimonial-avatar" src="https://randomuser.me/api/portraits/women/65.jpg" alt="Amina Chaari">
+            <div>
+              <div class="testimonial-name">Amina Chaari</div>
+              <div class="testimonial-role">Médecin spécialiste</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swiper-slide">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★☆</div>
+          <p class="testimonial-text">Investissement locatif réussi grâce aux conseils avisés de l'équipe Lumière Estate. Rendement supérieur aux prévisions, gestion locative sérieuse. Je confie désormais l'ensemble de mon patrimoine à cette agence.</p>
+          <div class="testimonial-author">
+            <img class="testimonial-avatar" src="https://randomuser.me/api/portraits/men/78.jpg" alt="Sami Bouaziz">
+            <div>
+              <div class="testimonial-name">Sami Bouaziz</div>
+              <div class="testimonial-role">Investisseur immobilier</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="swiper-pagination" style="bottom:0"></div>
+  </div>
+</section>
+
+<!-- SOCIAL GALLERY -->
+<section class="social-section" id="social">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Réseaux Sociaux</div>
+      <h2 class="section-title">Suivez-nous sur<br><em>Instagram & Facebook</em></h2>
+    </div>
+  </div>
+
+  <div class="social-tabs">
+    <button class="social-tab active" data-social="instagram" onclick="switchSocial('instagram')">
+      <i class="fab fa-instagram"></i> Instagram
+    </button>
+    <button class="social-tab" data-social="facebook" onclick="switchSocial('facebook')">
+      <i class="fab fa-facebook"></i> Facebook
+    </button>
+  </div>
+
+  <div class="social-grid" id="socialGrid">
+    <div class="social-item">
+      <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&q=70" alt="">
+      <div class="social-item-overlay">
+        <div class="social-item-stat"><i class="fas fa-heart"></i> 2.4k</div>
+        <div class="social-item-stat"><i class="fas fa-comment"></i> 84</div>
+      </div>
+    </div>
+    <div class="social-item">
+      <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=70" alt="">
+      <div class="social-item-overlay">
+        <div class="social-item-stat"><i class="fas fa-heart"></i> 1.8k</div>
+        <div class="social-item-stat"><i class="fas fa-comment"></i> 63</div>
+      </div>
+    </div>
+    <div class="social-item">
+      <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&q=70" alt="">
+      <div class="social-item-overlay">
+        <div class="social-item-stat"><i class="fas fa-heart"></i> 3.1k</div>
+        <div class="social-item-stat"><i class="fas fa-comment"></i> 112</div>
+      </div>
+    </div>
+    <div class="social-item">
+      <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=70" alt="">
+      <div class="social-item-overlay">
+        <div class="social-item-stat"><i class="fas fa-heart"></i> 2.9k</div>
+        <div class="social-item-stat"><i class="fas fa-comment"></i> 97</div>
+      </div>
+    </div>
+    <div class="social-item">
+      <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&q=70" alt="">
+      <div class="social-item-overlay">
+        <div class="social-item-stat"><i class="fas fa-heart"></i> 1.5k</div>
+        <div class="social-item-stat"><i class="fas fa-comment"></i> 48</div>
+      </div>
+    </div>
+    <div class="social-item">
+      <img src="https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=400&q=70" alt="">
+      <div class="social-item-overlay">
+        <div class="social-item-stat"><i class="fas fa-heart"></i> 4.2k</div>
+        <div class="social-item-stat"><i class="fas fa-comment"></i> 158</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="social-follow" style="margin-top:32px">
+    <a href="#" class="btn-social instagram"><i class="fab fa-instagram"></i> @lumiere.estate</a>
+    <a href="#" class="btn-social facebook"><i class="fab fa-facebook"></i> Lumière Estate</a>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why-section">
+  <div class="section-header" style="margin-bottom:50px">
+    <div>
+      <div class="section-label">Nos Engagements</div>
+      <h2 class="section-title">Pourquoi choisir<br><em>Lumière Estate</em> ?</h2>
+    </div>
+  </div>
+
+  <div class="why-grid">
+    <div class="why-card reveal">
+      <div class="why-number">01</div>
+      <div class="why-icon"><i class="fas fa-shield-alt"></i></div>
+      <div class="why-title">Expertise & Confiance</div>
+      <div class="why-desc">15 ans d'expérience sur le marché immobilier tunisien. Notre équipe d'experts vous accompagne à chaque étape de votre projet avec transparence et professionnalisme.</div>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-number">02</div>
+      <div class="why-icon"><i class="fas fa-gem"></i></div>
+      <div class="why-title">Sélection Premium</div>
+      <div class="why-desc">Chaque propriété de notre portefeuille est soigneusement sélectionnée selon des critères stricts de qualité, localisation et valeur patrimoniale exceptionnelle.</div>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-number">03</div>
+      <div class="why-icon"><i class="fas fa-handshake"></i></div>
+      <div class="why-title">Accompagnement Complet</div>
+      <div class="why-desc">De la recherche à la signature, en passant par le financement et les démarches administratives, nous gérons tout pour vous offrir une expérience sans stress.</div>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-number">04</div>
+      <div class="why-icon"><i class="fas fa-chart-line"></i></div>
+      <div class="why-title">Expertise du Marché</div>
+      <div class="why-desc">Analyses de marché en temps réel, estimation précise de la valeur de vos biens, conseils en investissement pour maximiser votre rentabilité.</div>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-number">05</div>
+      <div class="why-icon"><i class="fas fa-key"></i></div>
+      <div class="why-title">Gestion Locative</div>
+      <div class="why-desc">Service complet de gestion locative : recherche de locataires, état des lieux, encaissement des loyers, suivi des travaux. Votre bien géré sereinement.</div>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-number">06</div>
+      <div class="why-icon"><i class="fas fa-clock"></i></div>
+      <div class="why-title">Disponibilité 7j/7</div>
+      <div class="why-desc">Notre équipe est à votre service 7 jours sur 7. Visites flexibles, réponses rapides et suivi personnalisé pour chaque client, quelle que soit votre demande.</div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENTS -->
+<section class="agents-section" id="agents">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Notre Équipe</div>
+      <h2 class="section-title">Des Experts à<br>votre <em>Service</em></h2>
+    </div>
+  </div>
+
+  <div class="agents-grid">
+    <div class="agent-card reveal">
+      <div class="agent-img-wrap">
+        <img src="https://randomuser.me/api/portraits/women/40.jpg" alt="Sarah Hamdi">
+        <div class="agent-socials">
+          <div class="agent-social-btn"><i class="fab fa-linkedin-in"></i></div>
+          <div class="agent-social-btn"><i class="fab fa-instagram"></i></div>
+          <div class="agent-social-btn"><i class="fas fa-envelope"></i></div>
+        </div>
+      </div>
+      <div class="agent-info">
+        <div class="agent-name">Sarah Hamdi</div>
+        <div class="agent-role">Directrice Vente Premium</div>
+        <div class="agent-stats">
+          <div class="agent-stat"><strong>148</strong> Ventes</div>
+          <div class="agent-stat"><strong>12</strong> Ans exp.</div>
+          <div class="agent-stat"><strong>4.9 ★</strong> Avis</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card reveal">
+      <div class="agent-img-wrap">
+        <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="Raouf Mansouri">
+        <div class="agent-socials">
+          <div class="agent-social-btn"><i class="fab fa-linkedin-in"></i></div>
+          <div class="agent-social-btn"><i class="fab fa-instagram"></i></div>
+          <div class="agent-social-btn"><i class="fas fa-envelope"></i></div>
+        </div>
+      </div>
+      <div class="agent-info">
+        <div class="agent-name">Raouf Mansouri</div>
+        <div class="agent-role">Expert Investissement</div>
+        <div class="agent-stats">
+          <div class="agent-stat"><strong>203</strong> Ventes</div>
+          <div class="agent-stat"><strong>15</strong> Ans exp.</div>
+          <div class="agent-stat"><strong>4.8 ★</strong> Avis</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card reveal">
+      <div class="agent-img-wrap">
+        <img src="https://randomuser.me/api/portraits/women/55.jpg" alt="Nadia Slim">
+        <div class="agent-socials">
+          <div class="agent-social-btn"><i class="fab fa-linkedin-in"></i></div>
+          <div class="agent-social-btn"><i class="fab fa-instagram"></i></div>
+          <div class="agent-social-btn"><i class="fas fa-envelope"></i></div>
+        </div>
+      </div>
+      <div class="agent-info">
+        <div class="agent-name">Nadia Slim</div>
+        <div class="agent-role">Spécialiste Location</div>
+        <div class="agent-stats">
+          <div class="agent-stat"><strong>89</strong> Locations</div>
+          <div class="agent-stat"><strong>8</strong> Ans exp.</div>
+          <div class="agent-stat"><strong>5.0 ★</strong> Avis</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card reveal">
+      <div class="agent-img-wrap">
+        <img src="https://randomuser.me/api/portraits/men/62.jpg" alt="Mehdi Karoui">
+        <div class="agent-socials">
+          <div class="agent-social-btn"><i class="fab fa-linkedin-in"></i></div>
+          <div class="agent-social-btn"><i class="fab fa-instagram"></i></div>
+          <div class="agent-social-btn"><i class="fas fa-envelope"></i></div>
+        </div>
+      </div>
+      <div class="agent-info">
+        <div class="agent-name">Mehdi Karoui</div>
+        <div class="agent-role">Conseiller Patrimonial</div>
+        <div class="agent-stats">
+          <div class="agent-stat"><strong>176</strong> Ventes</div>
+          <div class="agent-stat"><strong>10</strong> Ans exp.</div>
+          <div class="agent-stat"><strong>4.9 ★</strong> Avis</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT FORM -->
+<section class="contact-section" id="contact">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Contact</div>
+      <h2 class="section-title">Parlons de votre<br><em>Projet</em></h2>
+    </div>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-info-block reveal">
+      <p class="section-desc" style="max-width:100%">Confiez-nous votre projet immobilier. Nos conseillers vous répondent dans les 24h pour vous accompagner vers la propriété de vos rêves.</p>
+
+      <div class="contact-info-items">
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <div class="contact-item-label">Adresse</div>
+            <div class="contact-item-value">Av. Habib Bourguiba, Tunis 1000, Tunisie</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="fas fa-phone"></i></div>
+          <div>
+            <div class="contact-item-label">Téléphone</div>
+            <div class="contact-item-value">+216 71 XXX XXX</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+          <div>
+            <div class="contact-item-label">Email</div>
+            <div class="contact-item-value">contact@lumiere-estate.tn</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon"><i class="fas fa-clock"></i></div>
+          <div>
+            <div class="contact-item-label">Horaires</div>
+            <div class="contact-item-value">Lun – Sam : 9h00 – 19h00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form reveal" id="contactFormWrap">
+      <div class="form-title">Demande de <em style="font-style:italic;color:var(--gold)">location / achat</em></div>
+      <form id="contactForm" onsubmit="submitForm(event)">
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Prénom</label>
+            <input type="text" class="form-input" placeholder="Votre prénom" required>
+          </div>
+          <div class="form-field">
+            <label>Nom</label>
+            <input type="text" class="form-input" placeholder="Votre nom" required>
+          </div>
+          <div class="form-field">
+            <label>Email</label>
+            <input type="email" class="form-input" placeholder="email@exemple.com" required>
+          </div>
+          <div class="form-field">
+            <label>Téléphone</label>
+            <input type="tel" class="form-input" placeholder="+216 XX XXX XXX">
+          </div>
+          <div class="form-field full">
+            <label>Type de projet</label>
+            <select class="form-select">
+              <option>Achat d'une propriété</option>
+              <option>Location d'une propriété</option>
+              <option>Vendre ma propriété</option>
+              <option>Estimation gratuite</option>
+              <option>Gestion locative</option>
+              <option>Investissement</option>
+            </select>
+          </div>
+          <div class="form-field full">
+            <label>Type de bien recherché</label>
+            <select class="form-select">
+              <option>Villa</option>
+              <option>Appartement</option>
+              <option>Penthouse</option>
+              <option>Duplex</option>
+              <option>Terrain</option>
+              <option>Local commercial</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Budget maximum</label>
+            <input type="text" class="form-input" placeholder="Ex: 2 000 000 DT">
+          </div>
+          <div class="form-field">
+            <label>Délai souhaité</label>
+            <select class="form-select">
+              <option>Le plus tôt possible</option>
+              <option>Dans 1 mois</option>
+              <option>Dans 3 mois</option>
+              <option>Dans 6 mois</option>
+              <option>Pas de délai précis</option>
+            </select>
+          </div>
+          <div class="form-field full">
+            <label>Message</label>
+            <textarea class="form-input" placeholder="Décrivez votre projet, vos critères, vos souhaits…"></textarea>
+          </div>
+          <div class="form-field full">
+            <label class="form-checkbox">
+              <input type="checkbox" required>
+              <span class="form-checkbox-label">J'accepte que mes données soient utilisées pour traiter ma demande et être recontacté par l'équipe Lumière Estate.</span>
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="form-submit">
+          <i class="fas fa-paper-plane"></i>
+          Envoyer ma demande
+        </button>
+      </form>
+      <div class="form-success" id="formSuccess">
+        <i class="fas fa-check-circle"></i>
+        <h3>Message envoyé !</h3>
+        <p>Notre équipe vous contactera dans les 24 heures. Merci de votre confiance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+  <div class="newsletter-inner">
+    <div class="newsletter-text">
+      <h2>Restez informé</h2>
+      <p>Recevez les nouvelles propriétés et opportunités d'investissement en exclusivité.</p>
+    </div>
+    <div class="newsletter-form">
+      <input type="email" class="newsletter-input" placeholder="Votre adresse email…">
+      <button class="newsletter-btn">S'abonner</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo" style="text-decoration:none">
+        <div class="logo-mark">L</div>
+        <span class="logo-text">Lumière <span>Estate</span></span>
+      </a>
+      <p>L'agence immobilière de référence pour les biens d'exception en Tunisie depuis 2009. Excellence, confiance et résultats.</p>
+      <div class="footer-socials">
+        <a href="#" class="footer-social"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="footer-social"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="footer-social"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="footer-social"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <ul class="footer-links">
+        <li><a href="#listings">Nos Propriétés</a></li>
+        <li><a href="#map-section">Carte Interactive</a></li>
+        <li><a href="#gallery">Galerie Photos</a></li>
+        <li><a href="#agents">Notre Équipe</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Nos Services</h4>
+      <ul class="footer-links">
+        <li><a href="#">Achat Immobilier</a></li>
+        <li><a href="#">Location Premium</a></li>
+        <li><a href="#">Estimation Gratuite</a></li>
+        <li><a href="#">Gestion Locative</a></li>
+        <li><a href="#">Conseil Patrimonial</a></li>
+        <li><a href="#">Programmes Neufs</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Zones</h4>
+      <ul class="footer-links">
+        <li><a href="#">Carthage</a></li>
+        <li><a href="#">La Marsa</a></li>
+        <li><a href="#">Sidi Bou Saïd</a></li>
+        <li><a href="#">Gammarth</a></li>
+        <li><a href="#">Lac Tunis</a></li>
+        <li><a href="#">Sfax & Sud</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2025 Lumière Estate. Tous droits réservés.</p>
+    <div class="footer-bottom-links">
+      <a href="#">Mentions légales</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">CGV</a>
+    </div>
+  </div>
+</footer>
+
+<!-- SCROLL TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <i class="fas fa-chevron-up"></i>
+</button>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+// ===== HERO SWIPER =====
+const heroSwiper = new Swiper('#heroSwiper', {
+  loop: true,
+  speed: 1200,
+  autoplay: { delay: 5000, disableOnInteraction: false },
+  pagination: { el: '.hero-swiper .swiper-pagination', clickable: true },
+  effect: 'fade',
+  fadeEffect: { crossFade: true }
+});
+
+// ===== TESTIMONIALS SWIPER =====
+new Swiper('.testimonials-swiper', {
+  loop: true,
+  speed: 800,
+  autoplay: { delay: 5000 },
+  slidesPerView: 1,
+  spaceBetween: 24,
+  pagination: { el: '.testimonials-swiper .swiper-pagination', clickable: true },
+  breakpoints: {
+    768: { slidesPerView: 2 },
+    1100: { slidesPerView: 3 }
+  }
+});
+
+// ===== THEME TOGGLE =====
+const html = document.documentElement;
+const themeToggle = document.getElementById('themeToggle');
+const toggleKnob = document.getElementById('toggleKnob');
+
+let isDark = true;
+
+themeToggle.addEventListener('click', () => {
+  isDark = !isDark;
+  html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  toggleKnob.textContent = isDark ? '☀️' : '🌙';
+  if (!isDark) initMapLight(); else initMapDark();
+});
+
+// ===== NAVBAR SCROLL =====
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 80);
+  document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);
+});
+
+// ===== MOBILE MENU =====
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+const menuOverlay = document.getElementById('menuOverlay');
+const menuClose = document.getElementById('menuClose');
+
+function openMenu() { mobileMenu.classList.add('open'); menuOverlay.classList.add('open'); }
+function closeMenu() { mobileMenu.classList.remove('open'); menuOverlay.classList.remove('open'); }
+
+hamburger.addEventListener('click', openMenu);
+menuClose.addEventListener('click', closeMenu);
+menuOverlay.addEventListener('click', closeMenu);
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+
+// ===== CURSOR =====
+const cursor = document.getElementById('cursor');
+const cursorFollower = document.getElementById('cursorFollower');
+let mouseX = 0, mouseY = 0;
+let followerX = 0, followerY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  cursor.style.left = mouseX - 4 + 'px';
+  cursor.style.top = mouseY - 4 + 'px';
+});
+
+function animateCursor() {
+  followerX += (mouseX - followerX - 15) * 0.12;
+  followerY += (mouseY - followerY - 15) * 0.12;
+  cursorFollower.style.left = followerX + 'px';
+  cursorFollower.style.top = followerY + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+// ===== REVEAL ON SCROLL =====
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('revealed');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+revealEls.forEach(el => observer.observe(el));
+
+// ===== COUNTER ANIMATION =====
+function animateCounter(el, target) {
+  let start = 0;
+  const duration = 2000;
+  const step = timestamp => {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp - start) / duration, 1);
+    el.textContent = Math.floor(progress * target) + (target >= 100 ? '+' : target === 98 ? '%' : '');
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target + (target >= 100 ? '+' : target === 98 ? '%' : '');
+  };
+  requestAnimationFrame(step);
+}
+
+const statObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target.querySelector('.stat-number');
+      const target = parseInt(el.dataset.target);
+      animateCounter(el, target);
+      statObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.stat-item').forEach(el => statObserver.observe(el));
+
+// ===== SEARCH SUGGESTIONS =====
+const suggestions = ['Carthage', 'La Marsa', 'Sidi Bou Saïd', 'Gammarth', 'Les Berges du Lac', 'Ennasr', 'El Aouina', 'Menzah', 'El Menzah 6', 'Ariana', 'Ben Arous', 'Sfax', 'Sousse', 'Hammamet', 'Nabeul'];
+
+const searchInput = document.getElementById('searchLocation');
+const searchSuggestionsEl = document.getElementById('searchSuggestions');
+
+searchInput.addEventListener('input', () => {
+  const val = searchInput.value.toLowerCase();
+  searchSuggestionsEl.innerHTML = '';
+  if (val.length < 1) { searchSuggestionsEl.classList.remove('visible'); return; }
+  const matches = suggestions.filter(s => s.toLowerCase().includes(val));
+  if (matches.length === 0) { searchSuggestionsEl.classList.remove('visible'); return; }
+  matches.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'search-suggestion-item';
+    div.innerHTML = `<i class="fas fa-map-marker-alt" style="color:var(--gold);font-size:12px"></i> ${m}`;
+    div.onclick = () => { searchInput.value = m; searchSuggestionsEl.classList.remove('visible'); };
+    searchSuggestionsEl.appendChild(div);
+  });
+  searchSuggestionsEl.classList.add('visible');
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-field-wrap')) searchSuggestionsEl.classList.remove('visible');
+});
+
+// ===== SEARCH TABS =====
+document.querySelectorAll('.search-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.search-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// ===== LISTING FILTERS =====
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.listing-card').forEach(card => {
+      if (filter === 'all' || card.dataset.type.includes(filter)) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+});
+
+// ===== FAV BUTTONS =====
+document.querySelectorAll('.listing-fav').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    btn.classList.toggle('active');
+    btn.innerHTML = btn.classList.contains('active') ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
+  });
+});
+
+// ===== LEAFLET MAP =====
+let mapInstance = null;
+
+function getMapStyle() {
+  return isDark
+    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+}
+
+const properties = [
+  { lat: 36.8585, lng: 10.3261, name: 'Villa Palmeraie', price: '2 850 000 DT', type: 'Vente' },
+  { lat: 36.8781, lng: 10.3219, name: 'Penthouse La Marsa', price: '8 500 DT/mois', type: 'Location' },
+  { lat: 36.8735, lng: 10.3467, name: 'Résidence Les Jasmins', price: '4 200 000 DT', type: 'Vente' },
+  { lat: 36.8339, lng: 10.2476, name: 'App. Grand Standing', price: '3 800 DT/mois', type: 'Location' },
+  { lat: 36.8961, lng: 10.2933, name: 'Villa Moderne Gammarth', price: '1 650 000 DT', type: 'Vente' },
+  { lat: 36.8618, lng: 10.1943, name: 'Duplex Luxe Ennasr', price: '980 000 DT', type: 'Vente' },
+];
+
+function createMarkerIcon(type) {
+  const color = type === 'Vente' ? '#c4a564' : '#2a6496';
+  return L.divIcon({
+    className: '',
+    html: `<div style="background:${color};width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.4)"></div>`,
+    iconSize: [12, 12],
+    iconAnchor: [6, 6]
+  });
+}
+
+function initMap() {
+  if (mapInstance) { mapInstance.remove(); mapInstance = null; }
+  mapInstance = L.map('map', { zoomControl: false }).setView([36.858, 10.28], 12);
+
+  L.tileLayer(getMapStyle(), {
+    attribution: '© CartoDB',
+    maxZoom: 19
+  }).addTo(mapInstance);
+
+  L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
+
+  properties.forEach(p => {
+    L.marker([p.lat, p.lng], { icon: createMarkerIcon(p.type) })
+      .addTo(mapInstance)
+      .bindPopup(`<div style="font-family:Cormorant Garamond,serif;min-width:160px"><strong style="font-size:16px">${p.name}</strong><br><span style="color:${p.type==='Vente'?'#c4a564':'#2a6496'};font-size:12px">${p.type}</span><br><span style="font-size:14px;font-weight:500">${p.price}</span></div>`);
+  });
+}
+
+// Init map on first view
+const mapObserver = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) { initMap(); mapObserver.disconnect(); }
+}, { threshold: 0.1 });
+mapObserver.observe(document.getElementById('map-section'));
+
+function initMapLight() { if (mapInstance) { mapInstance.eachLayer(l => { if (l._url) mapInstance.removeLayer(l); }); L.tileLayer(getMapStyle(), { attribution: '© CartoDB', maxZoom: 19 }).addTo(mapInstance); } }
+function initMapDark() { initMapLight(); }
+
+// ===== GALLERY LIGHTBOX =====
+const galleryImages = [
+  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=85',
+  'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200&q=85',
+  'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=1200&q=85',
+  'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=85',
+  'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=1200&q=85',
+  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=85',
+];
+
+let currentImg = 0;
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+
+function openLightbox(idx) {
+  currentImg = idx % galleryImages.length;
+  lightboxImg.src = galleryImages[currentImg];
+  lightbox.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function lightboxPrev() { currentImg = (currentImg - 1 + galleryImages.length) % galleryImages.length; lightboxImg.src = galleryImages[currentImg]; }
+function lightboxNext() { currentImg = (currentImg + 1) % galleryImages.length; lightboxImg.src = galleryImages[currentImg]; }
+
+lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('active')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lightboxPrev();
+  if (e.key === 'ArrowRight') lightboxNext();
+});
+
+// ===== SOCIAL TABS =====
+const socialImages = {
+  instagram: [
+    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&q=70',
+    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=70',
+    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&q=70',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=70',
+    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&q=70',
+    'https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=400&q=70',
+  ],
+  facebook: [
+    'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&q=70',
+    'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=400&q=70',
+    'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=400&q=70',
+    'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400&q=70',
+    'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=400&q=70',
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=70',
+  ]
+};
+
+const socialLikes = { instagram: ['2.4k','1.8k','3.1k','2.9k','1.5k','4.2k'], facebook: ['1.1k','890','2.3k','1.7k','640','3.8k'] };
+
+function switchSocial(platform) {
+  document.querySelectorAll('.social-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-social="${platform}"]`).classList.add('active');
+  const grid = document.getElementById('socialGrid');
+  const imgs = socialImages[platform];
+  const likes = socialLikes[platform];
+  grid.innerHTML = imgs.map((src, i) => `
+    <div class="social-item">
+      <img src="${src}" alt="">
+      <div class="social-item-overlay">
+        <div class="social-item-stat"><i class="fas fa-heart"></i> ${likes[i]}</div>
+        <div class="social-item-stat"><i class="fas fa-comment"></i> ${Math.floor(Math.random()*150+30)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== CONTACT FORM =====
+function submitForm(e) {
+  e.preventDefault();
+  const form = document.getElementById('contactForm');
+  const success = document.getElementById('formSuccess');
+  form.style.display = 'none';
+  success.classList.add('visible');
+}
+</script>
+</body>
+</html>

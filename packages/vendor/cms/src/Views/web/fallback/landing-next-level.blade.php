@@ -732,7 +732,7 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
             </div>
             <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
+          <a href="{{ asset('templates/next-level/immobilier-premium.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=500&q=80" alt="Immobilier premium">
@@ -743,7 +743,7 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
             </div>
             <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
+          <a href="{{ asset('templates/next-level/restaurant-bistro-noir.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80" alt="Restaurant & food">
@@ -2524,6 +2524,8 @@ function handleForm(e) {
 </script>
 </body>
 </html>
+
+
 
 
 
