@@ -53,10 +53,30 @@
         revealEls.forEach((el) => el.classList.add('pc-visible'));
     }
 
+    const socialGrid = document.getElementById('pcSocialGrid');
+    const socialIcon = { instagram: 'fa-instagram', facebook: 'fa-facebook', pinterest: 'fa-pinterest' };
+    const escapeAttr = (value) => String(value || '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[char]);
+    const renderSocialGrid = (platform) => {
+        if (!socialGrid) return;
+        let items = [];
+        try { items = JSON.parse(socialGrid.dataset[platform] || '[]'); } catch (error) { items = []; }
+        const url = socialGrid.dataset[`${platform}Url`] || '';
+        socialGrid.innerHTML = items.map((item) => `
+            <a class="pc-social-card" href="${url || '#reseaux'}" ${url ? 'target="_blank" rel="noopener noreferrer"' : ''}>
+                <img src="${escapeAttr(item.thumbnail || item.url || '')}" alt="${escapeAttr(item.name || 'Publication')}">
+                <span class="pc-social-overlay"><i class="fa-brands ${socialIcon[platform]}"></i></span>
+            </a>
+        `).join('');
+    };
+    renderSocialGrid('instagram');
+
     document.querySelectorAll('.pc-social-tab').forEach((button) => {
         button.addEventListener('click', () => {
             document.querySelectorAll('.pc-social-tab').forEach((tab) => tab.classList.remove('pc-active'));
             button.classList.add('pc-active');
+            renderSocialGrid(button.dataset.tab || 'instagram');
         });
     });
 

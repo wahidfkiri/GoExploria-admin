@@ -7,6 +7,7 @@ use Vendor\Cms\Models\Theme;
 use Vendor\Cms\Models\Page;
 use Vendor\Cms\Models\Setting;
 use Vendor\Cms\Models\Media;
+use Vendor\Cms\Models\BlogPost;
 use App\Models\Etablissement;
 use App\Models\Activity;
 use App\Models\Plan;
@@ -616,7 +617,10 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             });
         }
 
-        $galleryMedia = $this->getLandingGalleryMedia();
+        $landingMedia = $this->getLandingMediaGroups();
+        $galleryMedia = $landingMedia['main']->isNotEmpty() ? $landingMedia['main'] : $landingMedia['all'];
+        $blogPosts = $this->getLandingBlogPosts();
+        $cmsPageSections = $this->getLandingCmsPageSections();
 
         $activitySections = $this->buildActivitySections($activities);
         $hasRestaurantActivity = $this->hasActivityKeyword($activities, [
@@ -635,7 +639,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'cta' => route('devis'),
         ];
 
-        $workingHours = [
+        $workingHoursFallback = [
             ['day' => 'Lundi', 'hours' => '08:30 - 18:00'],
             ['day' => 'Mardi', 'hours' => '08:30 - 18:00'],
             ['day' => 'Mercredi', 'hours' => '08:30 - 18:00'],
@@ -644,6 +648,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             ['day' => 'Samedi', 'hours' => '09:30 - 17:00'],
             ['day' => 'Dimanche', 'hours' => 'Sur rendez-vous'],
         ];
+        $workingHours = get_establishment_opening_hours($this->etablissement, $workingHoursFallback);
 
         $commercialBlocks = [
             [
@@ -688,6 +693,11 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'etablissement' => $this->etablissement,
             'sliders' => $sliders,
             'galleryMedia' => $galleryMedia,
+            'allGalleryMedia' => $landingMedia['all'],
+            'mainGalleryMedia' => $landingMedia['main'],
+            'facebookGalleryMedia' => $landingMedia['facebook'],
+            'instagramGalleryMedia' => $landingMedia['instagram'],
+            'pinterestGalleryMedia' => $landingMedia['pinterest'],
             'brandLogoUrl' => get_logo_url($this->etablissement->id),
             'plans' => $plans,
             'ads' => $ads,
@@ -700,6 +710,9 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'workingHours' => $workingHours,
             'commercialBlocks' => $commercialBlocks,
             'reviews' => $reviews,
+            'socialLinks' => get_establishment_social_links($this->etablissement),
+            'blogPosts' => $blogPosts,
+            'cmsPageSections' => $cmsPageSections,
             'devisUrl' => route('devis'),
             'message' => $message,
         ];
@@ -858,13 +871,141 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
      */
     protected function getLandingGalleryMedia(): Collection
     {
+        $groups = $this->getLandingMediaGroups();
+
+        return $groups['main']->isNotEmpty() ? $groups['main'] : $groups['all'];
+    }
+
+    /**
+     * Load published blog posts for fallback landing pages.
+     */
+    protected function getLandingBlogPosts(): Collection
+    {
         try {
-            return Media::query()
+            return BlogPost::query()
+                ->where('etablissement_id', $this->etablissement->id)
+                ->published()
+                ->orderByDesc('is_featured')
+                ->orderByDesc('published_at')
+                ->orderByDesc('created_at')
+                ->limit(6)
+                ->get()
+                ->map(function (BlogPost $post) {
+                    $tags = collect($post->tags ?? [])
+                        ->filter(fn ($tag) => is_string($tag) && trim($tag) !== '')
+                        ->values();
+                    $image = $post->featured_image ?: $post->og_image_url;
+                    $excerpt = trim((string) ($post->excerpt ?: \Illuminate\Support\Str::limit(strip_tags((string) $post->content), 150)));
+
+                    return [
+                        'id' => $post->id,
+                        'title' => $post->display_title,
+                        'excerpt' => $excerpt,
+                        'image' => $this->resolveLandingAssetUrl($image),
+                        'tag' => $tags->first() ?: 'Blog',
+                        'tags' => $tags,
+                        'date' => optional($post->published_at ?: $post->created_at)->translatedFormat('j M Y'),
+                        'reading_time' => $post->reading_time,
+                        'url' => $this->resolveLandingBlogUrl($post),
+                        'is_featured' => (bool) $post->is_featured,
+                    ];
+                })
+                ->values();
+        } catch (\Throwable $e) {
+            Log::warning('Unable to load landing blog posts: ' . $e->getMessage(), [
+                'etablissement_id' => $this->etablissement->id ?? null,
+            ]);
+
+            return collect();
+        }
+    }
+
+    protected function resolveLandingAssetUrl($path): ?string
+    {
+        $path = trim((string) $path);
+        if ($path === '') {
+            return null;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['http://', 'https://', '//'])) {
+            return $path;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['/storage/'])) {
+            return asset(ltrim($path, '/'));
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['storage/'])) {
+            return asset($path);
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['/'])) {
+            return asset(ltrim($path, '/'));
+        }
+
+        return asset('storage/' . ltrim($path, '/'));
+    }
+
+    protected function resolveLandingBlogUrl(BlogPost $post): string
+    {
+        $canonical = trim((string) $post->canonical_url);
+        if ($canonical !== '' && $canonical !== '#') {
+            return $canonical;
+        }
+
+        return '#blog';
+    }
+
+    /**
+     * Load CMS page content blocks for fallback landing pages.
+     */
+    protected function getLandingCmsPageSections(): Collection
+    {
+        try {
+            return Page::query()
+                ->where('etablissement_id', $this->etablissement->id)
+                ->where('status', 'published')
+                ->where(function ($query) {
+                    $query->whereNull('visibility')
+                        ->orWhere('visibility', 'public');
+                })
+                ->where(function ($query) {
+                    $query->whereNull('published_at')
+                        ->orWhere('published_at', '<=', now());
+                })
+                ->whereNotNull('content')
+                ->orderByDesc('is_home')
+                ->orderBy('id')
+                ->get(['id', 'title', 'slug', 'content'])
+                ->filter(fn (Page $page) => trim((string) $page->content) !== '')
+                ->map(fn (Page $page) => [
+                    'id' => $page->id,
+                    'title' => $page->title,
+                    'slug' => $page->slug,
+                    'content' => $page->content,
+                ])
+                ->values();
+        } catch (\Throwable $e) {
+            Log::warning('Unable to load landing CMS page sections: ' . $e->getMessage(), [
+                'etablissement_id' => $this->etablissement->id ?? null,
+            ]);
+
+            return collect();
+        }
+    }
+
+    /**
+     * Load landing media grouped by CMS gallery flags.
+     */
+    protected function getLandingMediaGroups(): array
+    {
+        try {
+            $mediaItems = Media::query()
                 ->where('etablissement_id', $this->etablissement->id)
                 ->where('is_public', true)
                 ->whereNull('deleted_at')
                 ->ordered()
-                ->limit(24)
+                ->limit(48)
                 ->get()
                 ->map(function (Media $media) {
                     $videoUrl = trim((string) ($media->video_url ?? ''));
@@ -882,19 +1023,39 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                     return [
                         'id' => $media->id,
                         'name' => $media->title ?: $media->name,
+                        'title' => $media->title,
+                        'description' => $media->description,
                         'thumbnail' => $thumbnail,
-                        'url' => $media->url,
+                        'url' => $videoUrl ?: $media->url,
                         'type' => $media->type,
+                        'is_main_gallery' => (bool) ($media->is_main_gallery ?? false),
+                        'is_facebook_gallery' => (bool) ($media->is_facebook_gallery ?? false),
+                        'is_instagram_gallery' => (bool) ($media->is_instagram_gallery ?? false),
+                        'is_pinterest_gallery' => (bool) ($media->is_pinterest_gallery ?? false),
                     ];
                 })
                 ->filter(fn ($item) => !empty($item['thumbnail']))
                 ->values();
+
+            return [
+                'all' => $mediaItems,
+                'main' => $mediaItems->where('is_main_gallery', true)->values(),
+                'facebook' => $mediaItems->where('is_facebook_gallery', true)->values(),
+                'instagram' => $mediaItems->where('is_instagram_gallery', true)->values(),
+                'pinterest' => $mediaItems->where('is_pinterest_gallery', true)->values(),
+            ];
         } catch (\Throwable $e) {
             Log::warning('Unable to load landing gallery media: ' . $e->getMessage(), [
                 'etablissement_id' => $this->etablissement->id,
             ]);
 
-            return collect();
+            return [
+                'all' => collect(),
+                'main' => collect(),
+                'facebook' => collect(),
+                'instagram' => collect(),
+                'pinterest' => collect(),
+            ];
         }
     }
 

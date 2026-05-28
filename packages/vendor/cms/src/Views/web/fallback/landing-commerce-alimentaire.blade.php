@@ -45,6 +45,8 @@
         ?: $etablissement->getSetting('adresse', null, 'general')
         ?: $etablissement->adresse
         ?: 'Adresse en cours de configuration';
+    $hours = $etablissement->getSetting('opening_hours', [], 'company');
+    $workingHours = normalize_cms_opening_hours($hours, $workingHours ?? []);
 
     $fallbackImages = collect([
         ['thumbnail' => 'https://images.pexels.com/photos/3296434/pexels-photo-3296434.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Comptoir de produits frais'],
@@ -57,7 +59,7 @@
         ['thumbnail' => 'https://images.pexels.com/photos/1295138/pexels-photo-1295138.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Approvisionnement local'],
     ]);
 
-    $gallery = collect($galleryMedia ?? [])
+    $gallery = collect($mainGalleryMedia ?? [])
         ->map(fn ($row) => [
             'thumbnail' => data_get($row, 'thumbnail') ?: data_get($row, 'url'),
             'url' => data_get($row, 'url') ?: data_get($row, 'thumbnail'),
@@ -66,6 +68,18 @@
         ])
         ->filter(fn ($row) => !empty($row['thumbnail']))
         ->values();
+
+    if ($gallery->isEmpty()) {
+        $gallery = collect($galleryMedia ?? [])
+            ->map(fn ($row) => [
+                'thumbnail' => data_get($row, 'thumbnail') ?: data_get($row, 'url'),
+                'url' => data_get($row, 'url') ?: data_get($row, 'thumbnail'),
+                'name' => data_get($row, 'name') ?: 'Photo du commerce',
+                'type' => data_get($row, 'type') ?: 'image',
+            ])
+            ->filter(fn ($row) => !empty($row['thumbnail']))
+            ->values();
+    }
 
     if ($gallery->isEmpty()) {
         $gallery = $fallbackImages;
@@ -154,9 +168,20 @@
         ]);
     }
 
-    $instagramPosts = $gallery->slice(max(0, $gallery->count() - 4))->values();
+    $instagramPosts = collect($instagramGalleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
+    if ($instagramPosts->isEmpty()) {
+        $instagramPosts = $gallery->slice(max(0, $gallery->count() - 4))->values();
+    }
     if ($instagramPosts->count() < 4) {
         $instagramPosts = $gallery->take(4)->values();
+    }
+
+    $facebookPostsMedia = collect($facebookGalleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
+    if ($facebookPostsMedia->isEmpty()) {
+        $facebookPostsMedia = $gallery->slice(8, 2)->values();
+    }
+    if ($facebookPostsMedia->count() < 2) {
+        $facebookPostsMedia = $gallery->take(2)->values();
     }
 
     $mapLat = $mapLatitude ?? 46.8139;
@@ -398,7 +423,21 @@
             overflow: hidden;
             box-shadow: var(--food-shadow);
         }
-        .food-section-pad { padding: clamp(24px, 4vw, 54px); }
+        .food-cms-pages { display: grid; gap: 18px; }
+        .food-cms-page-content {
+            color: var(--food-text);
+            line-height: 1.75;
+        }
+        .food-cms-page-content :where(h1,h2,h3,h4,h5,h6) {
+            color: var(--food-dark);
+            margin: 0 0 14px;
+            line-height: 1.15;
+        }
+        .food-cms-page-content :where(p,ul,ol,blockquote,figure) { margin-bottom: 16px; }
+        .food-cms-page-content :where(img,video,iframe) {
+            max-width: 100%;
+            border-radius: 10px;
+        }
         .food-kicker {
             color: var(--food-rust);
             display: inline-flex;
@@ -898,7 +937,6 @@
         }
         @media (max-width: 560px) {
             .food-hero h2 { font-size: 2.45rem; }
-            .food-section-pad { padding: 22px; }
             .food-gallery-grid { grid-template-columns: 1fr; }
             .food-header-brand { min-width: 0; }
             .food-cta { width: 100%; justify-content: center; }
@@ -1085,9 +1123,6 @@
             border: 0;
             box-shadow: none;
             background: var(--market-white);
-        }
-        .food-section-pad {
-            padding: 7rem 5rem;
         }
         .food-kicker {
             color: var(--market-rust);
@@ -1472,11 +1507,6 @@
                         @endif
                         <h1>{{ $siteName }}</h1>
                         <p>{{ $siteDescription }}</p>
-                        <div class="food-pills">
-                            <span class="food-pill">Frais</span>
-                            <span class="food-pill">Local</span>
-                            <span class="food-pill">Gourmand</span>
-                        </div>
                         <div class="food-contact-mini" style="margin-top:18px;">
                             @if($phone)<a href="tel:{{ preg_replace('/\s+/', '', $phone) }}"><i class="fa-solid fa-phone"></i>{{ $phone }}</a>@endif
                             @if($email)<a href="mailto:{{ $email }}"><i class="fa-solid fa-envelope"></i>{{ $email }}</a>@endif
@@ -1578,25 +1608,18 @@
                         </div>
                     </section>
 
-                    <section class="food-section food-section-pad" id="about">
-                        <div class="food-about-grid">
-                            <div class="food-about-stack">
-                                <img src="{{ $gallery->get(0)['thumbnail'] }}" alt="Commerce alimentaire">
-                                <img src="{{ $gallery->get(1)['thumbnail'] }}" alt="Produits frais">
-                                <div class="food-floating-stat"><strong>100%</strong><span>sélection locale</span></div>
-                            </div>
-                            <div>
-                                <span class="food-kicker">À propos</span>
-                                <h2 class="food-title">Une vitrine moderne pour vos <em>saveurs</em></h2>
-                                <p class="food-copy">{{ $siteDescription }}</p>
-                                <div class="food-feature-list">
-                                    <div class="food-feature-item"><i class="fa-solid fa-fish"></i><div><h3>Arrivages frais</h3><p>Affichez vos produits, nouveautés et arrivages directement sur votre page.</p></div></div>
-                                    <div class="food-feature-item"><i class="fa-solid fa-store"></i><div><h3>Expérience boutique</h3><p>Une présentation premium qui guide le client vers la visite, l'appel ou la demande de devis.</p></div></div>
-                                    <div class="food-feature-item"><i class="fa-solid fa-gift"></i><div><h3>Offres et coffrets</h3><p>Mettez en avant vos paniers, plateaux, promotions et services événementiels.</p></div></div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                    @if(collect($cmsPageSections ?? [])->isNotEmpty())
+                        <section class="food-cms-pages" id="cms-pages-content">
+                            @foreach(collect($cmsPageSections) as $cmsPage)
+                                <article class="food-section food-section-pad food-cms-page" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
+                                    <div class="food-cms-page-content">
+                                        {!! data_get($cmsPage, 'content') !!}
+                                    </div>
+                                </article>
+                            @endforeach
+                        </section>
+                    @endif
+
 
                     @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
                     <section class="food-section food-section-pad" id="produits">
@@ -1627,64 +1650,9 @@
                         'cmsProductsSectionId' => 'produits',
                     ])
 
-                    <section class="food-section food-section-pad food-feature-section" id="specialites">
-                        <div class="food-feature-grid">
-                            <div>
-                                <span class="food-kicker">Spécialités maison</span>
-                                <h2 class="food-title">Des offres gourmandes qui donnent envie de commander</h2>
-                                <p class="food-copy">Cette section peut servir pour vos plats prêts-à-manger, fumoirs, plateaux, paniers cadeaux ou produits saisonniers.</p>
-                                <div class="food-feature-prices">
-                                    <div class="food-feature-price">Plateaux découvertes <span>À partir de 49 $</span></div>
-                                    <div class="food-feature-price">Coffrets entreprises <span>Sur devis</span></div>
-                                    <div class="food-feature-price">Commandes spéciales <span>24h - 48h</span></div>
-                                    <div class="food-feature-price">Livraison locale <span>Selon secteur</span></div>
-                                </div>
-                            </div>
-                            <img class="food-feature-image" src="{{ $gallery->get(2)['thumbnail'] }}" alt="Spécialité alimentaire">
-                        </div>
-                    </section>
 
-                    <section class="food-section food-section-pad">
-                        <span class="food-kicker">Parcours client</span>
-                        <h2 class="food-title">Simple, rapide et orienté <em>conversion</em></h2>
-                        <div class="food-process-grid">
-                            @foreach([
-                                ['Sélection', 'Le client découvre les produits frais et catégories.', 'fa-basket-shopping'],
-                                ['Conseil', 'Il comprend vos spécialités et vos services.', 'fa-comments'],
-                                ['Commande', 'Il demande un devis, appelle ou prépare sa visite.', 'fa-paper-plane'],
-                                ['Fidélisation', 'Galerie, avis et réseaux renforcent la confiance.', 'fa-heart'],
-                            ] as $stepIndex => $step)
-                                <article class="food-step">
-                                    <img src="{{ $gallery->get($stepIndex + 3)['thumbnail'] ?? $gallery->first()['thumbnail'] }}" alt="{{ $step[0] }}">
-                                    <div><span>{{ $stepIndex + 1 }}</span><h3>{{ $step[0] }}</h3><p>{{ $step[1] }}</p></div>
-                                </article>
-                            @endforeach
-                        </div>
-                    </section>
 
-                    <section class="food-section food-video-banner">
-                        <img src="{{ $gallery->get(6)['thumbnail'] ?? $gallery->first()['thumbnail'] }}" alt="Marché en action">
-                        <div>
-                            <span class="food-kicker">Activation commerciale</span>
-                            <h2 class="food-title">Prêt à vendre plus de produits en ligne ?</h2>
-                            <p>Activez votre espace entreprise et transformez votre présence locale en vitrine moderne.</p>
-                            <a class="food-btn food-btn-primary" href="{{ $devisLink }}" target="_blank" rel="noopener">Demander une soumission</a>
-                        </div>
-                    </section>
 
-                    <section class="food-section food-section-pad" id="avis">
-                        <span class="food-kicker">Avis clients</span>
-                        <h2 class="food-title">La confiance se construit avec les <em>preuves</em></h2>
-                        <div class="food-reviews-track">
-                            @foreach($reviewCards as $review)
-                                <article class="food-review">
-                                    <div class="food-stars">★★★★★</div>
-                                    <p>"{{ $review['text'] }}"</p>
-                                    <strong>{{ $review['author'] }}</strong>
-                                </article>
-                            @endforeach
-                        </div>
-                    </section>
 
                     <section class="food-section food-section-pad" id="galerie">
                         <span class="food-kicker">Galerie</span>
@@ -1713,31 +1681,6 @@
                         </div>
                     </section>
 
-                    <section class="food-section food-section-pad">
-                        <span class="food-kicker">Facebook</span>
-                        <h2 class="food-title">Rejoignez la communauté</h2>
-                        <div class="food-fb-grid">
-                            <article class="food-fb-post">
-                                <div class="food-fb-post-header"><div class="food-avatar">F</div><div><strong>{{ $siteName }}</strong><br><span class="food-copy">Aujourd'hui</span></div></div>
-                                <p class="food-copy">Nouveaux arrivages, produits saisonniers et idées repas à découvrir en boutique.</p>
-                                <img src="{{ $gallery->get(8)['thumbnail'] ?? $gallery->first()['thumbnail'] }}" alt="Publication Facebook">
-                            </article>
-                            <article class="food-fb-post">
-                                <div class="food-fb-post-header"><div class="food-avatar">G</div><div><strong>Événement gourmand</strong><br><span class="food-copy">Cette semaine</span></div></div>
-                                <p class="food-copy">Mettez en avant vos dégustations, promotions et offres spéciales pour attirer plus de visiteurs.</p>
-                                <img src="{{ $gallery->get(9)['thumbnail'] ?? $gallery->first()['thumbnail'] }}" alt="Événement Facebook">
-                            </article>
-                        </div>
-                    </section>
-
-                    <section class="food-section food-section-pad food-newsletter">
-                        <h2 class="food-title">Recevoir les offres et arrivages</h2>
-                        <p>Une section newsletter prête pour vos campagnes locales et promotions de saison.</p>
-                        <form onsubmit="event.preventDefault(); this.querySelector('button').textContent='Inscription reçue';">
-                            <input type="email" placeholder="Votre courriel" aria-label="Courriel">
-                            <button class="food-btn food-btn-light" type="submit">M'inscrire</button>
-                        </form>
-                    </section>
 
                     <section class="food-section food-section-pad" id="contact">
                         <div class="food-contact-grid">

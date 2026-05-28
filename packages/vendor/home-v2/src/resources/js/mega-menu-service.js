@@ -29,7 +29,9 @@ class MegaMenuService {
             const result = await response.json();
             if (result.success) {
                 const data = Array.isArray(result.data)
-                    ? result.data.map((item) => this.normalizeDestination(item, type))
+                    ? result.data
+                        .map((item) => this.normalizeDestination(item, type))
+                        .filter((item) => this.isActiveDestination(item))
                     : [];
                 this.setCache(cacheKey, data);
                 return data;
@@ -91,7 +93,12 @@ class MegaMenuService {
             const flat = [];
             Object.entries(map).forEach(([groupKey, type]) => {
                 const items = Array.isArray(grouped[groupKey]) ? grouped[groupKey] : [];
-                items.forEach((item) => flat.push(this.normalizeDestination(item, type)));
+                items.forEach((item) => {
+                    const normalized = this.normalizeDestination(item, type);
+                    if (this.isActiveDestination(normalized)) {
+                        flat.push(normalized);
+                    }
+                });
             });
 
             return flat;
@@ -106,6 +113,17 @@ class MegaMenuService {
         normalized.slug = normalized.slug || this.slugify(normalized.name || normalized.code || '');
         normalized.url = this.getDestinationUrl(normalized);
         return normalized;
+    }
+
+    isActiveDestination(item) {
+        const value = item?.is_active;
+
+        return !(
+            value === false ||
+            value === 0 ||
+            value === '0' ||
+            String(value).toLowerCase() === 'false'
+        );
     }
 
     getDestinationUrl(destination) {

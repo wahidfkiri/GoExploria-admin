@@ -48,7 +48,12 @@ class Media extends Model
         'ville_id',
         'secteur_id',
         'is_slider',
+        'is_main_gallery',
+        'is_facebook_gallery',
+        'is_instagram_gallery',
+        'is_pinterest_gallery',
         'order',
+
         'button_text',
         'button_url',
     ];
@@ -60,14 +65,23 @@ class Media extends Model
         'is_public' => 'boolean',
         'metadata' => 'array',
         'is_slider' => 'boolean',
+        'is_main_gallery' => 'boolean',
+        'is_facebook_gallery' => 'boolean',
+        'is_instagram_gallery' => 'boolean',
+        'is_pinterest_gallery' => 'boolean',
         'order' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'url',
+        'formatted_size',
+    ];
+
     /**
-     * Relation avec l'établissement
+     * Relation avec l'établissements
      */
     public function etablissement()
     {
@@ -157,6 +171,26 @@ class Media extends Model
         return $query->where('is_slider', true);
     }
 
+    public function scopeMainGallery($query)
+    {
+        return $query->where('is_main_gallery', true);
+    }
+
+    public function scopeFacebookGallery($query)
+    {
+        return $query->where('is_facebook_gallery', true);
+    }
+
+    public function scopeInstagramGallery($query)
+    {
+        return $query->where('is_instagram_gallery', true);
+    }
+
+    public function scopePinterestGallery($query)
+    {
+        return $query->where('is_pinterest_gallery', true);
+    }
+
     public function scopeOrdered($query)
     {
         return $query->orderBy('order', 'asc')->orderBy('id', 'desc');
@@ -167,11 +201,23 @@ class Media extends Model
      */
     public function getUrlAttribute()
     {
+        if (empty($this->path)) {
+            return trim((string) ($this->video_url ?? ''));
+        }
+
         if (!empty($this->path) && preg_match('/^https?:\/\//i', $this->path)) {
             return $this->path;
         }
 
-        return Storage::disk('public')->url($this->path);
+        $publicUrl = Storage::disk('public')->url($this->path);
+
+        if (preg_match('/^https?:\/\//i', $publicUrl)) {
+            return $publicUrl;
+        }
+
+        $baseUrl = rtrim((string) config('app.url'), '/');
+
+        return $baseUrl !== '' ? $baseUrl . '/' . ltrim($publicUrl, '/') : url($publicUrl);
     }
 
     /**

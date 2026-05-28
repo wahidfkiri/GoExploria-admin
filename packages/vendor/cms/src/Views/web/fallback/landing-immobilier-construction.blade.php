@@ -18,6 +18,11 @@
     $address = $etablissement->getSetting('address', null, 'company')
         ?: $etablissement->getSetting('address', null, 'general')
         ?: 'Québec, Canada';
+    $hours = $etablissement->getSetting('opening_hours', [], 'company');
+    $workingHours = normalize_cms_opening_hours($hours, [
+        ['day' => 'Lun-Ven', 'hours' => '8h00 - 17h00'],
+        ['day' => 'Samedi', 'hours' => 'Sur rendez-vous'],
+    ]);
     $mapAddress = '220 Rue Olivier, Issoudun, QC G0S 1L0, Canada';
     $mapLat = 46.5467987;
     $mapLng = -71.6160686;
@@ -25,6 +30,7 @@
 
     $devisLink = $devisUrl ?? route('devis');
     $phoneHref = preg_replace('/[^\d\+]/', '', (string) $phone);
+    $socialLinks = $socialLinks ?? get_establishment_social_links($etablissement);
     $cmsLandingProducts = collect();
     try {
         if (
@@ -187,7 +193,7 @@
         ['thumbnail' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/Client-auto-constructeur-image.jpg', 'name' => 'Auto-construction'],
     ]);
 
-    $galleryItems = collect($galleryMedia ?? [])
+    $galleryItems = collect($mainGalleryMedia ?? [])
         ->map(function ($item) {
             return [
                 'thumbnail' => data_get($item, 'thumbnail') ?: data_get($item, 'url'),
@@ -199,11 +205,34 @@
         ->values();
 
     if ($galleryItems->isEmpty()) {
+        $galleryItems = collect($galleryMedia ?? [])
+            ->map(function ($item) {
+                return [
+                    'thumbnail' => data_get($item, 'thumbnail') ?: data_get($item, 'url'),
+                    'name' => data_get($item, 'name') ?: 'Média',
+                ];
+            })
+            ->filter(fn ($item) => !empty($item['thumbnail']))
+            ->take(16)
+            ->values();
+    }
+
+    if ($galleryItems->isEmpty()) {
         $galleryItems = $fallbackGallery;
     }
 
     $galleryCats = ['prestige', 'scandinave', 'contemporain'];
-    $socialImages = $galleryItems->pluck('thumbnail')->take(8)->values();
+    $socialFallback = $galleryItems->take(8)->values();
+    $socialImages = [
+        'instagram' => collect($instagramGalleryMedia ?? [])->filter(fn ($item) => !empty($item['thumbnail']))->pluck('thumbnail')->take(8)->values(),
+        'facebook' => collect($facebookGalleryMedia ?? [])->filter(fn ($item) => !empty($item['thumbnail']))->pluck('thumbnail')->take(8)->values(),
+        'pinterest' => collect($pinterestGalleryMedia ?? [])->filter(fn ($item) => !empty($item['thumbnail']))->pluck('thumbnail')->take(8)->values(),
+    ];
+    foreach ($socialImages as $platform => $images) {
+        if ($images->isEmpty()) {
+            $socialImages[$platform] = $socialFallback->pluck('thumbnail')->values();
+        }
+    }
 @endphp
 
 <!DOCTYPE html>
@@ -1102,10 +1131,13 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
       <div class="swiper-wrapper" id="socialFeed"></div>
       <div class="swiper-pagination"></div>
     </div>
-    <div style="text-align:center;margin-top:1rem">
-      <a href="https://www.instagram.com/prestigeboisrond/" target="_blank" class="btn-primary" style="margin-right:1rem"><i class="fab fa-instagram"></i> Instagram</a>
-      <a href="https://www.facebook.com/prestigeboisrond" target="_blank" class="btn-outline" style="border-color:var(--gold);color:var(--gold)"><i class="fab fa-facebook"></i> Facebook</a>
-    </div>
+    @if(!empty($socialLinks))
+      <div style="text-align:center;margin-top:1rem">
+        @foreach($socialLinks as $link)
+          <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer" class="{{ $loop->first ? 'btn-primary' : 'btn-outline' }}" style="{{ $loop->first ? 'margin-right:1rem' : 'border-color:var(--gold);color:var(--gold);margin-right:1rem' }}"><i class="{{ $link['icon'] }}"></i> {{ $link['label'] }}</a>
+        @endforeach
+      </div>
+    @endif
   </div>
 </section>
 
@@ -1120,7 +1152,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
         <div class="map-details">
           <div class="map-detail"><i class="fa fa-map-marker-alt"></i><span>{{ $mapAddress }}</span></div>
           <div class="map-detail"><i class="fa fa-phone"></i><span><a href="tel:{{ $phoneHref }}" style="color:var(--gold)">{{ $phone }}</a></span></div>
-          <div class="map-detail"><i class="fa fa-clock"></i><span>Lun–Ven : 8h00 – 17h00<br>Sam : Sur rendez-vous</span></div>
+          <div class="map-detail"><i class="fa fa-clock"></i><span>@foreach($workingHours as $row){{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}@if(!$loop->last)<br>@endif @endforeach</span></div>
           <div class="map-detail"><i class="fa fa-envelope"></i><span>{{ $email }}</span></div>
         </div>
         <div style="margin-top:2rem"><a href="https://maps.google.com/?q={{ urlencode($mapAddress) }}" target="_blank" class="btn-primary">Obtenir l'itinéraire <i class="fa fa-external-link-alt" style="margin-left:6px"></i></a></div>
@@ -1142,19 +1174,43 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
       <div><div class="sec-eyebrow reveal">Actualités</div><h2 class="sec-title reveal">Blogue & <span class="text-gold">Nouvelles</span></h2></div>
       <a href="#" class="btn-outline reveal" style="border-color:var(--gold);color:var(--gold)">Tous les articles</a>
     </div>
+    @php
+      $constructionBlogFallback = collect([
+        ['title' => "Les avantages du bois rond massif : pourquoi c'est le meilleur choix pour votre chalet", 'excerpt' => 'Découvrez pourquoi de plus en plus de Québécois choisissent le bois rond pour leur résidence secondaire ou principale.', 'image' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DSC06735-HDR.jpg', 'tag' => 'Construction', 'date' => '15 avril 2025', 'reading_time' => 4, 'url' => '#blog'],
+        ['title' => "Série Scandinave : l'art de vivre nordique au Québec", 'excerpt' => 'Notre nouvelle série scandinave apporte le meilleur du design nordique.', 'image' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/SaveInsta.App_327015499_693241832530188_5777615420000727358_n.jpg', 'tag' => 'Design', 'date' => '2 mars 2025', 'reading_time' => 3, 'url' => '#blog'],
+        ['title' => "Auto-construction : guide complet pour réussir votre projet", 'excerpt' => "Tout ce que vous devez savoir avant de vous lancer dans l'auto-construction.", 'image' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DJI_0237.jpg', 'tag' => 'Conseils', 'date' => '18 fév 2025', 'reading_time' => 5, 'url' => '#blog'],
+      ]);
+      $constructionBlogs = collect($blogPosts ?? [])->take(3)->values()->map(function ($post, $index) use ($constructionBlogFallback) {
+        $fallback = $constructionBlogFallback->get($index, $constructionBlogFallback->first());
+        return [
+          'title' => data_get($post, 'title') ?: data_get($fallback, 'title'),
+          'excerpt' => data_get($post, 'excerpt') ?: data_get($fallback, 'excerpt'),
+          'image' => data_get($post, 'image') ?: data_get($fallback, 'image'),
+          'tag' => data_get($post, 'tag') ?: data_get($fallback, 'tag'),
+          'date' => data_get($post, 'date') ?: data_get($fallback, 'date'),
+          'url' => data_get($post, 'url') ?: '#blog',
+        ];
+      });
+      if ($constructionBlogs->isEmpty()) {
+        $constructionBlogs = $constructionBlogFallback;
+      }
+    @endphp
     <div class="blog-grid">
-      <div class="blog-card featured reveal">
-        <div class="blog-card-img"><img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/DSC06735-HDR.jpg" alt="Blog"></div>
-        <div class="blog-card-body"><div class="blog-meta"><span class="cat">Construction</span><span>15 avril 2025</span></div><h3>Les avantages du bois rond massif : pourquoi c'est le meilleur choix pour votre chalet</h3><p>Découvrez pourquoi de plus en plus de Québécois choisissent le bois rond pour leur résidence secondaire ou principale.</p><a href="#" class="blog-more">Lire l'article <i class="fa fa-arrow-right"></i></a></div>
-      </div>
-      <div class="blog-card reveal delay-1">
-        <div class="blog-card-img"><img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/SaveInsta.App_327015499_693241832530188_5777615420000727358_n.jpg" alt="Blog"></div>
-        <div class="blog-card-body"><div class="blog-meta"><span class="cat">Design</span><span>2 mars 2025</span></div><h3>Série Scandinave : l'art de vivre nordique au Québec</h3><p>Notre nouvelle série scandinave apporte le meilleur du design nordique.</p><a href="#" class="blog-more">Lire l'article <i class="fa fa-arrow-right"></i></a></div>
-      </div>
-      <div class="blog-card reveal delay-2">
-        <div class="blog-card-img"><img src="https://prestigeboisrond.ca/wp-content/uploads/2025/09/DJI_0237.jpg" alt="Blog"></div>
-        <div class="blog-card-body"><div class="blog-meta"><span class="cat">Conseils</span><span>18 fév 2025</span></div><h3>Auto-construction : guide complet pour réussir votre projet</h3><p>Tout ce que vous devez savoir avant de vous lancer dans l'auto-construction.</p><a href="#" class="blog-more">Lire l'article <i class="fa fa-arrow-right"></i></a></div>
-      </div>
+      @foreach($constructionBlogs as $blog)
+        @php
+          $blogUrl = data_get($blog, 'url') ?: '#blog';
+          $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
+        @endphp
+        <div class="blog-card{{ $loop->first ? ' featured' : '' }} reveal{{ $loop->iteration === 2 ? ' delay-1' : ($loop->iteration === 3 ? ' delay-2' : '') }}">
+          <div class="blog-card-img"><img src="{{ data_get($blog, 'image') }}" alt="{{ data_get($blog, 'title') }}"></div>
+          <div class="blog-card-body">
+            <div class="blog-meta"><span class="cat">{{ data_get($blog, 'tag') }}</span><span>{{ data_get($blog, 'date') }}</span></div>
+            <h3>{{ data_get($blog, 'title') }}</h3>
+            <p>{{ data_get($blog, 'excerpt') }}</p>
+            <a href="{{ $blogUrl }}" class="blog-more" @if($isExternalBlogUrl) target="_blank" rel="noopener noreferrer" @endif>Lire l'article <i class="fa fa-arrow-right"></i></a>
+          </div>
+        </div>
+      @endforeach
     </div>
   </div>
 </section>
@@ -1203,16 +1259,17 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
         <div class="contact-card"><i class="fa fa-phone-alt"></i><div><h4>Téléphone</h4><p><a href="tel:{{ $phoneHref }}" style="color:var(--gold)">{{ $phone }}</a></p></div></div>
         <div class="contact-card"><i class="fa fa-envelope"></i><div><h4>Courriel</h4><p><a href="mailto:{{ $email }}" style="color:var(--gold)">{{ $email }}</a></p></div></div>
         <div class="contact-card"><i class="fa fa-map-marker-alt"></i><div><h4>Localisation</h4><p>{{ $address }}</p></div></div>
-        <div class="contact-card"><i class="fa fa-clock"></i><div><h4>Heures d'ouverture</h4><p>Lun–Ven : 8h00 – 17h00<br>Samedi : Sur rendez-vous</p></div></div>
+        <div class="contact-card"><i class="fa fa-clock"></i><div><h4>Heures d'ouverture</h4><p>@foreach($workingHours as $row){{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}@if(!$loop->last)<br>@endif @endforeach</p></div></div>
+        @if(!empty($socialLinks))
         <div style="margin-top:2rem">
           <h4 style="font-family:var(--font-sans);font-size:.75rem;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:1rem;color:var(--gold)">Suivez-nous</h4>
           <div class="social-links">
-            <a href="https://www.facebook.com/prestigeboisrond" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/prestigeboisrond/" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.pinterest.com/prestigeboisrond/" target="_blank" class="social-link"><i class="fab fa-pinterest-p"></i></a>
-            <a href="https://www.youtube.com/@prestigeboisrond" target="_blank" class="social-link"><i class="fab fa-youtube"></i></a>
+            @foreach($socialLinks as $link)
+              <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="{{ $link['label'] }}"><i class="{{ $link['icon'] }}"></i></a>
+            @endforeach
           </div>
         </div>
+        @endif
       </div>
     </div>
   </div>
@@ -1238,12 +1295,13 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
           <i class="fa fa-envelope"></i> {{ $email }}
         </a>
       </div>
-      <div class="social-links">
-        <a href="https://www.facebook.com/prestigeboisrond" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://www.instagram.com/prestigeboisrond/" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
-        <a href="https://www.pinterest.com/prestigeboisrond/" target="_blank" class="social-link"><i class="fab fa-pinterest-p"></i></a>
-        <a href="https://www.youtube.com/@prestigeboisrond" target="_blank" class="social-link"><i class="fab fa-youtube"></i></a>
-      </div>
+      @if(!empty($socialLinks))
+        <div class="social-links">
+          @foreach($socialLinks as $link)
+            <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="{{ $link['label'] }}"><i class="{{ $link['icon'] }}"></i></a>
+          @endforeach
+        </div>
+      @endif
     </div>
     <div class="footer-col"><h4>Maisons & Chalets</h4><ul><li><a href="#">Tous nos modèles</a></li><li><a href="#">Série Prestige</a></li><li><a href="#">Série Scandinave</a></li><li><a href="#">Série Contemporaine</a></li><li><a href="#">Maison en bois rond</a></li><li><a href="#">Chalet en bois rond</a></li></ul></div>
     <div class="footer-col"><h4>Services</h4><ul><li><a href="#">Plans</a></li><li><a href="#">Soutien technique</a></li><li><a href="#">Auto-construction</a></li><li><a href="#">Surveillance chantier</a></li><li><a href="#">Ajouts & rénovations</a></li><li><a href="#">Transport</a></li></ul></div>
@@ -1379,7 +1437,8 @@ const socialPlat = {
 let socialSwiperInst;
 function renderSocialFeed(platform) {
   const feed = document.getElementById('socialFeed');
-  feed.innerHTML = socialImages.map((img, i) => `
+  const images = socialImages[platform] || socialImages.instagram || [];
+  feed.innerHTML = images.map((img, i) => `
     <div class="swiper-slide">
       <div class="social-post">
         <div class="social-post-img"><img src="${img}" alt="Post social" loading="lazy"></div>

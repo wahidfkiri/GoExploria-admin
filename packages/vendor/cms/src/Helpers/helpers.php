@@ -926,6 +926,239 @@ if (!function_exists('get_company_info')) {
     }
 }
 
+if (!function_exists('normalize_cms_opening_hours')) {
+    /**
+     * Normalize establishment opening hours for Blade templates.
+     *
+     * @param mixed $hours
+     * @param array $fallback
+     * @return array
+     */
+    function normalize_cms_opening_hours($hours, array $fallback = []): array
+    {
+        if ($hours instanceof \Illuminate\Support\Collection) {
+            $hours = $hours->all();
+        }
+
+        if (is_string($hours)) {
+            $hours = trim($hours);
+            if ($hours === '') {
+                return $fallback ? normalize_cms_opening_hours($fallback) : [];
+            }
+
+            $decoded = json_decode($hours, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $hours = $decoded;
+            } else {
+                $rows = [];
+                foreach (preg_split('/\r\n|\r|\n|\|/', $hours) as $line) {
+                    $line = trim($line);
+                    if ($line === '') {
+                        continue;
+                    }
+
+                    $parts = preg_split('/\s*[:：]\s*/u', $line, 2);
+                    $rows[] = count($parts) === 2
+                        ? ['day' => trim($parts[0]), 'hours' => trim($parts[1])]
+                        : ['day' => '', 'hours' => $line];
+                }
+
+                return $rows ?: ($fallback ? normalize_cms_opening_hours($fallback) : []);
+            }
+        }
+
+        if (!is_array($hours)) {
+            return $fallback ? normalize_cms_opening_hours($fallback) : [];
+        }
+
+        $dayLabels = [
+            'monday' => 'Lundi',
+            'tuesday' => 'Mardi',
+            'wednesday' => 'Mercredi',
+            'thursday' => 'Jeudi',
+            'friday' => 'Vendredi',
+            'saturday' => 'Samedi',
+            'sunday' => 'Dimanche',
+            'lundi' => 'Lundi',
+            'mardi' => 'Mardi',
+            'mercredi' => 'Mercredi',
+            'jeudi' => 'Jeudi',
+            'vendredi' => 'Vendredi',
+            'samedi' => 'Samedi',
+            'dimanche' => 'Dimanche',
+        ];
+
+        $formatDay = static function ($day) use ($dayLabels): string {
+            $day = trim((string) $day);
+            if ($day === '') {
+                return '';
+            }
+
+            $key = strtolower($day);
+            return $dayLabels[$key] ?? $day;
+        };
+
+        $formatHours = static function ($value): string {
+            if (is_bool($value)) {
+                return $value ? 'Ouvert' : 'Fermé';
+            }
+
+            return trim((string) $value);
+        };
+
+        $rows = [];
+        $isList = array_keys($hours) === range(0, count($hours) - 1);
+
+        foreach ($hours as $key => $entry) {
+            if (is_string($entry) || is_numeric($entry)) {
+                if ($isList) {
+                    $line = trim((string) $entry);
+                    $parts = preg_split('/\s*[:：]\s*/u', $line, 2);
+                    $rows[] = count($parts) === 2
+                        ? ['day' => trim($parts[0]), 'hours' => trim($parts[1])]
+                        : ['day' => '', 'hours' => $line];
+                } else {
+                    $rows[] = ['day' => $formatDay($key), 'hours' => $formatHours($entry)];
+                }
+
+                continue;
+            }
+
+            if (!is_array($entry)) {
+                continue;
+            }
+
+            $day = $entry['day']
+                ?? $entry['jour']
+                ?? $entry['label']
+                ?? $entry['name']
+                ?? $entry['weekday']
+                ?? ($isList ? '' : $key);
+
+            $value = $entry['hours']
+                ?? $entry['hour']
+                ?? $entry['horaire']
+                ?? $entry['value']
+                ?? $entry['time']
+                ?? null;
+
+            if ($value === null) {
+                $isClosed = (bool) ($entry['closed'] ?? $entry['is_closed'] ?? false);
+                $open = $entry['open'] ?? $entry['opening'] ?? $entry['from'] ?? $entry['start'] ?? null;
+                $close = $entry['close'] ?? $entry['closing'] ?? $entry['to'] ?? $entry['end'] ?? null;
+
+                if ($isClosed) {
+                    $value = 'Fermé';
+                } elseif ($open !== null && $close !== null) {
+                    $value = trim((string) $open) . ' - ' . trim((string) $close);
+                } elseif ($open !== null) {
+                    $value = trim((string) $open);
+                }
+            }
+
+            $day = $formatDay($day);
+            $value = $formatHours($value);
+
+            if ($day !== '' || $value !== '') {
+                $rows[] = ['day' => $day, 'hours' => $value];
+            }
+        }
+
+        return $rows ?: ($fallback ? normalize_cms_opening_hours($fallback) : []);
+    }
+}
+
+if (!function_exists('format_cms_opening_hours')) {
+    /**
+     * Format normalized opening hours as a compact string.
+     *
+     * @param mixed $hours
+     * @param string $separator
+     * @return string
+     */
+    function format_cms_opening_hours($hours, string $separator = ' | '): string
+    {
+        return collect(normalize_cms_opening_hours($hours))
+            ->map(function ($row) {
+                $day = trim((string) ($row['day'] ?? ''));
+                $value = trim((string) ($row['hours'] ?? ''));
+
+                if ($day === '') {
+                    return $value;
+                }
+
+                return $day . ' : ' . $value;
+            })
+            ->filter()
+            ->implode($separator);
+    }
+}
+
+if (!function_exists('get_establishment_opening_hours')) {
+    /**
+     * Read opening hours from company settings.
+     *
+     * @param mixed $etablissement
+     * @param array $fallback
+     * @return array
+     */
+    function get_establishment_opening_hours($etablissement, array $fallback = []): array
+    {
+        $hours = [];
+
+        if ($etablissement && method_exists($etablissement, 'getSetting')) {
+            $hours = $etablissement->getSetting('opening_hours', [], 'company');
+        }
+
+        return normalize_cms_opening_hours($hours, $fallback);
+    }
+}
+
+if (!function_exists('get_establishment_social_links')) {
+    /**
+     * Read non-empty social links from cms_settings group=social.
+     *
+     * @param mixed $etablissement
+     * @return array
+     */
+    function get_establishment_social_links($etablissement): array
+    {
+        if (!$etablissement || !method_exists($etablissement, 'getSetting')) {
+            return [];
+        }
+
+        $networks = [
+            'facebook' => ['key' => 'facebook_url', 'label' => 'Facebook', 'icon' => 'fab fa-facebook-f'],
+            'instagram' => ['key' => 'instagram_url', 'label' => 'Instagram', 'icon' => 'fab fa-instagram'],
+            'twitter' => ['key' => 'twitter_url', 'label' => 'X', 'icon' => 'fab fa-x-twitter'],
+            'pinterest' => ['key' => 'pinterest_url', 'label' => 'Pinterest', 'icon' => 'fab fa-pinterest-p'],
+            'linkedin' => ['key' => 'linkedin_url', 'label' => 'LinkedIn', 'icon' => 'fab fa-linkedin-in'],
+            'youtube' => ['key' => 'youtube_url', 'label' => 'YouTube', 'icon' => 'fab fa-youtube'],
+            'tiktok' => ['key' => 'tiktok_url', 'label' => 'TikTok', 'icon' => 'fab fa-tiktok'],
+        ];
+
+        $links = [];
+        foreach ($networks as $network => $meta) {
+            $value = trim((string) ($etablissement->getSetting($meta['key'], '', 'social') ?? ''));
+            if ($value === '' || $value === '#' || in_array(strtolower($value), ['null', 'undefined', 'none', 'n/a'], true)) {
+                continue;
+            }
+
+            if (!preg_match('#^(https?:)?//#i', $value) && !preg_match('#^(mailto:|tel:)#i', $value)) {
+                $value = 'https://' . ltrim($value, '/');
+            }
+
+            $links[$network] = [
+                'url' => $value,
+                'label' => $meta['label'],
+                'icon' => $meta['icon'],
+            ];
+        }
+
+        return $links;
+    }
+}
+
 if (!function_exists('get_slider_media')) {
     /**
      * Get slider media directly from cms.cms_media.

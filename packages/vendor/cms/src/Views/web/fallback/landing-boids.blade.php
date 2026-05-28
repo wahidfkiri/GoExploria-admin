@@ -1634,8 +1634,13 @@
             ?: $etablissement->getSetting('adresse', null, 'general')
             ?: $etablissement->adresse
             ?: 'Adresse en cours de configuration';
+        $hours = $etablissement->getSetting('opening_hours', [], 'company');
+        $workingHours = normalize_cms_opening_hours($hours, $workingHours ?? []);
 
-        $gallery = collect($galleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
+        $gallery = collect($mainGalleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
+        if ($gallery->isEmpty()) {
+            $gallery = collect($galleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
+        }
         $galleryFallback = collect([
             ['thumbnail' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/GALLERY_01.jpg', 'name' => 'Projet 1'],
             ['thumbnail' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/GALLERY_02.jpg', 'name' => 'Projet 2'],
@@ -1689,14 +1694,18 @@
             ['text' => 'Découpe parfaite de mes billots. Je recommande à 100 % pour la qualité du rendu final.', 'author' => 'Pierre Gagnon · Google'],
         ];
 
-        $videoChannelUrl = 'https://www.youtube.com/@Moulin_%C3%A0_Scie_Lanaudi%C3%A8re';
+        $socialLinks = $socialLinks ?? get_establishment_social_links($etablissement);
+        $facebookUrl = $socialLinks['facebook']['url'] ?? null;
+        $instagramUrl = $socialLinks['instagram']['url'] ?? null;
+        $pinterestUrl = $socialLinks['pinterest']['url'] ?? null;
+        $youtubeUrl = $socialLinks['youtube']['url'] ?? null;
+        $videoChannelUrl = $youtubeUrl;
         $videoThumbs = [
             'https://img.youtube.com/vi/0edALYi7_Qs/hqdefault.jpg',
             'https://img.youtube.com/vi/7Wq5hRTvN5g/hqdefault.jpg',
             'https://img.youtube.com/vi/6M4f5HXQYvQ/hqdefault.jpg',
         ];
 
-        $instagramUrl = $etablissement->instagram_url ?? $etablissement->instagram ?? '#';
         $instagramHandle = '@notre_compte';
         if (is_string($instagramUrl) && str_contains($instagramUrl, 'instagram.com')) {
             $path = trim((string) parse_url($instagramUrl, PHP_URL_PATH), '/');
@@ -1708,7 +1717,7 @@
             }
         }
 
-        $instagramBase = collect($galleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
+        $instagramBase = collect($instagramGalleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
         if ($instagramBase->isEmpty()) {
             $instagramBase = $gallery->values();
         }
@@ -1729,7 +1738,6 @@
         $instagramLikes = [2345, 1892, 3567, 4210];
         $instagramTags = ['#instant-creatif', '#naturelovers', '#shoplocal', '#explore'];
 
-        $facebookUrl = $etablissement->facebook_url ?? $etablissement->facebook ?? '#';
         $facebookPageLabel = '/notrepage';
         if (is_string($facebookUrl) && str_contains($facebookUrl, 'facebook.com')) {
             $path = trim((string) parse_url($facebookUrl, PHP_URL_PATH), '/');
@@ -1741,7 +1749,7 @@
             }
         }
 
-        $facebookBase = collect($galleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
+        $facebookBase = collect($facebookGalleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
         if ($facebookBase->isEmpty()) {
             $facebookBase = $gallery->values();
         }
@@ -1784,7 +1792,6 @@
             '<i class="fas fa-users"></i> Communauté',
         ];
 
-        $pinterestUrl = $etablissement->pinterest_url ?? $etablissement->pinterest ?? '#';
         $pinterestBoardLabel = '@notre_tableau';
         if (is_string($pinterestUrl) && str_contains($pinterestUrl, 'pinterest.')) {
             $path = trim((string) parse_url($pinterestUrl, PHP_URL_PATH), '/');
@@ -1796,10 +1803,15 @@
             }
         }
 
-        $pinterestPins = $facebookBase->take(-6)->values();
-        if ($pinterestPins->count() < 6 && $facebookBase->isNotEmpty()) {
+        $pinterestBase = collect($pinterestGalleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
+        if ($pinterestBase->isEmpty()) {
+            $pinterestBase = $gallery->values();
+        }
+
+        $pinterestPins = $pinterestBase->take(-6)->values();
+        if ($pinterestPins->count() < 6 && $pinterestBase->isNotEmpty()) {
             while ($pinterestPins->count() < 6) {
-                foreach ($facebookBase as $item) {
+                foreach ($pinterestBase as $item) {
                     $pinterestPins->push($item);
                     if ($pinterestPins->count() >= 6) {
                         break;
@@ -2122,9 +2134,11 @@
             <div class="boids-social-body">
                 <div class="boids-social-post">Nouveau projet de sciage complété avec succès. Résultat précis et client satisfait.</div>
                 <div class="boids-social-post">Service mobile rapide sur site avec découpe personnalisée selon les besoins.</div>
-                <a class="boids-social-btn boids-social-btn--fb" href="https://www.facebook.com/MoulinaciesLanaudiere" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-facebook"></i> Suivre sur Facebook
-                </a>
+                @if($facebookUrl)
+                    <a class="boids-social-btn boids-social-btn--fb" href="{{ $facebookUrl }}" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-facebook"></i> Suivre sur Facebook
+                    </a>
+                @endif
             </div>
         </div>
         <div class="boids-social-card">
@@ -2135,25 +2149,29 @@
                         <img src="{{ $media['thumbnail'] }}" alt="{{ $media['name'] ?? 'Photo' }}">
                     @endforeach
                 </div>
-                <a class="boids-social-btn boids-social-btn--ig" href="{{ $devisLink }}" target="_blank" rel="noopener noreferrer">
-                    <i class="fas fa-images"></i> Voir plus de photos
-                </a>
+                @if($instagramUrl)
+                    <a class="boids-social-btn boids-social-btn--ig" href="{{ $instagramUrl }}" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-instagram"></i> Voir plus de photos
+                    </a>
+                @endif
             </div>
         </div>
         <div class="boids-social-card">
             <div class="boids-social-head"><i class="fab fa-youtube"></i> YouTube</div>
             <div class="boids-social-body">
-                <div class="boids-social-videos">
-                    @foreach($videoThumbs as $thumb)
-                        <a href="{{ $videoChannelUrl }}" target="_blank" rel="noopener noreferrer">
-                            <img src="{{ $thumb }}" alt="Vignette vidéo">
-                            <span><i class="fas fa-play-circle"></i></span>
-                        </a>
-                    @endforeach
-                </div>
-                <a class="boids-social-btn boids-social-btn--yt" href="{{ $videoChannelUrl }}" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-youtube"></i> S'abonner sur YouTube
-                </a>
+                @if($videoChannelUrl)
+                    <div class="boids-social-videos">
+                        @foreach($videoThumbs as $thumb)
+                            <a href="{{ $videoChannelUrl }}" target="_blank" rel="noopener noreferrer">
+                                <img src="{{ $thumb }}" alt="Vignette vidéo">
+                                <span><i class="fas fa-play-circle"></i></span>
+                            </a>
+                        @endforeach
+                    </div>
+                    <a class="boids-social-btn boids-social-btn--yt" href="{{ $videoChannelUrl }}" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-youtube"></i> S'abonner sur YouTube
+                    </a>
+                @endif
             </div>
         </div>
     </div>
@@ -2196,7 +2214,7 @@
 
             <div class="fb-albums-grid" data-gjs-type="albums">
                 @foreach($facebookAlbums as $index => $album)
-                    <a class="fb-album" data-gjs-type="album" href="{{ $facebookUrl !== '#' ? $facebookUrl : $devisLink }}" target="_blank" rel="noopener noreferrer">
+                    <a class="fb-album" data-gjs-type="album" href="{{ $facebookUrl ?: '#section-facebook' }}" @if($facebookUrl) target="_blank" rel="noopener noreferrer" @endif>
                         <img src="{{ $album['thumbnail'] }}" alt="album" data-gjs-type="image">
                         <div class="fb-album-overlay" data-gjs-type="text">
                             {!! $facebookAlbumLabels[$index] ?? '<i class="fas fa-images"></i> Album' !!}
@@ -2206,10 +2224,12 @@
             </div>
 
             <div class="fb-cta" data-gjs-type="cta">
-                <a href="{{ $facebookUrl !== '#' ? $facebookUrl : $devisLink }}" class="fb-button" data-gjs-type="button" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-facebook" style="margin-right: 10px;"></i>
-                    <span data-gjs-type="text">Suivre sur Facebook</span>
-                </a>
+                @if($facebookUrl)
+                    <a href="{{ $facebookUrl }}" class="fb-button" data-gjs-type="button" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-facebook" style="margin-right: 10px;"></i>
+                        <span data-gjs-type="text">Suivre sur Facebook</span>
+                    </a>
+                @endif
             </div>
         </div>
     </section>
@@ -2236,9 +2256,8 @@
                     <a
                         class="insta-card"
                         data-gjs-type="social-post"
-                        href="{{ $instagramUrl !== '#' ? $instagramUrl : $devisLink }}"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href="{{ $instagramUrl ?: '#section-instagram' }}"
+                        @if($instagramUrl) target="_blank" rel="noopener noreferrer" @endif
                     >
                         <img src="{{ $post['thumbnail'] }}" alt="{{ $postName }}" data-gjs-type="image">
                         <div class="insta-icon"><i class="fab fa-instagram"></i></div>
@@ -2251,10 +2270,12 @@
             </div>
 
             <div class="insta-cta" data-gjs-type="cta">
-                <a href="{{ $instagramUrl !== '#' ? $instagramUrl : $devisLink }}" class="insta-button" data-gjs-type="button" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-instagram" style="margin-right: 10px;"></i>
-                    <span data-gjs-type="text">Suivre sur Instagram</span>
-                </a>
+                @if($instagramUrl)
+                    <a href="{{ $instagramUrl }}" class="insta-button" data-gjs-type="button" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-instagram" style="margin-right: 10px;"></i>
+                        <span data-gjs-type="text">Suivre sur Instagram</span>
+                    </a>
+                @endif
             </div>
         </div>
     </section>
@@ -2277,7 +2298,7 @@
                         $isLarge = $index === 0;
                         $category = $pinterestCategories[$index - 1] ?? '✨ Inspiration';
                     @endphp
-                    <a class="pin-card{{ $isLarge ? ' large' : '' }}" data-gjs-type="pin" href="{{ $pinterestUrl !== '#' ? $pinterestUrl : $devisLink }}" target="_blank" rel="noopener noreferrer">
+                    <a class="pin-card{{ $isLarge ? ' large' : '' }}" data-gjs-type="pin" href="{{ $pinterestUrl ?: '#section-pinterest' }}" @if($pinterestUrl) target="_blank" rel="noopener noreferrer" @endif>
                         <img src="{{ $pin['thumbnail'] }}" alt="Pinterest pin" data-gjs-type="image">
                         @if($isLarge)
                             <div class="pin-label" data-gjs-type="text">
@@ -2292,10 +2313,12 @@
             </div>
 
             <div class="pinterest-cta" data-gjs-type="cta">
-                <a href="{{ $pinterestUrl !== '#' ? $pinterestUrl : $devisLink }}" class="pinterest-button" data-gjs-type="button" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-pinterest" style="margin-right: 10px;"></i>
-                    <span data-gjs-type="text">Suivre sur Pinterest</span>
-                </a>
+                @if($pinterestUrl)
+                    <a href="{{ $pinterestUrl }}" class="pinterest-button" data-gjs-type="button" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-pinterest" style="margin-right: 10px;"></i>
+                        <span data-gjs-type="text">Suivre sur Pinterest</span>
+                    </a>
+                @endif
             </div>
         </div>
     </section>

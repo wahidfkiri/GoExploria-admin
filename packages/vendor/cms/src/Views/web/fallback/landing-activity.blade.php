@@ -851,6 +851,8 @@
 
     @php
         $devisLink = $devisUrl ?? route('devis');
+        $hours = $etablissement->getSetting('opening_hours', [], 'company');
+        $workingHours = normalize_cms_opening_hours($hours, $workingHours ?? []);
         $cmsLandingProducts = collect();
         try {
             if (
@@ -1284,6 +1286,41 @@
                             @endforeach
                         </div>
                     </article>
+
+                    @if(collect($blogPosts ?? [])->isNotEmpty())
+                        <article id="blog" class="lf-section">
+                            <div class="lf-row-head">
+                                <h3>Blog & actualités</h3>
+                            </div>
+                            <div class="lf-events">
+                                @foreach(collect($blogPosts)->take(5) as $post)
+                                    @php
+                                        $blogUrl = data_get($post, 'url') ?: '#blog';
+                                        $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
+                                        $blogImage = data_get($post, 'image') ?: ($galleryImages[$loop->index] ?? $galleryImages[0] ?? null);
+                                    @endphp
+                                    <article class="lf-event">
+                                        @if($blogImage)
+                                            <div class="lf-event-media">
+                                                <img src="{{ $blogImage }}" alt="{{ data_get($post, 'title', 'Article') }}">
+                                                <div class="lf-date">{{ data_get($post, 'tag', 'Blog') }}</div>
+                                            </div>
+                                        @endif
+                                        <div class="lf-event-body">
+                                            <h4>{{ data_get($post, 'title') }}</h4>
+                                            @if(data_get($post, 'excerpt'))
+                                                <p>{{ data_get($post, 'excerpt') }}</p>
+                                            @endif
+                                            <div class="lf-event-meta">
+                                                <span>{{ data_get($post, 'date') }}</span>
+                                                <a href="{{ $blogUrl }}" @if($isExternalBlogUrl) target="_blank" rel="noopener noreferrer" @endif>Lire</a>
+                                            </div>
+                                        </div>
+                                    </article>
+                                @endforeach
+                            </div>
+                        </article>
+                    @endif
 
                     <article id="section-gallery" class="lf-section">
                         <div class="lf-row-head">

@@ -281,7 +281,7 @@ class DestinationController extends Controller
     private function enrichCollection($items, string $type, ?string $parentPath = null): Collection
     {
         return collect($items)
-            ->filter(fn ($item) => $item instanceof Model)
+            ->filter(fn ($item) => $item instanceof Model && (bool) ($item->is_active ?? true))
             ->map(fn (Model $item) => $this->destinationPayload($item, $type, $parentPath))
             ->values();
     }

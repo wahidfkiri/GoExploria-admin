@@ -114,7 +114,17 @@ function searchForfaits() {
 function bookForfait(name) { showToast('Demande de réservation pour « '+name+' »', 'success'); setTimeout(() => document.getElementById('contact')?.scrollIntoView({behavior:'smooth'}), 650); }
 function toggleFaq(el){ const wasOpen=el.classList.contains('open'); document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open')); if(!wasOpen) el.classList.add('open'); }
 function showTab(id, event){ document.querySelectorAll('.itinerary-panel').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById('tab-'+id)?.classList.add('active'); event?.target?.classList.add('active'); }
-function switchGallery(type, event){ document.querySelectorAll('.gallery-tab').forEach(t=>t.classList.remove('active')); event?.target?.classList.add('active'); const grid=document.getElementById('galleryGrid'); if(grid) grid.style.filter = type === 'instagram' ? 'sepia(.25) saturate(1.35)' : 'none'; }
+function switchGallery(type, event){
+  document.querySelectorAll('.gallery-tab').forEach(t=>t.classList.remove('active'));
+  event?.target?.classList.add('active');
+  const grid=document.getElementById('galleryGrid');
+  if(!grid) return;
+  let items=[];
+  try{items=JSON.parse(grid.dataset[type] || '[]');}catch(e){items=[];}
+  const esc=(value)=>String(value || '').replace(/[&<>"']/g,(ch)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  if(items.length){grid.innerHTML=items.map(item=>`<div class="gallery-item"><img src="${esc(item.thumbnail || item.url)}" alt="${esc(item.name || 'Galerie')}"></div>`).join('');}
+  grid.style.filter = type === 'instagram' ? 'sepia(.25) saturate(1.35)' : 'none';
+}
 function showToast(msg,type=''){ const t=document.getElementById('toast'); if(!t) return; t.textContent=msg; t.className='toast'+(type?' '+type:''); setTimeout(()=>t.classList.add('show'),50); setTimeout(()=>t.classList.remove('show'),3500); }
 
 window.addEventListener('scroll',()=>{ document.getElementById('navbar')?.classList.toggle('scrolled',window.scrollY>50); });

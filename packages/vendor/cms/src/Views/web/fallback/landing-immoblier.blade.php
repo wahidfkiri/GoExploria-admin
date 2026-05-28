@@ -11,8 +11,15 @@
     $phoneDial = strlen($phoneDial) === 10 ? '+1' . $phoneDial : $phoneDial;
     $email = $etablissement->getSetting('email', null, 'general') ?: $etablissement->getSetting('email_contact', null, 'general') ?: ($etablissement->email_contact ?? null) ?: ($etablissement->email ?? null) ?: 'info@goexploriabusiness.com';
     $address = $etablissement->getSetting('address', null, 'company') ?: $etablissement->getSetting('adress', null, 'company') ?: $etablissement->getSetting('address', null, 'general') ?: $etablissement->getSetting('adresse', null, 'general') ?: ($etablissement->adresse ?? null) ?: 'Rue des Jonquilles, Rivière-du-Loup, QC';
-    $facebookUrl = $etablissement->getSetting('facebook', null, 'social') ?: $etablissement->getSetting('facebook_url', null, 'general') ?: '#';
-    $instagramUrl = $etablissement->getSetting('instagram', null, 'social') ?: $etablissement->getSetting('instagram_url', null, 'general') ?: '#';
+    $hours = $etablissement->getSetting('opening_hours', [], 'company');
+    $workingHours = normalize_cms_opening_hours($hours, [
+        ['day' => 'Lundi au vendredi', 'hours' => '9h à 17h'],
+        ['day' => 'Visites', 'hours' => 'Sur rendez-vous'],
+    ]);
+    $socialLinks = $socialLinks ?? get_establishment_social_links($etablissement);
+    $facebookUrl = $socialLinks['facebook']['url'] ?? null;
+    $instagramUrl = $socialLinks['instagram']['url'] ?? null;
+    $pinterestUrl = $socialLinks['pinterest']['url'] ?? null;
     $mapLat = (float) ($mapLatitude ?? $etablissement->latitude ?? 47.8358);
     $mapLng = (float) ($mapLongitude ?? $etablissement->longitude ?? -69.5369);
     $initials = collect(explode(' ', $siteName))->filter()->take(2)->map(fn ($part) => mb_substr($part, 0, 1, 'UTF-8'))->implode('') ?: 'PC';
@@ -74,10 +81,46 @@
         ['thumbnail' => 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1800&q=85', 'name' => 'Décor soigné'],
     ]);
 
-    // Only the hero slider is dynamic for this fallback. Other visual sections
-    // intentionally keep the default design media.
-    $gallery = $fallbackImages;
+    $gallery = collect($mainGalleryMedia ?? [])->map(function ($row) use ($mediaUrl) {
+        $url = $mediaUrl(data_get($row, 'thumbnail') ?: data_get($row, 'url') ?: data_get($row, 'path'));
+        return [
+            'thumbnail' => $url,
+            'url' => $mediaUrl(data_get($row, 'url') ?: data_get($row, 'path')) ?: $url,
+            'name' => data_get($row, 'name') ?: data_get($row, 'title') ?: 'Galerie',
+            'type' => strtolower((string) (data_get($row, 'type') ?: 'image')),
+        ];
+    })->filter(fn ($row) => !empty($row['thumbnail']))->values();
+    if ($gallery->isEmpty()) {
+        $gallery = collect($galleryMedia ?? [])->map(function ($row) use ($mediaUrl) {
+            $url = $mediaUrl(data_get($row, 'thumbnail') ?: data_get($row, 'url') ?: data_get($row, 'path'));
+            return [
+                'thumbnail' => $url,
+                'url' => $mediaUrl(data_get($row, 'url') ?: data_get($row, 'path')) ?: $url,
+                'name' => data_get($row, 'name') ?: data_get($row, 'title') ?: 'Galerie',
+                'type' => strtolower((string) (data_get($row, 'type') ?: 'image')),
+            ];
+        })->filter(fn ($row) => !empty($row['thumbnail']))->values();
+    }
+    if ($gallery->isEmpty()) {
+        $gallery = $fallbackImages;
+    }
     while ($gallery->count() < 8) $gallery = $gallery->concat($fallbackImages)->values();
+
+    $normalizeSocialMedia = static function ($items, $fallback) use ($mediaUrl) {
+        $media = collect($items ?? [])->map(function ($row) use ($mediaUrl) {
+            $url = $mediaUrl(data_get($row, 'thumbnail') ?: data_get($row, 'url') ?: data_get($row, 'path'));
+            return [
+                'thumbnail' => $url,
+                'url' => $mediaUrl(data_get($row, 'url') ?: data_get($row, 'path')) ?: $url,
+                'name' => data_get($row, 'name') ?: data_get($row, 'title') ?: 'Publication',
+            ];
+        })->filter(fn ($row) => !empty($row['thumbnail']))->values();
+
+        return $media->isNotEmpty() ? $media : $fallback->values();
+    };
+    $instagramGallery = $normalizeSocialMedia($instagramGalleryMedia ?? [], $gallery);
+    $facebookGallery = $normalizeSocialMedia($facebookGalleryMedia ?? [], $gallery);
+    $pinterestGallery = $normalizeSocialMedia($pinterestGalleryMedia ?? [], $gallery);
 
     $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($mediaUrl, $heroEmbedUrl, $siteName) {
         $type = strtolower((string) data_get($slider, 'type', 'image'));

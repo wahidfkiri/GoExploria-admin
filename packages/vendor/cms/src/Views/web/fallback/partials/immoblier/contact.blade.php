@@ -31,7 +31,7 @@
             <div class="pc-info-card"><i class="fa-solid fa-phone"></i><div><h3>Téléphone</h3><a href="tel:{{ $phoneDial }}">{{ $phone }}</a></div></div>
             <div class="pc-info-card"><i class="fa-solid fa-envelope"></i><div><h3>Courriel</h3><a href="mailto:{{ $email }}">{{ $email }}</a></div></div>
             <div class="pc-info-card"><i class="fa-solid fa-location-dot"></i><div><h3>Adresse</h3><p>{{ $address }}</p></div></div>
-            <div class="pc-info-card"><i class="fa-solid fa-clock"></i><div><h3>Horaire</h3><p>Lundi au vendredi · 9h à 17h<br>Visites sur rendez-vous</p></div></div>
+            <div class="pc-info-card"><i class="fa-solid fa-clock"></i><div><h3>Horaire</h3><p>@foreach($workingHours as $row){{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}@if(!$loop->last)<br>@endif @endforeach</p></div></div>
         </div>
     </div>
 </section>

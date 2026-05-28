@@ -4,6 +4,13 @@
         ?: $etablissement->getSetting('site_description', null, 'general')
         ?: get_site_description($etablissement->id)
         ?: 'Des expériences de voyage uniques et inoubliables pour passer au niveau supérieur.';
+    $hours = $etablissement->getSetting('opening_hours', [], 'company');
+    $workingHours = normalize_cms_opening_hours($hours, [
+        ['day' => 'Lun-Sam', 'hours' => '9h-19h'],
+        ['day' => 'Dim', 'hours' => '10h-16h'],
+    ]);
+    $openingHoursText = format_cms_opening_hours($workingHours);
+    $socialLinks = $socialLinks ?? get_establishment_social_links($etablissement);
 
     $mediaUrl = static function ($path) {
         if (empty($path)) return null;
@@ -64,6 +71,46 @@
             ['type' => 'image', 'url' => 'https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=1920&q=80', 'embed' => null, 'title' => 'VIS DES ÉMOTIONS RARES', 'subtitle' => 'Bivouacs sous les étoiles, dunes infinies, rencontres authentiques. Des moments qui marquent une vie entière.', 'button_text' => 'Découvrir', 'button_url' => '#services'],
         ]);
     }
+
+    $nextLevelGalleryFallback = collect([
+        ['thumbnail' => 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80', 'name' => 'Sahara Marocain'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80', 'name' => 'Alpes Suisses'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80', 'name' => 'Maldives'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=600&q=80', 'name' => 'Outback Australien'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80', 'name' => 'Fjords Norvégiens'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=600&q=80', 'name' => 'Santorin'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=600&q=80', 'name' => 'Bali'],
+    ]);
+
+    $normalizeNextLevelMedia = static function ($items, $fallback) use ($mediaUrl) {
+        $media = collect($items ?? [])->map(function ($row) use ($mediaUrl) {
+            $url = $mediaUrl(data_get($row, 'thumbnail') ?: data_get($row, 'url') ?: data_get($row, 'path'));
+            return [
+                'thumbnail' => $url,
+                'url' => $mediaUrl(data_get($row, 'url') ?: data_get($row, 'path')) ?: $url,
+                'name' => data_get($row, 'name') ?: data_get($row, 'title') ?: 'Photo',
+            ];
+        })->filter(fn ($row) => !empty($row['thumbnail']))->values();
+
+        return $media->isNotEmpty() ? $media : $fallback->values();
+    };
+
+    $nextLevelGallery = $normalizeNextLevelMedia($mainGalleryMedia ?? [], collect());
+    if ($nextLevelGallery->isEmpty()) {
+        $nextLevelGallery = $normalizeNextLevelMedia($galleryMedia ?? [], $nextLevelGalleryFallback);
+    }
+    $nextLevelInstagram = $normalizeNextLevelMedia($instagramGalleryMedia ?? [], collect([
+        ['thumbnail' => 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&q=80', 'name' => 'Instagram 1'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1502791451862-7bd8c1df43a7?w=400&q=80', 'name' => 'Instagram 2'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&q=80', 'name' => 'Instagram 3'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=400&q=80', 'name' => 'Instagram 4'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1510797215324-95aa89f43c33?w=400&q=80', 'name' => 'Instagram 5'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=400&q=80', 'name' => 'Instagram 6'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1539635278303-d4002c07eae3?w=400&q=80', 'name' => 'Instagram 7'],
+        ['thumbnail' => 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400&q=80', 'name' => 'Instagram 8'],
+    ]));
+    $nextLevelFacebook = $normalizeNextLevelMedia($facebookGalleryMedia ?? [], $nextLevelGallery);
+    $nextLevelPinterest = $normalizeNextLevelMedia($pinterestGalleryMedia ?? [], $nextLevelGallery);
 
     $youtubeIdFromUrl = static function ($value) {
         $raw = trim((string) $value);
@@ -164,6 +211,17 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script>
+(function () {
+  try {
+    const saved = localStorage.getItem('go-exploria-theme');
+    const preferLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+    if (saved === 'light' || (!saved && preferLight)) {
+      document.documentElement.classList.add('light');
+    }
+  } catch (error) {}
+})();
+</script>
 <style>
 
 :root {
@@ -272,6 +330,47 @@ nav.scrolled .templates-mega-panel { top: 64px; }
 .lang-btn:hover,
 .lang-btn.is-active { background: var(--gold); color: var(--dark); opacity: 1; }
 .lang-flag { width: 18px; height: 13px; border-radius: 3px; box-shadow: 0 0 0 1px rgba(255,255,255,0.18); line-height: 1; background-size: cover; }
+.theme-toggle {
+  width: 46px;
+  height: 26px;
+  border: 1px solid rgba(201,168,76,0.28);
+  border-radius: 50px;
+  cursor: pointer;
+  position: relative;
+  background: rgba(10,10,10,0.58);
+  transition: var(--transition);
+  flex-shrink: 0;
+  padding: 0;
+  color: var(--text);
+  backdrop-filter: blur(12px);
+}
+.theme-toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--gold);
+  transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 1;
+}
+.theme-toggle:hover { border-color: var(--gold); }
+.theme-toggle-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 7px;
+  pointer-events: none;
+  font-size: 10px;
+  line-height: 1;
+  z-index: 2;
+}
+html.light .theme-toggle { background: rgba(255,255,255,0.72); color: var(--text); }
+html.light .theme-toggle::after { transform: translateX(20px); }
 .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
 .hamburger span { width: 26px; height: 2px; background: var(--text); transition: var(--transition); }
 .mobile-menu { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: var(--dark); z-index: 998; flex-direction: column; align-items: center; justify-content: center; gap: 32px; }
@@ -631,6 +730,160 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
 }
 
 .hero-slide-bg iframe { width: 100%; height: 100%; border: 0; position: absolute; inset: 0; object-fit: cover; pointer-events: none; }
+
+html.light {
+  --dark: #f5f2ec;
+  --dark2: #ede9e0;
+  --dark3: #e4dfd4;
+  --dark4: #d8d2c6;
+  --text: #1a1410;
+  --muted: #6b6258;
+  --accent: #1aaa82;
+}
+html.light body {
+  background: var(--dark);
+  color: var(--text);
+}
+html.light ::-webkit-scrollbar-track { background: var(--dark); }
+html.light nav {
+  background: linear-gradient(to bottom, rgba(245,242,236,0.92) 0%, transparent 100%);
+}
+html.light nav.scrolled {
+  background: rgba(245,242,236,0.97);
+  border-bottom: 1px solid rgba(201,168,76,0.25);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+}
+html.light .nav-logo span:last-child,
+html.light .nav-links a,
+html.light .templates-mega-toggle,
+html.light .hamburger span,
+html.light .mobile-menu a { color: var(--text); }
+html.light .hamburger span { background: var(--text); }
+html.light .mobile-menu { background: var(--dark); }
+html.light .templates-mega-panel,
+html.light .lang-menu {
+  background: rgba(245,242,236,0.97);
+  border-color: rgba(201,168,76,0.28);
+  box-shadow: 0 28px 80px rgba(0,0,0,0.16);
+}
+html.light .templates-mega-head { border-bottom-color: rgba(0,0,0,0.08); }
+html.light .templates-mega-copy,
+html.light .template-card p { color: var(--muted); }
+html.light .template-card {
+  color: var(--text);
+  background: #fff;
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+}
+html.light .template-card:hover { box-shadow: 0 18px 48px rgba(0,0,0,0.12); }
+html.light .template-media { background: var(--dark3); }
+html.light .template-card--inactive .template-cta { color: rgba(26,20,16,0.5); }
+html.light .lang-current {
+  background: rgba(255,255,255,0.72);
+  color: var(--text);
+}
+html.light .lang-current:hover,
+html.light .language-switcher.is-open .lang-current,
+html.light .lang-btn:hover,
+html.light .lang-btn.is-active {
+  background: var(--gold);
+  color: var(--dark);
+}
+html.light .lang-btn { color: var(--text); }
+html.light .lang-flag { box-shadow: 0 0 0 1px rgba(0,0,0,0.12); }
+html.light .hero-overlay {
+  background: linear-gradient(135deg, rgba(245,242,236,0.55) 0%, rgba(245,242,236,0.1) 60%, rgba(245,242,236,0.3) 100%);
+}
+html.light .hero-title { color: #fff; text-shadow: 0 2px 30px rgba(0,0,0,0.6); }
+html.light .hero-sub,
+html.light .stat-label { color: rgba(255,255,255,0.76); }
+html.light .btn-outline {
+  border-color: rgba(255,255,255,0.7);
+  color: #fff;
+}
+html.light .btn-outline:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+html.light .hero-audio-toggle {
+  background: rgba(255,255,255,0.72);
+  color: var(--text);
+}
+html.light #services,
+html.light #testimonials,
+html.light #contact { background: var(--dark2); }
+html.light #gallery,
+html.light #social { background: var(--dark3); }
+html.light #blog { background: var(--dark); }
+html.light .service-card,
+html.light .testi-card,
+html.light .blog-card {
+  background: #fff;
+  border-color: rgba(201,168,76,0.15);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+}
+html.light .service-card:hover,
+html.light .blog-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+html.light .service-card h3,
+html.light .blog-card h3,
+html.light .contact-info h3,
+html.light .social-handle-text strong { color: var(--text); }
+html.light .service-card p,
+html.light .testi-text,
+html.light .blog-card p,
+html.light .blog-meta,
+html.light .contact-item span,
+html.light .social-handle-text span,
+html.light .form-group label { color: var(--muted); }
+html.light .service-arrow,
+html.light .social-btn {
+  border-color: rgba(0,0,0,0.12);
+  color: var(--text);
+}
+html.light .service-card:hover .service-arrow,
+html.light .social-btn:hover { color: var(--dark); }
+html.light .platform-badge,
+html.light .social-tabs {
+  background: #fff;
+  border-color: rgba(0,0,0,0.1);
+  color: var(--text);
+}
+html.light .social-tab { color: var(--muted); }
+html.light .form-group input,
+html.light .form-group select,
+html.light .form-group textarea,
+html.light .footer-newsletter input {
+  background: #fff;
+  border-color: rgba(0,0,0,0.12);
+  color: var(--text);
+}
+html.light .form-group input:focus,
+html.light .form-group select:focus,
+html.light .form-group textarea:focus,
+html.light .footer-newsletter input:focus {
+  background: rgba(201,168,76,0.04);
+  border-color: var(--gold);
+}
+html.light .form-group select option { background: #fff; color: var(--text); }
+html.light .map-overlay {
+  background: #fff;
+  border-color: rgba(201,168,76,0.3);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+}
+html.light .map-overlay p { color: var(--muted); }
+html.light footer {
+  background: #e0dbd0;
+  border-top-color: rgba(201,168,76,0.2);
+}
+html.light .footer-brand p,
+html.light .footer-col ul li a,
+html.light .footer-bottom p,
+html.light .footer-bottom-links a { color: var(--muted); }
+html.light .footer-bottom { border-top-color: rgba(0,0,0,0.08); }
+html.light .back-to-top,
+html.light .float-cta {
+  box-shadow: 0 14px 34px rgba(0,0,0,0.16);
+}
 </style>
 </head><body>
 
@@ -811,6 +1064,12 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
         <button type="button" class="lang-btn" data-lang="ar" role="menuitem" aria-label="العربية"><span class="fi fi-sa lang-flag" aria-hidden="true"></span><span class="lang-code">AR</span></button>
       </div>
     </div>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Changer le thème" aria-pressed="false" title="Mode clair / sombre">
+      <span class="theme-toggle-icon" aria-hidden="true">
+        <i class="fas fa-moon"></i>
+        <i class="fas fa-sun"></i>
+      </span>
+    </button>
   </div>
   <div class="hamburger" id="hamburger">
     <span></span><span></span><span></span>
@@ -963,13 +1222,9 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
     <h2 class="section-title reveal delay-1">GALERIE <span>PHOTOS</span></h2>
     <p class="section-sub reveal delay-2">Plongez dans l'univers visuel de Go Exploria. Chaque image raconte une histoire, chaque lieu est une invitation.</p>
     <div class="gallery-grid reveal">
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80" alt="Sahara"><div class="gallery-item-overlay"><span>Sahara Marocain</span></div></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80" alt="Alpes"><div class="gallery-item-overlay"><span>Alpes Suisses</span></div></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" alt="Plage"><div class="gallery-item-overlay"><span>Maldives</span></div></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=600&q=80" alt="Australie"><div class="gallery-item-overlay"><span>Outback Australien</span></div></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80" alt="Fjords"><div class="gallery-item-overlay"><span>Fjords Norvégiens</span></div></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=600&q=80" alt="Grèce"><div class="gallery-item-overlay"><span>Santorin</span></div></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=600&q=80" alt="Asie"><div class="gallery-item-overlay"><span>Bali</span></div></div>
+      @foreach($nextLevelGallery->take(7) as $item)
+        <div class="gallery-item"><img src="{{ $item['thumbnail'] }}" alt="{{ $item['name'] ?? 'Galerie' }}"><div class="gallery-item-overlay"><span>{{ $item['name'] ?? 'Photo' }}</span></div></div>
+      @endforeach
     </div>
   </div>
 </section>
@@ -1119,63 +1374,52 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
     <p class="section-label reveal">Inspirations & Conseils</p>
     <h2 class="section-title reveal delay-1">NOTRE <span>BLOG</span></h2>
     <p class="section-sub reveal delay-2">Des articles pour inspirer vos prochains voyages, des conseils pratiques et des récits d'aventures vécues.</p>
+    @php
+      $nextLevelBlogFallback = collect([
+        ['title' => '10 Secrets Pour Préparer Un Trek Au Sahara Sans Stress', 'excerpt' => 'Tout ce que vous devez savoir avant de partir en expédition désert : équipement, hydratation, budget, et les erreurs à éviter absolument.', 'image' => 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=900&q=80', 'tag' => 'À La Une', 'date' => '12 Jan 2025', 'reading_time' => 8, 'url' => '#blog'],
+        ['title' => 'Les 5 Randonnées Incontournables Du Maghreb', 'excerpt' => '', 'image' => 'https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=600&q=80', 'tag' => 'Trekking', 'date' => '5 Fév 2025', 'reading_time' => 5, 'url' => '#blog'],
+        ['title' => 'Pourquoi Le Voyage Transforme Votre Mental', 'excerpt' => '', 'image' => 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=600&q=80', 'tag' => 'Bien-être', 'date' => '20 Fév 2025', 'reading_time' => 4, 'url' => '#blog'],
+        ['title' => 'Immersion Berbère : Vivre Avec Les Nomades Du Désert', 'excerpt' => '', 'image' => 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=600&q=80', 'tag' => 'Culture', 'date' => '3 Mar 2025', 'reading_time' => 6, 'url' => '#blog'],
+        ['title' => 'Budget Voyage : Voyager Mieux Pour Moins Cher', 'excerpt' => '', 'image' => 'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=600&q=80', 'tag' => 'Conseil', 'date' => '15 Mar 2025', 'reading_time' => 3, 'url' => '#blog'],
+      ]);
+      $nextLevelBlogs = collect($blogPosts ?? [])->take(5)->values()->map(function ($post, $index) use ($nextLevelBlogFallback) {
+        $fallback = $nextLevelBlogFallback->get($index, $nextLevelBlogFallback->first());
+        return [
+          'title' => data_get($post, 'title') ?: data_get($fallback, 'title'),
+          'excerpt' => data_get($post, 'excerpt') ?: data_get($fallback, 'excerpt'),
+          'image' => data_get($post, 'image') ?: data_get($fallback, 'image'),
+          'tag' => data_get($post, 'tag') ?: data_get($fallback, 'tag'),
+          'date' => data_get($post, 'date') ?: data_get($fallback, 'date'),
+          'reading_time' => data_get($post, 'reading_time') ?: data_get($fallback, 'reading_time'),
+          'url' => data_get($post, 'url') ?: '#blog',
+        ];
+      });
+      if ($nextLevelBlogs->isEmpty()) {
+        $nextLevelBlogs = $nextLevelBlogFallback;
+      }
+    @endphp
     <div class="blog-grid">
-      <div class="blog-card featured reveal">
-        <div class="blog-img">
-          <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=900&q=80" alt="Blog 1">
-          <span class="blog-tag">À La Une</span>
+      @foreach($nextLevelBlogs as $blog)
+        @php
+          $blogUrl = data_get($blog, 'url') ?: '#blog';
+          $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
+          $blogClass = $loop->first ? 'blog-card featured reveal' : 'blog-card reveal' . ($loop->iteration === 2 || $loop->iteration === 5 ? ' delay-1' : ($loop->iteration === 3 ? ' delay-2' : ''));
+        @endphp
+        <div class="{{ $blogClass }}">
+          <div class="blog-img">
+            <img src="{{ data_get($blog, 'image') }}" alt="{{ data_get($blog, 'title') }}">
+            <span class="blog-tag">{{ data_get($blog, 'tag') }}</span>
+          </div>
+          <div class="blog-body">
+            <div class="blog-meta"><span>{{ data_get($blog, 'date') }}</span><span>·</span><span>{{ data_get($blog, 'reading_time') }} min{{ $loop->first ? ' de lecture' : '' }}</span></div>
+            <h3>{{ data_get($blog, 'title') }}</h3>
+            @if($loop->first && data_get($blog, 'excerpt'))
+              <p>{{ data_get($blog, 'excerpt') }}</p>
+            @endif
+            <a href="{{ $blogUrl }}" class="blog-read" @if($isExternalBlogUrl) target="_blank" rel="noopener noreferrer" @endif>{{ $loop->first ? "Lire l'article" : 'Lire' }} →</a>
+          </div>
         </div>
-        <div class="blog-body">
-          <div class="blog-meta"><span>12 Jan 2025</span><span>·</span><span>8 min de lecture</span></div>
-          <h3>10 Secrets Pour Préparer Un Trek Au Sahara Sans Stress</h3>
-          <p>Tout ce que vous devez savoir avant de partir en expédition désert : équipement, hydratation, budget, et les erreurs à éviter absolument.</p>
-          <a href="#" class="blog-read">Lire l'article →</a>
-        </div>
-      </div>
-      <div class="blog-card reveal delay-1">
-        <div class="blog-img">
-          <img src="https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=600&q=80" alt="Blog 2">
-          <span class="blog-tag">Trekking</span>
-        </div>
-        <div class="blog-body">
-          <div class="blog-meta"><span>5 Fév 2025</span><span>·</span><span>5 min</span></div>
-          <h3>Les 5 Randonnées Incontournables Du Maghreb</h3>
-          <a href="#" class="blog-read">Lire →</a>
-        </div>
-      </div>
-      <div class="blog-card reveal delay-2">
-        <div class="blog-img">
-          <img src="https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=600&q=80" alt="Blog 3">
-          <span class="blog-tag">Bien-être</span>
-        </div>
-        <div class="blog-body">
-          <div class="blog-meta"><span>20 Fév 2025</span><span>·</span><span>4 min</span></div>
-          <h3>Pourquoi Le Voyage Transforme Votre Mental</h3>
-          <a href="#" class="blog-read">Lire →</a>
-        </div>
-      </div>
-      <div class="blog-card reveal">
-        <div class="blog-img">
-          <img src="https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=600&q=80" alt="Blog 4">
-          <span class="blog-tag">Culture</span>
-        </div>
-        <div class="blog-body">
-          <div class="blog-meta"><span>3 Mar 2025</span><span>·</span><span>6 min</span></div>
-          <h3>Immersion Berbère : Vivre Avec Les Nomades Du Désert</h3>
-          <a href="#" class="blog-read">Lire →</a>
-        </div>
-      </div>
-      <div class="blog-card reveal delay-1">
-        <div class="blog-img">
-          <img src="https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=600&q=80" alt="Blog 5">
-          <span class="blog-tag">Conseil</span>
-        </div>
-        <div class="blog-body">
-          <div class="blog-meta"><span>15 Mar 2025</span><span>·</span><span>3 min</span></div>
-          <h3>Budget Voyage : Voyager Mieux Pour Moins Cher</h3>
-          <a href="#" class="blog-read">Lire →</a>
-        </div>
-      </div>
+      @endforeach
     </div>
   </div>
 </section>
@@ -1214,16 +1458,16 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
           <div class="contact-icon"><i class="fas fa-clock" aria-hidden="true"></i></div>
           <div>
             <strong>Horaires</strong>
-            <span>Lun–Sam : 9h–19h | Dim : 10h–16h</span>
+            <span>{{ $openingHoursText }}</span>
           </div>
         </div>
-        <div class="contact-socials">
-          <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
-          <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
-          <a href="#" class="social-btn" aria-label="Pinterest"><i class="fab fa-pinterest-p" aria-hidden="true"></i></a>
-          <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube" aria-hidden="true"></i></a>
-          <a href="#" class="social-btn" aria-label="X"><i class="fab fa-x-twitter" aria-hidden="true"></i></a>
-        </div>
+        @if(!empty($socialLinks))
+          <div class="contact-socials">
+            @foreach($socialLinks as $link)
+              <a href="{{ $link['url'] }}" class="social-btn" aria-label="{{ $link['label'] }}" target="_blank" rel="noopener noreferrer"><i class="{{ $link['icon'] }}" aria-hidden="true"></i></a>
+            @endforeach
+          </div>
+        @endif
       </div>
       <form class="contact-form reveal-right" onsubmit="return handleForm(event)">
         <div class="form-row">
@@ -1306,12 +1550,13 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
       <div class="footer-brand">
         <div class="footer-logo">GO EXPLORIA</div>
         <p>Votre partenaire de confiance pour des aventures de voyage inoubliables. Nous créons des expériences qui transforment les perspectives et les vies.</p>
-        <div class="contact-socials">
-          <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
-          <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
-          <a href="#" class="social-btn" aria-label="Pinterest"><i class="fab fa-pinterest-p" aria-hidden="true"></i></a>
-          <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube" aria-hidden="true"></i></a>
-        </div>
+        @if(!empty($socialLinks))
+          <div class="contact-socials">
+            @foreach($socialLinks as $link)
+              <a href="{{ $link['url'] }}" class="social-btn" aria-label="{{ $link['label'] }}" target="_blank" rel="noopener noreferrer"><i class="{{ $link['icon'] }}" aria-hidden="true"></i></a>
+            @endforeach
+          </div>
+        @endif
       </div>
       <div class="footer-col">
         <h4>Navigation</h4>
@@ -1363,6 +1608,28 @@ footer { background: #050505; padding: 80px 40px 40px; border-top: 1px solid rgb
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+// ── THEME TOGGLE ──
+(function () {
+  const html = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const prefKey = 'go-exploria-theme';
+
+  if (!btn) return;
+
+  const syncThemeButton = () => {
+    btn.setAttribute('aria-pressed', html.classList.contains('light') ? 'true' : 'false');
+  };
+
+  syncThemeButton();
+  btn.addEventListener('click', () => {
+    const isLight = html.classList.toggle('light');
+    try {
+      localStorage.setItem(prefKey, isLight ? 'light' : 'dark');
+    } catch (error) {}
+    syncThemeButton();
+  });
+})();
+
 // ── LOCAL LANGUAGE DICTIONARY ──
 const nextLevelTranslations = {
   fr: {},
@@ -2398,36 +2665,9 @@ initNextLevelMap();
 
 // ── SOCIAL FEED DATA ──
 const photoSets = {
-  instagram: [
-    'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&q=80',
-    'https://images.unsplash.com/photo-1502791451862-7bd8c1df43a7?w=400&q=80',
-    'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&q=80',
-    'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=400&q=80',
-    'https://images.unsplash.com/photo-1510797215324-95aa89f43c33?w=400&q=80',
-    'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=400&q=80',
-    'https://images.unsplash.com/photo-1539635278303-d4002c07eae3?w=400&q=80',
-    'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400&q=80',
-  ],
-  facebook: [
-    'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=400&q=80',
-    'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=400&q=80',
-    'https://images.unsplash.com/photo-1543731068-7e0f5beff43a?w=400&q=80',
-    'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=400&q=80',
-    'https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?w=400&q=80',
-    'https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=400&q=80',
-    'https://images.unsplash.com/photo-1509233725247-49e657c54213?w=400&q=80',
-    'https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?w=400&q=80',
-  ],
-  pinterest: [
-    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80',
-    'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80',
-    'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=400&q=80',
-    'https://images.unsplash.com/photo-1481349518771-20055b2a7b24?w=400&q=80',
-    'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=400&q=80',
-    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80',
-    'https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=400&q=80',
-    'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=400&q=80',
-  ]
+  instagram: @json($nextLevelInstagram->take(8)->pluck('thumbnail')->values()),
+  facebook: @json($nextLevelFacebook->take(8)->pluck('thumbnail')->values()),
+  pinterest: @json($nextLevelPinterest->take(8)->pluck('thumbnail')->values())
 };
 
 const likes = ['2.3K','1.8K','3.1K','980','2.7K','1.5K','4.2K','860'];
