@@ -12,7 +12,6 @@
                     @endif
                     <div class="pc-slide-overlay"></div>
                     <div class="pc-slide-content">
-                        <span class="pc-slide-tag">Immobilier résidentiel · Québec</span>
                         <h1 class="pc-slide-title">{{ $slide['title'] }} <em>{{ $siteName }}</em></h1>
                         <p class="pc-slide-sub">{{ $slide['subtitle'] }}</p>
                         <div style="display:flex;gap:12px;flex-wrap:wrap">

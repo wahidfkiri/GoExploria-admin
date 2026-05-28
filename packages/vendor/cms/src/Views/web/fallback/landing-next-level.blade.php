@@ -930,6 +930,17 @@ html.light .float-cta {
             </div>
             <span class="template-cta">Voir ce template</span>
           </a>
+          <a href="{{ asset('templates/next-level/location-vehicule.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80" alt="Location des véhicules">
+                <div class="template-icon"><i class="fas fa-car-side" aria-hidden="true"></i></div>
+              </div>
+              <h4>Location des véhicules</h4>
+              <p>Flotte, disponibilités, offres premium et parcours de réservation pour locations auto.</p>
+            </div>
+            <span class="template-cta">Voir ce template</span>
+          </a>
           <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
             <div>
               <div class="template-media">
@@ -1018,7 +1029,7 @@ html.light .float-cta {
             </div>
             <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
+          <a href="{{ asset('templates/next-level/sante-bien-etre.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80" alt="Santé & bien-être">
@@ -1643,6 +1654,8 @@ const nextLevelTranslations = {
     'Landing dynamique pour agences, consultants, campagnes et services de croissance.': 'Dynamic landing page for agencies, consultants, campaigns and growth services.',
     'Travel & tourism': 'Travel & tourism',
     'Expériences, destinations, cartes vidéo et storytelling immersif pour le tourisme.': 'Experiences, destinations, video maps and immersive storytelling for tourism.',
+    'Location des véhicules': 'Vehicle rental',
+    'Flotte, disponibilités, offres premium et parcours de réservation pour locations auto.': 'Fleet, availability, premium offers and booking journey for car rentals.',
     'Médias & news': 'Media & news',
     'Format éditorial moderne pour articles, actualités, vidéos et contenus sociaux.': 'Modern editorial format for articles, news, videos and social content.',
     'Commerce local premium': 'Premium local commerce',
@@ -1781,6 +1794,8 @@ const nextLevelTranslations = {
     'Landing dynamique pour agences, consultants, campagnes et services de croissance.': 'Landing dinámica para agencias, consultores, campañas y servicios de crecimiento.',
     'Travel & tourism': 'Viajes y turismo',
     'Expériences, destinations, cartes vidéo et storytelling immersif pour le tourisme.': 'Experiencias, destinos, mapas de video y storytelling inmersivo para turismo.',
+    'Location des véhicules': 'Alquiler de vehículos',
+    'Flotte, disponibilités, offres premium et parcours de réservation pour locations auto.': 'Flota, disponibilidad, ofertas premium y recorrido de reserva para alquiler de coches.',
     'Médias & news': 'Medios y noticias',
     'Format éditorial moderne pour articles, actualités, vidéos et contenus sociaux.': 'Formato editorial moderno para artículos, noticias, videos y contenido social.',
     'Commerce local premium': 'Comercio local premium',
@@ -1920,6 +1935,8 @@ const nextLevelTranslations = {
     'Landing dynamique pour agences, consultants, campagnes et services de croissance.': 'Dynamische Landingpage für Agenturen, Berater, Kampagnen und Wachstumsservices.',
     'Travel & tourism': 'Travel & Tourism',
     'Expériences, destinations, cartes vidéo et storytelling immersif pour le tourisme.': 'Erlebnisse, Reiseziele, Videokarten und immersives Storytelling für den Tourismus.',
+    'Location des véhicules': 'Fahrzeugvermietung',
+    'Flotte, disponibilités, offres premium et parcours de réservation pour locations auto.': 'Flotte, Verfügbarkeiten, Premium-Angebote und Buchungsstrecke für Autovermietungen.',
     'Médias & news': 'Medien & News',
     'Format éditorial moderne pour articles, actualités, vidéos et contenus sociaux.': 'Modernes redaktionelles Format für Artikel, Nachrichten, Videos und Social Content.',
     'Commerce local premium': 'Premium lokaler Handel',
@@ -2065,6 +2082,8 @@ const nextLevelTranslations = {
     'Landing dynamique pour agences, consultants, campagnes et services de croissance.': 'Landing dinamica per agenzie, consulenti, campagne e servizi di crescita.',
     'Travel & tourism': 'Travel & tourism',
     'Expériences, destinations, cartes vidéo et storytelling immersif pour le tourisme.': 'Esperienze, destinazioni, mappe video e storytelling immersivo per il turismo.',
+    'Location des véhicules': 'Noleggio veicoli',
+    'Flotte, disponibilités, offres premium et parcours de réservation pour locations auto.': 'Flotta, disponibilità, offerte premium e percorso di prenotazione per autonoleggi.',
     'Médias & news': 'Media e news',
     'Format éditorial moderne pour articles, actualités, vidéos et contenus sociaux.': 'Formato editoriale moderno per articoli, notizie, video e contenuti social.',
     'Commerce local premium': 'Commercio locale premium',
@@ -2210,6 +2229,8 @@ const nextLevelTranslations = {
     'Landing dynamique pour agences, consultants, campagnes et services de croissance.': 'صفحة هبوط ديناميكية للوكالات والمستشارين والحملات وخدمات النمو.',
     'Travel & tourism': 'السفر والسياحة',
     'Expériences, destinations, cartes vidéo et storytelling immersif pour le tourisme.': 'تجارب ووجهات وخرائط فيديو وسرد قصصي تفاعلي للسياحة.',
+    'Location des véhicules': 'تأجير المركبات',
+    'Flotte, disponibilités, offres premium et parcours de réservation pour locations auto.': 'أسطول وتوفر وعروض مميزة ومسار حجز لتأجير السيارات.',
     'Médias & news': 'الإعلام والأخبار',
     'Format éditorial moderne pour articles, actualités, vidéos et contenus sociaux.': 'تنسيق تحريري حديث للمقالات والأخبار والفيديوهات والمحتوى الاجتماعي.',
     'Commerce local premium': 'تجارة محلية مميزة',

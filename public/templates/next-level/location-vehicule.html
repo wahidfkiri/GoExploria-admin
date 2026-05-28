@@ -1,0 +1,2148 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRIVEX — Location de Voitures Premium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700;1,800&family=Nunito+Sans:wght@200;300;400;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<style>
+/* ══════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════ */
+:root{
+  --y:#F5C518; --y2:#FFD84D; --y-pale:rgba(245,197,24,0.10);
+  --r:#E63946; --r2:#FF5563;
+  --tr:all .5s cubic-bezier(.23,1,.32,1);
+  --rad:14px;
+}
+[data-theme="dark"]{
+  --bg:#0C0C0E; --bg2:#111115; --bg3:#18181E; --bg4:#20202A;
+  --card:#141418; --card2:#1C1C24;
+  --border:rgba(255,255,255,.07); --border2:rgba(255,255,255,.12);
+  --text:#F0EEF8; --text2:#8884A0; --text3:#44405A;
+  --nav-bg:rgba(12,12,14,.92);
+  --inp:rgba(255,255,255,.05);
+  --sh:0 30px 80px rgba(0,0,0,.65);
+  --line:rgba(245,197,24,.18);
+}
+[data-theme="light"]{
+  --bg:#F5F5FA; --bg2:#ECEEF8; --bg3:#E2E4F0; --bg4:#D8DAE8;
+  --card:#FFFFFF; --card2:#F0F0F8;
+  --border:rgba(0,0,0,.07); --border2:rgba(0,0,0,.13);
+  --text:#0E0E18; --text2:#5A566E; --text3:#9E9AB0;
+  --nav-bg:rgba(245,245,250,.93);
+  --inp:rgba(0,0,0,.04);
+  --sh:0 20px 60px rgba(0,0,0,.10);
+  --line:rgba(245,197,24,.30);
+}
+
+/* ══════════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Nunito Sans',sans-serif;
+  overflow-x:hidden;
+  transition:background .45s,color .45s;
+}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--y);border-radius:2px}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+
+/* ══════════════════════════════════════════
+   SPEED LINES BG DECORATION
+══════════════════════════════════════════ */
+.speed-lines{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;
+}
+.speed-lines::before,.speed-lines::after{
+  content:'';position:absolute;
+  width:200%;height:2px;
+  background:linear-gradient(90deg,transparent 0%,var(--line) 40%,transparent 100%);
+  transform-origin:left center;
+}
+.speed-lines::before{top:35%;transform:rotate(-8deg) translateX(-10%);animation:speedl1 4s linear infinite}
+.speed-lines::after{top:60%;transform:rotate(-8deg) translateX(-10%);animation:speedl1 4s .8s linear infinite}
+@keyframes speedl1{0%{transform:rotate(-8deg) translateX(-100%)}100%{transform:rotate(-8deg) translateX(50%)}}
+
+/* ══════════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  height:72px;padding:0 52px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:var(--tr);
+}
+nav.solid{
+  background:var(--nav-bg);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 4px 40px rgba(0,0,0,.1);
+}
+.logo{
+  display:flex;align-items:center;gap:10px;
+}
+.logo-mark{
+  width:36px;height:36px;background:var(--y);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  font-size:20px;color:#0C0C0E;letter-spacing:-1px;
+  transform:skewX(-8deg);transition:var(--tr);
+}
+.logo:hover .logo-mark{transform:skewX(-8deg) scale(1.1) rotate(-3deg)}
+.logo-text{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:26px;font-weight:800;color:var(--text);
+  letter-spacing:3px;text-transform:uppercase;
+}
+.logo-text span{color:var(--y)}
+.nav-links{display:flex;gap:34px;list-style:none}
+.nav-links a{
+  font-size:11px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--text2);
+  transition:var(--tr);position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;
+  width:0;height:2px;background:var(--y);
+  transition:var(--tr);border-radius:1px;
+}
+.nav-links a:hover{color:var(--y)}
+.nav-links a:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:12px}
+.theme-toggle{
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid var(--border2);background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:15px;color:var(--text2);transition:var(--tr);
+}
+.theme-toggle:hover{border-color:var(--y);color:var(--y);transform:rotate(20deg)}
+.nav-cta{
+  background:var(--y);color:#0C0C0E;
+  padding:10px 22px;border-radius:50px;
+  font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  transition:var(--tr);white-space:nowrap;
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;
+}
+.nav-cta:hover{background:var(--y2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(245,197,24,.4)}
+.ham{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer}
+.ham span{width:24px;height:2px;background:var(--text);border-radius:1px;transition:var(--tr);display:block}
+.mob-menu{
+  display:none;position:fixed;inset:0;z-index:998;
+  background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:28px;
+}
+.mob-menu.open{display:flex}
+.mob-menu a{
+  font-family:'Barlow Condensed',sans-serif;font-size:40px;
+  font-weight:800;letter-spacing:3px;text-transform:uppercase;
+  color:var(--text);transition:var(--tr);
+}
+.mob-menu a:hover{color:var(--y)}
+.mob-close{position:absolute;top:22px;right:28px;font-size:30px;background:none;border:none;color:var(--text);cursor:pointer}
+
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+#hero{
+  position:relative;height:100vh;
+  overflow:hidden;display:flex;align-items:flex-end;
+}
+/* BIG diagonal slash */
+#hero::after{
+  content:'';position:absolute;
+  bottom:-1px;left:0;right:0;height:120px;
+  background:var(--bg2);
+  clip-path:polygon(0 100%,100% 0,100% 100%);
+  z-index:4;
+}
+.hero-swiper{position:absolute;inset:0;z-index:1}
+.hero-swiper,.hero-swiper .swiper-wrapper,.hero-swiper .swiper-slide{height:100%}
+.h-slide{position:relative;height:100%;overflow:hidden}
+.h-slide-img{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  transform:scale(1.07);
+  transition:transform 10s ease;
+}
+.swiper-slide-active .h-slide-img{transform:scale(1)}
+.h-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(105deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.5) 55%,rgba(0,0,0,.15) 100%);
+}
+/* diagonal yellow accent stripe */
+.h-stripe{
+  position:absolute;top:0;left:0;bottom:0;width:6px;
+  background:var(--y);z-index:3;
+}
+.h-content{
+  position:absolute;top:50%;left:10%;transform:translateY(-52%);
+  z-index:3;max-width:680px;
+}
+.h-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:10px;font-weight:800;letter-spacing:5px;text-transform:uppercase;
+  color:var(--y);margin-bottom:20px;
+}
+.h-eyebrow::before{content:'';width:30px;height:2px;background:var(--y);border-radius:1px}
+.h-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(64px,10vw,130px);
+  font-weight:900;line-height:.88;
+  color:#fff;letter-spacing:-1px;
+  text-transform:uppercase;
+  margin-bottom:24px;
+}
+.h-title .accent{color:var(--y);font-style:italic}
+.h-title .stroke{
+  -webkit-text-stroke:2px rgba(255,255,255,.7);
+  color:transparent;
+}
+.h-sub{
+  font-size:16px;color:rgba(255,255,255,.6);
+  line-height:1.8;font-weight:300;
+  max-width:460px;margin-bottom:40px;
+}
+.h-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.btn-y{
+  background:var(--y);color:#0C0C0E;
+  padding:15px 36px;border-radius:50px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:10px;transition:var(--tr);
+}
+.btn-y:hover{background:var(--y2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(245,197,24,.45)}
+.btn-outline-w{
+  border:2px solid rgba(255,255,255,.35);color:#fff;
+  padding:14px 32px;border-radius:50px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:10px;transition:var(--tr);
+}
+.btn-outline-w:hover{border-color:var(--y);color:var(--y);transform:translateY(-3px)}
+.h-kpis{
+  position:absolute;bottom:130px;right:8%;z-index:3;
+  display:flex;gap:32px;
+}
+.h-kpi{text-align:center}
+.h-kpi-n{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:46px;font-weight:900;color:var(--y);line-height:1;
+}
+.h-kpi-l{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:3px}
+.hero-swiper .swiper-pagination{bottom:100px!important}
+.hero-swiper .swiper-pagination-bullet{background:#fff;opacity:.3;width:6px;height:6px}
+.hero-swiper .swiper-pagination-bullet-active{background:var(--y);opacity:1;width:22px;border-radius:3px}
+/* slide counter */
+.h-counter{
+  position:absolute;bottom:110px;left:10%;z-index:3;
+  display:flex;align-items:center;gap:14px;
+}
+.h-counter-cur{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:52px;font-weight:900;color:rgba(255,255,255,.15);
+  line-height:1;
+}
+.h-counter-sep{width:40px;height:2px;background:rgba(255,255,255,.2);border-radius:1px}
+.h-counter-tot{font-size:13px;color:rgba(255,255,255,.3);letter-spacing:2px}
+
+/* ══════════════════════════════════════════
+   SEARCH / BOOKING BAR
+══════════════════════════════════════════ */
+.booking-bar-wrap{
+  background:var(--bg2);
+  padding:0 52px;
+  position:relative;z-index:10;
+}
+.booking-bar{
+  max-width:1320px;margin:0 auto;
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:var(--rad);
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;
+  overflow:hidden;
+  box-shadow:var(--sh);
+  transform:translateY(-44px);
+  transition:var(--tr);
+}
+.booking-bar:hover{box-shadow:0 40px 100px rgba(0,0,0,.2)}
+.bb-field{
+  padding:20px 24px;
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;gap:4px;
+  cursor:pointer;transition:var(--tr);
+}
+.bb-field:hover{background:var(--y-pale)}
+.bb-field:last-of-type{border-right:none}
+.bb-label{
+  font-size:9px;font-weight:800;letter-spacing:3px;
+  text-transform:uppercase;color:var(--y);
+}
+.bb-val{
+  font-size:14px;font-weight:600;color:var(--text);
+}
+.bb-val input,.bb-val select{
+  background:none;border:none;color:var(--text);
+  font-family:'Nunito Sans',sans-serif;font-size:14px;
+  font-weight:600;outline:none;cursor:pointer;width:100%;
+}
+.bb-val select option{background:var(--card);color:var(--text)}
+.bb-val input[type="date"]{color-scheme:dark}
+[data-theme="light"] .bb-val input[type="date"]{color-scheme:light}
+.bb-submit{
+  background:var(--y);border:none;
+  padding:0 36px;cursor:pointer;transition:var(--tr);
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;
+  font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  color:#0C0C0E;display:flex;align-items:center;gap:10px;white-space:nowrap;
+}
+.bb-submit:hover{background:var(--y2);transform:none}
+
+/* ══════════════════════════════════════════
+   SECTIONS
+══════════════════════════════════════════ */
+section{padding:110px 52px}
+.container{max-width:1320px;margin:0 auto}
+.s-label{
+  display:inline-flex;align-items:center;gap:12px;
+  font-size:10px;font-weight:800;letter-spacing:5px;
+  text-transform:uppercase;color:var(--y);margin-bottom:14px;
+}
+.s-label::before{content:'';width:28px;height:2px;background:var(--y);border-radius:1px}
+h2.s-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(40px,5.5vw,72px);
+  font-weight:900;line-height:.95;
+  text-transform:uppercase;letter-spacing:-.5px;
+  color:var(--text);margin-bottom:18px;
+}
+h2.s-title .acc{color:var(--y)}
+h2.s-title .str{
+  -webkit-text-stroke:2px var(--text2);
+  color:transparent;
+}
+.s-sub{font-size:15px;color:var(--text2);line-height:1.9;font-weight:300;max-width:520px}
+.s-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px;gap:40px;flex-wrap:wrap}
+.link-more{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:800;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--y);
+  border-bottom:2px solid var(--y);padding-bottom:2px;
+  transition:var(--tr);
+}
+.link-more:hover{gap:18px}
+
+/* ══════════════════════════════════════════
+   FLEET / CARS
+══════════════════════════════════════════ */
+#fleet{background:var(--bg2)}
+.fleet-tabs{
+  display:flex;gap:0;overflow:hidden;
+  border:1px solid var(--border2);border-radius:50px;
+  width:fit-content;margin-bottom:56px;background:var(--bg3);
+}
+.fleet-tab{
+  padding:10px 24px;font-family:'Barlow Condensed',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;border:none;background:transparent;color:var(--text2);
+  transition:var(--tr);white-space:nowrap;
+}
+.fleet-tab.on{background:var(--y);color:#0C0C0E}
+.fleet-tab:hover:not(.on){color:var(--text);background:var(--bg4)}
+.fleet-panel{display:none}
+.fleet-panel.on{display:block}
+.cars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.car-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--rad);overflow:hidden;
+  transition:var(--tr);cursor:pointer;position:relative;
+}
+.car-card:hover{
+  transform:translateY(-8px);
+  box-shadow:var(--sh);
+  border-color:rgba(245,197,24,.35);
+}
+/* yellow top bar on hover */
+.car-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--y);transform:scaleX(0);transform-origin:left;
+  transition:var(--tr);z-index:2;
+}
+.car-card:hover::before{transform:scaleX(1)}
+.car-img-wrap{
+  height:200px;overflow:hidden;
+  background:linear-gradient(135deg,var(--bg3),var(--bg4));
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.car-img-wrap img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .7s cubic-bezier(.23,1,.32,1);
+}
+.car-card:hover .car-img-wrap img{transform:scale(1.06)}
+.car-badge{
+  position:absolute;top:14px;left:14px;z-index:2;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 12px;border-radius:50px;
+}
+.car-badge.hot{background:var(--r);color:#fff}
+.car-badge.new{background:var(--y);color:#0C0C0E}
+.car-badge.eco{background:#27ae60;color:#fff}
+.car-badge.lux{background:linear-gradient(135deg,#8B6914,#D4A843);color:#fff}
+.car-wish{
+  position:absolute;top:12px;right:12px;z-index:2;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;cursor:pointer;transition:var(--tr);color:#fff;
+}
+.car-wish:hover,.car-wish.active{background:var(--r);border-color:var(--r)}
+.car-body{padding:24px}
+.car-brand{
+  font-size:9px;font-weight:800;letter-spacing:3px;
+  text-transform:uppercase;color:var(--y);margin-bottom:5px;
+}
+.car-name{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:24px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--text);margin-bottom:14px;line-height:1;
+}
+.car-specs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.car-spec{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg2);border-radius:10px;padding:10px 12px;
+  border:1px solid var(--border);transition:var(--tr);
+}
+.car-card:hover .car-spec{border-color:rgba(245,197,24,.2)}
+.car-spec-icon{font-size:16px}
+.car-spec-val{font-size:12px;font-weight:700;color:var(--text)}
+.car-spec-lbl{font-size:9px;color:var(--text3);letter-spacing:1px;display:block;margin-top:1px}
+.car-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid var(--border);padding-top:16px;
+}
+.car-price-wrap{}
+.car-price-from{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3)}
+.car-price{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:32px;font-weight:900;color:var(--y);line-height:1;
+}
+.car-price span{font-size:14px;color:var(--text3);font-weight:400}
+.car-book{
+  background:var(--y-pale);border:1px solid rgba(245,197,24,.3);
+  color:var(--y);padding:10px 20px;border-radius:50px;
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;
+  font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  cursor:pointer;transition:var(--tr);border-style:solid;
+}
+.car-book:hover{background:var(--y);color:#0C0C0E;transform:scale(1.04)}
+
+/* ══════════════════════════════════════════
+   WHY US / FEATURES
+══════════════════════════════════════════ */
+#why{background:var(--bg);position:relative;overflow:hidden}
+.why-bg-text{
+  position:absolute;bottom:-40px;right:-20px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  font-size:200px;text-transform:uppercase;letter-spacing:-5px;
+  color:var(--y);opacity:.03;pointer-events:none;line-height:1;
+  white-space:nowrap;
+}
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.why-card{
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:var(--rad);padding:36px 28px;
+  transition:var(--tr);cursor:default;position:relative;overflow:hidden;
+}
+.why-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:var(--y);transform:scaleX(0);transform-origin:left;
+  transition:var(--tr);
+}
+.why-card:hover{transform:translateY(-6px);border-color:rgba(245,197,24,.3);box-shadow:var(--sh)}
+.why-card:hover::after{transform:scaleX(1)}
+.why-icon{
+  width:56px;height:56px;background:var(--y-pale);
+  border:1px solid rgba(245,197,24,.25);border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;margin-bottom:22px;transition:var(--tr);
+}
+.why-card:hover .why-icon{background:var(--y);transform:rotate(-5deg) scale(1.1)}
+.why-num{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:3px;
+  color:var(--y);opacity:.5;margin-bottom:8px;text-transform:uppercase;
+}
+.why-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:22px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--text);margin-bottom:10px;
+}
+.why-desc{font-size:13px;color:var(--text2);line-height:1.8}
+
+/* ══════════════════════════════════════════
+   HERO SPLIT — ABOUT
+══════════════════════════════════════════ */
+#about{background:var(--bg2);padding:0}
+.about-split{display:grid;grid-template-columns:1fr 1fr;min-height:75vh}
+.about-visual{position:relative;overflow:hidden}
+.about-visual img{width:100%;height:100%;object-fit:cover;transition:transform 8s ease}
+.about-visual:hover img{transform:scale(1.04)}
+.about-visual-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to right,transparent 50%,var(--bg2));
+}
+.about-stats-float{
+  position:absolute;bottom:50px;left:50px;
+  display:flex;flex-direction:column;gap:14px;
+}
+.ab-stat{
+  background:rgba(12,12,14,.85);backdrop-filter:blur(16px);
+  border:1px solid rgba(245,197,24,.25);border-radius:14px;
+  padding:16px 22px;display:flex;align-items:center;gap:14px;
+  min-width:200px;transition:var(--tr);
+}
+.ab-stat:hover{border-color:var(--y);transform:translateX(6px)}
+.ab-stat-n{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:34px;font-weight:900;color:var(--y);line-height:1;
+}
+.ab-stat-l{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;margin-top:2px}
+.about-right{
+  padding:100px 80px;display:flex;flex-direction:column;justify-content:center;
+}
+.about-quote{
+  font-family:'Barlow Condensed',sans-serif;font-style:italic;
+  font-size:clamp(20px,2.5vw,30px);font-weight:700;
+  color:var(--text);line-height:1.4;margin:24px 0 32px;
+  border-left:3px solid var(--y);padding-left:20px;
+  text-transform:uppercase;letter-spacing:.5px;
+}
+.about-desc{font-size:14px;color:var(--text2);line-height:2;font-weight:300;margin-bottom:36px}
+.about-certs{display:flex;gap:14px;flex-wrap:wrap}
+.cert-badge{
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:12px;padding:12px 16px;
+  display:flex;align-items:center;gap:10px;transition:var(--tr);
+}
+.cert-badge:hover{border-color:var(--y);background:var(--y-pale)}
+.cert-icon{font-size:20px}
+.cert-text strong{font-size:12px;color:var(--text);display:block}
+.cert-text span{font-size:10px;color:var(--text3);letter-spacing:.5px}
+
+/* ══════════════════════════════════════════
+   PROCESS / HOW IT WORKS
+══════════════════════════════════════════ */
+#process{background:var(--bg);position:relative;overflow:hidden}
+.process-bg-num{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Bebas Neue',sans-serif;font-size:400px;
+  color:var(--y);opacity:.025;pointer-events:none;white-space:nowrap;
+}
+.process-steps{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:0;position:relative;
+}
+.process-line{
+  position:absolute;top:52px;left:12%;right:12%;
+  height:1px;background:linear-gradient(90deg,transparent,var(--y),transparent);
+  opacity:.2;z-index:0;
+}
+.proc-step{
+  text-align:center;padding:0 24px;position:relative;z-index:1;
+}
+.proc-circle{
+  width:60px;height:60px;border-radius:50%;
+  border:2px solid var(--y);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 24px;background:var(--bg);
+  font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;
+  color:var(--y);transition:var(--tr);
+}
+.proc-step:hover .proc-circle{
+  background:var(--y);color:#0C0C0E;
+  transform:scale(1.15);
+  box-shadow:0 0 30px rgba(245,197,24,.4);
+}
+.proc-icon{font-size:28px;margin-bottom:14px}
+.proc-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:20px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--text);margin-bottom:8px;
+}
+.proc-desc{font-size:13px;color:var(--text2);line-height:1.8}
+
+/* ══════════════════════════════════════════
+   OFFERS / PROMO
+══════════════════════════════════════════ */
+#offers{background:var(--bg2)}
+.offers-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:20px}
+.offer-card{
+  border-radius:var(--rad);overflow:hidden;position:relative;
+  cursor:pointer;min-height:300px;
+}
+.offer-card .offer-bg{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  transition:transform .8s cubic-bezier(.23,1,.32,1);
+}
+.offer-card:hover .offer-bg{transform:scale(1.06)}
+.offer-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.2) 60%,transparent 100%);
+}
+.offer-content{position:absolute;bottom:0;left:0;right:0;padding:28px;z-index:2}
+.offer-tag{
+  display:inline-block;background:var(--y);color:#0C0C0E;
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;
+  font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 14px;border-radius:50px;margin-bottom:12px;
+}
+.offer-name{
+  font-family:'Barlow Condensed',sans-serif;font-size:28px;
+  font-weight:900;text-transform:uppercase;color:#fff;
+  letter-spacing:.5px;line-height:1.1;margin-bottom:6px;
+}
+.offer-desc{font-size:13px;color:rgba(255,255,255,.65);line-height:1.6;margin-bottom:14px}
+.offer-price-row{display:flex;align-items:baseline;gap:10px}
+.offer-old{font-size:14px;color:rgba(255,255,255,.4);text-decoration:line-through}
+.offer-new{
+  font-family:'Barlow Condensed',sans-serif;font-size:30px;
+  font-weight:900;color:var(--y);
+}
+.offer-save{
+  background:var(--r);color:#fff;font-size:10px;
+  font-weight:800;padding:3px 10px;border-radius:50px;letter-spacing:1px;
+}
+.offer-card:nth-child(1){grid-row:span 2}
+.offer-card:nth-child(1) .offer-name{font-size:36px}
+
+/* ══════════════════════════════════════════
+   TESTIMONIALS
+══════════════════════════════════════════ */
+#reviews{background:var(--bg)}
+.reviews-header{display:grid;grid-template-columns:1fr auto;align-items:end;margin-bottom:56px;gap:40px}
+.reviews-score{text-align:right}
+.score-big{
+  font-family:'Barlow Condensed',sans-serif;font-size:80px;
+  font-weight:900;color:var(--y);line-height:1;letter-spacing:-2px;
+}
+.score-stars{color:var(--y);font-size:22px;letter-spacing:3px}
+.score-label{font-size:11px;color:var(--text3);letter-spacing:1px;margin-top:4px}
+.rev-swiper{overflow:hidden;padding-bottom:50px!important}
+.rev-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--rad);padding:34px;
+  position:relative;overflow:hidden;transition:var(--tr);
+}
+.rev-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--y),transparent);
+  opacity:0;transition:var(--tr);
+}
+.rev-card:hover{border-color:rgba(245,197,24,.25);box-shadow:var(--sh);transform:translateY(-4px)}
+.rev-card:hover::before{opacity:1}
+.rev-stars{color:var(--y);font-size:14px;letter-spacing:2px;margin-bottom:14px}
+.rev-text{
+  font-size:14px;color:var(--text2);line-height:1.9;
+  font-style:italic;margin-bottom:24px;
+  position:relative;
+}
+.rev-text::before{
+  content:'"';position:absolute;top:-20px;left:-8px;
+  font-family:'Barlow Condensed',sans-serif;font-size:80px;font-weight:900;
+  color:var(--y);opacity:.08;line-height:1;pointer-events:none;
+}
+.rev-author{display:flex;align-items:center;gap:14px}
+.rev-ava{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)}
+.rev-name{font-weight:800;font-size:14px;color:var(--text)}
+.rev-info{font-size:11px;color:var(--text3);margin-top:2px}
+.rev-car{margin-left:auto;font-size:11px;color:var(--y);font-weight:700;letter-spacing:1px}
+.swiper-pagination-bullet{background:var(--text3)!important;opacity:.4!important}
+.swiper-pagination-bullet-active{background:var(--y)!important;opacity:1!important;width:20px!important;border-radius:2px!important}
+
+/* ══════════════════════════════════════════
+   PRICING PLANS
+══════════════════════════════════════════ */
+#pricing{background:var(--bg2)}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:start}
+.price-card{
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:var(--rad);padding:40px 34px;
+  position:relative;overflow:hidden;transition:var(--tr);
+}
+.price-card:hover{transform:translateY(-6px);box-shadow:var(--sh);border-color:rgba(245,197,24,.3)}
+.price-card.featured{
+  background:var(--y);border-color:var(--y);
+  transform:scale(1.04);
+}
+.price-card.featured *{color:#0C0C0E!important}
+.price-card.featured:hover{transform:scale(1.04) translateY(-6px)}
+.price-pop-badge{
+  position:absolute;top:20px;right:20px;
+  background:#0C0C0E;color:var(--y)!important;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 12px;border-radius:50px;
+}
+.price-plan{
+  font-size:10px;font-weight:800;letter-spacing:4px;
+  text-transform:uppercase;color:var(--text3);margin-bottom:16px;
+}
+.price-amount{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:60px;font-weight:900;color:var(--text);
+  letter-spacing:-2px;line-height:1;margin-bottom:6px;
+}
+.price-amount sup{font-size:26px;vertical-align:top;margin-top:12px;display:inline-block}
+.price-period{font-size:12px;color:var(--text3);margin-bottom:24px}
+.price-desc{
+  font-size:13px;color:var(--text2);line-height:1.8;
+  margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--border);
+}
+.price-card.featured .price-desc{border-bottom-color:rgba(12,12,14,.2);color:rgba(12,12,14,.7)!important}
+.price-feats{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+.pf-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2)}
+.pf-check{
+  width:20px;height:20px;border-radius:50%;background:var(--y-pale);
+  border:1px solid rgba(245,197,24,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--y);flex-shrink:0;
+}
+.price-card.featured .pf-check{background:rgba(12,12,14,.15);border-color:rgba(12,12,14,.25);color:#0C0C0E!important}
+.price-cta{
+  display:block;text-align:center;
+  padding:14px;border-radius:50px;
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;
+  font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  border:2px solid var(--border2);color:var(--text);
+  transition:var(--tr);
+}
+.price-cta:hover{background:var(--y);border-color:var(--y);color:#0C0C0E!important}
+.price-card.featured .price-cta{background:#0C0C0E;border-color:#0C0C0E;color:var(--y)!important}
+.price-card.featured .price-cta:hover{background:#1a1a2a;border-color:#1a1a2a}
+
+/* ══════════════════════════════════════════
+   GALLERY
+══════════════════════════════════════════ */
+#gallery{background:var(--bg)}
+.gal-grid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  grid-auto-rows:200px;gap:12px;
+}
+.g-item{border-radius:12px;overflow:hidden;position:relative;cursor:pointer}
+.g-item:nth-child(1){grid-column:span 5;grid-row:span 2}
+.g-item:nth-child(2){grid-column:span 4}
+.g-item:nth-child(3){grid-column:span 3}
+.g-item:nth-child(4){grid-column:span 3}
+.g-item:nth-child(5){grid-column:span 4}
+.g-item:nth-child(6){grid-column:span 5;grid-row:span 1}
+.g-item img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.23,1,.32,1)}
+.g-item:hover img{transform:scale(1.07)}
+.g-lens{
+  position:absolute;inset:0;background:rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:var(--tr);
+}
+.g-item:hover .g-lens{opacity:1}
+.g-lens-ring{
+  width:52px;height:52px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.7);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:20px;transition:var(--tr);
+}
+.g-item:hover .g-lens-ring{border-color:var(--y);color:var(--y);transform:scale(1.1)}
+
+/* ══════════════════════════════════════════
+   CONTACT / BOOKING FORM
+══════════════════════════════════════════ */
+#contact{background:var(--bg2)}
+.contact-layout{display:grid;grid-template-columns:1fr 1.2fr;gap:90px;align-items:start}
+.contact-left h3{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(36px,4vw,54px);font-weight:900;
+  text-transform:uppercase;letter-spacing:.5px;
+  color:var(--text);line-height:1;margin-bottom:20px;
+}
+.contact-left h3 span{color:var(--y)}
+.contact-left p{font-size:14px;color:var(--text2);line-height:2;font-weight:300;margin-bottom:36px}
+.c-items{display:flex;flex-direction:column;gap:18px;margin-bottom:36px}
+.c-item{display:flex;align-items:flex-start;gap:14px}
+.c-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:var(--y-pale);border:1px solid rgba(245,197,24,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;transition:var(--tr);
+}
+.c-item:hover .c-icon{background:var(--y)}
+.c-label{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--y);margin-bottom:3px}
+.c-val{font-size:14px;color:var(--text2)}
+.contact-socials{display:flex;gap:10px}
+.cs{
+  width:42px;height:42px;border:1px solid var(--border2);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:var(--text2);transition:var(--tr);
+}
+.cs:hover{background:var(--y);border-color:var(--y);color:#0C0C0E;transform:translateY(-3px)}
+.contact-form{
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:calc(var(--rad)*1.5);padding:44px;
+  box-shadow:var(--sh);
+}
+.cf-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:28px;
+  font-weight:900;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--text);margin-bottom:28px;
+}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.cf-g{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.cf-g label{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--text3)}
+.cf-g input,.cf-g select,.cf-g textarea{
+  background:var(--inp);border:1.5px solid var(--border);
+  color:var(--text);padding:13px 16px;border-radius:10px;
+  font-family:'Nunito Sans',sans-serif;font-size:14px;
+  outline:none;resize:none;transition:var(--tr);
+}
+.cf-g input::placeholder,.cf-g textarea::placeholder{color:var(--text3)}
+.cf-g input:focus,.cf-g select:focus,.cf-g textarea:focus{
+  border-color:var(--y);background:var(--y-pale);
+  box-shadow:0 0 0 3px rgba(245,197,24,.1);
+}
+.cf-g select option{background:var(--card);color:var(--text)}
+.cf-submit{
+  width:100%;background:var(--y);color:#0C0C0E;border:none;
+  padding:16px;border-radius:50px;
+  font-family:'Barlow Condensed',sans-serif;font-size:15px;
+  font-weight:900;letter-spacing:3px;text-transform:uppercase;
+  cursor:pointer;margin-top:6px;transition:var(--tr);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.cf-submit:hover{background:var(--y2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(245,197,24,.4)}
+.cf-ok{
+  display:none;background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.3);
+  border-radius:10px;padding:14px;color:var(--y);
+  font-size:13px;text-align:center;margin-top:14px;font-weight:700;
+}
+
+/* ══════════════════════════════════════════
+   FAQ
+══════════════════════════════════════════ */
+#faq{background:var(--bg)}
+.faq-layout{display:grid;grid-template-columns:1fr 1.5fr;gap:90px;align-items:start}
+.faq-list{display:flex;flex-direction:column;gap:0}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 0;cursor:pointer;gap:16px;
+}
+.faq-q-text{font-size:15px;font-weight:700;color:var(--text);transition:var(--tr)}
+.faq-q:hover .faq-q-text{color:var(--y)}
+.faq-icon{
+  width:32px;height:32px;border:1.5px solid var(--border2);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:var(--text3);transition:var(--tr);flex-shrink:0;
+}
+.faq-item.open .faq-icon{background:var(--y);border-color:var(--y);color:#0C0C0E;transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.faq-item.open .faq-a{max-height:200px}
+.faq-a p{padding:0 0 20px;font-size:14px;color:var(--text2);line-height:1.9}
+
+/* ══════════════════════════════════════════
+   MAP
+══════════════════════════════════════════ */
+#map-sec{height:420px;position:relative;overflow:hidden}
+#map-sec iframe{width:100%;height:100%;border:none}
+[data-theme="dark"] #map-sec iframe{filter:invert(92%) hue-rotate(190deg) saturate(.65) brightness(.8)}
+.map-overlay-card{
+  position:absolute;top:30px;left:52px;
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:var(--rad);padding:24px 28px;box-shadow:var(--sh);
+}
+.map-logo{
+  font-family:'Barlow Condensed',sans-serif;font-size:20px;
+  font-weight:900;text-transform:uppercase;letter-spacing:2px;
+  color:var(--text);margin-bottom:4px;
+}
+.map-logo span{color:var(--y)}
+.map-addr{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px}
+.map-open{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;color:#22c55e}
+.open-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ══════════════════════════════════════════
+   NEWSLETTER BAND
+══════════════════════════════════════════ */
+.nl-band{background:var(--y);padding:70px 52px}
+.nl-inner{
+  max-width:1320px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;gap:60px;flex-wrap:wrap;
+}
+.nl-left h3{
+  font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,4vw,54px);
+  font-weight:900;text-transform:uppercase;letter-spacing:-1px;
+  color:#0C0C0E;line-height:1;margin-bottom:8px;
+}
+.nl-left p{font-size:14px;color:rgba(12,12,14,.6);font-weight:300}
+.nl-form{display:flex;gap:0;border-radius:50px;overflow:hidden;border:2px solid rgba(12,12,14,.2);flex:0 0 440px}
+.nl-input{
+  flex:1;background:rgba(255,255,255,.3);border:none;
+  color:#0C0C0E;padding:14px 22px;
+  font-family:'Nunito Sans',sans-serif;font-size:14px;font-weight:600;
+  outline:none;
+}
+.nl-input::placeholder{color:rgba(12,12,14,.45)}
+.nl-btn{
+  background:#0C0C0E;border:none;color:var(--y);
+  padding:14px 24px;cursor:pointer;
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;
+  font-weight:900;letter-spacing:2px;text-transform:uppercase;
+  transition:var(--tr);white-space:nowrap;
+}
+.nl-btn:hover{background:#1a1a2a}
+
+/* ══════════════════════════════════════════
+   STATS STRIP
+══════════════════════════════════════════ */
+.stats-strip{
+  background:var(--bg3);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+.stats-inner{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-left:1px solid var(--border);
+}
+.stat-box{
+  padding:48px 36px;text-align:center;
+  border-right:1px solid var(--border);
+  position:relative;overflow:hidden;transition:var(--tr);
+}
+.stat-box:hover{background:var(--y-pale)}
+.stat-box::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:var(--y);transform:scaleX(0);transform-origin:left;transition:var(--tr);
+}
+.stat-box:hover::after{transform:scaleX(1)}
+.stat-n{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:58px;font-weight:900;color:var(--y);
+  line-height:1;letter-spacing:-1px;
+}
+.stat-l{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-top:8px}
+
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:80px 52px 40px}
+.footer-grid{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:56px;margin-bottom:56px}
+.f-logo-wrap{
+  display:flex;align-items:center;gap:10px;margin-bottom:6px;
+}
+.f-logo-mark{
+  width:32px;height:32px;background:var(--y);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:17px;
+  color:#0C0C0E;transform:skewX(-8deg);
+}
+.f-logo-text{
+  font-family:'Barlow Condensed',sans-serif;font-size:22px;
+  font-weight:900;letter-spacing:3px;text-transform:uppercase;color:var(--text);
+}
+.f-logo-text span{color:var(--y)}
+.f-desc{font-size:13px;color:var(--text2);line-height:1.9;max-width:270px;margin-bottom:22px}
+.f-socials{display:flex;gap:10px}
+.f-soc{
+  width:38px;height:38px;border:1px solid var(--border2);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--text2);transition:var(--tr);
+}
+.f-soc:hover{background:var(--y);border-color:var(--y);color:#0C0C0E}
+.f-col h5{
+  font-size:9px;font-weight:800;letter-spacing:4px;
+  text-transform:uppercase;color:var(--text3);margin-bottom:20px;
+}
+.f-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.f-col ul li a{font-size:13px;color:var(--text2);transition:var(--tr)}
+.f-col ul li a:hover{color:var(--y);padding-left:6px}
+.f-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid var(--border);padding-top:24px;flex-wrap:wrap;gap:12px;
+}
+.f-bottom p{font-size:11px;color:var(--text3)}
+.f-bottom-links{display:flex;gap:22px}
+.f-bottom-links a{font-size:11px;color:var(--text3);transition:var(--tr)}
+.f-bottom-links a:hover{color:var(--y)}
+
+/* ══════════════════════════════════════════
+   FLOAT CTA
+══════════════════════════════════════════ */
+.float-btn{
+  position:fixed;bottom:32px;right:32px;z-index:900;
+  background:var(--y);color:#0C0C0E;
+  width:58px;height:58px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;box-shadow:0 8px 32px rgba(245,197,24,.5);
+  transition:var(--tr);transform:skewX(-5deg);
+}
+.float-btn:hover{transform:skewX(-5deg) scale(1.14) rotate(-8deg);box-shadow:0 14px 50px rgba(245,197,24,.7)}
+
+/* ══════════════════════════════════════════
+   REVEALS
+══════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}
+.reveal-l{opacity:0;transform:translateX(-28px);transition:opacity .8s ease,transform .8s ease}
+.reveal-r{opacity:0;transform:translateX(28px);transition:opacity .8s ease,transform .8s ease}
+.reveal.on,.reveal-l.on,.reveal-r.on{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+.d4{transition-delay:.4s}.d5{transition-delay:.5s}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media(max-width:1200px){
+  .cars-grid{grid-template-columns:1fr 1fr}
+  .why-grid{grid-template-columns:1fr 1fr}
+  .about-split{grid-template-columns:1fr;min-height:auto}
+  .about-visual{height:450px}
+  .about-right{padding:60px 40px}
+  .offers-grid{grid-template-columns:1fr 1fr}
+  .offer-card:nth-child(1){grid-column:span 2;grid-row:span 1}
+  .gal-grid{grid-template-columns:1fr 1fr 1fr;grid-auto-rows:180px}
+  .g-item:nth-child(1){grid-column:span 2;grid-row:span 2}
+  .g-item:nth-child(6){grid-column:span 2}
+  .contact-layout{grid-template-columns:1fr;gap:60px}
+  .faq-layout{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:40px}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  .pricing-grid{grid-template-columns:1fr}
+  .price-card.featured{transform:none}
+  section{padding:80px 36px}
+  nav{padding:0 36px}
+  .booking-bar-wrap{padding:0 36px}
+}
+@media(max-width:768px){
+  nav{padding:0 20px;height:64px}
+  .nav-links,.nav-right{display:none}
+  .ham{display:flex}
+  section{padding:64px 20px}
+  .booking-bar{grid-template-columns:1fr;border-radius:var(--rad)}
+  .bb-field{border-right:none;border-bottom:1px solid var(--border)}
+  .bb-submit{padding:18px;justify-content:center}
+  .booking-bar-wrap{padding:0 20px}
+  .cars-grid{grid-template-columns:1fr}
+  .why-grid{grid-template-columns:1fr 1fr}
+  .offers-grid{grid-template-columns:1fr}
+  .offer-card:nth-child(1){grid-column:span 1}
+  .gal-grid{grid-template-columns:1fr 1fr;grid-auto-rows:160px}
+  .g-item:nth-child(1){grid-column:span 2;grid-row:span 1}
+  .g-item:nth-child(6){grid-column:span 1}
+  .h-kpis{display:none}
+  .process-steps{grid-template-columns:1fr 1fr;gap:32px}
+  .process-line{display:none}
+  footer{padding:56px 20px 32px}
+  .footer-grid{grid-template-columns:1fr}
+  .map-overlay-card{left:16px;top:16px}
+  .nl-inner{flex-direction:column;gap:28px}
+  .nl-form{flex:none;width:100%}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  .reviews-header{grid-template-columns:1fr}
+  .s-head{flex-direction:column;align-items:flex-start}
+  .cf-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <button class="mob-close" onclick="closeMob()">✕</button>
+  <a href="#fleet" onclick="closeMob()">Flotte</a>
+  <a href="#about" onclick="closeMob()">À propos</a>
+  <a href="#offers" onclick="closeMob()">Offres</a>
+  <a href="#pricing" onclick="closeMob()">Tarifs</a>
+  <a href="#reviews" onclick="closeMob()">Avis</a>
+  <a href="#contact" onclick="closeMob()">Réserver</a>
+</div>
+
+<!-- ══════ NAVBAR ══════ -->
+<nav id="navbar">
+  <div class="logo">
+    <div class="logo-mark">D</div>
+    <div class="logo-text">DRIVE<span>X</span></div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#fleet">Nos voitures</a></li>
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#process">Comment ça marche</a></li>
+    <li><a href="#offers">Offres</a></li>
+    <li><a href="#pricing">Tarifs</a></li>
+    <li><a href="#reviews">Avis</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()"></button>
+    <a href="#contact" class="nav-cta">Réserver maintenant</a>
+  </div>
+  <button class="ham" onclick="openMob()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ══════ HERO ══════ -->
+<section id="hero">
+  <div class="swiper hero-swiper">
+    <div class="swiper-wrapper">
+
+      <div class="swiper-slide">
+        <div class="h-slide">
+          <div class="h-slide-img" style="background-image:url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1920&q=85')"></div>
+          <div class="h-overlay"></div>
+          <div class="h-stripe"></div>
+          <div class="speed-lines"></div>
+          <div class="h-content">
+            <div class="h-eyebrow">Location Premium · Depuis 2010</div>
+            <h1 class="h-title">
+              PRENEZ<br>LE <span class="accent">VOLANT</span><br><span class="stroke">LIBREMENT</span>
+            </h1>
+            <p class="h-sub">Des véhicules d'exception disponibles dès aujourd'hui. Citadines, SUV, berlines luxe ou sportives — votre route, vos règles.</p>
+            <div class="h-actions">
+              <a href="#fleet" class="btn-y">Voir notre flotte ›</a>
+              <a href="#contact" class="btn-outline-w">Réserver maintenant</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swiper-slide">
+        <div class="h-slide">
+          <div class="h-slide-img" style="background-image:url('https://images.unsplash.com/photo-1555215695-3004980ad54e?w=1920&q=85')"></div>
+          <div class="h-overlay"></div>
+          <div class="h-stripe"></div>
+          <div class="speed-lines"></div>
+          <div class="h-content">
+            <div class="h-eyebrow">Collection Luxe & Sport</div>
+            <h1 class="h-title">
+              ROULEZ<br><span class="accent">DIFFÉREM</span><br>MENT.
+            </h1>
+            <p class="h-sub">Lamborghini, Ferrari, Porsche, Mercedes AMG. Nos véhicules de prestige pour les occasions qui méritent l'exceptionnel.</p>
+            <div class="h-actions">
+              <a href="#fleet" class="btn-y">Collection Prestige ›</a>
+              <a href="#offers" class="btn-outline-w">Offres spéciales</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swiper-slide">
+        <div class="h-slide">
+          <div class="h-slide-img" style="background-image:url('https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1920&q=85')"></div>
+          <div class="h-overlay"></div>
+          <div class="h-stripe"></div>
+          <div class="speed-lines"></div>
+          <div class="h-content">
+            <div class="h-eyebrow">Électrique & Éco</div>
+            <h1 class="h-title">
+              L'AVENIR<br>EST <span class="accent">ÉLECTRI</span><br>QUE.
+            </h1>
+            <p class="h-sub">Tesla, BMW iX, Mercedes EQS. Notre flotte électrique 100% chargée vous attend. Zéro émission, 100% plaisir de conduire.</p>
+            <div class="h-actions">
+              <a href="#fleet" class="btn-y">Flotte électrique ›</a>
+              <a href="#contact" class="btn-outline-w">Réserver</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swiper-slide">
+        <div class="h-slide">
+          <div class="h-slide-img" style="background-image:url('https://images.unsplash.com/photo-1441148345475-03a2e82f9719?w=1920&q=85')"></div>
+          <div class="h-overlay"></div>
+          <div class="h-stripe"></div>
+          <div class="speed-lines"></div>
+          <div class="h-content">
+            <div class="h-eyebrow">SUV & Aventure</div>
+            <h1 class="h-title">
+              EXPLOREZ<br>SANS <span class="accent">LIMITES</span><br>NI ROUTES.
+            </h1>
+            <p class="h-sub">Range Rover, Toyota Land Cruiser, Jeep Grand Cherokee. Pour les aventuriers qui refusent de se laisser arrêter par le terrain.</p>
+            <div class="h-actions">
+              <a href="#fleet" class="btn-y">SUV Tout-terrain ›</a>
+              <a href="#offers" class="btn-outline-w">Offres famille</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+
+  <div class="h-kpis">
+    <div class="h-kpi"><div class="h-kpi-n">120+</div><div class="h-kpi-l">Véhicules</div></div>
+    <div class="h-kpi"><div class="h-kpi-n">98%</div><div class="h-kpi-l">Satisfaction</div></div>
+    <div class="h-kpi"><div class="h-kpi-n">24/7</div><div class="h-kpi-l">Assistance</div></div>
+  </div>
+  <div class="h-counter">
+    <div class="h-counter-cur" id="heroSlideNum">01</div>
+    <div class="h-counter-sep"></div>
+    <div class="h-counter-tot">04</div>
+  </div>
+</section>
+
+<!-- ══════ BOOKING BAR ══════ -->
+<div class="booking-bar-wrap">
+  <div class="booking-bar">
+    <div class="bb-field">
+      <div class="bb-label">Lieu de prise en charge</div>
+      <div class="bb-val">
+        <select>
+          <option>Paris — Charles de Gaulle</option>
+          <option>Paris — Orly</option>
+          <option>Paris — Centre Ville</option>
+          <option>Lyon — Aéroport</option>
+          <option>Marseille — Aéroport</option>
+          <option>Nice — Côte d'Azur</option>
+        </select>
+      </div>
+    </div>
+    <div class="bb-field">
+      <div class="bb-label">Date de départ</div>
+      <div class="bb-val"><input type="date" id="startDate"></div>
+    </div>
+    <div class="bb-field">
+      <div class="bb-label">Date de retour</div>
+      <div class="bb-val"><input type="date" id="endDate"></div>
+    </div>
+    <div class="bb-field">
+      <div class="bb-label">Catégorie de véhicule</div>
+      <div class="bb-val">
+        <select>
+          <option>Tous les véhicules</option>
+          <option>Citadine</option>
+          <option>Berline</option>
+          <option>SUV</option>
+          <option>Prestige & Luxe</option>
+          <option>Sport & GT</option>
+          <option>Électrique</option>
+          <option>Utilitaire</option>
+        </select>
+      </div>
+    </div>
+    <button class="bb-submit" onclick="searchCars()">🔍 Rechercher</button>
+  </div>
+</div>
+
+<!-- ══════ FLEET ══════ -->
+<section id="fleet">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-label reveal">Notre flotte</div>
+        <h2 class="s-title reveal d1">120+ VÉHICULES<br><span class="acc">DISPONIBLES</span><br><span class="str">MAINTENANT</span></h2>
+      </div>
+      <div style="text-align:right">
+        <p class="s-sub reveal d2" style="margin-left:auto">Renouvelée chaque année, notre flotte couvre tous les besoins : économique, familial, prestige ou aventure.</p>
+        <a href="#" class="link-more reveal d3" style="margin-top:20px;display:inline-flex">Voir tous les véhicules</a>
+      </div>
+    </div>
+
+    <div class="fleet-tabs reveal d2">
+      <button class="fleet-tab on" onclick="switchFleet(this,'tous')">Tous</button>
+      <button class="fleet-tab" onclick="switchFleet(this,'citadines')">🚗 Citadines</button>
+      <button class="fleet-tab" onclick="switchFleet(this,'suv')">🚙 SUV</button>
+      <button class="fleet-tab" onclick="switchFleet(this,'prestige')">💎 Prestige</button>
+      <button class="fleet-tab" onclick="switchFleet(this,'electrique')">⚡ Électrique</button>
+      <button class="fleet-tab" onclick="switchFleet(this,'sport')">🏎️ Sport</button>
+    </div>
+
+    <!-- TOUS -->
+    <div class="fleet-panel on" id="panel-tous">
+      <div class="cars-grid reveal">
+
+        <div class="car-card">
+          <div class="car-img-wrap">
+            <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=700&q=80" alt="Tesla Model 3">
+            <div class="car-badge eco">Électrique</div>
+            <button class="car-wish" onclick="toggleWish(this)">♡</button>
+          </div>
+          <div class="car-body">
+            <div class="car-brand">Tesla</div>
+            <div class="car-name">Model 3 Long Range</div>
+            <div class="car-specs">
+              <div class="car-spec"><span class="car-spec-icon">⚡</span><div><span class="car-spec-val">580 km</span><span class="car-spec-lbl">Autonomie</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">🚀</span><div><span class="car-spec-val">4.4 s</span><span class="car-spec-lbl">0–100 km/h</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">👤</span><div><span class="car-spec-val">5 places</span><span class="car-spec-lbl">Passagers</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">❄️</span><div><span class="car-spec-val">Auto</span><span class="car-spec-lbl">Climatisation</span></div></div>
+            </div>
+            <div class="car-footer">
+              <div class="car-price-wrap">
+                <div class="car-price-from">Dès</div>
+                <div class="car-price">89 €<span>/jour</span></div>
+              </div>
+              <button class="car-book" onclick="bookCar(this)">Réserver</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="car-card">
+          <div class="car-img-wrap">
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=700&q=80" alt="Porsche 911">
+            <div class="car-badge hot">Populaire</div>
+            <button class="car-wish" onclick="toggleWish(this)">♡</button>
+          </div>
+          <div class="car-body">
+            <div class="car-brand">Porsche</div>
+            <div class="car-name">911 Carrera S</div>
+            <div class="car-specs">
+              <div class="car-spec"><span class="car-spec-icon">🔥</span><div><span class="car-spec-val">450 ch</span><span class="car-spec-lbl">Puissance</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">🚀</span><div><span class="car-spec-val">3.5 s</span><span class="car-spec-lbl">0–100 km/h</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">📸</span><div><span class="car-spec-val">2+2</span><span class="car-spec-lbl">Places</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">⚙️</span><div><span class="car-spec-val">Auto PDK</span><span class="car-spec-lbl">Boîte</span></div></div>
+            </div>
+            <div class="car-footer">
+              <div class="car-price-wrap">
+                <div class="car-price-from">Dès</div>
+                <div class="car-price">320 €<span>/jour</span></div>
+              </div>
+              <button class="car-book" onclick="bookCar(this)">Réserver</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="car-card">
+          <div class="car-img-wrap">
+            <img src="https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=700&q=80" alt="Range Rover">
+            <div class="car-badge lux">Premium</div>
+            <button class="car-wish" onclick="toggleWish(this)">♡</button>
+          </div>
+          <div class="car-body">
+            <div class="car-brand">Land Rover</div>
+            <div class="car-name">Range Rover Sport</div>
+            <div class="car-specs">
+              <div class="car-spec"><span class="car-spec-icon">🔥</span><div><span class="car-spec-val">395 ch</span><span class="car-spec-lbl">Puissance</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">🛞</span><div><span class="car-spec-val">4x4</span><span class="car-spec-lbl">Transmission</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">👤</span><div><span class="car-spec-val">7 places</span><span class="car-spec-lbl">Passagers</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">🧳</span><div><span class="car-spec-val">700 L</span><span class="car-spec-lbl">Coffre</span></div></div>
+            </div>
+            <div class="car-footer">
+              <div class="car-price-wrap">
+                <div class="car-price-from">Dès</div>
+                <div class="car-price">195 €<span>/jour</span></div>
+              </div>
+              <button class="car-book" onclick="bookCar(this)">Réserver</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="car-card">
+          <div class="car-img-wrap">
+            <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=700&q=80" alt="Mercedes AMG">
+            <div class="car-badge new">Nouveau</div>
+            <button class="car-wish" onclick="toggleWish(this)">♡</button>
+          </div>
+          <div class="car-body">
+            <div class="car-brand">Mercedes-Benz</div>
+            <div class="car-name">AMG GT 63 S</div>
+            <div class="car-specs">
+              <div class="car-spec"><span class="car-spec-icon">🔥</span><div><span class="car-spec-val">630 ch</span><span class="car-spec-lbl">Puissance</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">🚀</span><div><span class="car-spec-val">3.2 s</span><span class="car-spec-lbl">0–100 km/h</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">👤</span><div><span class="car-spec-val">4 places</span><span class="car-spec-lbl">Passagers</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">🏁</span><div><span class="car-spec-val">315 km/h</span><span class="car-spec-lbl">Vitesse max</span></div></div>
+            </div>
+            <div class="car-footer">
+              <div class="car-price-wrap">
+                <div class="car-price-from">Dès</div>
+                <div class="car-price">480 €<span>/jour</span></div>
+              </div>
+              <button class="car-book" onclick="bookCar(this)">Réserver</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="car-card">
+          <div class="car-img-wrap">
+            <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=700&q=80" alt="Jeep">
+            <button class="car-wish" onclick="toggleWish(this)">♡</button>
+          </div>
+          <div class="car-body">
+            <div class="car-brand">Jeep</div>
+            <div class="car-name">Grand Cherokee 4xe</div>
+            <div class="car-specs">
+              <div class="car-spec"><span class="car-spec-icon">🔋</span><div><span class="car-spec-val">Hybride</span><span class="car-spec-lbl">Motorisation</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">🛞</span><div><span class="car-spec-val">4x4</span><span class="car-spec-lbl">Transmission</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">👤</span><div><span class="car-spec-val">5 places</span><span class="car-spec-lbl">Passagers</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">🧳</span><div><span class="car-spec-val">520 L</span><span class="car-spec-lbl">Coffre</span></div></div>
+            </div>
+            <div class="car-footer">
+              <div class="car-price-wrap">
+                <div class="car-price-from">Dès</div>
+                <div class="car-price">140 €<span>/jour</span></div>
+              </div>
+              <button class="car-book" onclick="bookCar(this)">Réserver</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="car-card">
+          <div class="car-img-wrap">
+            <img src="https://images.unsplash.com/photo-1541348263662-e068662d82af?w=700&q=80" alt="BMW Serie 5">
+            <div class="car-badge lux">Business</div>
+            <button class="car-wish" onclick="toggleWish(this)">♡</button>
+          </div>
+          <div class="car-body">
+            <div class="car-brand">BMW</div>
+            <div class="car-name">Série 5 Touring M Sport</div>
+            <div class="car-specs">
+              <div class="car-spec"><span class="car-spec-icon">🔥</span><div><span class="car-spec-val">306 ch</span><span class="car-spec-lbl">Puissance</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">⚙️</span><div><span class="car-spec-val">Auto 8</span><span class="car-spec-lbl">Boîte</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">👤</span><div><span class="car-spec-val">5 places</span><span class="car-spec-lbl">Passagers</span></div></div>
+              <div class="car-spec"><span class="car-spec-icon">🧳</span><div><span class="car-spec-val">570 L</span><span class="car-spec-lbl">Coffre</span></div></div>
+            </div>
+            <div class="car-footer">
+              <div class="car-price-wrap">
+                <div class="car-price-from">Dès</div>
+                <div class="car-price">155 €<span>/jour</span></div>
+              </div>
+              <button class="car-book" onclick="bookCar(this)">Réserver</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- OTHER PANELS (empty fallback) -->
+    <div class="fleet-panel" id="panel-citadines"><div class="cars-grid reveal"><div class="car-card" style="grid-column:span 3;padding:60px;text-align:center;background:var(--card2);border:1px dashed var(--border2)"><div style="font-size:48px;margin-bottom:16px">🚗</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;text-transform:uppercase;color:var(--text2)">Citadines disponibles — voir tous les véhicules</div></div></div></div>
+    <div class="fleet-panel" id="panel-suv"><div class="cars-grid reveal"><div class="car-card" style="grid-column:span 3;padding:60px;text-align:center;background:var(--card2);border:1px dashed var(--border2)"><div style="font-size:48px;margin-bottom:16px">🚙</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;text-transform:uppercase;color:var(--text2)">SUV disponibles — voir tous les véhicules</div></div></div></div>
+    <div class="fleet-panel" id="panel-prestige"><div class="cars-grid reveal"><div class="car-card" style="grid-column:span 3;padding:60px;text-align:center;background:var(--card2);border:1px dashed var(--border2)"><div style="font-size:48px;margin-bottom:16px">💎</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;text-transform:uppercase;color:var(--text2)">Collection Prestige — Lamborghini, Ferrari, Bentley</div></div></div></div>
+    <div class="fleet-panel" id="panel-electrique"><div class="cars-grid reveal"><div class="car-card" style="grid-column:span 3;padding:60px;text-align:center;background:var(--card2);border:1px dashed var(--border2)"><div style="font-size:48px;margin-bottom:16px">⚡</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;text-transform:uppercase;color:var(--text2)">Flotte 100% Électrique — Tesla, BMW, Mercedes EQS</div></div></div></div>
+    <div class="fleet-panel" id="panel-sport"><div class="cars-grid reveal"><div class="car-card" style="grid-column:span 3;padding:60px;text-align:center;background:var(--card2);border:1px dashed var(--border2)"><div style="font-size:48px;margin-bottom:16px">🏎️</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;text-transform:uppercase;color:var(--text2)">Sport & GT — Porsche, Ferrari, Maserati</div></div></div></div>
+  </div>
+</section>
+
+<!-- ══════ WHY US ══════ -->
+<section id="why">
+  <div class="why-bg-text">DRIVEX</div>
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-label reveal">Pourquoi nous choisir</div>
+        <h2 class="s-title reveal d1">CE QUI NOUS<br><span class="acc">DISTINGUE</span></h2>
+      </div>
+      <p class="s-sub reveal d2">Plus de 15 ans d'expérience, une flotte premium et un service client disponible 24h/24 pour une expérience irréprochable.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <div class="why-icon">🚀</div>
+        <div class="why-num">01</div>
+        <div class="why-title">Réservation en 2 minutes</div>
+        <p class="why-desc">Réservez en ligne, sur application ou par téléphone. Confirmation immédiate par email et SMS. Pas de paperasse.</p>
+      </div>
+      <div class="why-card reveal d1">
+        <div class="why-icon">🛡️</div>
+        <div class="why-num">02</div>
+        <div class="why-title">Assurance tous risques incluse</div>
+        <p class="why-desc">Tous nos véhicules sont couverts tous risques. Franchise zéro disponible. Assistance routière 24/7 en France et Europe.</p>
+      </div>
+      <div class="why-card reveal d2">
+        <div class="why-icon">✨</div>
+        <div class="why-num">03</div>
+        <div class="why-title">Véhicules neufs & parfaits</div>
+        <p class="why-desc">Flotte renouvelée chaque année. Nettoyage professionnel entre chaque location. Vérification mécanique complète garantie.</p>
+      </div>
+      <div class="why-card reveal d3">
+        <div class="why-icon">📍</div>
+        <div class="why-num">04</div>
+        <div class="why-title">Livraison à domicile</div>
+        <p class="why-desc">On livre la voiture là où vous êtes — hotel, bureau, aéroport, domicile. Retour simplifié dans nos 12 agences.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ ABOUT ══════ -->
+<section id="about">
+  <div class="about-split">
+    <div class="about-visual reveal-l">
+      <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=900&q=80" alt="Route ouverte">
+      <div class="about-visual-overlay"></div>
+      <div class="about-stats-float">
+        <div class="ab-stat">
+          <div class="ab-stat-n">120+</div>
+          <div><div style="font-size:13px;color:#fff;font-weight:700">Véhicules</div><div class="ab-stat-l">dans notre flotte</div></div>
+        </div>
+        <div class="ab-stat">
+          <div class="ab-stat-n">15K+</div>
+          <div><div style="font-size:13px;color:#fff;font-weight:700">Clients</div><div class="ab-stat-l">nous font confiance</div></div>
+        </div>
+        <div class="ab-stat">
+          <div class="ab-stat-n">12</div>
+          <div><div style="font-size:13px;color:#fff;font-weight:700">Agences</div><div class="ab-stat-l">en France</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="about-right reveal-r">
+      <div class="s-label">Notre histoire</div>
+      <h2 class="s-title">15 ANS DE<br>PASSION<br><span class="acc">AUTOMOBILE</span></h2>
+      <blockquote class="about-quote">"La route est l'aventure. Nous sommes juste là pour vous la rendre parfaite."</blockquote>
+      <p class="about-desc">Fondée en 2010 à Paris, DRIVEX est née d'une passion simple : rendre accessible le plaisir de rouler dans des véhicules d'exception. Ce qui a commencé avec 8 voitures et une agence est aujourd'hui l'une des références françaises de la location premium.</p>
+      <p class="about-desc">Notre engagement : des véhicules impeccables, un service ultra-réactif et des tarifs transparents. Pas de mauvaise surprise, juste le plaisir de conduire.</p>
+      <div class="about-certs">
+        <div class="cert-badge">
+          <div class="cert-icon">🏆</div>
+          <div class="cert-text"><strong>Meilleure agence 2024</strong><span>Auto Plus Magazine</span></div>
+        </div>
+        <div class="cert-badge">
+          <div class="cert-icon">⭐</div>
+          <div class="cert-text"><strong>Note 4.9/5</strong><span>+4 200 avis Google</span></div>
+        </div>
+        <div class="cert-badge">
+          <div class="cert-icon">🌿</div>
+          <div class="cert-text"><strong>Label Eco-Drive</strong><span>Flotte 40% électrique</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ PROCESS ══════ -->
+<section id="process">
+  <div class="process-bg-num">3 ÉTAPES</div>
+  <div class="container">
+    <div class="s-head" style="margin-bottom:72px">
+      <div>
+        <div class="s-label reveal">Simple & rapide</div>
+        <h2 class="s-title reveal d1">ROULEZ EN<br><span class="acc">4 ÉTAPES</span></h2>
+      </div>
+      <p class="s-sub reveal d2">De la réservation en ligne à la remise des clés en moins de 2 minutes. C'est aussi simple que ça.</p>
+    </div>
+    <div class="process-steps">
+      <div class="process-line"></div>
+      <div class="proc-step reveal">
+        <div class="proc-circle">01</div>
+        <div class="proc-icon">🔍</div>
+        <div class="proc-title">Choisissez votre voiture</div>
+        <p class="proc-desc">Filtrez par catégorie, date, agence ou budget. Comparez les véhicules disponibles en temps réel.</p>
+      </div>
+      <div class="proc-step reveal d1">
+        <div class="proc-circle">02</div>
+        <div class="proc-icon">📋</div>
+        <div class="proc-title">Renseignez vos infos</div>
+        <p class="proc-desc">Permis de conduire, carte bancaire, options souhaitées. Formulaire sécurisé, 100% en ligne ou en agence.</p>
+      </div>
+      <div class="proc-step reveal d2">
+        <div class="proc-circle">03</div>
+        <div class="proc-icon">✅</div>
+        <div class="proc-title">Confirmation instantanée</div>
+        <p class="proc-desc">Email + SMS de confirmation immédiat. Contrat de location PDF disponible dans votre espace client.</p>
+      </div>
+      <div class="proc-step reveal d3">
+        <div class="proc-circle">04</div>
+        <div class="proc-icon">🗝️</div>
+        <div class="proc-title">Prenez le volant !</div>
+        <p class="proc-desc">Récupérez les clés en agence ou recevez le véhicule à l'adresse de votre choix. Bonne route !</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ OFFERS ══════ -->
+<section id="offers">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-label reveal">Bons plans</div>
+        <h2 class="s-title reveal d1">OFFRES<br><span class="acc">SPÉCIALES</span></h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Toutes les offres</a>
+    </div>
+    <div class="offers-grid reveal d2">
+      <div class="offer-card">
+        <div class="offer-bg" style="background-image:url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80')"></div>
+        <div class="offer-overlay"></div>
+        <div class="offer-content">
+          <div class="offer-tag">🔥 Offre limitée</div>
+          <div class="offer-name">Week-end Prestige — Porsche 911</div>
+          <div class="offer-desc">2 nuits, kilométrage illimité, assurance tous risques, livraison à domicile incluse. Offre valable jusqu'au 28 fév.</div>
+          <div class="offer-price-row">
+            <div class="offer-old">640 €</div>
+            <div class="offer-new">449 €</div>
+            <div class="offer-save">-30%</div>
+          </div>
+        </div>
+      </div>
+      <div class="offer-card">
+        <div class="offer-bg" style="background-image:url('https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&q=80')"></div>
+        <div class="offer-overlay"></div>
+        <div class="offer-content">
+          <div class="offer-tag">⚡ Pack Éco</div>
+          <div class="offer-name">Semaine Tesla — Rechargement offert</div>
+          <div class="offer-desc">7 jours en Tesla Model 3, toutes les charges incluses. Zéro émission, zéro surprise.</div>
+          <div class="offer-price-row">
+            <div class="offer-old">623 €</div>
+            <div class="offer-new">490 €</div>
+            <div class="offer-save">-21%</div>
+          </div>
+        </div>
+      </div>
+      <div class="offer-card">
+        <div class="offer-bg" style="background-image:url('https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=600&q=80')"></div>
+        <div class="offer-overlay"></div>
+        <div class="offer-content">
+          <div class="offer-tag">👨‍👩‍👧 Famille</div>
+          <div class="offer-name">SUV 7 places — 10 jours vacances</div>
+          <div class="offer-desc">Range Rover Sport, siège bébé offert, GPS inclus, kilométrage illimité.</div>
+          <div class="offer-price-row">
+            <div class="offer-old">1 950 €</div>
+            <div class="offer-new">1 499 €</div>
+            <div class="offer-save">-23%</div>
+          </div>
+        </div>
+      </div>
+      <div class="offer-card">
+        <div class="offer-bg" style="background-image:url('https://images.unsplash.com/photo-1441148345475-03a2e82f9719?w=600&q=80')"></div>
+        <div class="offer-overlay"></div>
+        <div class="offer-content">
+          <div class="offer-tag">💼 Business</div>
+          <div class="offer-name">Abonnement mensuel — Berline Premium</div>
+          <div class="offer-desc">BMW Série 5 ou Classe E, 1 mois, chauffeur optionnel, facturation entreprise simplifiée.</div>
+          <div class="offer-price-row">
+            <div class="offer-old">3 200 €</div>
+            <div class="offer-new">2 499 €/mois</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ STATS ══════ -->
+<div class="stats-strip reveal">
+  <div class="stats-inner">
+    <div class="stat-box"><div class="stat-n" data-target="120">0</div><div class="stat-l">Véhicules en flotte</div></div>
+    <div class="stat-box"><div class="stat-n" data-target="15000">0</div><div class="stat-l">Clients satisfaits</div></div>
+    <div class="stat-box"><div class="stat-n" data-target="12">0</div><div class="stat-l">Agences en France</div></div>
+    <div class="stat-box"><div class="stat-n" data-target="98">0</div><div class="stat-l">% de satisfaction</div></div>
+  </div>
+</div>
+
+<!-- ══════ REVIEWS ══════ -->
+<section id="reviews">
+  <div class="container">
+    <div class="reviews-header reveal">
+      <div>
+        <div class="s-label">Avis clients</div>
+        <h2 class="s-title">CE QU'ILS<br><span class="acc">DISENT</span></h2>
+      </div>
+      <div class="reviews-score">
+        <div class="score-big">4.9</div>
+        <div class="score-stars">★★★★★</div>
+        <div class="score-label">Sur 4 280 avis vérifiés</div>
+      </div>
+    </div>
+    <div class="swiper rev-swiper reveal d2">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <div class="rev-card">
+            <div class="rev-stars">★★★★★</div>
+            <p class="rev-text">Expérience incroyable avec la Porsche 911. Véhicule impeccable, livré à mon hôtel à l'heure exacte. Le service est vraiment au niveau premium. Je recommande DRIVEX à tous mes collègues voyageurs d'affaires.</p>
+            <div class="rev-author">
+              <img class="rev-ava" src="https://i.pravatar.cc/100?img=11" alt="Marc">
+              <div><div class="rev-name">Marc Leblanc</div><div class="rev-info">Paris · Nov. 2024</div></div>
+              <div class="rev-car">Porsche 911</div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="rev-card">
+            <div class="rev-stars">★★★★★</div>
+            <p class="rev-text">La Tesla était parfaite pour notre road trip en famille. Chargée à 100%, propre comme un sou neuf, et le siège enfant était déjà installé ! Le retour sans file d'attente en 5 minutes. C'est ça qu'on appelle un bon service.</p>
+            <div class="rev-author">
+              <img class="rev-ava" src="https://i.pravatar.cc/100?img=43" alt="Sophie">
+              <div><div class="rev-name">Sophie & Julien M.</div><div class="rev-info">Lyon · Oct. 2024</div></div>
+              <div class="rev-car">Tesla Model 3</div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="rev-card">
+            <div class="rev-stars">★★★★★</div>
+            <p class="rev-text">3ème location avec DRIVEX, toujours aussi satisfait. Le Range Rover Sport était exactement comme décrit. Prix compétitifs, assurance claire, personnel sympa. Pas d'arnaque, pas de surprise cachée. Rare dans ce secteur !</p>
+            <div class="rev-author">
+              <img class="rev-ava" src="https://i.pravatar.cc/100?img=27" alt="Karim">
+              <div><div class="rev-name">Karim Benali</div><div class="rev-info">Marseille · Sept. 2024</div></div>
+              <div class="rev-car">Range Rover Sport</div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="rev-card">
+            <div class="rev-stars">★★★★★</div>
+            <p class="rev-text">Loué la Mercedes AMG pour l'anniversaire de ma femme. Surprise totale ! L'équipe a même mis des fleurs dans le véhicule comme je leur avais demandé. Ce genre d'attention fait toute la différence. Merci DRIVEX !</p>
+            <div class="rev-author">
+              <img class="rev-ava" src="https://i.pravatar.cc/100?img=54" alt="Thomas">
+              <div><div class="rev-name">Thomas Garnier</div><div class="rev-info">Nice · Août 2024</div></div>
+              <div class="rev-car">Mercedes AMG GT</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-pagination" style="bottom:-40px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ PRICING ══════ -->
+<section id="pricing">
+  <div class="container">
+    <div class="s-head" style="flex-direction:column;align-items:center;text-align:center;margin-bottom:60px">
+      <div class="s-label reveal">Nos formules</div>
+      <h2 class="s-title reveal d1">TARIFS<br><span class="acc">TRANSPARENTS</span></h2>
+      <p class="s-sub reveal d2" style="max-width:480px;margin:0 auto">Choisissez la formule qui correspond à vos besoins. Pas de frais cachés, pas de mauvaise surprise.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-plan">Essentiel</div>
+        <div class="price-amount"><sup>€</sup>39</div>
+        <div class="price-period">par jour · à partir de</div>
+        <div class="price-desc">Pour les déplacements quotidiens. Véhicules citadines et compactes. Idéal pour les courtes durées.</div>
+        <div class="price-feats">
+          <div class="pf-item"><div class="pf-check">✓</div>Kilométrage 200 km/jour</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Assurance responsabilité civile</div>
+          <div class="pf-item"><div class="pf-check">✓</div>1 conducteur inclus</div>
+          <div class="pf-item"><div class="pf-check">✓</div>GPS en option (+5€/j)</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Prise en charge en agence</div>
+        </div>
+        <a href="#contact" class="price-cta">Réserver →</a>
+      </div>
+      <div class="price-card featured reveal d1">
+        <div class="price-pop-badge">⭐ Le plus choisi</div>
+        <div class="price-plan">Premium</div>
+        <div class="price-amount"><sup>€</sup>89</div>
+        <div class="price-period">par jour · à partir de</div>
+        <div class="price-desc">La formule complète pour les voyageurs exigeants. Véhicules SUV, berlines et electriques premium.</div>
+        <div class="price-feats">
+          <div class="pf-item"><div class="pf-check">✓</div>Kilométrage illimité</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Assurance tous risques incluse</div>
+          <div class="pf-item"><div class="pf-check">✓</div>2 conducteurs inclus</div>
+          <div class="pf-item"><div class="pf-check">✓</div>GPS + siège enfant offerts</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Livraison à domicile</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Assistance 24/7 prioritaire</div>
+        </div>
+        <a href="#contact" class="price-cta">Réserver →</a>
+      </div>
+      <div class="price-card reveal d2">
+        <div class="price-plan">Prestige</div>
+        <div class="price-amount"><sup>€</sup>299</div>
+        <div class="price-period">par jour · à partir de</div>
+        <div class="price-desc">L'expérience ultime. Véhicules de luxe et sportifs, service conciergerie personnalisé.</div>
+        <div class="price-feats">
+          <div class="pf-item"><div class="pf-check">✓</div>Kilométrage illimité</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Assurance franchise zéro</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Conducteurs illimités</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Livraison VIP · chauffeur optionnel</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Conciergerie & surprises personnalisées</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Assistance dédiée 24/7</div>
+        </div>
+        <a href="#contact" class="price-cta">Réserver →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ GALLERY ══════ -->
+<section id="gallery">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-label reveal">Notre univers</div>
+        <h2 class="s-title reveal d1">LA FLOTTE<br><span class="acc">EN IMAGES</span></h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Voir toute la galerie</a>
+    </div>
+    <div class="gal-grid reveal d2">
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80" alt="g1"><div class="g-lens"><div class="g-lens-ring">🔍</div></div></div>
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&q=80" alt="g2"><div class="g-lens"><div class="g-lens-ring">🔍</div></div></div>
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=600&q=80" alt="g3"><div class="g-lens"><div class="g-lens-ring">🔍</div></div></div>
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&q=80" alt="g4"><div class="g-lens"><div class="g-lens-ring">🔍</div></div></div>
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=600&q=80" alt="g5"><div class="g-lens"><div class="g-lens-ring">🔍</div></div></div>
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1441148345475-03a2e82f9719?w=800&q=80" alt="g6"><div class="g-lens"><div class="g-lens-ring">🔍</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ FAQ ══════ -->
+<section id="faq">
+  <div class="container">
+    <div class="faq-layout">
+      <div class="reveal-l">
+        <div class="s-label">Questions fréquentes</div>
+        <h2 class="s-title">FAQ<br><span class="acc">RÉPONSES</span><br>RAPIDES</h2>
+        <p style="font-size:14px;color:var(--text2);line-height:2;margin-top:18px;font-weight:300">Pas de réponse à votre question ? Contactez-nous directement — réponse garantie sous 30 min.</p>
+        <a href="#contact" class="btn-y" style="margin-top:28px;display:inline-flex">Nous contacter →</a>
+      </div>
+      <div class="faq-list reveal-r">
+        <div class="faq-item open">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Quel âge minimum pour louer une voiture ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>L'âge minimum est de 21 ans pour les véhicules standard, et 25 ans pour les véhicules prestige et sport. Un permis de conduire valide depuis au moins 2 ans est requis. Des frais "jeune conducteur" peuvent s'appliquer pour les moins de 25 ans.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Quels documents sont nécessaires à la prise en charge ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Permis de conduire valide, pièce d'identité (CNI ou passeport), carte bancaire au nom du locataire pour la caution. Pour les ressortissants étrangers, un permis international peut être demandé selon le pays.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Puis-je modifier ou annuler ma réservation ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Modification gratuite jusqu'à 24h avant la prise en charge. Annulation gratuite jusqu'à 48h avant. Au-delà, des frais peuvent s'appliquer selon la formule choisie. La formule Premium et Prestige inclut l'annulation flexible jusqu'à 12h.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Le kilométrage est-il limité ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>La formule Essentiel inclut 200 km/jour. Les formules Premium et Prestige offrent un kilométrage illimité. Des packages kilométrage supplémentaire sont disponibles pour la formule Essentiel à 0.15€/km au-delà du forfait.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Puis-je conduire en dehors de la France ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Oui ! Tous nos véhicules peuvent être utilisés dans l'espace Schengen (Europe). Pour les voyages en dehors de l'UE, une autorisation spéciale est nécessaire. Informez-nous lors de la réservation pour adapter votre contrat.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Comment fonctionne la livraison à domicile ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Disponible dans un rayon de 50 km autour de nos agences. Gratuite avec les formules Premium et Prestige. Tarif de 35€ pour la formule Essentiel. Livraison disponible entre 7h et 22h, 7j/7. Réservation requise 24h à l'avance.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ CONTACT ══════ -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-layout">
+      <div class="reveal-l">
+        <div class="s-label">Réservation</div>
+        <h3>RÉSERVEZ<br>VOTRE <span>VÉHICULE</span><br>MAINTENANT</h3>
+        <p style="font-size:14px;color:var(--text2);line-height:2;font-weight:300;margin-bottom:8px">Notre équipe vous confirme la disponibilité et finalise votre réservation sous 30 minutes. Devis gratuit et immédiat.</p>
+        <div class="c-items">
+          <div class="c-item">
+            <div class="c-icon">📞</div>
+            <div><div class="c-label">Téléphone</div><div class="c-val">+33 1 80 00 00 00</div></div>
+          </div>
+          <div class="c-item">
+            <div class="c-icon">✉️</div>
+            <div><div class="c-label">Email</div><div class="c-val">bonjour@drivex.fr</div></div>
+          </div>
+          <div class="c-item">
+            <div class="c-icon">📍</div>
+            <div><div class="c-label">Agence principale</div><div class="c-val">45 Avenue des Champs-Élysées, 75008 Paris</div></div>
+          </div>
+          <div class="c-item">
+            <div class="c-icon">⏰</div>
+            <div><div class="c-label">Horaires</div><div class="c-val">Lun–Dim 7h00 – 22h00 · Urgences 24/7</div></div>
+          </div>
+        </div>
+        <div class="contact-socials">
+          <a href="#" class="cs">📘</a>
+          <a href="#" class="cs">📸</a>
+          <a href="#" class="cs">▶</a>
+          <a href="#" class="cs">🐦</a>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div class="contact-form">
+          <div class="cf-title">Demande de réservation</div>
+          <form onsubmit="return doForm(event)">
+            <div class="cf-row">
+              <div class="cf-g" style="margin-bottom:0">
+                <label>Prénom *</label>
+                <input type="text" placeholder="Jean" required>
+              </div>
+              <div class="cf-g" style="margin-bottom:0">
+                <label>Nom *</label>
+                <input type="text" placeholder="Dupont" required>
+              </div>
+            </div>
+            <div class="cf-row">
+              <div class="cf-g" style="margin-bottom:0">
+                <label>Email *</label>
+                <input type="email" placeholder="jean@email.fr" required>
+              </div>
+              <div class="cf-g" style="margin-bottom:0">
+                <label>Téléphone</label>
+                <input type="tel" placeholder="+33 6 00 00 00 00">
+              </div>
+            </div>
+            <div class="cf-g">
+              <label>Véhicule souhaité</label>
+              <select>
+                <option>Choisir une catégorie...</option>
+                <option>Citadine / Compacte</option>
+                <option>Berline Premium</option>
+                <option>SUV / 4x4</option>
+                <option>Sport / GT</option>
+                <option>Prestige (Porsche, Mercedes AMG...)</option>
+                <option>Électrique (Tesla, BMW iX...)</option>
+                <option>Utilitaire</option>
+              </select>
+            </div>
+            <div class="cf-row">
+              <div class="cf-g" style="margin-bottom:0">
+                <label>Date de départ *</label>
+                <input type="date" required>
+              </div>
+              <div class="cf-g" style="margin-bottom:0">
+                <label>Date de retour *</label>
+                <input type="date" required>
+              </div>
+            </div>
+            <div class="cf-g">
+              <label>Lieu de prise en charge</label>
+              <select>
+                <option>Paris CDG — Aéroport</option>
+                <option>Paris Orly — Aéroport</option>
+                <option>Paris — Centre Ville</option>
+                <option>Lyon — Agence</option>
+                <option>Marseille — Agence</option>
+                <option>Nice — Agence</option>
+                <option>Livraison à mon adresse</option>
+              </select>
+            </div>
+            <div class="cf-g">
+              <label>Message / Demandes spéciales</label>
+              <textarea rows="3" placeholder="Siège enfant, GPS, conducteur supplémentaire, occasion particulière..."></textarea>
+            </div>
+            <button type="submit" class="cf-submit">Envoyer ma demande 🚗</button>
+            <div class="cf-ok" id="cfOk">✅ Demande reçue ! Notre équipe vous contacte sous 30 minutes.</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ MAP ══════ -->
+<div id="map-sec">
+  <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=2.285%2C48.863%2C2.345%2C48.883&layer=mapnik&marker=48.8698%2C2.3079" loading="lazy"></iframe>
+  <div class="map-overlay-card">
+    <div class="map-logo">DRIVE<span>X</span></div>
+    <div class="map-addr">45 Av. des Champs-Élysées<br>75008 Paris · Métro George V</div>
+    <div class="map-open"><div class="open-dot"></div> Ouvert · Ferme à 22h</div>
+  </div>
+</div>
+
+<!-- ══════ NEWSLETTER ══════ -->
+<div class="nl-band">
+  <div class="nl-inner">
+    <div class="nl-left">
+      <h3>OFFRES EXCLUSIVES<br>EN AVANT-PREMIÈRE</h3>
+      <p>Rejoignez 18 000 conducteurs et recevez nos meilleures offres avant tout le monde.</p>
+    </div>
+    <form class="nl-form" onsubmit="return nlSend(event)">
+      <input class="nl-input" type="email" placeholder="votre@email.fr" required>
+      <button class="nl-btn" type="submit">S'inscrire →</button>
+    </form>
+  </div>
+</div>
+
+<!-- ══════ FOOTER ══════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="f-logo-wrap">
+          <div class="f-logo-mark">D</div>
+          <div class="f-logo-text">DRIVE<span>X</span></div>
+        </div>
+        <p class="f-desc">Location de voitures premium en France depuis 2010. 120+ véhicules, 12 agences, livraison à domicile. Votre liberté, notre priorité.</p>
+        <div class="f-socials">
+          <a href="#" class="f-soc">📘</a>
+          <a href="#" class="f-soc">📸</a>
+          <a href="#" class="f-soc">▶</a>
+          <a href="#" class="f-soc">🐦</a>
+        </div>
+      </div>
+      <div class="f-col">
+        <h5>Nos Véhicules</h5>
+        <ul>
+          <li><a href="#">Citadines & Compactes</a></li>
+          <li><a href="#">Berlines Premium</a></li>
+          <li><a href="#">SUV & 4x4</a></li>
+          <li><a href="#">Sport & GT</a></li>
+          <li><a href="#">Prestige & Luxe</a></li>
+          <li><a href="#">Flotte Électrique</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="#">Livraison à domicile</a></li>
+          <li><a href="#">Location longue durée</a></li>
+          <li><a href="#">Abonnement entreprise</a></li>
+          <li><a href="#">Chauffeur privé</a></li>
+          <li><a href="#">Location avec option d'achat</a></li>
+          <li><a href="#">Assistance 24/7</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Nos Agences</h5>
+        <ul>
+          <li><a href="#">Paris — Champs-Élysées</a></li>
+          <li><a href="#">Paris — CDG Aéroport</a></li>
+          <li><a href="#">Paris — Orly</a></li>
+          <li><a href="#">Lyon — Part-Dieu</a></li>
+          <li><a href="#">Marseille — Vieux Port</a></li>
+          <li><a href="#">Nice — Côte d'Azur</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <p>© 2025 DRIVEX — Location de Voitures Premium. Tous droits réservés.</p>
+      <div class="f-bottom-links">
+        <a href="#">Mentions légales</a>
+        <a href="#">CGV</a>
+        <a href="#">Confidentialité</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<a href="#contact" class="float-btn" title="Réserver">🚗</a>
+
+<!-- ══════ SCRIPTS ══════ -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+/* ── THEME ── */
+let t=localStorage.getItem('dx-theme')||'dark';
+const TB=document.getElementById('themeBtn');
+function applyT(th){document.documentElement.setAttribute('data-theme',th);TB.textContent=th==='dark'?'☀️':'🌙';localStorage.setItem('dx-theme',th)}
+function toggleTheme(){t=t==='dark'?'light':'dark';applyT(t)}
+applyT(t);
+
+/* ── NAVBAR ── */
+window.addEventListener('scroll',()=>{document.getElementById('navbar').classList.toggle('solid',window.scrollY>60)});
+
+/* ── MOBILE ── */
+function openMob(){document.getElementById('mobMenu').classList.add('open')}
+function closeMob(){document.getElementById('mobMenu').classList.remove('open')}
+
+/* ── HERO SWIPER ── */
+const hs=new Swiper('.hero-swiper',{
+  loop:true,autoplay:{delay:6000,disableOnInteraction:false},
+  effect:'fade',fadeEffect:{crossFade:true},speed:1400,
+  pagination:{el:'.hero-swiper .swiper-pagination',clickable:true},
+  on:{slideChange(){
+    const el=document.getElementById('heroSlideNum');
+    if(el)el.textContent=String(this.realIndex+1).padStart(2,'0');
+  }}
+});
+
+/* ── REVIEWS SWIPER ── */
+new Swiper('.rev-swiper',{
+  loop:true,autoplay:{delay:5000},speed:900,
+  spaceBetween:20,
+  pagination:{el:'.rev-swiper .swiper-pagination',clickable:true},
+  breakpoints:{768:{slidesPerView:2},1100:{slidesPerView:3}}
+});
+
+/* ── FLEET TABS ── */
+function switchFleet(btn,id){
+  document.querySelectorAll('.fleet-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.fleet-panel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  const p=document.getElementById('panel-'+id);
+  if(p){p.classList.add('on');p.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>{el.classList.remove('on');setTimeout(()=>el.classList.add('on'),50)})}
+}
+
+/* ── SCROLL REVEAL ── */
+const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');ro.unobserve(e.target)}})},{threshold:.1});
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>ro.observe(el));
+
+/* ── COUNTERS ── */
+function cnt(el,target){
+  let v=0;const step=target/70;
+  const ti=setInterval(()=>{
+    v=Math.min(v+step,target);
+    const d=target>=1000?Math.round(v).toLocaleString('fr'):Math.round(v);
+    el.textContent=d+(target===98?'%':'+');
+    if(v>=target){el.textContent=(target>=1000?target.toLocaleString('fr'):target)+(target===98?'%':'+');clearInterval(ti)}
+  },18);
+}
+const cob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.stat-n[data-target]').forEach(el=>cnt(el,+el.dataset.target));cob.disconnect()}})},{threshold:.3});
+const ss=document.querySelector('.stats-strip');if(ss)cob.observe(ss);
+
+/* ── FAQ ── */
+function toggleFaq(q){
+  const item=q.parentElement;
+  const wasOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen)item.classList.add('open');
+}
+
+/* ── WISHLIST ── */
+function toggleWish(btn){
+  const active=btn.classList.toggle('active');
+  btn.textContent=active?'♥':'♡';
+}
+
+/* ── CAR BOOK ── */
+function bookCar(btn){
+  const orig=btn.textContent;
+  btn.textContent='✓ Ajouté !';
+  btn.style.background='var(--y)';btn.style.color='#0C0C0E';
+  setTimeout(()=>{btn.textContent=orig;btn.style.background='';btn.style.color=''},2000);
+}
+
+/* ── SEARCH ── */
+function searchCars(){
+  const start=document.getElementById('startDate').value;
+  const end=document.getElementById('endDate').value;
+  if(!start||!end){alert('Veuillez sélectionner vos dates de location.');return}
+  document.getElementById('fleet').scrollIntoView({behavior:'smooth'});
+}
+
+/* ── DATE DEFAULTS ── */
+const today=new Date();
+const td=today.toISOString().split('T')[0];
+const tomorrow=new Date(today);tomorrow.setDate(today.getDate()+3);
+const tm=tomorrow.toISOString().split('T')[0];
+const s=document.getElementById('startDate'),e=document.getElementById('endDate');
+if(s)s.value=td;if(e)e.value=tm;
+
+/* ── FORMS ── */
+function doForm(ev){
+  ev.preventDefault();
+  document.getElementById('cfOk').style.display='block';
+  ev.target.reset();
+  setTimeout(()=>document.getElementById('cfOk').style.display='none',7000);
+  return false;
+}
+function nlSend(ev){
+  ev.preventDefault();
+  ev.target.querySelector('input').value='';
+  ev.target.querySelector('.nl-btn').textContent='✓ Inscrit !';
+  setTimeout(()=>ev.target.querySelector('.nl-btn').textContent='S\'inscrire →',3000);
+  return false;
+}
+</script>
+</body>
+</html>

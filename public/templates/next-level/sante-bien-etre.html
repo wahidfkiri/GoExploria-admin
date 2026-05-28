@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VITALIS — Centre de Santé & Bien-être</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;0,900;1,300;1,400;1,600&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<style>
+:root{
+  --sage:#2D6A4F; --sage2:#40916C; --sage3:#52B788;
+  --mint:#95D5B2; --mint2:#D8F3DC;
+  --sage-pale:rgba(45,106,79,0.08);
+  --amber:#E9C46A; --warm:#F4A261;
+  --tr:all .5s cubic-bezier(.23,1,.32,1);
+  --rad:18px; --rad-lg:28px;
+}
+[data-theme="light"]{
+  --bg:#FAFAF8; --bg2:#F4F0E8; --bg3:#EDE8DC;
+  --bg4:#E4DDD0; --card:#FFFFFF;
+  --border:rgba(45,106,79,.1); --border2:rgba(45,106,79,.18);
+  --text:#1A2E1E; --text2:#4A6355; --text3:#8FA898;
+  --nav-bg:rgba(250,250,248,.92);
+  --inp:rgba(45,106,79,.05);
+  --sh:0 20px 60px rgba(45,106,79,.10);
+  --sh2:0 4px 20px rgba(45,106,79,.08);
+}
+[data-theme="dark"]{
+  --bg:#0D1610; --bg2:#111B14; --bg3:#162219;
+  --bg4:#1C2B1F; --card:#131D16;
+  --border:rgba(82,183,136,.10); --border2:rgba(82,183,136,.18);
+  --text:#E8F5EC; --text2:#82B496; --text3:#446655;
+  --nav-bg:rgba(13,22,16,.92);
+  --inp:rgba(82,183,136,.07);
+  --sh:0 20px 60px rgba(0,0,0,.50);
+  --sh2:0 4px 20px rgba(0,0,0,.30);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden;transition:background .45s,color .45s}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--sage3);border-radius:2px}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  height:72px;padding:0 56px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:var(--tr);
+}
+nav.solid{background:var(--nav-bg);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);box-shadow:var(--sh2)}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo-icon{
+  width:38px;height:38px;background:var(--sage);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:var(--tr);
+}
+.nav-logo:hover .nav-logo-icon{transform:rotate(10deg) scale(1.08)}
+.nav-logo-text{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--text);letter-spacing:.5px}
+.nav-logo-text span{color:var(--sage)}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);transition:var(--tr);position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--sage);border-radius:1px;transition:var(--tr)}
+.nav-links a:hover{color:var(--sage)}
+.nav-links a:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:12px}
+.theme-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--border2);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:var(--text2);transition:var(--tr)}
+.theme-btn:hover{border-color:var(--sage);color:var(--sage);transform:rotate(15deg)}
+.nav-rdv{background:var(--sage);color:#fff;padding:10px 22px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:var(--tr);white-space:nowrap}
+.nav-rdv:hover{background:var(--sage2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(45,106,79,.35)}
+.ham{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer}
+.ham span{width:24px;height:2px;background:var(--text);border-radius:1px;display:block;transition:var(--tr)}
+.mob-nav{display:none;position:fixed;inset:0;z-index:998;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:26px}
+.mob-nav.open{display:flex}
+.mob-nav a{font-family:'Fraunces',serif;font-size:30px;font-weight:400;color:var(--text);transition:var(--tr)}
+.mob-nav a:hover{color:var(--sage)}
+.mob-close{position:absolute;top:22px;right:28px;font-size:28px;background:none;border:none;color:var(--text);cursor:pointer}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;padding:100px 80px 60px;
+  position:relative;overflow:hidden;gap:60px;
+}
+.hero-blob{
+  position:absolute;top:-200px;right:-150px;
+  width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle at 40% 40%,var(--mint2) 0%,rgba(149,213,178,.3) 50%,transparent 75%);
+  animation:blobpulse 8s ease-in-out infinite;z-index:0;
+}
+.hero-blob2{
+  position:absolute;bottom:-150px;left:-100px;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,rgba(45,106,79,.06) 0%,transparent 70%);
+  animation:blobpulse 10s 2s ease-in-out infinite;z-index:0;
+}
+@keyframes blobpulse{0%,100%{transform:scale(1) translate(0,0)}50%{transform:scale(1.08) translate(-20px,15px)}}
+.hero-left{position:relative;z-index:2}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--mint2);border:1px solid var(--mint);
+  border-radius:50px;padding:6px 16px;margin-bottom:24px;
+}
+[data-theme="dark"] .hero-pill{background:rgba(149,213,178,.12);border-color:rgba(149,213,178,.25)}
+.hero-pill-dot{width:7px;height:7px;background:var(--sage);border-radius:50%;animation:pingdot 2s infinite}
+@keyframes pingdot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.5}}
+.hero-pill span{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sage)}
+.hero-h1{font-family:'Fraunces',serif;font-size:clamp(48px,6.5vw,84px);font-weight:700;line-height:1;color:var(--text);letter-spacing:-1.5px;margin-bottom:22px}
+.hero-h1 em{font-style:italic;color:var(--sage)}
+.hero-sub{font-size:16px;color:var(--text2);line-height:1.9;font-weight:300;max-width:460px;margin-bottom:40px}
+.hero-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.btn-sage{background:var(--sage);color:#fff;padding:15px 34px;border-radius:50px;font-size:13px;font-weight:700;letter-spacing:1px;display:inline-flex;align-items:center;gap:10px;transition:var(--tr)}
+.btn-sage:hover{background:var(--sage2);transform:translateY(-3px);box-shadow:0 12px 36px rgba(45,106,79,.35)}
+.btn-outline{border:2px solid var(--border2);color:var(--text);padding:14px 30px;border-radius:50px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:var(--tr)}
+.btn-outline:hover{border-color:var(--sage);color:var(--sage);transform:translateY(-3px)}
+.hero-trust{display:flex;align-items:center;gap:16px;margin-top:40px;padding-top:32px;border-top:1px solid var(--border)}
+.hero-avatars{display:flex}
+.hero-avatars img{width:36px;height:36px;border-radius:50%;border:2px solid var(--bg);margin-left:-10px;object-fit:cover}
+.hero-avatars img:first-child{margin-left:0}
+.hero-trust-text span{font-size:13px;font-weight:700;color:var(--text)}
+.hero-trust-text small{font-size:11px;color:var(--text3);display:block;margin-top:1px}
+.hero-right{position:relative;z-index:2}
+.hero-img-frame{border-radius:32px;overflow:hidden;box-shadow:var(--sh);position:relative;height:520px}
+.hero-img-frame img{width:100%;height:100%;object-fit:cover}
+.hero-float-card{
+  position:absolute;bottom:-16px;left:-28px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;padding:18px 22px;box-shadow:var(--sh);
+  min-width:190px;animation:floatup 4s ease-in-out infinite;
+}
+@keyframes floatup{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.fcard-icon{font-size:24px;margin-bottom:8px}
+.fcard-num{font-family:'Fraunces',serif;font-size:28px;font-weight:700;color:var(--sage);line-height:1}
+.fcard-label{font-size:11px;color:var(--text3);letter-spacing:.5px;margin-top:2px}
+.hero-float-card2{
+  position:absolute;top:32px;right:-24px;
+  background:var(--sage);border-radius:20px;padding:18px 22px;
+  box-shadow:0 16px 50px rgba(45,106,79,.35);
+  min-width:170px;animation:floatup 5s 1s ease-in-out infinite;
+}
+.fcard2-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:6px}
+.fcard2-val{font-family:'Fraunces',serif;font-size:30px;font-weight:700;color:#fff;line-height:1}
+.fcard2-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:4px}
+
+/* ── RIBBON ── */
+.ribbon{background:var(--sage);overflow:hidden;padding:13px 0}
+.ribbon-track{display:flex;animation:rtk 24s linear infinite;white-space:nowrap}
+.ri{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:rgba(255,255,255,.85);padding:0 40px}
+.rd{color:rgba(255,255,255,.3);padding:0 4px}
+@keyframes rtk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SECTIONS BASE ── */
+section{padding:110px 80px}
+.container{max-width:1320px;margin:0 auto}
+.s-pill{display:inline-flex;align-items:center;gap:10px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--sage);margin-bottom:14px}
+.s-pill::before{content:'';width:22px;height:2px;background:var(--sage);border-radius:1px}
+h2.s-title{font-family:'Fraunces',serif;font-size:clamp(36px,5vw,62px);font-weight:700;line-height:1.05;letter-spacing:-1px;color:var(--text);margin-bottom:18px}
+h2.s-title em{font-style:italic;color:var(--sage)}
+.s-sub{font-size:15px;color:var(--text2);line-height:1.9;font-weight:300;max-width:500px}
+.s-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px;gap:40px;flex-wrap:wrap}
+.link-all{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sage);border-bottom:2px solid var(--sage);padding-bottom:2px;transition:var(--tr)}
+.link-all:hover{gap:16px}
+
+/* ── SERVICES ── */
+#services{background:var(--bg2)}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.svc-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--rad-lg);padding:38px 32px;
+  position:relative;overflow:hidden;transition:var(--tr);cursor:pointer;
+}
+.svc-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(45,106,79,.05),transparent);opacity:0;transition:var(--tr)}
+.svc-card:hover{transform:translateY(-8px);box-shadow:var(--sh);border-color:var(--border2)}
+.svc-card:hover::before{opacity:1}
+.svc-icon-wrap{
+  width:60px;height:60px;border-radius:18px;
+  background:var(--sage-pale);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;margin-bottom:22px;transition:var(--tr);
+}
+.svc-card:hover .svc-icon-wrap{background:var(--sage);transform:rotate(-5deg) scale(1.1)}
+.svc-num{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--sage);opacity:.5;margin-bottom:8px}
+.svc-name{font-family:'Fraunces',serif;font-size:23px;font-weight:600;color:var(--text);margin-bottom:12px;letter-spacing:-.3px}
+.svc-desc{font-size:13px;color:var(--text2);line-height:1.85;margin-bottom:20px}
+.svc-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.svc-tag{background:var(--sage-pale);border:1px solid var(--border);border-radius:50px;padding:3px 12px;font-size:10px;font-weight:600;letter-spacing:.5px;color:var(--sage)}
+.svc-arrow{display:inline-flex;align-items:center;gap:8px;color:var(--sage);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:var(--tr)}
+.svc-card:hover .svc-arrow{gap:14px}
+
+/* ── ABOUT / MISSION ── */
+#about{background:var(--bg);padding:0}
+.about-layout{display:grid;grid-template-columns:1fr 1fr;min-height:80vh}
+.about-left{position:relative;overflow:hidden}
+.about-left img{width:100%;height:100%;object-fit:cover;transition:transform 8s ease}
+.about-left:hover img{transform:scale(1.04)}
+.about-left-overlay{position:absolute;inset:0;background:linear-gradient(to right,transparent 55%,var(--bg))}
+.about-numbers{
+  position:absolute;bottom:60px;left:60px;
+  display:flex;flex-direction:column;gap:14px;
+}
+.ab-num{
+  background:rgba(13,22,16,.8);backdrop-filter:blur(16px);
+  border:1px solid rgba(82,183,136,.25);border-radius:16px;
+  padding:14px 20px;display:flex;align-items:center;gap:14px;
+  min-width:190px;transition:var(--tr);
+}
+[data-theme="light"] .ab-num{background:rgba(255,255,255,.88)}
+.ab-num:hover{border-color:var(--sage3);transform:translateX(6px)}
+.ab-n-val{font-family:'Fraunces',serif;font-size:30px;font-weight:700;color:var(--sage3);line-height:1}
+.ab-n-label{font-size:11px;color:var(--text2);letter-spacing:.5px}
+.about-right{padding:100px 80px;display:flex;flex-direction:column;justify-content:center}
+.about-values{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px}
+.av-item{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:14px;padding:20px;transition:var(--tr);
+}
+.av-item:hover{border-color:var(--sage3);background:var(--sage-pale)}
+.av-icon{font-size:20px;margin-bottom:8px}
+.av-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.av-desc{font-size:11px;color:var(--text3);line-height:1.6}
+
+/* ── TEAM ── */
+#team{background:var(--bg2)}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.team-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rad-lg);overflow:hidden;transition:var(--tr);cursor:pointer}
+.team-card:hover{transform:translateY(-8px);box-shadow:var(--sh);border-color:var(--border2)}
+.team-img{height:280px;overflow:hidden;position:relative;background:var(--bg3)}
+.team-img img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease}
+.team-card:hover .team-img img{transform:scale(1.05)}
+.team-spec-badge{
+  position:absolute;top:14px;left:14px;
+  background:var(--sage);color:#fff;
+  font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 12px;border-radius:50px;
+}
+.team-social-overlay{
+  position:absolute;inset:0;background:rgba(45,106,79,.85);
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  opacity:0;transition:var(--tr);
+}
+.team-card:hover .team-social-overlay{opacity:1}
+.t-soc{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;transition:var(--tr)}
+.t-soc:hover{background:#fff;color:var(--sage);transform:scale(1.1)}
+.team-body{padding:22px}
+.team-name{font-family:'Fraunces',serif;font-size:19px;font-weight:600;color:var(--text);margin-bottom:4px;letter-spacing:-.2px}
+.team-role{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sage);margin-bottom:8px}
+.team-bio{font-size:12px;color:var(--text3);line-height:1.65;margin-bottom:12px}
+.team-cred{display:flex;gap:6px;flex-wrap:wrap}
+.team-cred-item{background:var(--sage-pale);border-radius:50px;padding:2px 10px;font-size:9px;font-weight:600;letter-spacing:.5px;color:var(--sage)}
+
+/* ── HORAIRES ── */
+#horaires{background:var(--bg)}
+.horaires-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:start}
+.horaires-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rad-lg);overflow:hidden;box-shadow:var(--sh2)}
+.h-card-header{background:var(--sage);padding:28px 32px}
+.h-card-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:#fff}
+.h-card-sub{font-size:12px;color:rgba(255,255,255,.65);margin-top:4px}
+.h-card-body{padding:8px 0}
+.h-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 32px;border-bottom:1px solid var(--border);
+  transition:var(--tr);
+}
+.h-row:last-child{border-bottom:none}
+.h-row:hover{background:var(--sage-pale)}
+.h-day{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.h-dot{width:7px;height:7px;border-radius:50%;background:var(--sage3)}
+.h-dot.closed{background:var(--text3)}
+.h-time{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--sage)}
+.h-time.closed{color:var(--text3);font-style:italic;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px}
+.h-urgences{
+  margin-top:24px;background:var(--sage-pale);
+  border:1px solid var(--border2);border-radius:var(--rad);padding:22px 24px;
+  display:flex;align-items:flex-start;gap:14px;
+}
+.h-urg-icon{font-size:24px;flex-shrink:0}
+.h-urg-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.h-urg-desc{font-size:12px;color:var(--text2);line-height:1.7}
+.h-urg-tel{display:block;color:var(--sage);font-weight:700;font-size:16px;margin-top:6px;letter-spacing:.5px}
+.appointment-widget{background:var(--card);border:1px solid var(--border);border-radius:var(--rad-lg);padding:36px;box-shadow:var(--sh2)}
+.aw-title{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-.3px}
+.aw-sub{font-size:13px;color:var(--text3);margin-bottom:28px}
+.aw-mini-cal{margin-bottom:24px}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.cal-month{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--text)}
+.cal-nav{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text2);transition:var(--tr)}
+.cal-nav:hover{background:var(--sage);color:#fff;border-color:var(--sage)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal-day-name{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);padding:4px 0}
+.cal-day{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;
+  transition:var(--tr);margin:0 auto;
+}
+.cal-day:hover{background:var(--sage-pale);color:var(--sage)}
+.cal-day.today{background:var(--sage);color:#fff;font-weight:700}
+.cal-day.available{color:var(--sage);font-weight:700}
+.cal-day.empty{cursor:default}
+.cal-day.disabled{color:var(--text3);opacity:.4;cursor:not-allowed}
+.aw-slots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px}
+.slot{
+  padding:9px;border-radius:10px;text-align:center;
+  border:1.5px solid var(--border2);font-size:12px;font-weight:700;
+  color:var(--text2);cursor:pointer;transition:var(--tr);
+}
+.slot:hover,.slot.selected{background:var(--sage);border-color:var(--sage);color:#fff}
+.slot.unavailable{opacity:.35;cursor:not-allowed;pointer-events:none}
+.aw-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.aw-group{display:flex;flex-direction:column;gap:6px}
+.aw-group label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3)}
+.aw-group input,.aw-group select{
+  background:var(--inp);border:1.5px solid var(--border);
+  color:var(--text);padding:12px 14px;border-radius:12px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:var(--tr);
+}
+.aw-group input:focus,.aw-group select:focus{border-color:var(--sage);background:var(--sage-pale);box-shadow:0 0 0 3px rgba(45,106,79,.1)}
+.aw-group select option{background:var(--card);color:var(--text)}
+.aw-group input::placeholder{color:var(--text3)}
+.aw-submit{
+  width:100%;background:var(--sage);color:#fff;border:none;
+  padding:15px;border-radius:50px;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;
+  margin-top:14px;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.aw-submit:hover{background:var(--sage2);transform:translateY(-2px);box-shadow:0 10px 36px rgba(45,106,79,.35)}
+.aw-ok{display:none;background:var(--sage-pale);border:1px solid var(--border2);border-radius:12px;padding:12px;color:var(--sage);font-size:13px;font-weight:700;text-align:center;margin-top:12px}
+
+/* ── TESTIMONIALS ── */
+#testimonials{background:var(--bg2)}
+.testi-header{display:grid;grid-template-columns:1fr auto;align-items:end;margin-bottom:56px;gap:40px}
+.testi-score-block{text-align:right}
+.score-big{font-family:'Fraunces',serif;font-size:72px;font-weight:700;color:var(--sage);line-height:1}
+.score-stars{font-size:20px;letter-spacing:3px;color:var(--amber)}
+.score-lbl{font-size:11px;color:var(--text3);letter-spacing:1px;margin-top:4px}
+.testi-swiper{overflow:hidden;padding-bottom:50px!important}
+.testi-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--rad-lg);padding:34px;position:relative;
+  overflow:hidden;transition:var(--tr);
+}
+.testi-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--sage),var(--sage3));
+  opacity:0;transition:var(--tr);
+}
+.testi-card:hover{border-color:var(--border2);box-shadow:var(--sh);transform:translateY(-4px)}
+.testi-card:hover::before{opacity:1}
+.testi-stars{color:var(--amber);font-size:14px;letter-spacing:2px;margin-bottom:14px}
+.testi-text{font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--text);line-height:1.85;margin-bottom:24px}
+.testi-author{display:flex;align-items:center;gap:12px}
+.testi-ava{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)}
+.testi-name{font-weight:700;font-size:14px;color:var(--text)}
+.testi-info{font-size:11px;color:var(--text3);margin-top:2px}
+.testi-service{margin-left:auto;font-size:10px;font-weight:700;color:var(--sage);letter-spacing:1px;background:var(--sage-pale);padding:3px 10px;border-radius:50px}
+.swiper-pagination-bullet{background:var(--text3)!important;opacity:.4!important}
+.swiper-pagination-bullet-active{background:var(--sage)!important;opacity:1!important;width:20px!important;border-radius:2px!important}
+
+/* ── STATS ── */
+.stats-band{background:var(--sage);padding:0}
+.stats-inner{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.15)}
+.stat-cell{padding:52px 36px;text-align:center;border-right:1px solid rgba(255,255,255,.15);transition:var(--tr)}
+.stat-cell:hover{background:rgba(255,255,255,.06)}
+.stat-n{font-family:'Fraunces',serif;font-size:56px;font-weight:700;color:#fff;line-height:1;letter-spacing:-1px}
+.stat-l{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-top:8px}
+
+/* ── BLOG ── */
+#blog{background:var(--bg)}
+.blog-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:22px}
+.blog-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rad-lg);overflow:hidden;cursor:pointer;transition:var(--tr)}
+.blog-card:hover{transform:translateY(-6px);box-shadow:var(--sh);border-color:var(--border2)}
+.blog-img{overflow:hidden;position:relative}
+.blog-img img{transition:transform .6s ease;display:block}
+.blog-card:hover .blog-img img{transform:scale(1.04)}
+.blog-img img.big-h{height:260px;width:100%;object-fit:cover}
+.blog-img img.sm-h{height:170px;width:100%;object-fit:cover}
+.blog-cat{position:absolute;top:14px;left:14px;background:var(--sage);color:#fff;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:50px}
+.blog-body{padding:24px}
+.blog-meta{display:flex;align-items:center;gap:10px;font-size:10px;color:var(--text3);letter-spacing:.5px;margin-bottom:10px}
+.bm-dot{width:2px;height:2px;border-radius:50%;background:var(--text3)}
+.blog-title{font-family:'Fraunces',serif;font-size:clamp(16px,2vw,22px);font-weight:600;color:var(--text);letter-spacing:-.3px;line-height:1.3;margin-bottom:10px;transition:var(--tr)}
+.blog-card:hover .blog-title{color:var(--sage)}
+.blog-excerpt{font-size:12px;color:var(--text2);line-height:1.8}
+.blog-readmore{display:inline-flex;align-items:center;gap:8px;color:var(--sage);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-top:16px;transition:var(--tr)}
+.blog-readmore:hover{gap:14px}
+
+/* ── CONTACT ── */
+#contact{background:var(--bg2)}
+.contact-layout{display:grid;grid-template-columns:1fr 1.2fr;gap:90px;align-items:start}
+.contact-left h3{font-family:'Fraunces',serif;font-size:clamp(30px,4vw,48px);font-weight:700;letter-spacing:-1px;color:var(--text);line-height:1.1;margin-bottom:18px}
+.contact-left h3 em{font-style:italic;color:var(--sage)}
+.contact-left p{font-size:14px;color:var(--text2);line-height:2;font-weight:300;margin-bottom:32px}
+.c-items{display:flex;flex-direction:column;gap:18px;margin-bottom:32px}
+.c-item{display:flex;align-items:flex-start;gap:14px}
+.c-icon{width:44px;height:44px;border-radius:13px;background:var(--sage-pale);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:var(--tr)}
+.c-item:hover .c-icon{background:var(--sage)}
+.c-lbl{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--sage);margin-bottom:3px}
+.c-val{font-size:14px;color:var(--text2)}
+.contact-socials{display:flex;gap:10px}
+.cs{width:42px;height:42px;border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text2);transition:var(--tr)}
+.cs:hover{background:var(--sage);border-color:var(--sage);color:#fff;transform:translateY(-3px)}
+.contact-form-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--rad-lg);padding:44px;box-shadow:var(--sh2)}
+.cf-title{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-.3px}
+.cf-sub{font-size:12px;color:var(--text3);margin-bottom:28px}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.cf-g{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.cf-g label{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3)}
+.cf-g input,.cf-g select,.cf-g textarea{
+  background:var(--inp);border:1.5px solid var(--border);
+  color:var(--text);padding:13px 16px;border-radius:12px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;
+  outline:none;resize:none;transition:var(--tr);
+}
+.cf-g input::placeholder,.cf-g textarea::placeholder{color:var(--text3)}
+.cf-g input:focus,.cf-g select:focus,.cf-g textarea:focus{border-color:var(--sage);background:var(--sage-pale);box-shadow:0 0 0 3px rgba(45,106,79,.08)}
+.cf-g select option{background:var(--card);color:var(--text)}
+.cf-submit{
+  width:100%;background:var(--sage);color:#fff;border:none;
+  padding:15px;border-radius:50px;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;
+  margin-top:6px;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.cf-submit:hover{background:var(--sage2);transform:translateY(-2px);box-shadow:0 10px 36px rgba(45,106,79,.35)}
+.cf-ok{display:none;background:var(--sage-pale);border:1px solid var(--border2);border-radius:12px;padding:12px;color:var(--sage);font-size:13px;font-weight:700;text-align:center;margin-top:12px}
+
+/* ── MAP ── */
+#map-sec{height:420px;position:relative;overflow:hidden}
+#map-sec iframe{width:100%;height:100%;border:none}
+[data-theme="dark"] #map-sec iframe{filter:invert(90%) hue-rotate(175deg) saturate(.75) brightness(.82)}
+.map-card{position:absolute;top:30px;left:56px;background:var(--card);border:1px solid var(--border);border-radius:var(--rad);padding:22px 26px;box-shadow:var(--sh)}
+.map-name{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--sage);margin-bottom:4px}
+.map-addr{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:8px}
+.map-open{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:#22c55e}
+.open-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── NEWSLETTER ── */
+#newsletter{background:var(--bg3);padding:90px 80px}
+.nl-inner{
+  max-width:1320px;margin:0 auto;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--rad-lg);padding:70px 80px;
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+  position:relative;overflow:hidden;box-shadow:var(--sh2);
+}
+.nl-blob{position:absolute;top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,var(--mint2) 0%,transparent 70%);pointer-events:none}
+[data-theme="dark"] .nl-blob{background:radial-gradient(circle,rgba(82,183,136,.08) 0%,transparent 70%)}
+.nl-form-wrap{position:relative;z-index:1}
+.nl-feats{display:flex;flex-direction:column;gap:16px;position:relative;z-index:1}
+.nl-feat{display:flex;align-items:center;gap:14px}
+.nl-feat-ico{width:38px;height:38px;border-radius:12px;background:var(--sage-pale);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.nl-feat-text strong{font-size:14px;color:var(--text);display:block;font-weight:700}
+.nl-feat-text span{font-size:12px;color:var(--text3)}
+.nl-inputs{display:flex;gap:0;border-radius:50px;overflow:hidden;border:2px solid var(--border2);margin-top:28px;background:var(--inp)}
+.nl-input{flex:1;background:transparent;border:none;color:var(--text);padding:14px 22px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none}
+.nl-input::placeholder{color:var(--text3)}
+.nl-btn{background:var(--sage);border:none;color:#fff;padding:14px 24px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:var(--tr);white-space:nowrap}
+.nl-btn:hover{background:var(--sage2)}
+
+/* ── FOOTER ── */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:80px 80px 40px}
+.footer-grid{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:56px;margin-bottom:56px}
+.f-logo-wrap{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.f-logo-ico{width:36px;height:36px;background:var(--sage);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px}
+.f-logo-text{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--text);letter-spacing:.3px}
+.f-logo-text span{color:var(--sage)}
+.f-desc{font-size:13px;color:var(--text2);line-height:1.9;max-width:270px;margin-bottom:22px}
+.f-socials{display:flex;gap:10px}
+.f-soc{width:38px;height:38px;border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2);transition:var(--tr)}
+.f-soc:hover{background:var(--sage);border-color:var(--sage);color:#fff}
+.f-col h5{font-size:9px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--text3);margin-bottom:20px}
+.f-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.f-col ul li a{font-size:13px;color:var(--text2);transition:var(--tr)}
+.f-col ul li a:hover{color:var(--sage);padding-left:5px}
+.f-bot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:24px;flex-wrap:wrap;gap:12px}
+.f-bot p{font-size:11px;color:var(--text3)}
+.f-bot-links{display:flex;gap:22px}
+.f-bot-links a{font-size:11px;color:var(--text3);transition:var(--tr)}
+.f-bot-links a:hover{color:var(--sage)}
+
+/* ── FLOAT CTA ── */
+.float-rdv{position:fixed;bottom:32px;right:32px;z-index:900;background:var(--sage);color:#fff;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 8px 32px rgba(45,106,79,.45);transition:var(--tr)}
+.float-rdv:hover{transform:scale(1.12) rotate(-8deg);box-shadow:0 14px 50px rgba(45,106,79,.6)}
+
+/* ── REVEALS ── */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
+.reveal-l{opacity:0;transform:translateX(-26px);transition:opacity .8s ease,transform .8s ease}
+.reveal-r{opacity:0;transform:translateX(26px);transition:opacity .8s ease,transform .8s ease}
+.reveal.on,.reveal-l.on,.reveal-r.on{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1200px){
+  #hero{grid-template-columns:1fr;padding:120px 40px 60px;min-height:auto}
+  .hero-right{display:none}
+  .about-layout{grid-template-columns:1fr;min-height:auto}
+  .about-left{height:420px}
+  .about-right{padding:60px 40px}
+  .services-grid{grid-template-columns:1fr 1fr}
+  .team-grid{grid-template-columns:1fr 1fr}
+  .horaires-layout{grid-template-columns:1fr;gap:40px}
+  .blog-grid{grid-template-columns:1fr 1fr}
+  .blog-card:first-child{grid-column:span 2}
+  .contact-layout{grid-template-columns:1fr;gap:60px}
+  .nl-inner{grid-template-columns:1fr;gap:40px;padding:50px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:40px}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  section{padding:80px 40px}
+}
+@media(max-width:768px){
+  nav{padding:0 20px;height:66px}
+  .nav-links,.nav-right{display:none}
+  .ham{display:flex}
+  section{padding:64px 20px}
+  .services-grid{grid-template-columns:1fr}
+  .team-grid{grid-template-columns:1fr 1fr}
+  .blog-grid{grid-template-columns:1fr}
+  .blog-card:first-child{grid-column:span 1}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  .testi-header{grid-template-columns:1fr}
+  .testi-score-block{text-align:left}
+  .footer-grid{grid-template-columns:1fr}
+  footer{padding:56px 20px 32px}
+  .map-card{left:16px;top:16px}
+  .nl-inner{padding:32px 24px}
+  .about-values{grid-template-columns:1fr}
+  .s-head{flex-direction:column;align-items:flex-start}
+  .aw-form-row{grid-template-columns:1fr}
+  .cf-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE NAV -->
+<div class="mob-nav" id="mobNav">
+  <button class="mob-close" onclick="closeMob()">✕</button>
+  <a href="#services" onclick="closeMob()">Services</a>
+  <a href="#team" onclick="closeMob()">Équipe</a>
+  <a href="#horaires" onclick="closeMob()">Horaires & RDV</a>
+  <a href="#testimonials" onclick="closeMob()">Témoignages</a>
+  <a href="#blog" onclick="closeMob()">Blog</a>
+  <a href="#contact" onclick="closeMob()">Contact</a>
+</div>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav id="navbar">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">🌿</div>
+    <div class="nav-logo-text">VITA<span>LIS</span></div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#team">Notre Équipe</a></li>
+    <li><a href="#horaires">Horaires</a></li>
+    <li><a href="#testimonials">Témoignages</a></li>
+    <li><a href="#blog">Blog Santé</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()"></button>
+    <a href="#horaires" class="nav-rdv">Prendre RDV</a>
+  </div>
+  <button class="ham" onclick="openMob()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-blob"></div>
+  <div class="hero-blob2"></div>
+  <div class="hero-left">
+    <div class="hero-pill">
+      <div class="hero-pill-dot"></div>
+      <span>Centre de santé certifié HAS 2024</span>
+    </div>
+    <h1 class="hero-h1">
+      Votre santé,<br>notre <em>engagement</em><br>quotidien.
+    </h1>
+    <p class="hero-sub">Un centre pluridisciplinaire regroupant médecins, spécialistes et thérapeutes autour d'une vision commune : votre bien-être global, durable et personnalisé.</p>
+    <div class="hero-actions">
+      <a href="#horaires" class="btn-sage">Prendre rendez-vous →</a>
+      <a href="#services" class="btn-outline">Nos services</a>
+    </div>
+    <div class="hero-trust">
+      <div class="hero-avatars">
+        <img src="https://i.pravatar.cc/100?img=32" alt="p1">
+        <img src="https://i.pravatar.cc/100?img=47" alt="p2">
+        <img src="https://i.pravatar.cc/100?img=18" alt="p3">
+        <img src="https://i.pravatar.cc/100?img=55" alt="p4">
+        <img src="https://i.pravatar.cc/100?img=11" alt="p5">
+      </div>
+      <div class="hero-trust-text">
+        <span>+4 800 patients nous font confiance</span>
+        <small>★★★★★ 4.9/5 sur Google · 1 240 avis</small>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-frame">
+      <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=85" alt="Centre Vitalis">
+      <div class="hero-float-card">
+        <div class="fcard-icon">🏥</div>
+        <div class="fcard-num">18</div>
+        <div class="fcard-label">Spécialistes disponibles</div>
+      </div>
+      <div class="hero-float-card2">
+        <div class="fcard2-label">Satisfaction patients</div>
+        <div class="fcard2-val">98%</div>
+        <div class="fcard2-sub">Score NPS 2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ RIBBON ═══ -->
+<div class="ribbon">
+  <div class="ribbon-track">
+    <span class="ri">Médecine Générale</span><span class="rd">✦</span>
+    <span class="ri">Cardiologie</span><span class="rd">✦</span>
+    <span class="ri">Dermatologie</span><span class="rd">✦</span>
+    <span class="ri">Kinésithérapie</span><span class="rd">✦</span>
+    <span class="ri">Nutritionniste</span><span class="rd">✦</span>
+    <span class="ri">Psychologie</span><span class="rd">✦</span>
+    <span class="ri">Ostéopathie</span><span class="rd">✦</span>
+    <span class="ri">Pédiatrie</span><span class="rd">✦</span>
+    <span class="ri">Médecine du Sport</span><span class="rd">✦</span>
+    <span class="ri">Médecine Générale</span><span class="rd">✦</span>
+    <span class="ri">Cardiologie</span><span class="rd">✦</span>
+    <span class="ri">Dermatologie</span><span class="rd">✦</span>
+    <span class="ri">Kinésithérapie</span><span class="rd">✦</span>
+    <span class="ri">Nutritionniste</span><span class="rd">✦</span>
+    <span class="ri">Psychologie</span><span class="rd">✦</span>
+    <span class="ri">Ostéopathie</span><span class="rd">✦</span>
+    <span class="ri">Pédiatrie</span><span class="rd">✦</span>
+    <span class="ri">Médecine du Sport</span><span class="rd">✦</span>
+  </div>
+</div>
+
+<!-- ═══ SERVICES ═══ -->
+<section id="services">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-pill reveal">Nos spécialités</div>
+        <h2 class="s-title reveal d1">Des soins <em>complets</em><br>sous un même toit</h2>
+      </div>
+      <div>
+        <p class="s-sub reveal d2" style="text-align:right">18 disciplines médicales et paramédicales, coordonnées pour vous offrir une prise en charge globale et sans rupture.</p>
+        <a href="#" class="link-all reveal d3" style="display:inline-flex;margin-top:20px;float:right">Tous nos services</a>
+      </div>
+    </div>
+    <div class="services-grid">
+      <div class="svc-card reveal">
+        <div class="svc-icon-wrap">🩺</div>
+        <div class="svc-num">01</div>
+        <div class="svc-name">Médecine Générale</div>
+        <p class="svc-desc">Consultation, suivi médical, bilan de santé, vaccinations, certificats médicaux. Votre médecin traitant disponible 6j/7.</p>
+        <div class="svc-tags"><span class="svc-tag">Consultation</span><span class="svc-tag">Bilan annuel</span><span class="svc-tag">Urgences</span></div>
+        <div class="svc-arrow">Prendre RDV →</div>
+      </div>
+      <div class="svc-card reveal d1">
+        <div class="svc-icon-wrap">❤️</div>
+        <div class="svc-num">02</div>
+        <div class="svc-name">Cardiologie</div>
+        <p class="svc-desc">ECG, holter, échocardiographie, épreuve d'effort. Prévention et traitement des maladies cardiovasculaires.</p>
+        <div class="svc-tags"><span class="svc-tag">ECG</span><span class="svc-tag">Echo</span><span class="svc-tag">Holter</span></div>
+        <div class="svc-arrow">Prendre RDV →</div>
+      </div>
+      <div class="svc-card reveal d2">
+        <div class="svc-icon-wrap">🧠</div>
+        <div class="svc-num">03</div>
+        <div class="svc-name">Psychologie Clinique</div>
+        <p class="svc-desc">Thérapies cognitivo-comportementales, soutien psychologique, gestion du stress, dépression, anxiété. En présentiel ou visio.</p>
+        <div class="svc-tags"><span class="svc-tag">TCC</span><span class="svc-tag">Anxiété</span><span class="svc-tag">Visio</span></div>
+        <div class="svc-arrow">Prendre RDV →</div>
+      </div>
+      <div class="svc-card reveal">
+        <div class="svc-icon-wrap">💪</div>
+        <div class="svc-num">04</div>
+        <div class="svc-name">Kinésithérapie</div>
+        <p class="svc-desc">Rééducation post-opératoire, troubles musculo-squelettiques, préparation sportive, drainage lymphatique.</p>
+        <div class="svc-tags"><span class="svc-tag">Rééducation</span><span class="svc-tag">Sport</span><span class="svc-tag">Drainage</span></div>
+        <div class="svc-arrow">Prendre RDV →</div>
+      </div>
+      <div class="svc-card reveal d1">
+        <div class="svc-icon-wrap">🥗</div>
+        <div class="svc-num">05</div>
+        <div class="svc-name">Nutrition & Diététique</div>
+        <p class="svc-desc">Bilan nutritionnel complet, plans alimentaires personnalisés, gestion du poids, nutrition sportive, allergies alimentaires.</p>
+        <div class="svc-tags"><span class="svc-tag">Bilan</span><span class="svc-tag">Poids</span><span class="svc-tag">Sport</span></div>
+        <div class="svc-arrow">Prendre RDV →</div>
+      </div>
+      <div class="svc-card reveal d2">
+        <div class="svc-icon-wrap">🌿</div>
+        <div class="svc-num">06</div>
+        <div class="svc-name">Ostéopathie</div>
+        <p class="svc-desc">Traitement manuel des douleurs, rééquilibrage postural, ostéopathie crânienne, pédiatrique et sportive.</p>
+        <div class="svc-tags"><span class="svc-tag">Douleurs</span><span class="svc-tag">Posture</span><span class="svc-tag">Pédiatrie</span></div>
+        <div class="svc-arrow">Prendre RDV →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="about-layout">
+    <div class="about-left reveal-l">
+      <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=900&q=85" alt="Notre centre">
+      <div class="about-left-overlay"></div>
+      <div class="about-numbers">
+        <div class="ab-num"><div class="ab-n-val">2008</div><div><div style="font-size:13px;font-weight:700;color:var(--text)">Fondé en</div><div class="ab-n-label">16 ans d'excellence</div></div></div>
+        <div class="ab-num"><div class="ab-n-val">18</div><div><div style="font-size:13px;font-weight:700;color:var(--text)">Spécialistes</div><div class="ab-n-label">dans notre équipe</div></div></div>
+        <div class="ab-num"><div class="ab-n-val">98%</div><div><div style="font-size:13px;font-weight:700;color:var(--text)">Satisfaction</div><div class="ab-n-label">patients 2024</div></div></div>
+      </div>
+    </div>
+    <div class="about-right reveal-r">
+      <div class="s-pill">Notre mission</div>
+      <h2 class="s-title">La santé comme<br>un art de <em>vivre.</em></h2>
+      <p style="font-size:14px;color:var(--text2);line-height:2;font-weight:300;margin-bottom:16px">Fondé en 2008 par le Dr. Amira Khelil, le Centre Vitalis est né d'une conviction : la santé ne se réduit pas à l'absence de maladie. C'est un équilibre physique, mental et social qui mérite une attention pluridisciplinaire et une écoute sincère.</p>
+      <p style="font-size:14px;color:var(--text2);line-height:2;font-weight:300;margin-bottom:36px">Aujourd'hui, 18 professionnels de santé travaillent en coordination dans nos locaux modernes et chaleureux, partageant dossiers patients et protocoles pour vous offrir la meilleure prise en charge possible.</p>
+      <div class="about-values">
+        <div class="av-item reveal"><div class="av-icon">🤝</div><div class="av-title">Écoute & bienveillance</div><div class="av-desc">Chaque patient est unique. Nous prenons le temps d'écouter avant de prescrire.</div></div>
+        <div class="av-item reveal d1"><div class="av-icon">🔬</div><div class="av-title">Excellence médicale</div><div class="av-desc">Formation continue, équipements dernière génération, protocoles actualisés.</div></div>
+        <div class="av-item reveal d2"><div class="av-icon">🌱</div><div class="av-title">Médecine préventive</div><div class="av-desc">Nous croyons à la prévention : bilans réguliers, éducation thérapeutique.</div></div>
+        <div class="av-item reveal d3"><div class="av-icon">🔗</div><div class="av-title">Coordination des soins</div><div class="av-desc">Tous nos praticiens communiquent pour assurer la continuité de votre parcours.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TEAM ═══ -->
+<section id="team">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-pill reveal">Nos professionnels</div>
+        <h2 class="s-title reveal d1">Une équipe à votre<br><em>écoute</em> chaque jour</h2>
+      </div>
+      <a href="#" class="link-all reveal d3" style="align-self:flex-end">Toute l'équipe</a>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div class="team-img">
+          <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500&q=80" alt="Dr Amira Khelil">
+          <div class="team-spec-badge">Médecine Générale</div>
+          <div class="team-social-overlay">
+            <a href="#" class="t-soc">💼</a>
+            <a href="#" class="t-soc">📧</a>
+            <a href="#horaires" class="t-soc">📅</a>
+          </div>
+        </div>
+        <div class="team-body">
+          <div class="team-name">Dr. Amira Khelil</div>
+          <div class="team-role">Médecin Généraliste · Fondatrice</div>
+          <p class="team-bio">16 ans d'expérience, spécialisée en médecine préventive et prise en charge globale. Médecin coordinatrice du centre.</p>
+          <div class="team-cred"><span class="team-cred-item">DU Médecine du sport</span><span class="team-cred-item">Secteur 1</span></div>
+        </div>
+      </div>
+      <div class="team-card reveal d1">
+        <div class="team-img">
+          <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500&q=80" alt="Dr Thomas Renard">
+          <div class="team-spec-badge">Cardiologie</div>
+          <div class="team-social-overlay">
+            <a href="#" class="t-soc">💼</a>
+            <a href="#" class="t-soc">📧</a>
+            <a href="#horaires" class="t-soc">📅</a>
+          </div>
+        </div>
+        <div class="team-body">
+          <div class="team-name">Dr. Thomas Renard</div>
+          <div class="team-role">Cardiologue</div>
+          <p class="team-bio">Ancien interne des Hôpitaux de Paris. Expert en échocardiographie et prévention cardiovasculaire.</p>
+          <div class="team-cred"><span class="team-cred-item">FESC</span><span class="team-cred-item">Secteur 2</span></div>
+        </div>
+      </div>
+      <div class="team-card reveal d2">
+        <div class="team-img">
+          <img src="https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=500&q=80" alt="Layla Mansouri">
+          <div class="team-spec-badge">Psychologie</div>
+          <div class="team-social-overlay">
+            <a href="#" class="t-soc">💼</a>
+            <a href="#" class="t-soc">📧</a>
+            <a href="#horaires" class="t-soc">📅</a>
+          </div>
+        </div>
+        <div class="team-body">
+          <div class="team-name">Layla Mansouri</div>
+          <div class="team-role">Psychologue Clinicienne</div>
+          <p class="team-bio">Spécialiste TCC, thérapie des émotions et soutien des aidants. Consultations en présentiel et en visioconférence.</p>
+          <div class="team-cred"><span class="team-cred-item">Master II</span><span class="team-cred-item">EMDR</span></div>
+        </div>
+      </div>
+      <div class="team-card reveal d3">
+        <div class="team-img">
+          <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=500&q=80" alt="Marc Fontaine">
+          <div class="team-spec-badge">Kinésithérapie</div>
+          <div class="team-social-overlay">
+            <a href="#" class="t-soc">💼</a>
+            <a href="#" class="t-soc">📧</a>
+            <a href="#horaires" class="t-soc">📅</a>
+          </div>
+        </div>
+        <div class="team-body">
+          <div class="team-name">Marc Fontaine</div>
+          <div class="team-role">Kinésithérapeute</div>
+          <p class="team-bio">Rééducation sportive et post-opératoire, thérapie manuelle et techniques de décontraction neuromusculaire.</p>
+          <div class="team-cred"><span class="team-cred-item">Maitrise OMT</span><span class="team-cred-item">Sport</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HORAIRES & RDV ═══ -->
+<section id="horaires">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-pill reveal">Disponibilités</div>
+        <h2 class="s-title reveal d1">Horaires &<br><em>prise de rendez-vous</em></h2>
+      </div>
+      <p class="s-sub reveal d2" style="text-align:right;margin-left:auto">Réservez en ligne 24h/24, par téléphone ou directement à l'accueil. Confirmation instantanée par SMS.</p>
+    </div>
+    <div class="horaires-layout">
+      <div class="reveal-l">
+        <div class="horaires-card">
+          <div class="h-card-header">
+            <div class="h-card-title">🕐 Horaires d'ouverture</div>
+            <div class="h-card-sub">Centre Vitalis — 12 Rue de la Santé, Paris 14e</div>
+          </div>
+          <div class="h-card-body">
+            <div class="h-row"><div class="h-day"><div class="h-dot"></div>Lundi</div><div class="h-time">08h00 – 20h00</div></div>
+            <div class="h-row"><div class="h-day"><div class="h-dot"></div>Mardi</div><div class="h-time">08h00 – 20h00</div></div>
+            <div class="h-row"><div class="h-day"><div class="h-dot"></div>Mercredi</div><div class="h-time">08h00 – 19h00</div></div>
+            <div class="h-row"><div class="h-day"><div class="h-dot"></div>Jeudi</div><div class="h-time">08h00 – 20h00</div></div>
+            <div class="h-row"><div class="h-day"><div class="h-dot"></div>Vendredi</div><div class="h-time">08h00 – 18h00</div></div>
+            <div class="h-row"><div class="h-day"><div class="h-dot"></div>Samedi</div><div class="h-time">09h00 – 13h00</div></div>
+            <div class="h-row"><div class="h-day"><div class="h-dot closed"></div>Dimanche</div><div class="h-time closed">Fermé</div></div>
+          </div>
+        </div>
+        <div class="h-urgences">
+          <div class="h-urg-icon">🚨</div>
+          <div>
+            <div class="h-urg-title">Urgences médicales</div>
+            <div class="h-urg-desc">En dehors des horaires d'ouverture ou pour une urgence médicale, contactez le 15 (SAMU) ou le 3966 (SOS Médecins Paris).</div>
+            <a href="tel:+33143000000" class="h-urg-tel">📞 +33 1 43 00 00 00</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="appointment-widget reveal-r">
+        <div class="aw-title">Réserver un créneau</div>
+        <div class="aw-sub">Disponibilités en temps réel · Confirmation immédiate</div>
+        <div class="aw-mini-cal">
+          <div class="cal-header">
+            <button class="cal-nav" onclick="prevMonth()">‹</button>
+            <div class="cal-month" id="calMonth">Juin 2025</div>
+            <button class="cal-nav" onclick="nextMonth()">›</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Créneaux disponibles — Vendredi 20 juin</div>
+        <div class="aw-slots">
+          <div class="slot" onclick="selectSlot(this)">09:00</div>
+          <div class="slot" onclick="selectSlot(this)">09:30</div>
+          <div class="slot unavailable">10:00</div>
+          <div class="slot" onclick="selectSlot(this)">10:30</div>
+          <div class="slot unavailable">11:00</div>
+          <div class="slot" onclick="selectSlot(this)">14:00</div>
+          <div class="slot" onclick="selectSlot(this)">14:30</div>
+          <div class="slot unavailable">15:00</div>
+          <div class="slot" onclick="selectSlot(this)">15:30</div>
+        </div>
+        <form onsubmit="return submitRdv(event)">
+          <div class="aw-form-row">
+            <div class="aw-group"><label>Prénom *</label><input type="text" placeholder="Sophie" required></div>
+            <div class="aw-group"><label>Nom *</label><input type="text" placeholder="Martin" required></div>
+          </div>
+          <div class="aw-form-row">
+            <div class="aw-group"><label>Téléphone *</label><input type="tel" placeholder="+33 6 00 00 00 00" required></div>
+            <div class="aw-group"><label>Email</label><input type="email" placeholder="sophie@email.fr"></div>
+          </div>
+          <div class="aw-group"><label>Spécialité souhaitée</label>
+            <select>
+              <option>Médecine générale</option>
+              <option>Cardiologie</option>
+              <option>Psychologie</option>
+              <option>Kinésithérapie</option>
+              <option>Nutrition</option>
+              <option>Ostéopathie</option>
+              <option>Dermatologie</option>
+              <option>Pédiatrie</option>
+            </select>
+          </div>
+          <button type="submit" class="aw-submit">✓ Confirmer le rendez-vous</button>
+          <div class="aw-ok" id="awOk">✅ Rendez-vous confirmé ! Vous recevrez un SMS de rappel.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═══ -->
+<section id="testimonials">
+  <div class="container">
+    <div class="testi-header reveal">
+      <div>
+        <div class="s-pill">Paroles de patients</div>
+        <h2 class="s-title">Ils nous font<br><em>confiance</em></h2>
+      </div>
+      <div class="testi-score-block">
+        <div class="score-big">4.9</div>
+        <div class="score-stars">★★★★★</div>
+        <div class="score-lbl">Sur 1 240 avis vérifiés</div>
+      </div>
+    </div>
+    <div class="swiper testi-swiper reveal d2">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">« Le Dr. Khelil prend vraiment le temps d'écouter. Après des années à me sentir bâclée dans d'autres cabinets, ici j'ai enfin l'impression d'être suivie dans ma globalité. La coordination entre les praticiens est remarquable. »</p>
+          <div class="testi-author">
+            <img class="testi-ava" src="https://i.pravatar.cc/100?img=32" alt="Marie">
+            <div><div class="testi-name">Marie-Sophie D.</div><div class="testi-info">Patiente depuis 2020 · Paris</div></div>
+            <div class="testi-service">Médecine générale</div>
+          </div>
+        </div></div>
+        <div class="swiper-slide"><div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">« Mon suivi cardiologique avec le Dr. Renard a transformé ma vision de la prévention. Compétent, pédagogue, disponible. J'ai eu les résultats de mon écho dans la journée. Un service médical d'un niveau exceptionnel. »</p>
+          <div class="testi-author">
+            <img class="testi-ava" src="https://i.pravatar.cc/100?img=12" alt="Bernard">
+            <div><div class="testi-name">Bernard Leclercq</div><div class="testi-info">Patient · 63 ans · Lyon</div></div>
+            <div class="testi-service">Cardiologie</div>
+          </div>
+        </div></div>
+        <div class="swiper-slide"><div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">« Après un burnout difficile, les séances avec Layla Mansouri m'ont littéralement reconstruite. Son approche bienveillante et les TCC ont changé ma façon de voir les choses. Je recommande le centre Vitalis les yeux fermés. »</p>
+          <div class="testi-author">
+            <img class="testi-ava" src="https://i.pravatar.cc/100?img=48" alt="Claire">
+            <div><div class="testi-name">Claire Fontaine</div><div class="testi-info">Patiente · 38 ans · Paris</div></div>
+            <div class="testi-service">Psychologie</div>
+          </div>
+        </div></div>
+        <div class="swiper-slide"><div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">« Après mon opération du genou, Marc Fontaine a été d'une précision et d'une douceur incroyables. En 3 mois de rééducation, j'ai retrouvé toute ma mobilité. Le planning de séances en ligne est aussi très pratique. »</p>
+          <div class="testi-author">
+            <img class="testi-ava" src="https://i.pravatar.cc/100?img=27" alt="Julien">
+            <div><div class="testi-name">Julien Moreau</div><div class="testi-info">Patient · 45 ans · Sportif amateur</div></div>
+            <div class="testi-service">Kinésithérapie</div>
+          </div>
+        </div></div>
+      </div>
+      <div class="swiper-pagination" style="bottom:-40px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS ═══ -->
+<div class="stats-band reveal">
+  <div class="stats-inner">
+    <div class="stat-cell"><div class="stat-n" data-target="4800">0</div><div class="stat-l">Patients actifs</div></div>
+    <div class="stat-cell"><div class="stat-n" data-target="18">0</div><div class="stat-l">Spécialistes</div></div>
+    <div class="stat-cell"><div class="stat-n" data-target="16">0</div><div class="stat-l">Années d'expérience</div></div>
+    <div class="stat-cell"><div class="stat-n" data-target="98">0</div><div class="stat-l">% satisfaction</div></div>
+  </div>
+</div>
+
+<!-- ═══ BLOG ═══ -->
+<section id="blog">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-pill reveal">Conseils santé</div>
+        <h2 class="s-title reveal d1">Le magazine<br><em>bien-être</em> Vitalis</h2>
+      </div>
+      <a href="#" class="link-all reveal d3" style="align-self:flex-end">Tous les articles</a>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card reveal">
+        <div class="blog-img">
+          <img class="big-h" src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=700&q=80" alt="blog1">
+          <div class="blog-cat">Nutrition</div>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>10 Jan 2025</span><div class="bm-dot"></div><span>8 min</span></div>
+          <div class="blog-title">10 aliments anti-inflammatoires à intégrer dans votre alimentation quotidienne</div>
+          <p class="blog-excerpt">L'inflammation chronique est à l'origine de nombreuses maladies. Nos nutritionnistes partagent leurs meilleures recommandations...</p>
+          <a href="#" class="blog-readmore">Lire l'article →</a>
+        </div>
+      </div>
+      <div class="blog-card reveal d1">
+        <div class="blog-img">
+          <img class="sm-h" src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&q=80" alt="blog2">
+          <div class="blog-cat">Bien-être</div>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>28 Jan 2025</span><div class="bm-dot"></div><span>5 min</span></div>
+          <div class="blog-title">Gestion du stress : les 5 techniques validées par la science</div>
+          <a href="#" class="blog-readmore">Lire →</a>
+        </div>
+      </div>
+      <div class="blog-card reveal d2">
+        <div class="blog-img">
+          <img class="sm-h" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" alt="blog3">
+          <div class="blog-cat">Sport & Santé</div>
+        </div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>15 Fév 2025</span><div class="bm-dot"></div><span>6 min</span></div>
+          <div class="blog-title">Reprise sportive après 40 ans : guide complet pour éviter les blessures</div>
+          <a href="#" class="blog-readmore">Lire →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ NEWSLETTER ═══ -->
+<section id="newsletter" style="padding:0 80px 100px;background:var(--bg3)">
+  <div class="nl-inner reveal">
+    <div class="nl-blob"></div>
+    <div>
+      <div class="s-pill">Restez informé</div>
+      <h2 class="s-title" style="font-size:clamp(28px,4vw,46px)">Recevez nos<br>conseils <em>santé</em><br>chaque semaine</h2>
+      <p class="s-sub" style="margin-top:12px;font-size:13px">Rejoignez 12 000 lecteurs et recevez chaque semaine des conseils médicaux fiables rédigés par nos praticiens.</p>
+      <form class="nl-inputs" onsubmit="return nlSend(event)">
+        <input class="nl-input" type="email" placeholder="votre@email.fr" required>
+        <button class="nl-btn" type="submit">S'inscrire →</button>
+      </form>
+      <p style="font-size:11px;color:var(--text3);margin-top:10px">🔒 Données confidentielles. Désinscription en 1 clic.</p>
+    </div>
+    <div class="nl-feats nl-form-wrap">
+      <div class="nl-feat"><div class="nl-feat-ico">💊</div><div class="nl-feat-text"><strong>Conseils médicaux</strong><span>Validés par nos praticiens</span></div></div>
+      <div class="nl-feat"><div class="nl-feat-ico">🥗</div><div class="nl-feat-text"><strong>Nutrition & recettes</strong><span>Saines et savoureuses</span></div></div>
+      <div class="nl-feat"><div class="nl-feat-ico">🧘</div><div class="nl-feat-text"><strong>Bien-être mental</strong><span>Techniques validées scientifiquement</span></div></div>
+      <div class="nl-feat"><div class="nl-feat-ico">🏃</div><div class="nl-feat-text"><strong>Sport & prévention</strong><span>Programmes adaptés à tous</span></div></div>
+      <div class="nl-feat"><div class="nl-feat-ico">📅</div><div class="nl-feat-text"><strong>Événements & webinaires</strong><span>Conférences santé en avant-première</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-layout">
+      <div class="reveal-l">
+        <div class="s-pill">Nous écrire</div>
+        <h3 class="contact-left" style="margin-bottom:0">
+          <h3 style="font-family:'Fraunces',serif;font-size:clamp(30px,4vw,48px);font-weight:700;letter-spacing:-1px;color:var(--text);line-height:1.1;margin-bottom:18px">Parlons de<br>votre <em style="color:var(--sage);font-style:italic">parcours</em><br>de santé.</h3>
+        </h3>
+        <p style="font-size:14px;color:var(--text2);line-height:2;font-weight:300;margin-bottom:32px">Notre équipe soignante est à votre écoute pour répondre à toutes vos questions, orienter votre parcours de soins ou organiser une consultation multidisciplinaire.</p>
+        <div class="c-items">
+          <div class="c-item"><div class="c-icon">📞</div><div><div class="c-lbl">Téléphone</div><div class="c-val">+33 1 43 00 00 00</div></div></div>
+          <div class="c-item"><div class="c-icon">✉️</div><div><div class="c-lbl">Email</div><div class="c-val">contact@vitalis-sante.fr</div></div></div>
+          <div class="c-item"><div class="c-icon">📍</div><div><div class="c-lbl">Adresse</div><div class="c-val">12 Rue de la Santé, 75014 Paris · Métro Glacière</div></div></div>
+          <div class="c-item"><div class="c-icon">⏰</div><div><div class="c-lbl">Accueil</div><div class="c-val">Lun–Ven 8h–20h · Sam 9h–13h</div></div></div>
+        </div>
+        <div class="contact-socials">
+          <a href="#" class="cs">📘</a>
+          <a href="#" class="cs">📸</a>
+          <a href="#" class="cs">▶</a>
+          <a href="#" class="cs">🐦</a>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div class="contact-form-wrap">
+          <div class="cf-title">Formulaire de contact</div>
+          <div class="cf-sub">Réponse garantie sous 24h ouvrées par notre équipe médicale.</div>
+          <form onsubmit="return submitContact(event)">
+            <div class="cf-row">
+              <div class="cf-g" style="margin-bottom:0"><label>Prénom *</label><input type="text" placeholder="Sophie" required></div>
+              <div class="cf-g" style="margin-bottom:0"><label>Nom *</label><input type="text" placeholder="Martin" required></div>
+            </div>
+            <div class="cf-row">
+              <div class="cf-g" style="margin-bottom:0"><label>Email *</label><input type="email" placeholder="sophie@email.fr" required></div>
+              <div class="cf-g" style="margin-bottom:0"><label>Téléphone</label><input type="tel" placeholder="+33 6 00 00 00 00"></div>
+            </div>
+            <div class="cf-g"><label>Vous êtes</label>
+              <select>
+                <option>Un patient</option>
+                <option>Un professionnel de santé partenaire</option>
+                <option>Un médecin adresseur</option>
+                <option>Un journaliste / presse</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div class="cf-g"><label>Objet de votre message</label>
+              <select>
+                <option>Demande de rendez-vous</option>
+                <option>Information sur un service</option>
+                <option>Partenariat professionnel</option>
+                <option>Dossier médical</option>
+                <option>Réclamation / Suggestion</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div class="cf-g" style="margin-bottom:0"><label>Votre message *</label>
+              <textarea rows="4" placeholder="Décrivez votre demande, vos symptômes ou la raison de votre prise de contact..." required></textarea>
+            </div>
+            <button type="submit" class="cf-submit">Envoyer mon message 🌿</button>
+            <div class="cf-ok" id="cfOk">✅ Message envoyé ! Notre équipe vous répond sous 24h.</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MAP ═══ -->
+<div id="map-sec">
+  <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=2.342%2C48.826%2C2.372%2C48.842&layer=mapnik&marker=48.834%2C2.352" loading="lazy"></iframe>
+  <div class="map-card">
+    <div class="map-name">🌿 Centre Vitalis</div>
+    <div class="map-addr">12 Rue de la Santé, 75014 Paris<br>Métro Glacière (Ligne 6)</div>
+    <div class="map-open"><div class="open-dot"></div>Ouvert · Ferme à 20h00</div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="f-logo-wrap"><div class="f-logo-ico">🌿</div><div class="f-logo-text">VITA<span>LIS</span></div></div>
+        <p class="f-desc">Centre de santé pluridisciplinaire à Paris. 18 professionnels engagés pour votre bien-être physique et mental depuis 2008.</p>
+        <div class="f-socials">
+          <a href="#" class="f-soc">📘</a>
+          <a href="#" class="f-soc">📸</a>
+          <a href="#" class="f-soc">▶</a>
+          <a href="#" class="f-soc">🐦</a>
+        </div>
+      </div>
+      <div class="f-col">
+        <h5>Spécialités</h5>
+        <ul>
+          <li><a href="#">Médecine Générale</a></li>
+          <li><a href="#">Cardiologie</a></li>
+          <li><a href="#">Psychologie</a></li>
+          <li><a href="#">Kinésithérapie</a></li>
+          <li><a href="#">Nutrition</a></li>
+          <li><a href="#">Ostéopathie</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Centre</h5>
+        <ul>
+          <li><a href="#">Notre équipe</a></li>
+          <li><a href="#">Nos valeurs</a></li>
+          <li><a href="#">Certifications</a></li>
+          <li><a href="#">Blog Santé</a></li>
+          <li><a href="#">Partenaires</a></li>
+          <li><a href="#">Recrutement</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Pratique</h5>
+        <ul>
+          <li><a href="#">Prendre RDV en ligne</a></li>
+          <li><a href="#">Téléconsultation</a></li>
+          <li><a href="#">Tiers payant</a></li>
+          <li><a href="#">Carte Vitale</a></li>
+          <li><a href="#">Urgences</a></li>
+          <li><a href="#">Plan d'accès</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="f-bot">
+      <p>© 2025 Centre Vitalis — Santé & Bien-être. Tous droits réservés.</p>
+      <div class="f-bot-links">
+        <a href="#">Mentions légales</a>
+        <a href="#">Politique de confidentialité</a>
+        <a href="#">CGU</a>
+        <a href="#">Données de santé</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<a href="#horaires" class="float-rdv" title="Prendre rendez-vous">📅</a>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+/* THEME */
+let th=localStorage.getItem('vt-th')||'light';
+const TB=document.getElementById('themeBtn');
+function applyT(t){document.documentElement.setAttribute('data-theme',t);TB.textContent=t==='light'?'🌙':'☀️';localStorage.setItem('vt-th',t)}
+function toggleTheme(){th=th==='light'?'dark':'light';applyT(th)}
+applyT(th);
+
+/* NAV */
+window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('solid',window.scrollY>60));
+
+/* MOBILE */
+function openMob(){document.getElementById('mobNav').classList.add('open')}
+function closeMob(){document.getElementById('mobNav').classList.remove('open')}
+
+/* SWIPER */
+new Swiper('.testi-swiper',{
+  loop:true,autoplay:{delay:5000},speed:900,
+  spaceBetween:20,
+  pagination:{el:'.testi-swiper .swiper-pagination',clickable:true},
+  breakpoints:{768:{slidesPerView:2},1100:{slidesPerView:3}}
+});
+
+/* REVEAL */
+const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');ro.unobserve(e.target)}})},{threshold:.1});
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>ro.observe(el));
+
+/* COUNTERS */
+function cnt(el,target){
+  let v=0;const step=target/70;
+  const ti=setInterval(()=>{
+    v=Math.min(v+step,target);
+    const d=target>=1000?Math.round(v).toLocaleString('fr'):Math.round(v);
+    el.textContent=d+(target===98?'%':target===18||target===16?'':'+');
+    if(v>=target){el.textContent=(target>=1000?target.toLocaleString('fr'):target)+(target===98?'%':target===18||target===16?'':'+');clearInterval(ti)}
+  },18);
+}
+const cb=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.stat-n[data-target]').forEach(el=>cnt(el,+el.dataset.target));cb.disconnect()}})},{threshold:.3});
+const sb=document.querySelector('.stats-band');if(sb)cb.observe(sb);
+
+/* CALENDAR */
+let calYear=2025,calMonth=5;
+const months=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const dayNames=['L','M','M','J','V','S','D'];
+function renderCal(){
+  const m=document.getElementById('calMonth');
+  const g=document.getElementById('calGrid');
+  if(!m||!g)return;
+  m.textContent=months[calMonth]+' '+calYear;
+  const firstDay=(new Date(calYear,calMonth,1).getDay()+6)%7;
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const today=new Date();
+  let html=dayNames.map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-day empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
+    const isPast=new Date(calYear,calMonth,d)<new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    const isAvail=[3,7,9,12,14,16,20,21,23,28].includes(d);
+    let cls='cal-day';
+    if(isToday)cls+=' today';
+    else if(isPast)cls+=' disabled';
+    else if(isAvail)cls+=' available';
+    html+=`<div class="${cls}">${d}</div>`;
+  }
+  g.innerHTML=html;
+  g.querySelectorAll('.cal-day:not(.empty):not(.disabled)').forEach(el=>{
+    el.addEventListener('click',()=>{
+      g.querySelectorAll('.cal-day').forEach(c=>c.classList.remove('today'));
+      el.classList.add('today');
+    });
+  });
+}
+function prevMonth(){if(calMonth===0){calMonth=11;calYear--}else calMonth--;renderCal()}
+function nextMonth(){if(calMonth===11){calMonth=0;calYear++}else calMonth++;renderCal()}
+renderCal();
+
+/* SLOTS */
+function selectSlot(el){
+  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+/* FORMS */
+function submitRdv(e){e.preventDefault();document.getElementById('awOk').style.display='block';e.target.reset();document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));setTimeout(()=>document.getElementById('awOk').style.display='none',7000);return false}
+function submitContact(e){e.preventDefault();document.getElementById('cfOk').style.display='block';e.target.reset();setTimeout(()=>document.getElementById('cfOk').style.display='none',7000);return false}
+function nlSend(e){e.preventDefault();const btn=e.target.querySelector('.nl-btn');const orig=btn.textContent;btn.textContent='✓ Inscrit !';e.target.querySelector('input').value='';setTimeout(()=>btn.textContent=orig,3000);return false}
+</script>
+</body>
+</html>
