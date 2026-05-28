@@ -34,6 +34,12 @@
 .pc-title { font-family: var(--pc-font-display); font-size: clamp(2.2rem, 5vw, 4.4rem); font-weight: 300; line-height: 1.06; margin: 0; color: var(--pc-charcoal); }
 .pc-title em { color: var(--pc-accent); font-style: italic; }
 .pc-desc { color: var(--pc-muted); font-size: 1.03rem; line-height: 1.8; margin: 18px auto 0; max-width: 620px; }
+.pc-cms-pages { padding: 28px 0 0; display: grid; gap: 24px; }
+.pc-cms-page { background: var(--pc-white); border: 1px solid var(--pc-border); box-shadow: var(--pc-shadow-sm); }
+.pc-cms-page-content { color: var(--pc-slate); font-size: 1.02rem; line-height: 1.78; }
+.pc-cms-page-content :where(h1,h2,h3,h4,h5,h6) { font-family: var(--pc-font-display); color: var(--pc-charcoal); font-weight: 400; line-height: 1.08; margin: 0 0 16px; }
+.pc-cms-page-content :where(p,ul,ol,blockquote,figure) { margin: 0 0 18px; }
+.pc-cms-page-content :where(img,video,iframe) { max-width: 100%; border-radius: var(--pc-radius-lg); }
 .pc-btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 26px; border-radius: var(--pc-radius); text-decoration: none; font-weight: 700; font-size: .82rem; letter-spacing: .1em; text-transform: uppercase; border: 1px solid transparent; transition: .28s ease; }
 .pc-btn-dark { background: var(--pc-charcoal); color: var(--pc-cream); }
 .pc-btn-dark:hover { background: var(--pc-accent); color: #fff; transform: translateY(-2px); }
