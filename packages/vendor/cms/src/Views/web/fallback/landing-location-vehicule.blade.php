@@ -167,12 +167,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Nunito+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-menu-videos.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/hero.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/navigation.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/carousel.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-destinations-mega.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/mega-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/services-mega-menu-v2.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-mega-menu-modern.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-search.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/search-bar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/categories-mega-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/videos-dropdown.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/slideshows.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/media-slideshow.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/products-vedette.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/restaurant-header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/footer.css') }}">
     <style>
         :root{--y:#f5c518;--y2:#ffd84d;--r:#e63946;--tr:all .45s cubic-bezier(.23,1,.32,1);--rad:14px}
         [data-theme=dark]{--bg:#0c0c0e;--bg2:#111115;--bg3:#18181e;--card:#141418;--card2:#1c1c24;--border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);--text:#f5f2ff;--text2:#918ba6;--nav-bg:rgba(12,12,14,.92);--inp:rgba(255,255,255,.06);--sh:0 30px 80px rgba(0,0,0,.55)}
         [data-theme=light]{--bg:#f7f7fb;--bg2:#eceef8;--bg3:#e3e5f0;--card:#fff;--card2:#f1f1f8;--border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.14);--text:#101018;--text2:#5d596d;--nav-bg:rgba(247,247,251,.94);--inp:rgba(0,0,0,.04);--sh:0 20px 60px rgba(0,0,0,.12)}
-        *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:'Nunito Sans',sans-serif;overflow-x:hidden}a{color:inherit;text-decoration:none}img{display:block;max-width:100%}.container{max-width:1240px;margin:auto;padding:0 28px}section{padding:96px 0}.btn-y,.nav-cta,.car-book,.price-cta,.cf-submit{background:var(--y);color:#0c0c0e;border:0;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;transition:var(--tr)}.btn-y:hover,.nav-cta:hover,.car-book:hover,.price-cta:hover,.cf-submit:hover{background:var(--y2);transform:translateY(-2px)}
-        nav{position:fixed;inset:0 0 auto;z-index:1000;height:76px;padding:0 46px;display:flex;align-items:center;justify-content:space-between;transition:var(--tr)}nav.solid{background:var(--nav-bg);backdrop-filter:blur(22px);border-bottom:1px solid var(--border)}.logo{display:flex;align-items:center;gap:12px}.logo-mark{width:42px;height:42px;border-radius:10px;background:var(--y);color:#0c0c0e;display:grid;place-items:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;transform:skewX(-8deg);overflow:hidden}.logo-mark img{width:100%;height:100%;object-fit:contain;padding:4px;background:#fff}.logo-text{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;letter-spacing:2px;text-transform:uppercase}.logo-text span,.acc{color:var(--y)}.nav-links{display:flex;gap:26px;list-style:none;margin:0;padding:0}.nav-links a{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:2px;color:var(--text2)}.nav-links a:hover{color:var(--y)}.nav-right{display:flex;gap:12px;align-items:center}.theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer}.nav-cta{padding:11px 20px;font-size:12px}.ham{display:none;background:transparent;border:0}.ham span{display:block;width:24px;height:2px;background:var(--text);margin:5px}.mob-menu{display:none;position:fixed;inset:0;z-index:999;background:var(--bg);place-items:center;align-content:center;gap:22px}.mob-menu.open{display:grid}.mob-menu a{font-family:'Barlow Condensed';font-size:38px;text-transform:uppercase}.mob-close{position:absolute;right:28px;top:22px;background:none;border:0;color:var(--text);font-size:30px}
+        *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:'Nunito Sans',sans-serif;overflow-x:hidden}a{color:inherit;text-decoration:none}img{display:block;max-width:100%}.container{max-width:1240px;margin:auto;padding:0 28px}section{padding:96px 0}.btn-y,body>nav#navbar .nav-cta,.car-book,.price-cta,.cf-submit{background:var(--y);color:#0c0c0e;border:0;border-radius:999px;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;transition:var(--tr)}.btn-y:hover,body>nav#navbar .nav-cta:hover,.car-book:hover,.price-cta:hover,.cf-submit:hover{background:var(--y2);transform:translateY(-2px)}
+        body>nav#navbar{position:fixed;inset:0 0 auto;z-index:1000;height:76px;padding:0 46px;display:flex;align-items:center;justify-content:space-between;transition:var(--tr)}body>nav#navbar.solid{background:var(--nav-bg);backdrop-filter:blur(22px);border-bottom:1px solid var(--border)}body>nav#navbar .logo{display:flex;align-items:center;gap:12px}body>nav#navbar .logo-mark{width:42px;height:42px;border-radius:10px;background:var(--y);color:#0c0c0e;display:grid;place-items:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;transform:skewX(-8deg);overflow:hidden}body>nav#navbar .logo-mark img{width:100%;height:100%;object-fit:contain;padding:4px;background:#fff}body>nav#navbar .logo-text{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;letter-spacing:2px;text-transform:uppercase}body>nav#navbar .logo-text span,.acc{color:var(--y)}body>nav#navbar .nav-links{display:flex;gap:26px;list-style:none;margin:0;padding:0}body>nav#navbar .nav-links a{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:2px;color:var(--text2)}body>nav#navbar .nav-links a:hover{color:var(--y)}body>nav#navbar .nav-right{display:flex;gap:12px;align-items:center}body>nav#navbar .theme-toggle{width:40px;height:40px;border-radius:50%;border:1px solid var(--border2);background:transparent;color:var(--text);cursor:pointer}body>nav#navbar .nav-cta{padding:11px 20px;font-size:12px}body>nav#navbar .ham{display:none;background:transparent;border:0}body>nav#navbar .ham span{display:block;width:24px;height:2px;background:var(--text);margin:5px}.mob-menu{display:none;position:fixed;inset:0;z-index:999;background:var(--bg);place-items:center;align-content:center;gap:22px}.mob-menu.open{display:grid}.mob-menu a{font-family:'Barlow Condensed';font-size:38px;text-transform:uppercase}.mob-close{position:absolute;right:28px;top:22px;background:none;border:0;color:var(--text);font-size:30px}
         #hero{position:relative;height:100vh;min-height:720px;overflow:hidden}.hero-swiper,.hero-swiper .swiper-wrapper,.hero-swiper .swiper-slide{height:100%}.h-slide{height:100%;position:relative}.h-img{position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.06);transition:transform 9s ease}.swiper-slide-active .h-img{transform:scale(1)}.h-overlay{position:absolute;inset:0;background:linear-gradient(105deg,rgba(0,0,0,.86),rgba(0,0,0,.45) 55%,rgba(0,0,0,.12))}.h-content{position:absolute;z-index:2;top:50%;left:9%;transform:translateY(-48%);max-width:720px}.eyebrow{color:var(--y);font-weight:900;font-size:11px;letter-spacing:4px;text-transform:uppercase;margin-bottom:20px}.h-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(64px,10vw,128px);font-weight:900;line-height:.86;text-transform:uppercase;margin:0 0 24px;color:#fff}.h-title .stroke{-webkit-text-stroke:2px rgba(255,255,255,.72);color:transparent}.h-sub{max-width:540px;color:rgba(255,255,255,.72);font-size:17px;line-height:1.8}.h-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}.btn-y{display:inline-flex;padding:15px 32px}.btn-ghost{border:1px solid rgba(255,255,255,.36);border-radius:999px;color:white;padding:14px 28px;text-transform:uppercase;font-weight:900;letter-spacing:1px}.h-kpis{position:absolute;right:52px;bottom:52px;z-index:3;display:flex;gap:10px}.h-kpi{min-width:118px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(12px);padding:18px}.h-kpi-n{font-family:'Barlow Condensed';font-size:30px;font-weight:900;color:var(--y)}.h-kpi-l{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:white}
         .booking{position:relative;z-index:5;max-width:1180px;margin:-42px auto 0;background:var(--card);border:1px solid var(--border);box-shadow:var(--sh);border-radius:18px;padding:16px;display:grid;grid-template-columns:1.2fr repeat(3,1fr) auto;gap:12px}.bb-field{background:var(--inp);border:1px solid var(--border);border-radius:12px;padding:12px}.bb-label{font-size:10px;text-transform:uppercase;letter-spacing:1.7px;color:var(--text2);font-weight:900}.bb-field input,.bb-field select{width:100%;border:0;background:transparent;color:var(--text);font:inherit;font-weight:800;outline:0;margin-top:4px}.bb-submit{border-radius:12px;padding:0 24px}
         .s-head{display:flex;justify-content:space-between;gap:34px;margin-bottom:48px}.s-label{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--y);font-weight:900}.s-title{font-family:'Barlow Condensed';font-size:clamp(42px,7vw,82px);line-height:.9;text-transform:uppercase;margin:10px 0 0}.s-title .str{-webkit-text-stroke:1.5px var(--text2);color:transparent}.s-sub{max-width:500px;color:var(--text2);line-height:1.8}.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}.tab{border:1px solid var(--border2);background:var(--card);color:var(--text2);border-radius:999px;padding:11px 17px;font-weight:900;cursor:pointer}.tab.on,.tab:hover{background:var(--y);color:#0c0c0e;border-color:var(--y)}
@@ -182,11 +201,15 @@
         .media-panel{display:none}.media-panel.on{display:block}.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:210px;gap:12px}.g-item{position:relative;border-radius:14px;overflow:hidden;background:var(--card)}.g-item:nth-child(1),.g-item:nth-child(6){grid-column:span 2}.g-item img{width:100%;height:100%;object-fit:cover;transition:transform .6s}.g-item:hover img{transform:scale(1.08)}.reviews-wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:34px;align-items:center}.swiper{width:100%}.review-card{min-height:270px}.stars{color:var(--y);letter-spacing:2px}.review-author{font-weight:900;margin-top:20px}.blog-card{padding:0;overflow:hidden}.blog-img{height:210px}.blog-img img{width:100%;height:100%;object-fit:cover}.blog-body{padding:24px}.blog-date{font-size:11px;color:var(--y);font-weight:900;text-transform:uppercase;letter-spacing:2px}.blog-title{font-family:'Barlow Condensed';font-size:28px;line-height:1;text-transform:uppercase;margin:10px 0}
         .faq-layout,.contact-layout{display:grid;grid-template-columns:.85fr 1.15fr;gap:46px}.faq-list{display:grid;gap:12px}.faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}.faq-q{display:flex;justify-content:space-between;gap:18px;padding:20px;font-weight:900;cursor:pointer}.faq-a{display:none;color:var(--text2);line-height:1.75;padding:0 20px 20px}.faq-item.open .faq-a{display:block}.contact-info{display:grid;gap:12px}.c-item{display:grid;grid-template-columns:48px 1fr;gap:14px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}.c-icon,.social a{width:46px;height:46px;border-radius:12px;background:var(--y);color:#0c0c0e;display:grid;place-items:center}.c-label{font-size:11px;text-transform:uppercase;letter-spacing:1.6px;color:var(--text2);font-weight:900}.c-val{font-weight:800}.hours{display:grid;gap:7px}.hours-row{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid var(--border);padding-bottom:7px}.social{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.contact-form{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:30px}.form-title{font-family:'Barlow Condensed';font-size:34px;text-transform:uppercase;font-weight:900;margin-bottom:18px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.fg{margin-bottom:14px}.fg label{display:block;font-size:11px;color:var(--text2);font-weight:900;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}.fg input,.fg select,.fg textarea{width:100%;border:1px solid var(--border);background:var(--inp);border-radius:12px;color:var(--text);padding:14px;font:inherit}.fg-full{grid-column:1/-1}.cf-submit{width:100%;padding:15px}
         .map{height:420px;position:relative}.map iframe{width:100%;height:100%;border:0;filter:grayscale(.2)}[data-theme=dark] .map iframe{filter:invert(.9) hue-rotate(180deg) saturate(.6)}.map-card{position:absolute;left:28px;bottom:28px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--sh);max-width:320px}.footer{background:#060607;padding:70px 0 26px;color:white}.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:34px}.footer h4{font-family:'Barlow Condensed';font-size:22px;text-transform:uppercase;color:var(--y)}.footer a,.footer p{color:rgba(255,255,255,.68)}.footer ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}.footer-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:36px;padding-top:22px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.float-btn{position:fixed;right:24px;bottom:24px;z-index:99;width:58px;height:58px;border-radius:50%;background:var(--y);color:#0c0c0e;display:grid;place-items:center;box-shadow:var(--sh)}
-        @media(max-width:1050px){.nav-links{display:none}.ham{display:block}.booking,.cars-grid,.why-grid,.pricing-grid,.blog-grid,.process-grid,.footer-grid,.about,.faq-layout,.contact-layout,.reviews-wrap{grid-template-columns:1fr}.booking{margin:0 20px}.h-kpis{left:24px;right:24px;bottom:24px}.gallery-grid{grid-template-columns:repeat(2,1fr)}}
-        @media(max-width:620px){nav{padding:0 20px}.logo-text{font-size:22px}.h-content{left:24px;right:24px}.h-title{font-size:58px}.h-kpis{display:none}.s-head{display:block}.form-grid{grid-template-columns:1fr}.gallery-grid{grid-template-columns:1fr}.g-item:nth-child(n){grid-column:auto}.booking{grid-template-columns:1fr}}
+        @media(max-width:1050px){body>nav#navbar .nav-links{display:none}body>nav#navbar .ham{display:block}.booking,.cars-grid,.why-grid,.pricing-grid,.blog-grid,.process-grid,.footer-grid,.about,.faq-layout,.contact-layout,.reviews-wrap{grid-template-columns:1fr}.booking{margin:0 20px}.h-kpis{left:24px;right:24px;bottom:24px}.gallery-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:620px){body>nav#navbar{padding:0 20px}body>nav#navbar .logo-text{font-size:22px}.h-content{left:24px;right:24px}.h-title{font-size:58px}.h-kpis{display:none}.s-head{display:block}.form-grid{grid-template-columns:1fr}.gallery-grid{grid-template-columns:1fr}.g-item:nth-child(n){grid-column:auto}.booking{grid-template-columns:1fr}}
+        body > .mob-menu, body > nav#navbar, body > footer.footer, body > .float-btn{display:none!important}.lv-global-wrap{max-width:1580px;margin:0 auto;padding:24px 16px 36px;margin-top:100px}.lv-global-row.row{display:grid;grid-template-columns:minmax(260px,3fr) minmax(0,9fr);gap:18px;align-items:start}.lv-global-row .col-3,.lv-global-row .col-9{width:auto;max-width:none;padding:0}.lv-sidebar{position:sticky;top:106px;display:grid;gap:14px}.lv-side-card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.12);overflow:hidden}.lv-side-head{padding:16px 16px 8px;border-bottom:1px solid var(--border)}.lv-side-title{margin:0;font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text)}.lv-side-sub{margin:6px 0 0;color:var(--text2);line-height:1.5;font-size:.9rem}.lv-side-body{padding:14px 16px 16px}.lv-side-line{display:flex;gap:9px;align-items:flex-start;color:var(--text2);font-size:.92rem;margin-bottom:9px}.lv-side-line i{color:var(--y);margin-top:3px}.lv-side-nav{display:grid;gap:8px}.lv-side-nav a{border:1px solid var(--border);border-radius:11px;padding:9px 11px;color:var(--text);font-weight:800;font-size:.88rem}.lv-side-nav a:hover{border-color:var(--y);color:var(--y)}.lv-content{display:grid;gap:16px}.lv-content>section,.lv-content>.map{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 22px rgba(0,0,0,.08);overflow:hidden}.lv-content section{padding:60px 0}.lv-content .container{max-width:none;padding:0 24px}.lv-content #hero{height:auto;min-height:640px;padding:0}.lv-content .booking{max-width:none;margin:0;grid-template-columns:1fr 1fr;box-shadow:none;border-radius:16px}.lv-content .cars-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lv-content .why-grid,.lv-content .process-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lv-content .pricing-grid,.lv-content .blog-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.lv-content .about,.lv-content .faq-layout,.lv-content .contact-layout,.lv-content .reviews-wrap{grid-template-columns:1fr}.lv-content .gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:1050px){.lv-global-row.row{grid-template-columns:1fr}.lv-sidebar{position:static}.lv-content .cars-grid,.lv-content .pricing-grid,.lv-content .blog-grid,.lv-content .gallery-grid{grid-template-columns:1fr}.lv-content .booking{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
+    @include('cms::web.fallback.activities.default.vertical-menu')
+    @include('home-v2.components.Header')
+
     <div class="mob-menu" id="mobMenu">
         <button class="mob-close" onclick="closeMob()">x</button>
         <a href="#fleet" onclick="closeMob()">Flotte</a>
@@ -217,6 +240,70 @@
         </div>
         <button class="ham" onclick="openMob()" aria-label="Menu"><span></span><span></span><span></span></button>
     </nav>
+
+    <main class="lv-global-wrap">
+        <div class="lv-global-row row">
+            <aside class="lv-sidebar col-3">
+                <article class="lv-side-card">
+                    <div class="lv-side-head">
+                        <h2 class="lv-side-title">{{ $siteName }}</h2>
+                        <p class="lv-side-sub">Location de vehicules avec contenus CMS et fallbacks.</p>
+                    </div>
+                    <div class="lv-side-body">
+                        <div class="lv-side-line"><i class="fas fa-location-dot"></i><span>{{ $address }}</span></div>
+                        <div class="lv-side-line"><i class="fas fa-phone"></i><a href="tel:{{ $phoneDial }}">{{ $phone }}</a></div>
+                        <div class="lv-side-line"><i class="fas fa-envelope"></i><a href="mailto:{{ $email }}">{{ $email }}</a></div>
+                        <div class="lv-side-line"><i class="fas fa-car-side"></i><span>{{ $vehicleCards->count() }} vehicules affiches</span></div>
+                    </div>
+                </article>
+
+                <article class="lv-side-card">
+                    <div class="lv-side-head">
+                        <h3 class="lv-side-title">Navigation</h3>
+                    </div>
+                    <div class="lv-side-body">
+                        <nav class="lv-side-nav" aria-label="Sections location vehicule">
+                            <a href="#hero">Hero</a>
+                            <a href="#fleet">Flotte</a>
+                            <a href="#pricing">Tarifs</a>
+                            <a href="#gallery">Galerie</a>
+                            @if($blogCards->isNotEmpty())<a href="#blog">Blog</a>@endif
+                            <a href="#contact">Reservation</a>
+                        </nav>
+                    </div>
+                </article>
+
+                <article class="lv-side-card">
+                    <div class="lv-side-head">
+                        <h3 class="lv-side-title">Horaires</h3>
+                    </div>
+                    <div class="lv-side-body">
+                        <div class="hours">
+                            @foreach($workingHours as $row)
+                                <div class="hours-row"><span>{{ $row['day'] ?? '' }}</span><strong>{{ $row['hours'] ?? '' }}</strong></div>
+                            @endforeach
+                        </div>
+                    </div>
+                </article>
+
+                @if($visibleSocialLinks->isNotEmpty())
+                    <article class="lv-side-card">
+                        <div class="lv-side-head">
+                            <h3 class="lv-side-title">Reseaux sociaux</h3>
+                        </div>
+                        <div class="lv-side-body">
+                            <div class="social">
+                                @foreach($visibleSocialLinks as $social)
+                                    @php $key = data_get($social, 'key') ?: data_get($social, 'name'); $icon = $socialIcons[$key] ?? 'fa-solid fa-share-nodes'; @endphp
+                                    <a href="{{ data_get($social, 'url') }}" target="_blank" rel="noopener noreferrer" aria-label="{{ data_get($social, 'label') ?: $key }}"><i class="{{ $icon }}"></i></a>
+                                @endforeach
+                            </div>
+                        </div>
+                    </article>
+                @endif
+            </aside>
+
+            <div class="lv-content col-9">
 
     <section id="hero">
         <div class="swiper hero-swiper">
@@ -463,6 +550,10 @@
         <div class="map-card"><strong>{{ $siteName }}</strong><p>{{ $address }}</p><p>{{ $openingHoursText }}</p></div>
     </div>
 
+            </div>
+        </div>
+    </main>
+
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
@@ -474,9 +565,23 @@
             <div class="footer-bottom"><span>© {{ date('Y') }} {{ $siteName }}.</span><span><a href="#fleet">Flotte</a> · <a href="#pricing">Tarifs</a> · <a href="#contact">Reservation</a></span></div>
         </div>
     </footer>
+    @include('cms::web.fallback.activities.default.footer')
     <a href="#contact" class="float-btn" title="Reserver"><i class="fa-solid fa-car-side"></i></a>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="{{ asset('js/home-v2/carousel.js') }}"></script>
+    <script src="{{ asset('js/home-v2/navigation.js') }}"></script>
+    <script src="{{ asset('js/home-v2/menu-api-service.js') }}"></script>
+    <script src="{{ asset('js/home-v2/mega-menu-service.js') }}"></script>
+    <script src="{{ asset('js/home-v2/vertical-menu-dynamic.js') }}"></script>
+    <script src="{{ asset('js/home-v2/vertical-menu.js') }}"></script>
+    <script src="{{ asset('js/home-v2/vertical-destinations-mega.js') }}"></script>
+    <script src="{{ asset('js/home-v2/mega-menu.js') }}"></script>
+    <script src="{{ asset('js/home-v2/destinations-mega-menu.js') }}"></script>
+    <script src="{{ asset('js/home-v2/destinations-search.js') }}"></script>
+    <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
+    <script src="{{ asset('js/home-v2/videos-dropdown.js') }}"></script>
+    <script src="{{ asset('js/home-v2/slideshows.js') }}"></script>
     <script>
         let theme = localStorage.getItem('dx-theme') || 'dark';
         const themeBtn = document.getElementById('themeBtn');
