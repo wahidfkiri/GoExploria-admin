@@ -545,19 +545,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     {
         $data = $this->prepareNoThemeLandingData($message);
         $activities = $data['activities'] ?? collect();
-        $view = $this->shouldUseBoidsFallback($activities)
-            ? 'cms::web.fallback.landing-boids'
-            : ($this->shouldUseNextLevelFallback($activities)
-                ? 'cms::web.fallback.landing-next-level'
-                : ($this->shouldUseImmoblierFallback($activities)
-                    ? 'cms::web.fallback.landing-immoblier'
-                    : ($this->shouldUseImmobilierConstructionFallback($activities)
-                        ? 'cms::web.fallback.landing-immobilier-construction'
-                        : ($this->shouldUseCommerceAlimentaireFallback($activities)
-                            ? 'cms::web.fallback.landing-commerce-alimentaire'
-                            : ($this->shouldUseEspaceForfaitFallback($activities)
-                                ? 'cms::web.fallback.landing-espace-forfait'
-                                : 'cms::web.fallback.landing-activity')))));
+        $view = $this->resolveNoThemeLandingView($activities);
         $html = view($view, $data)->render();
 
         return $this->buildResponse($html, $this->buildSeoContext(null, false));
@@ -1106,6 +1094,133 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     }
 
     /**
+     * Resolve the fallback landing with business priority:
+     * other_activity_label first, primary_activity_id second, then attached activities.
+     */
+    protected function resolveNoThemeLandingView(Collection $activities): string
+    {
+        foreach ($this->getPrioritizedActivityLabels($activities) as $label) {
+            $view = $this->matchLandingViewForActivityLabel($label);
+            if ($view) {
+                return $view;
+            }
+        }
+
+        return 'cms::web.fallback.landing-activity';
+    }
+
+    protected function getPrioritizedActivityLabels(Collection $activities): Collection
+    {
+        $labels = collect();
+        $otherActivity = trim((string) ($this->etablissement->other_activity_label ?? ''));
+
+        if ($otherActivity !== '') {
+            $labels->push($otherActivity);
+        }
+
+        $primaryActivityId = $this->etablissement->primary_activity_id ?? null;
+        $primaryActivity = null;
+
+        if ($primaryActivityId) {
+            $primaryActivity = $activities->firstWhere('id', $primaryActivityId);
+
+            if (!$primaryActivity) {
+                try {
+                    $primaryActivity = Activity::query()
+                        ->whereKey($primaryActivityId)
+                        ->where('is_active', true)
+                        ->first(['id', 'name']);
+                } catch (\Throwable $e) {
+                    $primaryActivity = null;
+                }
+            }
+
+            if ($primaryActivity && trim((string) ($primaryActivity->name ?? '')) !== '') {
+                $labels->push((string) $primaryActivity->name);
+            }
+        }
+
+        $activities
+            ->reject(fn ($activity) => $primaryActivityId && (int) ($activity->id ?? 0) === (int) $primaryActivityId)
+            ->pluck('name')
+            ->filter(fn ($name) => trim((string) $name) !== '')
+            ->each(fn ($name) => $labels->push((string) $name));
+
+        return $labels
+            ->map(fn ($label) => trim((string) $label))
+            ->filter()
+            ->unique(fn ($label) => mb_strtolower(\Illuminate\Support\Str::ascii($label), 'UTF-8'))
+            ->values();
+    }
+
+    protected function matchLandingViewForActivityLabel(string $label): ?string
+    {
+        $landingKeywords = [
+            'cms::web.fallback.landing-boids' => [
+                'boids', 'bois', 'wood', 'scierie', 'moulin', 'sciage', 'lumber', 'timber',
+            ],
+            'cms::web.fallback.landing-next-level' => [
+                'next level', 'go exploria next', 'next-level', 'aventure next', 'voyage aventure',
+                'trekking', 'exploration', 'expedition voyage',
+            ],
+            'cms::web.fallback.landing-immoblier' => [
+                'immoblier', 'appartement', 'appartements', 'logement', 'logements',
+                'location appartement', 'location residentielle', 'immeuble locatif',
+                'immeubles locatifs', 'residence', 'condo', 'condos', 'place des cerisiers',
+            ],
+            'cms::web.fallback.landing-immobilier-construction' => [
+                'immobilier', 'immo', 'construction', 'constructeur', 'habitation',
+                'maison', 'chalet', 'residentiel', 'résidentiel',
+            ],
+            'cms::web.fallback.landing-commerce-alimentaire' => [
+                'commerce alimentaire', 'alimentaire', 'alimentation', 'epicerie', 'épicerie',
+                'marche', 'marché', 'supermarche', 'supermarché', 'poissonnerie', 'boucherie',
+                'fromagerie', 'boulangerie', 'patisserie', 'pâtisserie', 'terroir',
+                'traiteur', 'gourmet', 'fine food',
+            ],
+            'cms::web.fallback.landing-location-vehicule' => [
+                'location vehicule', 'location véhicule', 'location véhicules',
+                'location de vehicule', 'location de véhicule', 'location de vehicules',
+                'location de véhicules', 'location des vehicules', 'location des véhicules',
+                'location voiture', 'location de voiture', 'location voitures',
+                'location de voitures', 'location auto', 'location automobile',
+                'rent a car', 'car rental', 'vehicule rental', 'véhicule rental',
+            ],
+            'cms::web.fallback.landing-espace-forfait' => [
+                'espace forfait', 'forfait', 'forfaits', 'package', 'packages',
+                'circuit', 'expedition', 'expédition', 'location', 'motoneige',
+                'quad', 'vtt', 'cote-a-cote', 'côte-à-côte', 'cote à cote',
+                'ssv', 'aventure',
+            ],
+        ];
+
+        foreach ($landingKeywords as $view => $keywords) {
+            if ($this->activityLabelContainsAny($label, $keywords)) {
+                return $view;
+            }
+        }
+
+        return null;
+    }
+
+    protected function activityLabelContainsAny(string $label, array $keywords): bool
+    {
+        $haystack = mb_strtolower($label, 'UTF-8');
+        $asciiHaystack = mb_strtolower(\Illuminate\Support\Str::ascii($label), 'UTF-8');
+
+        foreach ($keywords as $keyword) {
+            $needle = mb_strtolower((string) $keyword, 'UTF-8');
+            $asciiNeedle = mb_strtolower(\Illuminate\Support\Str::ascii((string) $keyword), 'UTF-8');
+
+            if (str_contains($haystack, $needle) || str_contains($asciiHaystack, $asciiNeedle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Detect if the establishment should use the custom "Boids/Bois" fallback landing.
      */
     protected function shouldUseBoidsFallback(Collection $activities): bool
@@ -1307,6 +1422,55 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     }
 
     /**
+     * Detect if the establishment should use the vehicle rental fallback landing.
+     */
+    protected function shouldUseLocationVehiculeFallback(Collection $activities): bool
+    {
+        $haystack = $activities
+            ->pluck('name')
+            ->filter()
+            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
+            ->implode(' ');
+
+        $otherActivity = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
+        $haystack = trim($haystack . ' ' . $otherActivity);
+
+        if ($haystack === '') {
+            return false;
+        }
+
+        $keywords = [
+            'location vehicule',
+            'location véhicule',
+            'location véhicules',
+            'location de vehicule',
+            'location de véhicule',
+            'location de vehicules',
+            'location de véhicules',
+            'location des vehicules',
+            'location des véhicules',
+            'location voiture',
+            'location de voiture',
+            'location voitures',
+            'location de voitures',
+            'location auto',
+            'location automobile',
+            'rent a car',
+            'car rental',
+            'vehicule rental',
+            'véhicule rental',
+        ];
+
+        foreach ($keywords as $keyword) {
+            if (str_contains($haystack, $keyword)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Detect if the establishment should use the "Espace Forfait" fallback landing.
      */
     protected function shouldUseEspaceForfaitFallback(Collection $activities): bool
@@ -1371,18 +1535,26 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             ->where('is_active', true)
             ->first(['id', 'name', 'slug', 'description']);
 
-        if ($primaryActivity && !$activities->contains('id', $primaryActivity->id)) {
-            $activities->prepend($primaryActivity);
-        }
+        $orderedActivities = collect();
 
-        if ($activities->isEmpty() && !empty($this->etablissement->other_activity_label)) {
+        if (!empty($this->etablissement->other_activity_label)) {
             $fallback = new Activity();
             $fallback->name = (string) $this->etablissement->other_activity_label;
             $fallback->description = 'Activité principale de cet établissement.';
-            $activities = collect([$fallback]);
+            $orderedActivities->push($fallback);
         }
 
-        return $activities->values();
+        if ($primaryActivity) {
+            $orderedActivities->push($primaryActivity);
+        }
+
+        $activities
+            ->reject(fn ($activity) => $primaryActivity && (int) ($activity->id ?? 0) === (int) $primaryActivity->id)
+            ->each(fn ($activity) => $orderedActivities->push($activity));
+
+        return $orderedActivities
+            ->unique(fn ($activity) => mb_strtolower(\Illuminate\Support\Str::ascii((string) ($activity->name ?? '')), 'UTF-8'))
+            ->values();
     }
 
     /**

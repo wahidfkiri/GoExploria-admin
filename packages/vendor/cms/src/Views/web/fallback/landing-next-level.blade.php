@@ -582,6 +582,13 @@ section { padding: 100px 40px; }
 .blog-card p { font-size: 13px; color: var(--muted); line-height: 1.8; }
 .blog-read { display: inline-flex; align-items: center; gap: 8px; color: var(--gold); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-top: 16px; text-decoration: none; transition: var(--transition); }
 .blog-read:hover { gap: 14px; }
+.next-cms-pages { background: var(--dark2); }
+.next-cms-pages .container { display: grid; gap: 24px; }
+.next-cms-page { background: var(--dark3); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: clamp(24px, 4vw, 48px); }
+.next-cms-page-content { color: var(--muted); line-height: 1.8; }
+.next-cms-page-content :where(h1,h2,h3,h4,h5,h6) { color: var(--text); margin: 0 0 16px; line-height: 1.08; }
+.next-cms-page-content :where(p,ul,ol,blockquote,figure) { margin: 0 0 18px; }
+.next-cms-page-content :where(img,video,iframe) { max-width: 100%; border-radius: var(--radius-sm); }
 
 /* ─── CONTACT ─── */
 #contact { background: var(--dark2); }
@@ -1130,6 +1137,21 @@ html.light .float-cta {
   </button>
   <div class="scroll-hint"><span>Scroll</span><div class="scroll-line"></div></div>
 </section>
+
+@if(collect($cmsPageSections ?? [])->isNotEmpty())
+<section class="next-cms-pages" id="cms-pages-content">
+  <div class="container">
+    @foreach(collect($cmsPageSections) as $cmsPage)
+      <article class="next-cms-page reveal" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
+        <div class="next-cms-page-content">
+          {!! data_get($cmsPage, 'content') !!}
+        </div>
+      </article>
+    @endforeach
+  </div>
+</section>
+@endif
+
 <!-- MARQUEE -->
 <div class="marquee-wrap">
   <div class="marquee-track">

@@ -668,6 +668,12 @@ section{padding:6rem 2.5rem;}
 
 /* ====================== BLOG ====================== */
 #blog{background:var(--bg-2);}
+#cms-pages-content{background:var(--bg-2);}
+.cms-page-block{background:var(--card-bg);border:1px solid var(--border);padding:clamp(1.5rem,4vw,3rem);margin-bottom:1.5rem;}
+.cms-page-content{color:var(--text-muted);line-height:1.8;}
+.cms-page-content :where(h1,h2,h3,h4,h5,h6){color:var(--text);line-height:1.15;margin:0 0 1rem;}
+.cms-page-content :where(p,ul,ol,blockquote,figure){margin:0 0 1rem;}
+.cms-page-content :where(img,video,iframe){max-width:100%;border-radius:4px;}
 .blog-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2px;margin-top:3rem;}
 .blog-card{background:var(--card-bg);overflow:hidden;border:1px solid var(--border);}
 .blog-card-img{overflow:hidden;}
@@ -934,6 +940,20 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 
   </div>
 </section>
+
+@if(collect($cmsPageSections ?? [])->isNotEmpty())
+<section id="cms-pages-content">
+  <div class="container">
+    @foreach(collect($cmsPageSections) as $cmsPage)
+      <article class="cms-page-block reveal" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
+        <div class="cms-page-content">
+          {!! data_get($cmsPage, 'content') !!}
+        </div>
+      </article>
+    @endforeach
+  </div>
+</section>
+@endif
 
 <!-- STATS -->
 <section id="stats">

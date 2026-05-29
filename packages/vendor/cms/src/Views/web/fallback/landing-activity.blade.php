@@ -334,6 +334,20 @@
             gap: 6px;
         }
 
+        .lf-cms-page-content {
+            color: #5c6f89;
+            line-height: 1.75;
+        }
+
+        .lf-cms-page-content :where(h1,h2,h3,h4,h5,h6) {
+            color: #0f203c;
+            margin: 0 0 14px;
+            line-height: 1.15;
+        }
+
+        .lf-cms-page-content :where(p,ul,ol,blockquote,figure) { margin: 0 0 16px; }
+        .lf-cms-page-content :where(img,video,iframe) { max-width: 100%; border-radius: 12px; }
+
         .lf-destination-shell {
             border: 1px solid #dde7f4;
             border-radius: 14px;
@@ -1130,6 +1144,16 @@
                     <article id="section-hero"  style="margin-top:0px !important;" class="lf-section lf-hero-embed">
                         @include("cms::web.fallback.activities.$activityViewFolder.hero", ['hideSearchBarV2' => true])
                     </article>
+
+                    @if(collect($cmsPageSections ?? [])->isNotEmpty())
+                        @foreach(collect($cmsPageSections) as $cmsPage)
+                            <article class="lf-section" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
+                                <div class="lf-cms-page-content">
+                                    {!! data_get($cmsPage, 'content') !!}
+                                </div>
+                            </article>
+                        @endforeach
+                    @endif
 
                     @if(!empty($hasRestaurantActivity))
                         <article id="section-restaurant" class="lf-section">

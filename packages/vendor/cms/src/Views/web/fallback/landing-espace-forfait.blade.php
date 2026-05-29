@@ -241,6 +241,19 @@
     <main class="tl-page">
         @include('cms::web.fallback.partials.espace-forfait.nav')
         @include('cms::web.fallback.partials.espace-forfait.hero')
+        @if(collect($cmsPageSections ?? [])->isNotEmpty())
+            <section id="cms-pages-content">
+                <div class="container" style="display:grid;gap:22px;">
+                    @foreach(collect($cmsPageSections) as $cmsPage)
+                        <article class="tl-cms-page" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
+                            <div class="tl-cms-page-content">
+                                {!! data_get($cmsPage, 'content') !!}
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            </section>
+        @endif
         @include('cms::web.fallback.partials.espace-forfait.reservation')
         @include('cms::web.fallback.partials.espace-forfait.services')
         @include('cms::web.fallback.partials.espace-forfait.forfaits')

@@ -334,6 +334,21 @@
             padding: 0;
         }
 
+        .boids-cms-page-content {
+            color: var(--boids-muted);
+            line-height: 1.75;
+        }
+
+        .boids-cms-page-content :where(h1,h2,h3,h4,h5,h6) {
+            color: #111;
+            margin: 0 0 14px;
+            line-height: 1.15;
+            font-family: "Playfair Display", serif;
+        }
+
+        .boids-cms-page-content :where(p,ul,ol,blockquote,figure) { margin: 0 0 16px; }
+        .boids-cms-page-content :where(img,video,iframe) { max-width: 100%; border-radius: 12px; }
+
         .boids-row-head {
             margin-bottom: 12px;
             display: flex;
@@ -1955,6 +1970,16 @@
                     <article class="boids-section boids-hero-embed" id="section-hero">
                         @include("cms::web.fallback.activities.$activityViewFolder.hero", ['hideSearchBarV2' => true])
                     </article>
+
+                    @if(collect($cmsPageSections ?? [])->isNotEmpty())
+                        @foreach(collect($cmsPageSections) as $cmsPage)
+                            <article class="boids-section boids-cms-page" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
+                                <div class="boids-cms-page-content">
+                                    {!! data_get($cmsPage, 'content') !!}
+                                </div>
+                            </article>
+                        @endforeach
+                    @endif
 
                     <article class="boids-section" id="section-about">
     <span class="boids-kicker"><i class="fas fa-tree"></i> À propos</span>
