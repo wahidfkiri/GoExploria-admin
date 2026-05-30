@@ -1132,10 +1132,10 @@ html.light .float-cta {
             <p class="hero-sub">{{ $slide['subtitle'] }}</p>
             <div class="hero-btns">
               @if(!empty($slide['button_text']) && !empty($slide['button_url']))
-                <a href="{{ $slide['button_url'] }}" class="btn-primary">{{ $slide['button_text'] }} →</a>
+                <a href="{{ $slide['button_url'] }}" target="_blank" class="btn-primary">{{ $slide['button_text'] }} →</a>
               @endif
               @if(!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl))
-                <a href="{{ $heroSecondaryCtaUrl }}" class="btn-outline"><i class="fas fa-play" aria-hidden="true"></i> {{ $heroSecondaryCtaText }}</a>
+                <a href="{{ $heroSecondaryCtaUrl }}" target="_blank" class="btn-outline"><i class="fas fa-play" aria-hidden="true"></i> {{ $heroSecondaryCtaText }}</a>
               @endif
             </div>
           </div>
@@ -1147,7 +1147,6 @@ html.light .float-cta {
   <button type="button" class="hero-audio-toggle" id="heroAudioToggle" aria-pressed="false" aria-label="Activer le son de la vidéo">
     <i class="fas fa-volume-xmark" aria-hidden="true"></i>
   </button>
-  <div class="scroll-hint"><span>Scroll</span><div class="scroll-line"></div></div>
 </section>
 
 @if(collect($cmsPageSections ?? [])->isNotEmpty())
