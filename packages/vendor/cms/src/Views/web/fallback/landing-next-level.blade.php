@@ -1159,20 +1159,6 @@ html.light .float-cta {
 
 
 
-<!-- GALLERY -->
-<section id="gallery">
-  <div class="container">
-    <p class="section-label reveal">Nos Destinations</p>
-    <h2 class="section-title reveal delay-1">GALERIE <span>PHOTOS</span></h2>
-    <p class="section-sub reveal delay-2">Plongez dans l'univers visuel de Go Exploria. Chaque image raconte une histoire, chaque lieu est une invitation.</p>
-    <div class="gallery-grid reveal">
-      @foreach($nextLevelGallery->take(7) as $item)
-        <div class="gallery-item"><img src="{{ $item['thumbnail'] }}" alt="{{ $item['name'] ?? 'Galerie' }}"><div class="gallery-item-overlay"><span>{{ $item['name'] ?? 'Photo' }}</span></div></div>
-      @endforeach
-    </div>
-  </div>
-</section>
-
 
 <!-- SOCIAL FEED -->
 <section id="social">
