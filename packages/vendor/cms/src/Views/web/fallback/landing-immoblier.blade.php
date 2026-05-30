@@ -5,6 +5,12 @@
         ?: $etablissement->getSetting('site_description', null, 'general')
         ?: get_site_description($etablissement->id)
         ?: 'Appartements lumineux, espaces verts, stationnement inclus et emplacement privilégié à proximité des services.';
+    $heroPrimaryCtaText = $etablissement->getSetting('hero_cta_text', null, 'landing')
+        ?: $etablissement->getSetting('cta_text', null, 'general');
+    $heroPrimaryCtaUrl = $etablissement->getSetting('hero_cta_url', null, 'landing')
+        ?: $devisLink;
+    $heroSecondaryCtaText = $etablissement->getSetting('hero_secondary_cta_text', null, 'landing');
+    $heroSecondaryCtaUrl = $etablissement->getSetting('hero_secondary_cta_url', null, 'landing');
     $brandLogo = get_logo_url($etablissement->id) ?: ($brandLogoUrl ?? null);
     $phone = $etablissement->getSetting('phone', null, 'company') ?: $etablissement->getSetting('phone', null, 'general') ?: $etablissement->getSetting('telephone', null, 'general') ?: ($etablissement->phone ?? null) ?: ($etablissement->telephone ?? null) ?: '(418) 525-7748';
     $phoneDial = preg_replace('/\D+/', '', $phone);
@@ -122,7 +128,7 @@
     $facebookGallery = $normalizeSocialMedia($facebookGalleryMedia ?? [], $gallery);
     $pinterestGallery = $normalizeSocialMedia($pinterestGalleryMedia ?? [], $gallery);
 
-    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($mediaUrl, $heroEmbedUrl, $siteName) {
+    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($mediaUrl, $heroEmbedUrl, $siteName, $siteDescription, $heroPrimaryCtaText, $heroPrimaryCtaUrl) {
         $type = strtolower((string) data_get($slider, 'type', 'image'));
         $url = $mediaUrl(data_get($slider, 'image_url') ?: data_get($slider, 'thumbnail_url') ?: data_get($slider, 'video_url') ?: data_get($slider, 'url') ?: data_get($slider, 'image_path'));
         $embed = $heroEmbedUrl(data_get($slider, 'video_embed_url') ?: data_get($slider, 'embed') ?: ($type === 'iframe' ? data_get($slider, 'url') : null));
@@ -130,17 +136,17 @@
             'type' => $type,
             'url' => $url,
             'embed' => $embed,
-            'title' => data_get($slider, 'title') ?: "Vivre à {$siteName}",
-            'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: 'Un milieu de vie lumineux, calme et proche des services essentiels.',
-            'button_text' => data_get($slider, 'button_text') ?: 'Planifier une visite',
-            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: '#contact',
+            'title' => data_get($slider, 'title') ?: $siteName,
+            'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: $siteDescription,
+            'button_text' => data_get($slider, 'button_text') ?: $heroPrimaryCtaText,
+            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: $heroPrimaryCtaUrl,
         ];
     })->filter(fn ($slide) => !empty($slide['url']) || !empty($slide['embed']))->values();
     if ($heroSlides->isEmpty()) {
         $heroSlides = collect([
-            ['type' => 'image', 'url' => $gallery[0]['thumbnail'], 'embed' => null, 'title' => 'Appartements modernes à Rivière-du-Loup', 'subtitle' => 'Des espaces chaleureux, bien situés et pensés pour une vie quotidienne simple et confortable.', 'button_text' => 'Planifier une visite', 'button_url' => '#contact'],
-            ['type' => 'image', 'url' => $gallery[1]['thumbnail'], 'embed' => null, 'title' => 'Un milieu de vie lumineux et paisible', 'subtitle' => 'Stationnement, espaces verts et proximité des services dans un environnement soigné.', 'button_text' => 'Voir les logements', 'button_url' => '#logements'],
-            ['type' => 'image', 'url' => $gallery[2]['thumbnail'], 'embed' => null, 'title' => 'Louez avec confiance', 'subtitle' => 'Une présentation professionnelle de vos disponibilités, services et informations de contact.', 'button_text' => 'Demander les disponibilités', 'button_url' => '#contact'],
+            ['type' => 'image', 'url' => $gallery[0]['thumbnail'], 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
+            ['type' => 'image', 'url' => $gallery[1]['thumbnail'], 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
+            ['type' => 'image', 'url' => $gallery[2]['thumbnail'], 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
         ]);
     }
 

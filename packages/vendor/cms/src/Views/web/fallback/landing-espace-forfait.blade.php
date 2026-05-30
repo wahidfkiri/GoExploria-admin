@@ -6,6 +6,12 @@
         ?: $etablissement->getSetting('site_description', null, 'general')
         ?: get_site_description($etablissement->id)
         ?: 'Location de motoneige, quad, côte-à-côte et forfaits d’aventure avec une expérience de réservation moderne.';
+    $heroPrimaryCtaText = $etablissement->getSetting('hero_cta_text', null, 'landing')
+        ?: $etablissement->getSetting('cta_text', null, 'general');
+    $heroPrimaryCtaUrl = $etablissement->getSetting('hero_cta_url', null, 'landing')
+        ?: $devisLink;
+    $heroSecondaryCtaText = $etablissement->getSetting('hero_secondary_cta_text', null, 'landing');
+    $heroSecondaryCtaUrl = $etablissement->getSetting('hero_secondary_cta_url', null, 'landing');
     $brandLogo = get_logo_url($etablissement->id) ?: ($brandLogoUrl ?? null);
     $phone = $etablissement->getSetting('phone', null, 'company') ?: $etablissement->getSetting('phone', null, 'general') ?: $etablissement->getSetting('telephone', null, 'general') ?: ($etablissement->phone ?? null) ?: ($etablissement->telephone ?? null) ?: '(418) 525-7748';
     $phoneDial = preg_replace('/\D+/', '', $phone);
@@ -86,7 +92,7 @@
     $instagramGallery = $normalizeSocialMedia($instagramGalleryMedia ?? [], $gallery);
     $facebookGallery = $normalizeSocialMedia($facebookGalleryMedia ?? [], $gallery);
 
-    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($mediaUrl, $devisLink, $siteName) {
+    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($mediaUrl, $siteName, $siteDescription, $heroPrimaryCtaText, $heroPrimaryCtaUrl) {
         $type = strtolower((string) data_get($slider, 'type', 'image'));
         $url = $mediaUrl(data_get($slider, 'image_url') ?: data_get($slider, 'thumbnail_url') ?: data_get($slider, 'video_url') ?: data_get($slider, 'url') ?: data_get($slider, 'image_path'));
         $embed = data_get($slider, 'video_embed_url') ?: data_get($slider, 'embed');
@@ -94,20 +100,20 @@
             'type' => $type,
             'url' => $url,
             'embed' => $embed,
-            'title' => data_get($slider, 'title') ?: "L’aventure avec {$siteName}",
-            'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: 'Location, forfaits guidés et expériences prêtes à réserver.',
-            'button_text' => data_get($slider, 'button_text') ?: 'Réserver un forfait',
-            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: '#reserver',
-            'caption' => data_get($slider, 'caption') ?: data_get($slider, 'title') ?: 'Expérience forfait',
+            'title' => data_get($slider, 'title') ?: $siteName,
+            'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: $siteDescription,
+            'button_text' => data_get($slider, 'button_text') ?: $heroPrimaryCtaText,
+            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: $heroPrimaryCtaUrl,
+            'caption' => data_get($slider, 'caption') ?: data_get($slider, 'title') ?: $siteName,
         ];
     })->filter(fn ($slide) => !empty($slide['url']) || !empty($slide['embed']))->values();
     if ($heroSlides->isEmpty()) {
         $heroSlides = collect([
-            ['type' => 'image', 'url' => $fallbackImages[0]['thumbnail'], 'embed' => null, 'title' => 'L’aventure hivernale au cœur de Charlevoix', 'subtitle' => 'Location de motoneige, quad et côte-à-côte dans la plus belle région du Québec.', 'button_text' => 'Réserver un forfait', 'button_url' => '#reserver', 'caption' => 'Sentiers de Charlevoix'],
-            ['type' => 'image', 'url' => $fallbackImages[1]['thumbnail'], 'embed' => null, 'title' => 'Motoneige, quad et SSV prêts à partir', 'subtitle' => 'Des véhicules haut de gamme, des parcours clairs et une équipe proche de vos clients.', 'button_text' => 'Voir les services', 'button_url' => '#services', 'caption' => 'Motoneige premium'],
-            ['type' => 'image', 'url' => $fallbackImages[2]['thumbnail'], 'embed' => null, 'title' => 'Forfaits guidés pour tous les niveaux', 'subtitle' => 'Séjours, hébergement, itinéraires et réservation dans une interface immersive.', 'button_text' => 'Découvrir les forfaits', 'button_url' => '#forfaits', 'caption' => 'Expéditions guidées'],
-            ['type' => 'image', 'url' => $fallbackImages[3]['thumbnail'], 'embed' => null, 'title' => 'Paysages, adrénaline et confort', 'subtitle' => 'Un design orienté émotion, confiance et conversion pour votre établissement.', 'button_text' => 'Galerie photos', 'button_url' => '#galerie', 'caption' => 'Paysages panoramiques'],
-            ['type' => 'image', 'url' => $fallbackImages[4]['thumbnail'], 'embed' => null, 'title' => 'Une aventure duo ou groupe', 'subtitle' => 'Présentez vos départs, salles, véhicules, options et offres personnalisées.', 'button_text' => 'Demander un devis', 'button_url' => $devisLink, 'caption' => 'Côte-à-côte aventure'],
+            ['type' => 'image', 'url' => $fallbackImages[0]['thumbnail'], 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl, 'caption' => $fallbackImages[0]['name'] ?? $siteName],
+            ['type' => 'image', 'url' => $fallbackImages[1]['thumbnail'], 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl, 'caption' => $fallbackImages[1]['name'] ?? $siteName],
+            ['type' => 'image', 'url' => $fallbackImages[2]['thumbnail'], 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl, 'caption' => $fallbackImages[2]['name'] ?? $siteName],
+            ['type' => 'image', 'url' => $fallbackImages[3]['thumbnail'], 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl, 'caption' => $fallbackImages[3]['name'] ?? $siteName],
+            ['type' => 'image', 'url' => $fallbackImages[4]['thumbnail'], 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl, 'caption' => $fallbackImages[4]['name'] ?? $siteName],
         ]);
     }
 

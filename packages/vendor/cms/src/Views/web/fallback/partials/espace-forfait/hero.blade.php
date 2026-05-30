@@ -21,14 +21,23 @@
   <div class="hero-snow" id="snowContainer"></div>
   <button class="hero-arrow hero-arrow-prev" onclick="slideshowNav(-1)" aria-label="Précédent">←</button>
   <button class="hero-arrow hero-arrow-next" onclick="slideshowNav(1)" aria-label="Suivant">→</button>
-  <div class="hero-slide-caption" id="slideCaption">{{ $heroSlides->first()['caption'] ?? 'Aventure forfait' }}</div>
+  @php
+    $firstHeroSlide = collect($heroSlides ?? [])->first() ?? [];
+  @endphp
+  <div class="hero-slide-caption" id="slideCaption">{{ data_get($firstHeroSlide, 'caption') ?: $siteName }}</div>
   <div class="hero-content">
-    <h1 class="hero-title">{{ $heroSlides->first()['title'] ?? 'L’aventure hivernale' }} <span class="accent">{{ $siteName }}</span></h1>
-    <p class="hero-sub">{{ $heroSlides->first()['subtitle'] ?? $siteDescription }}</p>
-    <div class="hero-actions">
-      <a href="#reserver" class="btn btn-hero btn-white">Réserver un forfait</a>
-      <a href="#services" class="btn btn-hero btn-ghost">Nos services ↓</a>
-    </div>
+    <h1 class="hero-title">{{ data_get($firstHeroSlide, 'title') ?: $siteName }} <span class="accent">{{ $siteName }}</span></h1>
+    <p class="hero-sub">{{ data_get($firstHeroSlide, 'subtitle') ?: $siteDescription }}</p>
+    @if((!empty($firstHeroSlide['button_text']) && !empty($firstHeroSlide['button_url'])) || (!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl)))
+      <div class="hero-actions">
+        @if(!empty($firstHeroSlide['button_text']) && !empty($firstHeroSlide['button_url']))
+          <a href="{{ $firstHeroSlide['button_url'] }}" class="btn btn-hero btn-white">{{ $firstHeroSlide['button_text'] }}</a>
+        @endif
+        @if(!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl))
+          <a href="{{ $heroSecondaryCtaUrl }}" class="btn btn-hero btn-ghost">{{ $heroSecondaryCtaText }}</a>
+        @endif
+      </div>
+    @endif
   </div>
   <div class="hero-dots" id="heroDots">
     @foreach($heroSlides as $index => $slide)

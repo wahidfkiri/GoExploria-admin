@@ -4,6 +4,7 @@
         ?: $etablissement->getSetting('site_description', null, 'general')
         ?: get_site_description($etablissement->id)
         ?: 'Des expériences de voyage uniques et inoubliables pour passer au niveau supérieur.';
+    $devisLink = $devisUrl ?? route('devis');
     $hours = $etablissement->getSetting('opening_hours', [], 'company');
     $workingHours = normalize_cms_opening_hours($hours, [
         ['day' => 'Lun-Sam', 'hours' => '9h-19h'],
@@ -11,6 +12,12 @@
     ]);
     $openingHoursText = format_cms_opening_hours($workingHours);
     $socialLinks = $socialLinks ?? get_establishment_social_links($etablissement);
+    $heroPrimaryCtaText = $etablissement->getSetting('hero_cta_text', null, 'landing')
+        ?: $etablissement->getSetting('cta_text', null, 'general');
+    $heroPrimaryCtaUrl = $etablissement->getSetting('hero_cta_url', null, 'landing')
+        ?: $devisLink;
+    $heroSecondaryCtaText = $etablissement->getSetting('hero_secondary_cta_text', null, 'landing');
+    $heroSecondaryCtaUrl = $etablissement->getSetting('hero_secondary_cta_url', null, 'landing');
 
     $mediaUrl = static function ($path) {
         if (empty($path)) return null;
@@ -49,7 +56,7 @@
         return $raw;
     };
 
-    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($mediaUrl, $heroEmbedUrl, $siteName, $siteDescription) {
+    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($mediaUrl, $heroEmbedUrl, $siteName, $siteDescription, $heroPrimaryCtaText, $heroPrimaryCtaUrl) {
         $type = strtolower((string) data_get($slider, 'type', 'image'));
         $url = $mediaUrl(data_get($slider, 'image_url') ?: data_get($slider, 'thumbnail_url') ?: data_get($slider, 'video_url') ?: data_get($slider, 'url') ?: data_get($slider, 'image_path'));
         $embed = $heroEmbedUrl(data_get($slider, 'video_embed_url') ?: data_get($slider, 'embed') ?: ($type === 'iframe' ? data_get($slider, 'url') : null));
@@ -57,18 +64,18 @@
             'type' => $type,
             'url' => $url,
             'embed' => $embed,
-            'title' => data_get($slider, 'title') ?: 'EXPLORE LE MONDE AUTREMENT',
+            'title' => data_get($slider, 'title') ?: $siteName,
             'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: $siteDescription,
-            'button_text' => data_get($slider, 'button_text') ?: 'Nos Voyages',
-            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: '#services',
+            'button_text' => data_get($slider, 'button_text') ?: $heroPrimaryCtaText,
+            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: $heroPrimaryCtaUrl,
         ];
     })->filter(fn ($slide) => !empty($slide['url']) || !empty($slide['embed']))->values();
 
     if ($heroSlides->isEmpty()) {
         $heroSlides = collect([
-            ['type' => 'image', 'url' => 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920&q=80', 'embed' => null, 'title' => 'EXPLORE LE MONDE AUTREMENT', 'subtitle' => 'Des expériences de voyage uniques et inoubliables, conçues pour les esprits curieux qui cherchent à repousser leurs limites.', 'button_text' => 'Nos Voyages', 'button_url' => '#services'],
-            ['type' => 'image', 'url' => 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80', 'embed' => null, 'title' => 'ATTEINS TON NEXT LEVEL', 'subtitle' => 'Trekking en altitude, camps de base, randonnées alpines. Chaque sommet est une nouvelle victoire sur soi-même.', 'button_text' => 'Demander un devis', 'button_url' => '#contact'],
-            ['type' => 'image', 'url' => 'https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=1920&q=80', 'embed' => null, 'title' => 'VIS DES ÉMOTIONS RARES', 'subtitle' => 'Bivouacs sous les étoiles, dunes infinies, rencontres authentiques. Des moments qui marquent une vie entière.', 'button_text' => 'Découvrir', 'button_url' => '#services'],
+            ['type' => 'image', 'url' => 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920&q=80', 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
+            ['type' => 'image', 'url' => 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80', 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
+            ['type' => 'image', 'url' => 'https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=1920&q=80', 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
         ]);
     }
 
@@ -215,9 +222,10 @@
 (function () {
   try {
     const saved = localStorage.getItem('go-exploria-theme');
-    const preferLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-    if (saved === 'light' || (!saved && preferLight)) {
+    if (saved === 'light') {
       document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
     }
   } catch (error) {}
 })();
@@ -1123,8 +1131,12 @@ html.light .float-cta {
             <h1 class="hero-title">{!! $heroTitleParts($slide['title']) !!}</h1>
             <p class="hero-sub">{{ $slide['subtitle'] }}</p>
             <div class="hero-btns">
-              <a href="{{ $slide['button_url'] ?: '#services' }}" class="btn-primary">{{ $slide['button_text'] ?: 'Nos Voyages' }} →</a>
-              <a href="#services" class="btn-outline"><i class="fas fa-play" aria-hidden="true"></i> Nos services</a>
+              @if(!empty($slide['button_text']) && !empty($slide['button_url']))
+                <a href="{{ $slide['button_url'] }}" class="btn-primary">{{ $slide['button_text'] }} →</a>
+              @endif
+              @if(!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl))
+                <a href="{{ $heroSecondaryCtaUrl }}" class="btn-outline"><i class="fas fa-play" aria-hidden="true"></i> {{ $heroSecondaryCtaText }}</a>
+              @endif
             </div>
           </div>
         </div>
@@ -1152,101 +1164,9 @@ html.light .float-cta {
 </section>
 @endif
 
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span class="marquee-item">Site vitrine</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Boutique en ligne</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Restaurant</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Tourisme</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Immobilier</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Marketplace</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Portfolio</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Blog professionnel</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Site vitrine</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Boutique en ligne</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Restaurant</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Tourisme</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Immobilier</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Marketplace</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Portfolio</span><span class="marquee-dot">✦</span>
-    <span class="marquee-item">Blog professionnel</span><span class="marquee-dot">✦</span>
-  </div>
-</div>
 
-<!-- SERVICES -->
-<section id="services">
-  <div class="container">
-    <p class="section-label reveal">Ce que nous offrons</p>
-    <h2 class="section-title reveal delay-1">NOS <span>SERVICES</span></h2>
-    <p class="section-sub reveal delay-2">Des solutions web et marketing pensées pour propulser votre présence en ligne, attirer plus de clients et convertir vos visiteurs en demandes concrètes.</p>
-    <div class="services-grid">
-      <div class="service-card reveal">
-        <div class="service-icon"><i class="fas fa-laptop-code" aria-hidden="true"></i></div>
-        <div class="service-num">01</div>
-        <h3>Création site web</h3>
-        <p>Sites vitrines modernes, rapides et responsive, conçus pour présenter votre activité avec une image professionnelle et rassurante.</p>
-        <div class="service-arrow">→</div>
-      </div>
-      <div class="service-card reveal delay-1">
-        <div class="service-icon"><i class="fas fa-bullhorn" aria-hidden="true"></i></div>
-        <div class="service-num">02</div>
-        <h3>Marketing digital</h3>
-        <p>Campagnes ciblées, stratégie de visibilité et tunnels de conversion pour transformer votre audience en clients qualifiés.</p>
-        <div class="service-arrow">→</div>
-      </div>
-      <div class="service-card reveal delay-2">
-        <div class="service-icon"><i class="fas fa-magnifying-glass-chart" aria-hidden="true"></i></div>
-        <div class="service-num">03</div>
-        <h3>SEO & optimisation</h3>
-        <p>Optimisation technique, contenus structurés et performance pour améliorer votre classement Google et votre expérience utilisateur.</p>
-        <div class="service-arrow">→</div>
-      </div>
-      <div class="service-card reveal delay-3">
-        <div class="service-icon"><i class="fas fa-cart-shopping" aria-hidden="true"></i></div>
-        <div class="service-num">04</div>
-        <h3>Boutique en ligne</h3>
-        <p>Création de pages produits, parcours d'achat fluide, demandes de devis et vitrines e-commerce adaptées à vos offres.</p>
-        <div class="service-arrow">→</div>
-      </div>
-      <div class="service-card reveal">
-        <div class="service-icon"><i class="fas fa-pen-nib" aria-hidden="true"></i></div>
-        <div class="service-num">05</div>
-        <h3>Identité visuelle</h3>
-        <p>Direction artistique, choix des couleurs, typographies et univers visuel pour rendre votre marque immédiatement reconnaissable.</p>
-        <div class="service-arrow">→</div>
-      </div>
-      <div class="service-card reveal delay-1">
-        <div class="service-icon"><i class="fas fa-photo-film" aria-hidden="true"></i></div>
-        <div class="service-num">06</div>
-        <h3>Contenu photo & vidéo</h3>
-        <p>Mise en valeur de vos services, lieux, produits et témoignages avec des contenus visuels pensés pour le web et les réseaux sociaux.</p>
-        <div class="service-arrow">→</div>
-      </div>
-      <div class="service-card reveal delay-2">
-        <div class="service-icon"><i class="fas fa-chart-line" aria-hidden="true"></i></div>
-        <div class="service-num">07</div>
-        <h3>Analytics & performance</h3>
-        <p>Suivi des visites, conversions, sources de trafic et indicateurs clés pour piloter vos actions avec des données claires.</p>
-        <div class="service-arrow">→</div>
-      </div>
-      <div class="service-card reveal delay-3">
-        <div class="service-icon"><i class="fas fa-shield-halved" aria-hidden="true"></i></div>
-        <div class="service-num">08</div>
-        <h3>Maintenance & sécurité</h3>
-        <p>Surveillance, corrections, mises à jour, sauvegardes et accompagnement pour garder votre présence web fiable et durable.</p>
-        <div class="service-arrow">→</div>
-      </div>
-      <div class="service-card reveal">
-        <div class="service-icon"><i class="fas fa-robot" aria-hidden="true"></i></div>
-        <div class="service-num">09</div>
-        <h3>Automatisation IA</h3>
-        <p>Formulaires intelligents, réponses rapides, génération de contenus et outils connectés pour gagner du temps au quotidien.</p>
-        <div class="service-arrow">→</div>
-      </div>
-    </div>
-  </div>
-</section>
+
+
 
 <!-- GALLERY -->
 <section id="gallery">
@@ -1262,90 +1182,6 @@ html.light .float-cta {
   </div>
 </section>
 
-<!-- TESTIMONIALS -->
-<section id="testimonials">
-  <div class="container">
-    <p class="section-label reveal">Ce qu'ils disent</p>
-    <h2 class="section-title reveal delay-1">AVIS <span>CLIENTS</span></h2>
-    <div class="testimonials-wrap">
-      <div class="testi-left reveal-left">
-        <div class="testi-score">
-          <strong>4.9</strong><span>/ 5</span>
-        </div>
-        <div class="stars"><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i></div>
-        <p class="testi-count">Basé sur 486 avis vérifiés</p>
-        <div class="testi-platforms">
-          <div class="platform-badge"><i class="fas fa-globe-americas" aria-hidden="true"></i> TripAdvisor <strong style="color:var(--gold)">5★</strong></div>
-          <div class="platform-badge"><i class="fab fa-facebook-f" aria-hidden="true"></i> Facebook <strong style="color:var(--gold)">4.9</strong></div>
-          <div class="platform-badge"><i class="fab fa-google" aria-hidden="true"></i> Google <strong style="color:var(--gold)">4.8</strong></div>
-        </div>
-      </div>
-      <div class="testi-right reveal-right">
-        <div class="swiper testi-swiper">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <div class="testi-card">
-                <div class="testi-stars"><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i></div>
-                <div class="testi-quote">"</div>
-                <p class="testi-text">Notre nouveau site web donne enfin une image professionnelle à notre entreprise. Les pages sont rapides, claires et les demandes de devis ont augmenté dès les premières semaines.</p>
-                <div class="testi-author">
-                  <img class="testi-avatar" src="https://i.pravatar.cc/100?img=25" alt="Sophie">
-                  <div>
-                    <div class="testi-name">Sophie Martin</div>
-                    <div class="testi-dest">Création site web — Entreprise locale</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="swiper-slide">
-              <div class="testi-card">
-                <div class="testi-stars"><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i></div>
-                <div class="testi-quote">"</div>
-                <p class="testi-text">Le travail SEO a vraiment fait la différence. Nous sommes mieux positionnés sur Google et les visiteurs restent plus longtemps sur nos pages. Une équipe proactive et très claire.</p>
-                <div class="testi-author">
-                  <img class="testi-avatar" src="https://i.pravatar.cc/100?img=12" alt="Karim">
-                  <div>
-                    <div class="testi-name">Karim Benali</div>
-                    <div class="testi-dest">SEO & optimisation — Services professionnels</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="swiper-slide">
-              <div class="testi-card">
-                <div class="testi-stars"><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i></div>
-                <div class="testi-quote">"</div>
-                <p class="testi-text">Nous avions besoin d'une stratégie marketing simple à suivre. Les campagnes proposées ont généré plus de contacts qualifiés et notre présence sur les réseaux est beaucoup plus solide.</p>
-                <div class="testi-author">
-                  <img class="testi-avatar" src="https://i.pravatar.cc/100?img=48" alt="Layla">
-                  <div>
-                    <div class="testi-name">Layla Kaddouri</div>
-                    <div class="testi-dest">Marketing digital — Commerce touristique</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="swiper-slide">
-              <div class="testi-card">
-                <div class="testi-stars"><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i></div>
-                <div class="testi-quote">"</div>
-                <p class="testi-text">La boutique en ligne est facile à gérer et nos produits sont mieux présentés. Le parcours client est fluide, les boutons de contact sont visibles et les ventes ont progressé.</p>
-                <div class="testi-author">
-                  <img class="testi-avatar" src="https://i.pravatar.cc/100?img=36" alt="Pierre">
-                  <div>
-                    <div class="testi-name">Pierre Dubois</div>
-                    <div class="testi-dest">Boutique en ligne — Produits locaux</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="swiper-pagination" style="bottom: -40px;"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- SOCIAL FEED -->
 <section id="social">

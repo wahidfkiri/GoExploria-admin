@@ -5,6 +5,14 @@
         ?: $etablissement->getSetting('site_description', null, 'general')
         ?: get_site_description($etablissement->id)
         ?: 'Location de voitures, SUV, utilitaires et vehicules premium avec reservation rapide.';
+    $heroPrimaryCtaText = $etablissement->getSetting('hero_cta_text', null, 'landing')
+        ?: $etablissement->getSetting('cta_text', null, 'general');
+    $heroPrimaryCtaUrl = $etablissement->getSetting('hero_cta_url', null, 'landing')
+        ?: $devisLink;
+    $heroSecondaryCtaText = $etablissement->getSetting('hero_secondary_cta_text', null, 'landing');
+    $heroSecondaryCtaUrl = $etablissement->getSetting('hero_secondary_cta_url', null, 'landing');
+    $heroEyebrow = $etablissement->getSetting('hero_eyebrow', null, 'landing')
+        ?: ($etablissement->other_activity_label ?? $siteName);
     $brandLogo = get_logo_url($etablissement->id) ?: ($brandLogoUrl ?? null);
     $initials = collect(explode(' ', $siteName))->filter()->take(2)->map(fn ($part) => mb_substr($part, 0, 1, 'UTF-8'))->implode('') ?: 'LV';
     $phone = $etablissement->getSetting('phone', null, 'company') ?: $etablissement->getSetting('phone', null, 'general') ?: $etablissement->getSetting('telephone', null, 'general') ?: ($etablissement->phone ?? null) ?: ($etablissement->telephone ?? null) ?: '+1 514 000 0000';
@@ -33,6 +41,23 @@
     $mapLat = (float) ($mapLatitude ?? $etablissement->latitude ?? 45.5017);
     $mapLng = (float) ($mapLongitude ?? $etablissement->longitude ?? -73.5673);
     $mapBbox = implode(',', [$mapLng - 0.02, $mapLat - 0.01, $mapLng + 0.02, $mapLat + 0.01]);
+
+    $youtubeIdFromUrl = static function ($value) {
+        $raw = trim((string) $value);
+        if ($raw === '') return null;
+        if (preg_match('/<iframe[^>]+src=["\']([^"\']+)["\']/i', $raw, $match)) {
+            $raw = trim((string) $match[1]);
+        }
+        $host = (string) parse_url($raw, PHP_URL_HOST);
+        $path = (string) parse_url($raw, PHP_URL_PATH);
+        if (str_contains($host, 'youtu.be')) return trim($path, '/');
+        if (str_contains($host, 'youtube.com')) {
+            parse_str((string) parse_url($raw, PHP_URL_QUERY), $query);
+            if (!empty($query['v'])) return (string) $query['v'];
+            if (preg_match('#/(embed|shorts)/([^/?]+)#', $path, $match)) return $match[2];
+        }
+        return null;
+    };
 
     $mediaUrl = static function ($path) {
         if (empty($path)) return null;
@@ -77,21 +102,66 @@
     $facebookGallery = $normalizeVehicleMedia($facebookGalleryMedia ?? [], $gallery);
     $pinterestGallery = $normalizeVehicleMedia($pinterestGalleryMedia ?? [], $gallery);
 
-    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($mediaUrl, $siteDescription) {
+    $fallbackYoutubeId = $youtubeIdFromUrl($socialLinks['youtube']['url'] ?? null) ?: 'MfAAJgCzOAs';
+    $vehicleMapQuery = collect();
+    try {
+        if (class_exists(\App\Models\MapPoint::class) && \Illuminate\Support\Facades\Schema::hasTable('map_points')) {
+            $vehicleMapQuery = \App\Models\MapPoint::with(['videos'])
+                ->active()
+                ->where('etablissement_id', $etablissement->id)
+                ->whereNotNull('latitude')
+                ->whereNotNull('longitude')
+                ->orderByDesc('is_featured')
+                ->latest('updated_at')
+                ->limit(80)
+                ->get();
+        }
+    } catch (\Throwable $e) {
+        $vehicleMapQuery = collect();
+    }
+
+    $vehicleMapPoints = $vehicleMapQuery->map(function ($point) use ($youtubeIdFromUrl, $fallbackYoutubeId) {
+        $video = optional($point->videos->first());
+        $youtubeId = $point->youtube_id ?: $video->youtube_id ?: $youtubeIdFromUrl($point->youtube_url ?: $video->youtube_url) ?: $fallbackYoutubeId;
+
+        return [
+            'title' => $point->title ?: 'Point de location',
+            'description' => \Illuminate\Support\Str::limit(strip_tags((string) $point->description), 140),
+            'category' => strtolower((string) ($point->category ?: 'vehicule')),
+            'lat' => (float) $point->latitude,
+            'lng' => (float) $point->longitude,
+            'address' => $point->adresse ?: trim(collect([$point->ville, $point->code_postal])->filter()->implode(' ')),
+            'video_embed' => 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&muted=1&playsinline=1&rel=0&modestbranding=1',
+        ];
+    })->values();
+
+    if ($vehicleMapPoints->isEmpty()) {
+        $vehicleMapPoints = collect([[
+            'title' => $siteName,
+            'description' => $siteDescription,
+            'category' => 'vehicule',
+            'lat' => $mapLat,
+            'lng' => $mapLng,
+            'address' => $address,
+            'video_embed' => 'https://www.youtube.com/embed/' . $fallbackYoutubeId . '?autoplay=1&mute=1&muted=1&playsinline=1&rel=0&modestbranding=1',
+        ]]);
+    }
+
+    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($mediaUrl, $siteName, $siteDescription, $heroPrimaryCtaText, $heroPrimaryCtaUrl) {
         $url = $mediaUrl(data_get($slider, 'image_url') ?: data_get($slider, 'thumbnail_url') ?: data_get($slider, 'url') ?: data_get($slider, 'image_path'));
         return [
             'url' => $url,
-            'title' => data_get($slider, 'title') ?: 'Prenez le volant',
+            'title' => data_get($slider, 'title') ?: $siteName,
             'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: $siteDescription,
-            'button_text' => data_get($slider, 'button_text') ?: 'Voir la flotte',
-            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: '#fleet',
+            'button_text' => data_get($slider, 'button_text') ?: $heroPrimaryCtaText,
+            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: $heroPrimaryCtaUrl,
         ];
     })->filter(fn ($slide) => !empty($slide['url']))->values();
     if ($heroSlides->isEmpty()) {
         $heroSlides = collect([
-            ['url' => $gallery[0]['thumbnail'], 'title' => 'Prenez le volant librement', 'subtitle' => $siteDescription, 'button_text' => 'Voir notre flotte', 'button_url' => '#fleet'],
-            ['url' => $gallery[1]['thumbnail'], 'title' => 'Roulez differemment', 'subtitle' => 'Des vehicules prets pour vos deplacements, vos voyages et vos evenements.', 'button_text' => 'Reserver maintenant', 'button_url' => '#contact'],
-            ['url' => $gallery[2]['thumbnail'], 'title' => 'Partez sans attendre', 'subtitle' => 'Demande simple, confirmation rapide et accompagnement personnalise.', 'button_text' => 'Demander un devis', 'button_url' => $devisLink],
+            ['url' => $gallery[0]['thumbnail'], 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
+            ['url' => $gallery[1]['thumbnail'], 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
+            ['url' => $gallery[2]['thumbnail'], 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
         ]);
     }
 
@@ -138,6 +208,14 @@
             ];
         })->values()
         : $fallbackVehicles;
+    $heroStats = collect($etablissement->getSetting('hero_stats', [], 'landing'))
+        ->map(fn ($stat) => [
+            'value' => data_get($stat, 'value') ?: data_get($stat, 'number'),
+            'label' => data_get($stat, 'label') ?: data_get($stat, 'title'),
+        ])
+        ->filter(fn ($stat) => !empty($stat['value']) && !empty($stat['label']))
+        ->take(3)
+        ->values();
 
     $reviewCards = collect($reviews ?? [])->take(6)->map(function ($review) {
         return [
@@ -319,13 +397,19 @@
                             <div class="h-img" style="background-image:url('{{ $slide['url'] }}')"></div>
                             <div class="h-overlay"></div>
                             <div class="h-content">
-                                <div class="eyebrow">Location vehicule</div>
+                                <div class="eyebrow">{{ $heroEyebrow }}</div>
                                 <h1 class="h-title">{{ $first }}<br><span class="acc">{{ $second }}</span><br><span class="stroke">{{ \Illuminate\Support\Str::limit($siteName, 14, '') }}</span></h1>
                                 <p class="h-sub">{{ $slide['subtitle'] }}</p>
-                                <div class="h-actions">
-                                    <a class="btn-y" href="{{ $slide['button_url'] }}">{{ $slide['button_text'] }}</a>
-                                    <a class="btn-ghost" href="#contact">Reserver maintenant</a>
-                                </div>
+                                @if((!empty($slide['button_text']) && !empty($slide['button_url'])) || (!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl)))
+                                    <div class="h-actions">
+                                        @if(!empty($slide['button_text']) && !empty($slide['button_url']))
+                                            <a class="btn-y" href="{{ $slide['button_url'] }}">{{ $slide['button_text'] }}</a>
+                                        @endif
+                                        @if(!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl))
+                                            <a class="btn-ghost" href="{{ $heroSecondaryCtaUrl }}">{{ $heroSecondaryCtaText }}</a>
+                                        @endif
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -333,11 +417,13 @@
             </div>
             <div class="swiper-pagination"></div>
         </div>
-        <div class="h-kpis">
-            <div class="h-kpi"><div class="h-kpi-n">{{ $vehicleCards->count() }}+</div><div class="h-kpi-l">Vehicules</div></div>
-            <div class="h-kpi"><div class="h-kpi-n">98%</div><div class="h-kpi-l">Satisfaction</div></div>
-            <div class="h-kpi"><div class="h-kpi-n">24/7</div><div class="h-kpi-l">Assistance</div></div>
-        </div>
+        @if($heroStats->isNotEmpty())
+            <div class="h-kpis">
+                @foreach($heroStats as $stat)
+                    <div class="h-kpi"><div class="h-kpi-n">{{ $stat['value'] }}</div><div class="h-kpi-l">{{ $stat['label'] }}</div></div>
+                @endforeach
+            </div>
+        @endif
     </section>
 
     @if(collect($cmsPageSections ?? [])->isNotEmpty())

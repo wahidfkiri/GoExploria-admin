@@ -10,6 +10,14 @@
     $siteDescription = $etablissement->getSetting('site_description', null, 'general')
         ?: get_site_description($etablissement->id)
         ?: 'Landing activité Immobilier & Construction.';
+    $heroPrimaryCtaText = $etablissement->getSetting('hero_cta_text', null, 'landing')
+        ?: $etablissement->getSetting('cta_text', null, 'general');
+    $heroPrimaryCtaUrl = $etablissement->getSetting('hero_cta_url', null, 'landing')
+        ?: ($devisUrl ?? route('devis'));
+    $heroSecondaryCtaText = $etablissement->getSetting('hero_secondary_cta_text', null, 'landing');
+    $heroSecondaryCtaUrl = $etablissement->getSetting('hero_secondary_cta_url', null, 'landing');
+    $heroEyebrow = $etablissement->getSetting('hero_eyebrow', null, 'landing')
+        ?: ($etablissement->other_activity_label ?? $siteNameDisplay);
 
     $logoUrl = get_logo_url($etablissement->id);
     $hasWideLogo = !empty(trim((string) $logoUrl));
@@ -57,10 +65,10 @@
             'type' => 'image',
             'media_url' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DSC06735-HDR.jpg',
             'thumb' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DSC06735-HDR.jpg',
-            'title' => 'Maisons & Chalets en Bois Rond',
-            'subtitle' => 'Chaque réalisation est l\'expression d\'une passion pour le bois massif et d\'un engagement constant envers l\'excellence artisanale.',
-            'button_text' => 'Découvrir nos modèles',
-            'button_url' => '#products',
+            'title' => $siteNameDisplay,
+            'subtitle' => $siteDescription,
+            'button_text' => $heroPrimaryCtaText,
+            'button_url' => $heroPrimaryCtaUrl,
             'video_type' => null,
             'video_embed_url' => null,
         ],
@@ -68,10 +76,10 @@
             'type' => 'image',
             'media_url' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DJI_0237.jpg',
             'thumb' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/DJI_0237.jpg',
-            'title' => 'Design Moderne, Âme Naturelle',
-            'subtitle' => 'La série Contemporaine allie lignes épurées et chaleur intemporelle du bois massif.',
-            'button_text' => 'Explorer la série',
-            'button_url' => '#products',
+            'title' => $siteNameDisplay,
+            'subtitle' => $siteDescription,
+            'button_text' => $heroPrimaryCtaText,
+            'button_url' => $heroPrimaryCtaUrl,
             'video_type' => null,
             'video_embed_url' => null,
         ],
@@ -79,10 +87,10 @@
             'type' => 'image',
             'media_url' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/SaveInsta.App_327015499_693241832530188_5777615420000727358_n.jpg',
             'thumb' => 'https://prestigeboisrond.ca/wp-content/uploads/2025/09/SaveInsta.App_327015499_693241832530188_5777615420000727358_n.jpg',
-            'title' => 'Charme Rustique, Design Épuré',
-            'subtitle' => 'Nos chalets scandinaves fusionnent l\'authenticité du bois rond avec l\'esthétique nordique.',
-            'button_text' => 'Galerie photos',
-            'button_url' => '#gallery',
+            'title' => $siteNameDisplay,
+            'subtitle' => $siteDescription,
+            'button_text' => $heroPrimaryCtaText,
+            'button_url' => $heroPrimaryCtaUrl,
             'video_type' => null,
             'video_embed_url' => null,
         ],
@@ -124,7 +132,7 @@
 
     $cmsSliderItems = collect(get_slider_items($etablissement->id ?? null))
         ->filter(fn ($item) => (bool) data_get($item, 'is_active', true))
-        ->map(function ($item, $index) use ($devisLink, $toVideoMeta) {
+        ->map(function ($item, $index) use ($toVideoMeta, $siteNameDisplay, $siteDescription, $heroPrimaryCtaText, $heroPrimaryCtaUrl) {
             $type = strtolower((string) data_get($item, 'type', 'image')) === 'video' ? 'video' : 'image';
             $rawUrl = trim((string) data_get($item, 'url', ''));
             [$videoType, $videoEmbed] = $toVideoMeta($rawUrl);
@@ -136,10 +144,10 @@
                 'thumb' => $type === 'video' && $videoType === 'youtube' && preg_match('/embed\/([A-Za-z0-9_-]{11})/i', (string) $videoEmbed, $m)
                     ? 'https://i.ytimg.com/vi/' . $m[1] . '/hqdefault.jpg'
                     : $rawUrl,
-                'title' => data_get($item, 'title') ?: ('Slide ' . ($index + 1)),
-                'subtitle' => data_get($item, 'subtitle') ?: 'Valorisez votre établissement avec une page moderne et performante.',
-                'button_text' => data_get($item, 'button_text') ?: 'En savoir plus',
-                'button_url' => data_get($item, 'button_link') ?: $devisLink,
+                'title' => data_get($item, 'title') ?: $siteNameDisplay,
+                'subtitle' => data_get($item, 'subtitle') ?: $siteDescription,
+                'button_text' => data_get($item, 'button_text') ?: $heroPrimaryCtaText,
+                'button_url' => data_get($item, 'button_link') ?: $heroPrimaryCtaUrl,
                 'video_type' => $type === 'video' ? $videoType : null,
                 'video_embed_url' => $type === 'video' ? $videoEmbed : null,
                 'order' => (int) data_get($item, 'order', $index + 1),
@@ -150,7 +158,7 @@
         ->values();
 
     $heroSlides = ($cmsSliderItems->isNotEmpty() ? $cmsSliderItems : collect($sliders ?? []))
-        ->map(function ($slide) use ($devisLink, $toVideoMeta) {
+        ->map(function ($slide) use ($toVideoMeta, $siteNameDisplay, $siteDescription, $heroPrimaryCtaText, $heroPrimaryCtaUrl) {
             $type = strtolower((string) data_get($slide, 'type', 'image')) === 'video' ? 'video' : 'image';
 
             if ($type === 'video') {
@@ -167,10 +175,10 @@
                 'type' => $type,
                 'media_url' => $mediaUrl,
                 'thumb' => data_get($slide, 'thumbnail_url') ?: data_get($slide, 'thumbnail_path') ?: data_get($slide, 'image_url') ?: data_get($slide, 'image_path') ?: $mediaUrl,
-                'title' => data_get($slide, 'name') ?: data_get($slide, 'title') ?: 'Immobilier & Construction',
-                'subtitle' => data_get($slide, 'description') ?: data_get($slide, 'subtitle') ?: 'Valorisez votre établissement avec une page moderne et performante.',
-                'button_text' => data_get($slide, 'button_text') ?: 'En savoir plus',
-                'button_url' => data_get($slide, 'button_url') ?: data_get($slide, 'button_link') ?: $devisLink,
+                'title' => data_get($slide, 'name') ?: data_get($slide, 'title') ?: $siteNameDisplay,
+                'subtitle' => data_get($slide, 'description') ?: data_get($slide, 'subtitle') ?: $siteDescription,
+                'button_text' => data_get($slide, 'button_text') ?: $heroPrimaryCtaText,
+                'button_url' => data_get($slide, 'button_url') ?: data_get($slide, 'button_link') ?: $heroPrimaryCtaUrl,
                 'video_type' => $videoType,
                 'video_embed_url' => $videoEmbed,
                 'order' => (int) data_get($slide, 'order', 0),
@@ -233,6 +241,16 @@
             $socialImages[$platform] = $socialFallback->pluck('thumbnail')->values();
         }
     }
+    $heroStats = collect($etablissement->getSetting('hero_stats', [], 'landing'))
+        ->map(function ($stat) {
+            return [
+                'value' => data_get($stat, 'value') ?: data_get($stat, 'number'),
+                'label' => data_get($stat, 'label') ?: data_get($stat, 'title'),
+            ];
+        })
+        ->filter(fn ($stat) => !empty($stat['value']) && !empty($stat['label']))
+        ->take(3)
+        ->values();
 @endphp
 
 <!DOCTYPE html>
@@ -896,12 +914,16 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
             @endif
           </div>
           <div class="hero-content">
-            <div class="hero-eyebrow">Immobilier & Construction</div>
+            <div class="hero-eyebrow">{{ $heroEyebrow }}</div>
             <h1>{{ $slide['title'] }}</h1>
             <p>{{ $slide['subtitle'] }}</p>
             <div class="hero-btns">
-              <a href="{{ $slide['button_url'] }}" class="btn-primary" target="_blank" rel="noopener noreferrer">{{ $slide['button_text'] }}</a>
-              <a href="#gallery" class="btn-ghost">Voir nos réalisations</a>
+              @if(!empty($slide['button_text']) && !empty($slide['button_url']))
+                <a href="{{ $slide['button_url'] }}" class="btn-primary" target="_blank" rel="noopener noreferrer">{{ $slide['button_text'] }}</a>
+              @endif
+              @if(!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl))
+                <a href="{{ $heroSecondaryCtaUrl }}" class="btn-ghost">{{ $heroSecondaryCtaText }}</a>
+              @endif
             </div>
           </div>
         </div>
@@ -909,11 +931,13 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
     </div>
     <div class="swiper-pagination" style="bottom:1.5rem;left:5%;width:auto;text-align:left;z-index:4;"></div>
 
-    <div class="hero-stats">
-      <div class="hero-stat"><span class="num">100+</span><span class="lbl">Réalisations</span></div>
-      <div class="hero-stat"><span class="num">25+</span><span class="lbl">Années</span></div>
-      <div class="hero-stat"><span class="num">100%</span><span class="lbl">Satisfaction</span></div>
-    </div>
+    @if($heroStats->isNotEmpty())
+      <div class="hero-stats">
+        @foreach($heroStats as $stat)
+          <div class="hero-stat"><span class="num">{{ $stat['value'] }}</span><span class="lbl">{{ $stat['label'] }}</span></div>
+        @endforeach
+      </div>
+    @endif
 
     <div class="hero-scroll"><i class="fa fa-chevron-down"></i><span>Défiler</span></div>
 

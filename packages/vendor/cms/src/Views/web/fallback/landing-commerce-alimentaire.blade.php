@@ -26,6 +26,15 @@
         ?: get_site_description($etablissement->id)
         ?: 'Commerce alimentaire local, produits frais, spécialités gourmandes et service de proximité.';
 
+    $heroPrimaryCtaText = $etablissement->getSetting('hero_cta_text', null, 'landing')
+        ?: $etablissement->getSetting('cta_text', null, 'general');
+    $heroPrimaryCtaUrl = $etablissement->getSetting('hero_cta_url', null, 'landing')
+        ?: $devisLink;
+    $heroSecondaryCtaText = $etablissement->getSetting('hero_secondary_cta_text', null, 'landing');
+    $heroSecondaryCtaUrl = $etablissement->getSetting('hero_secondary_cta_url', null, 'landing');
+    $heroEyebrow = $etablissement->getSetting('hero_eyebrow', null, 'landing')
+        ?: ($etablissement->other_activity_label ?? $siteName);
+
     $phone = $etablissement->getSetting('phone', null, 'company')
         ?: $etablissement->getSetting('phone', null, 'general')
         ?: $etablissement->getSetting('telephone', null, 'general')
@@ -98,7 +107,7 @@
         $gallery = $gallery->values();
     }
 
-    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($devisLink) {
+    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($siteName, $siteDescription, $heroPrimaryCtaText, $heroPrimaryCtaUrl) {
         $type = data_get($slider, 'type', 'image');
         $url = data_get($slider, 'image_url')
             ?: data_get($slider, 'thumbnail_url')
@@ -109,10 +118,10 @@
             'type' => $type,
             'url' => $url,
             'embed' => data_get($slider, 'video_embed_url'),
-            'title' => data_get($slider, 'title') ?: data_get($slider, 'name') ?: 'Marché alimentaire & terroir',
-            'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: 'Produits frais, arrivages sélectionnés et expériences gourmandes locales.',
-            'button_text' => data_get($slider, 'button_text') ?: 'Demander un devis',
-            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: $devisLink,
+            'title' => data_get($slider, 'title') ?: data_get($slider, 'name') ?: $siteName,
+            'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: $siteDescription,
+            'button_text' => data_get($slider, 'button_text') ?: $heroPrimaryCtaText,
+            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: $heroPrimaryCtaUrl,
         ];
     })->filter(fn ($slide) => !empty($slide['url']) || !empty($slide['embed']))->values();
 
@@ -121,26 +130,26 @@
             [
                 'type' => 'image',
                 'url' => 'https://images.pexels.com/photos/3296434/pexels-photo-3296434.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
-                'title' => 'Votre marché gourmand de proximité',
-                'subtitle' => 'Produits frais, comptoirs spécialisés, découvertes locales et service attentionné.',
-                'button_text' => 'Voir les produits',
-                'button_url' => '#produits',
+                'title' => $siteName,
+                'subtitle' => $siteDescription,
+                'button_text' => $heroPrimaryCtaText,
+                'button_url' => $heroPrimaryCtaUrl,
             ],
             [
                 'type' => 'image',
                 'url' => 'https://images.pexels.com/photos/566345/pexels-photo-566345.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
-                'title' => 'Arrivages frais chaque semaine',
-                'subtitle' => 'Poissonnerie, épicerie fine, plats prêts-à-manger et spécialités de saison.',
-                'button_text' => 'Nos spécialités',
-                'button_url' => '#specialites',
+                'title' => $siteName,
+                'subtitle' => $siteDescription,
+                'button_text' => $heroPrimaryCtaText,
+                'button_url' => $heroPrimaryCtaUrl,
             ],
             [
                 'type' => 'image',
                 'url' => 'https://images.pexels.com/photos/3655916/pexels-photo-3655916.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
-                'title' => 'Saveurs locales, présentation premium',
-                'subtitle' => 'Une vitrine moderne pour vendre, inspirer et convertir vos visiteurs.',
-                'button_text' => 'Demander un devis',
-                'button_url' => $devisLink,
+                'title' => $siteName,
+                'subtitle' => $siteDescription,
+                'button_text' => $heroPrimaryCtaText,
+                'button_url' => $heroPrimaryCtaUrl,
             ],
         ]);
     }
@@ -1587,12 +1596,16 @@
                                     @endif
                                 </div>
                                 <div class="food-hero-content">
-                                    <span class="food-hero-badge">Commerce alimentaire · GoExploria</span>
+                                    <span class="food-hero-badge">{{ $heroEyebrow }}</span>
                                     <h2>{{ $slide['title'] }}</h2>
                                     <p>{{ $slide['subtitle'] }}</p>
                                     <div class="food-hero-actions">
-                                        <a class="food-btn food-btn-primary" href="{{ $slide['button_url'] }}" target="_blank" rel="noopener">{{ $slide['button_text'] }}</a>
-                                        <a class="food-btn food-btn-light" href="#produits">Explorer les produits</a>
+                                        @if(!empty($slide['button_text']) && !empty($slide['button_url']))
+                                            <a class="food-btn food-btn-primary" href="{{ $slide['button_url'] }}" target="_blank" rel="noopener">{{ $slide['button_text'] }}</a>
+                                        @endif
+                                        @if(!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl))
+                                            <a class="food-btn food-btn-light" href="{{ $heroSecondaryCtaUrl }}">{{ $heroSecondaryCtaText }}</a>
+                                        @endif
                                     </div>
                                 </div>
                             </article>

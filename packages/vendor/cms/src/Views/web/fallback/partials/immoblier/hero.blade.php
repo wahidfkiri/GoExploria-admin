@@ -14,10 +14,16 @@
                     <div class="pc-slide-content">
                         <h1 class="pc-slide-title">{{ $slide['title'] }} <em>{{ $siteName }}</em></h1>
                         <p class="pc-slide-sub">{{ $slide['subtitle'] }}</p>
-                        <div style="display:flex;gap:12px;flex-wrap:wrap">
-                            <a class="pc-btn pc-btn-light" href="{{ $slide['button_url'] ?: '#contact' }}">{{ $slide['button_text'] ?: 'Planifier une visite' }} <i class="fa-solid fa-arrow-right"></i></a>
-                            <a class="pc-btn pc-btn-outline" href="#logements">Voir les logements</a>
-                        </div>
+                        @if((!empty($slide['button_text']) && !empty($slide['button_url'])) || (!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl)))
+                            <div style="display:flex;gap:12px;flex-wrap:wrap">
+                                @if(!empty($slide['button_text']) && !empty($slide['button_url']))
+                                    <a class="pc-btn pc-btn-light" href="{{ $slide['button_url'] }}">{{ $slide['button_text'] }} <i class="fa-solid fa-arrow-right"></i></a>
+                                @endif
+                                @if(!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl))
+                                    <a class="pc-btn pc-btn-outline" href="{{ $heroSecondaryCtaUrl }}">{{ $heroSecondaryCtaText }}</a>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </div>
             @endforeach
