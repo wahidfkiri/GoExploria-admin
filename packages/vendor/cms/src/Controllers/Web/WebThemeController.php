@@ -607,6 +607,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
 
         $landingMedia = $this->getLandingMediaGroups();
         $galleryMedia = $landingMedia['main']->isNotEmpty() ? $landingMedia['main'] : $landingMedia['all'];
+        $slideshowMediaGroups = $this->buildLandingSlideshowGroups($landingMedia['all']);
         $blogPosts = $this->getLandingBlogPosts();
         $cmsPageSections = $this->getLandingCmsPageSections();
 
@@ -686,6 +687,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'facebookGalleryMedia' => $landingMedia['facebook'],
             'instagramGalleryMedia' => $landingMedia['instagram'],
             'pinterestGalleryMedia' => $landingMedia['pinterest'],
+            'slideshowMediaGroups' => $slideshowMediaGroups,
             'brandLogoUrl' => get_logo_url($this->etablissement->id),
             'plans' => $plans,
             'ads' => $ads,
@@ -1045,6 +1047,48 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 'pinterest' => collect(),
             ];
         }
+    }
+
+    protected function buildLandingSlideshowGroups(Collection $mediaItems): Collection
+    {
+        $items = $mediaItems
+            ->map(function ($item) {
+                $url = trim((string) data_get($item, 'url'));
+                $thumbnail = trim((string) (data_get($item, 'thumbnail') ?: $url));
+
+                if ($url === '' || $thumbnail === '') {
+                    return null;
+                }
+
+                $youtubeId = $this->extractYoutubeId($url);
+                $type = strtolower((string) data_get($item, 'type'));
+                $isVideo = $youtubeId
+                    || str_starts_with($type, 'video')
+                    || preg_match('/\.(mp4|webm|ogg)(\?.*)?$/i', $url);
+
+                return [
+                    'src' => $thumbnail,
+                    'video' => $isVideo ? ($youtubeId ?: $url) : null,
+                    'title' => data_get($item, 'title') ?: data_get($item, 'name') ?: 'Media',
+                    'desc' => data_get($item, 'description') ?: '',
+                    'badge' => null,
+                ];
+            })
+            ->filter()
+            ->values();
+
+        return $items
+            ->chunk(5)
+            ->map(function ($chunk) {
+                $chunk = $chunk->values();
+
+                return [
+                    'main' => $chunk->first(),
+                    'grid' => $chunk->slice(1, 4)->values()->all(),
+                ];
+            })
+            ->filter(fn ($group) => !empty($group['main']['src']))
+            ->values();
     }
 
     protected function extractYoutubeId(?string $url): ?string

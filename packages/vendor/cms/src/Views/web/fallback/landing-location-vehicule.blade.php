@@ -636,6 +636,8 @@
         <div class="map-card"><strong>{{ $siteName }}</strong><p>{{ $address }}</p><p>{{ $openingHoursText }}</p></div>
     </div>
 
+    @include('cms::web.fallback.partials.landing-media-slideshow')
+
             </div>
         </div>
     </main>

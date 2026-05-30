@@ -1443,6 +1443,8 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    @include('cms::web.fallback.partials.landing-media-slideshow')
+
     @include("cms::web.fallback.activities.$activityViewFolder.footer")
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

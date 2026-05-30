@@ -47,7 +47,7 @@ $businessCats = $businessType
                data-cat-href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
                onclick="catMegaSelect(event, this, 'tourisme')">
                 <span>{{ $cat->name }}</span>
-                <span class="cat-mega-cat-count">{{ $cat->activities->count() }}</span>
+               
             </a>
         @empty
             <div class="cat-mega-empty">{{ $tr('Aucune catégorie active') }}</div>
@@ -95,7 +95,6 @@ $businessCats = $businessType
                data-cat-href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
                onclick="catMegaSelect(event, this, 'business')">
                 <span>{{ $cat->name }}</span>
-                <span class="cat-mega-cat-count">{{ $cat->activities->count() }}</span>
             </a>
         @empty
             <div class="cat-mega-empty">{{ $tr('Aucune catégorie active') }}</div>

@@ -233,6 +233,7 @@
         @include('cms::web.fallback.partials.immoblier.social')
         @include('cms::web.fallback.partials.immoblier.contact')
         @include('cms::web.fallback.partials.immoblier.map-cta')
+        @include('cms::web.fallback.partials.landing-media-slideshow')
         @include('cms::web.fallback.partials.immoblier.footer')
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>

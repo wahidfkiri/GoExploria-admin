@@ -1738,6 +1738,8 @@
         </div>
     </main>
 
+    @include('cms::web.fallback.partials.landing-media-slideshow')
+
     @include("cms::web.fallback.activities.$activityViewFolder.footer")
 
     <button type="button" class="food-backtop" id="foodBackTop" aria-label="Retour en haut"><i class="fa-solid fa-arrow-up"></i></button>

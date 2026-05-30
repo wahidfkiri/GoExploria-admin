@@ -1389,6 +1389,8 @@ html.light .float-cta {
   </div>
 </div>
 
+@include('cms::web.fallback.partials.landing-media-slideshow')
+
 <!-- FOOTER -->
 <footer>
   <div class="container">
@@ -2620,7 +2622,6 @@ function handleForm(e) {
 </script>
 </body>
 </html>
-
 
 
 

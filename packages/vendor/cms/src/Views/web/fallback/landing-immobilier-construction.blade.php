@@ -1319,6 +1319,8 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
   </div>
 </section>
 
+@include('cms::web.fallback.partials.landing-media-slideshow')
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-grid">
