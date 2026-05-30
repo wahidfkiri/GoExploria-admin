@@ -1151,8 +1151,6 @@ html.light .float-cta {
 </section>
 
 @if(collect($cmsPageSections ?? [])->isNotEmpty())
-<section class="next-cms-pages" id="cms-pages-content">
-  <div class="container">
     @foreach(collect($cmsPageSections) as $cmsPage)
       <article class="next-cms-page reveal" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
         <div class="next-cms-page-content">
@@ -1160,8 +1158,6 @@ html.light .float-cta {
         </div>
       </article>
     @endforeach
-  </div>
-</section>
 @endif
 
 
