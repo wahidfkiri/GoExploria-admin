@@ -329,13 +329,9 @@
     </section>
 
     @if(collect($cmsPageSections ?? [])->isNotEmpty())
-        <section class="cms-pages" id="cms-pages-content">
             @foreach(collect($cmsPageSections) as $cmsPage)
-                <article class="cms-card" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
-                    <div class="cms-content">{!! data_get($cmsPage, 'content') !!}</div>
-                </article>
+                  {!! data_get($cmsPage, 'content') !!}
             @endforeach
-        </section>
     @endif
 
 
