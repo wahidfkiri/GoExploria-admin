@@ -386,7 +386,7 @@
     </section>
     @endif
 
-    @if(false && $blogCards->isNotEmpty())
+    @if($blogCards->isNotEmpty())
         <section id="blog">
             <div class="container">
                 <div class="s-head"><div><div class="s-label">Blog</div><h2 class="s-title">Conseils<br><span class="acc">et actualites</span></h2></div></div>
@@ -400,7 +400,6 @@
         </section>
     @endif
 
-    @if(false)
     <section id="contact">
         <div class="container contact-layout">
             <div>
@@ -438,18 +437,14 @@
             </form>
         </div>
     </section>
-    @endif
-
-    @if(false)
+     
     <div class="map" id="map-sec">
         <iframe src="https://www.openstreetmap.org/export/embed.html?bbox={{ $mapBbox }}&layer=mapnik&marker={{ $mapLat }}%2C{{ $mapLng }}" loading="lazy"></iframe>
         <div class="map-card"><strong>{{ $siteName }}</strong><p>{{ $address }}</p><p>{{ $openingHoursText }}</p></div>
     </div>
-    @endif
 
-    @if(false)
         @include('cms::web.fallback.partials.landing-media-slideshow')
-    @endif
+    
 
             </div>
         </div>
