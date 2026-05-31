@@ -1824,6 +1824,8 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             $keywords = trim((string) ($this->etablissement->getSetting('seo_keywords', null, 'seo') ?? ''));
         }
 
+        $slogan = trim((string) ($this->etablissement->getSetting('slogan', null, 'general') ?? ''));
+
         $canonical = trim((string) ($meta['canonical_url'] ?? ''));
         if ($canonical === '') {
             $canonical = url()->current();
@@ -1845,6 +1847,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'title' => $title,
             'description' => $description,
             'keywords' => $keywords,
+            'slogan' => $slogan,
             'canonical' => $canonical,
             'image' => $image,
             'site_name' => $siteName,

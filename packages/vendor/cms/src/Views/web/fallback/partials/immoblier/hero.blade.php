@@ -12,7 +12,7 @@
                     @endif
                     <div class="pc-slide-overlay"></div>
                     <div class="pc-slide-content">
-                        <h1 class="pc-slide-title">{{ $slide['title'] }} <em>{{ $siteName }}</em></h1>
+                        <h1 class="pc-slide-title">{{ $slide['title'] }} <em>{{ $slogan }}</em></h1>
                         <p class="pc-slide-sub">{{ $slide['subtitle'] }}</p>
                         @if((!empty($slide['button_text']) && !empty($slide['button_url'])) || (!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl)))
                             <div style="display:flex;gap:12px;flex-wrap:wrap">
