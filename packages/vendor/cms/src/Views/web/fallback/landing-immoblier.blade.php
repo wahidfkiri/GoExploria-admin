@@ -217,17 +217,9 @@
         @include('cms::web.fallback.partials.immoblier.nav')
         @include('cms::web.fallback.partials.immoblier.hero')
         @if(collect($cmsPageSections ?? [])->isNotEmpty())
-            <section class="pc-cms-pages" id="cms-pages-content">
                 @foreach(collect($cmsPageSections) as $cmsPage)
-                    <article class="pc-section pc-cms-page" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
-                        <div class="pc-container">
-                            <div class="pc-cms-page-content">
                                 {!! data_get($cmsPage, 'content') !!}
-                            </div>
-                        </div>
-                    </article>
                 @endforeach
-            </section>
         @endif
         @include('cms::web.fallback.partials.immoblier.gallery')
         @include('cms::web.fallback.partials.immoblier.amenities')
