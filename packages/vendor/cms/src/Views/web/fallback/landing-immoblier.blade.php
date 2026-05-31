@@ -11,6 +11,7 @@
         ?: $devisLink;
     $heroSecondaryCtaText = $etablissement->getSetting('hero_secondary_cta_text', null, 'landing');
     $heroSecondaryCtaUrl = $etablissement->getSetting('hero_secondary_cta_url', null, 'landing');
+    $slogan = trim((string) $etablissement->getSetting('slogan', null, 'general')) ?: '';
     $brandLogo = get_logo_url($etablissement->id) ?: ($brandLogoUrl ?? null);
     $phone = $etablissement->getSetting('phone', null, 'company') ?: $etablissement->getSetting('phone', null, 'general') ?: $etablissement->getSetting('telephone', null, 'general') ?: ($etablissement->phone ?? null) ?: ($etablissement->telephone ?? null) ?: '(418) 525-7748';
     $phoneDial = preg_replace('/\D+/', '', $phone);
