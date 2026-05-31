@@ -5,14 +5,6 @@
         ?: $etablissement->getSetting('site_description', null, 'general')
         ?: get_site_description($etablissement->id)
         ?: 'Location de voitures, SUV, utilitaires et vehicules premium avec reservation rapide.';
-    $heroPrimaryCtaText = $etablissement->getSetting('hero_cta_text', null, 'landing')
-        ?: $etablissement->getSetting('cta_text', null, 'general');
-    $heroPrimaryCtaUrl = $etablissement->getSetting('hero_cta_url', null, 'landing')
-        ?: $devisLink;
-    $heroSecondaryCtaText = $etablissement->getSetting('hero_secondary_cta_text', null, 'landing');
-    $heroSecondaryCtaUrl = $etablissement->getSetting('hero_secondary_cta_url', null, 'landing');
-    $heroEyebrow = $etablissement->getSetting('hero_eyebrow', null, 'landing')
-        ?: ($etablissement->other_activity_label ?? $siteName);
     $brandLogo = get_logo_url($etablissement->id) ?: ($brandLogoUrl ?? null);
     $initials = collect(explode(' ', $siteName))->filter()->take(2)->map(fn ($part) => mb_substr($part, 0, 1, 'UTF-8'))->implode('') ?: 'LV';
     $phone = $etablissement->getSetting('phone', null, 'company') ?: $etablissement->getSetting('phone', null, 'general') ?: $etablissement->getSetting('telephone', null, 'general') ?: ($etablissement->phone ?? null) ?: ($etablissement->telephone ?? null) ?: '+1 514 000 0000';
@@ -147,23 +139,36 @@
         ]]);
     }
 
-    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($mediaUrl, $siteName, $siteDescription, $heroPrimaryCtaText, $heroPrimaryCtaUrl) {
-        $url = $mediaUrl(data_get($slider, 'image_url') ?: data_get($slider, 'thumbnail_url') ?: data_get($slider, 'url') ?: data_get($slider, 'image_path'));
+    $heroSlides = collect(get_slider_items($etablissement->id))->map(function ($slider) use ($mediaUrl, $youtubeIdFromUrl) {
+        $type = strtolower((string) (data_get($slider, 'type') ?: 'image'));
+        $rawUrl = data_get($slider, 'url');
+        $media = $mediaUrl($rawUrl);
+        $poster = $mediaUrl(data_get($slider, 'poster_url'));
+        $iframe = null;
+
+        if (preg_match('/<iframe[^>]+src=["\']([^"\']+)["\']/i', (string) data_get($slider, 'video_html'), $match)) {
+            $iframe = trim((string) $match[1]);
+        }
+
+        $youtubeId = $youtubeIdFromUrl($media);
+        if (!$poster && $youtubeId) {
+            $poster = 'https://i.ytimg.com/vi/' . $youtubeId . '/hqdefault.jpg';
+        }
+
+        $embed = $iframe ?: ($youtubeId ? 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&muted=1&loop=1&playlist=' . $youtubeId . '&controls=0&rel=0&modestbranding=1&playsinline=1' : null);
+
         return [
-            'url' => $url,
-            'title' => data_get($slider, 'title') ?: $siteName,
-            'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: $siteDescription,
-            'button_text' => data_get($slider, 'button_text') ?: $heroPrimaryCtaText,
-            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: $heroPrimaryCtaUrl,
+            'type' => $type,
+            'url' => $type === 'image' ? $media : ($poster ?: $media),
+            'media_url' => $media,
+            'embed' => $embed,
+            'title' => data_get($slider, 'title'),
+            'subtitle' => data_get($slider, 'subtitle'),
+            'button_text' => data_get($slider, 'button_text'),
+            'button_url' => data_get($slider, 'button_link'),
+            'order' => (int) data_get($slider, 'order', 0),
         ];
-    })->filter(fn ($slide) => !empty($slide['url']))->values();
-    if ($heroSlides->isEmpty()) {
-        $heroSlides = collect([
-            ['url' => $gallery[0]['thumbnail'], 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
-            ['url' => $gallery[1]['thumbnail'], 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
-            ['url' => $gallery[2]['thumbnail'], 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
-        ]);
-    }
+    })->filter(fn ($slide) => !empty($slide['url']) || !empty($slide['embed']))->sortBy('order')->values();
 
     $cmsLandingProducts = collect();
     try {
@@ -285,31 +290,36 @@
         <div class="lv-global-row row">
             <div class="lv-content">
 
+    @if($heroSlides->isNotEmpty())
     <section id="hero">
         <div class="swiper hero-swiper">
             <div class="swiper-wrapper">
                 @foreach($heroSlides as $slide)
                     @php
-                        $words = collect(explode(' ', $slide['title']))->filter()->values();
+                        $words = collect(explode(' ', (string) $slide['title']))->filter()->values();
                         $first = $words->take(max(1, (int) ceil($words->count() / 2)))->implode(' ');
-                        $second = $words->slice(max(1, (int) ceil($words->count() / 2)))->implode(' ') ?: 'Location';
+                        $second = $words->slice(max(1, (int) ceil($words->count() / 2)))->implode(' ');
                     @endphp
                     <div class="swiper-slide">
                         <div class="h-slide">
-                            <div class="h-img" style="background-image:url('{{ $slide['url'] }}')"></div>
+                            @if(!empty($slide['embed']))
+                                <iframe src="{{ $slide['embed'] }}" title="{{ $slide['title'] }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>
+                            @elseif(($slide['type'] ?? 'image') === 'video' && !empty($slide['media_url']))
+                                <video src="{{ $slide['media_url'] }}" autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
+                            @else
+                                <div class="h-img" style="background-image:url('{{ $slide['url'] }}')"></div>
+                            @endif
                             <div class="h-overlay"></div>
                             <div class="h-content">
-                                <div class="eyebrow">{{ $heroEyebrow }}</div>
-                                <h1 class="h-title">{{ $first }}<br><span class="acc">{{ $second }}</span><br><span class="stroke">{{ \Illuminate\Support\Str::limit($siteName, 14, '') }}</span></h1>
-                                <p class="h-sub">{{ $slide['subtitle'] }}</p>
-                                @if((!empty($slide['button_text']) && !empty($slide['button_url'])) || (!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl)))
+                                @if($words->isNotEmpty())
+                                    <h1 class="h-title">{{ $first }}@if($second !== '')<br><span class="acc">{{ $second }}</span>@endif</h1>
+                                @endif
+                                @if(!empty($slide['subtitle']))
+                                    <p class="h-sub">{{ $slide['subtitle'] }}</p>
+                                @endif
+                                @if(!empty($slide['button_text']) && !empty($slide['button_url']))
                                     <div class="h-actions">
-                                        @if(!empty($slide['button_text']) && !empty($slide['button_url']))
-                                            <a class="btn-y" href="{{ $slide['button_url'] }}">{{ $slide['button_text'] }}</a>
-                                        @endif
-                                        @if(!empty($heroSecondaryCtaText) && !empty($heroSecondaryCtaUrl))
-                                            <a class="btn-ghost" href="{{ $heroSecondaryCtaUrl }}">{{ $heroSecondaryCtaText }}</a>
-                                        @endif
+                                        <a class="btn-y" href="{{ $slide['button_url'] }}">{{ $slide['button_text'] }}</a>
                                     </div>
                                 @endif
                             </div>
@@ -319,14 +329,8 @@
             </div>
             <div class="swiper-pagination"></div>
         </div>
-        @if($heroStats->isNotEmpty())
-            <div class="h-kpis">
-                @foreach($heroStats as $stat)
-                    <div class="h-kpi"><div class="h-kpi-n">{{ $stat['value'] }}</div><div class="h-kpi-l">{{ $stat['label'] }}</div></div>
-                @endforeach
-            </div>
-        @endif
     </section>
+    @endif
 
     @if(collect($cmsPageSections ?? [])->isNotEmpty())
             @foreach(collect($cmsPageSections) as $cmsPage)
