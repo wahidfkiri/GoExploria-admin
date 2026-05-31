@@ -328,7 +328,7 @@
         @endif
     </section>
 
-    @if(false && collect($cmsPageSections ?? [])->isNotEmpty())
+    @if(collect($cmsPageSections ?? [])->isNotEmpty())
         <section class="cms-pages" id="cms-pages-content">
             @foreach(collect($cmsPageSections) as $cmsPage)
                 <article class="cms-card" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
