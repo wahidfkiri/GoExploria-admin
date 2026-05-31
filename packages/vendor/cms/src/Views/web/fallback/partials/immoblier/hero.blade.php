@@ -33,6 +33,5 @@
             <button class="pc-hero-btn pc-hero-prev" type="button" aria-label="Précédent"><i class="fa-solid fa-arrow-left"></i></button>
             <button class="pc-hero-btn pc-hero-next" type="button" aria-label="Suivant"><i class="fa-solid fa-arrow-right"></i></button>
         </div>
-        <div class="pc-scroll">Défiler<span></span></div>
     </div>
 </section>

@@ -181,16 +181,8 @@
     $formatPrice = static function ($value) {
         return $value === null || $value === '' ? 'Sur demande' : number_format((float) $value, 0, ',', ' ') . ' $';
     };
-    $fallbackVehicles = collect([
-        ['brand' => 'Tesla', 'name' => 'Model 3 Long Range', 'category' => 'electrique', 'badge' => 'Electrique', 'price' => '89 $', 'unit' => '/jour', 'image' => $gallery[3]['thumbnail'], 'specs' => ['580 km', 'Auto', '5 places', 'Premium']],
-        ['brand' => 'Porsche', 'name' => '911 Carrera S', 'category' => 'sport', 'badge' => 'Populaire', 'price' => '320 $', 'unit' => '/jour', 'image' => $gallery[0]['thumbnail'], 'specs' => ['450 ch', 'Sport', '2+2', 'PDK']],
-        ['brand' => 'Land Rover', 'name' => 'Range Rover Sport', 'category' => 'suv', 'badge' => 'Premium', 'price' => '195 $', 'unit' => '/jour', 'image' => $gallery[4]['thumbnail'], 'specs' => ['4x4', 'SUV', '7 places', '700 L']],
-        ['brand' => 'Mercedes-Benz', 'name' => 'AMG GT 63 S', 'category' => 'prestige', 'badge' => 'Nouveau', 'price' => '480 $', 'unit' => '/jour', 'image' => $gallery[1]['thumbnail'], 'specs' => ['630 ch', 'Prestige', '4 places', 'Auto']],
-        ['brand' => 'Jeep', 'name' => 'Grand Cherokee 4xe', 'category' => 'suv', 'badge' => 'Hybride', 'price' => '140 $', 'unit' => '/jour', 'image' => $gallery[2]['thumbnail'], 'specs' => ['Hybride', '4x4', '5 places', '520 L']],
-        ['brand' => 'BMW', 'name' => 'Serie 5 Touring', 'category' => 'berline', 'badge' => 'Business', 'price' => '155 $', 'unit' => '/jour', 'image' => $gallery[5]['thumbnail'], 'specs' => ['306 ch', 'Berline', '5 places', '570 L']],
-    ]);
-    $vehicleCards = $cmsLandingProducts->isNotEmpty()
-        ? $cmsLandingProducts->map(function ($product, $index) use ($mediaUrl, $formatPrice, $gallery) {
+    $vehicleCards = $cmsLandingProducts
+        ->map(function ($product, $index) use ($mediaUrl, $formatPrice, $gallery) {
             $galleryImage = is_array($product->gallery_images ?? null) ? data_get($product->gallery_images, 0) : null;
             $image = $mediaUrl($product->main_image ?: $galleryImage) ?: ($gallery[$index % max(1, $gallery->count())]['thumbnail'] ?? null);
             $category = optional($product->category)->name ?: optional($product->family)->name ?: 'Vehicule';
@@ -206,8 +198,9 @@
                 'specs' => [$category, $product->stock_management === 'sur_commande' ? 'Sur commande' : 'En stock', 'Devis rapide', 'Assistance'],
                 'product_id' => $product->id,
             ];
-        })->values()
-        : $fallbackVehicles;
+        })
+        ->filter(fn ($vehicle) => !empty($vehicle['name']))
+        ->values();
     $heroStats = collect($etablissement->getSetting('hero_stats', [], 'landing'))
         ->map(fn ($stat) => [
             'value' => data_get($stat, 'value') ?: data_get($stat, 'number'),
@@ -281,107 +274,16 @@
         .map{height:420px;position:relative}.map iframe{width:100%;height:100%;border:0;filter:grayscale(.2)}[data-theme=dark] .map iframe{filter:invert(.9) hue-rotate(180deg) saturate(.6)}.map-card{position:absolute;left:28px;bottom:28px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--sh);max-width:320px}.footer{background:#060607;padding:70px 0 26px;color:white}.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:34px}.footer h4{font-family:'Barlow Condensed';font-size:22px;text-transform:uppercase;color:var(--y)}.footer a,.footer p{color:rgba(255,255,255,.68)}.footer ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}.footer-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:36px;padding-top:22px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.float-btn{position:fixed;right:24px;bottom:24px;z-index:99;width:58px;height:58px;border-radius:50%;background:var(--y);color:#0c0c0e;display:grid;place-items:center;box-shadow:var(--sh)}
         @media(max-width:1050px){body>nav#navbar .nav-links{display:none}body>nav#navbar .ham{display:block}.booking,.cars-grid,.why-grid,.pricing-grid,.blog-grid,.process-grid,.footer-grid,.about,.faq-layout,.contact-layout,.reviews-wrap{grid-template-columns:1fr}.booking{margin:0 20px}.h-kpis{left:24px;right:24px;bottom:24px}.gallery-grid{grid-template-columns:repeat(2,1fr)}}
         @media(max-width:620px){body>nav#navbar{padding:0 20px}body>nav#navbar .logo-text{font-size:22px}.h-content{left:24px;right:24px}.h-title{font-size:58px}.h-kpis{display:none}.s-head{display:block}.form-grid{grid-template-columns:1fr}.gallery-grid{grid-template-columns:1fr}.g-item:nth-child(n){grid-column:auto}.booking{grid-template-columns:1fr}}
-        body > .mob-menu, body > nav#navbar, body > footer.footer, body > .float-btn{display:none!important}.lv-global-wrap{max-width:1580px;margin:0 auto;padding:24px 16px 36px;margin-top:100px}.lv-global-row.row{display:grid;grid-template-columns:minmax(260px,3fr) minmax(0,9fr);gap:18px;align-items:start}.lv-global-row .col-3,.lv-global-row .col-9{width:auto;max-width:none;padding:0}.lv-sidebar{position:sticky;top:106px;display:grid;gap:14px}.lv-side-card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.12);overflow:hidden}.lv-side-head{padding:16px 16px 8px;border-bottom:1px solid var(--border)}.lv-side-title{margin:0;font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text)}.lv-side-sub{margin:6px 0 0;color:var(--text2);line-height:1.5;font-size:.9rem}.lv-side-body{padding:14px 16px 16px}.lv-side-line{display:flex;gap:9px;align-items:flex-start;color:var(--text2);font-size:.92rem;margin-bottom:9px}.lv-side-line i{color:var(--y);margin-top:3px}.lv-side-nav{display:grid;gap:8px}.lv-side-nav a{border:1px solid var(--border);border-radius:11px;padding:9px 11px;color:var(--text);font-weight:800;font-size:.88rem}.lv-side-nav a:hover{border-color:var(--y);color:var(--y)}.lv-content{display:grid;gap:16px}.lv-content>section,.lv-content>.map{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 22px rgba(0,0,0,.08);overflow:hidden}.lv-content section{padding:60px 0}.lv-content .container{max-width:none;padding:0 24px}.lv-content #hero{height:auto;min-height:640px;padding:0}.lv-content .booking{max-width:none;margin:0;grid-template-columns:1fr 1fr;box-shadow:none;border-radius:16px}.lv-content .cars-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lv-content .why-grid,.lv-content .process-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lv-content .pricing-grid,.lv-content .blog-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.lv-content .about,.lv-content .faq-layout,.lv-content .contact-layout,.lv-content .reviews-wrap{grid-template-columns:1fr}.lv-content .gallery-grid{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:1050px){.lv-global-row.row{grid-template-columns:1fr}.lv-sidebar{position:static}.lv-content .cars-grid,.lv-content .pricing-grid,.lv-content .blog-grid,.lv-content .gallery-grid{grid-template-columns:1fr}.lv-content .booking{grid-template-columns:1fr}}
+        body > .mob-menu, body > nav#navbar, body > footer.footer, body > .float-btn{display:none!important}.lv-global-wrap{max-width:1580px;margin:0 auto;padding:24px 16px 36px;margin-top:100px}.lv-global-row.row{display:grid;grid-template-columns:1fr;gap:18px;align-items:start}.lv-content{display:grid;gap:16px;width:100%;max-width:none;padding:0}.lv-content>section,.lv-content>.map{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 22px rgba(0,0,0,.08);overflow:hidden}.lv-content section{padding:60px 0}.lv-content .container{max-width:none;padding:0 24px}.lv-content #hero{height:auto;min-height:640px;padding:0}.lv-content .booking{max-width:none;margin:0;grid-template-columns:1fr 1fr;box-shadow:none;border-radius:16px}.lv-content .cars-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.lv-content .why-grid,.lv-content .process-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.lv-content .pricing-grid,.lv-content .blog-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.lv-content .about,.lv-content .faq-layout,.lv-content .contact-layout,.lv-content .reviews-wrap{grid-template-columns:1fr 1fr}.lv-content .gallery-grid{grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:1050px){.lv-content .cars-grid,.lv-content .why-grid,.lv-content .process-grid,.lv-content .pricing-grid,.lv-content .blog-grid,.lv-content .gallery-grid,.lv-content .about,.lv-content .faq-layout,.lv-content .contact-layout,.lv-content .reviews-wrap{grid-template-columns:1fr}.lv-content .booking{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
     @include('cms::web.fallback.activities.default.vertical-menu')
     @include('home-v2.components.Header')
 
-    <div class="mob-menu" id="mobMenu">
-        <button class="mob-close" onclick="closeMob()">x</button>
-        <a href="#fleet" onclick="closeMob()">Flotte</a>
-        <a href="#about" onclick="closeMob()">A propos</a>
-        <a href="#pricing" onclick="closeMob()">Tarifs</a>
-        <a href="#gallery" onclick="closeMob()">Galerie</a>
-        <a href="#blog" onclick="closeMob()">Blog</a>
-        <a href="#contact" onclick="closeMob()">Reserver</a>
-    </div>
-
-    <nav id="navbar">
-        <a href="#hero" class="logo">
-            <span class="logo-mark">@if($brandLogo)<img src="{{ $brandLogo }}" alt="{{ $siteName }}">@else{{ $initials }}@endif</span>
-            <span class="logo-text">{{ \Illuminate\Support\Str::limit($siteName, 18, '') }}<span>.</span></span>
-        </a>
-        <ul class="nav-links">
-            <li><a href="#fleet">Nos voitures</a></li>
-            <li><a href="#about">A propos</a></li>
-            <li><a href="#process">Etapes</a></li>
-            <li><a href="#pricing">Tarifs</a></li>
-            <li><a href="#gallery">Galerie</a></li>
-            <li><a href="#reviews">Avis</a></li>
-            <li><a href="#faq">FAQ</a></li>
-        </ul>
-        <div class="nav-right">
-            <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" aria-label="Changer le theme"></button>
-            <a class="nav-cta" href="#contact">Reserver</a>
-        </div>
-        <button class="ham" onclick="openMob()" aria-label="Menu"><span></span><span></span><span></span></button>
-    </nav>
-
     <main class="lv-global-wrap">
         <div class="lv-global-row row">
-            <aside class="lv-sidebar col-3">
-                <article class="lv-side-card">
-                    <div class="lv-side-head">
-                        <h2 class="lv-side-title">{{ $siteName }}</h2>
-                        <p class="lv-side-sub">Location de vehicules avec contenus CMS et fallbacks.</p>
-                    </div>
-                    <div class="lv-side-body">
-                        <div class="lv-side-line"><i class="fas fa-location-dot"></i><span>{{ $address }}</span></div>
-                        <div class="lv-side-line"><i class="fas fa-phone"></i><a href="tel:{{ $phoneDial }}">{{ $phone }}</a></div>
-                        <div class="lv-side-line"><i class="fas fa-envelope"></i><a href="mailto:{{ $email }}">{{ $email }}</a></div>
-                        <div class="lv-side-line"><i class="fas fa-car-side"></i><span>{{ $vehicleCards->count() }} vehicules affiches</span></div>
-                    </div>
-                </article>
-
-                <article class="lv-side-card">
-                    <div class="lv-side-head">
-                        <h3 class="lv-side-title">Navigation</h3>
-                    </div>
-                    <div class="lv-side-body">
-                        <nav class="lv-side-nav" aria-label="Sections location vehicule">
-                            <a href="#hero">Hero</a>
-                            <a href="#fleet">Flotte</a>
-                            <a href="#pricing">Tarifs</a>
-                            <a href="#gallery">Galerie</a>
-                            @if($blogCards->isNotEmpty())<a href="#blog">Blog</a>@endif
-                            <a href="#contact">Reservation</a>
-                        </nav>
-                    </div>
-                </article>
-
-                <article class="lv-side-card">
-                    <div class="lv-side-head">
-                        <h3 class="lv-side-title">Horaires</h3>
-                    </div>
-                    <div class="lv-side-body">
-                        <div class="hours">
-                            @foreach($workingHours as $row)
-                                <div class="hours-row"><span>{{ $row['day'] ?? '' }}</span><strong>{{ $row['hours'] ?? '' }}</strong></div>
-                            @endforeach
-                        </div>
-                    </div>
-                </article>
-
-                @if($visibleSocialLinks->isNotEmpty())
-                    <article class="lv-side-card">
-                        <div class="lv-side-head">
-                            <h3 class="lv-side-title">Reseaux sociaux</h3>
-                        </div>
-                        <div class="lv-side-body">
-                            <div class="social">
-                                @foreach($visibleSocialLinks as $social)
-                                    @php $key = data_get($social, 'key') ?: data_get($social, 'name'); $icon = $socialIcons[$key] ?? 'fa-solid fa-share-nodes'; @endphp
-                                    <a href="{{ data_get($social, 'url') }}" target="_blank" rel="noopener noreferrer" aria-label="{{ data_get($social, 'label') ?: $key }}"><i class="{{ $icon }}"></i></a>
-                                @endforeach
-                            </div>
-                        </div>
-                    </article>
-                @endif
-            </aside>
-
-            <div class="lv-content col-9">
+            <div class="lv-content">
 
     <section id="hero">
         <div class="swiper hero-swiper">
@@ -426,7 +328,7 @@
         @endif
     </section>
 
-    @if(collect($cmsPageSections ?? [])->isNotEmpty())
+    @if(false && collect($cmsPageSections ?? [])->isNotEmpty())
         <section class="cms-pages" id="cms-pages-content">
             @foreach(collect($cmsPageSections) as $cmsPage)
                 <article class="cms-card" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
@@ -436,32 +338,30 @@
         </section>
     @endif
 
-    <div class="booking">
-        <div class="bb-field"><div class="bb-label">Lieu de prise en charge</div><select><option>{{ $address }}</option><option>Livraison a domicile</option><option>Aeroport / Gare</option></select></div>
-        <div class="bb-field"><div class="bb-label">Date depart</div><input id="startDate" type="date"></div>
-        <div class="bb-field"><div class="bb-label">Date retour</div><input id="endDate" type="date"></div>
-        <div class="bb-field"><div class="bb-label">Categorie</div><select id="fleetSelect"><option value="all">Tous les vehicules</option>@foreach($vehicleCards->pluck('category')->unique()->filter() as $cat)<option value="{{ $cat }}">{{ \Illuminate\Support\Str::headline($cat) }}</option>@endforeach</select></div>
-        <button class="bb-submit" onclick="searchCars()">Rechercher</button>
-    </div>
 
+    @if($vehicleCards->isNotEmpty())
     <section id="fleet">
         <div class="container">
             <div class="s-head">
-                <div><div class="s-label">Notre flotte</div><h2 class="s-title">Vehicules<br><span class="acc">disponibles</span><br><span class="str">maintenant</span></h2></div>
-                <p class="s-sub">Les vehicules viennent des produits CMS si disponibles. Sinon, une flotte de fallback conserve le design complet.</p>
+                <div><div class="s-label">Nos vehicules a vendre</div><h2 class="s-title">Vehicules<br><span class="acc">disponibles</span></h2></div>
+                <p class="s-sub">Cette section affiche uniquement les produits ajoutes pour cet etablissement.</p>
             </div>
+            @if($vehicleCards->pluck('category')->unique()->filter()->count() > 1)
             <div class="tabs">
                 <button class="tab on" onclick="filterFleet(this,'all')">Tous</button>
                 @foreach($vehicleCards->pluck('category')->unique()->filter()->take(6) as $cat)
                     <button class="tab" onclick="filterFleet(this,'{{ $cat }}')">{{ \Illuminate\Support\Str::headline($cat) }}</button>
                 @endforeach
             </div>
+            @endif
             <div class="cars-grid" id="carsGrid">
                 @foreach($vehicleCards as $car)
                     @php $productLink = $devisLink . (str_contains($devisLink, '?') ? '&' : '?') . http_build_query(['etablissement_id' => $etablissement->id, 'product_id' => $car['product_id'] ?? null]); @endphp
                     <article class="car-card" data-category="{{ $car['category'] ?? 'all' }}">
                         <div class="car-img">
-                            <img src="{{ $car['image'] }}" alt="{{ $car['name'] }}">
+                            @if(!empty($car['image']))
+                                <img src="{{ $car['image'] }}" alt="{{ $car['name'] }}">
+                            @endif
                             <span class="badge">{{ $car['badge'] }}</span>
                             <button class="wish" type="button" onclick="toggleWish(this)">♡</button>
                         </div>
@@ -471,12 +371,12 @@
                             @if(!empty($car['description']))<p class="car-desc">{{ $car['description'] }}</p>@endif
                             <div class="specs">
                                 @foreach(array_slice($car['specs'] ?? [], 0, 4) as $spec)
-                                    <div class="spec"><strong>{{ $spec }}</strong>Inclus</div>
+                                    <div class="spec"><strong>{{ $spec }}</strong></div>
                                 @endforeach
                             </div>
                             <div class="car-foot">
                                 <div class="price">{{ $car['price'] }}<span>{{ $car['unit'] ?? '' }}</span></div>
-                                <a class="car-book" href="{{ $productLink }}">Reserver</a>
+                                <a class="car-book" href="{{ $productLink }}">Voir</a>
                             </div>
                         </div>
                     </article>
@@ -484,91 +384,9 @@
             </div>
         </div>
     </section>
+    @endif
 
-    <section id="why">
-        <div class="container">
-            <div class="s-head">
-                <div><div class="s-label">Pourquoi nous choisir</div><h2 class="s-title">Ce qui nous<br><span class="acc">distingue</span></h2></div>
-                <p class="s-sub">Une experience orientee confiance: vehicules propres, disponibilite claire, reservation rapide et accompagnement humain.</p>
-            </div>
-            <div class="why-grid">
-                @foreach([['fa-bolt','Reservation rapide','Demande en ligne avec rappel ou confirmation selon disponibilite.'],['fa-shield-halved','Service fiable','Controle, assistance et transparence sur les conditions de location.'],['fa-car-side','Flotte adaptee','Citadines, SUV, prestige, electrique ou utilitaire selon votre besoin.'],['fa-location-dot','Prise flexible','Agence, hotel, domicile, gare ou aeroport selon les options disponibles.']] as $i => $item)
-                    <article class="why-card"><div class="why-icon"><i class="fa-solid {{ $item[0] }}"></i></div><div class="why-num">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</div><h3 class="why-title">{{ $item[1] }}</h3><p class="why-desc">{{ $item[2] }}</p></article>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <section id="about">
-        <div class="container about">
-            <div class="about-img"><img src="{{ $gallery[6]['thumbnail'] }}" alt="{{ $siteName }}"></div>
-            <div>
-                <div class="s-label">Notre service</div>
-                <h2 class="s-title">Location<br>de vehicules<br><span class="acc">sur mesure</span></h2>
-                <p class="s-sub">{{ $siteDescription }}</p>
-                <p class="s-sub">Cette landing page alimente ses contenus depuis le CMS: medias, produits, pages, reseaux sociaux, horaires et articles de blog.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="process">
-        <div class="container">
-            <div class="s-head"><div><div class="s-label">Simple et rapide</div><h2 class="s-title">Roulez en<br><span class="acc">4 etapes</span></h2></div></div>
-            <div class="process-grid">
-                @foreach([['Choisissez','Comparez les vehicules et categories disponibles.'],['Demandez','Indiquez dates, lieu et besoins particuliers.'],['Confirmez','L equipe valide disponibilite et conditions.'],['Roulez','Recuperez le vehicule ou demandez une livraison.']] as $i => $step)
-                    <article class="proc-step"><div class="proc-circle">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</div><h3 class="proc-title">{{ $step[0] }}</h3><p class="proc-desc">{{ $step[1] }}</p></article>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <section id="pricing">
-        <div class="container">
-            <div class="s-head"><div><div class="s-label">Nos formules</div><h2 class="s-title">Tarifs<br><span class="acc">transparents</span></h2></div><p class="s-sub">Adaptez la formule a votre besoin. Les prix CMS s affichent dans la flotte quand ils existent.</p></div>
-            <div class="pricing-grid">
-                @foreach([['Essentiel','Deplacements quotidiens, prise en charge simple et options a la carte.','39'],['Premium','Kilometrage confortable, assistance prioritaire et options incluses.','89'],['Prestige','Vehicules luxe, service personnalise et experience haut de gamme.','299']] as $i => $plan)
-                    <article class="price-card {{ $i === 1 ? 'featured' : '' }}"><h3 class="price-plan">{{ $plan[0] }}</h3><div class="price-amount"><sup>$</sup>{{ $plan[2] }}</div><p class="price-desc">{{ $plan[1] }}</p><div class="price-feats"><span>✓ Demande de devis rapide</span><span>✓ Confirmation selon disponibilite</span><span>✓ Options personnalisables</span></div><a class="price-cta" href="#contact">Reserver</a></article>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <section id="gallery">
-        <div class="container">
-            <div class="s-head"><div><div class="s-label">Medias CMS</div><h2 class="s-title">La flotte<br><span class="acc">en images</span></h2></div></div>
-            <div class="tabs">
-                <button class="tab on" onclick="switchMedia(this,'main')">Galerie</button>
-                <button class="tab" onclick="switchMedia(this,'instagram')">Instagram</button>
-                <button class="tab" onclick="switchMedia(this,'facebook')">Facebook</button>
-                <button class="tab" onclick="switchMedia(this,'pinterest')">Pinterest</button>
-            </div>
-            @foreach(['main' => $gallery, 'instagram' => $instagramGallery, 'facebook' => $facebookGallery, 'pinterest' => $pinterestGallery] as $key => $items)
-                <div class="media-panel {{ $key === 'main' ? 'on' : '' }}" id="media-{{ $key }}">
-                    <div class="gallery-grid">
-                        @foreach(collect($items)->take(6) as $item)
-                            <a class="g-item" href="{{ $item['url'] ?? $item['thumbnail'] }}" target="_blank" rel="noopener noreferrer"><img src="{{ $item['thumbnail'] }}" alt="{{ $item['name'] ?? 'Media' }}"></a>
-                        @endforeach
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </section>
-
-    <section id="reviews">
-        <div class="container reviews-wrap">
-            <div><div class="s-label">Avis clients</div><h2 class="s-title">Ce qu ils<br><span class="acc">disent</span></h2><p class="s-sub">Retours clients et preuves de confiance.</p></div>
-            <div class="swiper rev-swiper">
-                <div class="swiper-wrapper">
-                    @foreach($reviewCards as $review)
-                        <div class="swiper-slide"><article class="review-card"><div class="stars">@for($i=0;$i<$review['rating'];$i++)★@endfor</div><p>{{ $review['text'] }}</p><div class="review-author">{{ $review['author'] }}<br><span style="color:var(--text2);font-weight:400">{{ $review['source'] }}</span></div></article></div>
-                    @endforeach
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-        </div>
-    </section>
-
-    @if($blogCards->isNotEmpty())
+    @if(false && $blogCards->isNotEmpty())
         <section id="blog">
             <div class="container">
                 <div class="s-head"><div><div class="s-label">Blog</div><h2 class="s-title">Conseils<br><span class="acc">et actualites</span></h2></div></div>
@@ -582,17 +400,7 @@
         </section>
     @endif
 
-    <section id="faq">
-        <div class="container faq-layout">
-            <div><div class="s-label">Questions frequentes</div><h2 class="s-title">FAQ<br><span class="acc">rapide</span></h2><p class="s-sub">Contactez-nous pour confirmer les conditions propres a votre reservation.</p></div>
-            <div class="faq-list">
-                @foreach([['Quel age minimum pour louer un vehicule ?','Les conditions varient selon le type de vehicule. Notre equipe confirme les criteres au moment de la demande.'],['Quels documents sont necessaires ?','Permis valide, piece d identite et moyen de paiement sont generalement requis.'],['Puis-je modifier ma reservation ?','Oui, selon disponibilite et conditions de l etablissement.'],['La livraison est-elle disponible ?','La livraison peut etre proposee selon la zone, les horaires et la formule choisie.']] as $i => $faq)
-                    <article class="faq-item {{ $i === 0 ? 'open' : '' }}"><div class="faq-q" onclick="toggleFaq(this)"><span>{{ $faq[0] }}</span><span>+</span></div><div class="faq-a"><p>{{ $faq[1] }}</p></div></article>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
+    @if(false)
     <section id="contact">
         <div class="container contact-layout">
             <div>
@@ -630,13 +438,18 @@
             </form>
         </div>
     </section>
+    @endif
 
+    @if(false)
     <div class="map" id="map-sec">
         <iframe src="https://www.openstreetmap.org/export/embed.html?bbox={{ $mapBbox }}&layer=mapnik&marker={{ $mapLat }}%2C{{ $mapLng }}" loading="lazy"></iframe>
         <div class="map-card"><strong>{{ $siteName }}</strong><p>{{ $address }}</p><p>{{ $openingHoursText }}</p></div>
     </div>
+    @endif
 
-    @include('cms::web.fallback.partials.landing-media-slideshow')
+    @if(false)
+        @include('cms::web.fallback.partials.landing-media-slideshow')
+    @endif
 
             </div>
         </div>
