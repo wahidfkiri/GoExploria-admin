@@ -214,7 +214,7 @@
 <body>
     @include('home-v2.components.Header')
     <main class="pc-page">
-        @include('cms::web.fallback.partials.immoblier.nav')
+        <!-- @include('cms::web.fallback.partials.immoblier.nav') -->
         @include('cms::web.fallback.partials.immoblier.hero')
         @if(collect($cmsPageSections ?? [])->isNotEmpty())
                 @foreach(collect($cmsPageSections) as $cmsPage)
