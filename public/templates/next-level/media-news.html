@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNAL — Médias & Actualités</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<style>
+:root{
+  --red:#D32F2F;--red2:#E53935;--red3:#FF5252;
+  --amber:#F59E0B;--amber2:#FCD34D;
+  --red-pale:rgba(211,47,47,.08);
+  --tr:all .48s cubic-bezier(.23,1,.32,1);
+  --r:12px;--r2:20px;
+}
+[data-theme="light"]{
+  --bg:#FAFAFA;--bg2:#F4F4F4;--bg3:#EBEBEB;--bg4:#E0E0E0;
+  --card:#FFFFFF;--card2:#F8F8F8;
+  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.14);
+  --text:#0A0A0A;--text2:#484848;--text3:#909090;
+  --nav-bg:rgba(250,250,250,.94);
+  --inp:rgba(0,0,0,.04);
+  --sh:0 4px 24px rgba(0,0,0,.08);--sh2:0 16px 56px rgba(0,0,0,.12);
+  --rule:rgba(0,0,0,.12);
+}
+[data-theme="dark"]{
+  --bg:#0B0B0D;--bg2:#111115;--bg3:#18181E;--bg4:#202028;
+  --card:#111115;--card2:#18181E;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --text:#F0EEF8;--text2:#8884A0;--text3:#44405A;
+  --nav-bg:rgba(11,11,13,.94);
+  --inp:rgba(255,255,255,.05);
+  --sh:0 4px 24px rgba(0,0,0,.4);--sh2:0 16px 56px rgba(0,0,0,.6);
+  --rule:rgba(255,255,255,.1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;transition:background .45s,color .45s}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--red);border-radius:2px}
+a{text-decoration:none;color:inherit}img{display:block;max-width:100%}
+
+/* ── BREAKING BAND ── */
+.breaking-band{
+  background:var(--red);padding:8px 0;
+  display:flex;align-items:center;overflow:hidden;
+  position:relative;z-index:1001;
+}
+.breaking-label{
+  background:#0A0A0A;color:#fff;
+  font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;
+  padding:4px 14px;white-space:nowrap;flex-shrink:0;margin-right:16px;
+  display:flex;align-items:center;gap:6px;
+}
+.breaking-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:bpulse 1s infinite}
+@keyframes bpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+.breaking-ticker{overflow:hidden;flex:1}
+.breaking-track{display:flex;animation:btk 30s linear infinite;white-space:nowrap}
+.bt-item{font-size:12px;font-weight:600;color:#fff;padding:0 40px;letter-spacing:.3px}
+.bt-sep{color:rgba(255,255,255,.4);padding:0 4px}
+@keyframes btk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.breaking-close{
+  width:28px;height:28px;background:rgba(0,0,0,.2);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:#fff;cursor:pointer;flex-shrink:0;
+  margin:0 12px;transition:var(--tr);border:none;
+}
+.breaking-close:hover{background:rgba(0,0,0,.4)}
+
+/* ── NAVBAR ── */
+nav{
+  position:sticky;top:0;left:0;right:0;z-index:990;
+  background:var(--nav-bg);
+  backdrop-filter:blur(24px);
+  border-bottom:2px solid var(--red);
+  transition:var(--tr);
+}
+.nav-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 56px;gap:24px;
+}
+.logo{display:flex;flex-direction:column;line-height:1}
+.logo-main{
+  font-family:'Libre Baskerville',serif;
+  font-size:28px;font-weight:700;color:var(--text);
+  letter-spacing:-1px;
+}
+.logo-main span{color:var(--red)}
+.logo-sub{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--text3);margin-top:3px}
+.nav-search{
+  display:flex;align-items:center;gap:10px;
+  background:var(--inp);border:1px solid var(--border);
+  border-radius:50px;padding:8px 16px;flex:0 0 260px;
+  transition:var(--tr);
+}
+.nav-search:focus-within{border-color:var(--red);background:var(--card);box-shadow:0 0 0 3px var(--red-pale)}
+.nav-search input{background:none;border:none;outline:none;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);flex:1}
+.nav-search input::placeholder{color:var(--text3)}
+.nav-search-icon{font-size:14px;color:var(--text3)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.th-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border2);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--text2);transition:var(--tr)}
+.th-btn:hover{border-color:var(--red);color:var(--red);transform:rotate(15deg)}
+.nav-subscribe{background:var(--red);color:#fff;padding:9px 20px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:var(--tr);white-space:nowrap}
+.nav-subscribe:hover{background:var(--red2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(211,47,47,.4)}
+.nav-bottom{
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:0;
+  overflow-x:auto;scrollbar-width:none;
+  padding:0 56px;
+}
+.nav-bottom::-webkit-scrollbar{display:none}
+.nav-cat{
+  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--text2);padding:10px 20px;white-space:nowrap;
+  border-bottom:2px solid transparent;margin-bottom:-2px;
+  transition:var(--tr);cursor:pointer;
+}
+.nav-cat:hover,.nav-cat.active{color:var(--red);border-bottom-color:var(--red)}
+.ham{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer}
+.ham span{width:22px;height:2px;background:var(--text);border-radius:1px;display:block;transition:var(--tr)}
+.mob-nav{display:none;position:fixed;inset:0;z-index:989;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:24px}
+.mob-nav.open{display:flex}
+.mob-nav a{font-family:'Libre Baskerville',serif;font-size:28px;color:var(--text);transition:var(--tr)}
+.mob-nav a:hover{color:var(--red)}
+.mob-close{position:absolute;top:22px;right:28px;font-size:26px;background:none;border:none;color:var(--text);cursor:pointer}
+
+/* ── HERO / FEATURED ── */
+#hero{padding:0;background:var(--bg2);border-bottom:1px solid var(--border)}
+.hero-grid{
+  display:grid;grid-template-columns:1.6fr 1fr;
+  border-right:1px solid var(--border);
+}
+.hero-main{position:relative;overflow:hidden;cursor:pointer;min-height:540px}
+.hero-main-img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transition:transform .8s cubic-bezier(.23,1,.32,1)}
+.hero-main:hover .hero-main-img{transform:scale(1.03)}
+.hero-main-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.3) 55%,transparent 100%)}
+.hero-main-content{position:absolute;bottom:0;left:0;right:0;padding:36px 40px;z-index:2}
+.art-cat{display:inline-block;background:var(--red);color:#fff;font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;padding:4px 12px;border-radius:3px;margin-bottom:12px}
+.art-cat.amber{background:var(--amber);color:#0A0A0A}
+.art-cat.dark{background:#0A0A0A;color:#fff}
+.hero-headline{font-family:'Libre Baskerville',serif;font-size:clamp(24px,3.5vw,40px);font-weight:700;color:#fff;line-height:1.18;letter-spacing:-.5px;margin-bottom:12px}
+.hero-deck{font-size:14px;color:rgba(255,255,255,.72);line-height:1.7;margin-bottom:16px;max-width:560px}
+.hero-meta{display:flex;align-items:center;gap:14px}
+.art-author{display:flex;align-items:center;gap:8px}
+.art-ava{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.3)}
+.art-author-name{font-size:11px;font-weight:700;color:rgba(255,255,255,.8);letter-spacing:.3px}
+.art-time{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.5px}
+.art-read{font-size:11px;color:rgba(255,255,255,.45)}
+.meta-dot{color:rgba(255,255,255,.25)}
+.hero-side{display:flex;flex-direction:column;border-left:1px solid var(--border)}
+.hero-side-item{
+  flex:1;padding:24px 28px;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:var(--tr);display:flex;flex-direction:column;gap:10px;
+  position:relative;overflow:hidden;
+}
+.hero-side-item:last-child{border-bottom:none}
+.hero-side-item:hover{background:var(--bg3)}
+.hero-side-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red);transform:scaleY(0);transform-origin:bottom;transition:var(--tr)}
+.hero-side-item:hover::before{transform:scaleY(1)}
+.hsi-img{border-radius:var(--r);overflow:hidden;height:120px}
+.hsi-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.hero-side-item:hover .hsi-img img{transform:scale(1.04)}
+.hsi-headline{font-family:'Libre Baskerville',serif;font-size:16px;font-weight:700;color:var(--text);line-height:1.35;letter-spacing:-.2px}
+.hsi-meta{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--text3);letter-spacing:.5px}
+.hsi-dot{width:2px;height:2px;border-radius:50%;background:var(--text3)}
+
+/* ── SECTIONS BASE ── */
+section{padding:72px 56px}
+.container{max-width:1360px;margin:0 auto}
+.sec-label{display:flex;align-items:center;gap:14px;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:24px}
+.sec-label::before{content:'';width:28px;height:2px;background:var(--red);border-radius:1px}
+.sec-title{font-family:'Libre Baskerville',serif;font-size:clamp(28px,4vw,52px);font-weight:700;color:var(--text);letter-spacing:-1px;line-height:1.08;margin-bottom:16px}
+.sec-title em{font-style:italic;color:var(--red)}
+.sec-sub{font-size:14px;color:var(--text2);line-height:1.9;font-weight:400;max-width:520px}
+.s-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;gap:32px;flex-wrap:wrap}
+.link-more{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--red);border-bottom:1.5px solid var(--red);padding-bottom:2px;transition:var(--tr)}
+.link-more:hover{gap:14px}
+.hr-rule{border:none;border-top:1px solid var(--rule);margin:0 56px}
+
+/* ── ARTICLE CARD (universal) ── */
+.art-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;cursor:pointer;transition:var(--tr)}
+.art-card:hover{transform:translateY(-5px);box-shadow:var(--sh2);border-color:var(--border2)}
+.art-card::before{display:none}
+.art-img{overflow:hidden;position:relative}
+.art-img img{display:block;width:100%;object-fit:cover;transition:transform .6s cubic-bezier(.23,1,.32,1)}
+.art-card:hover .art-img img{transform:scale(1.04)}
+.art-img img.h200{height:200px}
+.art-img img.h160{height:160px}
+.art-img img.h240{height:240px}
+.art-img img.h280{height:280px}
+.art-tag{position:absolute;top:12px;left:12px}
+.art-save{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;cursor:pointer;transition:var(--tr)}
+.art-save:hover,.art-save.saved{background:var(--red);border-color:var(--red)}
+.art-body{padding:20px}
+.art-body-title{font-family:'Libre Baskerville',serif;font-size:clamp(15px,1.8vw,19px);font-weight:700;color:var(--text);line-height:1.35;letter-spacing:-.2px;margin-bottom:8px;transition:var(--tr)}
+.art-card:hover .art-body-title{color:var(--red)}
+.art-body-deck{font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:14px}
+.art-foot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:12px;margin-top:4px}
+.art-foot-left{display:flex;align-items:center;gap:8px}
+.art-foot-ava{width:24px;height:24px;border-radius:50%;object-fit:cover}
+.art-foot-author{font-size:10px;font-weight:700;color:var(--text2);letter-spacing:.3px}
+.art-foot-time{font-size:10px;color:var(--text3)}
+.art-foot-read{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:4px}
+
+/* ── MAIN FEED GRID ── */
+#latest{background:var(--bg)}
+.latest-layout{display:grid;grid-template-columns:1fr 320px;gap:48px;align-items:start}
+.articles-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.sidebar{display:flex;flex-direction:column;gap:28px}
+
+/* ── SIDEBAR WIDGETS ── */
+.widget{background:var(--card2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.widget-header{background:var(--text);padding:14px 20px;display:flex;align-items:center;gap:10px}
+[data-theme="light"] .widget-header{background:var(--text)}
+.widget-header-title{font-family:'Libre Baskerville',serif;font-size:15px;font-weight:700;color:#fff;flex:1}
+.widget-header-icon{font-size:18px}
+.widget-body{padding:0}
+.trending-item{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:14px 20px;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:var(--tr);
+}
+.trending-item:last-child{border-bottom:none}
+.trending-item:hover{background:var(--bg3)}
+.trending-num{font-family:'Libre Baskerville',serif;font-size:22px;font-weight:700;color:var(--red);line-height:1;min-width:24px;opacity:.5}
+.trending-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:4px}
+.trending-meta{font-size:10px;color:var(--text3);letter-spacing:.5px}
+.poll-widget{}
+.poll-question{font-family:'Libre Baskerville',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;line-height:1.35}
+.poll-body{padding:20px}
+.poll-opt{margin-bottom:10px}
+.poll-opt label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--text2);font-weight:500;margin-bottom:6px}
+.poll-opt input[type="radio"]{accent-color:var(--red)}
+.poll-bar-wrap{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.poll-bar{height:100%;background:var(--red);border-radius:3px;transition:width .8s ease}
+.poll-pct{font-size:10px;font-weight:700;color:var(--red);margin-top:3px}
+.poll-vote-btn{width:100%;background:var(--red);color:#fff;border:none;padding:11px;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;margin-top:16px;transition:var(--tr)}
+.poll-vote-btn:hover{background:var(--red2);transform:translateY(-1px)}
+.newsletter-w{}
+.newsletter-w-body{padding:20px}
+.newsletter-w-desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px}
+.newsletter-w-inp{display:flex;flex-direction:column;gap:8px}
+.newsletter-w-inp input{background:var(--inp);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:var(--tr)}
+.newsletter-w-inp input::placeholder{color:var(--text3)}
+.newsletter-w-inp input:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-pale)}
+.newsletter-w-inp button{background:var(--red);color:#fff;border:none;padding:11px;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:var(--tr)}
+.newsletter-w-inp button:hover{background:var(--red2)}
+.social-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.ss-cell{background:var(--card2);padding:18px;text-align:center;cursor:pointer;transition:var(--tr)}
+.ss-cell:hover{background:var(--red-pale)}
+.ss-icon{font-size:22px;margin-bottom:6px}
+.ss-num{font-family:'Libre Baskerville',serif;font-size:22px;font-weight:700;color:var(--text);line-height:1}
+.ss-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-top:2px}
+.weather-body{padding:20px}
+.weather-city{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.weather-main{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.weather-icon{font-size:40px}
+.weather-temp{font-family:'Libre Baskerville',serif;font-size:42px;font-weight:700;color:var(--text);line-height:1}
+.weather-desc{font-size:12px;color:var(--text2);margin-top:4px}
+.weather-details{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wd-item{background:var(--bg2);border-radius:8px;padding:10px 12px}
+.wd-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:3px}
+.wd-val{font-size:14px;font-weight:700;color:var(--text)}
+
+/* ── VIDEO SECTION ── */
+#videos{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.video-hero{position:relative;border-radius:var(--r2);overflow:hidden;cursor:pointer;margin-bottom:24px;min-height:400px;background:var(--bg3)}
+.video-hero img{width:100%;height:400px;object-fit:cover;transition:transform .7s ease}
+.video-hero:hover img{transform:scale(1.03)}
+.video-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8) 0%,rgba(0,0,0,.2) 60%,transparent 100%)}
+.video-play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:rgba(211,47,47,.9);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;transition:var(--tr);backdrop-filter:blur(4px)}
+.video-hero:hover .video-play-btn{transform:translate(-50%,-50%) scale(1.1);background:var(--red)}
+.video-hero-content{position:absolute;bottom:0;left:0;right:0;padding:28px 32px;z-index:2}
+.video-duration{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.7);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;z-index:3}
+.video-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.vid-card{border-radius:var(--r);overflow:hidden;cursor:pointer;transition:var(--tr);background:var(--card);border:1px solid var(--border)}
+.vid-card:hover{transform:translateY(-4px);box-shadow:var(--sh2);border-color:var(--border2)}
+.vid-thumb{position:relative;overflow:hidden}
+.vid-thumb img{width:100%;height:130px;object-fit:cover;transition:transform .5s ease}
+.vid-card:hover .vid-thumb img{transform:scale(1.05)}
+.vid-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);transition:var(--tr)}
+.vid-card:hover .vid-play{background:rgba(211,47,47,.7)}
+.vid-play-icon{font-size:22px;color:#fff}
+.vid-dur{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.75);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px}
+.vid-body{padding:14px}
+.vid-title{font-size:13px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:6px}
+.vid-meta{font-size:10px;color:var(--text3);letter-spacing:.3px}
+
+/* ── CATEGORIES GRID ── */
+#categories{background:var(--bg)}
+.cat-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:50px;width:fit-content;overflow:hidden;margin-bottom:36px;background:var(--bg2)}
+.cat-tab{padding:9px 22px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:var(--text2);transition:var(--tr);white-space:nowrap}
+.cat-tab.on{background:var(--red);color:#fff}
+.cat-tab:hover:not(.on){color:var(--text);background:var(--bg3)}
+.cat-panel{display:none}
+.cat-panel.on{display:block}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+
+/* ── OPINIONS / COLUMNISTS ── */
+#opinions{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.opinions-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.op-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:28px;cursor:pointer;transition:var(--tr);position:relative;overflow:hidden}
+.op-card::after{content:'"';font-family:'Libre Baskerville',serif;font-size:120px;font-weight:700;color:var(--red);opacity:.05;position:absolute;top:-20px;right:14px;line-height:1;pointer-events:none}
+.op-card:hover{transform:translateY(-6px);box-shadow:var(--sh2);border-color:var(--border2)}
+.op-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:var(--tr)}
+.op-card:hover::before{transform:scaleX(1)}
+.op-author{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.op-ava{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)}
+.op-name{font-weight:700;font-size:14px;color:var(--text)}
+.op-role{font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:.3px}
+.op-title{font-family:'Libre Baskerville',serif;font-size:17px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:10px;letter-spacing:-.2px;transition:var(--tr)}
+.op-card:hover .op-title{color:var(--red)}
+.op-excerpt{font-size:12px;color:var(--text2);line-height:1.75}
+.op-footer{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+.op-date{font-size:10px;color:var(--text3);letter-spacing:.5px}
+.op-read{font-size:10px;font-weight:700;color:var(--red);letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:6px;transition:var(--tr)}
+.op-card:hover .op-read{gap:10px}
+
+/* ── PODCAST ── */
+#podcast{background:var(--bg)}
+.podcast-hero{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-bottom:56px}
+.podcast-cover{border-radius:var(--r2);overflow:hidden;box-shadow:var(--sh2);position:relative;aspect-ratio:1}
+.podcast-cover img{width:100%;height:100%;object-fit:cover}
+.podcast-cover-badge{position:absolute;top:16px;left:16px;background:var(--red);color:#fff;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:3px}
+.podcast-right{}
+.podcast-play-wrap{display:flex;align-items:center;gap:14px;margin-bottom:24px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px}
+.podcast-play-btn{width:44px;height:44px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;cursor:pointer;transition:var(--tr);flex-shrink:0;border:none}
+.podcast-play-btn:hover{background:var(--red2);transform:scale(1.08)}
+.podcast-progress{flex:1}
+.podcast-progress-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:6px;cursor:pointer}
+.podcast-progress-fill{height:100%;width:35%;background:var(--red);border-radius:2px}
+.podcast-times{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);font-weight:600}
+.podcast-vol{font-size:18px;color:var(--text3);cursor:pointer;transition:var(--tr)}
+.podcast-vol:hover{color:var(--red)}
+.podcast-episodes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.ep-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;cursor:pointer;transition:var(--tr);display:flex;gap:14px;align-items:flex-start}
+.ep-card:hover{border-color:var(--red);box-shadow:var(--sh);background:var(--red-pale)}
+.ep-num{font-family:'Libre Baskerville',serif;font-size:28px;font-weight:700;color:var(--red);opacity:.25;line-height:1;flex-shrink:0;min-width:32px}
+.ep-title{font-weight:700;font-size:13px;color:var(--text);line-height:1.4;margin-bottom:4px}
+.ep-meta{font-size:10px;color:var(--text3);letter-spacing:.3px}
+
+/* ── LIVE / TICKER ── */
+#live{background:var(--text);padding:0}
+[data-theme="light"] #live{background:#0A0A0A}
+.live-inner{display:flex;align-items:stretch;min-height:64px}
+.live-badge{background:var(--red);padding:0 28px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.live-dot-wrap{display:flex;align-items:center;gap:6px}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:livepulse 1.2s ease-in-out infinite}
+@keyframes livepulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.5}}
+.live-badge-text{font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:#fff}
+.live-ticker-wrap{flex:1;overflow:hidden;display:flex;align-items:center;padding:0 24px;gap:28px}
+.live-events{display:flex;gap:0;animation:livetkr 40s linear infinite;white-space:nowrap}
+.live-ev{display:inline-flex;align-items:center;gap:10px;padding-right:48px;border-right:1px solid rgba(255,255,255,.1);margin-right:48px}
+.live-ev-time{font-size:10px;font-weight:800;color:var(--amber);letter-spacing:1px;flex-shrink:0}
+.live-ev-text{font-size:13px;color:#fff;font-weight:500}
+@keyframes livetkr{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── TESTIMONIALS ── */
+#testimonials{background:var(--bg2)}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.testi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:30px;transition:var(--tr);cursor:default;position:relative;overflow:hidden}
+.testi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--amber));opacity:0;transition:var(--tr)}
+.testi-card:hover{border-color:var(--border2);box-shadow:var(--sh2);transform:translateY(-4px)}
+.testi-card:hover::before{opacity:1}
+.testi-stars{color:var(--amber);font-size:14px;letter-spacing:2px;margin-bottom:14px}
+.testi-text{font-family:'Libre Baskerville',serif;font-style:italic;font-size:15px;color:var(--text);line-height:1.8;margin-bottom:22px}
+.testi-author{display:flex;align-items:center;gap:12px}
+.testi-ava{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)}
+.testi-name{font-weight:700;font-size:13px;color:var(--text)}
+.testi-info{font-size:10px;color:var(--text3);letter-spacing:.5px;margin-top:2px}
+.testi-plan{margin-left:auto;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);background:var(--red-pale);padding:4px 10px;border-radius:3px}
+.swiper-pagination-bullet{background:var(--text3)!important;opacity:.4!important}
+.swiper-pagination-bullet-active{background:var(--red)!important;opacity:1!important;width:18px!important;border-radius:2px!important}
+
+/* ── STATS ── */
+.stats-band{background:var(--red);position:relative;z-index:1}
+.stats-inner{max-width:1360px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.18)}
+.stat-cell{padding:52px 36px;text-align:center;border-right:1px solid rgba(255,255,255,.18);transition:var(--tr)}
+.stat-cell:hover{background:rgba(0,0,0,.1)}
+.stat-n{font-family:'Libre Baskerville',serif;font-size:56px;font-weight:700;color:#fff;line-height:1;letter-spacing:-1px}
+.stat-l{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:8px}
+
+/* ── SUBSCRIBE / PLANS ── */
+#subscribe{background:var(--bg)}
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:start}
+.plan-card{background:var(--card);border:1.5px solid var(--border2);border-radius:var(--r2);padding:40px 34px;position:relative;overflow:hidden;transition:var(--tr)}
+.plan-card:hover{transform:translateY(-5px);box-shadow:var(--sh2);border-color:var(--red)}
+.plan-card.featured{background:var(--red);border-color:var(--red);transform:scale(1.03)}
+.plan-card.featured *{color:#fff!important}
+.plan-card.featured:hover{transform:scale(1.03) translateY(-5px)}
+.plan-badge{position:absolute;top:20px;right:20px;background:#fff;color:var(--red);font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:3px}
+.plan-tier{font-size:9px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--text3);margin-bottom:16px}
+.plan-name{font-family:'Libre Baskerville',serif;font-size:26px;font-weight:700;color:var(--text);margin-bottom:8px}
+.plan-price{margin-bottom:6px}
+.plan-price-amount{font-family:'Libre Baskerville',serif;font-size:48px;font-weight:700;color:var(--text);letter-spacing:-1px;line-height:1}
+.plan-price-amount sup{font-size:22px;vertical-align:top;margin-top:10px;display:inline-block}
+.plan-price-period{font-size:12px;color:var(--text3)}
+.plan-desc{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.plan-card.featured .plan-desc{border-bottom-color:rgba(255,255,255,.2)}
+.plan-feats{display:flex;flex-direction:column;gap:11px;margin-bottom:32px}
+.pf-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text2)}
+.pf-ck{width:18px;height:18px;border-radius:50%;background:var(--red-pale);border:1px solid rgba(211,47,47,.25);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--red);flex-shrink:0;margin-top:1px}
+.plan-card.featured .pf-ck{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.3);color:#fff}
+.plan-cta{display:block;text-align:center;padding:13px;border:2px solid var(--border2);border-radius:var(--r);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--text);transition:var(--tr)}
+.plan-cta:hover{background:var(--red);border-color:var(--red);color:#fff!important}
+.plan-card.featured .plan-cta{background:#fff;border-color:#fff;color:var(--red)!important}
+.plan-card.featured .plan-cta:hover{background:rgba(255,255,255,.88)}
+
+/* ── CONTACT ── */
+#contact{background:var(--bg2);border-top:1px solid var(--border)}
+.contact-layout{display:grid;grid-template-columns:1fr 1.15fr;gap:90px;align-items:start}
+.contact-left h3{font-family:'Libre Baskerville',serif;font-size:clamp(28px,4vw,46px);font-weight:700;color:var(--text);letter-spacing:-1px;line-height:1.1;margin-bottom:18px}
+.contact-left h3 em{font-style:italic;color:var(--red)}
+.contact-left p{font-size:14px;color:var(--text2);line-height:2;font-weight:400;margin-bottom:32px}
+.c-items{display:flex;flex-direction:column;gap:16px;margin-bottom:32px}
+.c-item{display:flex;align-items:flex-start;gap:14px}
+.c-icon{width:42px;height:42px;border-radius:var(--r);background:var(--red-pale);border:1px solid rgba(211,47,47,.2);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;transition:var(--tr)}
+.c-item:hover .c-icon{background:var(--red)}
+.c-lbl{font-size:9px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--red);margin-bottom:3px}
+.c-val{font-size:13px;color:var(--text2)}
+.contact-socials{display:flex;gap:10px}
+.cs{width:40px;height:40px;border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2);transition:var(--tr)}
+.cs:hover{background:var(--red);border-color:var(--red);color:#fff;transform:translateY(-3px)}
+.contact-form{background:var(--card);border:1px solid var(--border2);border-radius:var(--r2);padding:44px;box-shadow:var(--sh)}
+.cf-title{font-family:'Libre Baskerville',serif;font-size:24px;font-weight:700;color:var(--text);margin-bottom:24px;letter-spacing:-.3px}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.cf-g{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.cf-g label{font-size:9px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3)}
+.cf-g input,.cf-g select,.cf-g textarea{background:var(--inp);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;outline:none;resize:none;transition:var(--tr)}
+.cf-g input::placeholder,.cf-g textarea::placeholder{color:var(--text3)}
+.cf-g input:focus,.cf-g select:focus,.cf-g textarea:focus{border-color:var(--red);background:var(--red-pale);box-shadow:0 0 0 3px var(--red-pale)}
+.cf-g select option{background:var(--card);color:var(--text)}
+.cf-submit{width:100%;background:var(--red);color:#fff;border:none;padding:14px;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-top:4px;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:10px}
+.cf-submit:hover{background:var(--red2);transform:translateY(-1px);box-shadow:0 8px 28px rgba(211,47,47,.35)}
+.cf-ok{display:none;background:var(--red-pale);border:1px solid rgba(211,47,47,.25);border-radius:var(--r);padding:12px;color:var(--red);font-size:12px;font-weight:700;text-align:center;margin-top:10px}
+
+/* ── MAP ── */
+#map-sec{height:400px;position:relative;overflow:hidden}
+#map-sec iframe{width:100%;height:100%;border:none}
+[data-theme="dark"] #map-sec iframe{filter:invert(90%) hue-rotate(185deg) saturate(.65) brightness(.82)}
+.map-card{position:absolute;top:28px;left:56px;background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:22px 26px;box-shadow:var(--sh2)}
+.map-name{font-family:'Libre Baskerville',serif;font-size:18px;font-weight:700;color:var(--red);margin-bottom:4px}
+.map-addr{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:8px}
+.map-open{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:#22c55e}
+.open-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── FOOTER ── */
+footer{background:var(--text);color:var(--bg);padding:72px 56px 36px}
+[data-theme="light"] footer{background:#0A0A0A;color:#FAFAFA}
+.footer-grid{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:56px;margin-bottom:56px}
+.f-logo{font-family:'Libre Baskerville',serif;font-size:26px;font-weight:700;letter-spacing:-1px;margin-bottom:6px}
+.f-logo span{color:var(--red)}
+.f-tagline{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.35);display:block;margin-bottom:16px}
+.f-desc{font-size:13px;color:rgba(255,255,255,.5);line-height:1.9;max-width:270px;margin-bottom:22px}
+.f-socials{display:flex;gap:10px}
+.f-soc{width:36px;height:36px;border:1px solid rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:rgba(255,255,255,.5);transition:var(--tr)}
+.f-soc:hover{background:var(--red);border-color:var(--red);color:#fff}
+.f-col h5{font-size:9px;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:18px}
+.f-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.f-col ul li a{font-size:13px;color:rgba(255,255,255,.5);transition:var(--tr)}
+.f-col ul li a:hover{color:var(--red);padding-left:5px}
+.f-bottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.08);padding-top:24px;flex-wrap:wrap;gap:12px}
+.f-bottom p{font-size:11px;color:rgba(255,255,255,.3)}
+.f-bottom-links{display:flex;gap:22px}
+.f-bottom-links a{font-size:11px;color:rgba(255,255,255,.3);transition:var(--tr)}
+.f-bottom-links a:hover{color:var(--red)}
+
+/* ── FLOAT ── */
+.float-sub{position:fixed;bottom:32px;right:32px;z-index:900;background:var(--red);color:#fff;padding:12px 22px;border-radius:50px;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;gap:8px;box-shadow:0 8px 28px rgba(211,47,47,.5);transition:var(--tr)}
+.float-sub:hover{background:var(--red2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(211,47,47,.6)}
+
+/* ── REVEALS ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .75s ease,transform .75s ease}
+.reveal-l{opacity:0;transform:translateX(-24px);transition:opacity .75s ease,transform .75s ease}
+.reveal-r{opacity:0;transform:translateX(24px);transition:opacity .75s ease,transform .75s ease}
+.reveal.on,.reveal-l.on,.reveal-r.on{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1200px){
+  .hero-grid{grid-template-columns:1fr;min-height:auto}
+  .hero-side{flex-direction:row;border-left:none;border-top:1px solid var(--border)}
+  .hero-side-item{border-bottom:none;border-right:1px solid var(--border)}
+  .hero-side-item:last-child{border-right:none}
+  .hero-main{min-height:400px}
+  .latest-layout{grid-template-columns:1fr}
+  .articles-grid{grid-template-columns:repeat(3,1fr)}
+  .sidebar{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  .video-grid{grid-template-columns:1fr 1fr}
+  .cat-grid{grid-template-columns:1fr 1fr}
+  .opinions-grid{grid-template-columns:1fr 1fr}
+  .podcast-hero{grid-template-columns:1fr;gap:36px}
+  .podcast-cover{max-width:300px;margin:0 auto}
+  .podcast-episodes{grid-template-columns:1fr 1fr}
+  .plans-grid{grid-template-columns:1fr}
+  .plan-card.featured{transform:none}
+  .contact-layout{grid-template-columns:1fr;gap:60px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:40px}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  section{padding:64px 36px}nav .nav-top{padding:14px 36px}nav .nav-bottom{padding:0 36px}.hr-rule{margin:0 36px}
+}
+@media(max-width:768px){
+  nav .nav-top{padding:12px 20px}nav .nav-bottom{padding:0 20px}
+  .nav-links,.nav-right,.nav-search{display:none}.ham{display:flex}
+  section{padding:56px 20px}
+  .hero-side{flex-direction:column}
+  .hero-side-item{border-right:none;border-bottom:1px solid var(--border)}
+  .articles-grid{grid-template-columns:1fr}
+  .sidebar{grid-template-columns:1fr}
+  .video-grid{grid-template-columns:1fr 1fr}
+  .cat-grid{grid-template-columns:1fr}
+  .opinions-grid{grid-template-columns:1fr}
+  .testi-grid{grid-template-columns:1fr}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  .podcast-episodes{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  footer{padding:56px 20px 32px}
+  .map-card{left:16px;top:16px}
+  .cf-row{grid-template-columns:1fr}
+  .s-head{flex-direction:column;align-items:flex-start}
+  .hr-rule{margin:0 20px}
+  .breaking-label{display:none}
+  .hero-bottom-strip{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE NAV -->
+<div class="mob-nav" id="mobNav">
+  <button class="mob-close" onclick="closeMob()">✕</button>
+  <a href="#latest" onclick="closeMob()">Actualités</a>
+  <a href="#videos" onclick="closeMob()">Vidéos</a>
+  <a href="#opinions" onclick="closeMob()">Opinions</a>
+  <a href="#podcast" onclick="closeMob()">Podcast</a>
+  <a href="#subscribe" onclick="closeMob()">S'abonner</a>
+  <a href="#contact" onclick="closeMob()">Contact</a>
+</div>
+
+<!-- ══ BREAKING BAND ══ -->
+<div class="breaking-band" id="breakingBand">
+  <div class="breaking-label"><div class="breaking-dot"></div>Breaking</div>
+  <div class="breaking-ticker">
+    <div class="breaking-track">
+      <span class="bt-item">🔴 France : Le gouvernement présente son plan de réforme budgétaire 2025 — réaction des marchés financiers en direct</span><span class="bt-sep">|</span>
+      <span class="bt-item">⚡ Tensions géopolitiques : sommet d'urgence convoqué à Bruxelles pour ce soir</span><span class="bt-sep">|</span>
+      <span class="bt-item">📈 CAC 40 : hausse de 1,4% après les chiffres de l'inflation américaine</span><span class="bt-sep">|</span>
+      <span class="bt-item">🌡️ Météo extrême : alerte rouge dans 14 départements du Sud-Est</span><span class="bt-sep">|</span>
+      <span class="bt-item">🇫🇷 France : Le gouvernement présente son plan de réforme budgétaire 2025 — réaction des marchés financiers en direct</span><span class="bt-sep">|</span>
+      <span class="bt-item">⚡ Tensions géopolitiques : sommet d'urgence convoqué à Bruxelles pour ce soir</span><span class="bt-sep">|</span>
+      <span class="bt-item">📈 CAC 40 : hausse de 1,4% après les chiffres de l'inflation américaine</span><span class="bt-sep">|</span>
+      <span class="bt-item">🌡️ Météo extrême : alerte rouge dans 14 départements du Sud-Est</span><span class="bt-sep">|</span>
+    </div>
+  </div>
+  <button class="breaking-close" onclick="document.getElementById('breakingBand').style.display='none'">✕</button>
+</div>
+
+<!-- ══ NAVBAR ══ -->
+<nav id="navbar">
+  <div class="nav-top">
+    <div class="logo">
+      <div class="logo-main">SIGNAL<span>.</span></div>
+      <div class="logo-sub">L'information qui compte · Depuis 2004</div>
+    </div>
+    <div class="nav-search">
+      <span class="nav-search-icon">🔍</span>
+      <input type="text" placeholder="Rechercher un article, un sujet...">
+    </div>
+    <div class="nav-right">
+      <button class="th-btn" id="themeBtn" onclick="toggleTheme()"></button>
+      <a href="#subscribe" class="nav-subscribe">S'abonner</a>
+    </div>
+    <button class="ham" onclick="openMob()"><span></span><span></span><span></span></button>
+  </div>
+  <div class="nav-bottom">
+    <div class="nav-cat active" onclick="setNavCat(this)">Politique</div>
+    <div class="nav-cat" onclick="setNavCat(this)">Économie</div>
+    <div class="nav-cat" onclick="setNavCat(this)">International</div>
+    <div class="nav-cat" onclick="setNavCat(this)">Technologie</div>
+    <div class="nav-cat" onclick="setNavCat(this)">Société</div>
+    <div class="nav-cat" onclick="setNavCat(this)">Culture</div>
+    <div class="nav-cat" onclick="setNavCat(this)">Sport</div>
+    <div class="nav-cat" onclick="setNavCat(this)">Sciences</div>
+    <div class="nav-cat" onclick="setNavCat(this)">Environnement</div>
+    <div class="nav-cat" onclick="setNavCat(this)">Opinions</div>
+    <div class="nav-cat" onclick="setNavCat(this)">Podcast</div>
+    <div class="nav-cat" onclick="setNavCat(this)">Vidéo</div>
+  </div>
+</nav>
+
+<!-- ══ HERO / FEATURED ══ -->
+<section id="hero">
+  <div class="hero-grid">
+    <div class="hero-main">
+      <img class="hero-main-img" src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1200&q=85" alt="Une">
+      <div class="hero-main-overlay"></div>
+      <div class="hero-main-content">
+        <span class="art-cat">À la Une · Politique</span>
+        <h1 class="hero-headline">La grande réforme budgétaire 2025 : ce qui change pour les Français dès janvier</h1>
+        <p class="hero-deck">Le gouvernement a présenté hier soir son projet de loi de finances rectificatif. Entre hausses de taxes, coupes budgétaires et nouvelles aides sociales, voici ce que cela signifie concrètement pour votre quotidien.</p>
+        <div class="hero-meta">
+          <div class="art-author">
+            <img class="art-ava" src="https://i.pravatar.cc/100?img=32" alt="Marie">
+            <span class="art-author-name">Marie Fontaine</span>
+          </div>
+          <span class="meta-dot">·</span>
+          <span class="art-time">Il y a 2h</span>
+          <span class="meta-dot">·</span>
+          <span class="art-read">8 min de lecture</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-side">
+      <div class="hero-side-item">
+        <div class="hsi-img">
+          <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=80" alt="Économie">
+        </div>
+        <span class="art-cat amber">Économie</span>
+        <div class="hsi-headline">Les marchés boursiers européens en forte hausse : ce que les investisseurs anticipent</div>
+        <div class="hsi-meta"><span>Il y a 45 min</span><div class="hsi-dot"></div><span>5 min</span></div>
+      </div>
+      <div class="hero-side-item">
+        <div class="hsi-img">
+          <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80" alt="Tech">
+        </div>
+        <span class="art-cat">Technologie</span>
+        <div class="hsi-headline">Intelligence artificielle : l'Europe adopte un règlement historique qui change tout</div>
+        <div class="hsi-meta"><span>Il y a 1h</span><div class="hsi-dot"></div><span>6 min</span></div>
+      </div>
+      <div class="hero-side-item">
+        <div class="hsi-img">
+          <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&q=80" alt="Environnement">
+        </div>
+        <span class="art-cat dark">Environnement</span>
+        <div class="hsi-headline">COP30 : les engagements de Paris tiennent-ils encore la route ?</div>
+        <div class="hsi-meta"><span>Il y a 3h</span><div class="hsi-dot"></div><span>7 min</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LIVE TICKER ══ -->
+<div id="live">
+  <div class="live-inner">
+    <div class="live-badge">
+      <div class="live-dot-wrap"><div class="live-dot"></div></div>
+      <div class="live-badge-text">En direct</div>
+    </div>
+    <div class="live-ticker-wrap">
+      <div class="live-events">
+        <div class="live-ev"><span class="live-ev-time">18:42</span><span class="live-ev-text">Parlement européen : vote crucial sur la directive numérique</span></div>
+        <div class="live-ev"><span class="live-ev-time">18:31</span><span class="live-ev-text">Pétrole : le Brent dépasse les 92$ après les annonces de l'OPEP</span></div>
+        <div class="live-ev"><span class="live-ev-time">18:15</span><span class="live-ev-text">Sport : PSG qualifié pour les quarts de finale de la Ligue des Champions</span></div>
+        <div class="live-ev"><span class="live-ev-time">17:58</span><span class="live-ev-text">Santé : l'OMS déclare la fin de l'urgence sanitaire mondiale</span></div>
+        <div class="live-ev"><span class="live-ev-time">17:42</span><span class="live-ev-text">Tech : Apple annonce une conférence presse surprise pour demain 10h</span></div>
+        <div class="live-ev"><span class="live-ev-time">18:42</span><span class="live-ev-text">Parlement européen : vote crucial sur la directive numérique</span></div>
+        <div class="live-ev"><span class="live-ev-time">18:31</span><span class="live-ev-text">Pétrole : le Brent dépasse les 92$ après les annonces de l'OPEP</span></div>
+        <div class="live-ev"><span class="live-ev-time">18:15</span><span class="live-ev-text">Sport : PSG qualifié pour les quarts de finale de la Ligue des Champions</span></div>
+        <div class="live-ev"><span class="live-ev-time">17:58</span><span class="live-ev-text">Santé : l'OMS déclare la fin de l'urgence sanitaire mondiale</span></div>
+        <div class="live-ev"><span class="live-ev-time">17:42</span><span class="live-ev-text">Tech : Apple annonce une conférence presse surprise pour demain 10h</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LATEST NEWS + SIDEBAR ══ -->
+<section id="latest">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="sec-label reveal">Actualités récentes</div>
+        <h2 class="sec-title reveal d1">Les dernières<br><em>nouvelles</em></h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Toutes les actualités</a>
+    </div>
+    <div class="latest-layout">
+      <div class="articles-grid reveal d1">
+        <div class="art-card">
+          <div class="art-img"><img class="h200" src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=600&q=80" alt="Économie"><span class="art-tag"><span class="art-cat">Économie</span></span><button class="art-save" onclick="toggleSave(this)">♡</button></div>
+          <div class="art-body">
+            <div class="art-body-title">Inflation : les chiffres de mai confirment le reflux, mais les ménages modestes restent sous pression</div>
+            <p class="art-body-deck">Malgré une baisse de l'inflation à 2,1%, les produits alimentaires restent en hausse de 4,8% sur un an...</p>
+            <div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=11" alt="a"><span class="art-foot-author">Lucas Petit</span></div><span class="art-foot-time">3h · 5 min</span></div>
+          </div>
+        </div>
+        <div class="art-card">
+          <div class="art-img"><img class="h200" src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80" alt="Tech"><span class="art-tag"><span class="art-cat">Technologie</span></span><button class="art-save" onclick="toggleSave(this)">♡</button></div>
+          <div class="art-body">
+            <div class="art-body-title">ChatGPT-5 dévoilé : ce que les experts pensent vraiment des nouvelles capacités d'OpenAI</div>
+            <p class="art-body-deck">La dernière version du célèbre chatbot marque un bond qualitatif que même les sceptiques reconnaissent...</p>
+            <div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=23" alt="a"><span class="art-foot-author">Sophia Bernard</span></div><span class="art-foot-time">5h · 7 min</span></div>
+          </div>
+        </div>
+        <div class="art-card">
+          <div class="art-img"><img class="h200" src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80" alt="Env"><span class="art-tag"><span class="art-cat dark">Environnement</span></span><button class="art-save" onclick="toggleSave(this)">♡</button></div>
+          <div class="art-body">
+            <div class="art-body-title">Feux de forêt en Méditerranée : un été 2025 déjà qualifié de catastrophique par les experts</div>
+            <p class="art-body-deck">Plus de 120 000 hectares partis en fumée depuis janvier. Les scientifiques établissent le lien direct avec le changement climatique...</p>
+            <div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=44" alt="a"><span class="art-foot-author">Camille Roux</span></div><span class="art-foot-time">6h · 6 min</span></div>
+          </div>
+        </div>
+        <div class="art-card">
+          <div class="art-img"><img class="h200" src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80" alt="International"><span class="art-tag"><span class="art-cat amber">International</span></span><button class="art-save" onclick="toggleSave(this)">♡</button></div>
+          <div class="art-body">
+            <div class="art-body-title">Elections en Allemagne : victoire surprise du centre-gauche, l'Europe retient son souffle</div>
+            <p class="art-body-deck">Le SPD remporte 34% des suffrages dans un scrutin marqué par une participation record de 78%...</p>
+            <div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=56" alt="a"><span class="art-foot-author">Thomas Garnier</span></div><span class="art-foot-time">8h · 9 min</span></div>
+          </div>
+        </div>
+        <div class="art-card">
+          <div class="art-img"><img class="h200" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" alt="Société"><span class="art-tag"><span class="art-cat">Société</span></span><button class="art-save" onclick="toggleSave(this)">♡</button></div>
+          <div class="art-body">
+            <div class="art-body-title">Santé mentale des jeunes : le grand tabou qui s'effondre enfin en France</div>
+            <p class="art-body-deck">Un rapport parlementaire révèle que 40% des 18-25 ans déclarent avoir souffert d'un trouble anxieux en 2024...</p>
+            <div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=39" alt="a"><span class="art-foot-author">Isabelle Martin</span></div><span class="art-foot-time">9h · 4 min</span></div>
+          </div>
+        </div>
+        <div class="art-card">
+          <div class="art-img"><img class="h200" src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&q=80" alt="Culture"><span class="art-tag"><span class="art-cat dark">Culture</span></span><button class="art-save" onclick="toggleSave(this)">♡</button></div>
+          <div class="art-body">
+            <div class="art-body-title">Festival de Cannes 2025 : la Palme d'Or surprend le monde entier — notre analyse</div>
+            <p class="art-body-deck">Un film congolais de 28 minutes repart avec la distinction suprême. Décryptage d'un choix du jury qui fait débat...</p>
+            <div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=28" alt="a"><span class="art-foot-author">Antoine Dubois</span></div><span class="art-foot-time">11h · 8 min</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="sidebar reveal-r">
+        <!-- Trending -->
+        <div class="widget">
+          <div class="widget-header"><span class="widget-header-icon">🔥</span><div class="widget-header-title">Les plus lus aujourd'hui</div></div>
+          <div class="widget-body">
+            <div class="trending-item"><div class="trending-num">1</div><div><div class="trending-title">Réforme des retraites : le gouvernement cède sur deux points clés face aux syndicats</div><div class="trending-meta">Politique · 42 min · 12 min</div></div></div>
+            <div class="trending-item"><div class="trending-num">2</div><div><div class="trending-title">Prix de l'immobilier : pour la première fois en 10 ans, Paris voit ses prix chuter</div><div class="trending-meta">Économie · 2h · 8 min</div></div></div>
+            <div class="trending-item"><div class="trending-num">3</div><div><div class="trending-title">ChatGPT-5 : les 5 fonctionnalités qui vont changer votre quotidien</div><div class="trending-meta">Technologie · 5h · 6 min</div></div></div>
+            <div class="trending-item"><div class="trending-num">4</div><div><div class="trending-title">PSG - Real Madrid : le choc des titans en quart de finale</div><div class="trending-meta">Sport · 7h · 4 min</div></div></div>
+            <div class="trending-item"><div class="trending-num">5</div><div><div class="trending-title">Sécheresse record : la Seine à son plus bas niveau historique</div><div class="trending-meta">Environnement · 9h · 5 min</div></div></div>
+          </div>
+        </div>
+
+        <!-- Poll -->
+        <div class="widget poll-widget">
+          <div class="widget-header"><span class="widget-header-icon">📊</span><div class="widget-header-title">Sondage du jour</div></div>
+          <div class="poll-body">
+            <div class="poll-question">Pensez-vous que la réforme budgétaire 2025 est juste ?</div>
+            <div class="poll-opt"><label><input type="radio" name="poll" value="a"> Oui, elle est nécessaire</label><div class="poll-bar-wrap"><div class="poll-bar" style="width:38%"></div></div><div class="poll-pct">38%</div></div>
+            <div class="poll-opt"><label><input type="radio" name="poll" value="b"> Non, elle pénalise les plus faibles</label><div class="poll-bar-wrap"><div class="poll-bar" style="width:51%"></div></div><div class="poll-pct">51%</div></div>
+            <div class="poll-opt"><label><input type="radio" name="poll" value="c"> Sans avis</label><div class="poll-bar-wrap"><div class="poll-bar" style="width:11%"></div></div><div class="poll-pct">11%</div></div>
+            <button class="poll-vote-btn" onclick="votePoll(this)">Voter — 14 280 participants</button>
+          </div>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="widget newsletter-w">
+          <div class="widget-header"><span class="widget-header-icon">✉️</span><div class="widget-header-title">La Newsletter Signal</div></div>
+          <div class="newsletter-w-body">
+            <p class="newsletter-w-desc">Chaque matin à 7h30, l'essentiel de l'actualité résumé en 5 minutes. Gratuit et sans spam.</p>
+            <div class="newsletter-w-inp">
+              <input type="email" placeholder="votre@email.fr">
+              <button onclick="nlSend(this)">S'abonner gratuitement →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Stats -->
+        <div class="widget">
+          <div class="widget-header"><span class="widget-header-icon">📡</span><div class="widget-header-title">Suivez Signal</div></div>
+          <div class="social-stats">
+            <div class="ss-cell"><div class="ss-icon">📘</div><div class="ss-num">284K</div><div class="ss-label">Facebook</div></div>
+            <div class="ss-cell"><div class="ss-icon">🐦</div><div class="ss-num">196K</div><div class="ss-label">Twitter / X</div></div>
+            <div class="ss-cell"><div class="ss-icon">📸</div><div class="ss-num">142K</div><div class="ss-label">Instagram</div></div>
+            <div class="ss-cell"><div class="ss-icon">▶</div><div class="ss-num">98K</div><div class="ss-label">YouTube</div></div>
+          </div>
+        </div>
+
+        <!-- Weather -->
+        <div class="widget">
+          <div class="widget-header"><span class="widget-header-icon">🌤️</span><div class="widget-header-title">Météo</div></div>
+          <div class="weather-body">
+            <div class="weather-city">Paris, Île-de-France</div>
+            <div class="weather-main"><div class="weather-icon">⛅</div><div><div class="weather-temp">22°</div><div class="weather-desc">Partiellement nuageux · min 16° max 24°</div></div></div>
+            <div class="weather-details">
+              <div class="wd-item"><div class="wd-label">Vent</div><div class="wd-val">18 km/h</div></div>
+              <div class="wd-item"><div class="wd-label">Humidité</div><div class="wd-val">62%</div></div>
+              <div class="wd-item"><div class="wd-label">UV</div><div class="wd-val">Modéré</div></div>
+              <div class="wd-item"><div class="wd-label">Précip.</div><div class="wd-val">15%</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr-rule">
+
+<!-- ══ VIDEOS ══ -->
+<section id="videos">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="sec-label reveal">Vidéos</div>
+        <h2 class="sec-title reveal d1">L'actualité<br><em>en images</em></h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Toutes les vidéos</a>
+    </div>
+    <div class="video-hero reveal d1">
+      <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=85" alt="Video une">
+      <div class="video-hero-overlay"></div>
+      <div class="video-play-btn">▶</div>
+      <div class="video-duration">14:32</div>
+      <div class="video-hero-content">
+        <span class="art-cat">Grand Format Vidéo</span>
+        <div class="hero-headline" style="font-size:clamp(20px,3vw,32px)">Enquête exclusive : dans les coulisses du Parlement européen, comment se votent vraiment les lois qui nous gouvernent</div>
+        <div class="hero-meta" style="margin-top:10px">
+          <span class="art-author-name" style="color:rgba(255,255,255,.75)">Par l'équipe investigation Signal</span>
+          <span class="meta-dot">·</span>
+          <span class="art-time">Hier · 2,4M de vues</span>
+        </div>
+      </div>
+    </div>
+    <div class="video-grid reveal d2">
+      <div class="vid-card">
+        <div class="vid-thumb"><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80" alt="v1"><div class="vid-play"><div class="vid-play-icon">▶</div></div><div class="vid-dur">8:14</div></div>
+        <div class="vid-body"><div class="vid-title">IA & emploi : 5 métiers qui disparaîtront avant 2030 selon les économistes</div><div class="vid-meta">Technologie · 320K vues</div></div>
+      </div>
+      <div class="vid-card">
+        <div class="vid-thumb"><img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&q=80" alt="v2"><div class="vid-play"><div class="vid-play-icon">▶</div></div><div class="vid-dur">12:05</div></div>
+        <div class="vid-body"><div class="vid-title">Reportage : une journée dans un centre de tri des déchets nucléaires</div><div class="vid-meta">Environnement · 198K vues</div></div>
+      </div>
+      <div class="vid-card">
+        <div class="vid-thumb"><img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=500&q=80" alt="v3"><div class="vid-play"><div class="vid-play-icon">▶</div></div><div class="vid-dur">6:48</div></div>
+        <div class="vid-body"><div class="vid-title">Débat tendu au Sénat : les images qui ont choqué la classe politique</div><div class="vid-meta">Politique · 445K vues</div></div>
+      </div>
+      <div class="vid-card">
+        <div class="vid-thumb"><img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=500&q=80" alt="v4"><div class="vid-play"><div class="vid-play-icon">▶</div></div><div class="vid-dur">9:22</div></div>
+        <div class="vid-body"><div class="vid-title">Immobilier : l'enquête choc sur les marchands de sommeil en Île-de-France</div><div class="vid-meta">Société · 712K vues</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CATEGORIES ══ -->
+<section id="categories" style="background:var(--bg2)">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="sec-label reveal">Par thématique</div>
+        <h2 class="sec-title reveal d1">Explorer par<br><em>catégorie</em></h2>
+      </div>
+    </div>
+    <div class="cat-tabs reveal d2">
+      <button class="cat-tab on" onclick="switchCat(this,'economie')">📈 Économie</button>
+      <button class="cat-tab" onclick="switchCat(this,'tech')">💻 Technologie</button>
+      <button class="cat-tab" onclick="switchCat(this,'sport')">⚽ Sport</button>
+      <button class="cat-tab" onclick="switchCat(this,'culture')">🎭 Culture</button>
+    </div>
+    <div class="cat-panel on" id="panel-economie">
+      <div class="cat-grid">
+        <div class="art-card"><div class="art-img"><img class="h160" src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=80" alt="e1"><span class="art-tag"><span class="art-cat amber">Économie</span></span></div><div class="art-body"><div class="art-body-title">Le CAC 40 franchit pour la première fois la barre des 8 500 points</div><p class="art-body-deck">Un record historique porté par les valeurs tech et énergétiques dans un contexte macro favorable...</p><div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=14" alt="a"><span class="art-foot-author">P. Laurent</span></div><span class="art-foot-time">1h · 4 min</span></div></div></div>
+        <div class="art-card"><div class="art-img"><img class="h160" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80" alt="e2"><span class="art-tag"><span class="art-cat amber">Économie</span></span></div><div class="art-body"><div class="art-body-title">Croissance française : +0.4% au T1, les économistes revus à la hausse</div><p class="art-body-deck">L'INSEE publie des chiffres meilleurs qu'attendu. Mais l'écart entre les ménages aisés et modestes se creuse...</p><div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=8" alt="a"><span class="art-foot-author">R. Morel</span></div><span class="art-foot-time">3h · 6 min</span></div></div></div>
+        <div class="art-card"><div class="art-img"><img class="h160" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80" alt="e3"><span class="art-tag"><span class="art-cat amber">Économie</span></span></div><div class="art-body"><div class="art-body-title">Startups françaises : un 1er semestre record en levées de fonds (8,4 Mds€)</div><p class="art-body-deck">La French Tech confirme sa dynamique malgré un contexte mondial tendu. Les secteurs IA et greentech en tête...</p><div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=22" alt="a"><span class="art-foot-author">C. Blanc</span></div><span class="art-foot-time">6h · 5 min</span></div></div></div>
+      </div>
+    </div>
+    <div class="cat-panel" id="panel-tech">
+      <div class="cat-grid">
+        <div class="art-card"><div class="art-img"><img class="h160" src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80" alt="t1"><span class="art-tag"><span class="art-cat">Technologie</span></span></div><div class="art-body"><div class="art-body-title">Apple Vision Pro 2 : toutes les fuites avant la keynote de septembre</div><p class="art-body-deck">Capteurs améliorés, autonomie doublée, prix en baisse. Ce que les sources internes révèlent...</p><div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=17" alt="a"><span class="art-foot-author">S. Bernard</span></div><span class="art-foot-time">2h · 7 min</span></div></div></div>
+        <div class="art-card"><div class="art-img"><img class="h160" src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80" alt="t2"><span class="art-tag"><span class="art-cat">Technologie</span></span></div><div class="art-body"><div class="art-body-title">L'IA générative dépasse le milliard d'utilisateurs : mais à quel prix humain ?</div><p class="art-body-deck">Derrière les succès commerciaux, le travail invisible des annotateurs dans les pays du Sud...</p><div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=41" alt="a"><span class="art-foot-author">N. Dufour</span></div><span class="art-foot-time">4h · 9 min</span></div></div></div>
+        <div class="art-card"><div class="art-img"><img class="h160" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80" alt="t3"><span class="art-tag"><span class="art-cat">Technologie</span></span></div><div class="art-body"><div class="art-body-title">Cybersécurité : la France sous la menace de 3 000 attaques par jour en 2025</div><p class="art-body-deck">L'ANSSI publie son rapport annuel. Les PME représentent désormais 60% des victimes...</p><div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=36" alt="a"><span class="art-foot-author">M. Leclerc</span></div><span class="art-foot-time">7h · 6 min</span></div></div></div>
+      </div>
+    </div>
+    <div class="cat-panel" id="panel-sport">
+      <div class="cat-grid">
+        <div class="art-card"><div class="art-img"><img class="h160" src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80" alt="s1"><span class="art-tag"><span class="art-cat">Sport</span></span></div><div class="art-body"><div class="art-body-title">Roland-Garros 2025 : Djokovic visé par le record absolu de Nadal</div><p class="art-body-deck">À 38 ans, le Serbe arrive à Paris avec un statut de favori contesté par une nouvelle génération affamée...</p><div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=6" alt="a"><span class="art-foot-author">F. Brun</span></div><span class="art-foot-time">1h · 5 min</span></div></div></div>
+        <div class="art-card"><div class="art-img"><img class="h160" src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=600&q=80" alt="s2"><span class="art-tag"><span class="art-cat">Sport</span></span></div><div class="art-body"><div class="art-body-title">Ligue 1 : Monaco champion, l'épopée d'une équipe qui a défié tous les pronostics</div><p class="art-body-deck">Après 8 ans d'attente, les Monégasques s'offrent leur 9e titre dans un sprint haletant...</p><div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=30" alt="a"><span class="art-foot-author">J. Simon</span></div><span class="art-foot-time">4h · 4 min</span></div></div></div>
+        <div class="art-card"><div class="art-img"><img class="h160" src="https://images.unsplash.com/photo-1526676037888-7ad497bee7b9?w=600&q=80" alt="s3"><span class="art-tag"><span class="art-cat">Sport</span></span></div><div class="art-body"><div class="art-body-title">JO Paris 2025 : bilan et perspectives — la France a-t-elle rempli ses objectifs ?</div><p class="art-body-deck">16 médailles d'or, un budget dépassé, un héritage sportif à construire. L'analyse un an après...</p><div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=52" alt="a"><span class="art-foot-author">A. Perret</span></div><span class="art-foot-time">8h · 8 min</span></div></div></div>
+      </div>
+    </div>
+    <div class="cat-panel" id="panel-culture">
+      <div class="cat-grid">
+        <div class="art-card"><div class="art-img"><img class="h160" src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=600&q=80" alt="c1"><span class="art-tag"><span class="art-cat dark">Culture</span></span></div><div class="art-body"><div class="art-body-title">Le Louvre bat tous ses records avec 12 millions de visiteurs en 2024</div><p class="art-body-deck">L'essor du tourisme post-Covid profite aux grands musées parisiens. Mais la question de la surtourisation se pose...</p><div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=47" alt="a"><span class="art-foot-author">L. Vidal</span></div><span class="art-foot-time">2h · 3 min</span></div></div></div>
+        <div class="art-card"><div class="art-img"><img class="h160" src="https://images.unsplash.com/photo-1524712245354-2c4e5e7121c0?w=600&q=80" alt="c2"><span class="art-tag"><span class="art-cat dark">Culture</span></span></div><div class="art-body"><div class="art-body-title">Le roman français en crise ? Ventes en baisse de 12% malgré des Prix littéraires records</div><p class="art-body-deck">L'édition souffre face aux réseaux sociaux et aux formats courts. Les éditeurs cherchent la parade...</p><div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=25" alt="a"><span class="art-foot-author">C. Renard</span></div><span class="art-foot-time">5h · 6 min</span></div></div></div>
+        <div class="art-card"><div class="art-img"><img class="h160" src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80" alt="c3"><span class="art-tag"><span class="art-cat dark">Culture</span></span></div><div class="art-body"><div class="art-body-title">Musique : la revanche du vinyle — les ventes dépassent le CD pour la première fois depuis 1987</div><p class="art-body-deck">Le format analogique séduit une nouvelle génération qui veut du tangible dans un monde digital...</p><div class="art-foot"><div class="art-foot-left"><img class="art-foot-ava" src="https://i.pravatar.cc/100?img=18" alt="a"><span class="art-foot-author">B. Martel</span></div><span class="art-foot-time">9h · 5 min</span></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ OPINIONS ══ -->
+<section id="opinions">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="sec-label reveal">Chroniques & Analyses</div>
+        <h2 class="sec-title reveal d1">Les voix<br><em>qui font réfléchir</em></h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Toutes les opinions</a>
+    </div>
+    <div class="opinions-grid reveal d2">
+      <div class="op-card">
+        <div class="op-author"><img class="op-ava" src="https://i.pravatar.cc/100?img=32" alt="Élise"><div><div class="op-name">Élise Marchetti</div><div class="op-role">Éditorialiste · Économie politique</div></div></div>
+        <div class="op-title">La dette française : arrêtons les métaphores catastrophistes qui paralysent le débat</div>
+        <p class="op-excerpt">Comparer la dette d'un État à celle d'un ménage est intellectuellement malhonnête. Voici pourquoi cette analogie nous empêche de penser clairement les véritables enjeux...</p>
+        <div class="op-footer"><div class="op-date">12 Jan 2025</div><div class="op-read">Lire →</div></div>
+      </div>
+      <div class="op-card">
+        <div class="op-author"><img class="op-ava" src="https://i.pravatar.cc/100?img=56" alt="Marc"><div><div class="op-name">Marc Dupont</div><div class="op-role">Chroniqueur · Géopolitique</div></div></div>
+        <div class="op-title">Pourquoi l'Europe a perdu sa boussole stratégique et comment la retrouver</div>
+        <p class="op-excerpt">Vingt ans après les espoirs du traité constitutionnel, l'Union européenne navigue à vue. Une lucidité s'impose avant qu'il ne soit trop tard pour corriger le cap...</p>
+        <div class="op-footer"><div class="op-date">14 Jan 2025</div><div class="op-read">Lire →</div></div>
+      </div>
+      <div class="op-card">
+        <div class="op-author"><img class="op-ava" src="https://i.pravatar.cc/100?img=44" alt="Nadia"><div><div class="op-name">Nadia Ouelhadj</div><div class="op-role">Chroniqueuse · Numérique & Société</div></div></div>
+        <div class="op-title">L'IA n'est pas neutre : ce que les biais algorithmiques font à nos démocraties</div>
+        <p class="op-excerpt">Quand les systèmes d'IA reproduisent et amplifient les inégalités existantes, ce n'est pas un bug. C'est une caractéristique systémique qu'on refuse encore de nommer...</p>
+        <div class="op-footer"><div class="op-date">16 Jan 2025</div><div class="op-read">Lire →</div></div>
+      </div>
+      <div class="op-card">
+        <div class="op-author"><img class="op-ava" src="https://i.pravatar.cc/100?img=27" alt="Pierre"><div><div class="op-name">Pierre Garaud</div><div class="op-role">Chroniqueur · Environnement</div></div></div>
+        <div class="op-title">Sobriété énergétique : le mot qu'aucun politique n'ose prononcer avant les élections</div>
+        <p class="op-excerpt">La transition écologique ne peut pas se faire sans réduire notre consommation. Ce discours de vérité est absent du débat public. Pourquoi ? Et qui en profite ?...</p>
+        <div class="op-footer"><div class="op-date">18 Jan 2025</div><div class="op-read">Lire →</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PODCAST ══ -->
+<section id="podcast">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="sec-label reveal">Signal Audio</div>
+        <h2 class="sec-title reveal d1">Le Podcast<br><em>Signal</em></h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Tous les épisodes</a>
+    </div>
+    <div class="podcast-hero">
+      <div class="podcast-cover reveal-l">
+        <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=600&q=85" alt="Podcast Signal">
+        <div class="podcast-cover-badge">🎙️ Nouveau épisode</div>
+      </div>
+      <div class="podcast-right reveal-r">
+        <span class="art-cat" style="display:inline-block;margin-bottom:14px">Épisode 142 · Politique</span>
+        <h3 style="font-family:'Libre Baskerville',serif;font-size:clamp(22px,3vw,34px);font-weight:700;color:var(--text);letter-spacing:-.5px;line-height:1.2;margin-bottom:16px">Réforme des institutions : et si la VIe République n'était pas une utopie ?</h3>
+        <p style="font-size:14px;color:var(--text2);line-height:1.85;margin-bottom:24px">Avec Thomas Ribault, constitutionnaliste, et Valérie Sanz, politologue. Une heure de débat sans langue de bois sur l'avenir de nos institutions.</p>
+        <div class="podcast-play-wrap">
+          <button class="podcast-play-btn" onclick="togglePlay(this)">▶</button>
+          <div class="podcast-progress">
+            <div class="podcast-progress-bar" onclick="seekPodcast(event,this)"><div class="podcast-progress-fill"></div></div>
+            <div class="podcast-times"><span>18:24</span><span>52:08</span></div>
+          </div>
+          <div class="podcast-vol">🔊</div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="#" style="background:var(--card2);border:1px solid var(--border);border-radius:50px;padding:8px 16px;font-size:11px;font-weight:700;color:var(--text2);transition:var(--tr)" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--border)'">🎧 Écouter sur Spotify</a>
+          <a href="#" style="background:var(--card2);border:1px solid var(--border);border-radius:50px;padding:8px 16px;font-size:11px;font-weight:700;color:var(--text2);transition:var(--tr)" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--border)'">🎵 Apple Podcasts</a>
+          <a href="#" style="background:var(--card2);border:1px solid var(--border);border-radius:50px;padding:8px 16px;font-size:11px;font-weight:700;color:var(--text2);transition:var(--tr)" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--border)'">📻 Deezer</a>
+        </div>
+      </div>
+    </div>
+    <div class="podcast-episodes reveal d2">
+      <div class="ep-card"><div class="ep-num">141</div><div><div class="ep-title">Intelligence artificielle : le grand débat éthique qui déchire la Silicon Valley</div><div class="ep-meta">48 min · Technologie · Il y a 3 jours</div></div></div>
+      <div class="ep-card"><div class="ep-num">140</div><div><div class="ep-title">Crise de l'immobilier : comment sortir du piège du logement en France</div><div class="ep-meta">55 min · Économie · Il y a 1 sem.</div></div></div>
+      <div class="ep-card"><div class="ep-num">139</div><div><div class="ep-title">Géopolitique du Maghreb : les enjeux que l'Europe sous-estime dangereusement</div><div class="ep-meta">61 min · International · Il y a 2 sem.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section id="testimonials">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="sec-label reveal">Ce que disent nos lecteurs</div>
+        <h2 class="sec-title reveal d1">Ils lisent<br><em>Signal</em></h2>
+      </div>
+    </div>
+    <div class="swiper testi-swiper reveal d2">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">« Signal est la seule rédaction française qui explique pourquoi, pas seulement quoi. Leurs analyses économiques m'ont changé la façon de comprendre l'actualité. Je ne pourrait plus m'en passer. »</p><div class="testi-author"><img class="testi-ava" src="https://i.pravatar.cc/100?img=32" alt="a"><div><div class="testi-name">Marie-Claire Dumont</div><div class="testi-info">Abonnée Premium · 4 ans</div></div><div class="testi-plan">Premium</div></div></div></div>
+        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">« La newsletter du matin est devenue mon rituel incontournable. Dense, factuelle, sans sensationnalisme. En 5 minutes, j'ai tout ce qu'il faut pour ma journée. Excellent travail éditorial. »</p><div class="testi-author"><img class="testi-ava" src="https://i.pravatar.cc/100?img=11" alt="b"><div><div class="testi-name">Thomas Renard</div><div class="testi-info">Abonné Standard · 2 ans</div></div><div class="testi-plan">Standard</div></div></div></div>
+        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">« J'apprécie particulièrement la diversité des voix dans les colonnes d'opinion. Signal ne prêche pas pour une chapelle. Des points de vue contradictoires, sourcés, argumentés. C'est rare. »</p><div class="testi-author"><img class="testi-ava" src="https://i.pravatar.cc/100?img=47" alt="c"><div><div class="testi-name">Sophie Blanchard</div><div class="testi-info">Abonnée Premium · 6 ans</div></div><div class="testi-plan">Premium</div></div></div></div>
+        <div class="swiper-slide"><div class="testi-card"><div class="testi-stars">★★★★☆</div><p class="testi-text">« Le podcast Signal est clairement dans mon top 3 francophone. Les invités sont pointus, les questions incisives, le format respecte mon intelligence. Continuez comme ça ! »</p><div class="testi-author"><img class="testi-ava" src="https://i.pravatar.cc/100?img=22" alt="d"><div><div class="testi-name">Julien Mercier</div><div class="testi-info">Auditeur · Paris</div></div><div class="testi-plan">Gratuit</div></div></div></div>
+      </div>
+      <div class="swiper-pagination" style="bottom:-40px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STATS ══ -->
+<div class="stats-band reveal">
+  <div class="stats-inner">
+    <div class="stat-cell"><div class="stat-n" data-t="2400000">0</div><div class="stat-l">Lecteurs uniques / mois</div></div>
+    <div class="stat-cell"><div class="stat-n" data-t="186000">0</div><div class="stat-l">Abonnés actifs</div></div>
+    <div class="stat-cell"><div class="stat-n" data-t="20">0</div><div class="stat-l">Années d'information</div></div>
+    <div class="stat-cell"><div class="stat-n" data-t="98">0</div><div class="stat-l">% satisfaction abonnés</div></div>
+  </div>
+</div>
+
+<!-- ══ SUBSCRIBE ══ -->
+<section id="subscribe">
+  <div class="container">
+    <div class="s-head" style="flex-direction:column;align-items:center;text-align:center;margin-bottom:56px">
+      <div class="sec-label reveal" style="justify-content:center">Rejoindre Signal</div>
+      <h2 class="sec-title reveal d1">L'information<br>sans compromis,<br><em>à votre rythme.</em></h2>
+      <p class="sec-sub reveal d2" style="max-width:480px;margin:0 auto;text-align:center">Accédez à tous nos articles, analyses, podcasts et archives. Sans publicité. Sans algorithme. Juste du journalisme.</p>
+    </div>
+    <div class="plans-grid">
+      <div class="plan-card reveal">
+        <div class="plan-tier">Formule</div>
+        <div class="plan-name">Gratuit</div>
+        <div class="plan-price"><div class="plan-price-amount"><sup>€</sup>0</div><div class="plan-price-period">pour toujours</div></div>
+        <p class="plan-desc">Accès aux articles récents, à la newsletter hebdomadaire et aux podcasts publics.</p>
+        <div class="plan-feats">
+          <div class="pf-item"><div class="pf-ck">✓</div>5 articles premium / mois</div>
+          <div class="pf-item"><div class="pf-ck">✓</div>Newsletter hebdomadaire</div>
+          <div class="pf-item"><div class="pf-ck">✓</div>Podcasts publics</div>
+          <div class="pf-item"><div class="pf-ck">✓</div>Application mobile</div>
+        </div>
+        <a href="#" class="plan-cta">Commencer gratuitement</a>
+      </div>
+      <div class="plan-card featured reveal d1">
+        <div class="plan-badge">⭐ Plus populaire</div>
+        <div class="plan-tier">Formule</div>
+        <div class="plan-name">Signal Premium</div>
+        <div class="plan-price"><div class="plan-price-amount"><sup>€</sup>9<span style="font-size:22px;font-weight:400">,90</span></div><div class="plan-price-period">/ mois · sans engagement</div></div>
+        <p class="plan-desc">L'accès complet à toute la rédaction Signal. Journalisme sans compromis, sans publicité.</p>
+        <div class="plan-feats">
+          <div class="pf-item"><div class="pf-ck">✓</div>Articles illimités, archives complètes</div>
+          <div class="pf-item"><div class="pf-ck">✓</div>Newsletter quotidienne 7h30</div>
+          <div class="pf-item"><div class="pf-ck">✓</div>Tous les podcasts en avant-première</div>
+          <div class="pf-item"><div class="pf-ck">✓</div>Mode lecture hors ligne</div>
+          <div class="pf-item"><div class="pf-ck">✓</div>Zéro publicité</div>
+          <div class="pf-item"><div class="pf-ck">✓</div>Live & événements exclusifs</div>
+        </div>
+        <a href="#" class="plan-cta">S'abonner — 9,90€/mois</a>
+      </div>
+      <div class="plan-card reveal d2">
+        <div class="plan-tier">Formule</div>
+        <div class="plan-name">Signal Annuel</div>
+        <div class="plan-price"><div class="plan-price-amount"><sup>€</sup>89</div><div class="plan-price-period">/ an · économisez 30€</div></div>
+        <p class="plan-desc">Tous les avantages Premium avec deux mois offerts et accès aux conférences Signal.</p>
+        <div class="plan-feats">
+          <div class="pf-item"><div class="pf-ck">✓</div>Tout Signal Premium inclus</div>
+          <div class="pf-item"><div class="pf-ck">✓</div>2 mois gratuits vs mensuel</div>
+          <div class="pf-item"><div class="pf-ck">✓</div>Invitations conférences Signal</div>
+          <div class="pf-item"><div class="pf-ck">✓</div>Accès aux enquêtes exclusives</div>
+          <div class="pf-item"><div class="pf-ck">✓</div>Partage familial (jusqu'à 3 comptes)</div>
+        </div>
+        <a href="#" class="plan-cta">S'abonner — 89€/an</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-layout">
+      <div class="reveal-l">
+        <div class="sec-label">Nous écrire</div>
+        <h3 style="font-family:'Libre Baskerville',serif;font-size:clamp(28px,4vw,46px);font-weight:700;color:var(--text);letter-spacing:-1px;line-height:1.1;margin-bottom:18px">Contactez<br>la <em>rédaction</em></h3>
+        <p style="font-size:14px;color:var(--text2);line-height:2;margin-bottom:32px">Un témoin, un scoop, un droit de réponse ? Notre équipe journalistique traite chaque message avec sérieux et réserve les suites nécessaires. Toutes les sources sont protégées.</p>
+        <div class="c-items">
+          <div class="c-item"><div class="c-icon">📞</div><div><div class="c-lbl">Rédaction</div><div class="c-val">+33 1 55 00 00 00</div></div></div>
+          <div class="c-item"><div class="c-icon">✉️</div><div><div class="c-lbl">Email général</div><div class="c-val">redaction@signal-media.fr</div></div></div>
+          <div class="c-item"><div class="c-icon">🔒</div><div><div class="c-lbl">Sources confidentielles</div><div class="c-val">securite@signal-media.fr (chiffré)</div></div></div>
+          <div class="c-item"><div class="c-icon">📍</div><div><div class="c-lbl">Adresse</div><div class="c-val">28 Rue de la Presse, 75002 Paris</div></div></div>
+        </div>
+        <div class="contact-socials">
+          <a href="#" class="cs">📘</a><a href="#" class="cs">🐦</a><a href="#" class="cs">📸</a><a href="#" class="cs">▶</a><a href="#" class="cs">💼</a>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div class="contact-form">
+          <div class="cf-title">Nous envoyer un message</div>
+          <form onsubmit="return sendContact(event)">
+            <div class="cf-row">
+              <div class="cf-g" style="margin-bottom:0"><label>Prénom *</label><input type="text" placeholder="Jean" required></div>
+              <div class="cf-g" style="margin-bottom:0"><label>Nom *</label><input type="text" placeholder="Dupont" required></div>
+            </div>
+            <div class="cf-row">
+              <div class="cf-g" style="margin-bottom:0"><label>Email *</label><input type="email" placeholder="jean@email.fr" required></div>
+              <div class="cf-g" style="margin-bottom:0"><label>Téléphone</label><input type="tel" placeholder="+33 6 00 00 00 00"></div>
+            </div>
+            <div class="cf-g">
+              <label>Objet de votre message</label>
+              <select>
+                <option>Signaler une information / Scoop</option>
+                <option>Droit de réponse</option>
+                <option>Demande de partenariat presse</option>
+                <option>Publicité & sponsoring</option>
+                <option>Problème abonnement</option>
+                <option>Signaler une erreur</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div class="cf-g" style="margin-bottom:0">
+              <label>Votre message *</label>
+              <textarea rows="5" placeholder="Décrivez votre demande en détail. Si vous souhaitez transmettre des documents, précisez-le et nous vous indiquerons la procédure sécurisée..." required></textarea>
+            </div>
+            <button type="submit" class="cf-submit">Envoyer à la rédaction →</button>
+            <div class="cf-ok" id="cfOk">✅ Message transmis à la rédaction. Réponse sous 48h ouvrées.</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ MAP ══ -->
+<div id="map-sec">
+  <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=2.330%2C48.862%2C2.380%2C48.878&layer=mapnik&marker=48.869%2C2.347" loading="lazy"></iframe>
+  <div class="map-card">
+    <div class="map-name">🗞️ SIGNAL Rédaction</div>
+    <div class="map-addr">28 Rue de la Presse, 75002 Paris<br>Métro Bonne Nouvelle (Lignes 8 & 9)</div>
+    <div class="map-open"><div class="open-dot"></div>Rédaction ouverte · 7j/7</div>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="f-logo">SIGNAL<span>.</span></div>
+        <span class="f-tagline">L'information qui compte · Depuis 2004</span>
+        <p class="f-desc">Journalisme indépendant, sans actionnaire, sans publicité. Financé par nos lecteurs. Fidèle à nos lecteurs.</p>
+        <div class="f-socials">
+          <a href="#" class="f-soc">📘</a><a href="#" class="f-soc">🐦</a><a href="#" class="f-soc">📸</a><a href="#" class="f-soc">▶</a><a href="#" class="f-soc">💼</a>
+        </div>
+      </div>
+      <div class="f-col">
+        <h5>Rubriques</h5>
+        <ul>
+          <li><a href="#">Politique</a></li>
+          <li><a href="#">Économie</a></li>
+          <li><a href="#">International</a></li>
+          <li><a href="#">Technologie</a></li>
+          <li><a href="#">Environnement</a></li>
+          <li><a href="#">Culture & Société</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Formats</h5>
+        <ul>
+          <li><a href="#">Vidéos & Reportages</a></li>
+          <li><a href="#">Podcast Signal</a></li>
+          <li><a href="#">Newsletters</a></li>
+          <li><a href="#">Enquêtes exclusives</a></li>
+          <li><a href="#">Opinions & Tribunes</a></li>
+          <li><a href="#">Livres & Hors-séries</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Signal</h5>
+        <ul>
+          <li><a href="#">La rédaction</a></li>
+          <li><a href="#">Notre indépendance</a></li>
+          <li><a href="#">S'abonner</a></li>
+          <li><a href="#">Charte éditoriale</a></li>
+          <li><a href="#">Publicité & Partenariats</a></li>
+          <li><a href="#">Offres d'emploi</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <p>© 2025 Signal Médias — Tous droits réservés · ISSN 1234-5678</p>
+      <div class="f-bottom-links">
+        <a href="#">Mentions légales</a>
+        <a href="#">Données personnelles</a>
+        <a href="#">CGU</a>
+        <a href="#">Cookies</a>
+        <a href="#">Charte éthique</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<a href="#subscribe" class="float-sub">📰 S'abonner</a>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+/* THEME */
+let th=localStorage.getItem('sg-th')||'light';
+const TB=document.getElementById('themeBtn');
+function applyT(t){document.documentElement.setAttribute('data-theme',t);TB.textContent=t==='light'?'🌙':'☀️';localStorage.setItem('sg-th',t)}
+function toggleTheme(){th=th==='light'?'dark':'light';applyT(th)}
+applyT(th);
+
+/* MOBILE */
+function openMob(){document.getElementById('mobNav').classList.add('open')}
+function closeMob(){document.getElementById('mobNav').classList.remove('open')}
+
+/* NAV CATS */
+function setNavCat(el){document.querySelectorAll('.nav-cat').forEach(c=>c.classList.remove('active'));el.classList.add('active')}
+
+/* SWIPER */
+new Swiper('.testi-swiper',{loop:true,autoplay:{delay:5000},speed:900,spaceBetween:20,pagination:{el:'.testi-swiper .swiper-pagination',clickable:true},breakpoints:{768:{slidesPerView:2},1100:{slidesPerView:3}}});
+
+/* REVEAL */
+const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');ro.unobserve(e.target)}})},{threshold:.1});
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>ro.observe(el));
+
+/* COUNTERS */
+function fmtN(v,target){
+  if(target>=1000000)return(Math.round(v/100000)/10).toFixed(1)+'M';
+  if(target>=1000)return Math.round(v/1000)+'K';
+  return Math.round(v)+(target===98?'%':target===20?'':'+');
+}
+function cnt(el,target){
+  let v=0,step=target/70;
+  const ti=setInterval(()=>{
+    v=Math.min(v+step,target);
+    el.textContent=fmtN(v,target);
+    if(v>=target){el.textContent=fmtN(target,target);clearInterval(ti)}
+  },18);
+}
+const cob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.stat-n[data-t]').forEach(el=>cnt(el,+el.dataset.t));cob.disconnect()}})},{threshold:.3});
+const sb=document.querySelector('.stats-band');if(sb)cob.observe(sb);
+
+/* CAT TABS */
+function switchCat(btn,id){
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.cat-panel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  const p=document.getElementById('panel-'+id);
+  if(p){p.classList.add('on');p.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>{el.classList.remove('on');setTimeout(()=>el.classList.add('on'),40)})}
+}
+
+/* SAVE ARTICLES */
+function toggleSave(btn){
+  const saved=btn.classList.toggle('saved');
+  btn.textContent=saved?'🔖':'♡';
+}
+
+/* POLL */
+function votePoll(btn){
+  const sel=document.querySelector('input[name="poll"]:checked');
+  if(!sel){alert('Veuillez choisir une option');return}
+  btn.textContent='✓ Vote enregistré !';
+  btn.style.background='#22c55e';
+  btn.disabled=true;
+}
+
+/* PODCAST */
+function togglePlay(btn){btn.textContent=btn.textContent==='▶'?'⏸':'▶'}
+function seekPodcast(e,bar){
+  const rect=bar.getBoundingClientRect();
+  const pct=((e.clientX-rect.left)/rect.width)*100;
+  bar.querySelector('.podcast-progress-fill').style.width=pct+'%';
+}
+
+/* NEWSLETTER */
+function nlSend(btn){
+  const inp=btn.closest('.newsletter-w-inp').querySelector('input');
+  if(!inp.value){return}
+  btn.textContent='✓ Abonné !';
+  btn.style.background='#22c55e';
+  inp.value='';
+  setTimeout(()=>{btn.textContent='S\'abonner gratuitement →';btn.style.background=''},3000);
+}
+
+/* CONTACT */
+function sendContact(e){
+  e.preventDefault();
+  document.getElementById('cfOk').style.display='block';
+  e.target.reset();
+  setTimeout(()=>document.getElementById('cfOk').style.display='none',7000);
+  return false;
+}
+
+/* FAQ (in case) */
+function toggleFaq(q){
+  const item=q.parentElement;const was=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!was)item.classList.add('open');
+}
+</script>
+</body>
+</html>

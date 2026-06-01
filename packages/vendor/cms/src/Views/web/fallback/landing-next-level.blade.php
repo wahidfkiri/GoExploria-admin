@@ -956,7 +956,7 @@ html.light .float-cta {
             </div>
             <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
+          <a href="{{ asset('templates/next-level/media-news.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=500&q=80" alt="Médias & news">
@@ -967,7 +967,7 @@ html.light .float-cta {
             </div>
             <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
+          <a href="{{ asset('templates/next-level/cabinet-conseil.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500&q=80" alt="Commerce local premium">
@@ -2622,7 +2622,6 @@ function handleForm(e) {
 </script>
 </body>
 </html>
-
 
 
 

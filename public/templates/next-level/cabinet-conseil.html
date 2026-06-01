@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCA CONSEIL — Cabinet de Conseil Stratégique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Epilogue:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<style>
+:root{
+  --gold:#B8952A; --gold2:#D4AF50; --gold3:#F0CC7A;
+  --copper:#C97D4E; --gold-pale:rgba(184,149,42,.10);
+  --tr:all .5s cubic-bezier(.23,1,.32,1); --r:16px; --r2:24px;
+}
+[data-theme="dark"]{
+  --bg:#0A0908; --bg2:#100F0D; --bg3:#161412; --bg4:#1E1C19;
+  --card:#131210; --card2:#1A1815;
+  --border:rgba(184,149,42,.12); --border2:rgba(184,149,42,.22);
+  --text:#F2EDE4; --text2:#8C8070; --text3:#4A4238;
+  --nav-bg:rgba(10,9,8,.92); --inp:rgba(255,255,255,.04);
+  --sh:0 32px 80px rgba(0,0,0,.7); --sh2:0 8px 32px rgba(0,0,0,.4);
+  --diag:rgba(184,149,42,.06);
+}
+[data-theme="light"]{
+  --bg:#FAF8F4; --bg2:#F2EDE4; --bg3:#E8E0D0; --bg4:#DDD5C0;
+  --card:#FFFFFF; --card2:#F7F3EC;
+  --border:rgba(120,90,30,.10); --border2:rgba(120,90,30,.20);
+  --text:#1A1510; --text2:#6A5A40; --text3:#A89878;
+  --nav-bg:rgba(250,248,244,.92); --inp:rgba(0,0,0,.04);
+  --sh:0 24px 60px rgba(0,0,0,.10); --sh2:0 6px 24px rgba(0,0,0,.07);
+  --diag:rgba(184,149,42,.05);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Epilogue',sans-serif;overflow-x:hidden;transition:background .5s,color .5s}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+a{text-decoration:none;color:inherit}img{display:block;max-width:100%}
+
+/* ── DIAGONAL TEXTURE ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(
+    -55deg,
+    var(--diag) 0px, var(--diag) 1px,
+    transparent 1px, transparent 80px
+  );
+}
+
+/* ══ NAVBAR ══ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  height:74px;padding:0 60px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:var(--tr);
+}
+nav.solid{background:var(--nav-bg);backdrop-filter:blur(28px);border-bottom:1px solid var(--border);box-shadow:var(--sh2)}
+.logo{display:flex;flex-direction:column;line-height:1;position:relative;z-index:1}
+.logo-main{font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;color:var(--text);letter-spacing:4px;text-transform:uppercase}
+.logo-main span{color:var(--gold)}
+.logo-sub{font-size:7px;letter-spacing:5px;text-transform:uppercase;color:var(--text3);margin-top:3px}
+.nav-links{display:flex;gap:36px;list-style:none;position:relative;z-index:1}
+.nav-links a{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text2);transition:var(--tr);position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:var(--tr)}
+.nav-links a:hover{color:var(--gold)}
+.nav-links a:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:14px;position:relative;z-index:1}
+.th-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--border2);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:var(--text2);transition:var(--tr)}
+.th-btn:hover{border-color:var(--gold);color:var(--gold);transform:rotate(20deg)}
+.nav-cta{background:var(--gold);color:#0A0908;padding:10px 24px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;transition:var(--tr);white-space:nowrap}
+.nav-cta:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(184,149,42,.4)}
+.ham{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;z-index:1}
+.ham span{width:24px;height:1px;background:var(--text);display:block;transition:var(--tr)}
+.mob-nav{display:none;position:fixed;inset:0;z-index:998;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:28px}
+.mob-nav.open{display:flex}
+.mob-nav a{font-family:'Instrument Serif',serif;font-size:32px;color:var(--text);transition:var(--tr)}
+.mob-nav a:hover{color:var(--gold)}
+.mob-close{position:absolute;top:24px;right:28px;font-size:28px;background:none;border:none;color:var(--text);cursor:pointer}
+
+/* ══ HERO ══ */
+#hero{
+  position:relative;min-height:100vh;
+  display:flex;align-items:flex-end;
+  overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background-size:cover;background-position:center;
+  background-image:url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=85');
+}
+[data-theme="light"] .hero-bg{filter:brightness(.45) saturate(.7)}
+[data-theme="dark"] .hero-bg{filter:brightness(.22) saturate(.6)}
+.hero-bg-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(
+    105deg,
+    rgba(10,9,8,.96) 0%,
+    rgba(10,9,8,.80) 45%,
+    rgba(10,9,8,.30) 100%
+  );
+}
+[data-theme="light"] .hero-bg-overlay{background:linear-gradient(105deg,rgba(250,248,244,.96) 0%,rgba(250,248,244,.82) 45%,rgba(250,248,244,.25) 100%)}
+.hero-content{
+  position:relative;z-index:2;
+  padding:0 80px 100px;
+  max-width:780px;
+}
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:14px;
+  font-size:9px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:28px;font-weight:700;
+}
+.hero-kicker::before{content:'';width:40px;height:1px;background:var(--gold)}
+.hero-h1{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(54px,8vw,108px);
+  font-weight:400;line-height:.92;
+  color:var(--text);letter-spacing:-2px;
+  margin-bottom:28px;
+}
+.hero-h1 em{font-style:italic;color:var(--gold)}
+.hero-h1 .outline{-webkit-text-stroke:1.5px var(--text3);color:transparent}
+.hero-sub{font-size:16px;color:var(--text2);line-height:1.9;font-weight:300;max-width:500px;margin-bottom:44px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.btn-gold{
+  background:var(--gold);color:#0A0908;
+  padding:15px 36px;border-radius:3px;
+  font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:10px;transition:var(--tr);
+}
+.btn-gold:hover{background:var(--gold2);transform:translateY(-3px);box-shadow:0 12px 36px rgba(184,149,42,.45)}
+.btn-ghost{
+  border:1px solid var(--border2);color:var(--text);
+  padding:14px 32px;border-radius:3px;
+  font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:10px;transition:var(--tr);
+}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px)}
+.hero-bottom-strip{
+  position:absolute;bottom:0;left:0;right:0;z-index:2;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--border);
+  background:rgba(10,9,8,.65);backdrop-filter:blur(20px);
+}
+[data-theme="light"] .hero-bottom-strip{background:rgba(250,248,244,.7)}
+.hbs-cell{
+  padding:22px 32px;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;gap:4px;transition:var(--tr);cursor:default;
+}
+.hbs-cell:hover{background:var(--gold-pale)}
+.hbs-cell:last-child{border-right:none}
+.hbs-label{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--text3)}
+.hbs-val{font-family:'Instrument Serif',serif;font-size:18px;color:var(--gold);font-weight:400}
+.hero-side-num{
+  position:absolute;right:6%;top:50%;transform:translateY(-50%);
+  z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.hsn-cur{font-family:'Instrument Serif',serif;font-size:56px;color:rgba(184,149,42,.15);line-height:1}
+.hsn-line{width:1px;height:50px;background:var(--border)}
+.hsn-tot{font-size:11px;color:var(--text3);letter-spacing:2px}
+.hero-scroll-hint{position:absolute;bottom:120px;right:80px;z-index:2;display:flex;align-items:center;gap:10px;transform:rotate(90deg);transform-origin:center}
+.hero-scroll-hint span{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text3)}
+.hero-scroll-line{width:40px;height:1px;background:var(--border);position:relative;overflow:hidden}
+.hero-scroll-line::after{content:'';position:absolute;top:0;left:-40px;width:40px;height:1px;background:var(--gold);animation:scrollmove 2s ease-in-out infinite}
+@keyframes scrollmove{0%{left:-40px}100%{left:100%}}
+
+/* ══ SECTIONS ══ */
+section{padding:120px 80px;position:relative;z-index:1}
+.container{max-width:1360px;margin:0 auto}
+.s-eyebrow{display:flex;align-items:center;gap:14px;font-size:9px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.s-eyebrow::before{content:'';width:32px;height:1px;background:var(--gold)}
+h2.s-title{font-family:'Instrument Serif',serif;font-size:clamp(38px,5.5vw,70px);font-weight:400;line-height:1.0;letter-spacing:-1.5px;color:var(--text);margin-bottom:20px}
+h2.s-title em{font-style:italic;color:var(--gold)}
+h2.s-title .str{-webkit-text-stroke:1px var(--text3);color:transparent}
+.s-sub{font-size:15px;color:var(--text2);line-height:1.95;font-weight:300;max-width:520px}
+.s-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px;gap:40px;flex-wrap:wrap}
+.link-more{display:inline-flex;align-items:center;gap:10px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--gold);padding-bottom:2px;transition:var(--tr)}
+.link-more:hover{gap:16px}
+
+/* ══ TICKER ══ */
+.ticker{background:var(--gold);overflow:hidden;padding:13px 0;position:relative;z-index:1}
+.ticker-track{display:flex;animation:tktk 28s linear infinite;white-space:nowrap}
+.ti{font-family:'Instrument Serif',serif;font-style:italic;font-size:16px;color:rgba(10,9,8,.85);padding:0 44px}
+.td{color:rgba(10,9,8,.3)}
+@keyframes tktk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ══ EXPERTISE ══ */
+#expertise{background:var(--bg2)}
+.exp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.exp-card{
+  background:var(--card);padding:48px 40px;position:relative;
+  overflow:hidden;transition:var(--tr);cursor:pointer;
+}
+.exp-card::before{content:'';position:absolute;inset:0;background:var(--gold);transform:scaleY(0);transform-origin:bottom;transition:transform .6s cubic-bezier(.23,1,.32,1);z-index:0}
+.exp-card:hover::before{transform:scaleY(1)}
+.exp-card *{position:relative;z-index:1;transition:color .4s}
+.exp-card:hover *{color:#0A0908!important}
+.exp-num{font-family:'Instrument Serif',serif;font-size:11px;letter-spacing:4px;color:var(--gold);margin-bottom:28px;display:block}
+.exp-icon{font-size:32px;margin-bottom:18px;display:block}
+.exp-name{font-family:'Instrument Serif',serif;font-size:26px;color:var(--text);margin-bottom:14px;font-weight:400;line-height:1.1}
+.exp-desc{font-size:13px;color:var(--text2);line-height:1.85;margin-bottom:20px}
+.exp-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.exp-tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--border);padding:3px 12px;border-radius:2px;transition:var(--tr)}
+.exp-card:hover .exp-tag{background:rgba(10,9,8,.15);border-color:rgba(10,9,8,.2);color:#0A0908}
+.exp-arrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);transition:var(--tr)}
+.exp-card:hover .exp-arrow{gap:14px}
+
+/* ══ ABOUT / PHILOSOPHIE ══ */
+#about{background:var(--bg);padding:0}
+.about-layout{display:grid;grid-template-columns:1fr 1fr;min-height:85vh}
+.about-visual{position:relative;overflow:hidden}
+.about-visual img{width:100%;height:100%;object-fit:cover;transition:transform 10s ease}
+.about-visual:hover img{transform:scale(1.04)}
+.about-visual-overlay{position:absolute;inset:0;background:linear-gradient(to right,transparent 50%,var(--bg))}
+.about-floats{position:absolute;bottom:60px;left:60px;display:flex;flex-direction:column;gap:14px}
+.af{background:rgba(10,9,8,.82);backdrop-filter:blur(18px);border:1px solid rgba(184,149,42,.25);border-radius:var(--r);padding:16px 22px;display:flex;align-items:center;gap:16px;min-width:200px;transition:var(--tr)}
+[data-theme="light"] .af{background:rgba(250,248,244,.88)}
+.af:hover{border-color:var(--gold);transform:translateX(6px)}
+.af-n{font-family:'Instrument Serif',serif;font-size:32px;color:var(--gold);line-height:1}
+.af-l{font-size:11px;color:var(--text2);letter-spacing:.5px;margin-top:2px}
+.about-right{padding:100px 80px;display:flex;flex-direction:column;justify-content:center}
+.about-quote{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(20px,2.5vw,30px);color:var(--text);line-height:1.55;margin:28px 0 34px;border-left:2px solid var(--gold);padding-left:24px}
+.about-desc{font-size:14px;color:var(--text2);line-height:2.05;font-weight:300;margin-bottom:20px}
+.about-accolades{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+.acc-badge{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--border2);border-radius:var(--r);padding:12px 16px;transition:var(--tr)}
+.acc-badge:hover{border-color:var(--gold);background:var(--gold-pale)}
+.acc-icon{font-size:20px}
+.acc-text strong{font-size:12px;color:var(--text);display:block}
+.acc-text span{font-size:10px;color:var(--text3);letter-spacing:.5px}
+
+/* ══ APPROACH / PROCESS ══ */
+#approach{background:var(--bg2)}
+.approach-grid{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
+.approach-steps{display:flex;flex-direction:column;gap:0}
+.ap-step{
+  display:flex;gap:24px;padding:28px 0;
+  border-bottom:1px solid var(--border);position:relative;
+  transition:var(--tr);cursor:default;
+}
+.ap-step:last-child{border-bottom:none}
+.ap-step:hover{padding-left:10px}
+.ap-num-wrap{
+  width:48px;height:48px;border-radius:50%;border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-family:'Instrument Serif',serif;font-size:18px;font-weight:400;
+  color:var(--gold);transition:var(--tr);
+}
+.ap-step:hover .ap-num-wrap{background:var(--gold);color:#0A0908;border-color:var(--gold);transform:scale(1.1)}
+.ap-content{}
+.ap-title{font-family:'Instrument Serif',serif;font-size:21px;color:var(--text);margin-bottom:8px;line-height:1.2}
+.ap-desc{font-size:13px;color:var(--text2);line-height:1.85}
+.approach-right-img{border-radius:var(--r2);overflow:hidden;height:520px;box-shadow:var(--sh);position:relative}
+.approach-right-img img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease}
+.approach-right-img:hover img{transform:scale(1.04)}
+.approach-right-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(10,9,8,.5),transparent 60%)}
+
+/* ══ TEAM ══ */
+#team{background:var(--bg)}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.team-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;transition:var(--tr);cursor:pointer;position:relative}
+.team-card:hover{transform:translateY(-8px);box-shadow:var(--sh);border-color:var(--border2)}
+.team-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--copper));transform:scaleX(0);transform-origin:left;transition:var(--tr);z-index:2}
+.team-card:hover::before{transform:scaleX(1)}
+.team-img{height:300px;overflow:hidden;position:relative;background:var(--bg3)}
+.team-img img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.23,1,.32,1)}
+.team-card:hover .team-img img{transform:scale(1.06)}
+.team-spec{position:absolute;top:14px;left:14px;background:var(--gold);color:#0A0908;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:2px}
+.team-overlay{position:absolute;inset:0;background:rgba(10,9,8,.88);display:flex;align-items:center;justify-content:center;gap:14px;opacity:0;transition:var(--tr)}
+.team-card:hover .team-overlay{opacity:1}
+.t-soc{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;transition:var(--tr)}
+.t-soc:hover{background:var(--gold);border-color:var(--gold);color:#0A0908;transform:scale(1.1)}
+.team-body{padding:24px}
+.team-name{font-family:'Instrument Serif',serif;font-size:20px;color:var(--text);margin-bottom:4px;line-height:1}
+.team-role{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.team-bio{font-size:12px;color:var(--text3);line-height:1.7;margin-bottom:12px}
+.team-creds{display:flex;gap:6px;flex-wrap:wrap}
+.team-cred{background:var(--gold-pale);border:1px solid var(--border);padding:2px 10px;border-radius:2px;font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--gold)}
+
+/* ══ CHIFFRES / IMPACT ══ */
+.impact-band{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;z-index:1}
+.impact-inner{max-width:1360px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid var(--border)}
+.impact-cell{padding:60px 40px;text-align:center;border-right:1px solid var(--border);transition:var(--tr);position:relative;overflow:hidden}
+.impact-cell::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:var(--tr)}
+.impact-cell:hover{background:var(--gold-pale)}
+.impact-cell:hover::after{transform:scaleX(1)}
+.impact-n{font-family:'Instrument Serif',serif;font-size:60px;font-weight:400;color:var(--gold);line-height:1;letter-spacing:-1px}
+.impact-l{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-top:8px}
+
+/* ══ CASES / REFERENCES ══ */
+#cases{background:var(--bg)}
+.cases-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:20px}
+.case-card{border-radius:var(--r2);overflow:hidden;position:relative;cursor:pointer;min-height:320px;background:var(--card)}
+.case-card:nth-child(1){grid-row:span 2;min-height:auto}
+.case-img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .8s cubic-bezier(.23,1,.32,1)}
+.case-card:hover .case-img{transform:scale(1.06)}
+.case-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,9,8,.9) 0%,rgba(10,9,8,.3) 60%,transparent 100%)}
+[data-theme="light"] .case-overlay{background:linear-gradient(to top,rgba(10,9,8,.85) 0%,rgba(10,9,8,.25) 60%,transparent 100%)}
+.case-content{position:absolute;bottom:0;left:0;right:0;padding:28px;z-index:2}
+.case-sector{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:block}
+.case-title{font-family:'Instrument Serif',serif;font-size:clamp(18px,2.5vw,26px);color:#fff;margin-bottom:8px;line-height:1.2}
+.case-result{font-size:12px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:12px}
+.case-tag{display:inline-flex;align-items:center;gap:6px;color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:var(--tr)}
+.case-card:hover .case-tag{gap:12px}
+.case-top-badge{position:absolute;top:18px;left:18px;z-index:3;background:var(--gold);color:#0A0908;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:2px}
+
+/* ══ TESTIMONIALS ══ */
+#testimonials{background:var(--bg2)}
+.testi-layout{display:grid;grid-template-columns:300px 1fr;gap:80px;align-items:start}
+.testi-sidebar{}
+.testi-score-n{font-family:'Instrument Serif',serif;font-size:80px;font-weight:400;color:var(--gold);line-height:1;letter-spacing:-2px}
+.testi-score-stars{font-size:18px;letter-spacing:3px;color:var(--gold);margin:6px 0}
+.testi-score-sub{font-size:11px;color:var(--text3);letter-spacing:1px}
+.testi-platforms{display:flex;flex-direction:column;gap:10px;margin-top:28px}
+.tp-row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;transition:var(--tr)}
+.tp-row:hover{border-color:var(--gold);background:var(--gold-pale)}
+.tp-icon{font-size:18px}
+.tp-name{font-size:12px;font-weight:600;color:var(--text)}
+.tp-score{margin-left:auto;font-family:'Instrument Serif',serif;font-size:16px;color:var(--gold)}
+.testi-cards-wrap .swiper{overflow:hidden;padding-bottom:50px!important}
+.testi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:36px;position:relative;overflow:hidden;transition:var(--tr)}
+.testi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:var(--tr)}
+.testi-card:hover{border-color:var(--border2);box-shadow:var(--sh);transform:translateY(-4px)}
+.testi-card:hover::before{opacity:1}
+.testi-card-quote{font-family:'Instrument Serif',serif;font-size:48px;color:var(--gold);opacity:.15;line-height:1;position:absolute;top:14px;right:22px;pointer-events:none}
+.testi-stars{color:var(--gold);font-size:13px;letter-spacing:2px;margin-bottom:14px}
+.testi-text{font-family:'Instrument Serif',serif;font-style:italic;font-size:16px;color:var(--text);line-height:1.85;margin-bottom:26px}
+.testi-author{display:flex;align-items:center;gap:14px}
+.testi-ava{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)}
+.testi-name{font-weight:700;font-size:14px;color:var(--text)}
+.testi-info{font-size:11px;color:var(--text3);margin-top:2px}
+.testi-co{margin-left:auto;font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;background:var(--gold-pale);padding:4px 12px;border-radius:2px}
+.swiper-pagination-bullet{background:var(--text3)!important;opacity:.4!important}
+.swiper-pagination-bullet-active{background:var(--gold)!important;opacity:1!important;width:20px!important;border-radius:2px!important}
+
+/* ══ OFFRES / PRICING ══ */
+#pricing{background:var(--bg)}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start}
+.price-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--r2);padding:44px 38px;position:relative;overflow:hidden;transition:var(--tr)}
+.price-card:hover{transform:translateY(-6px);box-shadow:var(--sh);border-color:var(--gold)}
+.price-card.featured{background:var(--gold);border-color:var(--gold);transform:scale(1.04)}
+.price-card.featured *{color:#0A0908!important}
+.price-card.featured:hover{transform:scale(1.04) translateY(-6px)}
+.price-featured-badge{position:absolute;top:22px;right:22px;background:#0A0908;color:var(--gold)!important;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:2px}
+.price-plan{font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--text3);margin-bottom:18px}
+.price-name{font-family:'Instrument Serif',serif;font-size:28px;color:var(--text);margin-bottom:8px;line-height:1}
+.price-desc{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.price-card.featured .price-desc{border-bottom-color:rgba(10,9,8,.15)}
+.price-features{display:flex;flex-direction:column;gap:12px;margin-bottom:36px}
+.pf-item{display:flex;align-items:flex-start;gap:12px;font-size:13px;color:var(--text2)}
+.pf-check{width:20px;height:20px;border-radius:50%;background:var(--gold-pale);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold);flex-shrink:0;margin-top:1px}
+.price-card.featured .pf-check{background:rgba(10,9,8,.12);border-color:rgba(10,9,8,.2);color:#0A0908}
+.price-cta{display:block;text-align:center;padding:14px;border:1.5px solid var(--border2);border-radius:3px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text);transition:var(--tr)}
+.price-cta:hover{background:var(--gold);border-color:var(--gold);color:#0A0908!important}
+.price-card.featured .price-cta{background:#0A0908;border-color:#0A0908;color:var(--gold)!important}
+
+/* ══ INSIGHTS / BLOG ══ */
+#insights{background:var(--bg2)}
+.insights-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:20px}
+.insight-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;cursor:pointer;transition:var(--tr)}
+.insight-card:hover{transform:translateY(-6px);box-shadow:var(--sh);border-color:var(--border2)}
+.insight-img{overflow:hidden;position:relative}
+.insight-img img{width:100%;object-fit:cover;transition:transform .7s cubic-bezier(.23,1,.32,1);display:block}
+.insight-img img.tall{height:280px}
+.insight-img img.sm{height:170px}
+.insight-card:hover .insight-img img{transform:scale(1.04)}
+.insight-cat{position:absolute;top:14px;left:14px;background:var(--gold);color:#0A0908;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:2px}
+.insight-body{padding:26px}
+.insight-meta{display:flex;align-items:center;gap:10px;font-size:10px;color:var(--text3);letter-spacing:.5px;margin-bottom:10px}
+.im-dot{width:2px;height:2px;border-radius:50%;background:var(--text3)}
+.insight-title{font-family:'Instrument Serif',serif;font-size:clamp(17px,2vw,23px);color:var(--text);line-height:1.25;margin-bottom:10px;transition:var(--tr)}
+.insight-card:hover .insight-title{color:var(--gold)}
+.insight-excerpt{font-size:12px;color:var(--text2);line-height:1.85}
+.insight-read{display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:16px;transition:var(--tr)}
+.insight-read:hover{gap:14px}
+
+/* ══ FAQ ══ */
+#faq{background:var(--bg)}
+.faq-layout{display:grid;grid-template-columns:1fr 1.5fr;gap:100px;align-items:start}
+.faq-list{display:flex;flex-direction:column}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:22px 0;cursor:pointer;gap:16px}
+.faq-q-text{font-family:'Instrument Serif',serif;font-size:17px;color:var(--text);transition:var(--tr);font-weight:400}
+.faq-q:hover .faq-q-text{color:var(--gold)}
+.faq-icon{width:32px;height:32px;border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);transition:var(--tr);flex-shrink:0}
+.faq-item.open .faq-icon{background:var(--gold);border-color:var(--gold);color:#0A0908;transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.faq-item.open .faq-a{max-height:220px}
+.faq-a p{padding:0 0 22px;font-size:14px;color:var(--text2);line-height:1.95}
+
+/* ══ CONTACT ══ */
+#contact{background:var(--bg2)}
+.contact-layout{display:grid;grid-template-columns:1fr 1.15fr;gap:100px;align-items:start}
+.contact-left h3{font-family:'Instrument Serif',serif;font-size:clamp(32px,4vw,52px);color:var(--text);line-height:1.05;letter-spacing:-1px;margin-bottom:20px}
+.contact-left h3 em{font-style:italic;color:var(--gold)}
+.contact-left-desc{font-size:14px;color:var(--text2);line-height:2;font-weight:300;margin-bottom:36px}
+.c-items{display:flex;flex-direction:column;gap:18px;margin-bottom:36px}
+.c-item{display:flex;align-items:flex-start;gap:14px}
+.c-icon{width:44px;height:44px;border-radius:var(--r);background:var(--gold-pale);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:var(--tr)}
+.c-item:hover .c-icon{background:var(--gold)}
+.c-lbl{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.c-val{font-size:14px;color:var(--text2)}
+.contact-socials{display:flex;gap:10px}
+.cs{width:42px;height:42px;border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text2);transition:var(--tr)}
+.cs:hover{background:var(--gold);border-color:var(--gold);color:#0A0908;transform:translateY(-3px)}
+.contact-form{background:var(--card);border:1px solid var(--border2);border-radius:var(--r2);padding:48px;box-shadow:var(--sh2)}
+.cf-title{font-family:'Instrument Serif',serif;font-size:28px;color:var(--text);margin-bottom:6px}
+.cf-sub{font-size:12px;color:var(--text3);margin-bottom:30px}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.cf-g{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.cf-g label{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3)}
+.cf-g input,.cf-g select,.cf-g textarea{background:var(--inp);border:1px solid var(--border);color:var(--text);padding:13px 16px;border-radius:var(--r);font-family:'Epilogue',sans-serif;font-size:13px;outline:none;resize:none;transition:var(--tr)}
+.cf-g input::placeholder,.cf-g textarea::placeholder{color:var(--text3)}
+.cf-g input:focus,.cf-g select:focus,.cf-g textarea:focus{border-color:var(--gold);background:var(--gold-pale);box-shadow:0 0 0 3px rgba(184,149,42,.08)}
+.cf-g select option{background:var(--card);color:var(--text)}
+.cf-submit{width:100%;background:var(--gold);color:#0A0908;border:none;padding:16px;border-radius:3px;font-family:'Epilogue',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;margin-top:6px;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:10px}
+.cf-submit:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 10px 36px rgba(184,149,42,.4)}
+.cf-ok{display:none;background:var(--gold-pale);border:1px solid var(--border2);border-radius:var(--r);padding:14px;color:var(--gold);font-size:13px;font-weight:700;text-align:center;margin-top:12px}
+
+/* ══ MAP ══ */
+#map-sec{height:420px;position:relative;overflow:hidden;z-index:1}
+#map-sec iframe{width:100%;height:100%;border:none}
+[data-theme="dark"] #map-sec iframe{filter:invert(90%) hue-rotate(165deg) saturate(.6) brightness(.82)}
+.map-card{position:absolute;top:30px;left:60px;background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:24px 28px;box-shadow:var(--sh)}
+.map-name{font-family:'Instrument Serif',serif;font-size:20px;color:var(--gold);margin-bottom:4px}
+.map-addr{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:8px}
+.map-open{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:#22c55e}
+.open-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ══ NEWSLETTER ══ */
+#newsletter{background:var(--bg3);padding:90px 80px;position:relative;z-index:1}
+.nl-wrap{max-width:1360px;margin:0 auto;background:var(--card);border:1px solid var(--border2);border-radius:var(--r2);padding:70px 80px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;overflow:hidden}
+.nl-deco{position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,var(--gold-pale) 0%,transparent 70%);pointer-events:none}
+.nl-feats{display:flex;flex-direction:column;gap:14px}
+.nl-feat{display:flex;align-items:center;gap:14px}
+.nl-feat-ico{width:36px;height:36px;border-radius:var(--r);background:var(--gold-pale);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.nl-feat-text strong{font-size:13px;color:var(--text);display:block}
+.nl-feat-text span{font-size:11px;color:var(--text3)}
+.nl-form-area{}
+.nl-form{display:flex;gap:0;border-radius:3px;overflow:hidden;border:1px solid var(--border2);margin-top:28px}
+.nl-input{flex:1;background:var(--inp);border:none;color:var(--text);padding:14px 20px;font-family:'Epilogue',sans-serif;font-size:14px;outline:none}
+.nl-input::placeholder{color:var(--text3)}
+.nl-btn{background:var(--gold);border:none;color:#0A0908;padding:14px 22px;font-family:'Epilogue',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:var(--tr);white-space:nowrap}
+.nl-btn:hover{background:var(--gold2)}
+
+/* ══ FOOTER ══ */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:80px 80px 40px;position:relative;z-index:1}
+.footer-grid{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:56px;margin-bottom:56px}
+.f-brand-logo{font-family:'Instrument Serif',serif;font-size:24px;color:var(--text);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.f-brand-logo span{color:var(--gold)}
+.f-brand-tag{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:18px}
+.f-brand-desc{font-size:13px;color:var(--text2);line-height:1.9;max-width:270px;margin-bottom:22px}
+.f-socials{display:flex;gap:10px}
+.f-soc{width:38px;height:38px;border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2);transition:var(--tr)}
+.f-soc:hover{background:var(--gold);border-color:var(--gold);color:#0A0908}
+.f-col h5{font-size:9px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--text3);margin-bottom:20px}
+.f-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.f-col ul li a{font-size:13px;color:var(--text2);transition:var(--tr)}
+.f-col ul li a:hover{color:var(--gold);padding-left:5px}
+.f-bottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:26px;flex-wrap:wrap;gap:12px}
+.f-bottom p{font-size:11px;color:var(--text3)}
+.f-bottom-links{display:flex;gap:22px}
+.f-bottom-links a{font-size:11px;color:var(--text3);transition:var(--tr)}
+.f-bottom-links a:hover{color:var(--gold)}
+
+/* ══ FLOAT ══ */
+.float-cta{position:fixed;bottom:32px;right:32px;z-index:900;background:var(--gold);color:#0A0908;width:56px;height:56px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:21px;box-shadow:0 8px 32px rgba(184,149,42,.5);transition:var(--tr)}
+.float-cta:hover{transform:translateY(-4px) rotate(-5deg);box-shadow:0 14px 50px rgba(184,149,42,.65)}
+
+/* ══ REVEALS ══ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}
+.reveal-l{opacity:0;transform:translateX(-28px);transition:opacity .8s ease,transform .8s ease}
+.reveal-r{opacity:0;transform:translateX(28px);transition:opacity .8s ease,transform .8s ease}
+.reveal.on,.reveal-l.on,.reveal-r.on{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1200px){
+  section{padding:80px 40px}nav{padding:0 36px}
+  .hero-content{padding:0 40px 120px}
+  .exp-grid{grid-template-columns:1fr 1fr}
+  .about-layout{grid-template-columns:1fr;min-height:auto}
+  .about-visual{height:440px}
+  .about-right{padding:60px 40px}
+  .approach-grid{grid-template-columns:1fr;gap:60px}
+  .approach-right-img{height:380px}
+  .team-grid{grid-template-columns:1fr 1fr}
+  .cases-grid{grid-template-columns:1fr 1fr}
+  .cases-grid .case-card:nth-child(1){grid-column:span 2;grid-row:span 1;min-height:280px}
+  .testi-layout{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr}
+  .price-card.featured{transform:none}
+  .insights-grid{grid-template-columns:1fr 1fr}
+  .insights-grid .insight-card:first-child{grid-column:span 2}
+  .contact-layout{grid-template-columns:1fr;gap:60px}
+  .faq-layout{grid-template-columns:1fr}
+  .nl-wrap{grid-template-columns:1fr;gap:40px;padding:50px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:40px}
+  .impact-inner{grid-template-columns:1fr 1fr}
+  .hero-bottom-strip{grid-template-columns:1fr 1fr}
+  .hbs-cell:nth-child(3){border-top:1px solid var(--border)}
+  .hbs-cell:nth-child(4){border-top:1px solid var(--border);border-right:none}
+  .hbs-cell:nth-child(2){border-right:none}
+}
+@media(max-width:768px){
+  nav{padding:0 20px;height:64px}.nav-links,.nav-right{display:none}.ham{display:flex}
+  section{padding:64px 20px}
+  .hero-content{padding:0 20px 130px}
+  .hero-h1{font-size:clamp(44px,12vw,64px)}
+  .hero-bottom-strip{grid-template-columns:1fr 1fr;position:relative}
+  .exp-grid{grid-template-columns:1fr}
+  .team-grid{grid-template-columns:1fr 1fr}
+  .cases-grid{grid-template-columns:1fr}
+  .cases-grid .case-card:nth-child(1){grid-column:span 1}
+  .insights-grid{grid-template-columns:1fr}
+  .insights-grid .insight-card:first-child{grid-column:span 1}
+  .impact-inner{grid-template-columns:1fr 1fr}
+  footer{padding:56px 20px 32px}.footer-grid{grid-template-columns:1fr}
+  .nl-wrap{padding:32px 24px}
+  .map-card{left:16px;top:16px}
+  .cf-row{grid-template-columns:1fr}
+  .hero-side-num,.hero-scroll-hint{display:none}
+  .s-head{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE NAV -->
+<div class="mob-nav" id="mobNav">
+  <button class="mob-close" onclick="closeMob()">✕</button>
+  <a href="#expertise" onclick="closeMob()">Expertises</a>
+  <a href="#approach" onclick="closeMob()">Notre Approche</a>
+  <a href="#team" onclick="closeMob()">Équipe</a>
+  <a href="#cases" onclick="closeMob()">Références</a>
+  <a href="#pricing" onclick="closeMob()">Offres</a>
+  <a href="#contact" onclick="closeMob()">Contact</a>
+</div>
+
+<!-- ══ NAVBAR ══ -->
+<nav id="navbar">
+  <div class="logo">
+    <div class="logo-main">ARCA<span>.</span></div>
+    <div class="logo-sub">Cabinet de Conseil Stratégique</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#expertise">Expertises</a></li>
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#approach">Approche</a></li>
+    <li><a href="#team">Équipe</a></li>
+    <li><a href="#cases">Références</a></li>
+    <li><a href="#pricing">Offres</a></li>
+    <li><a href="#insights">Insights</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="th-btn" id="themeBtn" onclick="toggleTheme()"></button>
+    <a href="#contact" class="nav-cta">Nous contacter</a>
+  </div>
+  <button class="ham" onclick="openMob()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-bg-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-kicker">Cabinet de Conseil · Paris · Depuis 2005</div>
+    <h1 class="hero-h1">
+      Stratégie<br>
+      <em>au sommet</em><br>
+      <span class="outline">de l'ambition.</span>
+    </h1>
+    <p class="hero-sub">ARCA accompagne les dirigeants et conseils d'administration dans leurs décisions les plus complexes — transformation, croissance, gouvernance et performance durable.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-gold">Discuter de votre projet →</a>
+      <a href="#cases" class="btn-ghost">Voir nos références</a>
+    </div>
+  </div>
+  <div class="hero-bottom-strip">
+    <div class="hbs-cell"><div class="hbs-label">Années d'expérience</div><div class="hbs-val">20 ans d'excellence</div></div>
+    <div class="hbs-cell"><div class="hbs-label">Missions réalisées</div><div class="hbs-val">+340 missions</div></div>
+    <div class="hbs-cell"><div class="hbs-label">Secteurs couverts</div><div class="hbs-val">12 secteurs</div></div>
+    <div class="hbs-cell"><div class="hbs-label">Satisfaction clients</div><div class="hbs-val">97% de renouvellement</div></div>
+  </div>
+  <div class="hero-side-num">
+    <div class="hsn-cur" id="heroNum">01</div>
+    <div class="hsn-line"></div>
+    <div class="hsn-tot">01</div>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Découvrir</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ══ TICKER ══ -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ti">Stratégie d'entreprise</span><span class="td">✦</span>
+    <span class="ti">Transformation digitale</span><span class="td">✦</span>
+    <span class="ti">M&A et Due Diligence</span><span class="td">✦</span>
+    <span class="ti">Gouvernance & RSE</span><span class="td">✦</span>
+    <span class="ti">Excellence opérationnelle</span><span class="td">✦</span>
+    <span class="ti">Change Management</span><span class="td">✦</span>
+    <span class="ti">Finance & Performance</span><span class="td">✦</span>
+    <span class="ti">Stratégie d'entreprise</span><span class="td">✦</span>
+    <span class="ti">Transformation digitale</span><span class="td">✦</span>
+    <span class="ti">M&A et Due Diligence</span><span class="td">✦</span>
+    <span class="ti">Gouvernance & RSE</span><span class="td">✦</span>
+    <span class="ti">Excellence opérationnelle</span><span class="td">✦</span>
+    <span class="ti">Change Management</span><span class="td">✦</span>
+    <span class="ti">Finance & Performance</span><span class="td">✦</span>
+  </div>
+</div>
+
+<!-- ══ EXPERTISE ══ -->
+<section id="expertise">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-eyebrow reveal">Nos domaines</div>
+        <h2 class="s-title reveal d1">Six piliers<br>d'<em>excellence</em><br><span class="str">stratégique</span></h2>
+      </div>
+      <div>
+        <p class="s-sub reveal d2" style="text-align:right;margin-left:auto">Vingt ans de conseil aux plus grandes organisations publiques et privées. Une expertise sectorielle profonde, une rigueur analytique absolue.</p>
+        <a href="#" class="link-more reveal d3" style="display:inline-flex;margin-top:22px;float:right">Toutes nos expertises</a>
+      </div>
+    </div>
+    <div class="exp-grid reveal d2">
+      <div class="exp-card">
+        <span class="exp-num">01</span>
+        <span class="exp-icon">🎯</span>
+        <div class="exp-name">Stratégie & Croissance</div>
+        <p class="exp-desc">Vision d'entreprise, positionnement concurrentiel, plans stratégiques à 3–5 ans, diversification et expansion internationale.</p>
+        <div class="exp-tags"><span class="exp-tag">Corporate</span><span class="exp-tag">BU Strategy</span><span class="exp-tag">International</span></div>
+        <div class="exp-arrow">En savoir plus →</div>
+      </div>
+      <div class="exp-card">
+        <span class="exp-num">02</span>
+        <span class="exp-icon">⚡</span>
+        <div class="exp-name">Transformation Digitale</div>
+        <p class="exp-desc">Feuille de route digitale, agilité organisationnelle, IA & data strategy, digitalisation des processus métier.</p>
+        <div class="exp-tags"><span class="exp-tag">Digital</span><span class="exp-tag">IA & Data</span><span class="exp-tag">Agile</span></div>
+        <div class="exp-arrow">En savoir plus →</div>
+      </div>
+      <div class="exp-card">
+        <span class="exp-num">03</span>
+        <span class="exp-icon">🔗</span>
+        <div class="exp-name">M&A & Transactions</div>
+        <p class="exp-desc">Due diligence stratégique, valuation, intégration post-fusion, cessions d'actifs, joint-ventures et alliances.</p>
+        <div class="exp-tags"><span class="exp-tag">Due Diligence</span><span class="exp-tag">PMI</span><span class="exp-tag">Valuation</span></div>
+        <div class="exp-arrow">En savoir plus →</div>
+      </div>
+      <div class="exp-card">
+        <span class="exp-num">04</span>
+        <span class="exp-icon">🏛️</span>
+        <div class="exp-name">Gouvernance & RSE</div>
+        <p class="exp-desc">Structuration des organes de gouvernance, conformité réglementaire, stratégies ESG, reporting extra-financier et CSRD.</p>
+        <div class="exp-tags"><span class="exp-tag">ESG</span><span class="exp-tag">CSRD</span><span class="exp-tag">Compliance</span></div>
+        <div class="exp-arrow">En savoir plus →</div>
+      </div>
+      <div class="exp-card">
+        <span class="exp-num">05</span>
+        <span class="exp-icon">⚙️</span>
+        <div class="exp-name">Excellence Opérationnelle</div>
+        <p class="exp-desc">Lean management, optimisation des chaînes de valeur, réduction des coûts, amélioration continue et pilotage de la performance.</p>
+        <div class="exp-tags"><span class="exp-tag">Lean</span><span class="exp-tag">Supply Chain</span><span class="exp-tag">KPIs</span></div>
+        <div class="exp-arrow">En savoir plus →</div>
+      </div>
+      <div class="exp-card">
+        <span class="exp-num">06</span>
+        <span class="exp-icon">🧭</span>
+        <div class="exp-name">Change Management</div>
+        <p class="exp-desc">Conduite du changement, accompagnement des transformations organisationnelles, leadership development, culture d'entreprise.</p>
+        <div class="exp-tags"><span class="exp-tag">RH & Culture</span><span class="exp-tag">Leadership</span><span class="exp-tag">Formation</span></div>
+        <div class="exp-arrow">En savoir plus →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══ -->
+<section id="about">
+  <div class="about-layout">
+    <div class="about-visual reveal-l">
+      <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=900&q=85" alt="Cabinet ARCA">
+      <div class="about-visual-overlay"></div>
+      <div class="about-floats">
+        <div class="af"><div class="af-n">2005</div><div><div style="font-size:13px;font-weight:700;color:var(--text)">Fondé en</div><div class="af-l">20 ans de références</div></div></div>
+        <div class="af"><div class="af-n">48</div><div><div style="font-size:13px;font-weight:700;color:var(--text)">Consultants</div><div class="af-l">seniors & associés</div></div></div>
+        <div class="af"><div class="af-n">12</div><div><div style="font-size:13px;font-weight:700;color:var(--text)">Secteurs</div><div class="af-l">d'intervention</div></div></div>
+      </div>
+    </div>
+    <div class="about-right reveal-r">
+      <div class="s-eyebrow">Notre philosophie</div>
+      <h2 class="s-title">Conseil de<br>conviction, pas<br><em>de complaisance.</em></h2>
+      <blockquote class="about-quote">« La valeur d'un conseil se mesure non à son éloquence, mais aux décisions qu'il permet de prendre avec clarté et confiance. »</blockquote>
+      <p class="about-desc">Fondé en 2005 par Élise Marchetti et Pierre-Henri Garaud, ARCA s'est imposé comme l'un des cabinets de référence pour les dirigeants qui cherchent un partenaire intellectuellement rigoureux et profondément engagé dans leur réussite.</p>
+      <p class="about-desc">Nous ne vendons pas de méthodologies. Nous co-construisons des solutions sur mesure avec des équipes qui restent jusqu'à ce que les résultats soient là. Notre modèle : 48 associés et seniors, aucun junior seul face au client.</p>
+      <div class="about-accolades">
+        <div class="acc-badge"><div class="acc-icon">🏆</div><div class="acc-text"><strong>Top 10 Cabinets FR</strong><span>Décideurs Magazine 2024</span></div></div>
+        <div class="acc-badge"><div class="acc-icon">⭐</div><div class="acc-text"><strong>Excellent 4.9/5</strong><span>+1 080 avis clients</span></div></div>
+        <div class="acc-badge"><div class="acc-icon">🌿</div><div class="acc-text"><strong>B Corp Certifié</strong><span>Depuis 2021</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ APPROACH ══ -->
+<section id="approach">
+  <div class="container">
+    <div class="s-head" style="margin-bottom:72px">
+      <div>
+        <div class="s-eyebrow reveal">Méthode ARCA</div>
+        <h2 class="s-title reveal d1">Une approche<br><em>rigoureuse</em><br>en 5 phases</h2>
+      </div>
+      <p class="s-sub reveal d2" style="text-align:right;margin-left:auto;align-self:flex-end">Notre méthode propriétaire combine rigueur analytique, intelligence du terrain et co-construction avec vos équipes pour des résultats pérennes.</p>
+    </div>
+    <div class="approach-grid">
+      <div class="approach-steps reveal-l">
+        <div class="ap-step">
+          <div class="ap-num-wrap">01</div>
+          <div class="ap-content">
+            <div class="ap-title">Diagnostic & Écoute</div>
+            <p class="ap-desc">Immersion dans votre organisation, entretiens avec les parties prenantes clés, analyse des données existantes. Nous comprenons avant de préconiser.</p>
+          </div>
+        </div>
+        <div class="ap-step">
+          <div class="ap-num-wrap">02</div>
+          <div class="ap-content">
+            <div class="ap-title">Analyse Stratégique</div>
+            <p class="ap-desc">Benchmarks sectoriels, modélisation financière, analyse concurrentielle et cartographie des enjeux. Une vision à 360° de votre situation.</p>
+          </div>
+        </div>
+        <div class="ap-step">
+          <div class="ap-num-wrap">03</div>
+          <div class="ap-content">
+            <div class="ap-title">Co-construction des Solutions</div>
+            <p class="ap-desc">Ateliers de travail avec vos équipes, scénarios alternatifs, évaluation des risques et des opportunités. Pas de solution imposée, des choix éclairés.</p>
+          </div>
+        </div>
+        <div class="ap-step">
+          <div class="ap-num-wrap">04</div>
+          <div class="ap-content">
+            <div class="ap-title">Plan d'Action & Roadmap</div>
+            <p class="ap-desc">Feuille de route opérationnelle, jalons, KPIs de suivi et plans de contingence. Une stratégie sans plan d'action n'est qu'un vœu.</p>
+          </div>
+        </div>
+        <div class="ap-step">
+          <div class="ap-num-wrap">05</div>
+          <div class="ap-content">
+            <div class="ap-title">Suivi & Accompagnement</div>
+            <p class="ap-desc">Reviews mensuelles, ajustements en temps réel, transfert de compétences. Nous restons jusqu'à ce que les résultats soient ancrés durablement.</p>
+          </div>
+        </div>
+      </div>
+      <div class="approach-right-img reveal-r">
+        <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=85" alt="Approche ARCA">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TEAM ══ -->
+<section id="team">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-eyebrow reveal">Nos associés</div>
+        <h2 class="s-title reveal d1">Des profils<br><em>d'exception</em><br>à votre service</h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Toute l'équipe</a>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div class="team-img">
+          <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=500&q=80" alt="Élise Marchetti">
+          <div class="team-spec">Stratégie & Croissance</div>
+          <div class="team-overlay">
+            <a href="#" class="t-soc">💼</a><a href="#" class="t-soc">✉️</a><a href="#contact" class="t-soc">📅</a>
+          </div>
+        </div>
+        <div class="team-body">
+          <div class="team-name">Élise Marchetti</div>
+          <div class="team-role">Associée Fondatrice</div>
+          <p class="team-bio">Ex-McKinsey, HEC Paris. 22 ans d'expérience en stratégie corporate et transformation. Auteure de « L'Entreprise Délibérée ».</p>
+          <div class="team-creds"><span class="team-cred">HEC Paris</span><span class="team-cred">Ex-McKinsey</span></div>
+        </div>
+      </div>
+      <div class="team-card reveal d1">
+        <div class="team-img">
+          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&q=80" alt="Pierre-Henri Garaud">
+          <div class="team-spec">M&A & Finance</div>
+          <div class="team-overlay">
+            <a href="#" class="t-soc">💼</a><a href="#" class="t-soc">✉️</a><a href="#contact" class="t-soc">📅</a>
+          </div>
+        </div>
+        <div class="team-body">
+          <div class="team-name">Pierre-Henri Garaud</div>
+          <div class="team-role">Associé Fondateur</div>
+          <p class="team-bio">Polytechnique, INSEAD. Ancien Directeur Corporate Development chez Vivendi. 180+ missions M&A menées à bien.</p>
+          <div class="team-creds"><span class="team-cred">Polytechnique</span><span class="team-cred">Ex-Vivendi</span></div>
+        </div>
+      </div>
+      <div class="team-card reveal d2">
+        <div class="team-img">
+          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=500&q=80" alt="Nadia Ouelhadj">
+          <div class="team-spec">Digital & Data</div>
+          <div class="team-overlay">
+            <a href="#" class="t-soc">💼</a><a href="#" class="t-soc">✉️</a><a href="#contact" class="t-soc">📅</a>
+          </div>
+        </div>
+        <div class="team-body">
+          <div class="team-name">Nadia Ouelhadj</div>
+          <div class="team-role">Directrice Associée</div>
+          <p class="team-bio">Sciences Po, MIT Sloan. Pionnière de la transformation IA en entreprise. Ex-Chief Digital Officer dans le CAC 40.</p>
+          <div class="team-creds"><span class="team-cred">MIT Sloan</span><span class="team-cred">AI Strategy</span></div>
+        </div>
+      </div>
+      <div class="team-card reveal d3">
+        <div class="team-img">
+          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&q=80" alt="Thomas Bellec">
+          <div class="team-spec">Gouvernance & RSE</div>
+          <div class="team-overlay">
+            <a href="#" class="t-soc">💼</a><a href="#" class="t-soc">✉️</a><a href="#contact" class="t-soc">📅</a>
+          </div>
+        </div>
+        <div class="team-body">
+          <div class="team-name">Thomas Bellec</div>
+          <div class="team-role">Associé Senior</div>
+          <p class="team-bio">ENA, Paris Dauphine. Expert en gouvernance des organisations complexes et stratégies ESG. Administrateur indépendant.</p>
+          <div class="team-creds"><span class="team-cred">ENA</span><span class="team-cred">ESG Expert</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ IMPACT ══ -->
+<div class="impact-band">
+  <div class="impact-inner">
+    <div class="impact-cell reveal"><div class="impact-n" data-target="340">0</div><div class="impact-l">Missions réalisées</div></div>
+    <div class="impact-cell reveal d1"><div class="impact-n" data-target="97">0</div><div class="impact-l">% de renouvellement client</div></div>
+    <div class="impact-cell reveal d2"><div class="impact-n" data-target="48">0</div><div class="impact-l">Consultants seniors</div></div>
+    <div class="impact-cell reveal d3"><div class="impact-n" data-target="20">0</div><div class="impact-l">Années d'excellence</div></div>
+  </div>
+</div>
+
+<!-- ══ CASES ══ -->
+<section id="cases">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-eyebrow reveal">Références clients</div>
+        <h2 class="s-title reveal d1">Des missions<br>qui <em>transforment</em><br>durablement</h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Toutes les références</a>
+    </div>
+    <div class="cases-grid reveal d2">
+      <div class="case-card">
+        <div class="case-img" style="background-image:url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&q=80')"></div>
+        <div class="case-overlay"></div>
+        <div class="case-top-badge">Mission phare</div>
+        <div class="case-content">
+          <span class="case-sector">Énergie · Stratégie de transformation</span>
+          <div class="case-title">Redéfinition du modèle économique d'un acteur énergétique majeur dans la transition bas-carbone</div>
+          <div class="case-result">+2,4 Mds € de valeur créée · 3 ans · 12 pays</div>
+          <div class="case-tag">Voir le cas →</div>
+        </div>
+      </div>
+      <div class="case-card">
+        <div class="case-img" style="background-image:url('https://images.unsplash.com/photo-1551836022-4c4c79ecde51?w=600&q=80')"></div>
+        <div class="case-overlay"></div>
+        <div class="case-content">
+          <span class="case-sector">Banque · M&A</span>
+          <div class="case-title">Due diligence stratégique d'une acquisition cross-border à 800 M€</div>
+          <div class="case-result">Acquisition finalisée · synergies +35%</div>
+          <div class="case-tag">Voir →</div>
+        </div>
+      </div>
+      <div class="case-card">
+        <div class="case-img" style="background-image:url('https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80')"></div>
+        <div class="case-overlay"></div>
+        <div class="case-content">
+          <span class="case-sector">Retail · Digital</span>
+          <div class="case-title">Transformation omnicanal d'un leader de la distribution spécialisée</div>
+          <div class="case-result">+40% CA digital en 18 mois</div>
+          <div class="case-tag">Voir →</div>
+        </div>
+      </div>
+      <div class="case-card">
+        <div class="case-img" style="background-image:url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&q=80')"></div>
+        <div class="case-overlay"></div>
+        <div class="case-content">
+          <span class="case-sector">Industrie · Excellence Opérationnelle</span>
+          <div class="case-title">Programme Lean à l'échelle d'un groupe industriel européen (22 sites)</div>
+          <div class="case-result">-18% coûts opérationnels · Score Q +28%</div>
+          <div class="case-tag">Voir →</div>
+        </div>
+      </div>
+      <div class="case-card">
+        <div class="case-img" style="background-image:url('https://images.unsplash.com/photo-1560520031-3a4dc4e9de0c?w=600&q=80')"></div>
+        <div class="case-overlay"></div>
+        <div class="case-content">
+          <span class="case-sector">Secteur Public · Gouvernance</span>
+          <div class="case-title">Réforme de la gouvernance d'une grande institution publique française</div>
+          <div class="case-result">Certification HAS · Indice confiance +22 pts</div>
+          <div class="case-tag">Voir →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section id="testimonials">
+  <div class="container">
+    <div class="s-head" style="margin-bottom:64px">
+      <div>
+        <div class="s-eyebrow reveal">Ce que disent nos clients</div>
+        <h2 class="s-title reveal d1">La confiance<br>se <em>construit</em><br>sur les résultats.</h2>
+      </div>
+    </div>
+    <div class="testi-layout">
+      <div class="testi-sidebar reveal-l">
+        <div class="testi-score-n">4.9</div>
+        <div class="testi-score-stars">★★★★★</div>
+        <div class="testi-score-sub">Sur 1 080 avis vérifiés</div>
+        <div class="testi-platforms">
+          <div class="tp-row"><div class="tp-icon">🌍</div><span class="tp-name">Google Reviews</span><div class="tp-score">4.9 ★</div></div>
+          <div class="tp-row"><div class="tp-icon">💼</div><span class="tp-name">LinkedIn</span><div class="tp-score">4.8 ★</div></div>
+          <div class="tp-row"><div class="tp-icon">📊</div><span class="tp-name">Clutch</span><div class="tp-score">5.0 ★</div></div>
+          <div class="tp-row"><div class="tp-icon">🏆</div><span class="tp-name">Décideurs Mag.</span><div class="tp-score">Top 10</div></div>
+        </div>
+      </div>
+      <div class="testi-cards-wrap reveal-r">
+        <div class="swiper testi-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide"><div class="testi-card">
+              <div class="testi-card-quote">"</div>
+              <div class="testi-stars">★★★★★</div>
+              <p class="testi-text">ARCA n'est pas un cabinet de conseil comme les autres. Ils ont refusé de nous donner ce que nous voulions entendre pour nous donner ce dont nous avions besoin. C'est rare et précieux. Leur travail a changé la trajectoire de notre groupe.</p>
+              <div class="testi-author">
+                <img class="testi-ava" src="https://i.pravatar.cc/100?img=15" alt="Jean-Marc">
+                <div><div class="testi-name">Jean-Marc Thévenot</div><div class="testi-info">PDG, Groupe Énergie Horizon</div></div>
+                <div class="testi-co">Énergie</div>
+              </div>
+            </div></div>
+            <div class="swiper-slide"><div class="testi-card">
+              <div class="testi-card-quote">"</div>
+              <div class="testi-stars">★★★★★</div>
+              <p class="testi-text">La mission M&A qu'ARCA a menée pour nous était d'une rigueur impressionnante. Leur capacité à challenger nos hypothèses tout en restant constructifs nous a permis de prendre une décision éclairée sur l'acquisition la plus importante de notre histoire.</p>
+              <div class="testi-author">
+                <img class="testi-ava" src="https://i.pravatar.cc/100?img=55" alt="Sophie">
+                <div><div class="testi-name">Sophie Renaudin</div><div class="testi-info">DAF, BNP Paribas Asset Management</div></div>
+                <div class="testi-co">Banque</div>
+              </div>
+            </div></div>
+            <div class="swiper-slide"><div class="testi-card">
+              <div class="testi-card-quote">"</div>
+              <div class="testi-stars">★★★★★</div>
+              <p class="testi-text">En 20 ans de direction, j'ai travaillé avec de nombreux cabinets. ARCA se distingue par sa capacité à mobiliser des consultants véritablement séniors et à maintenir l'engagement sur la durée. Une relation de partenariat authentique, pas une relation de fournisseur.</p>
+              <div class="testi-author">
+                <img class="testi-ava" src="https://i.pravatar.cc/100?img=33" alt="François">
+                <div><div class="testi-name">François de Montfort</div><div class="testi-info">DG, Groupe Industriel METAFOR</div></div>
+                <div class="testi-co">Industrie</div>
+              </div>
+            </div></div>
+          </div>
+          <div class="swiper-pagination" style="bottom:-40px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRICING ══ -->
+<section id="pricing">
+  <div class="container">
+    <div class="s-head" style="flex-direction:column;align-items:center;text-align:center;margin-bottom:60px">
+      <div class="s-eyebrow reveal" style="justify-content:center">Nos modalités</div>
+      <h2 class="s-title reveal d1">Trois modes<br>d'<em>intervention</em></h2>
+      <p class="s-sub reveal d2" style="max-width:520px;margin:0 auto;text-align:center">Chaque engagement est sur mesure. Ces formules servent de cadre ; nous adaptons systématiquement notre approche à vos enjeux spécifiques.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-plan">Formule</div>
+        <div class="price-name">Mission Ponctuelle</div>
+        <p class="price-desc">Intervention ciblée sur un enjeu précis. Diagnostic, recommandations et plan d'action. Durée 4 à 12 semaines.</p>
+        <div class="price-features">
+          <div class="pf-item"><div class="pf-check">✓</div>Diagnostic approfondi</div>
+          <div class="pf-item"><div class="pf-check">✓</div>2 à 3 consultants seniors</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Livrables documentés</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Restitution COMEX</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Support post-mission 1 mois</div>
+        </div>
+        <a href="#contact" class="price-cta">Nous contacter →</a>
+      </div>
+      <div class="price-card featured reveal d1">
+        <div class="price-featured-badge">Le + demandé</div>
+        <div class="price-plan">Formule</div>
+        <div class="price-name">Programme Transformation</div>
+        <p class="price-desc">Accompagnement complet d'une transformation stratégique. De la vision à l'exécution. Durée 6 à 18 mois avec équipe dédiée.</p>
+        <div class="price-features">
+          <div class="pf-item"><div class="pf-check">✓</div>Équipe dédiée 4–8 consultants</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Associé sponsor en direct</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Comité de pilotage mensuel</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Transfert de compétences inclus</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Garantie de résultats contractualisée</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Suivi 6 mois post-mission</div>
+        </div>
+        <a href="#contact" class="price-cta">Nous contacter →</a>
+      </div>
+      <div class="price-card reveal d2">
+        <div class="price-plan">Formule</div>
+        <div class="price-name">Conseil de Direction</div>
+        <p class="price-desc">Partenariat stratégique continu. Un ou plusieurs associés ARCA siègent en advisory board ou interviennent en retainer mensuel.</p>
+        <div class="price-features">
+          <div class="pf-item"><div class="pf-check">✓</div>Associé dédié disponible</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Sessions stratégiques mensuelles</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Accès réseau ARCA (48 experts)</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Veille stratégique sur mesure</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Participation COMEX optionnelle</div>
+        </div>
+        <a href="#contact" class="price-cta">Nous contacter →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ INSIGHTS ══ -->
+<section id="insights">
+  <div class="container">
+    <div class="s-head">
+      <div>
+        <div class="s-eyebrow reveal">Publications</div>
+        <h2 class="s-title reveal d1">Insights<br><em>& Tribunes</em></h2>
+      </div>
+      <a href="#" class="link-more reveal d3" style="align-self:flex-end">Toutes les publications</a>
+    </div>
+    <div class="insights-grid">
+      <div class="insight-card reveal">
+        <div class="insight-img">
+          <img class="tall" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=700&q=80" alt="insight1">
+          <div class="insight-cat">Stratégie</div>
+        </div>
+        <div class="insight-body">
+          <div class="insight-meta"><span>15 Jan 2025</span><div class="im-dot"></div><span>12 min · Tribune</span></div>
+          <div class="insight-title">La fin du consensus stratégique : pourquoi les entreprises doivent réapprendre à choisir</div>
+          <p class="insight-excerpt">Dans un monde ambigu, la capacité à trancher nettement est devenue un avantage compétitif rare. Analyse et recommandations par Élise Marchetti...</p>
+          <a href="#" class="insight-read">Lire l'analyse →</a>
+        </div>
+      </div>
+      <div class="insight-card reveal d1">
+        <div class="insight-img">
+          <img class="sm" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80" alt="insight2">
+          <div class="insight-cat">M&A</div>
+        </div>
+        <div class="insight-body">
+          <div class="insight-meta"><span>8 Fév 2025</span><div class="im-dot"></div><span>8 min</span></div>
+          <div class="insight-title">Post-merger integration : les 7 pièges que personne ne vous dit avant la signature</div>
+          <a href="#" class="insight-read">Lire →</a>
+        </div>
+      </div>
+      <div class="insight-card reveal d2">
+        <div class="insight-img">
+          <img class="sm" src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80" alt="insight3">
+          <div class="insight-cat">IA & Digital</div>
+        </div>
+        <div class="insight-body">
+          <div class="insight-meta"><span>22 Fév 2025</span><div class="im-dot"></div><span>10 min</span></div>
+          <div class="insight-title">IA générative en entreprise : au-delà du buzz, les vrais gains de productivité mesurés</div>
+          <a href="#" class="insight-read">Lire →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══ -->
+<section id="faq">
+  <div class="container">
+    <div class="faq-layout">
+      <div class="reveal-l">
+        <div class="s-eyebrow">Questions fréquentes</div>
+        <h2 class="s-title">Vos<br>questions,<br><em>nos réponses.</em></h2>
+        <p style="font-size:14px;color:var(--text2);line-height:2;margin-top:20px;font-weight:300">Une question spécifique à votre situation ? Nous répondons sous 24h ouvrées à toute demande sérieuse.</p>
+        <a href="#contact" class="btn-gold" style="display:inline-flex;margin-top:28px">Nous écrire →</a>
+      </div>
+      <div class="faq-list reveal-r">
+        <div class="faq-item open">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Quelle est la taille minimale des entreprises que vous accompagnez ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Nous intervenons principalement auprès d'entreprises de taille intermédiaire (50 M€+ de CA) jusqu'aux grandes entreprises du CAC 40 et SBF 120, ainsi que certaines institutions publiques. Nos honoraires reflètent l'expérience senior systématiquement mobilisée.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Quelle est votre politique de confidentialité sur les missions ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>La confidentialité absolue est un fondement de notre modèle. Nous ne publions aucune référence sans accord écrit explicite du client. Nos équipes signent des NDA dès la phase de qualification. Aucun conflit d'intérêts n'est toléré au sein d'une même industrie sur des missions simultanées.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Comment fonctionne votre modèle de tarification ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Nos honoraires sont basés sur un forfait par mission établi après discussion avec vous, ou un retainer mensuel pour les missions de conseil de direction. Pour les transformations majeures, nous proposons une part variable indexée sur les résultats obtenus, alignant ainsi nos intérêts sur les vôtres.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Comment garantissez-vous la qualité des intervenants ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Notre règle absolue : aucun junior seul face au client. Chaque mission est pilotée par un associé ou directeur senior avec 10+ années d'expérience. L'équipe présentée en avant-vente est l'équipe qui intervient. Pas de substitution sans votre accord.</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Intervenez-vous à l'international ?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><p>Oui. Nous avons mené des missions dans 28 pays. Notre réseau de partenaires locaux certifiés couvre l'Europe, l'Afrique francophone, le Proche-Orient et l'Amérique latine. Pour les missions pan-européennes, nous mobilisons nos bureaux de Londres, Bruxelles et Genève.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-layout">
+      <div class="reveal-l">
+        <div class="s-eyebrow">Première conversation</div>
+        <h3 style="font-family:'Instrument Serif',serif;font-size:clamp(32px,4vw,52px);color:var(--text);line-height:1.05;letter-spacing:-1px;margin-bottom:20px">Parlons de vos<br>enjeux<br><em style="color:var(--gold)">stratégiques.</em></h3>
+        <p class="contact-left-desc">Toute relation commence par une conversation franche. Décrivez-nous votre situation et l'un de nos associés vous répondra personnellement sous 24h pour une première analyse gratuite.</p>
+        <div class="c-items">
+          <div class="c-item"><div class="c-icon">📞</div><div><div class="c-lbl">Ligne directe</div><div class="c-val">+33 1 45 00 00 00</div></div></div>
+          <div class="c-item"><div class="c-icon">✉️</div><div><div class="c-lbl">Email</div><div class="c-val">contact@arca-conseil.fr</div></div></div>
+          <div class="c-item"><div class="c-icon">📍</div><div><div class="c-lbl">Siège social</div><div class="c-val">28 Avenue Montaigne, 75008 Paris</div></div></div>
+          <div class="c-item"><div class="c-icon">⏰</div><div><div class="c-lbl">Disponibilité</div><div class="c-val">Lundi–Vendredi 8h30 – 19h30</div></div></div>
+        </div>
+        <div class="contact-socials">
+          <a href="#" class="cs">💼</a><a href="#" class="cs">📘</a><a href="#" class="cs">🐦</a><a href="#" class="cs">▶</a>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div class="contact-form">
+          <div class="cf-title">Soumettre une demande</div>
+          <div class="cf-sub">Réponse garantie sous 24h par un associé sénior. Première analyse sans engagement.</div>
+          <form onsubmit="return sendForm(event)">
+            <div class="cf-row">
+              <div class="cf-g" style="margin-bottom:0"><label>Prénom *</label><input type="text" placeholder="Pierre" required></div>
+              <div class="cf-g" style="margin-bottom:0"><label>Nom *</label><input type="text" placeholder="Dupont" required></div>
+            </div>
+            <div class="cf-row">
+              <div class="cf-g" style="margin-bottom:0"><label>Email professionnel *</label><input type="email" placeholder="p.dupont@societe.fr" required></div>
+              <div class="cf-g" style="margin-bottom:0"><label>Téléphone direct</label><input type="tel" placeholder="+33 6 00 00 00 00"></div>
+            </div>
+            <div class="cf-row">
+              <div class="cf-g" style="margin-bottom:0"><label>Fonction</label><input type="text" placeholder="Directeur Général"></div>
+              <div class="cf-g" style="margin-bottom:0"><label>Entreprise *</label><input type="text" placeholder="Nom de votre organisation" required></div>
+            </div>
+            <div class="cf-g">
+              <label>Secteur d'activité</label>
+              <select>
+                <option>Industrie & Manufacturing</option>
+                <option>Banque & Finance</option>
+                <option>Énergie & Utilities</option>
+                <option>Retail & Distribution</option>
+                <option>Santé & Pharmaceutique</option>
+                <option>Technologie & Digital</option>
+                <option>Secteur public & Para-public</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div class="cf-g">
+              <label>Nature de la demande</label>
+              <select>
+                <option>Stratégie & Croissance</option>
+                <option>Transformation Digitale</option>
+                <option>M&A / Due Diligence</option>
+                <option>Gouvernance & RSE</option>
+                <option>Excellence Opérationnelle</option>
+                <option>Conseil de Direction (retainer)</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div class="cf-g" style="margin-bottom:0">
+              <label>Décrivez votre enjeu *</label>
+              <textarea rows="4" placeholder="En quelques lignes, quel est le défi stratégique ou opérationnel sur lequel vous souhaitez être accompagné ?" required></textarea>
+            </div>
+            <button type="submit" class="cf-submit">Envoyer ma demande →</button>
+            <div class="cf-ok" id="cfOk">✓ Demande reçue. Un associé ARCA vous contacte dans les 24h.</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ MAP ══ -->
+<div id="map-sec">
+  <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=2.295%2C48.863%2C2.335%2C48.878&layer=mapnik&marker=48.8674%2C2.3020" loading="lazy"></iframe>
+  <div class="map-card">
+    <div class="map-name">ARCA Conseil</div>
+    <div class="map-addr">28 Avenue Montaigne, 75008 Paris<br>Métro Franklin D. Roosevelt</div>
+    <div class="map-open"><div class="open-dot"></div>Ouvert · Ferme à 19h30</div>
+  </div>
+</div>
+
+<!-- ══ NEWSLETTER ══ -->
+<section id="newsletter">
+  <div class="nl-wrap reveal">
+    <div class="nl-deco"></div>
+    <div class="nl-form-area">
+      <div class="s-eyebrow">Intelligence stratégique</div>
+      <h2 class="s-title" style="font-size:clamp(28px,4vw,48px)">La revue<br>ARCA — <em>mensuelle</em></h2>
+      <p class="s-sub" style="margin-top:12px;font-size:13px">Analyses exclusives, études de cas anonymisées et tendances sectorielles. Réservée aux dirigeants et décideurs. Gratuit.</p>
+      <form class="nl-form" onsubmit="return nlSend(event)">
+        <input class="nl-input" type="email" placeholder="votre@entreprise.fr" required>
+        <button class="nl-btn" type="submit">S'abonner →</button>
+      </form>
+      <p style="font-size:11px;color:var(--text3);margin-top:10px">+8 400 dirigeants abonnés · Zéro spam · Désinscription immédiate</p>
+    </div>
+    <div class="nl-feats">
+      <div class="nl-feat"><div class="nl-feat-ico">🎯</div><div class="nl-feat-text"><strong>Analyses sectorielles</strong><span>Par nos associés experts</span></div></div>
+      <div class="nl-feat"><div class="nl-feat-ico">📊</div><div class="nl-feat-text"><strong>Études de cas anonymisées</strong><span>Missions réelles, leçons concrètes</span></div></div>
+      <div class="nl-feat"><div class="nl-feat-ico">🔭</div><div class="nl-feat-text"><strong>Signaux faibles</strong><span>Tendances avant qu'elles deviennent évidentes</span></div></div>
+      <div class="nl-feat"><div class="nl-feat-ico">📅</div><div class="nl-feat-text"><strong>Événements exclusifs</strong><span>Conférences et dîners dirigeants</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="f-brand-logo">ARCA<span>.</span></div>
+        <span class="f-brand-tag">Cabinet de Conseil Stratégique · Paris</span>
+        <p class="f-brand-desc">Partenaire de confiance des dirigeants depuis 2005. Rigueur, conviction et résultats mesurables.</p>
+        <div class="f-socials">
+          <a href="#" class="f-soc">💼</a><a href="#" class="f-soc">📘</a><a href="#" class="f-soc">🐦</a><a href="#" class="f-soc">▶</a>
+        </div>
+      </div>
+      <div class="f-col">
+        <h5>Expertises</h5>
+        <ul>
+          <li><a href="#">Stratégie & Croissance</a></li>
+          <li><a href="#">Transformation Digitale</a></li>
+          <li><a href="#">M&A & Transactions</a></li>
+          <li><a href="#">Gouvernance & RSE</a></li>
+          <li><a href="#">Excellence Opérationnelle</a></li>
+          <li><a href="#">Change Management</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Cabinet</h5>
+        <ul>
+          <li><a href="#">Notre histoire</a></li>
+          <li><a href="#">L'équipe</a></li>
+          <li><a href="#">Références clients</a></li>
+          <li><a href="#">Publications & Insights</a></li>
+          <li><a href="#">Nos valeurs</a></li>
+          <li><a href="#">Carrières</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="#">Soumettre une demande</a></li>
+          <li><a href="#">S'abonner à la Revue</a></li>
+          <li><a href="#">Événements</a></li>
+          <li><a href="#">Presse & Médias</a></li>
+          <li><a href="#">Paris — Montaigne</a></li>
+          <li><a href="#">Genève · Londres · Bruxelles</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <p>© 2025 ARCA Conseil — Cabinet de Conseil Stratégique. Tous droits réservés.</p>
+      <div class="f-bottom-links">
+        <a href="#">Mentions légales</a>
+        <a href="#">Confidentialité</a>
+        <a href="#">CGV</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<a href="#contact" class="float-cta" title="Nous contacter">✉</a>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+/* THEME */
+let t=localStorage.getItem('ar-th')||'dark';
+const TB=document.getElementById('themeBtn');
+function applyT(th){document.documentElement.setAttribute('data-theme',th);TB.textContent=th==='dark'?'☀️':'🌙';localStorage.setItem('ar-th',th)}
+function toggleTheme(){t=t==='dark'?'light':'dark';applyT(t)}
+applyT(t);
+/* NAV */
+window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('solid',window.scrollY>60));
+/* MOB */
+function openMob(){document.getElementById('mobNav').classList.add('open')}
+function closeMob(){document.getElementById('mobNav').classList.remove('open')}
+/* SWIPER */
+new Swiper('.testi-swiper',{
+  loop:true,autoplay:{delay:5500},speed:900,spaceBetween:22,
+  pagination:{el:'.testi-swiper .swiper-pagination',clickable:true},
+  breakpoints:{900:{slidesPerView:2}}
+});
+/* REVEAL */
+const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');ro.unobserve(e.target)}})},{threshold:.1});
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>ro.observe(el));
+/* COUNTERS */
+function cnt(el,target){
+  let v=0,step=target/70;
+  const sym=target===97?'%':target===48||target===20?'':'+';
+  const ti=setInterval(()=>{
+    v=Math.min(v+step,target);
+    el.textContent=Math.round(v)+(v>=target?sym:'');
+    if(v>=target){el.textContent=target+sym;clearInterval(ti)}
+  },18);
+}
+const cob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.impact-n[data-target]').forEach(el=>cnt(el,+el.dataset.target));cob.disconnect()}})},{threshold:.3});
+const ib=document.querySelector('.impact-band');if(ib)cob.observe(ib);
+/* FAQ */
+function toggleFaq(q){
+  const item=q.parentElement;const was=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!was)item.classList.add('open');
+}
+/* FORMS */
+function sendForm(e){
+  e.preventDefault();
+  document.getElementById('cfOk').style.display='block';
+  e.target.reset();
+  setTimeout(()=>document.getElementById('cfOk').style.display='none',8000);
+  return false;
+}
+function nlSend(e){
+  e.preventDefault();const btn=e.target.querySelector('.nl-btn');
+  btn.textContent='✓ Abonné !';e.target.querySelector('input').value='';
+  setTimeout(()=>btn.textContent='S\'abonner →',3000);
+  return false;
+}
+</script>
+</body>
+</html>

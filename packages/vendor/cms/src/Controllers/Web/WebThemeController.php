@@ -8,6 +8,7 @@ use Vendor\Cms\Models\Page;
 use Vendor\Cms\Models\Setting;
 use Vendor\Cms\Models\Media;
 use Vendor\Cms\Models\BlogPost;
+use Vendor\Cms\Models\EtablissementTemplate;
 use App\Models\Etablissement;
 use App\Models\Activity;
 use App\Models\Plan;
@@ -544,8 +545,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     protected function renderNoThemeLanding(?string $message = null)
     {
         $data = $this->prepareNoThemeLandingData($message);
-        $activities = $data['activities'] ?? collect();
-        $view = $this->resolveNoThemeLandingView($activities);
+        $view = $this->resolveTemplateLandingView($data['selectedEtablissementTemplate'] ?? null);
         $html = view($view, $data)->render();
 
         return $this->buildResponse($html, $this->buildSeoContext(null, false));
@@ -557,6 +557,9 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     protected function prepareNoThemeLandingData(?string $message = null): array
     {
         $activities = $this->getEtablissementActivities();
+        $activeEtablissementTemplates = $this->getActiveEtablissementTemplates();
+        $selectedEtablissementTemplate = $this->selectLandingEtablissementTemplate($activeEtablissementTemplates);
+        $selectedCmsTemplate = $selectedEtablissementTemplate?->template;
 
         $plans = Plan::query()
             ->where('is_active', true)
@@ -609,7 +612,10 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $galleryMedia = $landingMedia['main']->isNotEmpty() ? $landingMedia['main'] : $landingMedia['all'];
         $slideshowMediaGroups = $this->buildLandingSlideshowGroups($landingMedia['all']);
         $blogPosts = $this->getLandingBlogPosts();
-        $cmsPageSections = $this->getLandingCmsPageSections();
+        $templatePageSections = $this->getActiveTemplatePageSections($activeEtablissementTemplates);
+        $cmsPageSections = $templatePageSections->isNotEmpty()
+            ? $templatePageSections
+            : $this->getLandingCmsPageSections();
 
         $activitySections = $this->buildActivitySections($activities);
         $hasRestaurantActivity = $this->hasActivityKeyword($activities, [
@@ -703,6 +709,10 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'socialLinks' => get_establishment_social_links($this->etablissement),
             'blogPosts' => $blogPosts,
             'cmsPageSections' => $cmsPageSections,
+            'activeEtablissementTemplates' => $activeEtablissementTemplates,
+            'selectedEtablissementTemplate' => $selectedEtablissementTemplate,
+            'selectedCmsTemplate' => $selectedCmsTemplate,
+            'selectedTemplateCategory' => $selectedCmsTemplate?->category,
             'devisUrl' => route('devis'),
             'message' => $message,
         ];
@@ -947,6 +957,102 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     }
 
     /**
+     * Load active templates installed for the current establishment.
+     */
+    protected function getActiveEtablissementTemplates(): Collection
+    {
+        try {
+            return EtablissementTemplate::query()
+                ->with(['template' => function ($query) {
+                    $query->select([
+                        'id',
+                        'name',
+                        'slug',
+                        'category',
+                        'page_content',
+                        'status',
+                        'is_active',
+                    ]);
+                }])
+                ->where('etablissement_id', $this->etablissement->id)
+                ->where('is_active', true)
+                ->orderByDesc('activated_at')
+                ->orderByDesc('installed_at')
+                ->orderByDesc('updated_at')
+                ->orderByDesc('id')
+                ->get()
+                ->filter(fn (EtablissementTemplate $template) => $template->template !== null)
+                ->values();
+        } catch (\Throwable $e) {
+            Log::warning('Unable to load active etablissement templates: ' . $e->getMessage(), [
+                'etablissement_id' => $this->etablissement->id ?? null,
+            ]);
+
+            return collect();
+        }
+    }
+
+    /**
+     * Pick the active template that decides which landing view should be rendered.
+     */
+    protected function selectLandingEtablissementTemplate(Collection $templates): ?EtablissementTemplate
+    {
+        if ($templates->isEmpty()) {
+            return null;
+        }
+
+        return $templates->first(function (EtablissementTemplate $template) {
+            return $this->matchLandingViewForTemplateCategory((string) ($template->template?->category ?? '')) !== null;
+        }) ?: $templates->first();
+    }
+
+    /**
+     * Convert active etablissement template content into the same section format used by CMS pages.
+     */
+    protected function getActiveTemplatePageSections(Collection $templates): Collection
+    {
+        return $templates
+            ->map(function (EtablissementTemplate $etablissementTemplate) {
+                $template = $etablissementTemplate->template;
+                $content = $this->getEtablissementTemplateContent($etablissementTemplate);
+
+                if ($content === '') {
+                    return null;
+                }
+
+                return [
+                    'id' => 'etablissement-template-' . $etablissementTemplate->id,
+                    'title' => $template?->name ?: 'Template',
+                    'slug' => $template?->slug ?: 'template-' . $etablissementTemplate->id,
+                    'category' => $template?->category,
+                    'content' => $content,
+                    'source' => 'etablissement_template',
+                ];
+            })
+            ->filter()
+            ->values();
+    }
+
+    protected function getEtablissementTemplateContent(EtablissementTemplate $template): string
+    {
+        $content = $template->getAttribute('page_content');
+
+        if ($content === null || trim((string) $content) === '') {
+            $content = $template->getAttribute('page_contents');
+        }
+
+        if ($content === null || trim((string) $content) === '') {
+            $content = data_get($template->config, 'page_content');
+        }
+
+        if ($content === null || trim((string) $content) === '') {
+            $content = data_get($template->config, 'page_contents');
+        }
+
+        return trim((string) $content);
+    }
+
+    /**
      * Load CMS page content blocks for fallback landing pages.
      */
     protected function getLandingCmsPageSections(): Collection
@@ -1135,6 +1241,66 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         }
 
         return null;
+    }
+
+    /**
+     * Resolve the fallback landing from the active establishment template category.
+     */
+    protected function resolveTemplateLandingView(?EtablissementTemplate $etablissementTemplate): string
+    {
+        if (!$etablissementTemplate) {
+            return 'cms::web.fallback.landing-activity';
+        }
+
+        $view = $this->matchLandingViewForTemplateCategory((string) ($etablissementTemplate->template?->category ?? ''));
+
+        return $view ?: 'cms::web.fallback.landing-activity';
+    }
+
+    protected function matchLandingViewForTemplateCategory(string $category): ?string
+    {
+        $normalized = $this->normalizeTemplateCategory($category);
+
+        if ($normalized === '') {
+            return null;
+        }
+
+        $categoryViews = [
+            'association' => 'cms::web.fallback.landing-activity',
+            'agroalimentaire' => 'cms::web.fallback.landing-commerce-alimentaire',
+            'automobile' => 'cms::web.fallback.landing-location-vehicule',
+            'blog' => 'cms::web.fallback.landing-next-level',
+            'ecommerce' => 'cms::web.fallback.landing-commerce-alimentaire',
+            'e commerce' => 'cms::web.fallback.landing-commerce-alimentaire',
+            'education' => 'cms::web.fallback.landing-activity',
+            'evenement' => 'cms::web.fallback.landing-activity',
+            'general' => 'cms::web.fallback.landing-activity',
+            'hotel' => 'cms::web.fallback.landing-activity',
+            'immobilier' => 'cms::web.fallback.landing-immobilier-construction',
+            'industrie' => 'cms::web.fallback.landing-boids',
+            'landing page' => 'cms::web.fallback.landing-next-level',
+            'medical' => 'cms::web.fallback.landing-activity',
+            'next level' => 'cms::web.fallback.landing-next-level',
+            'place immoblier' => 'cms::web.fallback.landing-immobilier-construction',
+            'place immobilier' => 'cms::web.fallback.landing-immobilier-construction',
+            'portfolio' => 'cms::web.fallback.landing-next-level',
+            'restaurant' => 'cms::web.fallback.landing-commerce-alimentaire',
+            'saas' => 'cms::web.fallback.landing-next-level',
+            'services' => 'cms::web.fallback.landing-next-level',
+            'tourisme' => 'cms::web.fallback.landing-next-level',
+        ];
+
+        return $categoryViews[$normalized] ?? null;
+    }
+
+    protected function normalizeTemplateCategory(string $category): string
+    {
+        $normalized = \Illuminate\Support\Str::ascii(trim($category));
+        $normalized = mb_strtolower($normalized, 'UTF-8');
+        $normalized = str_replace(['-', '_'], ' ', $normalized);
+        $normalized = preg_replace('/\s+/', ' ', $normalized) ?: '';
+
+        return trim($normalized);
     }
 
     /**
