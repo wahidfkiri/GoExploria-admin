@@ -254,16 +254,9 @@
         }
         .food-grid {
             display: grid;
-            grid-template-columns: minmax(270px, 3fr) minmax(0, 9fr);
+            grid-template-columns: minmax(0, 1fr);
             gap: 18px;
             align-items: start;
-        }
-        .food-left {
-            position: sticky;
-            top: 104px;
-            display: grid;
-            gap: 16px;
-            min-width: 0;
         }
         .food-card {
             background: rgba(255, 255, 255, .88);
@@ -915,7 +908,6 @@
 
         @media (max-width: 1180px) {
             .food-grid { grid-template-columns: 1fr; }
-            .food-left { position: relative; top: 0; grid-template-columns: repeat(2, minmax(0,1fr)); }
             .food-header { top: 82px; }
             .food-product-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
             .food-process-grid, .food-social-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -924,7 +916,6 @@
         @media (max-width: 860px) {
             .food-page { padding-top: 80px; }
             .food-wrap { width: min(100% - 16px, 1580px); }
-            .food-left,
             .food-about-grid,
             .food-contact-grid,
             .food-feature-grid,
@@ -1507,73 +1498,7 @@
     <main class="food-page">
         <div class="food-wrap">
             <div class="food-grid">
-                <aside class="food-left">
-                    <section class="food-card food-card-pad food-brand-card">
-                        @if(!empty($brandLogoUrl))
-                            <img class="food-brand-logo" src="{{ $brandLogoUrl }}" alt="{{ $siteName }}">
-                        @else
-                            <div class="food-brand-fallback">{{ mb_substr($siteName, 0, 1, 'UTF-8') }}</div>
-                        @endif
-                        <h1>{{ $siteName }}</h1>
-                        <p>{{ $siteDescription }}</p>
-                        <div class="food-contact-mini" style="margin-top:18px;">
-                            @if($phone)<a href="tel:{{ preg_replace('/\s+/', '', $phone) }}"><i class="fa-solid fa-phone"></i>{{ $phone }}</a>@endif
-                            @if($email)<a href="mailto:{{ $email }}"><i class="fa-solid fa-envelope"></i>{{ $email }}</a>@endif
-                            <span><i class="fa-solid fa-location-dot"></i>{{ $address }}</span>
-                        </div>
-                    </section>
-
-                    @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
-                    <section class="food-card food-card-pad">
-                        <h2 class="food-side-title">Produits en vedette</h2>
-                        @foreach(array_slice($productCards, 0, 4) as $product)
-                            <div class="food-mini-product">
-                                <img src="{{ $product['image'] }}" alt="{{ $product['title'] }}">
-                                <div>
-                                    <strong>{{ $product['title'] }}</strong>
-                                    <span>{{ $product['price'] }}</span>
-                                </div>
-                            </div>
-                        @endforeach
-                    </section>
-                    @endif
-
-                    <section class="food-card food-card-pad">
-                        <h2 class="food-side-title">Horaire</h2>
-                        <div class="food-hours">
-                            @forelse($workingHours ?? [] as $row)
-                                <div class="food-hour-row"><strong>{{ $row['day'] ?? '' }}</strong><span>{{ $row['hours'] ?? '' }}</span></div>
-                            @empty
-                                <div class="food-hour-row"><strong>Lundi</strong><span>09:00 - 18:00</span></div>
-                                <div class="food-hour-row"><strong>Mardi</strong><span>09:00 - 18:00</span></div>
-                                <div class="food-hour-row"><strong>Mercredi</strong><span>09:00 - 18:00</span></div>
-                                <div class="food-hour-row"><strong>Jeudi</strong><span>09:00 - 20:00</span></div>
-                                <div class="food-hour-row"><strong>Vendredi</strong><span>09:00 - 20:00</span></div>
-                                <div class="food-hour-row"><strong>Samedi</strong><span>09:00 - 17:00</span></div>
-                                <div class="food-hour-row"><strong>Dimanche</strong><span>10:00 - 16:00</span></div>
-                            @endforelse
-                        </div>
-                    </section>
-                </aside>
-
                 <div class="food-right">
-                    <nav class="food-header" aria-label="Navigation commerce alimentaire">
-                        <a class="food-header-brand" href="#hero">
-                            <span class="food-header-mark"><i class="fa-solid fa-basket-shopping"></i></span>
-                            <span>{{ $siteName }}</span>
-                        </a>
-                        <div class="food-header-links">
-                            <a href="#about">À propos</a>
-                            <a href="#produits">Produits</a>
-                            <a href="#specialites">Spécialités</a>
-                            <a href="#galerie">Galerie</a>
-                            <a href="#avis">Avis</a>
-                            <a href="#contact">Contact</a>
-                        </div>
-                        <a class="food-cta" href="{{ $devisLink }}" target="_blank" rel="noopener">
-                            <i class="fa-solid fa-paper-plane"></i> Demander un devis
-                        </a>
-                    </nav>
 
                     <section class="food-hero" id="hero">
                         @foreach($heroSlides as $index => $slide)
