@@ -1281,20 +1281,21 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
         <div class="sec-eyebrow">Contactez-nous</div>
         <h2 style="font-family:var(--font-serif);font-size:2.2rem;margin-bottom:.5rem">Parlez-nous de votre <span class="text-gold">projet</span></h2>
         <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:2rem">Remplissez le formulaire ci-dessous et notre équipe vous contactera dans les 24 heures.</p>
-        <form onsubmit="handleSubmit(event)">
+        <form method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_immobilier_construction">
+          @csrf
           <div class="form-row">
-            <div class="form-group"><label>Prénom</label><input type="text" placeholder="Votre prénom" required></div>
-            <div class="form-group"><label>Nom</label><input type="text" placeholder="Votre nom" required></div>
+            <div class="form-group"><label>Prénom</label><input type="text" name="first_name" placeholder="Votre prénom" required></div>
+            <div class="form-group"><label>Nom</label><input type="text" name="last_name" placeholder="Votre nom" required></div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label>Courriel</label><input type="email" placeholder="votre@email.com" required></div>
-            <div class="form-group"><label>Téléphone</label><input type="tel" placeholder="(438) 000-0000"></div>
+            <div class="form-group"><label>Courriel</label><input type="email" name="email" placeholder="votre@email.com" required></div>
+            <div class="form-group"><label>Téléphone</label><input type="tel" name="phone" placeholder="(438) 000-0000"></div>
           </div>
           <div class="form-group">
             <label>Série d'intérêt</label>
-            <select><option value="">Sélectionnez une série</option><option>Série Prestige</option><option>Série Scandinave</option><option>Série Contemporaine (Hybride)</option><option>Ajouts & Rénovations</option><option>Autre</option></select>
+            <select name="service"><option value="">Sélectionnez une série</option><option>Série Prestige</option><option>Série Scandinave</option><option>Série Contemporaine (Hybride)</option><option>Ajouts & Rénovations</option><option>Autre</option></select>
           </div>
-          <div class="form-group"><label>Message</label><textarea placeholder="Décrivez votre projet : superficie souhaitée, terrain, budget approximatif..."></textarea></div>
+          <div class="form-group"><label>Message</label><textarea name="message" placeholder="Décrivez votre projet : superficie souhaitée, terrain, budget approximatif..." required></textarea></div>
           <button type="submit" class="btn-primary" style="width:100%;padding:1rem;font-size:.85rem;border:none;cursor:pointer">Envoyer ma demande <i class="fa fa-arrow-right" style="margin-left:8px"></i></button>
         </form>
       </div>
@@ -1320,6 +1321,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 </section>
 
 @include('cms::web.fallback.partials.landing-media-slideshow')
+@include('cms::web.fallback.partials.landing-contact-ajax')
 
 <!-- FOOTER -->
 <footer>

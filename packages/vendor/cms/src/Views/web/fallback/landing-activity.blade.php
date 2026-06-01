@@ -1365,7 +1365,8 @@
                         </div>
 
                         <div class="lf-contact-map">
-                            <form id="lfLandingContactForm" class="lf-form-grid">
+                            <form id="lfLandingContactForm" class="lf-form-grid" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_activity">
+                                @csrf
                                 <div>
                                     <input class="lf-input" type="text" name="first_name" placeholder="Prénom" required>
                                 </div>
@@ -1387,7 +1388,7 @@
                                     </select>
                                 </div>
                                 <div class="lf-col-full">
-                                    <textarea class="lf-textarea" name="message" placeholder="Décrivez votre besoin commercial..."></textarea>
+                                    <textarea class="lf-textarea" name="message" placeholder="Décrivez votre besoin commercial..." required></textarea>
                                 </div>
                                 <div class="lf-col-full">
                                     <button class="lf-submit" type="submit">
@@ -1444,6 +1445,7 @@
     </button>
 
     @include('cms::web.fallback.partials.landing-media-slideshow')
+    @include('cms::web.fallback.partials.landing-contact-ajax')
 
     @include("cms::web.fallback.activities.$activityViewFolder.footer")
 
@@ -1499,6 +1501,10 @@
             const form = document.getElementById('lfLandingContactForm');
             if (form) {
                 form.addEventListener('submit', function (event) {
+                    if (form.hasAttribute('data-cms-contact-form')) {
+                        return;
+                    }
+
                     event.preventDefault();
                     const formData = new FormData(form);
                     const params = new URLSearchParams();

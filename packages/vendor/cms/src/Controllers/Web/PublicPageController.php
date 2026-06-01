@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Vendor\Cms\Models\Page;
 use Vendor\Cms\Models\Theme;
 use Vendor\Cms\Models\Setting;
+use Vendor\Cms\Models\ContactMessage;
 use Vendor\Cms\Models\Traits\HasSettings;
 use App\Models\Etablissement;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class PublicPageController extends Controller
 {
@@ -710,5 +712,126 @@ class PublicPageController extends Controller
             ]);
         // Logique d'abonnement à la newsletter
         return response()->json(['message' => 'Abonnement réussi']);
+    }
+
+    public function contact(Request $request, $etablissementId)
+    {
+        return redirect(route('cms.company.home', ['etablissementId' => $etablissementId]) . '#contact');
+    }
+
+    public function sendContact(Request $request, $etablissementId)
+    {
+        return $this->storeContactMessage($request, $etablissementId);
+    }
+
+    public function contactApi(Request $request, $etablissementId)
+    {
+        return $this->storeContactMessage($request, $etablissementId);
+    }
+
+    protected function storeContactMessage(Request $request, $etablissementId)
+    {
+        $etablissement = Etablissement::findOrFail($etablissementId);
+        $this->etablissement = $etablissement;
+
+        $validator = Validator::make($request->all(), [
+            'first_name' => ['required', 'string', 'max:120'],
+            'last_name' => ['nullable', 'string', 'max:120'],
+            'name' => ['nullable', 'string', 'max:190'],
+            'email' => ['required', 'email', 'max:190'],
+            'phone' => ['nullable', 'string', 'max:80'],
+            'company' => ['nullable', 'string', 'max:190'],
+            'preferred_contact_method' => ['nullable', 'string', 'max:80'],
+            'subject' => ['nullable', 'string', 'max:190'],
+            'service' => ['nullable', 'string', 'max:190'],
+            'message' => ['required', 'string', 'min:5', 'max:5000'],
+            'consent' => ['nullable', 'boolean'],
+            'newsletter_opt_in' => ['nullable', 'boolean'],
+        ], [
+            'first_name.required' => 'Le prénom est requis.',
+            'email.required' => 'Le courriel est requis.',
+            'email.email' => 'Le courriel doit être valide.',
+            'message.required' => 'Le message est requis.',
+            'message.min' => 'Le message doit contenir au moins 5 caractères.',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->contactValidationResponse($request, $validator);
+        }
+
+        $validated = $validator->validated();
+        $firstName = trim((string) ($validated['first_name'] ?? ''));
+        $lastName = trim((string) ($validated['last_name'] ?? ''));
+        $fullName = trim((string) ($validated['name'] ?? trim($firstName . ' ' . $lastName)));
+        $service = trim((string) ($validated['service'] ?? ''));
+        $subject = trim((string) ($validated['subject'] ?? ''));
+
+        if ($subject === '') {
+            $subject = $service !== '' ? $service : 'Message depuis la landing page';
+        }
+
+        $reserved = [
+            '_token', 'first_name', 'last_name', 'name', 'email', 'phone', 'company',
+            'preferred_contact_method', 'subject', 'service', 'message', 'consent',
+            'newsletter_opt_in',
+        ];
+
+        $metadata = collect($request->except($reserved))
+            ->filter(fn ($value) => !is_array($value) && trim((string) $value) !== '')
+            ->all();
+
+        if ($service !== '') {
+            $metadata['service'] = $service;
+        }
+
+        $message = ContactMessage::create([
+            'etablissement_id' => $etablissement->id,
+            'form_name' => trim((string) $request->input('form_name', 'landing_contact')) ?: 'landing_contact',
+            'source' => 'landing_page',
+            'source_url' => $request->headers->get('referer') ?: $request->fullUrl(),
+            'referrer' => $request->headers->get('referer'),
+            'name' => $fullName,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'company' => $validated['company'] ?? null,
+            'preferred_contact_method' => $validated['preferred_contact_method'] ?? null,
+            'subject' => $subject,
+            'message' => $validated['message'],
+            'status' => 'new',
+            'priority' => 'normal',
+            'consent' => (bool) $request->boolean('consent', true),
+            'newsletter_opt_in' => (bool) $request->boolean('newsletter_opt_in', false),
+            'ip_address' => $request->ip(),
+            'user_agent' => substr((string) $request->userAgent(), 0, 500),
+            'utm_source' => $request->input('utm_source'),
+            'utm_medium' => $request->input('utm_medium'),
+            'utm_campaign' => $request->input('utm_campaign'),
+            'metadata' => $metadata,
+        ]);
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Votre message a bien été envoyé. Nous vous répondrons rapidement.',
+                'id' => $message->id,
+            ]);
+        }
+
+        return back()->with('success', 'Votre message a bien été envoyé.');
+    }
+
+    protected function contactValidationResponse(Request $request, $validator)
+    {
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Merci de vérifier les champs requis.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        return back()->withErrors($validator)->withInput();
     }
 }

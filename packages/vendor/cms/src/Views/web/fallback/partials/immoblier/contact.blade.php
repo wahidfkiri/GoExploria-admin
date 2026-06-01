@@ -4,14 +4,15 @@
             <span class="pc-eyebrow">Contact</span>
             <h2 class="pc-title">Planifiez une <em>visite</em></h2>
             <p class="pc-desc">Remplissez le formulaire pour demander les disponibilités, poser une question ou organiser une visite personnalisée.</p>
-            <form class="pc-form" method="GET" action="{{ $devisLink }}">
+            <form class="pc-form" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_immoblier">
+                @csrf
                 <div class="pc-form-grid">
-                    <div class="pc-field"><label for="pc-firstname">Prénom</label><input id="pc-firstname" name="prenom" type="text" placeholder="Votre prénom"></div>
-                    <div class="pc-field"><label for="pc-lastname">Nom</label><input id="pc-lastname" name="nom" type="text" placeholder="Votre nom"></div>
+                    <div class="pc-field"><label for="pc-firstname">Prénom</label><input id="pc-firstname" name="first_name" type="text" placeholder="Votre prénom" required></div>
+                    <div class="pc-field"><label for="pc-lastname">Nom</label><input id="pc-lastname" name="last_name" type="text" placeholder="Votre nom"></div>
                 </div>
                 <div class="pc-form-grid">
-                    <div class="pc-field"><label for="pc-email">Courriel</label><input id="pc-email" name="email" type="email" placeholder="votre@email.com"></div>
-                    <div class="pc-field"><label for="pc-phone">Téléphone</label><input id="pc-phone" name="telephone" type="tel" placeholder="(418) 000-0000"></div>
+                    <div class="pc-field"><label for="pc-email">Courriel</label><input id="pc-email" name="email" type="email" placeholder="votre@email.com" required></div>
+                    <div class="pc-field"><label for="pc-phone">Téléphone</label><input id="pc-phone" name="phone" type="tel" placeholder="(418) 000-0000"></div>
                 </div>
                 <div class="pc-field">
                     <label for="pc-unit">Type de logement</label>
@@ -23,7 +24,7 @@
                         <option>Produit ou unité à vendre</option>
                     </select>
                 </div>
-                <div class="pc-field"><label for="pc-message">Message</label><textarea id="pc-message" name="message" placeholder="Expliquez vos besoins, votre date souhaitée et vos questions."></textarea></div>
+                <div class="pc-field"><label for="pc-message">Message</label><textarea id="pc-message" name="message" placeholder="Expliquez vos besoins, votre date souhaitée et vos questions." required></textarea></div>
                 <button class="pc-btn pc-btn-dark" type="submit">Envoyer la demande <i class="fa-solid fa-paper-plane"></i></button>
             </form>
         </div>

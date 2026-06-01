@@ -1282,7 +1282,10 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'restaurant' => 'cms::web.fallback.landing-commerce-alimentaire',
             'saas' => 'cms::web.fallback.landing-next-level',
             'services' => 'cms::web.fallback.landing-next-level',
-            'tourisme' => 'cms::web.fallback.landing-next-level',
+            'tourisme' => 'cms::web.fallback.landing-tourisme',
+            'travel tourism' => 'cms::web.fallback.landing-tourisme',
+            'travel and tourism' => 'cms::web.fallback.landing-tourisme',
+            'voyage' => 'cms::web.fallback.landing-tourisme',
         ];
 
         return $categoryViews[$normalized] ?? null;
@@ -1367,6 +1370,11 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'cms::web.fallback.landing-next-level' => [
                 'next level', 'go exploria next', 'next-level', 'aventure next', 'voyage aventure',
                 'trekking', 'exploration', 'expedition voyage',
+            ],
+            'cms::web.fallback.landing-tourisme' => [
+                'tourisme', 'voyage', 'voyages', 'travel tourism', 'travel and tourism',
+                'travel & tourism', 'destination', 'destinations', 'agence voyage',
+                'agence de voyage',
             ],
             'cms::web.fallback.landing-immoblier' => [
                 'immoblier', 'appartement', 'appartements', 'logement', 'logements',

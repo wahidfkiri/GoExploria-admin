@@ -420,18 +420,19 @@
                     </div>
                 @endif
             </div>
-            <form class="contact-form" method="GET" action="{{ $devisLink }}">
+            <form class="contact-form" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_location_vehicule">
+                @csrf
                 <input type="hidden" name="etablissement_id" value="{{ $etablissement->id }}">
                 <div class="form-title">Demande de reservation</div>
                 <div class="form-grid">
-                    <div class="fg"><label>Prenom</label><input name="first_name" type="text"></div>
+                    <div class="fg"><label>Prenom</label><input name="first_name" type="text" required></div>
                     <div class="fg"><label>Nom</label><input name="last_name" type="text"></div>
-                    <div class="fg"><label>Email</label><input name="email" type="email"></div>
+                    <div class="fg"><label>Email</label><input name="email" type="email" required></div>
                     <div class="fg"><label>Telephone</label><input name="phone" type="tel"></div>
                     <div class="fg fg-full"><label>Vehicule souhaite</label><select name="vehicle">@foreach($vehicleCards as $car)<option>{{ $car['name'] }}</option>@endforeach<option>Autre besoin</option></select></div>
                     <div class="fg"><label>Date depart</label><input name="start_date" type="date"></div>
                     <div class="fg"><label>Date retour</label><input name="end_date" type="date"></div>
-                    <div class="fg fg-full"><label>Message</label><textarea name="message" rows="4"></textarea></div>
+                    <div class="fg fg-full"><label>Message</label><textarea name="message" rows="4" required></textarea></div>
                 </div>
                 <button class="cf-submit" type="submit">Envoyer ma demande</button>
             </form>
@@ -444,6 +445,7 @@
     </div>
 
         @include('cms::web.fallback.partials.landing-media-slideshow')
+        @include('cms::web.fallback.partials.landing-contact-ajax')
     
 
             </div>

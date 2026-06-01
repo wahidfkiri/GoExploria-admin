@@ -1315,30 +1315,31 @@ html.light .float-cta {
           </div>
         @endif
       </div>
-      <form class="contact-form reveal-right" onsubmit="return handleForm(event)">
+      <form class="contact-form reveal-right" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_next_level">
+        @csrf
         <div class="form-row">
           <div class="form-group">
             <label>Prénom *</label>
-            <input type="text" placeholder="Votre prénom" required>
+            <input type="text" name="first_name" placeholder="Votre prénom" required>
           </div>
           <div class="form-group">
             <label>Nom *</label>
-            <input type="text" placeholder="Votre nom" required>
+            <input type="text" name="last_name" placeholder="Votre nom" required>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>Email *</label>
-            <input type="email" placeholder="votre@email.com" required>
+            <input type="email" name="email" placeholder="votre@email.com" required>
           </div>
           <div class="form-group">
             <label>Téléphone</label>
-            <input type="tel" placeholder="(418) 525-7748">
+            <input type="tel" name="phone" placeholder="(418) 525-7748">
           </div>
         </div>
         <div class="form-group">
           <label>Type de service</label>
-          <select>
+          <select name="service">
             <option value="">Choisir un service...</option>
             <option>Création site web</option>
             <option>Marketing digital</option>
@@ -1353,7 +1354,7 @@ html.light .float-cta {
         </div>
         <div class="form-group">
           <label>Budget estimé</label>
-          <select>
+          <select name="budget">
             <option>Moins de 500 €</option>
             <option>500 € – 1500 €</option>
             <option>1500 € – 3000 €</option>
@@ -1362,7 +1363,7 @@ html.light .float-cta {
         </div>
         <div class="form-group">
           <label>Votre message *</label>
-          <textarea rows="4" placeholder="Décrivez votre rêve de voyage..." required></textarea>
+          <textarea rows="4" name="message" placeholder="Décrivez votre rêve de voyage..." required></textarea>
         </div>
         <button type="submit" class="btn-submit">
           <span>Envoyer ma demande</span> <i class="fas fa-paper-plane" aria-hidden="true"></i>
@@ -1390,6 +1391,7 @@ html.light .float-cta {
 </div>
 
 @include('cms::web.fallback.partials.landing-media-slideshow')
+@include('cms::web.fallback.partials.landing-contact-ajax')
 
 <!-- FOOTER -->
 <footer>
@@ -2622,7 +2624,6 @@ function handleForm(e) {
 </script>
 </body>
 </html>
-
 
 
 

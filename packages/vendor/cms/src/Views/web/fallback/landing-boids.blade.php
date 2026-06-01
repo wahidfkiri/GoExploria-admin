@@ -2387,13 +2387,14 @@
                             <div class="boids-map-wrap">
                                 <div id="boidsMap" class="boids-map" style="height:100%;"></div>
                             </div>
-                            <form id="boidsLandingContactForm" class="boids-form">
+                            <form id="boidsLandingContactForm" class="boids-form" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_boids">
+                                @csrf
                                 <h4>Soumission Gratuite</h4>
                                 <p>Decrivez votre projet et nous vous recontactons rapidement.</p>
                                 <div class="boids-form-grid">
-                                    <input class="boids-input" type="text" name="first_name" placeholder="Prenom">
+                                    <input class="boids-input" type="text" name="first_name" placeholder="Prenom" required>
                                     <input class="boids-input" type="text" name="last_name" placeholder="Nom">
-                                    <input class="boids-input boids-col-full" type="email" name="email" placeholder="Courriel">
+                                    <input class="boids-input boids-col-full" type="email" name="email" placeholder="Courriel" required>
                                     <input class="boids-input boids-col-full" type="text" name="phone" placeholder="Telephone">
                                     <select class="boids-select boids-col-full" name="service">
                                         <option value="">Type de service</option>
@@ -2402,7 +2403,7 @@
                                         <option value="Revetement en bois">Revetement en bois</option>
                                         <option value="Planage et emboutement">Planage et emboutement</option>
                                     </select>
-                                    <textarea class="boids-textarea boids-col-full" name="message" placeholder="Decrivez vos besoins"></textarea>
+                                    <textarea class="boids-textarea boids-col-full" name="message" placeholder="Decrivez vos besoins" required></textarea>
                                     <button class="boids-submit boids-col-full" type="submit">Envoyer ma demande de soumission</button>
                                 </div>
                             </form>
@@ -2423,6 +2424,7 @@
     </button>
 
     @include('cms::web.fallback.partials.landing-media-slideshow')
+    @include('cms::web.fallback.partials.landing-contact-ajax')
 
     @include("cms::web.fallback.activities.$activityViewFolder.footer")
 
@@ -2465,6 +2467,10 @@
             const form = document.getElementById('boidsLandingContactForm');
             if (form) {
                 form.addEventListener('submit', function (event) {
+                    if (form.hasAttribute('data-cms-contact-form')) {
+                        return;
+                    }
+
                     event.preventDefault();
                     const formData = new FormData(form);
                     const params = new URLSearchParams();

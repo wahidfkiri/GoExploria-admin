@@ -128,7 +128,7 @@ function switchGallery(type, event){
 function showToast(msg,type=''){ const t=document.getElementById('toast'); if(!t) return; t.textContent=msg; t.className='toast'+(type?' '+type:''); setTimeout(()=>t.classList.add('show'),50); setTimeout(()=>t.classList.remove('show'),3500); }
 
 window.addEventListener('scroll',()=>{ document.getElementById('navbar')?.classList.toggle('scrolled',window.scrollY>50); });
-document.getElementById('tlContactForm')?.addEventListener('submit', function(e){ e.preventDefault(); const params = new URLSearchParams(new FormData(this)); params.set('etablissement_id', tlConfig.etablissementId || ''); window.open(tlDevisLink + (tlDevisLink.includes('?') ? '&' : '?') + params.toString(), '_blank'); });
+document.getElementById('tlContactForm')?.addEventListener('submit', function(e){ if(this.hasAttribute('data-cms-contact-form')) return; e.preventDefault(); const params = new URLSearchParams(new FormData(this)); params.set('etablissement_id', tlConfig.etablissementId || ''); window.open(tlDevisLink + (tlDevisLink.includes('?') ? '&' : '?') + params.toString(), '_blank'); });
 
 const snow = document.getElementById('snowContainer');
 if (snow) { for(let i=0;i<28;i++){ const s=document.createElement('div'); s.className='snowflake'; const size=Math.random()*5+2; s.style.cssText=`left:${Math.random()*100}%;width:${size}px;height:${size}px;opacity:${Math.random()*.6+.2};animation-duration:${Math.random()*8+6}s;animation-delay:${Math.random()*10}s`; snow.appendChild(s); } }

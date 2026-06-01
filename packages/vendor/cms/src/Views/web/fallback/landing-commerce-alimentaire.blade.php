@@ -1703,13 +1703,14 @@
                                 <p class="food-copy">{{ $address }}</p>
                                 @if($phone)<p><strong>Téléphone :</strong> <a href="tel:{{ preg_replace('/\s+/', '', $phone) }}">{{ $phone }}</a></p>@endif
                                 @if($email)<p><strong>Courriel :</strong> <a href="mailto:{{ $email }}">{{ $email }}</a></p>@endif
-                                <form class="food-form" id="foodContactForm">
+                                <form class="food-form" id="foodContactForm" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_commerce_alimentaire">
+                                    @csrf
                                     <div class="food-form-row">
-                                        <input name="first_name" placeholder="Prénom">
+                                        <input name="first_name" placeholder="Prénom" required>
                                         <input name="last_name" placeholder="Nom">
                                     </div>
                                     <div class="food-form-row">
-                                        <input name="email" type="email" placeholder="Courriel">
+                                        <input name="email" type="email" placeholder="Courriel" required>
                                         <input name="phone" placeholder="Téléphone">
                                     </div>
                                     <select name="service">
@@ -1718,7 +1719,7 @@
                                         <option>Commande spéciale</option>
                                         <option>Demande de partenariat</option>
                                     </select>
-                                    <textarea name="message" placeholder="Décrivez votre besoin"></textarea>
+                                    <textarea name="message" placeholder="Décrivez votre besoin" required></textarea>
                                     <button class="food-btn food-btn-primary" type="submit">Envoyer ma demande</button>
                                 </form>
                             </div>
@@ -1739,6 +1740,7 @@
     </main>
 
     @include('cms::web.fallback.partials.landing-media-slideshow')
+    @include('cms::web.fallback.partials.landing-contact-ajax')
 
     @include("cms::web.fallback.activities.$activityViewFolder.footer")
 
@@ -1779,6 +1781,10 @@
             backTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
             document.getElementById('foodContactForm')?.addEventListener('submit', function (event) {
+                if (this.hasAttribute('data-cms-contact-form')) {
+                    return;
+                }
+
                 event.preventDefault();
                 const params = new URLSearchParams(new FormData(this));
                 params.set('etablissement_id', '{{ $etablissement->id }}');

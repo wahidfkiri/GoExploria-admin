@@ -273,6 +273,7 @@
         @include('cms::web.fallback.partials.espace-forfait.contact')
         @include('cms::web.fallback.partials.espace-forfait.partenaires')
         @include('cms::web.fallback.partials.landing-media-slideshow')
+        @include('cms::web.fallback.partials.landing-contact-ajax')
         @include('cms::web.fallback.partials.espace-forfait.footer')
         <div class="toast" id="toast"></div>
     </main>
