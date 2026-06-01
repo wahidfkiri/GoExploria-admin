@@ -1586,32 +1586,8 @@
 
 
 
-                    <section class="food-section food-section-pad" id="galerie">
-                        <span class="food-kicker">Galerie</span>
-                        <h2 class="food-title">Notre galerie </h2>
-                        <div class="food-gallery-grid">
-                            @foreach($gallery->take(8) as $item)
-                                <figure class="food-gallery-item">
-                                    <img src="{{ $item['thumbnail'] }}" alt="{{ $item['name'] ?? 'Galerie' }}">
-                                    <span>{{ $item['name'] ?? 'Photo' }}</span>
-                                </figure>
-                            @endforeach
-                        </div>
-                    </section>
 
-                    <section class="food-section food-section-pad food-insta-section" id="social">
-                        <span class="food-kicker">Réseaux sociaux</span>
-                        <h2 class="food-title">Instagram, Facebook et inspirations</h2>
-                        <p class="food-copy">Les 4 dernières images de la médiathèque alimentent automatiquement cette zone sociale.</p>
-                        <div class="food-social-grid">
-                            @foreach($instagramPosts as $post)
-                                <article class="food-social-card">
-                                    <img src="{{ $post['thumbnail'] }}" alt="{{ $post['name'] ?? 'Publication' }}">
-                                    <div><i class="fa-brands fa-instagram"></i> #saveurslocales</div>
-                                </article>
-                            @endforeach
-                        </div>
-                    </section>
+                   
 
 
                     @include('cms::web.fallback.partials.landing-working-hours')
