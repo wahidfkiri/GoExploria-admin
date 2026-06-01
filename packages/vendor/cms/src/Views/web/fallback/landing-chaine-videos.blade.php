@@ -54,7 +54,8 @@
         .vh-video-channel-page .hero-card-mid{width:92%;height:92%;top:3%;left:-3%;transform:rotate(-2deg)}
         .vh-video-channel-page .hero-card-main{position:relative;z-index:3;display:block;width:100%;background:var(--warm-white);border:1px solid var(--border-md);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-lg)}
         .vh-video-channel-page .hero-video-thumb{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#1A1814 0%,#2C2920 50%,#1A1814 100%);position:relative;overflow:hidden;display:grid;place-items:center}
-        .vh-video-channel-page .hero-video-thumb img,.vh-video-channel-page .hero-video-thumb video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+        .vh-video-channel-page .hero-video-thumb img,.vh-video-channel-page .hero-video-thumb video,.vh-video-channel-page .hero-video-thumb iframe{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0;display:block}
+        .vh-video-channel-page .hero-video-thumb iframe{transform:scale(1.08);transform-origin:center;pointer-events:none}
         .vh-video-channel-page .hero-video-thumb:after{content:"";position:absolute;inset:0;background:rgba(15,14,12,.22)}
         .vh-video-channel-page .play-btn-hero{position:relative;z-index:1;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,.3);display:grid;place-items:center;color:#fff}
         .vh-video-channel-page .hero-card-info{padding:16px 18px 18px}
