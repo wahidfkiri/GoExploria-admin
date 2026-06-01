@@ -117,7 +117,8 @@
         .vh-video-channel-page .video-card{background:var(--warm-white);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;cursor:pointer;transition:.25s;position:relative}
         .vh-video-channel-page .video-card:hover{box-shadow:var(--shadow-md);transform:translateY(-3px)}
         .vh-video-channel-page .video-thumb-wrap{position:relative;aspect-ratio:16/9;overflow:hidden;background:#E8E4DC}
-        .vh-video-channel-page .video-thumb-wrap img,.vh-video-channel-page .video-thumb-wrap video{width:100%;height:100%;object-fit:cover}
+        .vh-video-channel-page .video-thumb-wrap img,.vh-video-channel-page .video-thumb-wrap video,.vh-video-channel-page .video-thumb-wrap iframe{width:100%;height:100%;object-fit:cover;border:0;display:block}
+        .vh-video-channel-page .video-thumb-wrap iframe{pointer-events:none}
         .vh-video-channel-page .video-thumb-placeholder{width:100%;height:100%;background:linear-gradient(135deg,#2A2720 0%,#3C3830 60%,#1E1C18 100%);display:grid;place-items:center;color:#fff;font-size:34px}
         .vh-video-channel-page .play-overlay{position:absolute;inset:0;background:rgba(15,14,12,.35);display:grid;place-items:center;opacity:0;transition:.25s}
         .vh-video-channel-page .video-card:hover .play-overlay{opacity:1}
@@ -301,6 +302,18 @@
             return 'badge-' + (source || 'local');
         }
 
+        function cardVideoPreviewHtml(video) {
+            if (!video?.play_url) {
+                return `<div class="video-thumb-placeholder"><i class="fa-solid fa-play"></i></div>`;
+            }
+
+            if (video.is_iframe) {
+                return `<iframe src="${esc(video.play_url)}" loading="lazy" allow="fullscreen; picture-in-picture" title="${esc(video.title || 'Video')}"></iframe>`;
+            }
+
+            return `<video src="${esc(video.play_url)}" muted autoplay loop playsinline preload="metadata"></video>`;
+        }
+
         function videoThumbHtml(video, iconClass = 'fa-play') {
             if (!video) {
                 return `<div class="video-thumb-placeholder"><i class="fa-solid fa-video-slash"></i></div>`;
@@ -425,7 +438,7 @@
             empty.style.display = 'none';
             grid.innerHTML = list.map((video, index) => {
                 const color = channelColor(video.channel);
-                const thumb = video.thumbnail ? `<img src="${esc(video.thumbnail)}" alt="${esc(video.title)}">` : `<div class="video-thumb-placeholder"><i class="fa-solid fa-play"></i></div>`;
+                const thumb = cardVideoPreviewHtml(video);
                 return `
                     <article class="video-card" tabindex="0" role="button" data-video-index="${index}" aria-label="Lire ${esc(video.title)}">
                         <div class="video-thumb-wrap">
