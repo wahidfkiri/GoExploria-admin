@@ -1547,15 +1547,9 @@
                     </section>
 
                     @if(collect($cmsPageSections ?? [])->isNotEmpty())
-                        <section class="food-cms-pages" id="cms-pages-content">
                             @foreach(collect($cmsPageSections) as $cmsPage)
-                                <article class="food-section food-section-pad food-cms-page" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
-                                    <div class="food-cms-page-content">
                                         {!! data_get($cmsPage, 'content') !!}
-                                    </div>
-                                </article>
                             @endforeach
-                        </section>
                     @endif
 
 
@@ -1594,7 +1588,7 @@
 
                     <section class="food-section food-section-pad" id="galerie">
                         <span class="food-kicker">Galerie</span>
-                        <h2 class="food-title">Notre galerie <em>gourmande</em></h2>
+                        <h2 class="food-title">Notre galerie </h2>
                         <div class="food-gallery-grid">
                             @foreach($gallery->take(8) as $item)
                                 <figure class="food-gallery-item">
