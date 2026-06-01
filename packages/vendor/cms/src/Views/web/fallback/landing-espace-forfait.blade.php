@@ -270,6 +270,7 @@
         @include('cms::web.fallback.partials.espace-forfait.videos')
         @include('cms::web.fallback.partials.espace-forfait.avis')
         @include('cms::web.fallback.partials.espace-forfait.faq')
+        @include('cms::web.fallback.partials.landing-working-hours')
         @include('cms::web.fallback.partials.espace-forfait.contact')
         @include('cms::web.fallback.partials.espace-forfait.partenaires')
         @include('cms::web.fallback.partials.landing-media-slideshow')

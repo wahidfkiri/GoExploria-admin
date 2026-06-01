@@ -1274,7 +1274,12 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'immobilier' => 'cms::web.fallback.landing-immobilier-construction',
             'industrie' => 'cms::web.fallback.landing-boids',
             'landing page' => 'cms::web.fallback.landing-next-level',
-            'medical' => 'cms::web.fallback.landing-activity',
+            'health' => 'cms::web.fallback.landing-sante',
+            'medical' => 'cms::web.fallback.landing-sante',
+            'sante' => 'cms::web.fallback.landing-sante',
+            'sante & bien etre' => 'cms::web.fallback.landing-sante',
+            'sante bien etre' => 'cms::web.fallback.landing-sante',
+            'sante et bien etre' => 'cms::web.fallback.landing-sante',
             'next level' => 'cms::web.fallback.landing-next-level',
             'place immoblier' => 'cms::web.fallback.landing-immobilier-construction',
             'place immobilier' => 'cms::web.fallback.landing-immobilier-construction',
@@ -1286,6 +1291,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'travel tourism' => 'cms::web.fallback.landing-tourisme',
             'travel and tourism' => 'cms::web.fallback.landing-tourisme',
             'voyage' => 'cms::web.fallback.landing-tourisme',
+            'wellness' => 'cms::web.fallback.landing-sante',
         ];
 
         return $categoryViews[$normalized] ?? null;
@@ -1375,6 +1381,14 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 'tourisme', 'voyage', 'voyages', 'travel tourism', 'travel and tourism',
                 'travel & tourism', 'destination', 'destinations', 'agence voyage',
                 'agence de voyage',
+            ],
+            'cms::web.fallback.landing-sante' => [
+                'sante', 'santé', 'sante bien etre', 'santé bien etre',
+                'sante et bien etre', 'santé et bien etre', 'sante & bien etre',
+                'santé & bien-être', 'bien etre', 'bien-être', 'medical', 'médical',
+                'medecin', 'médecin', 'cabinet medical', 'cabinet médical', 'clinique',
+                'centre de sante', 'centre de santé', 'soins', 'therapie', 'thérapie',
+                'wellness', 'health',
             ],
             'cms::web.fallback.landing-immoblier' => [
                 'immoblier', 'appartement', 'appartements', 'logement', 'logements',

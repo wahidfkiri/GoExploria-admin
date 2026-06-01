@@ -1271,6 +1271,8 @@ html.light .float-cta {
 </section>
 
 <!-- CONTACT -->
+@include('cms::web.fallback.partials.landing-working-hours')
+
 <section id="contact">
   <div class="container">
     <p class="section-label reveal">Parlons de votre voyage</p>
@@ -2624,7 +2626,6 @@ function handleForm(e) {
 </script>
 </body>
 </html>
-
 
 
 

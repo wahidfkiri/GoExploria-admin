@@ -400,6 +400,8 @@
         </section>
     @endif
 
+    @include('cms::web.fallback.partials.landing-working-hours')
+
     <section id="contact">
         <div class="container contact-layout">
             <div>

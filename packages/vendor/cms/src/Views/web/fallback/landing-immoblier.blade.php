@@ -224,6 +224,7 @@
         @include('cms::web.fallback.partials.immoblier.gallery')
         @include('cms::web.fallback.partials.immoblier.amenities')
         @include('cms::web.fallback.partials.immoblier.social')
+        @include('cms::web.fallback.partials.landing-working-hours')
         @include('cms::web.fallback.partials.immoblier.contact')
         @include('cms::web.fallback.partials.immoblier.map-cta')
         @include('cms::web.fallback.partials.landing-media-slideshow')

@@ -2348,30 +2348,7 @@
         </div>
     </section>
 </article>
-<article class="boids-section" id="section-hours">
-                        <span class="boids-kicker"><i class="fas fa-clock"></i> Horaire & Contact</span>
-                        <div class="boids-hours-contact">
-                            <div class="boids-hours-card">
-                                <div class="boids-hours-title">Heures d'ouverture</div>
-                                <div class="boids-hours-body">
-                                    @foreach($workingHours as $row)
-                                        <div class="boids-hour">
-                                            <span>{{ $row['day'] }}</span>
-                                            <span>{{ $row['hours'] }}</span>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                            <div class="boids-contact-card">
-                                <div class="boids-hours-title">Coordonnees</div>
-                                <div class="boids-contact-body">
-                                    <div class="boids-contact-item"><i class="fas fa-location-dot"></i><span>{{ $address }}</span></div>
-                                    @if($phone)<div class="boids-contact-item"><i class="fas fa-phone"></i><span>{{ $phone }}</span></div>@endif
-                                    @if($email)<div class="boids-contact-item"><i class="fas fa-envelope"></i><span>{{ $email }}</span></div>@endif
-                                </div>
-                            </div>
-                        </div>
-                    </article>
+                    @include('cms::web.fallback.partials.landing-working-hours')
 
                     <article class="boids-section">
                         <div class="boids-cta-band">

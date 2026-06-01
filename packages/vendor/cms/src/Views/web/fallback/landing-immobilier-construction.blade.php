@@ -1274,6 +1274,8 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 </section>
 
 <!-- CONTACT -->
+@include('cms::web.fallback.partials.landing-working-hours')
+
 <section id="contact">
   <div class="container">
     <div class="contact-grid">

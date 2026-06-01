@@ -1695,6 +1695,8 @@
                     </section>
 
 
+                    @include('cms::web.fallback.partials.landing-working-hours')
+
                     <section class="food-section food-section-pad" id="contact">
                         <div class="food-contact-grid">
                             <div>
