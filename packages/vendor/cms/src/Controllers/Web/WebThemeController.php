@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class WebThemeController extends Controller
 {
@@ -553,13 +554,68 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
 
     public function videoChannel(Request $request, $etablissementId)
     {
-        $this->etablissement = Etablissement::findOrFail($etablissementId);
-        $this->checkPreviewMode($request);
+        return redirect()->route('cms.videos.channel');
+    }
 
-        $data = $this->prepareNoThemeLandingData();
-        $html = view('cms::web.fallback.landing-chaine-videos', $data)->render();
+    public function globalVideoChannel(Request $request)
+    {
+        $videos = $this->getGlobalVideoChannelItems();
+        $html = view('cms::web.fallback.landing-chaine-videos', [
+            'siteName' => 'GoExploria Chaine videos',
+            'siteDescription' => 'Toutes les videos publiees par les etablissements GoExploria, regroupees depuis les sliders, les sliders CMS et les medias videos.',
+            'videoChannelVideos' => $videos,
+            'videoSearchUrl' => route('cms.videos.search'),
+        ])->render();
 
-        return $this->buildResponse($html, $this->buildSeoContext(null, false));
+        return $this->buildResponse($html, [
+            'title' => 'GoExploria Chaine videos',
+            'description' => 'Toutes les videos publiees par les etablissements GoExploria.',
+            'canonical' => route('cms.videos.channel'),
+            'site_name' => 'GoExploria',
+            'robots' => 'index, follow',
+        ]);
+    }
+
+    public function globalVideoSearch(Request $request)
+    {
+        $query = trim((string) $request->query('q', ''));
+        $channel = trim((string) $request->query('channel', 'all'));
+        $limit = max(1, min((int) $request->query('limit', 36), 90));
+
+        $allVideos = $this->getGlobalVideoChannelItems();
+        $videos = $allVideos;
+
+        if ($channel !== '' && $channel !== 'all') {
+            $videos = $videos->filter(fn ($video) => strcasecmp((string) ($video['channel'] ?? ''), $channel) === 0);
+        }
+
+        if ($query !== '') {
+            $needle = Str::lower(Str::ascii($query));
+            $videos = $videos->filter(function ($video) use ($needle) {
+                $haystack = Str::lower(Str::ascii(implode(' ', [
+                    $video['title'] ?? '',
+                    $video['description'] ?? '',
+                    $video['channel'] ?? '',
+                    $video['source_label'] ?? '',
+                    $video['origin_label'] ?? '',
+                    $video['establishment_name'] ?? '',
+                ])));
+
+                return str_contains($haystack, $needle);
+            });
+        }
+
+        $videos = $videos->values();
+
+        return response()->json([
+            'videos' => $videos->take($limit)->values(),
+            'total' => $videos->count(),
+            'suggestions' => $this->buildGlobalVideoSuggestions($allVideos, $query),
+            'channels' => $allVideos
+                ->groupBy('channel')
+                ->map(fn ($items, $name) => ['name' => $name, 'count' => $items->count()])
+                ->values(),
+        ]);
     }
 
     /**
@@ -1272,6 +1328,140 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             });
     }
 
+    protected function getGlobalVideoChannelItems(): Collection
+    {
+        return collect()
+            ->merge($this->getGlobalCmsSliderVideoChannelItems())
+            ->merge($this->getGlobalCmsMediaVideoChannelItems())
+            ->merge($this->getGlobalSliderVideoChannelItems())
+            ->filter(fn ($video) => !empty($video['play_url']))
+            ->unique(fn ($video) => md5(
+                mb_strtolower((string) ($video['play_url'] ?? ''), 'UTF-8') . '|'
+                . mb_strtolower((string) ($video['title'] ?? ''), 'UTF-8') . '|'
+                . (string) ($video['establishment_id'] ?? '')
+            ))
+            ->sortBy([
+                ['order', 'asc'],
+                ['id', 'desc'],
+            ])
+            ->values()
+            ->map(function ($video, $index) {
+                $video['id'] = $video['id'] ?: ('global-video-' . ($index + 1));
+                $video['display_id'] = 'global-video-' . ($index + 1);
+
+                return $video;
+            });
+    }
+
+    protected function getGlobalVideoEstablishments(): Collection
+    {
+        return Etablissement::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->limit(500)
+            ->get(['id', 'name', 'slug'])
+            ->keyBy('id');
+    }
+
+    protected function getGlobalCmsSliderVideoChannelItems(): Collection
+    {
+        if (!function_exists('get_slider_items')) {
+            return collect();
+        }
+
+        return $this->getGlobalVideoEstablishments()
+            ->flatMap(function ($etablissement) {
+                try {
+                    return collect(get_slider_items($etablissement->id))
+                        ->filter(function ($item) {
+                            $url = trim((string) (data_get($item, 'video_html') ?: data_get($item, 'url') ?: data_get($item, 'video_url')));
+                            return $this->isVideoChannelPayload(data_get($item, 'type'), $url);
+                        })
+                        ->map(function ($item, $index) use ($etablissement) {
+                            return $this->makeVideoChannelItem([
+                                'id' => 'cms-slider-' . $etablissement->id . '-' . (data_get($item, 'id') ?: $index),
+                                'title' => data_get($item, 'title') ?: data_get($item, 'name') ?: 'Video',
+                                'description' => data_get($item, 'subtitle') ?: data_get($item, 'description'),
+                                'url' => data_get($item, 'video_html') ?: data_get($item, 'url') ?: data_get($item, 'video_url'),
+                                'thumbnail' => data_get($item, 'poster_url') ?: data_get($item, 'thumbnail_url') ?: data_get($item, 'image_url'),
+                                'channel' => $etablissement->name ?: 'Etablissement',
+                                'origin' => 'cms_sliders',
+                                'origin_label' => 'CMS sliders',
+                                'order' => (int) data_get($item, 'order', $index + 1),
+                                'establishment_id' => $etablissement->id,
+                                'establishment_name' => $etablissement->name,
+                                'establishment_url' => route('cms.company.home', ['etablissementId' => $etablissement->id]),
+                            ]);
+                        });
+                } catch (\Throwable $e) {
+                    return collect();
+                }
+            })
+            ->values();
+    }
+
+    protected function getGlobalCmsMediaVideoChannelItems(): Collection
+    {
+        try {
+            if (!\Illuminate\Support\Facades\Schema::connection('cms')->hasTable('cms_media')) {
+                return collect();
+            }
+
+            $establishments = $this->getGlobalVideoEstablishments();
+            if ($establishments->isEmpty()) {
+                return collect();
+            }
+
+            $hasVideoUrl = \Illuminate\Support\Facades\Schema::connection('cms')->hasColumn('cms_media', 'video_url');
+            $query = Media::query()
+                ->whereIn('etablissement_id', $establishments->keys()->all())
+                ->where(function ($query) use ($hasVideoUrl) {
+                    $query->where('type', 'like', 'video%')
+                        ->orWhere('mime_type', 'like', 'video/%');
+
+                    if ($hasVideoUrl) {
+                        $query->orWhereNotNull('video_url');
+                    }
+                });
+
+            if (\Illuminate\Support\Facades\Schema::connection('cms')->hasColumn('cms_media', 'is_public')) {
+                $query->where('is_public', true);
+            }
+
+            if (\Illuminate\Support\Facades\Schema::connection('cms')->hasColumn('cms_media', 'order')) {
+                $query->orderBy('order')->orderByDesc('id');
+            } else {
+                $query->orderByDesc('id');
+            }
+
+            return $query
+                ->limit(500)
+                ->get()
+                ->map(function ($media) use ($establishments) {
+                    $etablissement = $establishments->get($media->etablissement_id);
+                    $etablissementName = $etablissement?->name ?: 'Etablissement';
+                    $videoUrl = trim((string) ($media->video_url ?? ''));
+
+                    return $this->makeVideoChannelItem([
+                        'id' => 'cms-media-' . $media->id,
+                        'title' => $media->title ?: $media->name ?: $media->original_name ?: 'Video',
+                        'description' => $media->description,
+                        'url' => $videoUrl ?: $media->url,
+                        'thumbnail' => $media->thumbnail_url ?? null,
+                        'channel' => $etablissementName,
+                        'origin' => 'cms_media',
+                        'origin_label' => ($media->folder && $media->folder !== '/' ? trim($media->folder, '/') : 'CMS media'),
+                        'order' => (int) ($media->order ?? 1000),
+                        'establishment_id' => $media->etablissement_id,
+                        'establishment_name' => $etablissementName,
+                        'establishment_url' => $etablissement ? route('cms.company.home', ['etablissementId' => $etablissement->id]) : null,
+                    ]);
+                });
+        } catch (\Throwable $e) {
+            return collect();
+        }
+    }
+
     protected function getCmsSliderVideoChannelItems(): Collection
     {
         try {
@@ -1370,10 +1560,13 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                         'description' => $slider->description,
                         'url' => $slider->video_embed_url ?: $slider->video_url ?: $slider->video_path,
                         'thumbnail' => $slider->thumbnail_url ?: $slider->image_url,
-                        'channel' => 'Sliders',
+                        'channel' => 'GoExploria',
                         'origin' => 'sliders',
                         'origin_label' => 'Sliders',
                         'order' => (int) ($slider->order ?? 1000),
+                        'establishment_id' => null,
+                        'establishment_name' => 'GoExploria',
+                        'establishment_url' => url('/'),
                     ]);
                 });
         } catch (\Throwable $e) {
@@ -1408,7 +1601,36 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'thumbnail' => $thumbnail !== '' ? $thumbnail : null,
             'is_iframe' => $source['name'] !== 'local',
             'order' => (int) ($data['order'] ?? 1000),
+            'establishment_id' => $data['establishment_id'] ?? null,
+            'establishment_name' => $data['establishment_name'] ?? null,
+            'establishment_url' => $data['establishment_url'] ?? null,
         ];
+    }
+
+    protected function buildGlobalVideoSuggestions(Collection $videos, string $query): array
+    {
+        $needle = Str::lower(Str::ascii(trim($query)));
+
+        return $videos
+            ->flatMap(fn ($video) => [
+                $video['title'] ?? null,
+                $video['channel'] ?? null,
+                $video['source_label'] ?? null,
+                $video['origin_label'] ?? null,
+                $video['establishment_name'] ?? null,
+            ])
+            ->filter()
+            ->unique()
+            ->filter(function ($value) use ($needle) {
+                if ($needle === '') {
+                    return true;
+                }
+
+                return str_contains(Str::lower(Str::ascii((string) $value)), $needle);
+            })
+            ->take(10)
+            ->values()
+            ->all();
     }
 
     protected function isVideoChannelPayload($type, ?string $url): bool
@@ -1482,10 +1704,6 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'agroalimentaire' => 'cms::web.fallback.landing-commerce-alimentaire',
             'automobile' => 'cms::web.fallback.landing-location-vehicule',
             'blog' => 'cms::web.fallback.landing-next-level',
-            'chaine video' => 'cms::web.fallback.landing-chaine-videos',
-            'chaine videos' => 'cms::web.fallback.landing-chaine-videos',
-            'chaine vidéo' => 'cms::web.fallback.landing-chaine-videos',
-            'chaine vidéos' => 'cms::web.fallback.landing-chaine-videos',
             'ecommerce' => 'cms::web.fallback.landing-commerce-alimentaire',
             'e commerce' => 'cms::web.fallback.landing-commerce-alimentaire',
             'education' => 'cms::web.fallback.landing-activity',
@@ -1511,9 +1729,6 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'tourisme' => 'cms::web.fallback.landing-tourisme',
             'travel tourism' => 'cms::web.fallback.landing-tourisme',
             'travel and tourism' => 'cms::web.fallback.landing-tourisme',
-            'video hub' => 'cms::web.fallback.landing-chaine-videos',
-            'videohub' => 'cms::web.fallback.landing-chaine-videos',
-            'videos' => 'cms::web.fallback.landing-chaine-videos',
             'voyage' => 'cms::web.fallback.landing-tourisme',
             'wellness' => 'cms::web.fallback.landing-sante',
         ];
@@ -1605,11 +1820,6 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 'tourisme', 'voyage', 'voyages', 'travel tourism', 'travel and tourism',
                 'travel & tourism', 'destination', 'destinations', 'agence voyage',
                 'agence de voyage',
-            ],
-            'cms::web.fallback.landing-chaine-videos' => [
-                'chaine video', 'chaine videos', 'chaîne vidéo', 'chaîne vidéos',
-                'video hub', 'videohub', 'videos', 'vidéos', 'media video',
-                'média vidéo', 'streaming video', 'streaming vidéo',
             ],
             'cms::web.fallback.landing-sante' => [
                 'sante', 'santé', 'sante bien etre', 'santé bien etre',

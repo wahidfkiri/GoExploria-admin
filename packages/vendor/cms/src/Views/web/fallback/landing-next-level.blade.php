@@ -1055,7 +1055,7 @@ html.light .float-cta {
             </div>
             <span class="template-cta">Voir ce template</span>
           </a>
-          <a href="{{ asset('templates/next-level/chaine-videos.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
+          <a href="{{ \Illuminate\Support\Facades\Route::has('cms.videos.channel') ? route('cms.videos.channel') : url('/chaine-videos') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
             <div>
               <div class="template-media">
                 <img src="https://images.unsplash.com/photo-1497015289639-54688650d173?w=500&q=80" alt="Chaine videos">
@@ -2637,7 +2637,6 @@ function handleForm(e) {
 </script>
 </body>
 </html>
-
 
 
 

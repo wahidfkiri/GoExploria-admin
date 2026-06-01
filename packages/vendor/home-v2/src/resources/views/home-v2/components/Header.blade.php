@@ -14,13 +14,9 @@
         $currentLocale = 'fr';
     }
     $currentLanguage = $supportedLocales[$currentLocale];
-    $headerVideoChannelUrl = asset('templates/next-level/chaine-videos.html');
-
-    if (isset($etablissement) && !empty($etablissement->id)) {
-        $headerVideoChannelUrl = \Illuminate\Support\Facades\Route::has('cms.company.videos.channel')
-            ? route('cms.company.videos.channel', ['etablissementId' => $etablissement->id])
-            : url('/company/' . $etablissement->id . '/chaine-videos');
-    }
+    $headerVideoChannelUrl = \Illuminate\Support\Facades\Route::has('cms.videos.channel')
+        ? route('cms.videos.channel')
+        : url('/chaine-videos');
 @endphp
 
 {{-- Header Component --}}

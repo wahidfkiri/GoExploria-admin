@@ -1,10 +1,7 @@
 @php
-    $siteName = trim((string) (get_site_name($etablissement->id) ?: ($etablissement->name ?? 'Chaine videos')));
-    $siteDescription = trim((string) (
-        $etablissement->getSetting('site_description', null, 'general')
-        ?: get_site_description($etablissement->id)
-        ?: ($etablissement->description ?? '')
-    ));
+    $siteName = trim((string) ($siteName ?? 'GoExploria Chaine videos'));
+    $siteDescription = trim((string) ($siteDescription ?? ''));
+    $videoSearchUrl = $videoSearchUrl ?? (\Illuminate\Support\Facades\Route::has('cms.videos.search') ? route('cms.videos.search') : url('/chaine-videos/search'));
     $videos = collect($videoChannelVideos ?? [])->values();
     $featuredVideo = $videos->first();
     $channels = $videos
@@ -17,7 +14,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $siteName }} - Chaine videos</title>
+    <title>{{ $siteName }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
@@ -146,11 +143,11 @@
         <section class="hero">
             <div class="hero-text">
                 <div class="hero-label"><span></span>{{ $siteName }}</div>
-                <h1>Votre chaine<br><em>videos</em><br>centralisee</h1>
+                <h1>Chaine<br><em>videos</em><br>globale</h1>
                 @if($siteDescription)
                     <p>{{ $siteDescription }}</p>
                 @else
-                    <p>Retrouvez automatiquement les videos publiees dans les sliders, les sliders CMS et les medias videos de cet etablissement.</p>
+                    <p>Retrouvez automatiquement les videos publiees par les etablissements depuis les sliders, les sliders CMS et les medias videos.</p>
                 @endif
                 <div class="hero-actions">
                     <button class="vh-btn-primary" type="button" data-scroll-videos>Voir les videos</button>
@@ -158,7 +155,7 @@
                 </div>
                 <div class="hero-stats">
                     <div class="stat"><span class="stat-num" id="statVideos">{{ $videos->count() }}</span><span class="stat-label">Videos</span></div>
-                    <div class="stat"><span class="stat-num" id="statChannels">{{ $channels->count() }}</span><span class="stat-label">Chaines</span></div>
+                    <div class="stat"><span class="stat-num" id="statChannels">{{ $channels->count() }}</span><span class="stat-label">Etablissements</span></div>
                     <div class="stat"><span class="stat-num">3</span><span class="stat-label">Sources</span></div>
                 </div>
             </div>
@@ -184,7 +181,7 @@
                         </div>
                     </button>
                     <div class="floating-badge top-right"><div class="badge-icon" style="background:#FDEAEC"><i class="fa-solid fa-film"></i></div><div class="badge-text"><strong>{{ $videos->count() }} videos</strong><span>Disponibles</span></div></div>
-                    <div class="floating-badge bottom-left"><div class="badge-icon" style="background:#E0F5F0"><i class="fa-solid fa-layer-group"></i></div><div class="badge-text"><strong>{{ $channels->count() }} chaines</strong><span>Categories</span></div></div>
+                    <div class="floating-badge bottom-left"><div class="badge-icon" style="background:#E0F5F0"><i class="fa-solid fa-layer-group"></i></div><div class="badge-text"><strong>{{ $channels->count() }} etablissements</strong><span>Avec videos</span></div></div>
                 </div>
             </div>
         </section>
@@ -195,7 +192,7 @@
                     <div class="search-line">
                         <div class="search-box">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="search" id="videoSearchInput" autocomplete="off" placeholder="Chercher une video, une chaine, une source...">
+                            <input type="search" id="videoSearchInput" autocomplete="off" placeholder="Chercher une video, un etablissement, une source...">
                         </div>
                         <button class="vh-btn-primary" type="button" id="videoSearchButton">Rechercher</button>
                     </div>
@@ -208,7 +205,7 @@
         <section class="channels-section">
             <div class="vh-container">
                 <div class="section-head">
-                    <div><h2>Chaines</h2><p>Filtrer par categorie ou source</p></div>
+                    <div><h2>Etablissements</h2><p>Filtrer les videos par etablissement</p></div>
                 </div>
                 <div class="channels-row" id="channelsRow"></div>
             </div>
@@ -250,7 +247,7 @@
 
     <script>
         const initialVideos = @json($videos);
-        const searchUrl = @json(route('cms.company.videos.search', ['etablissementId' => $etablissement->id]));
+        const searchUrl = @json($videoSearchUrl);
         let videos = Array.isArray(initialVideos) ? initialVideos : [];
         let activeFilter = 'all';
         let searchQuery = '';
