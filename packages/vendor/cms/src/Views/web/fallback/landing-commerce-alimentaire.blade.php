@@ -1521,7 +1521,7 @@
                                     @endif
                                 </div>
                                 <div class="food-hero-content">
-                                    <h2>{{ $slide['title'] }}</h2>
+                                    <h2 style="    font-size: 35px;">{{ $slide['title'] }}</h2>
                                     <p>{{ $slide['subtitle'] }}</p>
                                     <div class="food-hero-actions">
                                         @if(!empty($slide['button_text']) && !empty($slide['button_url']))
