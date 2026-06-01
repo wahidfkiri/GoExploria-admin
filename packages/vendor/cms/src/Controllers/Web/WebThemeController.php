@@ -611,6 +611,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'videos' => $videos->take($limit)->values(),
             'total' => $videos->count(),
             'suggestions' => $this->buildGlobalVideoSuggestions($allVideos, $query),
+            'video_suggestions' => $this->buildGlobalVideoItemSuggestions($videos, $query),
             'channels' => $allVideos
                 ->groupBy('channel')
                 ->map(fn ($items, $name) => ['name' => $name, 'count' => $items->count()])
@@ -1629,6 +1630,32 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 return str_contains(Str::lower(Str::ascii((string) $value)), $needle);
             })
             ->take(10)
+            ->values()
+            ->all();
+    }
+
+    protected function buildGlobalVideoItemSuggestions(Collection $videos, string $query): array
+    {
+        $needle = Str::lower(Str::ascii(trim($query)));
+
+        return $videos
+            ->filter(function ($video) use ($needle) {
+                if ($needle === '') {
+                    return true;
+                }
+
+                $haystack = Str::lower(Str::ascii(implode(' ', [
+                    $video['title'] ?? '',
+                    $video['description'] ?? '',
+                    $video['channel'] ?? '',
+                    $video['source_label'] ?? '',
+                    $video['origin_label'] ?? '',
+                    $video['establishment_name'] ?? '',
+                ])));
+
+                return str_contains($haystack, $needle);
+            })
+            ->take(6)
             ->values()
             ->all();
     }

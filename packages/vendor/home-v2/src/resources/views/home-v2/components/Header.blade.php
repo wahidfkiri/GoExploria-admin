@@ -1,5 +1,6 @@
 ﻿{{-- flag-icons CDN --}}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="{{ asset('css/home-v2/services-mega-menu-v2.css') }}">
 
 @php
     $supportedLocales = [

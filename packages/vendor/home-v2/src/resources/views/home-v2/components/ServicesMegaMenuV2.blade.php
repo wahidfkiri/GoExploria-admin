@@ -1,5 +1,10 @@
-﻿@php(ob_start());@endphp
 {{-- MEGA MENU SERVICES V4 --}}
+<style>
+    .smm-v4-overlay:not(.active),
+    .smm-v4-container:not(.active) {
+        display: none !important;
+    }
+</style>
 
 <!-- Overlay -->
 <div class="smm-v4-overlay" id="smmV4Overlay"></div>
@@ -365,7 +370,3 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close
 generateSidebar();
 generateMainContent('espaces-medias');
 </script>
-@php
-    $__componentHtml = ob_get_clean();
-    echo $__componentHtml;
-@endphp
