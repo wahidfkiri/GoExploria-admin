@@ -53,10 +53,14 @@ Route::middleware(['web'])->group(function () {
         // Recherche
         Route::get('/search', [PublicPageController::class, 'search'])->name('search');
         Route::get('/search/ajax', [PublicPageController::class, 'searchAjax'])->name('search.ajax');
+        Route::get('/videos/search', [PublicPageController::class, 'videoSearch'])->name('videos.search');
         
         // Contact
         Route::get('/contact', [PublicPageController::class, 'contact'])->name('contact');
         Route::post('/contact/send', [PublicPageController::class, 'sendContact'])->name('contact.send');
+
+        // Page specifique Chaine videos
+        Route::get('/chaine-videos', [WebThemeController::class, 'videoChannel'])->name('videos.channel');
         
         // Newsletter
         Route::post('/newsletter/subscribe', [PublicPageController::class, 'subscribeNewsletter'])->name('newsletter.subscribe');

@@ -1055,6 +1055,17 @@ html.light .float-cta {
             </div>
             <span class="template-cta">Voir ce template</span>
           </a>
+          <a href="{{ asset('templates/next-level/chaine-videos.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1497015289639-54688650d173?w=500&q=80" alt="Chaine videos">
+                <div class="template-icon"><i class="fas fa-video" aria-hidden="true"></i></div>
+              </div>
+              <h4>Chaine videos</h4>
+              <p>Hub video avec sources sliders, CMS media, recherche AJAX et suggestions.</p>
+            </div>
+            <span class="template-cta">Voir ce template</span>
+          </a>
           <a href="#" class="template-card template-card--inactive" role="menuitem" aria-disabled="true">
             <div>
               <div class="template-media">
@@ -2626,7 +2637,6 @@ function handleForm(e) {
 </script>
 </body>
 </html>
-
 
 
 

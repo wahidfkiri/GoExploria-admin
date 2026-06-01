@@ -14,6 +14,13 @@
         $currentLocale = 'fr';
     }
     $currentLanguage = $supportedLocales[$currentLocale];
+    $headerVideoChannelUrl = asset('templates/next-level/chaine-videos.html');
+
+    if (isset($etablissement) && !empty($etablissement->id)) {
+        $headerVideoChannelUrl = \Illuminate\Support\Facades\Route::has('cms.company.videos.channel')
+            ? route('cms.company.videos.channel', ['etablissementId' => $etablissement->id])
+            : url('/company/' . $etablissement->id . '/chaine-videos');
+    }
 @endphp
 
 {{-- Header Component --}}
@@ -53,11 +60,11 @@
                     <!-- <li class="nav-menu-v2-has-videos" id="videosMenuItem">
                         <a href="#videos">VIDÃ‰OS</a>
                     </li> -->
+                    <li><a href="{{ $headerVideoChannelUrl }}" target="_blank" rel="noopener noreferrer">Chaîne vidéos</a></li>
                     <li class="nav-menu-v2-has-plans" id="plansMenuItem">
                         <a href="#section-nos-plans" id="plansMenuTrigger">{{ __('home-v2.header.menu.plans') }}</a>
                     </li>
                     <li><a href="{{ route('contact') }}">{{ __('home-v2.header.menu.contact') }}</a></li>
-                    <li><a href="{{ route('inscription') }}">{{ __('home-v2.header.menu.signup') }}</a></li>
                     <li><a href="{{ route('mon-compte') }}" class="nav-account-icon" title="{{ __('home-v2.common.account') }}" aria-label="{{ __('home-v2.common.account') }}"><i class="fas fa-user-circle"></i></a></li>
                 </ul>
             </div>

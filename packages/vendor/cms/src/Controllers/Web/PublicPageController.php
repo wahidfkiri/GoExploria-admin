@@ -7,6 +7,7 @@ use Vendor\Cms\Models\Page;
 use Vendor\Cms\Models\Theme;
 use Vendor\Cms\Models\Setting;
 use Vendor\Cms\Models\ContactMessage;
+use Vendor\Cms\Models\Media;
 use Vendor\Cms\Models\Traits\HasSettings;
 use App\Models\Etablissement;
 use Illuminate\Http\Request;
@@ -719,6 +720,50 @@ class PublicPageController extends Controller
         return redirect(route('cms.company.home', ['etablissementId' => $etablissementId]) . '#contact');
     }
 
+    public function videoSearch(Request $request, $etablissementId)
+    {
+        $etablissement = Etablissement::findOrFail($etablissementId);
+        $this->etablissement = $etablissement;
+
+        $query = trim((string) $request->query('q', ''));
+        $channel = trim((string) $request->query('channel', 'all'));
+        $limit = max(1, min((int) $request->query('limit', 24), 60));
+
+        $videos = $this->collectVideoChannelItems();
+
+        if ($channel !== '' && $channel !== 'all') {
+            $videos = $videos->filter(fn ($video) => strcasecmp((string) ($video['channel'] ?? ''), $channel) === 0);
+        }
+
+        if ($query !== '') {
+            $needle = Str::lower(Str::ascii($query));
+            $videos = $videos->filter(function ($video) use ($needle) {
+                $haystack = Str::lower(Str::ascii(implode(' ', [
+                    $video['title'] ?? '',
+                    $video['description'] ?? '',
+                    $video['channel'] ?? '',
+                    $video['source_label'] ?? '',
+                    $video['origin_label'] ?? '',
+                ])));
+
+                return str_contains($haystack, $needle);
+            });
+        }
+
+        $videos = $videos->values();
+        $suggestions = $this->buildVideoSuggestions($this->collectVideoChannelItems(), $query);
+
+        return response()->json([
+            'videos' => $videos->take($limit)->values(),
+            'total' => $videos->count(),
+            'suggestions' => $suggestions,
+            'channels' => $this->collectVideoChannelItems()
+                ->groupBy('channel')
+                ->map(fn ($items, $name) => ['name' => $name, 'count' => $items->count()])
+                ->values(),
+        ]);
+    }
+
     public function sendContact(Request $request, $etablissementId)
     {
         return $this->storeContactMessage($request, $etablissementId);
@@ -727,6 +772,243 @@ class PublicPageController extends Controller
     public function contactApi(Request $request, $etablissementId)
     {
         return $this->storeContactMessage($request, $etablissementId);
+    }
+
+    protected function collectVideoChannelItems(): \Illuminate\Support\Collection
+    {
+        if (!$this->etablissement) {
+            return collect();
+        }
+
+        $items = collect()
+            ->merge($this->collectCmsSliderVideos())
+            ->merge($this->collectCmsMediaVideos())
+            ->merge($this->collectGlobalSliderVideos())
+            ->filter(fn ($video) => !empty($video['play_url']))
+            ->unique(fn ($video) => md5(Str::lower((string) ($video['play_url'] ?? '')) . '|' . Str::lower((string) ($video['title'] ?? ''))))
+            ->sortBy([
+                ['order', 'asc'],
+                ['id', 'desc'],
+            ])
+            ->values();
+
+        return $items->map(function ($video, $index) {
+            $video['id'] = $video['id'] ?: ($index + 1);
+            $video['display_id'] = 'video-' . ($index + 1);
+            return $video;
+        });
+    }
+
+    protected function collectCmsSliderVideos(): \Illuminate\Support\Collection
+    {
+        try {
+            return collect(get_slider_items($this->etablissement->id))
+                ->filter(function ($item) {
+                    $url = trim((string) (data_get($item, 'url') ?: data_get($item, 'video_url') ?: data_get($item, 'video_html')));
+                    return $this->isVideoPayload(data_get($item, 'type'), $url);
+                })
+                ->map(function ($item, $index) {
+                    $url = trim((string) (data_get($item, 'video_html') ?: data_get($item, 'url') ?: data_get($item, 'video_url')));
+                    return $this->makeVideoChannelItem([
+                        'id' => 'cms-slider-' . (data_get($item, 'id') ?: $index),
+                        'title' => data_get($item, 'title') ?: data_get($item, 'name') ?: 'Video',
+                        'description' => data_get($item, 'subtitle') ?: data_get($item, 'description'),
+                        'url' => $url,
+                        'thumbnail' => data_get($item, 'poster_url') ?: data_get($item, 'thumbnail_url') ?: data_get($item, 'image_url'),
+                        'channel' => 'CMS sliders',
+                        'origin' => 'cms_sliders',
+                        'origin_label' => 'CMS sliders',
+                        'order' => (int) data_get($item, 'order', $index + 1),
+                    ]);
+                });
+        } catch (\Throwable $e) {
+            return collect();
+        }
+    }
+
+    protected function collectCmsMediaVideos(): \Illuminate\Support\Collection
+    {
+        try {
+            if (!Schema::connection('cms')->hasTable('cms_media')) {
+                return collect();
+            }
+
+            $hasVideoUrl = Schema::connection('cms')->hasColumn('cms_media', 'video_url');
+            $query = Media::query()
+                ->where('etablissement_id', $this->etablissement->id)
+                ->where(function ($query) use ($hasVideoUrl) {
+                    $query->where('type', 'like', 'video%')
+                        ->orWhere('mime_type', 'like', 'video/%');
+                    if ($hasVideoUrl) {
+                        $query->orWhereNotNull('video_url');
+                    }
+                });
+
+            if (Schema::connection('cms')->hasColumn('cms_media', 'is_public')) {
+                $query->where('is_public', true);
+            }
+
+            if (Schema::connection('cms')->hasColumn('cms_media', 'order')) {
+                $query->orderBy('order')->orderByDesc('id');
+            } else {
+                $query->orderByDesc('id');
+            }
+
+            return $query->limit(200)->get()->map(function ($media) {
+                $videoUrl = trim((string) ($media->video_url ?? ''));
+                return $this->makeVideoChannelItem([
+                    'id' => 'cms-media-' . $media->id,
+                    'title' => $media->title ?: $media->name ?: $media->original_name ?: 'Video',
+                    'description' => $media->description,
+                    'url' => $videoUrl ?: $media->url,
+                    'thumbnail' => $media->thumbnail_url ?? null,
+                    'channel' => $media->folder && $media->folder !== '/' ? trim($media->folder, '/') : 'CMS media',
+                    'origin' => 'cms_media',
+                    'origin_label' => 'CMS media',
+                    'order' => (int) ($media->order ?? 1000),
+                ]);
+            });
+        } catch (\Throwable $e) {
+            return collect();
+        }
+    }
+
+    protected function collectGlobalSliderVideos(): \Illuminate\Support\Collection
+    {
+        try {
+            if (!Schema::hasTable('sliders')) {
+                return collect();
+            }
+
+            return \App\Models\Slider::query()
+                ->active()
+                ->videos()
+                ->ordered()
+                ->limit(100)
+                ->get()
+                ->map(function ($slider) {
+                    return $this->makeVideoChannelItem([
+                        'id' => 'slider-' . $slider->id,
+                        'title' => $slider->name ?: 'Video',
+                        'description' => $slider->description,
+                        'url' => $slider->video_embed_url ?: $slider->video_url ?: $slider->video_path,
+                        'thumbnail' => $slider->thumbnail_url ?: $slider->image_url,
+                        'channel' => 'Sliders',
+                        'origin' => 'sliders',
+                        'origin_label' => 'Sliders',
+                        'order' => (int) ($slider->order ?? 1000),
+                    ]);
+                });
+        } catch (\Throwable $e) {
+            return collect();
+        }
+    }
+
+    protected function makeVideoChannelItem(array $data): array
+    {
+        $rawUrl = trim((string) ($data['url'] ?? ''));
+        $iframeSrc = $this->extractIframeSrc($rawUrl) ?: $rawUrl;
+        $source = $this->detectVideoSource($iframeSrc);
+        $embed = $this->toVideoEmbedUrl($iframeSrc, $source);
+        $thumbnail = trim((string) ($data['thumbnail'] ?? ''));
+
+        if ($thumbnail === '' && $source['name'] === 'youtube' && $source['id']) {
+            $thumbnail = 'https://i.ytimg.com/vi/' . $source['id'] . '/hqdefault.jpg';
+        }
+
+        return [
+            'id' => $data['id'] ?? null,
+            'title' => trim((string) ($data['title'] ?? 'Video')),
+            'description' => trim((string) ($data['description'] ?? '')),
+            'channel' => trim((string) ($data['channel'] ?? $data['origin_label'] ?? 'Videos')) ?: 'Videos',
+            'origin' => $data['origin'] ?? 'videos',
+            'origin_label' => $data['origin_label'] ?? 'Videos',
+            'source' => $source['name'],
+            'source_label' => $source['label'],
+            'source_id' => $source['id'],
+            'play_url' => $embed ?: $iframeSrc,
+            'raw_url' => $iframeSrc,
+            'thumbnail' => $thumbnail !== '' ? $thumbnail : null,
+            'is_iframe' => $source['name'] !== 'local',
+            'order' => (int) ($data['order'] ?? 1000),
+        ];
+    }
+
+    protected function isVideoPayload($type, ?string $url): bool
+    {
+        $type = Str::lower((string) $type);
+        $url = trim((string) $url);
+
+        return str_contains($type, 'video')
+            || $this->detectVideoSource($url)['name'] !== 'local'
+            || (bool) preg_match('/\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i', $url);
+    }
+
+    protected function detectVideoSource(?string $url): array
+    {
+        $value = trim((string) $url);
+
+        if (preg_match('/(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/i', $value, $m)) {
+            return ['name' => 'youtube', 'label' => 'YouTube', 'id' => $m[1]];
+        }
+
+        if (preg_match('/(?:vimeo\.com\/(?:.*\/)?|player\.vimeo\.com\/video\/)(\d+)/i', $value, $m)) {
+            return ['name' => 'vimeo', 'label' => 'Vimeo', 'id' => $m[1]];
+        }
+
+        if (preg_match('/dailymotion\.com\/(?:embed\/)?video\/([A-Za-z0-9]+)/i', $value, $m)) {
+            return ['name' => 'dailymotion', 'label' => 'Dailymotion', 'id' => $m[1]];
+        }
+
+        return ['name' => 'local', 'label' => 'Video', 'id' => null];
+    }
+
+    protected function toVideoEmbedUrl(?string $url, array $source): ?string
+    {
+        $value = trim((string) $url);
+        if ($value === '') {
+            return null;
+        }
+
+        return match ($source['name']) {
+            'youtube' => 'https://www.youtube.com/embed/' . $source['id'],
+            'vimeo' => 'https://player.vimeo.com/video/' . $source['id'],
+            'dailymotion' => 'https://www.dailymotion.com/embed/video/' . $source['id'],
+            default => $value,
+        };
+    }
+
+    protected function extractIframeSrc(?string $value): ?string
+    {
+        $raw = trim((string) $value);
+        if ($raw === '') {
+            return null;
+        }
+
+        if (preg_match('/<iframe[^>]+src=["\']([^"\']+)["\']/i', $raw, $m)) {
+            return trim((string) $m[1]);
+        }
+
+        return null;
+    }
+
+    protected function buildVideoSuggestions(\Illuminate\Support\Collection $videos, string $query): array
+    {
+        $needle = Str::lower(Str::ascii(trim($query)));
+
+        return $videos
+            ->flatMap(fn ($video) => [$video['title'] ?? null, $video['channel'] ?? null, $video['source_label'] ?? null])
+            ->filter()
+            ->unique()
+            ->filter(function ($value) use ($needle) {
+                if ($needle === '') {
+                    return true;
+                }
+                return str_contains(Str::lower(Str::ascii((string) $value)), $needle);
+            })
+            ->take(8)
+            ->values()
+            ->all();
     }
 
     protected function storeContactMessage(Request $request, $etablissementId)
