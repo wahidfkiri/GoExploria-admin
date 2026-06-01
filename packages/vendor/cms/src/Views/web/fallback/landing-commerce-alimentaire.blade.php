@@ -1592,7 +1592,7 @@
 
                     @include('cms::web.fallback.partials.landing-working-hours')
 
-                    <section class="food-section food-section-pad" id="contact">
+                    <section class="food-section food-section-pad" id="contact" style="padding:20px;">
                         <div class="food-contact-grid">
                             <div>
                                 <span class="food-kicker">Contact</span>
