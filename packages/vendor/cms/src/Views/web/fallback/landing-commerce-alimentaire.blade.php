@@ -177,6 +177,12 @@
         ]);
     }
 
+    $foodBlogPosts = collect($blogPosts ?? [])
+        ->filter(fn ($post) => trim((string) data_get($post, 'title')) !== '')
+        ->take(3)
+        ->values();
+    $foodBlogFallbackImage = $gallery->first()['thumbnail'] ?? $fallbackImages->first()['thumbnail'];
+
     $instagramPosts = collect($instagramGalleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
     if ($instagramPosts->isEmpty()) {
         $instagramPosts = $gallery->slice(max(0, $gallery->count() - 4))->values();
@@ -667,6 +673,42 @@
         .food-product-card p { color: var(--food-muted); line-height: 1.6; margin: 0 0 16px; }
         .food-price { color: var(--food-rust); font-weight: 900; font-size: 1.05rem; }
 
+        .food-blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+        .food-blog-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            border-radius: 28px;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid var(--food-border);
+            color: var(--food-ink);
+            text-decoration: none;
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+        .food-blog-card:hover { transform: translateY(-6px); box-shadow: var(--food-shadow); }
+        .food-blog-card img { width: 100%; height: 210px; object-fit: cover; display: block; }
+        .food-blog-body { display: flex; flex-direction: column; flex: 1; padding: 20px; }
+        .food-blog-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+            color: var(--food-rust);
+            font-size: .72rem;
+            font-weight: 900;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+        .food-blog-card h3 { margin: 0 0 10px; font: 900 1.35rem Fraunces, serif; line-height: 1.18; }
+        .food-blog-card p { color: var(--food-muted); line-height: 1.6; margin: 0 0 18px; }
+        .food-blog-read { margin-top: auto; color: var(--food-ocean); font-weight: 900; }
+
         .food-feature-section {
             background: linear-gradient(135deg, var(--food-ocean), #0a2e38);
             color: #fff;
@@ -909,7 +951,7 @@
         @media (max-width: 1180px) {
             .food-grid { grid-template-columns: 1fr; }
             .food-header { top: 82px; }
-            .food-product-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+            .food-product-grid, .food-blog-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
             .food-process-grid, .food-social-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
             .food-reviews-track { grid-template-columns: repeat(2, minmax(0,1fr)); }
         }
@@ -924,6 +966,7 @@
             .food-header-links { width: 100%; }
             .food-hero, .food-hero-content { min-height: 560px; }
             .food-product-grid,
+            .food-blog-grid,
             .food-process-grid,
             .food-social-grid,
             .food-reviews-track { grid-template-columns: 1fr; }
@@ -1449,6 +1492,7 @@
         }
         @media (max-width: 1180px) {
             .food-product-grid,
+            .food-blog-grid,
             .food-process-grid,
             .food-reviews-track {
                 grid-template-columns: repeat(2, 1fr);
@@ -1474,6 +1518,7 @@
                 grid-template-columns: 1fr;
             }
             .food-product-grid,
+            .food-blog-grid,
             .food-process-grid,
             .food-reviews-track {
                 grid-template-columns: 1fr;
@@ -1590,6 +1635,43 @@
 
 
                     @include('cms::web.fallback.partials.landing-working-hours')
+
+                    @if($foodBlogPosts->isNotEmpty())
+                        <section class="food-section food-section-pad" id="blogs">
+                            <span class="food-kicker">Blog</span>
+                            <h2 class="food-title">Actualités et conseils <em>gourmands</em></h2>
+                            <p class="food-copy">Articles publiés par {{ $siteName }}.</p>
+                            <div class="food-blog-grid">
+                                @foreach($foodBlogPosts as $post)
+                                    @php
+                                        $blogUrl = data_get($post, 'url') ?: '#';
+                                        $isExternalBlogUrl = \Illuminate\Support\Str::startsWith($blogUrl, ['http://', 'https://', '//']);
+                                        $blogImage = data_get($post, 'image') ?: $foodBlogFallbackImage;
+                                        $blogExcerpt = \Illuminate\Support\Str::limit(strip_tags((string) (data_get($post, 'excerpt') ?: data_get($post, 'content'))), 140);
+                                    @endphp
+                                    <a class="food-blog-card" href="{{ $blogUrl }}" @if($isExternalBlogUrl) target="_blank" rel="noopener noreferrer" @endif>
+                                        @if($blogImage)
+                                            <img src="{{ $blogImage }}" alt="{{ data_get($post, 'title') }}">
+                                        @endif
+                                        <div class="food-blog-body">
+                                            <div class="food-blog-meta">
+                                                <span>{{ data_get($post, 'tag') ?: 'Blog' }}</span>
+                                                @if(data_get($post, 'date'))
+                                                    <span>•</span>
+                                                    <span>{{ data_get($post, 'date') }}</span>
+                                                @endif
+                                            </div>
+                                            <h3>{{ data_get($post, 'title') }}</h3>
+                                            @if($blogExcerpt)
+                                                <p>{{ $blogExcerpt }}</p>
+                                            @endif
+                                            <span class="food-blog-read">Lire l'article <i class="fa-solid fa-arrow-right"></i></span>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </section>
+                    @endif
 
                     <section class="food-section food-section-pad" id="contact" style="padding:20px;">
                         <div class="food-contact-grid">
