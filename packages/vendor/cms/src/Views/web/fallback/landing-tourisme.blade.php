@@ -172,16 +172,31 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-menu-videos.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/hero.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/navigation.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/carousel.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-destinations-mega.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/mega-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/services-mega-menu-v2.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-mega-menu-modern.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-search.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/search-bar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/categories-mega-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/videos-dropdown.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/slideshows.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/media-slideshow.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/products-vedette.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/restaurant-header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/footer.css') }}">
     <style>
         :root{--gold:#C8A96E;--gold2:#E8CFA0;--bg:#080808;--bg2:#0f0f0f;--card:#141414;--text:#F2EDE4;--muted:#A79B8A;--line:rgba(255,255,255,.1);--shadow:0 30px 80px rgba(0,0,0,.5);--tr:all .45s cubic-bezier(.23,1,.32,1)}
         [data-theme=light]{--bg:#FAF8F5;--bg2:#F2EDE4;--card:#fff;--text:#1A1410;--muted:#6A5D4D;--line:rgba(0,0,0,.09);--shadow:0 30px 80px rgba(0,0,0,.1)}
         *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Jost,sans-serif;overflow-x:hidden}a{color:inherit;text-decoration:none}img,video,iframe{max-width:100%}.container{width:min(1180px,calc(100% - 40px));margin:auto}
-        .tt-nav{position:fixed;inset:0 0 auto;z-index:1000;height:74px;padding:0 44px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,.68);backdrop-filter:blur(22px);border-bottom:1px solid var(--line)}
-        [data-theme=light] .tt-nav{background:rgba(250,248,245,.86)}.tt-logo{display:flex;align-items:center;gap:12px;font-family:"Cormorant Garamond",serif;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase}.tt-logo img{max-width:180px;max-height:54px;object-fit:contain}.tt-logo span{color:var(--gold)}
-        .tt-links{display:flex;gap:30px;align-items:center}.tt-links a{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:var(--tr)}.tt-links a:hover{color:var(--gold)}.tt-actions{display:flex;gap:12px;align-items:center}.tt-theme,.tt-menu{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);display:grid;place-items:center;cursor:pointer}.tt-cta{background:var(--gold);color:#120e08;border-radius:999px;padding:12px 22px;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:800}
-        .tt-mobile{display:none;position:fixed;inset:74px 0 auto;background:var(--bg);z-index:999;border-bottom:1px solid var(--line);padding:20px}.tt-mobile.open{display:grid;gap:16px}.tt-mobile a{color:var(--muted);text-transform:uppercase;letter-spacing:2px;font-size:13px}
         .tt-hero{position:relative;min-height:100vh;display:flex;align-items:flex-end;overflow:hidden;background:var(--bg2)}.tt-hero-media{position:absolute;inset:0}.tt-hero-media img,.tt-hero-media video,.tt-hero-media iframe{width:100%;height:100%;object-fit:cover;border:0}.tt-hero-media iframe{position:absolute;inset:50% auto auto 50%;width:177.78vh;height:56.25vw;min-width:100%;min-height:100%;transform:translate(-50%,-50%);pointer-events:none}.tt-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.9),rgba(0,0,0,.28),rgba(0,0,0,.18))}
-        .tt-hero-inner{position:relative;z-index:2;padding:150px 0 90px;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:54px;align-items:end}.tt-kicker{display:inline-flex;gap:10px;align-items:center;color:var(--gold);font-size:11px;letter-spacing:4px;text-transform:uppercase}.tt-kicker::before{content:"";width:34px;height:1px;background:var(--gold)}.tt-h1{font-family:"Cormorant Garamond",serif;font-size:clamp(52px,8vw,108px);font-weight:400;line-height:.92;margin:18px 0 24px;color:#fff}.tt-h1 em{color:var(--gold);font-style:italic}.tt-desc{max-width:620px;color:rgba(255,255,255,.72);line-height:1.85;font-size:17px}.tt-hero-buttons{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}.tt-btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:14px 26px;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:800;border:1px solid rgba(255,255,255,.2)}.tt-btn.gold{background:var(--gold);color:#120e08;border-color:var(--gold)}.tt-mini{justify-self:end;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(16px);border-radius:20px;padding:22px;color:#fff}.tt-mini strong{display:block;font-family:"Cormorant Garamond",serif;font-size:38px;color:var(--gold);line-height:1}.tt-mini span{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.58)}
+        .tt-hero-inner{position:relative;z-index:2;padding:150px 0 90px;display:block}.tt-kicker{display:inline-flex;gap:10px;align-items:center;color:var(--gold);font-size:11px;letter-spacing:4px;text-transform:uppercase}.tt-kicker::before{content:"";width:34px;height:1px;background:var(--gold)}.tt-h1{font-family:"Cormorant Garamond",serif;font-size:clamp(52px,8vw,108px);font-weight:400;line-height:.92;margin:0 0 24px;color:#fff}.tt-h1 em{color:var(--gold);font-style:italic}.tt-desc{max-width:620px;color:rgba(255,255,255,.72);line-height:1.85;font-size:17px}.tt-hero-buttons{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}.tt-btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:14px 26px;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:800;border:1px solid rgba(255,255,255,.2)}.tt-btn.gold{background:var(--gold);color:#120e08;border-color:var(--gold)}
         .tt-section{padding:86px 0;background:var(--bg)}.tt-section.alt{background:var(--bg2)}.tt-head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:34px}.tt-title{font-family:"Cormorant Garamond",serif;font-size:clamp(34px,4vw,58px);line-height:1;margin:0}.tt-sub{max-width:560px;color:var(--muted);line-height:1.75}
         .tt-db-grid{display:grid;gap:24px}.tt-db-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:clamp(24px,4vw,46px);box-shadow:var(--shadow)}.tt-db-content{color:var(--muted);line-height:1.8}.tt-db-content :where(h1,h2,h3,h4,h5,h6){font-family:"Cormorant Garamond",serif;color:var(--text);line-height:1.1;margin:0 0 16px}.tt-db-content :where(p,ul,ol,blockquote,figure){margin:0 0 18px}.tt-db-content :where(img,video,iframe){border-radius:16px}
         .tt-blog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.tt-blog{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;transition:var(--tr)}.tt-blog:hover{transform:translateY(-4px);border-color:rgba(200,169,110,.5)}.tt-blog-img{height:230px;background:var(--bg3,#222)}.tt-blog-img img{width:100%;height:100%;object-fit:cover}.tt-blog-body{padding:22px}.tt-date{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}.tt-blog h3{font-family:"Cormorant Garamond",serif;font-size:26px;line-height:1.1;margin:0 0 10px}.tt-blog p{color:var(--muted);line-height:1.65;margin:0}
@@ -189,39 +204,12 @@
         .tt-form{display:grid;gap:14px}.tt-form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.tt-field label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}.tt-field input,.tt-field select,.tt-field textarea{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);border-radius:14px;padding:14px 15px;font:inherit}.tt-field textarea{min-height:130px;resize:vertical}.tt-submit{border:0;background:var(--gold);color:#120e08;border-radius:999px;padding:15px 24px;font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer}
         .tt-map{height:520px;position:relative;background:var(--bg2)}#ttMap{height:100%;width:100%}.tt-map-card{position:absolute;left:24px;bottom:24px;z-index:500;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow);max-width:330px}.tt-map-card p{margin:5px 0 0;color:var(--muted)}.tt-popup{width:320px;max-width:100%}.tt-popup h4{margin:0 0 8px;color:#1A1410}.tt-popup p{margin:0 0 10px;color:#6A5D4D}.tt-popup iframe{width:100%;height:180px;border:0;border-radius:10px;display:block}
         .tt-footer{padding:42px 0;background:#050505;color:rgba(255,255,255,.7);border-top:1px solid rgba(255,255,255,.08)}.tt-footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.tt-footer strong{color:#fff}
-        @media(max-width:900px){.tt-nav{padding:0 20px}.tt-links,.tt-cta{display:none}.tt-menu{display:grid}.tt-hero-inner,.tt-contact-grid{grid-template-columns:1fr}.tt-mini{justify-self:start}.tt-blog-grid{grid-template-columns:1fr}.tt-form-row{grid-template-columns:1fr}.tt-head{display:block}.tt-hero-inner{padding-top:130px}.tt-map{height:460px}}@media(min-width:901px){.tt-menu{display:none}}
+        @media(max-width:900px){.tt-contact-grid{grid-template-columns:1fr}.tt-blog-grid{grid-template-columns:1fr}.tt-form-row{grid-template-columns:1fr}.tt-head{display:block}.tt-hero-inner{padding-top:130px}.tt-map{height:460px}}
     </style>
 </head>
 <body>
-    <nav class="tt-nav">
-        <a class="tt-logo" href="#top" aria-label="{{ $siteName }}">
-            @if($logoUrl)
-                <img src="{{ $logoUrl }}" alt="{{ $siteName }}">
-            @else
-                <span>{{ \Illuminate\Support\Str::limit($siteName, 22, '') }}</span>
-            @endif
-        </a>
-        <div class="tt-links">
-            @if($heroSlides->isNotEmpty())<a href="#top">Accueil</a>@endif
-            <a href="#contenu">Découvrir</a>
-            @if($cmsLandingProducts->isNotEmpty())<a href="#offres">Offres</a>@endif
-            @if($blogCards->isNotEmpty())<a href="#blog">Blog</a>@endif
-            <a href="#contact">Contact</a>
-            <a href="#map">Carte</a>
-        </div>
-        <div class="tt-actions">
-            <button class="tt-theme" type="button" id="ttTheme" aria-label="Changer le thème"><i class="fa-solid fa-moon"></i></button>
-            <a class="tt-cta" href="#contact">Demander</a>
-            <button class="tt-menu" type="button" id="ttMenu" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
-        </div>
-    </nav>
-    <div class="tt-mobile" id="ttMobile">
-        <a href="#contenu">Découvrir</a>
-        @if($cmsLandingProducts->isNotEmpty())<a href="#offres">Offres</a>@endif
-        @if($blogCards->isNotEmpty())<a href="#blog">Blog</a>@endif
-        <a href="#contact">Contact</a>
-        <a href="#map">Carte</a>
-    </div>
+    @include('cms::web.fallback.activities.voyage.vertical-menu')
+    @include('home-v2.components.Header')
 
     @if($heroSlides->isNotEmpty())
         @php($hero = $heroSlides->first())
@@ -237,7 +225,6 @@
             </div>
             <div class="container tt-hero-inner">
                 <div>
-                    <div class="tt-kicker">Voyage & tourisme</div>
                     @if(!empty($hero['title']))
                         <h1 class="tt-h1">{!! e($hero['title']) !!}</h1>
                     @endif
@@ -250,42 +237,18 @@
                         @if(!empty($hero['button_text']) && !empty($hero['button_url']))
                             <a class="tt-btn gold" href="{{ $hero['button_url'] }}">{{ $hero['button_text'] }} <i class="fa-solid fa-arrow-right"></i></a>
                         @endif
-                        <a class="tt-btn" href="#contenu">Explorer</a>
                     </div>
-                </div>
-                <div class="tt-mini">
-                    <strong>{{ $cmsLandingProducts->count() }}</strong>
-                    <span>Offres actives</span>
                 </div>
             </div>
         </section>
     @endif
 
     <main>
-        <section class="tt-section" id="contenu">
-            <div class="container">
-                <div class="tt-head">
-                    <div>
-                        <div class="tt-kicker">Contenu dynamique</div>
-                        <h2 class="tt-title">Votre univers touristique</h2>
-                    </div>
-                    @if($siteDescription)
-                        <p class="tt-sub">{{ $siteDescription }}</p>
-                    @endif
-                </div>
-                @if(collect($cmsPageSections ?? [])->isNotEmpty())
-                    <div class="tt-db-grid">
+        @if(collect($cmsPageSections ?? [])->isNotEmpty())
                         @foreach(collect($cmsPageSections) as $cmsPage)
-                            <article class="tt-db-card">
-                                <div class="tt-db-content">
                                     {!! data_get($cmsPage, 'content') !!}
-                                </div>
-                            </article>
                         @endforeach
-                    </div>
-                @endif
-            </div>
-        </section>
+        @endif
 
         @if($cmsLandingProducts->isNotEmpty())
             <section class="tt-section alt" id="offres">
@@ -400,20 +363,6 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        const root = document.documentElement;
-        const themeButton = document.getElementById('ttTheme');
-        const menuButton = document.getElementById('ttMenu');
-        const mobile = document.getElementById('ttMobile');
-
-        themeButton?.addEventListener('click', () => {
-            const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            root.setAttribute('data-theme', next);
-            themeButton.innerHTML = next === 'dark' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
-        });
-
-        menuButton?.addEventListener('click', () => mobile?.classList.toggle('open'));
-        mobile?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => mobile.classList.remove('open')));
-
         function ttEsc(value) {
             const div = document.createElement('div');
             div.textContent = value || '';
