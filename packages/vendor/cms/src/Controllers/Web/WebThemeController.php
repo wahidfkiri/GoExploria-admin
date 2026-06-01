@@ -612,10 +612,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $galleryMedia = $landingMedia['main']->isNotEmpty() ? $landingMedia['main'] : $landingMedia['all'];
         $slideshowMediaGroups = $this->buildLandingSlideshowGroups($landingMedia['all']);
         $blogPosts = $this->getLandingBlogPosts();
-        $templatePageSections = $this->getActiveTemplatePageSections($activeEtablissementTemplates);
-        $cmsPageSections = $templatePageSections->isNotEmpty()
-            ? $templatePageSections
-            : $this->getLandingCmsPageSections();
+        $cmsPageSections = $this->getActiveTemplatePageSections($activeEtablissementTemplates);
 
         $activitySections = $this->buildActivitySections($activities);
         $hasRestaurantActivity = $this->hasActivityKeyword($activities, [
@@ -980,9 +977,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 ->orderByDesc('installed_at')
                 ->orderByDesc('updated_at')
                 ->orderByDesc('id')
-                ->get()
-                ->filter(fn (EtablissementTemplate $template) => $template->template !== null)
-                ->values();
+                ->get();
         } catch (\Throwable $e) {
             Log::warning('Unable to load active etablissement templates: ' . $e->getMessage(), [
                 'etablissement_id' => $this->etablissement->id ?? null,
@@ -1035,18 +1030,18 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
 
     protected function getEtablissementTemplateContent(EtablissementTemplate $template): string
     {
-        $content = $template->getAttribute('page_content');
+        $content = $template->getAttribute('page_contents');
 
         if ($content === null || trim((string) $content) === '') {
-            $content = $template->getAttribute('page_contents');
-        }
-
-        if ($content === null || trim((string) $content) === '') {
-            $content = data_get($template->config, 'page_content');
+            $content = $template->getAttribute('page_content');
         }
 
         if ($content === null || trim((string) $content) === '') {
             $content = data_get($template->config, 'page_contents');
+        }
+
+        if ($content === null || trim((string) $content) === '') {
+            $content = data_get($template->config, 'page_content');
         }
 
         return trim((string) $content);
