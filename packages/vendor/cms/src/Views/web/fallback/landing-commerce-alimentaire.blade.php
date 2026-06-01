@@ -24,7 +24,7 @@
     $siteName = get_site_name($etablissement->id);
     $siteDescription = $etablissement->getSetting('description', null, 'general')
         ?: get_site_description($etablissement->id)
-        ?: 'Commerce alimentaire local, produits frais, spécialités gourmandes et service de proximité.';
+        ?: '';
 
     $heroPrimaryCtaText = $etablissement->getSetting('hero_cta_text', null, 'landing')
         ?: $etablissement->getSetting('cta_text', null, 'general');
