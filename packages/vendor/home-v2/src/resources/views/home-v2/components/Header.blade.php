@@ -60,7 +60,12 @@
                     <!-- <li class="nav-menu-v2-has-videos" id="videosMenuItem">
                         <a href="#videos">VIDÃ‰OS</a>
                     </li> -->
-                    <li><a href="{{ $headerVideoChannelUrl }}" target="_blank" rel="noopener noreferrer">Chaîne vidéos</a></li>
+                    <li>
+                        <a href="{{ $headerVideoChannelUrl }}" class="nav-video-channel-link" target="_blank" rel="noopener noreferrer">
+                            <i class="fas fa-video" aria-hidden="true"></i>
+                            <span>Chaîne vidéos</span>
+                        </a>
+                    </li>
                     <li class="nav-menu-v2-has-plans" id="plansMenuItem">
                         <a href="#section-nos-plans" id="plansMenuTrigger">{{ __('home-v2.header.menu.plans') }}</a>
                     </li>
