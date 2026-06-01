@@ -68,7 +68,8 @@
         .vh-video-channel-page .hero-video-count{font-size:12px;font-weight:700;color:var(--ink-soft)}
         .vh-video-channel-page .hero-thumbs{position:relative;z-index:4;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:12px}
         .vh-video-channel-page .hero-thumb-btn{position:relative;aspect-ratio:16/10;border:2px solid transparent;border-radius:10px;background:#E8E4DC;overflow:hidden;cursor:pointer;padding:0;transition:.2s}
-        .vh-video-channel-page .hero-thumb-btn img,.vh-video-channel-page .hero-thumb-btn video{width:100%;height:100%;object-fit:cover;display:block}
+        .vh-video-channel-page .hero-thumb-btn img,.vh-video-channel-page .hero-thumb-btn video,.vh-video-channel-page .hero-thumb-btn iframe{width:100%;height:100%;object-fit:cover;border:0;display:block}
+        .vh-video-channel-page .hero-thumb-btn iframe{pointer-events:none}
         .vh-video-channel-page .hero-thumb-btn:after{content:"";position:absolute;inset:0;background:rgba(15,14,12,.28);transition:.2s}
         .vh-video-channel-page .hero-thumb-btn.is-active{border-color:var(--amber);box-shadow:0 0 0 3px rgba(232,160,32,.18)}
         .vh-video-channel-page .hero-thumb-btn.is-active:after,.vh-video-channel-page .hero-thumb-btn:hover:after{background:rgba(15,14,12,.04)}
@@ -139,20 +140,20 @@
         .vh-video-channel-page .ch-name{font-size:12px;color:var(--ink-soft);font-weight:500}
         .vh-video-channel-page .sep,.vh-video-channel-page .views{font-size:11px;color:var(--ink-muted)}
         .vh-video-channel-page .empty-state{text-align:center;padding:80px 20px;background:rgba(255,255,255,.6);border:1px dashed var(--border-md);border-radius:var(--r-xl)}
-        .vh-video-channel-page .modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(15,14,12,.7);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:.25s}
+        .vh-video-channel-page .modal-overlay{position:fixed;inset:96px 0 0;z-index:20000;background:rgba(15,14,12,.7);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:.25s;overflow-y:auto}
         .vh-video-channel-page .modal-overlay.open{opacity:1;pointer-events:auto}
-        .vh-video-channel-page .modal-box{background:var(--warm-white);border-radius:var(--r-xl);overflow:hidden;width:100%;max-width:880px;box-shadow:0 24px 80px rgba(15,14,12,.35);transform:scale(.94) translateY(20px);transition:.3s}
+        .vh-video-channel-page .modal-box{background:var(--warm-white);border-radius:var(--r-xl);overflow:hidden;width:100%;max-width:880px;max-height:calc(100vh - 144px);box-shadow:0 24px 80px rgba(15,14,12,.35);transform:scale(.94) translateY(20px);transition:.3s;display:flex;flex-direction:column}
         .vh-video-channel-page .modal-overlay.open .modal-box{transform:scale(1) translateY(0)}
         .vh-video-channel-page .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
         .vh-video-channel-page .modal-title{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--ink)}
         .vh-video-channel-page .modal-close{width:34px;height:34px;border-radius:50%;background:var(--cream);border:1px solid var(--border);display:grid;place-items:center;cursor:pointer}
-        .vh-video-channel-page .modal-video-frame{width:100%;aspect-ratio:16/9;background:#0F0E0C}
+        .vh-video-channel-page .modal-video-frame{width:100%;aspect-ratio:16/9;background:#0F0E0C;flex:0 1 auto;min-height:0}
         .vh-video-channel-page .modal-video-frame iframe,.vh-video-channel-page .modal-video-frame video{width:100%;height:100%;border:0}
         .vh-video-channel-page .modal-footer{padding:16px 20px}
         .vh-video-channel-page .modal-footer h4{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--ink);margin:0 0 4px}
         .vh-video-channel-page .modal-footer p{font-size:13px;color:var(--ink-muted);margin:0}
         .vh-video-channel-page .vh-footer{border-top:1px solid var(--border);padding:32px 40px;display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;color:var(--ink-muted);font-size:13px}
-        @media(max-width:900px){.vh-video-channel-page .vh-page{padding-top:82px}.vh-video-channel-page .vh-container{padding:0 20px}.vh-video-channel-page .hero{grid-template-columns:1fr;gap:40px;padding:48px 20px 40px}.vh-video-channel-page .hero-visual{order:-1}.vh-video-channel-page .search-line{grid-template-columns:1fr}.vh-video-channel-page .search-suggestions{top:132px}.vh-video-channel-page .vh-footer{padding:24px 20px;flex-direction:column;gap:12px;text-align:center}}
+        @media(max-width:900px){.vh-video-channel-page .vh-page{padding-top:82px}.vh-video-channel-page .vh-container{padding:0 20px}.vh-video-channel-page .hero{grid-template-columns:1fr;gap:40px;padding:48px 20px 40px}.vh-video-channel-page .hero-visual{order:-1}.vh-video-channel-page .search-line{grid-template-columns:1fr}.vh-video-channel-page .search-suggestions{top:132px}.vh-video-channel-page .modal-overlay{inset:82px 0 0}.vh-video-channel-page .modal-box{max-height:calc(100vh - 110px)}.vh-video-channel-page .vh-footer{padding:24px 20px;flex-direction:column;gap:12px;text-align:center}}
         @media(max-width:600px){.vh-video-channel-page .vh-container{padding:0 16px}.vh-video-channel-page .video-grid{grid-template-columns:1fr}.vh-video-channel-page .hero{padding:36px 16px 34px}.vh-video-channel-page .hero h1{font-size:34px}.vh-video-channel-page .hero-stats{gap:18px;flex-wrap:wrap}.vh-video-channel-page .floating-badge{display:none}.vh-video-channel-page .hero-thumbs{grid-template-columns:repeat(4,minmax(0,1fr))}.vh-video-channel-page .search-panel{padding:14px;border-radius:20px}.vh-video-channel-page .search-suggestions{left:14px;right:14px}.vh-video-channel-page .vh-btn-primary,.vh-video-channel-page .vh-btn-ghost{width:100%;justify-content:center}.vh-video-channel-page .section-head{display:block}.vh-video-channel-page .modal-overlay{padding:14px}}
     </style>
 </head>
@@ -319,11 +320,11 @@
                 return `<div class="video-thumb-placeholder"><i class="fa-solid fa-video-slash"></i></div>`;
             }
 
-            if (video.thumbnail) {
-                return `<img src="${esc(video.thumbnail)}" alt="${esc(video.title)}">`;
+            if (video.play_url && video.is_iframe) {
+                return `<iframe src="${esc(video.play_url)}" loading="lazy" allow="fullscreen; picture-in-picture" title="${esc(video.title || 'Video')}"></iframe>`;
             }
 
-            if (!video.is_iframe && video.play_url) {
+            if (video.play_url) {
                 return `<video src="${esc(video.play_url)}" muted playsinline></video>`;
             }
 
