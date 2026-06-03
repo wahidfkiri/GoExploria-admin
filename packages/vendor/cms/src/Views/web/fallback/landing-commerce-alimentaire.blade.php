@@ -1605,12 +1605,7 @@
                                     @if($isUploadVideo)
                                         <video autoplay muted loop playsinline src="{{ $slideUrl }}" @if(!empty($slide['poster'])) poster="{{ $slide['poster'] }}" @endif></video>
                                     @elseif($isFrame)
-                                        @if(!empty($slide['poster']))
-                                            <img src="{{ $slide['poster'] }}" alt="{{ $slide['title'] }}">
-                                        @endif
                                         <iframe src="{{ $iframeAutoplayUrl }}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-                                    @elseif(!empty($slideUrl))
-                                        <img src="{{ $slideUrl }}" alt="{{ $slide['title'] }}">
                                     @endif
                                 </div>
                                 <div class="food-hero-content">
