@@ -514,6 +514,35 @@ if (!function_exists('get_slider_items')) {
         $items = $items->filter(function($item) {
             return $item->is_active === true;
         });
+
+        if ($items->isEmpty() && function_exists('get_slider_media')) {
+            $items = collect(get_slider_media($etablissement->id))
+                ->map(function ($item, $index) {
+                    $row = (array) $item;
+                    $type = strtolower((string) ($row['type'] ?? 'image')) === 'video' ? 'video' : 'image';
+                    $url = $type === 'video'
+                        ? ($row['video_url'] ?? $row['image_url'] ?? $row['thumbnail_url'] ?? '')
+                        : ($row['image_url'] ?? $row['thumbnail_url'] ?? '');
+
+                    return (object) [
+                        'id' => $row['id'] ?? ('media-' . $index),
+                        'type' => $type,
+                        'url' => $url,
+                        'poster_url' => $row['thumbnail_url'] ?? $row['image_url'] ?? '',
+                        'title' => $row['title'] ?? $row['name'] ?? '',
+                        'subtitle' => $row['subtitle'] ?? $row['description'] ?? '',
+                        'button_text' => $row['button_text'] ?? '',
+                        'button_link' => $row['button_link'] ?? $row['button_url'] ?? '',
+                        'order' => $row['order'] ?? ($index + 1),
+                        'is_active' => true,
+                        'video_html' => null,
+                    ];
+                })
+                ->filter(function ($item) {
+                    return trim((string) $item->url) !== '';
+                })
+                ->values();
+        }
         
         return $items;
     }
@@ -564,9 +593,27 @@ if (!function_exists('get_slider_html')) {
 if ($item->type === 'video') {
     // Vérifier si c'est une vidéo locale ou externe
     $videoUrl = $item->url;
+    $youtubeId = null;
+    $vimeoId = null;
+
+    if (preg_match('/(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/', $videoUrl, $matches)) {
+        $youtubeId = $matches[1];
+    } elseif (preg_match('/vimeo\.com\/(?:video\/)?(\d+)/', $videoUrl, $matches)) {
+        $vimeoId = $matches[1];
+    }
     
     // Poster image (thumbnail)
     $posterUrl = $item->poster_url ?? '';
+
+    if ($youtubeId || $vimeoId) {
+        $embedUrl = $youtubeId
+            ? 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&loop=1&playlist=' . $youtubeId . '&controls=0&rel=0&playsinline=1'
+            : 'https://player.vimeo.com/video/' . $vimeoId . '?autoplay=1&muted=1&loop=1&background=1';
+
+        $html .= '<div class="video-wrapper-embed"' . ($posterUrl ? ' style="background-image:url(\'' . e($posterUrl) . '\');background-size:cover;background-position:center;"' : '') . '>';
+        $html .= '<iframe class="slide-video-iframe" src="' . e($embedUrl) . '" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>';
+        $html .= '</div>';
+    } else {
     
     $html .= '<video class="slide-video" 
         ' . ($options['video_autoplay'] ? 'autoplay' : '') . '
@@ -577,6 +624,7 @@ if ($item->type === 'video') {
     $html .= '<source src="' . e($videoUrl) . '" type="video/mp4">';
     $html .= 'Votre navigateur ne supporte pas la vidéo.';
     $html .= '</video>';
+    }
 } 
             // 🔥 GESTION DES IMAGES
             else {
@@ -673,12 +721,14 @@ if ($item->type === 'video') {
             .hero-slider .slide-video-iframe,
             .hero-slider .video-wrapper-embed iframe {
                 position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
+                top: 50%;
+                left: 50%;
+                width: 177.78vh;
+                height: 56.25vw;
+                min-width: 100%;
+                min-height: 100%;
+                transform: translate(-50%, -50%);
                 border: 0;
-                object-fit: cover;
             }
             .hero-slider .video-wrapper-youtube,
             .hero-slider .video-wrapper-vimeo,
@@ -740,6 +790,153 @@ if (!function_exists('has_slider')) {
     {
         $items = get_slider_items($etablissementId);
         return !$items->isEmpty();
+    }
+}
+
+if (!function_exists('is_slideshow_enabled')) {
+    /**
+     * Check if the landing slideshow is enabled for an establishment.
+     *
+     * The slideshow is enabled by default unless an explicit CMS setting disables it.
+     *
+     * @param int|null $etablissementId
+     * @return bool
+     */
+    function is_slideshow_enabled($etablissementId = null)
+    {
+        $etablissement = $etablissementId
+            ? \App\Models\Etablissement::find($etablissementId)
+            : getCurrentEtablissement();
+
+        if (!$etablissement) {
+            return false;
+        }
+
+        $setting = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
+            ->whereIn('group', ['slideshow', 'slider', 'general'])
+            ->whereIn('key', ['is_enabled', 'enabled', 'slideshow_enabled', 'show_slideshow', 'active'])
+            ->get()
+            ->sortBy(fn ($item) => match ($item->group) {
+                'slideshow' => 0,
+                'slider' => 1,
+                default => 2,
+            })
+            ->first();
+
+        if (!$setting) {
+            return true;
+        }
+
+        $value = $setting->value;
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        if (is_numeric($value)) {
+            return (int) $value === 1;
+        }
+
+        $normalized = mb_strtolower(trim((string) $value), 'UTF-8');
+
+        return !in_array($normalized, ['0', 'false', 'no', 'non', 'off', 'disabled', 'disable'], true);
+    }
+}
+
+if (!function_exists('is_slider_enabled')) {
+    /**
+     * Check if the main landing hero slider is enabled for an establishment.
+     *
+     * The slider is enabled by default unless an explicit CMS setting disables it.
+     *
+     * @param int|null $etablissementId
+     * @return bool
+     */
+    function is_slider_enabled($etablissementId = null)
+    {
+        $etablissement = $etablissementId
+            ? \App\Models\Etablissement::find($etablissementId)
+            : getCurrentEtablissement();
+
+        if (!$etablissement) {
+            return false;
+        }
+
+        $setting = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
+            ->whereIn('group', ['slider', 'hero', 'general'])
+            ->whereIn('key', ['is_enabled', 'enabled', 'slider_enabled', 'hero_slider_enabled', 'show_slider', 'active'])
+            ->get()
+            ->sortBy(fn ($item) => match ($item->group) {
+                'slider' => 0,
+                'hero' => 1,
+                default => 2,
+            })
+            ->first();
+
+        if (!$setting) {
+            return true;
+        }
+
+        $value = $setting->value;
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        if (is_numeric($value)) {
+            return (int) $value === 1;
+        }
+
+        $normalized = mb_strtolower(trim((string) $value), 'UTF-8');
+
+        return !in_array($normalized, ['0', 'false', 'no', 'non', 'off', 'disabled', 'disable'], true);
+    }
+}
+
+if (!function_exists('is_blog_enabled')) {
+    /**
+     * Check if landing blog sections are enabled for an establishment.
+     *
+     * Blogs are enabled by default unless an explicit CMS setting disables them.
+     *
+     * @param int|null $etablissementId
+     * @return bool
+     */
+    function is_blog_enabled($etablissementId = null)
+    {
+        $etablissement = $etablissementId
+            ? \App\Models\Etablissement::find($etablissementId)
+            : getCurrentEtablissement();
+
+        if (!$etablissement) {
+            return false;
+        }
+
+        $setting = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
+            ->whereIn('group', ['blog', 'blogs', 'general'])
+            ->whereIn('key', ['is_enabled', 'enabled', 'blog_enabled', 'blogs_enabled', 'show_blog', 'show_blogs', 'active'])
+            ->get()
+            ->sortBy(fn ($item) => match ($item->group) {
+                'blog' => 0,
+                'blogs' => 1,
+                default => 2,
+            })
+            ->first();
+
+        if (!$setting) {
+            return true;
+        }
+
+        $value = $setting->value;
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        if (is_numeric($value)) {
+            return (int) $value === 1;
+        }
+
+        $normalized = mb_strtolower(trim((string) $value), 'UTF-8');
+
+        return !in_array($normalized, ['0', 'false', 'no', 'non', 'off', 'disabled', 'disable'], true);
     }
 }
 
@@ -1202,6 +1399,129 @@ if (!function_exists('get_map_points')) {
 
         } catch (\Exception $e) {
             \Log::error('get_map_points error: ' . $e->getMessage());
+            return collect();
+        }
+    }
+}
+
+if (!function_exists('is_maps_enabled')) {
+    /**
+     * Check if landing maps are enabled for an establishment.
+     *
+     * Maps are enabled by default unless an explicit CMS setting disables them.
+     *
+     * @param int|null $etablissementId
+     * @return bool
+     */
+    function is_maps_enabled($etablissementId = null)
+    {
+        $etablissement = $etablissementId
+            ? \App\Models\Etablissement::find($etablissementId)
+            : getCurrentEtablissement();
+
+        if (!$etablissement) {
+            return false;
+        }
+
+        $setting = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissement->id)
+            ->whereIn('group', ['maps', 'map', 'general'])
+            ->whereIn('key', ['is_enabled', 'enabled', 'maps_enabled', 'map_enabled', 'show_maps', 'show_map', 'active'])
+            ->get()
+            ->sortBy(fn ($item) => match ($item->group) {
+                'maps' => 0,
+                'map' => 1,
+                default => 2,
+            })
+            ->first();
+
+        if (!$setting) {
+            return true;
+        }
+
+        $value = $setting->value;
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        if (is_numeric($value)) {
+            return (int) $value === 1;
+        }
+
+        $normalized = mb_strtolower(trim((string) $value), 'UTF-8');
+
+        return !in_array($normalized, ['0', 'false', 'no', 'non', 'off', 'disabled', 'disable'], true);
+    }
+}
+
+if (!function_exists('get_map_video_points')) {
+    /**
+     * Get active map points with a YouTube video.
+     *
+     * @param int|null $etablissementId
+     * @param array $options ['limit' => 50]
+     * @return \Illuminate\Support\Collection
+     */
+    function get_map_video_points($etablissementId = null, array $options = [])
+    {
+        $etablissement = $etablissementId
+            ? \App\Models\Etablissement::find($etablissementId)
+            : getCurrentEtablissement();
+
+        if (!$etablissement) {
+            return collect();
+        }
+
+        $options = array_merge(['limit' => 50], $options);
+
+        try {
+            if (!\Illuminate\Support\Facades\Schema::hasTable('map_points')) {
+                return collect();
+            }
+
+            $hasVideosTable = \Illuminate\Support\Facades\Schema::hasTable('map_point_videos');
+
+            $query = \App\Models\MapPoint::with($hasVideosTable ? ['videos', 'mainImage'] : ['mainImage'])
+                ->active()
+                ->where('etablissement_id', $etablissement->id)
+                ->whereNotNull('latitude')
+                ->whereNotNull('longitude')
+                ->where(function ($query) use ($hasVideosTable) {
+                    $query->whereNotNull('youtube_id')
+                        ->where('youtube_id', '<>', '');
+
+                    if ($hasVideosTable) {
+                        $query->orWhereHas('videos', function ($videoQuery) {
+                            $videoQuery->whereNotNull('youtube_id')
+                                ->where('youtube_id', '<>', '');
+                        });
+                    }
+                })
+                ->orderByDesc('is_featured')
+                ->orderByDesc('views')
+                ->limit((int) $options['limit']);
+
+            return $query->get()
+                ->map(function ($point) {
+                    $video = $point->youtube_id ? null : $point->videos->firstWhere('youtube_id');
+                    $youtubeId = trim((string) ($point->youtube_id ?: ($video->youtube_id ?? '')));
+
+                    if ($youtubeId === '') {
+                        return null;
+                    }
+
+                    $point->youtube_id = $youtubeId;
+                    $point->youtube_url = $point->youtube_url ?: ($video->youtube_url ?? ('https://www.youtube.com/watch?v=' . $youtubeId));
+                    $point->video_title = $video->title ?? $point->title;
+                    $point->thumbnail = 'https://img.youtube.com/vi/' . $youtubeId . '/hqdefault.jpg';
+                    $point->embed_url = 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=0&rel=0&playsinline=1';
+
+                    return $point;
+                })
+                ->filter()
+                ->values();
+        } catch (\Throwable $e) {
+            \Log::error('get_map_video_points error: ' . $e->getMessage());
+
             return collect();
         }
     }

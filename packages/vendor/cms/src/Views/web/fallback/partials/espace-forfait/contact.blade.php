@@ -12,10 +12,11 @@
           <div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-clock"></i></div><div><div class="contact-label">Horaire</div><div class="contact-value">@foreach($workingHours as $row){{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}@if(!$loop->last)<br>@endif @endforeach</div></div></div>
           <div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-snowflake"></i></div><div><div class="contact-label">Saisons</div><div class="contact-value">Motoneige · Quad · Côte-à-côte · Forfaits</div></div></div>
         </div>
-        <div class="map-wrap">
-          <div id="tlMap" class="tl-map" data-lat="{{ $mapLat }}" data-lng="{{ $mapLng }}" data-title="{{ e($siteName) }}" data-address="{{ e($address) }}"></div>
-          <button type="button" class="map-video-btn" id="tlMapVideoBtn"><i class="fa-solid fa-play-circle"></i> Voir la vidéo</button>
-        </div>
+        @if(is_maps_enabled($etablissement->id) && get_map_video_points($etablissement->id)->isNotEmpty())
+          <div class="map-wrap">
+            @include('cms::web.fallback.partials.landing-map-video-points', ['landingMapVariant' => 'inline'])
+          </div>
+        @endif
       </div>
       <form class="contact-form" id="tlContactForm" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_espace_forfait">
         @csrf

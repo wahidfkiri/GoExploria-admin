@@ -1967,9 +1967,15 @@
                         </ul>
                     </article>
 
+                    @if(is_slider_enabled($etablissement->id))
                     <article class="boids-section boids-hero-embed" id="section-hero">
-                        @include("cms::web.fallback.activities.$activityViewFolder.hero", ['hideSearchBarV2' => true])
+                        @if(has_slider($etablissement->id))
+                            {!! get_slider_html($etablissement->id) !!}
+                        @else
+                            @include("cms::web.fallback.activities.$activityViewFolder.hero", ['hideSearchBarV2' => true])
+                        @endif
                     </article>
+                    @endif
 
                     @if(collect($cmsPageSections ?? [])->isNotEmpty())
                         @foreach(collect($cmsPageSections) as $cmsPage)
@@ -2361,9 +2367,11 @@
                     <article class="boids-section" id="section-contact">
                         <span class="boids-kicker"><i class="fas fa-envelope-open-text"></i> Soumission</span>
                         <div class="boids-contact-grid">
-                            <div class="boids-map-wrap">
-                                <div id="boidsMap" class="boids-map" style="height:100%;"></div>
-                            </div>
+                            @if(is_maps_enabled($etablissement->id) && get_map_video_points($etablissement->id)->isNotEmpty())
+                                <div class="boids-map-wrap">
+                                    @include('cms::web.fallback.partials.landing-map-video-points', ['landingMapVariant' => 'inline'])
+                                </div>
+                            @endif
                             <form id="boidsLandingContactForm" class="boids-form" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_boids">
                                 @csrf
                                 <h4>Soumission Gratuite</h4>
@@ -2400,6 +2408,9 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    @if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
+        {!! get_slider_html($etablissement->id) !!}
+    @endif
     @include('cms::web.fallback.partials.landing-media-slideshow')
     @include('cms::web.fallback.partials.landing-contact-ajax')
 

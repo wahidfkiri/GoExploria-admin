@@ -206,7 +206,10 @@
     @include('cms::web.fallback.activities.default.vertical-menu')
     @include('home-v2.components.Header')
 
-    @if($heroSlides->isNotEmpty())
+    @if(is_slider_enabled($etablissement->id))
+        @if(has_slider($etablissement->id))
+            {!! get_slider_html($etablissement->id) !!}
+        @elseif($heroSlides->isNotEmpty())
         @php($hero = $heroSlides->first())
         <section class="hl-hero" id="top">
             <div class="hl-hero-media">
@@ -234,6 +237,7 @@
                 </div>
             </div>
         </section>
+        @endif
     @endif
 
     <main>
@@ -265,7 +269,7 @@
             </section>
         @endif
 
-        @if($blogCards->isNotEmpty())
+        @if(is_blog_enabled($etablissement->id) && $blogCards->isNotEmpty())
             <section class="hl-section" id="blog">
                 <div class="container">
                     <div class="hl-head">
@@ -343,15 +347,12 @@
             </div>
         </section>
 
-        <section class="hl-map" id="map">
-            <div id="hlMap" data-lat="{{ $mapLat }}" data-lng="{{ $mapLng }}"></div>
-            <div class="hl-map-card">
-                <strong>{{ $siteName }}</strong>
-                @if($address)<p>{{ $address }}</p>@endif
-            </div>
-        </section>
+        @include('cms::web.fallback.partials.landing-map-video-points')
     </main>
 
+    @if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
+        {!! get_slider_html($etablissement->id) !!}
+    @endif
     @include('cms::web.fallback.partials.landing-media-slideshow')
 
     <footer class="hl-footer">

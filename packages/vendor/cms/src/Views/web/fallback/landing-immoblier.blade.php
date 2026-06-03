@@ -215,7 +215,13 @@
     @include('home-v2.components.Header')
     <main class="pc-page">
         <!-- @include('cms::web.fallback.partials.immoblier.nav') -->
-        @include('cms::web.fallback.partials.immoblier.hero')
+        @if(is_slider_enabled($etablissement->id))
+            @if(has_slider($etablissement->id))
+                {!! get_slider_html($etablissement->id) !!}
+            @else
+                @include('cms::web.fallback.partials.immoblier.hero')
+            @endif
+        @endif
         @if(collect($cmsPageSections ?? [])->isNotEmpty())
                 @foreach(collect($cmsPageSections) as $cmsPage)
                                 {!! data_get($cmsPage, 'content') !!}
@@ -227,6 +233,9 @@
         @include('cms::web.fallback.partials.landing-working-hours')
         @include('cms::web.fallback.partials.immoblier.contact')
         @include('cms::web.fallback.partials.immoblier.map-cta')
+        @if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
+            {!! get_slider_html($etablissement->id) !!}
+        @endif
         @include('cms::web.fallback.partials.landing-media-slideshow')
         @include('cms::web.fallback.partials.landing-contact-ajax')
         @include('cms::web.fallback.partials.immoblier.footer')

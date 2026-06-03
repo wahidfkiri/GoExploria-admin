@@ -1125,6 +1125,10 @@ html.light .float-cta {
 </div>
 
 <!-- HERO -->
+@if(is_slider_enabled($etablissement->id))
+@if(has_slider($etablissement->id))
+{!! get_slider_html($etablissement->id) !!}
+@else
 <section id="hero">
   <div class="swiper hero-swiper">
     <div class="swiper-wrapper">
@@ -1159,6 +1163,8 @@ html.light .float-cta {
     <i class="fas fa-volume-xmark" aria-hidden="true"></i>
   </button>
 </section>
+@endif
+@endif
 
 @if(collect($cmsPageSections ?? [])->isNotEmpty())
     @foreach(collect($cmsPageSections) as $cmsPage)
@@ -1226,6 +1232,7 @@ html.light .float-cta {
 </section>
 
 <!-- BLOG -->
+@if(is_blog_enabled($etablissement->id))
 <section id="blog">
   <div class="container">
     <p class="section-label reveal">Inspirations & Conseils</p>
@@ -1280,6 +1287,7 @@ html.light .float-cta {
     </div>
   </div>
 </section>
+@endif
 
 <!-- CONTACT -->
 @include('cms::web.fallback.partials.landing-working-hours')
@@ -1390,19 +1398,11 @@ html.light .float-cta {
 </section>
 
 <!-- MAP -->
-<div class="map-commercial-header">
-  <p class="section-label">Votre visibilité locale</p>
-  <h2>Affichez votre entreprise <span>sur la carte du monde</span></h2>
-  <p>Transformez chaque point sur la carte en vitrine interactive avec vos informations, vos vidéos et vos lieux d'intérêt.</p>
-</div>
-<div id="map-section">
-  <div id="nextLevelMap" class="next-level-map"></div>
-  <div class="map-overlay">
-    <h4>Go Exploria — Next Level</h4>
-    <p>Québec, Canada<br>(418) 525-7748<br>info@goexploriabusiness.com</p>
-  </div>
-</div>
+@include('cms::web.fallback.partials.landing-map-video-points')
 
+@if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
+    {!! get_slider_html($etablissement->id) !!}
+@endif
 @include('cms::web.fallback.partials.landing-media-slideshow')
 @include('cms::web.fallback.partials.landing-contact-ajax')
 
@@ -2345,14 +2345,15 @@ if (templatesMega && templatesMegaToggle) {
 }
 
 // ── HERO SWIPER ──
-const heroSwiper = new Swiper('.hero-swiper', {
+const heroSwiperEl = document.querySelector('.hero-swiper');
+const heroSwiper = heroSwiperEl ? new Swiper('.hero-swiper', {
   loop: true,
   autoplay: { delay: 6000, disableOnInteraction: false },
   effect: 'fade',
   fadeEffect: { crossFade: true },
   pagination: { el: '.hero-swiper .swiper-pagination', clickable: true },
   speed: 1200,
-});
+}) : null;
 
 // ── HERO AUDIO CONTROL ──
 let heroAudioEnabled = false;
@@ -2428,7 +2429,9 @@ if (heroAudioBtn) {
     syncHeroAudio();
   });
 }
-heroSwiper.on('slideChangeTransitionEnd', syncHeroAudio);
+if (heroSwiper) {
+  heroSwiper.on('slideChangeTransitionEnd', syncHeroAudio);
+}
 translateNextLevelLanding(currentNextLevelLang);
 
 // ── TESTIMONIALS SWIPER ──
@@ -2637,7 +2640,3 @@ function handleForm(e) {
 </script>
 </body>
 </html>
-
-
-
-

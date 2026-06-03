@@ -3,14 +3,16 @@
     const pcConfig = {!! \Illuminate\Support\Js::from($pcConfig) !!};
 
     if (window.Swiper) {
-        new Swiper('.pc-hero-swiper', {
-            loop: true,
-            effect: 'fade',
-            speed: 900,
-            autoplay: { delay: 5200, disableOnInteraction: false },
-            pagination: { el: '.pc-hero-swiper .swiper-pagination', clickable: true },
-            navigation: { nextEl: '.pc-hero-next', prevEl: '.pc-hero-prev' }
-        });
+        if (document.querySelector('.pc-hero-swiper')) {
+            new Swiper('.pc-hero-swiper', {
+                loop: true,
+                effect: 'fade',
+                speed: 900,
+                autoplay: { delay: 5200, disableOnInteraction: false },
+                pagination: { el: '.pc-hero-swiper .swiper-pagination', clickable: true },
+                navigation: { nextEl: '.pc-hero-next', prevEl: '.pc-hero-prev' }
+            });
+        }
 
         new Swiper('.pc-reviews-swiper', {
             loop: true,

@@ -8,6 +8,7 @@ use Vendor\Cms\Models\Page;
 use Vendor\Cms\Models\Setting;
 use Vendor\Cms\Models\Media;
 use Vendor\Cms\Models\BlogPost;
+use Vendor\Cms\Models\CmsSlideshow;
 use Vendor\Cms\Models\EtablissementTemplate;
 use App\Models\Etablissement;
 use App\Models\Activity;
@@ -678,7 +679,10 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
 
         $landingMedia = $this->getLandingMediaGroups();
         $galleryMedia = $landingMedia['main']->isNotEmpty() ? $landingMedia['main'] : $landingMedia['all'];
-        $slideshowMediaGroups = $this->buildLandingSlideshowGroups($landingMedia['all']);
+        $slideshowMediaGroups = $this->getLandingCmsSlideshowGroups();
+        if ($slideshowMediaGroups->isEmpty()) {
+            $slideshowMediaGroups = $this->buildLandingSlideshowGroups($landingMedia['all']);
+        }
         $blogPosts = $this->getLandingBlogPosts();
         $cmsPageSections = $this->getActiveTemplatePageSections($activeEtablissementTemplates);
         $videoChannelVideos = $this->getLandingVideoChannelItems();
@@ -949,6 +953,10 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     protected function getLandingBlogPosts(): Collection
     {
         try {
+            if (function_exists('is_blog_enabled') && !is_blog_enabled($this->etablissement->id)) {
+                return collect();
+            }
+
             return BlogPost::query()
                 ->where('etablissement_id', $this->etablissement->id)
                 ->published()
@@ -1260,6 +1268,158 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             })
             ->filter(fn ($group) => !empty($group['main']['src']))
             ->values();
+    }
+
+    protected function getLandingCmsSlideshowGroups(): Collection
+    {
+        try {
+            if (!\Illuminate\Support\Facades\Schema::connection('cms')->hasTable('cms_slideshows')) {
+                return collect();
+            }
+
+            $slideshows = CmsSlideshow::query()
+                ->where('etablissement_id', $this->etablissement->id)
+                ->active()
+                ->orderBy('sort_order')
+                ->orderByDesc('id')
+                ->limit(50)
+                ->get();
+
+            $items = $slideshows
+                ->map(fn (CmsSlideshow $slideshow) => $this->normalizeLandingCmsSlideshowItem($slideshow))
+                ->filter(fn ($item) => !empty($item['src']))
+                ->values();
+
+            return $items
+                ->chunk(5)
+                ->map(function ($chunk) {
+                    $chunk = $chunk->values();
+
+                    return [
+                        'main' => $chunk->first(),
+                        'grid' => $chunk->slice(1, 4)->values()->all(),
+                    ];
+                })
+                ->filter(fn ($group) => !empty($group['main']['src']))
+                ->values();
+        } catch (\Throwable $e) {
+            Log::warning('Unable to load landing CMS slideshow: ' . $e->getMessage(), [
+                'etablissement_id' => $this->etablissement->id ?? null,
+            ]);
+
+            return collect();
+        }
+    }
+
+    protected function normalizeLandingCmsSlideshowItem(CmsSlideshow $slideshow): ?array
+    {
+        $options = is_array($slideshow->options) ? $slideshow->options : [];
+        $source = trim((string) ($slideshow->source ?? ''));
+        $sourceAsImage = $this->isLandingCmsSlideshowImagePath($source) ? $source : null;
+        $sourceAsVideo = $this->isLandingCmsSlideshowVideoPath($source) ? $source : null;
+
+        $rawVideo = collect([
+            $slideshow->video_url,
+            $slideshow->video_path,
+            data_get($options, 'video_url'),
+            data_get($options, 'video_path'),
+            data_get($options, 'video'),
+            data_get($options, 'embed_url'),
+            data_get($options, 'iframe_url'),
+            $sourceAsVideo,
+        ])->first(fn ($value) => is_string($value) && trim($value) !== '');
+
+        $poster = collect([
+            $slideshow->poster_url,
+            data_get($options, 'poster_url'),
+            data_get($options, 'thumbnail_url'),
+            data_get($options, 'thumbnail'),
+            data_get($options, 'image_url'),
+            data_get($options, 'image'),
+            $sourceAsImage,
+        ])->first(fn ($value) => is_string($value) && trim($value) !== '');
+
+        $videoUrl = $this->normalizeLandingCmsSlideshowVideoUrl($rawVideo);
+        $youtubeId = $this->extractYoutubeId($videoUrl);
+        if (!$youtubeId && is_string($videoUrl) && preg_match('/^[A-Za-z0-9_-]{11}$/', $videoUrl)) {
+            $youtubeId = $videoUrl;
+        }
+        $posterUrl = $this->resolveLandingAssetUrl($poster);
+
+        if (!$posterUrl && $youtubeId) {
+            $posterUrl = 'https://i.ytimg.com/vi/' . $youtubeId . '/hqdefault.jpg';
+        }
+
+        if (!$posterUrl) {
+            return null;
+        }
+
+        $video = null;
+        if ($videoUrl) {
+            if ($youtubeId) {
+                $video = $youtubeId;
+            } elseif (preg_match('/^[A-Za-z0-9_-]{11}$/', $videoUrl)) {
+                $video = $videoUrl;
+            } elseif (preg_match('/\.(mp4|webm|ogg)(\?.*)?$/i', $videoUrl)) {
+                $video = $videoUrl;
+            }
+        }
+
+        $sourceLabel = $source !== '' && !$sourceAsImage && !$sourceAsVideo ? $source : null;
+
+        return [
+            'src' => $posterUrl,
+            'video' => $video,
+            'title' => trim((string) ($slideshow->title ?: data_get($options, 'title') ?: ($this->etablissement->name ?? 'Media'))),
+            'desc' => trim((string) ($slideshow->subtitle ?: data_get($options, 'subtitle') ?: data_get($options, 'description') ?: '')),
+            'badge' => data_get($options, 'badge') ?: $sourceLabel,
+        ];
+    }
+
+    protected function normalizeLandingCmsSlideshowVideoUrl($value): ?string
+    {
+        $raw = trim((string) $value);
+        if ($raw === '') {
+            return null;
+        }
+
+        $raw = $this->extractIframeSrc($raw) ?: $raw;
+
+        if (preg_match('/^[A-Za-z0-9_-]{11}$/', $raw)) {
+            return $raw;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($raw, ['http://', 'https://', '//'])) {
+            return $raw;
+        }
+
+        return $this->resolveLandingAssetUrl($raw);
+    }
+
+    protected function isLandingCmsSlideshowImagePath(string $value): bool
+    {
+        if ($value === '') {
+            return false;
+        }
+
+        return (bool) preg_match('/\.(jpg|jpeg|png|gif|webp|avif|svg)(\?.*)?$/i', $value);
+    }
+
+    protected function isLandingCmsSlideshowVideoPath(string $value): bool
+    {
+        if ($value === '') {
+            return false;
+        }
+
+        if ($this->extractIframeSrc($value) || $this->extractYoutubeId($value)) {
+            return true;
+        }
+
+        if (preg_match('/^[A-Za-z0-9_-]{11}$/', $value)) {
+            return true;
+        }
+
+        return (bool) preg_match('/\.(mp4|webm|ogg)(\?.*)?$/i', $value);
     }
 
     protected function extractYoutubeId(?string $url): ?string

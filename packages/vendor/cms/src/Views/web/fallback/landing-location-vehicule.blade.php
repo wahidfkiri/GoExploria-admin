@@ -290,7 +290,7 @@
         <div class="lv-global-row row">
             <div class="lv-content">
 
-    @if($heroSlides->isNotEmpty())
+    @if(is_slider_enabled($etablissement->id) && $heroSlides->isNotEmpty())
     <section id="hero">
         <div class="swiper hero-swiper">
             <div class="swiper-wrapper">
@@ -302,12 +302,12 @@
                     @endphp
                     <div class="swiper-slide">
                         <div class="h-slide">
-                            @if(!empty($slide['embed']))
+                            @if(!empty($slide['url']))
+                                <div class="h-img" style="background-image:url('{{ $slide['url'] }}')"></div>
+                            @elseif(!empty($slide['embed']))
                                 <iframe src="{{ $slide['embed'] }}" title="{{ $slide['title'] }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>
                             @elseif(($slide['type'] ?? 'image') === 'video' && !empty($slide['media_url']))
                                 <video src="{{ $slide['media_url'] }}" autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
-                            @else
-                                <div class="h-img" style="background-image:url('{{ $slide['url'] }}')"></div>
                             @endif
                             <div class="h-overlay"></div>
                             <div class="h-content">
@@ -386,7 +386,7 @@
     </section>
     @endif
 
-    @if($blogCards->isNotEmpty())
+    @if(is_blog_enabled($etablissement->id) && $blogCards->isNotEmpty())
         <section id="blog">
             <div class="container">
                 <div class="s-head"><div><div class="s-label">Blog</div><h2 class="s-title">Conseils<br><span class="acc">et actualites</span></h2></div></div>
@@ -441,11 +441,11 @@
         </div>
     </section>
      
-    <div class="map" id="map-sec">
-        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox={{ $mapBbox }}&layer=mapnik&marker={{ $mapLat }}%2C{{ $mapLng }}" loading="lazy"></iframe>
-        <div class="map-card"><strong>{{ $siteName }}</strong><p>{{ $address }}</p><p>{{ $openingHoursText }}</p></div>
-    </div>
+    @include('cms::web.fallback.partials.landing-map-video-points')
 
+        @if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
+            {!! get_slider_html($etablissement->id) !!}
+        @endif
         @include('cms::web.fallback.partials.landing-media-slideshow')
         @include('cms::web.fallback.partials.landing-contact-ajax')
     
@@ -460,7 +460,7 @@
                 <div><div class="logo"><span class="logo-mark">{{ $initials }}</span><span class="logo-text">{{ \Illuminate\Support\Str::limit($siteName, 18, '') }}<span>.</span></span></div><p>{{ $siteDescription }}</p>@if($visibleSocialLinks->isNotEmpty())<div class="social">@foreach($visibleSocialLinks as $social)@php $key = data_get($social, 'key') ?: data_get($social, 'name'); $icon = $socialIcons[$key] ?? 'fa-solid fa-share-nodes'; @endphp<a href="{{ data_get($social, 'url') }}" target="_blank" rel="noopener noreferrer"><i class="{{ $icon }}"></i></a>@endforeach</div>@endif</div>
                 <div><h4>Vehicules</h4><ul><li><a href="#fleet">Citadines</a></li><li><a href="#fleet">Berlines</a></li><li><a href="#fleet">SUV</a></li><li><a href="#fleet">Prestige</a></li></ul></div>
                 <div><h4>Services</h4><ul><li><a href="#pricing">Courte duree</a></li><li><a href="#pricing">Longue duree</a></li><li><a href="#contact">Livraison</a></li><li><a href="#contact">Assistance</a></li></ul></div>
-                <div><h4>Contact</h4><ul><li><a href="tel:{{ $phoneDial }}">{{ $phone }}</a></li><li><a href="mailto:{{ $email }}">{{ $email }}</a></li><li><a href="#map-sec">{{ \Illuminate\Support\Str::limit($address, 36) }}</a></li></ul></div>
+                <div><h4>Contact</h4><ul><li><a href="tel:{{ $phoneDial }}">{{ $phone }}</a></li><li><a href="mailto:{{ $email }}">{{ $email }}</a></li><li><a href="#map">{{ \Illuminate\Support\Str::limit($address, 36) }}</a></li></ul></div>
             </div>
             <div class="footer-bottom"><span>© {{ date('Y') }} {{ $siteName }}.</span><span><a href="#fleet">Flotte</a> · <a href="#pricing">Tarifs</a> · <a href="#contact">Reservation</a></span></div>
         </div>
@@ -491,7 +491,9 @@
         window.addEventListener('scroll', () => document.getElementById('navbar')?.classList.toggle('solid', window.scrollY > 60));
         function openMob(){document.getElementById('mobMenu')?.classList.add('open');}
         function closeMob(){document.getElementById('mobMenu')?.classList.remove('open');}
-        new Swiper('.hero-swiper', {loop:true, autoplay:{delay:6000, disableOnInteraction:false}, effect:'fade', fadeEffect:{crossFade:true}, speed:1200, pagination:{el:'.hero-swiper .swiper-pagination', clickable:true}});
+        if (document.querySelector('.hero-swiper')) {
+            new Swiper('.hero-swiper', {loop:true, autoplay:{delay:6000, disableOnInteraction:false}, effect:'fade', fadeEffect:{crossFade:true}, speed:1200, pagination:{el:'.hero-swiper .swiper-pagination', clickable:true}});
+        }
         new Swiper('.rev-swiper', {loop:true, autoplay:{delay:5000}, speed:800, spaceBetween:20, pagination:{el:'.rev-swiper .swiper-pagination', clickable:true}, breakpoints:{768:{slidesPerView:2}}});
         function filterFleet(btn, id){document.querySelectorAll('#fleet .tab').forEach(b => b.classList.remove('on')); btn.classList.add('on'); document.querySelectorAll('#carsGrid .car-card').forEach(card => card.classList.toggle('is-hidden', id !== 'all' && card.dataset.category !== id));}
         function switchMedia(btn, id){document.querySelectorAll('#gallery .tab').forEach(b => b.classList.remove('on')); btn.classList.add('on'); document.querySelectorAll('.media-panel').forEach(panel => panel.classList.remove('on')); document.getElementById('media-' + id)?.classList.add('on');}

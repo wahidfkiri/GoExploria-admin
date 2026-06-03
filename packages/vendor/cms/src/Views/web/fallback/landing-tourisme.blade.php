@@ -211,7 +211,10 @@
     @include('cms::web.fallback.activities.voyage.vertical-menu')
     @include('home-v2.components.Header')
 
-    @if($heroSlides->isNotEmpty())
+    @if(is_slider_enabled($etablissement->id))
+        @if(has_slider($etablissement->id))
+            {!! get_slider_html($etablissement->id) !!}
+        @elseif($heroSlides->isNotEmpty())
         @php($hero = $heroSlides->first())
         <section class="tt-hero" id="top">
             <div class="tt-hero-media">
@@ -241,6 +244,7 @@
                 </div>
             </div>
         </section>
+        @endif
     @endif
 
     <main>
@@ -264,7 +268,7 @@
             </section>
         @endif
 
-        @if($blogCards->isNotEmpty())
+        @if(is_blog_enabled($etablissement->id) && $blogCards->isNotEmpty())
             <section class="tt-section" id="blog">
                 <div class="container">
                     <div class="tt-head">
@@ -342,15 +346,12 @@
             </div>
         </section>
 
-        <section class="tt-map" id="map">
-            <div id="ttMap" data-lat="{{ $mapLat }}" data-lng="{{ $mapLng }}"></div>
-            <div class="tt-map-card">
-                <strong>{{ $siteName }}</strong>
-                @if($address)<p>{{ $address }}</p>@endif
-            </div>
-        </section>
+        @include('cms::web.fallback.partials.landing-map-video-points')
     </main>
 
+    @if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
+        {!! get_slider_html($etablissement->id) !!}
+    @endif
     @include('cms::web.fallback.partials.landing-media-slideshow')
 
     <footer class="tt-footer">

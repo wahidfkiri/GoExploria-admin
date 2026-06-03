@@ -895,6 +895,10 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 </div>
 
 <!-- ==================== HERO ==================== -->
+@if(is_slider_enabled($etablissement->id))
+@if(has_slider($etablissement->id))
+{!! get_slider_html($etablissement->id) !!}
+@else
 <section id="hero">
   <div class="swiper hero-swiper" id="heroSwiper">
     <div class="swiper-wrapper">
@@ -964,6 +968,8 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 
   </div>
 </section>
+@endif
+@endif
 
 @if(collect($cmsPageSections ?? [])->isNotEmpty())
 <section id="cms-pages-content">
@@ -1186,32 +1192,10 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 </section>
 
 <!-- MAP -->
-<section id="map-section">
-  <div class="container">
-    <div class="map-wrap">
-      <div class="reveal">
-        <div class="sec-eyebrow">Où nous trouver</div>
-        <h2 class="sec-title">Visitez <span class="text-gold">nos installations</span></h2>
-        <p>Venez découvrir notre usine et nos modèles en exposition au Québec. Notre équipe sera ravie de vous accueillir.</p>
-        <div class="map-details">
-          <div class="map-detail"><i class="fa fa-map-marker-alt"></i><span>{{ $mapAddress }}</span></div>
-          <div class="map-detail"><i class="fa fa-phone"></i><span><a href="tel:{{ $phoneHref }}" style="color:var(--gold)">{{ $phone }}</a></span></div>
-          <div class="map-detail"><i class="fa fa-clock"></i><span>@foreach($workingHours as $row){{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}@if(!$loop->last)<br>@endif @endforeach</span></div>
-          <div class="map-detail"><i class="fa fa-envelope"></i><span>{{ $email }}</span></div>
-        </div>
-        <div style="margin-top:2rem"><a href="https://maps.google.com/?q={{ urlencode($mapAddress) }}" target="_blank" class="btn-primary">Obtenir l'itinéraire <i class="fa fa-external-link-alt" style="margin-left:6px"></i></a></div>
-      </div>
-      <div class="reveal delay-1">
-        <div id="map-container">
-          <div id="immoLeafletMap" style="height:100%;width:100%;"></div>
-          <div class="map-video-ov" onclick="openMapVideoPopup()"><i class="fa fa-play-circle"></i><span>Voir la vidéo sur la carte</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+@include('cms::web.fallback.partials.landing-map-video-points')
 
 <!-- BLOG -->
+@if(is_blog_enabled($etablissement->id))
 <section id="blog">
   <div class="container">
     <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem">
@@ -1258,6 +1242,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
     </div>
   </div>
 </section>
+@endif
 
 <!-- CTA BANNER -->
 <section id="cta-banner">
@@ -1322,6 +1307,9 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
   </div>
 </section>
 
+@if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
+    {!! get_slider_html($etablissement->id) !!}
+@endif
 @include('cms::web.fallback.partials.landing-media-slideshow')
 @include('cms::web.fallback.partials.landing-contact-ajax')
 
@@ -1432,7 +1420,8 @@ document.querySelectorAll('a,button,.product-card,.gallery-item,.hsel-card').for
 });
 
 /* ============ HERO SWIPER ============ */
-const heroSwiper = new Swiper('#heroSwiper', {
+const heroSwiperEl = document.querySelector('#heroSwiper');
+const heroSwiper = heroSwiperEl ? new Swiper('#heroSwiper', {
   loop: true, speed: 1200,
   autoplay: { delay: 6000, disableOnInteraction: false },
   effect: 'fade',
@@ -1444,13 +1433,15 @@ const heroSwiper = new Swiper('#heroSwiper', {
       syncHeroSelector(realIdx);
     }
   }
-});
+}) : null;
 
 /* ============ HERO SELECTOR ============ */
 function heroSelectCard(card, slideIdx) {
   document.querySelectorAll('.hsel-card').forEach(c => c.classList.remove('active'));
   card.classList.add('active');
-  heroSwiper.slideToLoop(slideIdx, 800);
+  if (heroSwiper) {
+    heroSwiper.slideToLoop(slideIdx, 800);
+  }
 }
 
 function syncHeroSelector(realIdx) {

@@ -1141,9 +1141,15 @@
                 <div class="lf-right">
                     @include("cms::web.fallback.activities.$activityViewFolder.header")
 
+                    @if(is_slider_enabled($etablissement->id))
                     <article id="section-hero"  style="margin-top:0px !important;" class="lf-section lf-hero-embed">
-                        @include("cms::web.fallback.activities.$activityViewFolder.hero", ['hideSearchBarV2' => true])
+                        @if(has_slider($etablissement->id))
+                            {!! get_slider_html($etablissement->id) !!}
+                        @else
+                            @include("cms::web.fallback.activities.$activityViewFolder.hero", ['hideSearchBarV2' => true])
+                        @endif
                     </article>
+                    @endif
 
                     @if(collect($cmsPageSections ?? [])->isNotEmpty())
                         @foreach(collect($cmsPageSections) as $cmsPage)
@@ -1311,7 +1317,7 @@
                         </div>
                     </article>
 
-                    @if(collect($blogPosts ?? [])->isNotEmpty())
+                    @if(is_blog_enabled($etablissement->id) && collect($blogPosts ?? [])->isNotEmpty())
                         <article id="blog" class="lf-section">
                             <div class="lf-row-head">
                                 <h3>Blog & actualités</h3>
@@ -1397,13 +1403,11 @@
                                 </div>
                             </form>
 
-                            <div class="lf-map-box">
-                                <div id="lfMap" class="lf-map"></div>
-                                <div class="lf-map-note">
-                                    <i class="fas fa-location-dot"></i>
-                                    Localisation de {{ $etablissement->name }}
+                            @if(is_maps_enabled($etablissement->id) && get_map_video_points($etablissement->id)->isNotEmpty())
+                                <div class="lf-map-box">
+                                    @include('cms::web.fallback.partials.landing-map-video-points', ['landingMapVariant' => 'inline'])
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     </article>
                 </div>
@@ -1444,6 +1448,9 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    @if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
+        {!! get_slider_html($etablissement->id) !!}
+    @endif
     @include('cms::web.fallback.partials.landing-media-slideshow')
     @include('cms::web.fallback.partials.landing-contact-ajax')
 

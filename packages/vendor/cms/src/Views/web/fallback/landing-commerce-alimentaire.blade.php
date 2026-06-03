@@ -1545,6 +1545,10 @@
             <div class="food-grid">
                 <div class="food-right">
 
+                    @if(is_slider_enabled($etablissement->id))
+                        @if(has_slider($etablissement->id))
+                            {!! get_slider_html($etablissement->id) !!}
+                        @else
                     <section class="food-hero" id="hero">
                         @foreach($heroSlides as $index => $slide)
                             <article class="food-hero-slide {{ $index === 0 ? 'is-active' : '' }}">
@@ -1589,6 +1593,8 @@
                             <button type="button" id="foodHeroNext" aria-label="Slide suivante"><i class="fa-solid fa-arrow-right"></i></button>
                         </div>
                     </section>
+                        @endif
+                    @endif
 
                     @if(collect($cmsPageSections ?? [])->isNotEmpty())
                             @foreach(collect($cmsPageSections) as $cmsPage)
@@ -1636,7 +1642,7 @@
 
                     @include('cms::web.fallback.partials.landing-working-hours')
 
-                    @if($foodBlogPosts->isNotEmpty())
+                    @if(is_blog_enabled($etablissement->id) && $foodBlogPosts->isNotEmpty())
                         <section class="food-section food-section-pad" id="blogs">
                             <span class="food-kicker">Blog</span>
                             <h2 class="food-title">Actualités et conseils <em>gourmands</em></h2>
@@ -1701,15 +1707,11 @@
                                     <button class="food-btn food-btn-primary" type="submit">Envoyer ma demande</button>
                                 </form>
                             </div>
-                            <div
-                                id="foodMap"
-                                class="food-map"
-                                data-lat="{{ $mapLat }}"
-                                data-lng="{{ $mapLng }}"
-                                data-title="{{ e($siteName) }}"
-                                data-address="{{ e($address) }}"
-                                data-video="https://www.youtube.com/embed/0edALYi7_Qs?autoplay=1&mute=1&playsinline=1&rel=0">
-                            </div>
+                            @if(is_maps_enabled($etablissement->id) && get_map_video_points($etablissement->id)->isNotEmpty())
+                                <div class="food-map">
+                                    @include('cms::web.fallback.partials.landing-map-video-points', ['landingMapVariant' => 'inline'])
+                                </div>
+                            @endif
                         </div>
                     </section>
                 </div>
@@ -1717,6 +1719,9 @@
         </div>
     </main>
 
+    @if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
+        {!! get_slider_html($etablissement->id) !!}
+    @endif
     @include('cms::web.fallback.partials.landing-media-slideshow')
     @include('cms::web.fallback.partials.landing-contact-ajax')
 

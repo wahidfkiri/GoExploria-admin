@@ -246,7 +246,13 @@
     @include('home-v2.components.Header')
     <main class="tl-page">
         @include('cms::web.fallback.partials.espace-forfait.nav')
-        @include('cms::web.fallback.partials.espace-forfait.hero')
+        @if(is_slider_enabled($etablissement->id))
+            @if(has_slider($etablissement->id))
+                {!! get_slider_html($etablissement->id) !!}
+            @else
+                @include('cms::web.fallback.partials.espace-forfait.hero')
+            @endif
+        @endif
         @if(collect($cmsPageSections ?? [])->isNotEmpty())
             <section id="cms-pages-content">
                 <div class="container" style="display:grid;gap:22px;">
@@ -273,6 +279,9 @@
         @include('cms::web.fallback.partials.landing-working-hours')
         @include('cms::web.fallback.partials.espace-forfait.contact')
         @include('cms::web.fallback.partials.espace-forfait.partenaires')
+        @if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
+            {!! get_slider_html($etablissement->id) !!}
+        @endif
         @include('cms::web.fallback.partials.landing-media-slideshow')
         @include('cms::web.fallback.partials.landing-contact-ajax')
         @include('cms::web.fallback.partials.espace-forfait.footer')

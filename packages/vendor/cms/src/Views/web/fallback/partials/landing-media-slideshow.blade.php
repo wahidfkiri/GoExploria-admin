@@ -1,7 +1,14 @@
 @php
+    $landingSlideshowEnabled = true;
+    $landingSlideshowEtablissementId = data_get($etablissement ?? null, 'id');
+
+    if ($landingSlideshowEtablissementId && function_exists('is_slideshow_enabled')) {
+        $landingSlideshowEnabled = is_slideshow_enabled($landingSlideshowEtablissementId);
+    }
+
     $landingSlideshowGroups = collect($slideshowMediaGroups ?? [])->filter(fn ($group) => !empty(data_get($group, 'main.src')))->values();
 
-    if ($landingSlideshowGroups->isEmpty()) {
+    if ($landingSlideshowEnabled && $landingSlideshowGroups->isEmpty()) {
         $landingSlideshowSource = collect($allGalleryMedia ?? []);
         if ($landingSlideshowSource->isEmpty()) {
             $landingSlideshowSource = collect($galleryMedia ?? []);
@@ -41,7 +48,7 @@
     $landingSlideshowId = 'landingCmsMedia' . substr(md5((string) ($etablissement->id ?? 'global')), 0, 8);
 @endphp
 
-@if($landingSlideshowGroups->isNotEmpty())
+@if($landingSlideshowEnabled && $landingSlideshowGroups->isNotEmpty())
     @once
         <link rel="stylesheet" href="{{ asset('css/home-v2/media-slideshow.css') }}">
         <style>
