@@ -107,52 +107,94 @@
         $gallery = $gallery->values();
     }
 
-    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($siteName, $siteDescription, $heroPrimaryCtaText, $heroPrimaryCtaUrl) {
-        $type = data_get($slider, 'type', 'image');
-        $url = data_get($slider, 'image_url')
-            ?: data_get($slider, 'thumbnail_url')
-            ?: data_get($slider, 'video_url')
-            ?: data_get($slider, 'url');
+    $foodHeroAssetUrl = static function ($path) {
+        $path = trim((string) $path);
+        if ($path === '') {
+            return null;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['http://', 'https://', '//'])) {
+            return $path;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['/storage/'])) {
+            return asset(ltrim($path, '/'));
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['storage/'])) {
+            return asset($path);
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['/'])) {
+            return asset(ltrim($path, '/'));
+        }
+
+        return asset('storage/' . ltrim($path, '/'));
+    };
+
+    $foodHeroYoutubeIdFromUrl = static function ($value) {
+        $value = trim((string) $value);
+        if ($value === '') {
+            return null;
+        }
+
+        if (preg_match('/<iframe[^>]+src=["\']([^"\']+)["\']/i', $value, $match)) {
+            $value = trim((string) $match[1]);
+        }
+
+        if (preg_match('/(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/i', $value, $match)) {
+            return $match[1];
+        }
+
+        return preg_match('/^[A-Za-z0-9_-]{11}$/', $value) ? $value : null;
+    };
+
+    $foodHeroSliderItems = function_exists('get_slider_items')
+        ? collect(get_slider_items($etablissement->id))
+        : collect();
+
+    if ($foodHeroSliderItems->isEmpty()) {
+        $foodHeroSliderItems = collect($sliders ?? []);
+    }
+
+    $heroSlides = $foodHeroSliderItems->map(function ($slider) use ($foodHeroAssetUrl, $foodHeroYoutubeIdFromUrl) {
+        $type = strtolower((string) (data_get($slider, 'type') ?: 'image'));
+        $rawUrl = data_get($slider, 'url')
+            ?: data_get($slider, 'image_url')
+            ?: data_get($slider, 'image_path')
+            ?: data_get($slider, 'video_url');
+        $poster = $foodHeroAssetUrl(data_get($slider, 'poster_url') ?: data_get($slider, 'thumbnail_url') ?: data_get($slider, 'thumbnail_path'));
+        $media = $foodHeroAssetUrl($rawUrl);
+        $iframe = null;
+
+        foreach ([data_get($slider, 'video_html'), data_get($slider, 'embed'), data_get($slider, 'video_embed_url'), $rawUrl] as $candidate) {
+            if (preg_match('/<iframe[^>]+src=["\']([^"\']+)["\']/i', (string) $candidate, $match)) {
+                $iframe = trim((string) $match[1]);
+                break;
+            }
+        }
+
+        $youtubeId = $foodHeroYoutubeIdFromUrl($iframe ?: $media ?: $rawUrl);
+        if (!$poster && $youtubeId) {
+            $poster = 'https://i.ytimg.com/vi/' . $youtubeId . '/hqdefault.jpg';
+        }
+
+        $embed = $iframe ?: ($youtubeId ? 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&muted=1&loop=1&playlist=' . $youtubeId . '&controls=0&rel=0&modestbranding=1&playsinline=1' : null);
 
         return [
             'type' => $type,
-            'url' => $url,
-            'embed' => data_get($slider, 'video_embed_url'),
-            'title' => data_get($slider, 'title') ?: data_get($slider, 'name') ?: $siteName,
-            'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: $siteDescription,
-            'button_text' => data_get($slider, 'button_text') ?: $heroPrimaryCtaText,
-            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: $heroPrimaryCtaUrl,
+            'url' => $media,
+            'poster' => $poster,
+            'embed' => $embed,
+            'title' => trim((string) (data_get($slider, 'title') ?: data_get($slider, 'name') ?: '')),
+            'subtitle' => trim((string) (data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: '')),
+            'button_text' => trim((string) (data_get($slider, 'button_text') ?: '')),
+            'button_url' => trim((string) (data_get($slider, 'button_link') ?: data_get($slider, 'button_url') ?: '')),
+            'order' => (int) data_get($slider, 'order', 0),
         ];
-    })->filter(fn ($slide) => !empty($slide['url']) || !empty($slide['embed']))->values();
-
-    if ($heroSlides->isEmpty()) {
-        $heroSlides = collect([
-            [
-                'type' => 'image',
-                'url' => 'https://images.pexels.com/photos/3296434/pexels-photo-3296434.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
-                'title' => $siteName,
-                'subtitle' => $siteDescription,
-                'button_text' => $heroPrimaryCtaText,
-                'button_url' => $heroPrimaryCtaUrl,
-            ],
-            [
-                'type' => 'image',
-                'url' => 'https://images.pexels.com/photos/566345/pexels-photo-566345.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
-                'title' => $siteName,
-                'subtitle' => $siteDescription,
-                'button_text' => $heroPrimaryCtaText,
-                'button_url' => $heroPrimaryCtaUrl,
-            ],
-            [
-                'type' => 'image',
-                'url' => 'https://images.pexels.com/photos/3655916/pexels-photo-3655916.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
-                'title' => $siteName,
-                'subtitle' => $siteDescription,
-                'button_text' => $heroPrimaryCtaText,
-                'button_url' => $heroPrimaryCtaUrl,
-            ],
-        ]);
-    }
+    })->filter(fn ($slide) => !empty($slide['url']) || !empty($slide['embed']) || !empty($slide['poster']))
+        ->sortBy('order')
+        ->values();
 
     $productCards = [
         ['tag' => 'Arrivage', 'title' => 'Poissons frais', 'desc' => 'SÃ©lection quotidienne, conseils de cuisson et dÃ©coupes sur demande.', 'price' => '18,95 $ / lb', 'image' => $gallery->get(0)['thumbnail'] ?? $fallbackImages->get(0)['thumbnail']],
@@ -1546,28 +1588,29 @@
                 <div class="food-right">
     @include('cms::web.fallback.partials.landing-cms-header')
 
-                    @if(is_slider_enabled($etablissement->id))
-                        @if(has_slider($etablissement->id))
-                            {!! get_slider_html($etablissement->id) !!}
-                        @else
+                    @if(is_slider_enabled($etablissement->id) && $heroSlides->isNotEmpty())
                     <section class="food-hero" id="hero">
                         @foreach($heroSlides as $index => $slide)
                             <article class="food-hero-slide {{ $index === 0 ? 'is-active' : '' }}">
                                 <div class="food-hero-media">
                                     @php
-                                        $slideUrl = $slide['embed'] ?: $slide['url'];
-                                        $isUploadVideo = str_contains((string) $slideUrl, '.mp4') || str_contains((string) $slideUrl, '.webm');
-                                        $isFrame = in_array($slide['type'], ['youtube', 'vimeo', 'iframe', 'video'], true) && !$isUploadVideo && !empty($slide['embed']);
+                                        $slideUrl = $slide['url'] ?: $slide['poster'];
+                                        $embedUrl = $slide['embed'] ?: null;
+                                        $isUploadVideo = !$embedUrl && (str_contains((string) $slideUrl, '.mp4') || str_contains((string) $slideUrl, '.webm'));
+                                        $isFrame = !empty($embedUrl);
                                         $iframeAutoplayUrl = $isFrame
-                                            ? $slideUrl . (str_contains((string) $slideUrl, '?') ? '&' : '?') . 'autoplay=1&mute=1&muted=1&playsinline=1&loop=1&rel=0&background=1'
+                                            ? $embedUrl . (str_contains((string) $embedUrl, '?') ? '&' : '?') . 'autoplay=1&mute=1&muted=1&playsinline=1&loop=1&rel=0&background=1'
                                             : $slideUrl;
                                     @endphp
                                     @if($isUploadVideo)
-                                        <video autoplay muted loop playsinline src="{{ $slideUrl }}"></video>
+                                        <video autoplay muted loop playsinline src="{{ $slideUrl }}" @if(!empty($slide['poster'])) poster="{{ $slide['poster'] }}" @endif></video>
                                     @elseif($isFrame)
+                                        @if(!empty($slide['poster']))
+                                            <img src="{{ $slide['poster'] }}" alt="{{ $slide['title'] }}">
+                                        @endif
                                         <iframe src="{{ $iframeAutoplayUrl }}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-                                    @else
-                                        <img src="{{ $slide['url'] }}" alt="{{ $slide['title'] }}">
+                                    @elseif(!empty($slideUrl))
+                                        <img src="{{ $slideUrl }}" alt="{{ $slide['title'] }}">
                                     @endif
                                 </div>
                                 <div class="food-hero-content">
@@ -1594,7 +1637,6 @@
                             <button type="button" id="foodHeroNext" aria-label="Slide suivante"><i class="fa-solid fa-arrow-right"></i></button>
                         </div>
                     </section>
-                        @endif
                     @endif
 
                     @if(collect($cmsPageSections ?? [])->isNotEmpty())
