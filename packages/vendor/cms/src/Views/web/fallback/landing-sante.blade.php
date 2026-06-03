@@ -212,10 +212,11 @@
             {!! get_slider_html($etablissement->id) !!}
         @elseif($heroSlides->isNotEmpty())
         @php($hero = $heroSlides->first())
+        @php($heroEmbed = !empty($hero['embed']) ? $hero['embed'] . (str_contains((string) $hero['embed'], '?') ? '&' : '?') . 'autoplay=1&mute=1&muted=1&playsinline=1' : null)
         <section class="hl-hero" id="top">
             <div class="hl-hero-media">
-                @if(!empty($hero['embed']))
-                    <iframe src="{{ $hero['embed'] }}" title="{{ $hero['title'] ?: $siteName }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                @if(!empty($heroEmbed))
+                    <iframe src="{{ $heroEmbed }}" title="{{ $hero['title'] ?: $siteName }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
                 @elseif(($hero['type'] ?? 'image') === 'video' && !empty($hero['url']))
                     <video src="{{ $hero['url'] }}" poster="{{ $hero['poster'] }}" autoplay muted loop playsinline></video>
                 @else
@@ -352,6 +353,8 @@
     </main>
     @include('cms::web.fallback.partials.landing-media-slideshow')
 
+    @include('cms::web.fallback.partials.landing-cms-footer')
+
     <footer class="hl-footer">
         <div class="container">
             <strong>{{ $siteName }}</strong>
@@ -405,7 +408,6 @@
             }
         }
     </script>
-    @include('cms::web.fallback.partials.landing-cms-footer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

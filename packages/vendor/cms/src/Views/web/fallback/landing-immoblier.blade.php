@@ -236,6 +236,7 @@
         @include('cms::web.fallback.partials.immoblier.map-cta')
         @include('cms::web.fallback.partials.landing-media-slideshow')
         @include('cms::web.fallback.partials.landing-contact-ajax')
+        @include('cms::web.fallback.partials.landing-cms-footer')
         @include('cms::web.fallback.partials.immoblier.footer')
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
@@ -244,7 +245,6 @@
     <script src="{{ asset('js/home-v2/mega-menu.js') }}"></script>
     <script src="{{ asset('js/home-v2/services-mega-menu-v2.js') }}"></script>
     @include('cms::web.fallback.partials.immoblier.scripts')
-    @include('cms::web.fallback.partials.landing-cms-footer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

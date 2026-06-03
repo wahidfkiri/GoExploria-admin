@@ -729,7 +729,7 @@ if ($item->type === 'video') {
 
     if ($youtubeId || $vimeoId) {
         $embedUrl = $youtubeId
-            ? 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&loop=1&playlist=' . $youtubeId . '&controls=0&rel=0&playsinline=1'
+            ? 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&muted=1&loop=1&playlist=' . $youtubeId . '&controls=0&rel=0&playsinline=1'
             : 'https://player.vimeo.com/video/' . $vimeoId . '?autoplay=1&muted=1&loop=1&background=1';
 
         $html .= '<div class="video-wrapper-embed"' . ($posterUrl ? ' style="background-image:url(\'' . e($posterUrl) . '\');background-size:cover;background-position:center;"' : '') . '>';

@@ -303,12 +303,13 @@
                     @endphp
                     <div class="swiper-slide">
                         <div class="h-slide">
-                            @if(!empty($slide['url']))
-                                <div class="h-img" style="background-image:url('{{ $slide['url'] }}')"></div>
-                            @elseif(!empty($slide['embed']))
-                                <iframe src="{{ $slide['embed'] }}" title="{{ $slide['title'] }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>
+                            @if(!empty($slide['embed']))
+                                @php($slideEmbed = $slide['embed'] . (str_contains((string) $slide['embed'], '?') ? '&' : '?') . 'autoplay=1&mute=1&muted=1&playsinline=1')
+                                <iframe src="{{ $slideEmbed }}" title="{{ $slide['title'] }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>
                             @elseif(($slide['type'] ?? 'image') === 'video' && !empty($slide['media_url']))
                                 <video src="{{ $slide['media_url'] }}" autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
+                            @elseif(!empty($slide['url']))
+                                <div class="h-img" style="background-image:url('{{ $slide['url'] }}')"></div>
                             @endif
                             <div class="h-overlay"></div>
                             <div class="h-content">
@@ -462,6 +463,7 @@
             <div class="footer-bottom"><span>Â© {{ date('Y') }} {{ $siteName }}.</span><span><a href="#fleet">Flotte</a> Â· <a href="#pricing">Tarifs</a> Â· <a href="#contact">Reservation</a></span></div>
         </div>
     </footer>
+    @include('cms::web.fallback.partials.landing-cms-footer')
     @include('cms::web.fallback.activities.default.footer')
     <a href="#contact" class="float-btn" title="Reserver"><i class="fa-solid fa-car-side"></i></a>
 
@@ -499,7 +501,6 @@
         function searchCars(){const select = document.getElementById('fleetSelect'); const id = select?.value || 'all'; const tab = [...document.querySelectorAll('#fleet .tab')].find(b => b.getAttribute('onclick')?.includes("'" + id + "'")) || document.querySelector('#fleet .tab'); if(tab) filterFleet(tab, id); document.getElementById('fleet')?.scrollIntoView({behavior:'smooth'});}
         const today = new Date(); const start = document.getElementById('startDate'); const end = document.getElementById('endDate'); if(start) start.value = today.toISOString().split('T')[0]; if(end){const later = new Date(today); later.setDate(today.getDate() + 3); end.value = later.toISOString().split('T')[0];}
     </script>
-    @include('cms::web.fallback.partials.landing-cms-footer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

@@ -56,13 +56,13 @@
                     @if(in_array($slide['video_type'], ['youtube', 'vimeo', 'iframe'], true))
                         <iframe
                             class="dlh-media dlh-iframe"
-                            src="{{ $slide['media_url'] }}{{ str_contains((string) $slide['media_url'], '?') ? '&' : '?' }}autoplay=1&mute=1&loop=1&controls=0&playsinline=1&rel=0&modestbranding=1"
+                            src="{{ $slide['media_url'] }}{{ str_contains((string) $slide['media_url'], '?') ? '&' : '?' }}autoplay=1&mute=1&muted=1&loop=1&controls=0&playsinline=1&rel=0&modestbranding=1"
                             frameborder="0"
                             allow="autoplay; encrypted-media"
                             allowfullscreen
                         ></iframe>
                     @else
-                        <video class="dlh-media dlh-video" muted loop playsinline preload="metadata">
+                        <video class="dlh-media dlh-video" autoplay muted loop playsinline preload="auto">
                             <source src="{{ $slide['media_url'] }}" type="video/mp4">
                         </video>
                     @endif

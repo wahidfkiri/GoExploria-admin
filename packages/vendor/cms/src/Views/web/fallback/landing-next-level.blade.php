@@ -1404,6 +1404,7 @@ html.light .float-cta {
 @include('cms::web.fallback.partials.landing-contact-ajax')
 
 <!-- FOOTER -->
+@include('cms::web.fallback.partials.landing-cms-footer')
 <footer>
   <div class="container">
     <div class="footer-grid">
@@ -2635,7 +2636,6 @@ function handleForm(e) {
   return false;
 }
 </script>
-    @include('cms::web.fallback.partials.landing-cms-footer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

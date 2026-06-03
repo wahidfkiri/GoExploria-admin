@@ -255,6 +255,8 @@
         </section>
     </main>
 
+    @include('cms::web.fallback.partials.landing-cms-footer')
+
     <footer class="vh-footer">
         <span>&copy; {{ date('Y') }} {{ $siteName }}</span>
         <span style="color:var(--amber)"><i class="fa-solid fa-star"></i></span>
@@ -618,7 +620,6 @@
         renderChannels();
         renderGrid();
     </script>
-    @include('cms::web.fallback.partials.landing-cms-footer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

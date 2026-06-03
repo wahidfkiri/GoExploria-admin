@@ -1311,6 +1311,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 @include('cms::web.fallback.partials.landing-contact-ajax')
 
 <!-- FOOTER -->
+@include('cms::web.fallback.partials.landing-cms-footer')
 <footer>
   <div class="footer-grid">
     <div class="footer-brand">
@@ -1656,7 +1657,6 @@ const statsSection=document.getElementById('stats');
 if(statsSection)statsObs.observe(statsSection);
 window.addEventListener('load', initImmoMap);
 </script>
-    @include('cms::web.fallback.partials.landing-cms-footer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

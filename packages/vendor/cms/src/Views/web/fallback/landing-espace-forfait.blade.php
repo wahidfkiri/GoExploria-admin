@@ -282,6 +282,7 @@
         @include('cms::web.fallback.partials.espace-forfait.partenaires')
         @include('cms::web.fallback.partials.landing-media-slideshow')
         @include('cms::web.fallback.partials.landing-contact-ajax')
+        @include('cms::web.fallback.partials.landing-cms-footer')
         @include('cms::web.fallback.partials.espace-forfait.footer')
         <div class="toast" id="toast"></div>
     </main>
@@ -290,7 +291,6 @@
     <script src="{{ asset('js/home-v2/mega-menu.js') }}"></script>
     <script src="{{ asset('js/home-v2/services-mega-menu-v2.js') }}"></script>
     @include('cms::web.fallback.partials.espace-forfait.scripts')
-    @include('cms::web.fallback.partials.landing-cms-footer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

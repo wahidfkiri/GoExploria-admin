@@ -1764,6 +1764,8 @@
     @include('cms::web.fallback.partials.landing-media-slideshow')
     @include('cms::web.fallback.partials.landing-contact-ajax')
 
+    @include('cms::web.fallback.partials.landing-cms-footer')
+
     @include("cms::web.fallback.activities.$activityViewFolder.footer")
 
     <button type="button" class="food-backtop" id="foodBackTop" aria-label="Retour en haut"><i class="fa-solid fa-arrow-up"></i></button>
@@ -1894,7 +1896,6 @@
             }
         })();
     </script>
-    @include('cms::web.fallback.partials.landing-cms-footer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

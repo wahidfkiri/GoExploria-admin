@@ -1451,6 +1451,8 @@
     @include('cms::web.fallback.partials.landing-media-slideshow')
     @include('cms::web.fallback.partials.landing-contact-ajax')
 
+    @include('cms::web.fallback.partials.landing-cms-footer')
+
     @include("cms::web.fallback.activities.$activityViewFolder.footer")
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -1560,7 +1562,6 @@
             }
         });
     </script>
-    @include('cms::web.fallback.partials.landing-cms-footer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

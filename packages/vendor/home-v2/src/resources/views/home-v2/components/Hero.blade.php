@@ -156,6 +156,7 @@
                             ? 'https://www.youtube.com/embed/' . $youtubeId . '?' . http_build_query([
                                 'autoplay' => 1,
                                 'mute' => 1,
+                                'muted' => 1,
                                 'loop' => 1,
                                 'playlist' => $youtubeId,
                                 'controls' => 0,
@@ -181,7 +182,7 @@
                             @elseif($isVideo && $vimeoSrc)
                                 <iframe class="go-hero-youtube go-hero-deferred-frame" @if($loop->first) src="{{ $vimeoSrc }}" @endif data-src="{{ $vimeoSrc }}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="{{ $loop->first ? 'eager' : 'lazy' }}"></iframe>
                             @elseif($isVideo && !empty($slide['media']))
-                                <video class="go-hero-local-video" @if($loop->first) autoplay @endif muted loop playsinline preload="{{ $loop->first ? 'auto' : 'metadata' }}" @if(!empty($slide['poster'])) poster="{{ $slide['poster'] }}" @endif>
+                                <video class="go-hero-local-video" autoplay muted loop playsinline preload="{{ $loop->first ? 'auto' : 'metadata' }}" @if(!empty($slide['poster'])) poster="{{ $slide['poster'] }}" @endif>
                                     <source src="{{ $slide['media'] }}" type="video/mp4">
                                 </video>
                             @elseif(!empty($slide['media']))

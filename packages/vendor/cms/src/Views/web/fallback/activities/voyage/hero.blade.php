@@ -1,4 +1,4 @@
-{{-- Hero Section Component --}}
+﻿{{-- Hero Section Component --}}
 <section class="hero-v2">
     @php
         $tr = static function (string $text): string {
@@ -17,15 +17,15 @@
         };
 
         $heroPlaceholderPhrases = [
-            $tr('Explorez le mondeâ€¦'),
-            $tr('Rechercher une destinationâ€¦'),
-            $tr('DÃ©couvrez des activitÃ©sâ€¦'),
-            $tr('Trouvez un hÃ©bergementâ€¦'),
+            $tr('Explorez le mondeÃ¢â‚¬Â¦'),
+            $tr('Rechercher une destinationÃ¢â‚¬Â¦'),
+            $tr('DÃƒÂ©couvrez des activitÃƒÂ©sÃ¢â‚¬Â¦'),
+            $tr('Trouvez un hÃƒÂ©bergementÃ¢â‚¬Â¦'),
         ];
     @endphp
     @php($orderedSliders = collect($sliders ?? [])->sortBy('order')->values())
     @php($showCarouselNav = $orderedSliders->count() > 5)
-    {{-- Video Carousel Background - ConfinÃ© au Hero --}}
+    {{-- Video Carousel Background - ConfinÃƒÂ© au Hero --}}
     <div class="video-carousel-background">
         <div class="video-carousel-container">
             @foreach($orderedSliders as $index => $slider)
@@ -33,22 +33,22 @@
                 @if($slider->type === 'image' && $slider->image_url)
                     <img class="video-background" src="{{ $slider->image_url }}" alt="{{ $slider->name }}">
                 @elseif($slider->video_type === 'youtube' || $slider->video_type === 'vimeo' || $slider->video_type === 'iframe')
-                    {{-- VidÃ©o YouTube/Vimeo avec iframe --}}
-                    <iframe 
-                        class="video-background" 
-                        src="{{ $slider->video_embed_url }}{{ str_contains($slider->video_embed_url ?? '', '?') ? '&' : '?' }}autoplay={{ $index === 0 ? '1' : '0' }}&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" 
-                        frameborder="0" 
-                        allow="autoplay; encrypted-media" 
+                    {{-- VidÃƒÂ©o YouTube/Vimeo avec iframe --}}
+                    <iframe
+                        class="video-background"
+                        src="{{ $slider->video_embed_url }}{{ str_contains($slider->video_embed_url ?? '', '?') ? '&' : '?' }}autoplay=1&mute=1&muted=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+                        frameborder="0"
+                        allow="autoplay; encrypted-media"
                         allowfullscreen
                     ></iframe>
                 @else
-                    {{-- VidÃ©o uploadÃ©e avec balise video HTML5 --}}
-                    <video class="video-background" {{ $index === 0 ? 'autoplay' : '' }} muted loop playsinline>
+                    {{-- VidÃƒÂ©o uploadÃƒÂ©e avec balise video HTML5 --}}
+                    <video class="video-background" autoplay muted loop playsinline preload="auto">
                         <source src="{{ $slider->video_embed_url }}" type="video/mp4">
                     </video>
                 @endif
-                
-                {{-- Overlay avec titre et bouton sur la vidÃ©o principale --}}
+
+                {{-- Overlay avec titre et bouton sur la vidÃƒÂ©o principale --}}
                 <div class="hero-video-overlay">
                     <div class="hero-video-info">
                         <h2 class="hero-video-main-title">{{ $slider->name }}</h2>
@@ -62,11 +62,11 @@
             </div>
             @endforeach
         </div>
-        
-        {{-- Cartes vidÃ©o miniatures sur la vidÃ©o principale --}}
+
+        {{-- Cartes vidÃƒÂ©o miniatures sur la vidÃƒÂ©o principale --}}
         <div class="hero-video-cards-overlay">
             @if($showCarouselNav)
-            <button class="carousel-nav-btn prev" aria-label="{{ $tr('PrÃ©cÃ©dent') }}">
+            <button class="carousel-nav-btn prev" aria-label="{{ $tr('PrÃƒÂ©cÃƒÂ©dent') }}">
                 <svg viewBox="0 0 24 24">
                     <path d="M15 18l-6-6 6-6"/>
                 </svg>
@@ -116,14 +116,14 @@
             </button>
             @endif
         </div>
-        
+
         <div class="carousel-controls">
             @foreach($orderedSliders as $index => $slider)
-            <button class="carousel-dot" data-slide="{{ $index }}" aria-label="{{ $tr('VidÃ©o') }} {{ $index + 1 }}"></button>
+            <button class="carousel-dot" data-slide="{{ $index }}" aria-label="{{ $tr('VidÃƒÂ©o') }} {{ $index + 1 }}"></button>
             @endforeach
         </div>
 
-        {{-- Bouton son vidÃ©o (mute/unmute) â€” gauche du Hero --}}
+        {{-- Bouton son vidÃƒÂ©o (mute/unmute) Ã¢â‚¬â€ gauche du Hero --}}
         <button type="button" class="hero-sound-toggle" id="heroSoundToggle" aria-label="{{ $tr('Activer le son') }}" title="{{ $tr('Activer le son') }}">
             <svg class="hero-sound-icon-muted" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
@@ -150,15 +150,15 @@
             <img src="{{ asset('header_info/map2.png') }}" alt="Map" class="hero-mobile-map">
         </div>
     </div>
-    
+
     <div class="hero-content">
         <!-- <div class="hero-text">
             <h1 class="hero-title">
                 <span class="hero-main">GO EXPLORIA</span>
             </h1>
         </div> -->
-        
-        {{-- Barre horizontale complÃ¨te avec destinations + recherche --}}
+
+        {{-- Barre horizontale complÃƒÂ¨te avec destinations + recherche --}}
         @if(!($hideSearchBarV2 ?? false))
         <div class="search-bar-v2">
             <div class="search-bar-v2-container">
@@ -166,13 +166,13 @@
                 <div class="search-bar-v2-destinations" style="position: relative; flex-direction: column; gap: 2px; align-items: center;">
                     <img src="{{ asset('REDI.png') }}" alt="Destinations" class="search-bar-v2-globe-icon" id="destinationsMainTrigger" style="cursor:pointer;">
                     <span class="search-bar-v2-destinations-title" id="destinationsBreadcrumb">{{ $tr('Destinations') }}</span>
-                    
+
                     {{-- Mega Menu Destinations Principal --}}
                     @include('cms::web.fallback.activities.default.destinations-mega-menu')
                 </div>
 
-               
-                {{-- 3 Pictos ronds bleus : i Â· iT Â· iB --}}
+
+                {{-- 3 Pictos ronds bleus : i Ã‚Â· iT Ã‚Â· iB --}}
                 <div class="search-bar-v2-quick-links">
                     {{-- Info i --}}
                     <div class="quick-link-item info-trigger" id="infoTrigger" title="{{ $tr('Informations') }}">
@@ -180,16 +180,16 @@
                             <span class="picto-label">i</span>
                         </div>
                     </div>
-                    
+
                     {{-- iT Tourisme --}}
-                    <div class="quick-link-item" id="catMegaTriggerTourisme" style="cursor:pointer;" title="{{ $tr('ActivitÃ©s Tourisme') }}">
+                    <div class="quick-link-item" id="catMegaTriggerTourisme" style="cursor:pointer;" title="{{ $tr('ActivitÃƒÂ©s Tourisme') }}">
                         <div class="icon-circle icon-blue">
                             <span class="picto-label">iT</span>
                         </div>
                     </div>
 
                     {{-- iB Business --}}
-                    <div class="quick-link-item" id="catMegaTriggerBusiness" style="cursor:pointer;" title="{{ $tr('ActivitÃ©s Business') }}">
+                    <div class="quick-link-item" id="catMegaTriggerBusiness" style="cursor:pointer;" title="{{ $tr('ActivitÃƒÂ©s Business') }}">
                         <div class="icon-circle icon-blue">
                             <span class="picto-label">iB</span>
                         </div>
@@ -203,11 +203,11 @@
                             <circle cx="11" cy="11" r="8"></circle>
                             <path d="m21 21-4.35-4.35"></path>
                         </svg>
-                        <input 
-                            type="text" 
-                            class="search-bar-v2-input" 
+                        <input
+                            type="text"
+                            class="search-bar-v2-input"
                             id="searchBarInput"
-                            placeholder="{{ $tr('Rechercher une destination, activitÃ©, hÃ©bergement...') }}"
+                            placeholder="{{ $tr('Rechercher une destination, activitÃƒÂ©, hÃƒÂ©bergement...') }}"
                             aria-label="{{ $tr('Rechercher une destination') }}"
                             autocomplete="off"
                         >
@@ -219,49 +219,49 @@
                         </button>
                     </div>
 
-                    {{-- Dropdown des rÃ©sultats --}}
+                    {{-- Dropdown des rÃƒÂ©sultats --}}
                     <div class="search-bar-v2-results" id="searchBarResults">
                         <div class="search-bar-v2-results-header">
-                            <h4 class="search-bar-v2-results-title">{{ $tr('RÃ©sultats de la recherche') }}</h4>
+                            <h4 class="search-bar-v2-results-title">{{ $tr('RÃƒÂ©sultats de la recherche') }}</h4>
                         </div>
                         <ul class="search-bar-v2-results-list" id="searchBarResultsList">
-                            {{-- Les rÃ©sultats seront injectÃ©s ici par JavaScript --}}
+                            {{-- Les rÃƒÂ©sultats seront injectÃƒÂ©s ici par JavaScript --}}
                         </ul>
                     </div>
                 </div>
 
 
-                {{-- Boutons rapides aprÃ¨s la barre de recherche : EE Â· ED Â· MP Â· Voiture Â· Avion --}}
+                {{-- Boutons rapides aprÃƒÂ¨s la barre de recherche : EE Ã‚Â· ED Ã‚Â· MP Ã‚Â· Voiture Ã‚Â· Avion --}}
                 <div class="search-bar-v2-quick-links search-bar-v2-quick-links--post">
-                    {{-- EE â€” Espace Entreprise --}}
+                    {{-- EE Ã¢â‚¬â€ Espace Entreprise --}}
                     <div class="quick-link-item" id="quickLinkEE" style="cursor:pointer;" title="{{ $tr('Espace Entreprise') }}">
                         <div class="icon-circle icon-blue">
                             <span class="picto-label">EE</span>
                         </div>
                     </div>
 
-                    {{-- ED â€” Espace Destination --}}
+                    {{-- ED Ã¢â‚¬â€ Espace Destination --}}
                     <div class="quick-link-item" id="quickLinkED" style="cursor:pointer;" title="{{ $tr('Espace Destination') }}">
                         <div class="icon-circle icon-blue">
                             <span class="picto-label">ED</span>
                         </div>
                     </div>
 
-                    {{-- MP â€” Marketplace --}}
+                    {{-- MP Ã¢â‚¬â€ Marketplace --}}
                     <div class="quick-link-item" id="quickLinkMP" style="cursor:pointer;" title="{{ $tr('Marketplace') }}">
                         <div class="icon-circle icon-blue">
                             <span class="picto-label">MP</span>
                         </div>
                     </div>
 
-                    {{-- Voiture â€” Location VÃ©hicule --}}
-                    <div class="quick-link-item" id="quickLinkCar" style="cursor:pointer;" title="{{ $tr('Location VÃ©hicule') }}">
+                    {{-- Voiture Ã¢â‚¬â€ Location VÃƒÂ©hicule --}}
+                    <div class="quick-link-item" id="quickLinkCar" style="cursor:pointer;" title="{{ $tr('Location VÃƒÂ©hicule') }}">
                         <div class="icon-circle icon-blue">
                             <i class="fas fa-car picto-icon"></i>
                         </div>
                     </div>
 
-                    {{-- Avion â€” Billets Avion --}}
+                    {{-- Avion Ã¢â‚¬â€ Billets Avion --}}
                     <div class="quick-link-item" id="quickLinkPlane" style="cursor:pointer;" title="{{ $tr('Billets Avion') }}">
                         <div class="icon-circle icon-blue">
                             <i class="fas fa-plane picto-icon"></i>
@@ -269,24 +269,24 @@
                     </div>
                 </div>
 
-                {{-- Logo Plan-n-go â€” dÃ©clencheur du mÃ©ga-menu Plan & GO --}}
+                {{-- Logo Plan-n-go Ã¢â‚¬â€ dÃƒÂ©clencheur du mÃƒÂ©ga-menu Plan & GO --}}
                 <div class="search-bar-v2-brand" id="planNGoTrigger" style="cursor:pointer;" title="{{ $tr('Plan & GO') }}">
                     <img src="{{ asset('plan-n-go.png') }}" alt="PLAN-N-GO" class="search-bar-v2-logo">
                 </div>
             </div>
         </div>
         @endif
-        
+
     </div>
 </section>
 
 {{-- INFO MEGA MENU - Hors de tout overflow parent pour un positionnement correct --}}
 @include('cms::web.fallback.activities.default.info-mega-menu')
 
-{{-- CATEGORIES MEGA MENU - Panel fixed, positionnÃ© par JS sous le trigger --}}
+{{-- CATEGORIES MEGA MENU - Panel fixed, positionnÃƒÂ© par JS sous le trigger --}}
 @include('cms::web.fallback.activities.default.categories-mega-menu')
 
-{{-- QUICK LINKS MEGA MENUS â€” Panels pour MP, EE, ED, Voiture, Avion, Plan & GO --}}
+{{-- QUICK LINKS MEGA MENUS Ã¢â‚¬â€ Panels pour MP, EE, ED, Voiture, Avion, Plan & GO --}}
 @include('cms::web.fallback.activities.default.hero-quick-mega-menus')
 
 <script>
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const rect = infoBtn.getBoundingClientRect();
             megaMenu.style.top = (rect.bottom + 15) + 'px';
         } else {
-            megaMenu.style.top = ''; // Laisse CSS gÃ©rer sur mobile
+            megaMenu.style.top = ''; // Laisse CSS gÃƒÂ©rer sur mobile
         }
     }
 
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isOpen) positionMegaMenu();
     });
 
-    // Gestion du survol dynamique sur desktop (avec pont temporel pour l'Ã©cart de 15px)
+    // Gestion du survol dynamique sur desktop (avec pont temporel pour l'ÃƒÂ©cart de 15px)
     let hoverTimeout;
     const handleMouseLeave = () => {
         if (window.innerWidth > 1025) {
@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     megaMenu.classList.remove('active');
                     infoBtn.classList.remove('active');
                 }
-            }, 250); // Espace de tolÃ©rance pour traverser le gap de 15px
+            }, 250); // Espace de tolÃƒÂ©rance pour traverser le gap de 15px
         }
     };
 
@@ -354,10 +354,10 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('scroll', positionMegaMenu);
 });
 
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
    Animation dactylographique du placeholder
-   Boucle : Ã©criture â†’ pause â†’ effacement
-   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+   Boucle : ÃƒÂ©criture Ã¢â€ â€™ pause Ã¢â€ â€™ effacement
+   Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 document.addEventListener('DOMContentLoaded', function() {
     const input = document.getElementById('searchBarInput');
     if (!input) return;
@@ -367,13 +367,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let phraseIdx = 0;
     let charIdx = 0;
     let isDeleting = false;
-    const typeSpeed = 70;     // ms par caractÃ¨re (Ã©criture)
-    const eraseSpeed = 40;    // ms par caractÃ¨re (effacement)
-    const holdDelay = 2000;   // pause Ã  la fin de chaque phrase
-    const startDelay = 500;   // avant de dÃ©marrer l'effacement / mot suivant
+    const typeSpeed = 70;     // ms par caractÃƒÂ¨re (ÃƒÂ©criture)
+    const eraseSpeed = 40;    // ms par caractÃƒÂ¨re (effacement)
+    const holdDelay = 2000;   // pause ÃƒÂ  la fin de chaque phrase
+    const startDelay = 500;   // avant de dÃƒÂ©marrer l'effacement / mot suivant
 
     function tick() {
-        // Stop l'animation dÃ¨s que l'utilisateur saisit quelque chose
+        // Stop l'animation dÃƒÂ¨s que l'utilisateur saisit quelque chose
         if (input.value && !input.dataset.animating) return;
 
         const phrase = phrases[phraseIdx];
@@ -397,23 +397,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // DÃ©marrer au chargement
+    // DÃƒÂ©marrer au chargement
     input.dataset.animating = '1';
     tick();
 
-    // Stopper l'animation dÃ¨s que l'utilisateur tape
+    // Stopper l'animation dÃƒÂ¨s que l'utilisateur tape
     input.addEventListener('input', function() {
         if (input.value.length > 0) {
             delete input.dataset.animating;
-            input.placeholder = @json($tr('Rechercherâ€¦'));
+            input.placeholder = @json($tr('RechercherÃ¢â‚¬Â¦'));
         }
     });
 });
 
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   Bouton mute/unmute vidÃ©o Hero
-   GÃ¨re <video> HTML5 + iframes YouTube/Vimeo
-   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+   Bouton mute/unmute vidÃƒÂ©o Hero
+   GÃƒÂ¨re <video> HTML5 + iframes YouTube/Vimeo
+   Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 document.addEventListener('DOMContentLoaded', function() {
     const btn = document.getElementById('heroSoundToggle');
     if (!btn) return;
@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setMuteState(!isMuted);
     });
 
-    // Re-synchroniser l'Ã©tat mute Ã  chaque changement de slide
+    // Re-synchroniser l'ÃƒÂ©tat mute ÃƒÂ  chaque changement de slide
     document.querySelectorAll('.carousel-dot, .hero-video-card, .carousel-nav-btn').forEach(function(el) {
         el.addEventListener('click', function() {
             setTimeout(function() {
@@ -535,10 +535,10 @@ document.addEventListener('DOMContentLoaded', function() {
     boostActiveYouTubeQuality();
 });
 
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   Fit prÃ©cis des iframes YouTube/Vimeo du Hero
-   RÃ©duit le zoom tout en Ã©vitant les bandes noires
-   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+   Fit prÃƒÂ©cis des iframes YouTube/Vimeo du Hero
+   RÃƒÂ©duit le zoom tout en ÃƒÂ©vitant les bandes noires
+   Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 document.addEventListener('DOMContentLoaded', function() {
     const VIDEO_RATIO = 16 / 9;
     const VERTICAL_FOCUS_TOP = 54;
@@ -555,7 +555,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const containerRatio = cw / ch;
 
             iframe.style.left = '50%';
-            // Favorise la zone haute de la vidÃ©o (moins de coupe en haut)
+            // Favorise la zone haute de la vidÃƒÂ©o (moins de coupe en haut)
             iframe.style.top = VERTICAL_FOCUS_TOP + '%';
             iframe.style.transform = 'translate(-50%, -50%)';
 
@@ -582,10 +582,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+/* ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
    Search-bar sticky : reste visible au scroll (comme le header)
    Garde sa position normale au chargement dans le Hero
-   Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
+   ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ */
 document.addEventListener('DOMContentLoaded', function() {
     const searchBar = document.querySelector('.hero-v2 .search-bar-v2');
     const header = document.querySelector('.header-v2');
