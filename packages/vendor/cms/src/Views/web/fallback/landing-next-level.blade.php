@@ -1400,10 +1400,6 @@ html.light .float-cta {
 
 <!-- MAP -->
 @include('cms::web.fallback.partials.landing-map-video-points')
-
-@if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
-    {!! get_slider_html($etablissement->id) !!}
-@endif
 @include('cms::web.fallback.partials.landing-media-slideshow')
 @include('cms::web.fallback.partials.landing-contact-ajax')
 

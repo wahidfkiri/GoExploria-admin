@@ -280,9 +280,6 @@
         @include('cms::web.fallback.partials.landing-working-hours')
         @include('cms::web.fallback.partials.espace-forfait.contact')
         @include('cms::web.fallback.partials.espace-forfait.partenaires')
-        @if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
-            {!! get_slider_html($etablissement->id) !!}
-        @endif
         @include('cms::web.fallback.partials.landing-media-slideshow')
         @include('cms::web.fallback.partials.landing-contact-ajax')
         @include('cms::web.fallback.partials.espace-forfait.footer')

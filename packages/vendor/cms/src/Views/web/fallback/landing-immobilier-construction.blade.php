@@ -1307,10 +1307,6 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
     </div>
   </div>
 </section>
-
-@if(is_slideshow_enabled($etablissement->id) && has_slider($etablissement->id))
-    {!! get_slider_html($etablissement->id) !!}
-@endif
 @include('cms::web.fallback.partials.landing-media-slideshow')
 @include('cms::web.fallback.partials.landing-contact-ajax')
 
