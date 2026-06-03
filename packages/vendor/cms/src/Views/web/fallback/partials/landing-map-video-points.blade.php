@@ -17,7 +17,6 @@
             'longitude' => (float) $point->longitude,
             'adresse' => trim(collect([$point->adresse, $point->ville, $point->code_postal])->filter()->implode(', ')),
             'youtube_id' => $point->youtube_id,
-            'thumbnail' => $point->thumbnail,
             'embed_url' => $point->embed_url,
         ];
     })->values();
@@ -38,12 +37,11 @@
             .cms-map-video-title{margin:0;font-size:clamp(28px,4vw,46px);line-height:1.05}
             .cms-map-video-count{color:var(--muted,rgba(255,255,255,.65));font-weight:700}
             .cms-map-video-canvas{height:520px;width:100%;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:#111;box-shadow:0 24px 60px rgba(0,0,0,.22)}
-            .cms-map-video-popup{width:310px;max-width:100%}
-            .cms-map-video-popup img{width:100%;height:142px;object-fit:cover;border-radius:12px;margin-bottom:10px;background:#111}
-            .cms-map-video-popup h4{margin:0 0 6px;color:#111;font-size:16px;line-height:1.25}
-            .cms-map-video-popup p{margin:0 0 10px;color:#555;font-size:13px;line-height:1.5}
-            .cms-map-video-popup iframe{width:100%;height:174px;border:0;border-radius:12px;background:#000}
-            .cms-map-video-marker{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#f2b705;color:#121212;border:3px solid #fff;box-shadow:0 10px 28px rgba(0,0,0,.35)}
+            .cms-map-video-popup{width:320px;max-width:100%}
+            .cms-map-video-popup h4{margin:0 0 10px;color:#111;font-size:16px;line-height:1.25}
+            .cms-map-video-popup iframe{width:100%;height:190px;border:0;border-radius:12px;background:#000}
+            .cms-map-video-marker{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;border:3px solid #fff;box-shadow:0 10px 28px rgba(0,0,0,.35)}
+            .cms-map-video-marker i{font-size:16px;line-height:1}
             @media(max-width:720px){.cms-map-video-section{padding:46px 16px}.cms-map-video-head{display:block}.cms-map-video-canvas{height:430px}}
         </style>
     @endonce
@@ -90,24 +88,63 @@
                 '"': '&quot;',
                 "'": '&#039;'
             })[char]);
+            const normalizeCategory = value => String(value || 'general')
+                .trim()
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '_')
+                .replace(/^_+|_+$/g, '') || 'general';
+            const categoryMarkerMeta = category => {
+                const key = normalizeCategory(category);
+                const map = {
+                    restaurant: { icon: 'fas fa-utensils', color: '#e53e3e' },
+                    alimentation: { icon: 'fas fa-utensils', color: '#e53e3e' },
+                    food: { icon: 'fas fa-utensils', color: '#e53e3e' },
+                    hotel: { icon: 'fas fa-bed', color: '#38a169' },
+                    hebergement: { icon: 'fas fa-bed', color: '#38a169' },
+                    tourism: { icon: 'fas fa-route', color: '#2a5bd7' },
+                    tourisme: { icon: 'fas fa-route', color: '#2a5bd7' },
+                    voyage: { icon: 'fas fa-plane', color: '#2a5bd7' },
+                    museum: { icon: 'fas fa-landmark', color: '#805ad5' },
+                    musee: { icon: 'fas fa-landmark', color: '#805ad5' },
+                    business: { icon: 'fas fa-briefcase', color: '#0f766e' },
+                    entreprise: { icon: 'fas fa-briefcase', color: '#0f766e' },
+                    automobile: { icon: 'fas fa-car', color: '#ea580c' },
+                    auto: { icon: 'fas fa-car', color: '#ea580c' },
+                    location_vehicule: { icon: 'fas fa-car', color: '#ea580c' },
+                    medical: { icon: 'fas fa-heartbeat', color: '#dc2626' },
+                    sante: { icon: 'fas fa-heartbeat', color: '#dc2626' },
+                    education: { icon: 'fas fa-graduation-cap', color: '#2563eb' },
+                    evenement: { icon: 'fas fa-calendar-alt', color: '#9333ea' },
+                    event: { icon: 'fas fa-calendar-alt', color: '#9333ea' },
+                    immobilier: { icon: 'fas fa-building', color: '#475569' },
+                    real_estate: { icon: 'fas fa-building', color: '#475569' },
+                    ecommerce: { icon: 'fas fa-shopping-bag', color: '#ca8a04' },
+                    commerce: { icon: 'fas fa-shopping-bag', color: '#ca8a04' },
+                    media: { icon: 'fas fa-video', color: '#db2777' },
+                    video: { icon: 'fas fa-video', color: '#db2777' },
+                    general: { icon: 'fas fa-map-marker-alt', color: '#f2b705' }
+                };
+
+                return map[key] || { icon: 'fas fa-map-marker-alt', color: '#f2b705' };
+            };
 
             points.forEach(point => {
                 const lat = Number(point.latitude);
                 const lng = Number(point.longitude);
+                const markerMeta = categoryMarkerMeta(point.category);
                 const icon = L.divIcon({
                     className: '',
-                    html: '<div class="cms-map-video-marker"><i class="fa-solid fa-play"></i></div>',
-                    iconSize: [38, 38],
-                    iconAnchor: [19, 38],
-                    popupAnchor: [0, -34],
+                    html: `<div class="cms-map-video-marker" style="background:${markerMeta.color}"><i class="${markerMeta.icon}"></i></div>`,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 40],
+                    popupAnchor: [0, -36],
                 });
                 const embed = point.embed_url || ('https://www.youtube.com/embed/' + point.youtube_id + '?autoplay=0&rel=0&playsinline=1');
                 const popup = `
                     <div class="cms-map-video-popup">
-                        ${point.thumbnail ? `<img src="${esc(point.thumbnail)}" alt="${esc(point.title)}" loading="lazy">` : ''}
                         <h4>${esc(point.title)}</h4>
-                        ${point.adresse ? `<p>${esc(point.adresse)}</p>` : ''}
-                        ${point.description ? `<p>${esc(point.description)}</p>` : ''}
                         <iframe src="${esc(embed)}" title="${esc(point.title)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
                     </div>
                 `;
