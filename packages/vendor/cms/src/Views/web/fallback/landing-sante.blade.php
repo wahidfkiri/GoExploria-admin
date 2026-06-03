@@ -1,4 +1,4 @@
-@php
+﻿@php
     $siteName = trim((string) (get_site_name($etablissement->id) ?: ($etablissement->name ?? 'Sante')));
     $logoUrl = $brandLogoUrl ?? get_logo_url($etablissement->id);
     $address = trim((string) ($etablissement->adresse ?? $etablissement->address ?? $etablissement->ville ?? ''));
@@ -205,6 +205,7 @@
 <body>
     @include('cms::web.fallback.activities.default.vertical-menu')
     @include('home-v2.components.Header')
+    @include('cms::web.fallback.partials.landing-cms-header')
 
     @if(is_slider_enabled($etablissement->id))
         @if(has_slider($etablissement->id))
@@ -408,5 +409,7 @@
             }
         }
     </script>
+    @include('cms::web.fallback.partials.landing-cms-footer')
+    @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

@@ -67,6 +67,113 @@ if (!function_exists('get_social_links')) {
     }
 }
 
+if (!function_exists('cms_header_footer_setting_enabled')) {
+    /**
+     * Check whether a CMS header/footer slot is explicitly enabled for an establishment.
+     */
+    function cms_header_footer_setting_enabled($etablissementId, string $key): bool
+    {
+        if (empty($etablissementId)) {
+            return false;
+        }
+
+        try {
+            $setting = \Vendor\Cms\Models\Setting::where('etablissement_id', $etablissementId)
+                ->whereIn('group', ['general', 'layout', 'header_footer', 'header', 'footer'])
+                ->where('key', $key)
+                ->orderByRaw("CASE WHEN `group` = 'general' THEN 0 WHEN `group` = 'layout' THEN 1 ELSE 2 END")
+                ->first();
+
+            if (!$setting) {
+                return false;
+            }
+
+            $value = $setting->value;
+            if (is_bool($value)) {
+                return $value;
+            }
+
+            return in_array(strtolower(trim((string) $value)), ['1', 'true', 'yes', 'on', 'enabled', 'active'], true);
+        } catch (\Throwable $e) {
+            \Log::warning('cms_header_footer_setting_enabled error: ' . $e->getMessage(), [
+                'etablissement_id' => $etablissementId,
+                'key' => $key,
+            ]);
+
+            return false;
+        }
+    }
+}
+
+if (!function_exists('is_cms_header_enabled')) {
+    function is_cms_header_enabled($etablissementId): bool
+    {
+        return cms_header_footer_setting_enabled($etablissementId, 'header_enabled');
+    }
+}
+
+if (!function_exists('is_cms_footer_enabled')) {
+    function is_cms_footer_enabled($etablissementId): bool
+    {
+        return cms_header_footer_setting_enabled($etablissementId, 'footer_enabled');
+    }
+}
+
+if (!function_exists('get_cms_header_footer_html')) {
+    /**
+     * Render the latest configured CMS header/footer content for an establishment.
+     */
+    function get_cms_header_footer_html($etablissementId, string $type): string
+    {
+        if (empty($etablissementId)) {
+            return '';
+        }
+
+        try {
+            if (!\Illuminate\Support\Facades\Schema::connection('cms')->hasTable('cms_header_footers')) {
+                return '';
+            }
+
+            $type = $type === \Vendor\Cms\Models\HeaderFooter::TYPE_FOOTER
+                ? \Vendor\Cms\Models\HeaderFooter::TYPE_FOOTER
+                : \Vendor\Cms\Models\HeaderFooter::TYPE_HEADER;
+
+            $content = \Vendor\Cms\Models\HeaderFooter::query()
+                ->where('etablissement_id', $etablissementId)
+                ->forType($type)
+                ->latest('updated_at')
+                ->first();
+
+            return $content ? $content->rendered_content : '';
+        } catch (\Throwable $e) {
+            \Log::warning('get_cms_header_footer_html error: ' . $e->getMessage(), [
+                'etablissement_id' => $etablissementId,
+                'type' => $type,
+            ]);
+
+            return '';
+        }
+    }
+}
+
+if (!function_exists('get_cms_header_html')) {
+    function get_cms_header_html($etablissementId): string
+    {
+        return is_cms_header_enabled($etablissementId)
+            ? get_cms_header_footer_html($etablissementId, \Vendor\Cms\Models\HeaderFooter::TYPE_HEADER)
+            : '';
+    }
+}
+
+if (!function_exists('get_cms_footer_html')) {
+    function get_cms_footer_html($etablissementId): string
+    {
+        return is_cms_footer_enabled($etablissementId)
+            ? get_cms_header_footer_html($etablissementId, \Vendor\Cms\Models\HeaderFooter::TYPE_FOOTER)
+            : '';
+    }
+}
+
 if (!function_exists('get_social_link')) {
     /**
      * Get a specific social media link.
@@ -453,6 +560,21 @@ if (!function_exists('get_social_settings_form')) {
 if (!function_exists('get_slider_items')) {
     function get_slider_items($etablissementId = null, $limit = 10)
     {
+        $hasRenderableSliderMedia = static function ($item): bool {
+            $type = strtolower((string) ($item->type ?? 'image')) === 'video' ? 'video' : 'image';
+            $url = trim((string) ($item->url ?? ''));
+
+            if ($url === '' || in_array(strtolower($url), ['null', 'undefined', '#'], true)) {
+                return false;
+            }
+
+            if ($type === 'video') {
+                return true;
+            }
+
+            return (bool) preg_match('/\.(jpg|jpeg|png|gif|webp|avif|svg)(\?.*)?$/i', $url);
+        };
+
         $etablissement = $etablissementId 
             ? \App\Models\Etablissement::find($etablissementId)
             : getCurrentEtablissement();
@@ -511,9 +633,9 @@ if (!function_exists('get_slider_items')) {
             }
         }
         
-        $items = $items->filter(function($item) {
-            return $item->is_active === true;
-        });
+        $items = $items->filter(function($item) use ($hasRenderableSliderMedia) {
+            return $item->is_active === true && $hasRenderableSliderMedia($item);
+        })->values();
 
         if ($items->isEmpty() && function_exists('get_slider_media')) {
             $items = collect(get_slider_media($etablissement->id))
@@ -538,8 +660,8 @@ if (!function_exists('get_slider_items')) {
                         'video_html' => null,
                     ];
                 })
-                ->filter(function ($item) {
-                    return trim((string) $item->url) !== '';
+                ->filter(function ($item) use ($hasRenderableSliderMedia) {
+                    return $hasRenderableSliderMedia($item);
                 })
                 ->values();
         }
@@ -582,7 +704,7 @@ if (!function_exists('get_slider_html')) {
         
         $sliderId = 'heroSlider_' . uniqid();
         
-        $html = '<div class="hero-slider" style="height: ' . $options['height'] . '; min-height: ' . $options['min_height'] . ';">';
+        $html = '<div class="hero-slider" style="height: ' . $options['height'] . '; min-height: ' . $options['min_height'] . '; background:#000; overflow:hidden;">';
         $html .= '<div class="swiper ' . $sliderId . '">';
         $html .= '<div class="swiper-wrapper">';
         
@@ -673,6 +795,40 @@ if ($item->type === 'video') {
         $html .= '<script>
             if (typeof Swiper !== "undefined") {
                 document.addEventListener("DOMContentLoaded", function() {
+                    const sliderRoot = document.querySelector(".' . $sliderId . '");
+                    const outerSlider = sliderRoot ? sliderRoot.closest(".hero-slider") : null;
+                    const updateRenderableSlides = function() {
+                        if (!sliderRoot || !outerSlider) {
+                            return;
+                        }
+
+                        const slides = Array.from(sliderRoot.querySelectorAll(".swiper-slide:not(.swiper-slide-duplicate)"));
+                        const hasRenderableSlide = slides.some(function(slide) {
+                            const image = slide.querySelector("img.slide-media");
+
+                            return slide.querySelector("video, iframe") || (image && image.dataset.failed !== "1");
+                        });
+
+                        if (!hasRenderableSlide) {
+                            outerSlider.style.display = "none";
+                        }
+                    };
+
+                    sliderRoot.querySelectorAll("img.slide-media").forEach(function(image) {
+                        const markFailed = function() {
+                            image.dataset.failed = "1";
+                            updateRenderableSlides();
+                        };
+
+                        image.addEventListener("error", markFailed, { once: true });
+
+                        if (image.complete && image.naturalWidth === 0) {
+                            markFailed();
+                        }
+                    });
+
+                    updateRenderableSlides();
+
                     const swiper = new Swiper(".' . $sliderId . '", {
                         loop: ' . ($options['loop'] ? 'true' : 'false') . ',
                         autoplay: { delay: ' . $options['autoplay_delay'] . ', disableOnInteraction: false },

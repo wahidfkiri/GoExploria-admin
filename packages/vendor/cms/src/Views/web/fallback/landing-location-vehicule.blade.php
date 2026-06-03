@@ -1,4 +1,4 @@
-@php
+﻿@php
     $devisLink = $devisUrl ?? route('devis');
     $siteName = get_site_name($etablissement->id) ?: ($etablissement->name ?? 'Location Vehicule');
     $siteDescription = $etablissement->getSetting('description', null, 'general')
@@ -289,6 +289,7 @@
     <main class="lv-global-wrap">
         <div class="lv-global-row row">
             <div class="lv-content">
+    @include('cms::web.fallback.partials.landing-cms-header')
 
     @if(is_slider_enabled($etablissement->id) && $heroSlides->isNotEmpty())
     <section id="hero">
@@ -363,7 +364,7 @@
                                 <img src="{{ $car['image'] }}" alt="{{ $car['name'] }}">
                             @endif
                             <span class="badge">{{ $car['badge'] }}</span>
-                            <button class="wish" type="button" onclick="toggleWish(this)">♡</button>
+                            <button class="wish" type="button" onclick="toggleWish(this)">â™¡</button>
                         </div>
                         <div class="car-body">
                             <div class="car-brand">{{ $car['brand'] }}</div>
@@ -462,7 +463,7 @@
                 <div><h4>Services</h4><ul><li><a href="#pricing">Courte duree</a></li><li><a href="#pricing">Longue duree</a></li><li><a href="#contact">Livraison</a></li><li><a href="#contact">Assistance</a></li></ul></div>
                 <div><h4>Contact</h4><ul><li><a href="tel:{{ $phoneDial }}">{{ $phone }}</a></li><li><a href="mailto:{{ $email }}">{{ $email }}</a></li><li><a href="#map">{{ \Illuminate\Support\Str::limit($address, 36) }}</a></li></ul></div>
             </div>
-            <div class="footer-bottom"><span>© {{ date('Y') }} {{ $siteName }}.</span><span><a href="#fleet">Flotte</a> · <a href="#pricing">Tarifs</a> · <a href="#contact">Reservation</a></span></div>
+            <div class="footer-bottom"><span>Â© {{ date('Y') }} {{ $siteName }}.</span><span><a href="#fleet">Flotte</a> Â· <a href="#pricing">Tarifs</a> Â· <a href="#contact">Reservation</a></span></div>
         </div>
     </footer>
     @include('cms::web.fallback.activities.default.footer')
@@ -485,7 +486,7 @@
     <script>
         let theme = localStorage.getItem('dx-theme') || 'dark';
         const themeBtn = document.getElementById('themeBtn');
-        function applyTheme(value){document.documentElement.setAttribute('data-theme', value); if(themeBtn) themeBtn.textContent = value === 'dark' ? '☀' : '☾'; localStorage.setItem('dx-theme', value);}
+        function applyTheme(value){document.documentElement.setAttribute('data-theme', value); if(themeBtn) themeBtn.textContent = value === 'dark' ? 'â˜€' : 'â˜¾'; localStorage.setItem('dx-theme', value);}
         function toggleTheme(){theme = theme === 'dark' ? 'light' : 'dark'; applyTheme(theme);}
         applyTheme(theme);
         window.addEventListener('scroll', () => document.getElementById('navbar')?.classList.toggle('solid', window.scrollY > 60));
@@ -498,9 +499,11 @@
         function filterFleet(btn, id){document.querySelectorAll('#fleet .tab').forEach(b => b.classList.remove('on')); btn.classList.add('on'); document.querySelectorAll('#carsGrid .car-card').forEach(card => card.classList.toggle('is-hidden', id !== 'all' && card.dataset.category !== id));}
         function switchMedia(btn, id){document.querySelectorAll('#gallery .tab').forEach(b => b.classList.remove('on')); btn.classList.add('on'); document.querySelectorAll('.media-panel').forEach(panel => panel.classList.remove('on')); document.getElementById('media-' + id)?.classList.add('on');}
         function toggleFaq(q){const item = q.parentElement; const wasOpen = item.classList.contains('open'); document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open')); if(!wasOpen) item.classList.add('open');}
-        function toggleWish(btn){const active = btn.classList.toggle('active'); btn.textContent = active ? '♥' : '♡';}
+        function toggleWish(btn){const active = btn.classList.toggle('active'); btn.textContent = active ? 'â™¥' : 'â™¡';}
         function searchCars(){const select = document.getElementById('fleetSelect'); const id = select?.value || 'all'; const tab = [...document.querySelectorAll('#fleet .tab')].find(b => b.getAttribute('onclick')?.includes("'" + id + "'")) || document.querySelector('#fleet .tab'); if(tab) filterFleet(tab, id); document.getElementById('fleet')?.scrollIntoView({behavior:'smooth'});}
         const today = new Date(); const start = document.getElementById('startDate'); const end = document.getElementById('endDate'); if(start) start.value = today.toISOString().split('T')[0]; if(end){const later = new Date(today); later.setDate(today.getDate() + 3); end.value = later.toISOString().split('T')[0];}
     </script>
+    @include('cms::web.fallback.partials.landing-cms-footer')
+    @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

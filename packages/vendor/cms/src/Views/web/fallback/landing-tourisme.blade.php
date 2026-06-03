@@ -1,4 +1,4 @@
-@php
+﻿@php
     $siteName = trim((string) (get_site_name($etablissement->id) ?: ($etablissement->name ?? 'Voyage')));
     $siteDescription = trim((string) (
         $etablissement->getSetting('site_description', null, 'general')
@@ -210,6 +210,7 @@
 <body>
     @include('cms::web.fallback.activities.voyage.vertical-menu')
     @include('home-v2.components.Header')
+    @include('cms::web.fallback.partials.landing-cms-header')
 
     @if(is_slider_enabled($etablissement->id))
         @if(has_slider($etablissement->id))
@@ -261,8 +262,8 @@
                         'cmsLandingProducts' => $cmsLandingProducts,
                         'cmsProductsLimit' => 8,
                         'cmsProductsSectionId' => 'offres-tourisme',
-                        'cmsProductsTitle' => 'Offres et expériences disponibles',
-                        'cmsProductsSubtitle' => 'Les produits et forfaits publiés par cet établissement sont affichés automatiquement.'
+                        'cmsProductsTitle' => 'Offres et expÃ©riences disponibles',
+                        'cmsProductsSubtitle' => 'Les produits et forfaits publiÃ©s par cet Ã©tablissement sont affichÃ©s automatiquement.'
                     ])
                 </div>
             </section>
@@ -273,7 +274,7 @@
                 <div class="container">
                     <div class="tt-head">
                         <div>
-                            <div class="tt-kicker">Actualités</div>
+                            <div class="tt-kicker">ActualitÃ©s</div>
                         </div>
                     </div>
                     <div class="tt-blog-grid">
@@ -305,14 +306,14 @@
                 <div class="tt-head">
                     <div>
                         <div class="tt-kicker">Contact</div>
-                        <h2 class="tt-title">Préparer une demande</h2>
+                        <h2 class="tt-title">PrÃ©parer une demande</h2>
                     </div>
-                    <p class="tt-sub">Envoyez votre demande directement à l’établissement. Le message est enregistré dans les contacts CMS.</p>
+                    <p class="tt-sub">Envoyez votre demande directement Ã  lâ€™Ã©tablissement. Le message est enregistrÃ© dans les contacts CMS.</p>
                 </div>
                 <div class="tt-contact-grid">
                     <aside class="tt-info">
                         <div class="tt-info-list">
-                            @if($phone)<div class="tt-info-item"><i class="fa-solid fa-phone"></i><div><strong>Téléphone</strong><a href="tel:{{ $phoneHref }}">{{ $phone }}</a></div></div>@endif
+                            @if($phone)<div class="tt-info-item"><i class="fa-solid fa-phone"></i><div><strong>TÃ©lÃ©phone</strong><a href="tel:{{ $phoneHref }}">{{ $phone }}</a></div></div>@endif
                             @if($email)<div class="tt-info-item"><i class="fa-solid fa-envelope"></i><div><strong>Courriel</strong><a href="mailto:{{ $email }}">{{ $email }}</a></div></div>@endif
                             @if($address)<div class="tt-info-item"><i class="fa-solid fa-location-dot"></i><div><strong>Adresse</strong><span>{{ $address }}</span></div></div>@endif
                             @if(!empty($workingHours))<div class="tt-info-item"><i class="fa-solid fa-clock"></i><div><strong>Horaire</strong><span>@foreach($workingHours as $row){{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}@if(!$loop->last)<br>@endif @endforeach</span></div></div>@endif
@@ -328,18 +329,18 @@
                     <form class="tt-form" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_tourisme">
                         @csrf
                         <div class="tt-form-row">
-                            <div class="tt-field"><label>Prénom</label><input name="first_name" type="text" required></div>
+                            <div class="tt-field"><label>PrÃ©nom</label><input name="first_name" type="text" required></div>
                             <div class="tt-field"><label>Nom</label><input name="last_name" type="text"></div>
                         </div>
                         <div class="tt-form-row">
                             <div class="tt-field"><label>Courriel</label><input name="email" type="email" required></div>
-                            <div class="tt-field"><label>Téléphone</label><input name="phone" type="tel"></div>
+                            <div class="tt-field"><label>TÃ©lÃ©phone</label><input name="phone" type="tel"></div>
                         </div>
                         <div class="tt-form-row">
-                            <div class="tt-field"><label>Type de demande</label><select name="service"><option>Forfait ou circuit</option><option>Hébergement</option><option>Activité touristique</option><option>Groupe ou événement</option><option>Autre</option></select></div>
-                            <div class="tt-field"><label>Date souhaitée</label><input name="date" type="date"></div>
+                            <div class="tt-field"><label>Type de demande</label><select name="service"><option>Forfait ou circuit</option><option>HÃ©bergement</option><option>ActivitÃ© touristique</option><option>Groupe ou Ã©vÃ©nement</option><option>Autre</option></select></div>
+                            <div class="tt-field"><label>Date souhaitÃ©e</label><input name="date" type="date"></div>
                         </div>
-                        <div class="tt-field"><label>Message</label><textarea name="message" required placeholder="Décrivez votre besoin, vos dates, le nombre de voyageurs ou vos questions."></textarea></div>
+                        <div class="tt-field"><label>Message</label><textarea name="message" required placeholder="DÃ©crivez votre besoin, vos dates, le nombre de voyageurs ou vos questions."></textarea></div>
                         <button class="tt-submit" type="submit">Envoyer la demande <i class="fa-solid fa-paper-plane"></i></button>
                     </form>
                 </div>
@@ -357,7 +358,7 @@
     <footer class="tt-footer">
         <div class="container">
             <strong>{{ $siteName }}</strong>
-            <span>© {{ date('Y') }} · Landing tourisme dynamique</span>
+            <span>Â© {{ date('Y') }} Â· Landing tourisme dynamique</span>
         </div>
     </footer>
 
@@ -407,5 +408,7 @@
             }
         }
     </script>
+    @include('cms::web.fallback.partials.landing-cms-footer')
+    @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

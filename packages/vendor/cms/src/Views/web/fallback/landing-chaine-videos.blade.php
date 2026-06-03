@@ -1,4 +1,4 @@
-@php
+﻿@php
     $siteName = trim((string) ($siteName ?? 'GoExploria Chaine videos'));
     $siteDescription = trim((string) ($siteDescription ?? ''));
     $videoSearchUrl = $videoSearchUrl ?? (\Illuminate\Support\Facades\Route::has('cms.videos.search') ? route('cms.videos.search') : url('/chaine-videos/search'));
@@ -162,6 +162,7 @@
     @include('home-v2.components.Header')
 
     <main class="vh-page">
+    @include('cms::web.fallback.partials.landing-cms-header')
         <section class="hero">
             <div class="hero-text">
                 <div class="hero-label"><span></span>{{ $siteName }}</div>
@@ -617,5 +618,7 @@
         renderChannels();
         renderGrid();
     </script>
+    @include('cms::web.fallback.partials.landing-cms-footer')
+    @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

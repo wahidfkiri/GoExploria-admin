@@ -1125,6 +1125,7 @@ html.light .float-cta {
 </div>
 
 <!-- HERO -->
+    @include('cms::web.fallback.partials.landing-cms-header')
 @if(is_slider_enabled($etablissement->id))
 @if(has_slider($etablissement->id))
 {!! get_slider_html($etablissement->id) !!}
@@ -2638,5 +2639,7 @@ function handleForm(e) {
   return false;
 }
 </script>
+    @include('cms::web.fallback.partials.landing-cms-footer')
+    @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

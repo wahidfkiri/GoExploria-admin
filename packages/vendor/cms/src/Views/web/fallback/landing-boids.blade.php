@@ -1966,6 +1966,7 @@
 
                         </ul>
                     </article>
+    @include('cms::web.fallback.partials.landing-cms-header')
 
                     @if(is_slider_enabled($etablissement->id))
                     <article class="boids-section boids-hero-embed" id="section-hero">
@@ -2574,5 +2575,7 @@
             }
         });
     </script>
+    @include('cms::web.fallback.partials.landing-cms-footer')
+    @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

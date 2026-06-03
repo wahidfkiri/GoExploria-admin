@@ -895,6 +895,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 </div>
 
 <!-- ==================== HERO ==================== -->
+    @include('cms::web.fallback.partials.landing-cms-header')
 @if(is_slider_enabled($etablissement->id))
 @if(has_slider($etablissement->id))
 {!! get_slider_html($etablissement->id) !!}
@@ -1659,6 +1660,8 @@ const statsSection=document.getElementById('stats');
 if(statsSection)statsObs.observe(statsSection);
 window.addEventListener('load', initImmoMap);
 </script>
+    @include('cms::web.fallback.partials.landing-cms-footer')
+    @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>
 

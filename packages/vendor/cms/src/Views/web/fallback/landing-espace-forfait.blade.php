@@ -246,6 +246,7 @@
     @include('home-v2.components.Header')
     <main class="tl-page">
         @include('cms::web.fallback.partials.espace-forfait.nav')
+    @include('cms::web.fallback.partials.landing-cms-header')
         @if(is_slider_enabled($etablissement->id))
             @if(has_slider($etablissement->id))
                 {!! get_slider_html($etablissement->id) !!}
@@ -292,5 +293,7 @@
     <script src="{{ asset('js/home-v2/mega-menu.js') }}"></script>
     <script src="{{ asset('js/home-v2/services-mega-menu-v2.js') }}"></script>
     @include('cms::web.fallback.partials.espace-forfait.scripts')
+    @include('cms::web.fallback.partials.landing-cms-footer')
+    @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>
