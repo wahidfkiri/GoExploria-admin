@@ -153,7 +153,7 @@
                         $youtubeId = $slide['youtube_id'] ?? null;
                         $vimeoId = $slide['vimeo_id'] ?? null;
                         $youtubeSrc = $youtubeId
-                            ? 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&loop=1&playlist=' . $youtubeId . '&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1'
+                            ? 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&loop=1&playlist=' . $youtubeId . '&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&vq=hd1080&hd=1'
                             : null;
                         $vimeoSrc = $vimeoId
                             ? 'https://player.vimeo.com/video/' . $vimeoId . '?autoplay=1&muted=1&loop=1&background=1'
