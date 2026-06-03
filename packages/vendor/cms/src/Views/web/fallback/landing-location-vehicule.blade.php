@@ -304,7 +304,11 @@
                     <div class="swiper-slide">
                         <div class="h-slide">
                             @if(!empty($slide['embed']))
-                                @php($slideEmbed = $slide['embed'] . (str_contains((string) $slide['embed'], '?') ? '&' : '?') . 'autoplay=1&mute=1&muted=1&playsinline=1')
+                                @php
+                                    $slideEmbed = $slide['embed']
+                                        . (str_contains((string) $slide['embed'], '?') ? '&' : '?')
+                                        . 'autoplay=1&mute=1&muted=1&playsinline=1';
+                                @endphp
                                 <iframe src="{{ $slideEmbed }}" title="{{ $slide['title'] }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>
                             @elseif(($slide['type'] ?? 'image') === 'video' && !empty($slide['media_url']))
                                 <video src="{{ $slide['media_url'] }}" autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
