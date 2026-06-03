@@ -153,7 +153,20 @@
                         $youtubeId = $slide['youtube_id'] ?? null;
                         $vimeoId = $slide['vimeo_id'] ?? null;
                         $youtubeSrc = $youtubeId
-                            ? 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&loop=1&playlist=' . $youtubeId . '&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&vq=hd1080&hd=1'
+                            ? 'https://www.youtube.com/embed/' . $youtubeId . '?' . http_build_query([
+                                'autoplay' => 1,
+                                'mute' => 1,
+                                'loop' => 1,
+                                'playlist' => $youtubeId,
+                                'controls' => 0,
+                                'showinfo' => 0,
+                                'rel' => 0,
+                                'modestbranding' => 1,
+                                'iv_load_policy' => 3,
+                                'playsinline' => 1,
+                                'vq' => 'hd1080',
+                                'hd' => 1,
+                            ], '', '&', PHP_QUERY_RFC3986)
                             : null;
                         $vimeoSrc = $vimeoId
                             ? 'https://player.vimeo.com/video/' . $vimeoId . '?autoplay=1&muted=1&loop=1&background=1'
@@ -164,11 +177,11 @@
                     <div class="swiper-slide">
                         <div class="go-hero-media" @if(!empty($slide['poster'])) style="background-image:url('{{ $slide['poster'] }}')" @endif>
                             @if($isVideo && $youtubeSrc)
-                                <iframe class="go-hero-youtube" src="{{ $youtubeSrc }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="{{ $loop->first ? 'eager' : 'lazy' }}"></iframe>
+                                <iframe class="go-hero-youtube go-hero-deferred-frame" @if($loop->first) src="{{ $youtubeSrc }}" @endif data-src="{{ $youtubeSrc }}" data-youtube-id="{{ $youtubeId }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="{{ $loop->first ? 'eager' : 'lazy' }}"></iframe>
                             @elseif($isVideo && $vimeoSrc)
-                                <iframe class="go-hero-youtube" src="{{ $vimeoSrc }}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="{{ $loop->first ? 'eager' : 'lazy' }}"></iframe>
+                                <iframe class="go-hero-youtube go-hero-deferred-frame" @if($loop->first) src="{{ $vimeoSrc }}" @endif data-src="{{ $vimeoSrc }}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="{{ $loop->first ? 'eager' : 'lazy' }}"></iframe>
                             @elseif($isVideo && !empty($slide['media']))
-                                <video class="go-hero-local-video" autoplay muted loop playsinline preload="{{ $loop->first ? 'auto' : 'metadata' }}" @if(!empty($slide['poster'])) poster="{{ $slide['poster'] }}" @endif>
+                                <video class="go-hero-local-video" @if($loop->first) autoplay @endif muted loop playsinline preload="{{ $loop->first ? 'auto' : 'metadata' }}" @if(!empty($slide['poster'])) poster="{{ $slide['poster'] }}" @endif>
                                     <source src="{{ $slide['media'] }}" type="video/mp4">
                                 </video>
                             @elseif(!empty($slide['media']))
@@ -858,9 +871,37 @@ document.addEventListener('DOMContentLoaded', function () {
     const heroSwiperEl = root.querySelector('.hero-swiper');
     if (!heroSwiperEl) return;
 
+    function syncHeroMedia(activeIndex) {
+        const slides = Array.from(root.querySelectorAll('.hero-swiper > .swiper-wrapper > .swiper-slide'));
+
+        slides.forEach(function(slide, index) {
+            const isActive = index === activeIndex;
+
+            slide.querySelectorAll('.go-hero-deferred-frame').forEach(function(frame) {
+                const nextSrc = frame.dataset.src || '';
+                if (isActive && nextSrc && frame.getAttribute('src') !== nextSrc) {
+                    frame.setAttribute('src', nextSrc);
+                }
+
+                if (!isActive && frame.getAttribute('src')) {
+                    frame.removeAttribute('src');
+                }
+            });
+
+            slide.querySelectorAll('.go-hero-local-video').forEach(function(video) {
+                if (isActive) {
+                    video.play().catch(function() {});
+                } else {
+                    video.pause();
+                }
+            });
+        });
+    }
+
     const heroSlideDelayMs = 30000;
     const swiper = new Swiper(heroSwiperEl, {
-        loop: {{ $heroSlides->count() > 1 ? 'true' : 'false' }},
+        loop: false,
+        rewind: {{ $heroSlides->count() > 1 ? 'true' : 'false' }},
         autoplay: {
             delay: heroSlideDelayMs,
             disableOnInteraction: false,
@@ -903,16 +944,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     swiper.on('slideChange', function () {
         thumbnails.forEach(function (thumb, index) {
-            thumb.classList.toggle('active', index === swiper.realIndex);
+            thumb.classList.toggle('active', index === swiper.activeIndex);
         });
+        syncHeroMedia(swiper.activeIndex);
         if (thumbsSwiper) {
-            thumbsSwiper.slideTo(swiper.realIndex);
+            thumbsSwiper.slideTo(swiper.activeIndex);
         }
     });
 
     thumbnails.forEach(function (thumb, index) {
         thumb.addEventListener('click', function () {
-            swiper.slideToLoop(index);
+            swiper.slideTo(index);
             if (thumbsSwiper) {
                 thumbsSwiper.slideTo(index);
             }
@@ -922,6 +964,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    syncHeroMedia(swiper.activeIndex || 0);
 });
 
 document.addEventListener('DOMContentLoaded', function() {
