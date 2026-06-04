@@ -956,6 +956,28 @@ html.light .float-cta {
             </div>
             <span class="template-cta">Voir ce template</span>
           </a>
+          <a href="{{ asset('templates/next-level/garage-automobile.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=500&q=80" alt="Garage automobile">
+                <div class="template-icon"><i class="fas fa-screwdriver-wrench" aria-hidden="true"></i></div>
+              </div>
+              <h4>Garage automobile</h4>
+              <p>Atelier, réparations, entretien, diagnostic et prise de rendez-vous pour services auto.</p>
+            </div>
+            <span class="template-cta">Voir ce template</span>
+          </a>
+          <a href="{{ asset('templates/next-level/garage-reparation-auto.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=500&q=80" alt="Garage réparation automobile">
+                <div class="template-icon"><i class="fas fa-car-burst" aria-hidden="true"></i></div>
+              </div>
+              <h4>Garage réparation auto</h4>
+              <p>Services mécaniques, entretien, pneus, diagnostic et suivi client pour atelier auto.</p>
+            </div>
+            <span class="template-cta">Voir ce template</span>
+          </a>
           <a href="{{ asset('templates/next-level/media-news.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
             <div>
               <div class="template-media">
