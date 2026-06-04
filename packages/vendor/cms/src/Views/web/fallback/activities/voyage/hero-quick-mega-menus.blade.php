@@ -1,8 +1,8 @@
 ﻿{{-- =================================================================
-     HERO QUICK MEGA MENUS â€” 6 panels dynamiques
-     MÃªme logique que CategoriesMegaMenu (iT / iB) :
+     HERO QUICK MEGA MENUS — 6 panels dynamiques
+     Même logique que CategoriesMegaMenu (iT / iB) :
        where('name', 'like', '%mot%') sur CategorieType
-       â†’ categories() actives â†’ activities() actives.
+       → categories() actives → activities() actives.
      ================================================================= --}}
 
 @php(ob_start());@endphp
@@ -32,11 +32,11 @@
             'title'   => 'Espace Destination',
         ],
         [
-            'keyword' => 'vÃ©hicule',
+            'keyword' => 'véhicule',
             'trigger' => 'quickLinkCar',
             'panel'   => 'hqmCar',
             'icon'    => 'fas fa-car-side',
-            'title'   => 'Location VÃ©hicule',
+            'title'   => 'Location Véhicule',
         ],
         [
             'keyword' => 'avion',
@@ -58,7 +58,7 @@
         $q->where('is_active', true)->orderBy('name');
     };
 
-    // Pour chaque panel, rÃ©cupÃ©rer le CategorieType correspondant par mot-clÃ©
+    // Pour chaque panel, récupérer le CategorieType correspondant par mot-clé
     $hqmPanels = [];
     foreach ($hqmConfig as $panel) {
         $kw = $panel['keyword'];
@@ -76,7 +76,7 @@
         $hqmPanels[] = $panel;
     }
 
-    // PrÃ©-calculÃ© pour @json() (Ã©vite un array_map inline qui fait planter le parser Blade)
+    // Pré-calculé pour @json() (évite un array_map inline qui fait planter le parser Blade)
     $hqmJsInit = array_map(function ($p) {
         return [
             'trigger' => $p['trigger'],
@@ -103,7 +103,7 @@
                     <span class="cat-mega-cat-count">{{ $cat->activities->count() }}</span>
                 </a>
             @empty
-                <div class="cat-mega-empty">Aucune catÃ©gorie active</div>
+                <div class="cat-mega-empty">Aucune catégorie active</div>
             @endforelse
         </div>
         <div class="cat-mega-right">
@@ -116,7 +116,7 @@
                                 <span class="cat-mega-act-dot"></span>{{ $act->name }}
                             </a>
                         @empty
-                            <div class="cat-mega-empty">Aucune activitÃ©</div>
+                            <div class="cat-mega-empty">Aucune activité</div>
                         @endforelse
                     </div>
                 @endforeach
@@ -125,9 +125,9 @@
                 <div class="cat-mega-footer">
                     <a href="{{ route('category.show', $panel['cats']->first()->slug ?? $panel['cats']->first()->id) }}"
                        class="cat-mega-view-all" id="{{ $panel['panel'] }}-viewAll">
-                        Voir toutes les activitÃ©s <i class="fas fa-arrow-right" style="font-size:9px;margin-left:2px"></i>
+                        Voir toutes les activités <i class="fas fa-arrow-right" style="font-size:9px;margin-left:2px"></i>
                     </a>
-                    <a href="{{ route('categories.index') }}" class="cat-mega-view-all-cats">Toutes les catÃ©gories</a>
+                    <a href="{{ route('categories.index') }}" class="cat-mega-view-all-cats">Toutes les catégories</a>
                 </div>
             @endif
         </div>
@@ -135,7 +135,7 @@
 @endforeach
 
 <script>
-/* RÃ©utilise initCatMegaPanel() dÃ©fini dans CategoriesMegaMenu */
+/* Réutilise initCatMegaPanel() défini dans CategoriesMegaMenu */
 (function () {
     function bootHqm() {
         if (typeof window.initCatMegaPanel !== 'function') {

@@ -60,11 +60,11 @@
     $fallbackImages = collect([
         ['thumbnail' => 'https://images.pexels.com/photos/3296434/pexels-photo-3296434.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Comptoir de produits frais'],
         ['thumbnail' => 'https://images.pexels.com/photos/566345/pexels-photo-566345.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Fruits de mer'],
-        ['thumbnail' => 'https://images.pexels.com/photos/3655916/pexels-photo-3655916.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Saumon fumÃ© artisanal'],
-        ['thumbnail' => 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Ã‰picerie fine'],
+        ['thumbnail' => 'https://images.pexels.com/photos/3655916/pexels-photo-3655916.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Saumon fumé artisanal'],
+        ['thumbnail' => 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Épicerie fine'],
         ['thumbnail' => 'https://images.pexels.com/photos/4397919/pexels-photo-4397919.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Produits naturels'],
         ['thumbnail' => 'https://images.pexels.com/photos/6249501/pexels-photo-6249501.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Coffrets gourmands'],
-        ['thumbnail' => 'https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Plats prÃ©parÃ©s'],
+        ['thumbnail' => 'https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Plats préparés'],
         ['thumbnail' => 'https://images.pexels.com/photos/1295138/pexels-photo-1295138.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Approvisionnement local'],
     ]);
 
@@ -197,25 +197,25 @@
         ->values();
 
     $productCards = [
-        ['tag' => 'Arrivage', 'title' => 'Poissons frais', 'desc' => 'SÃ©lection quotidienne, conseils de cuisson et dÃ©coupes sur demande.', 'price' => '18,95 $ / lb', 'image' => $gallery->get(0)['thumbnail'] ?? $fallbackImages->get(0)['thumbnail']],
-        ['tag' => 'Signature', 'title' => 'Fruits de mer', 'desc' => 'HuÃ®tres, crevettes et plateaux prÃªts Ã  servir pour vos Ã©vÃ©nements.', 'price' => 'Ã€ partir de 29 $', 'image' => $gallery->get(1)['thumbnail'] ?? $fallbackImages->get(1)['thumbnail']],
-        ['tag' => 'Maison', 'title' => 'Fumoir artisanal', 'desc' => 'Saumon fumÃ©, marinades et spÃ©cialitÃ©s prÃ©parÃ©es avec soin.', 'price' => '14,50 $ / portion', 'image' => $gallery->get(2)['thumbnail'] ?? $fallbackImages->get(2)['thumbnail']],
-        ['tag' => 'Terroir', 'title' => 'Ã‰picerie fine', 'desc' => 'Sauces, conserves, condiments, produits locaux et idÃ©es cadeaux.', 'price' => 'DÃ¨s 8,95 $', 'image' => $gallery->get(3)['thumbnail'] ?? $fallbackImages->get(3)['thumbnail']],
-        ['tag' => 'SantÃ©', 'title' => 'Produits naturels', 'desc' => 'Options bio, sans gluten et recettes Ã©quilibrÃ©es pour le quotidien.', 'price' => 'DÃ¨s 6,50 $', 'image' => $gallery->get(4)['thumbnail'] ?? $fallbackImages->get(4)['thumbnail']],
-        ['tag' => 'Cadeau', 'title' => 'Coffrets gourmands', 'desc' => 'Coffrets personnalisÃ©s pour clients, employÃ©s et occasions spÃ©ciales.', 'price' => 'Ã€ partir de 39 $', 'image' => $gallery->get(5)['thumbnail'] ?? $fallbackImages->get(5)['thumbnail']],
+        ['tag' => 'Arrivage', 'title' => 'Poissons frais', 'desc' => 'Sélection quotidienne, conseils de cuisson et découpes sur demande.', 'price' => '18,95 $ / lb', 'image' => $gallery->get(0)['thumbnail'] ?? $fallbackImages->get(0)['thumbnail']],
+        ['tag' => 'Signature', 'title' => 'Fruits de mer', 'desc' => 'Huîtres, crevettes et plateaux prêts à servir pour vos événements.', 'price' => 'À partir de 29 $', 'image' => $gallery->get(1)['thumbnail'] ?? $fallbackImages->get(1)['thumbnail']],
+        ['tag' => 'Maison', 'title' => 'Fumoir artisanal', 'desc' => 'Saumon fumé, marinades et spécialités préparées avec soin.', 'price' => '14,50 $ / portion', 'image' => $gallery->get(2)['thumbnail'] ?? $fallbackImages->get(2)['thumbnail']],
+        ['tag' => 'Terroir', 'title' => 'Épicerie fine', 'desc' => 'Sauces, conserves, condiments, produits locaux et idées cadeaux.', 'price' => 'Dès 8,95 $', 'image' => $gallery->get(3)['thumbnail'] ?? $fallbackImages->get(3)['thumbnail']],
+        ['tag' => 'Santé', 'title' => 'Produits naturels', 'desc' => 'Options bio, sans gluten et recettes équilibrées pour le quotidien.', 'price' => 'Dès 6,50 $', 'image' => $gallery->get(4)['thumbnail'] ?? $fallbackImages->get(4)['thumbnail']],
+        ['tag' => 'Cadeau', 'title' => 'Coffrets gourmands', 'desc' => 'Coffrets personnalisés pour clients, employés et occasions spéciales.', 'price' => 'À partir de 39 $', 'image' => $gallery->get(5)['thumbnail'] ?? $fallbackImages->get(5)['thumbnail']],
     ];
 
     $reviewCards = collect($reviews ?? [])->take(4)->map(fn ($review) => [
-        'text' => data_get($review, 'comment') ?: data_get($review, 'text') ?: 'Excellent service et trÃ¨s beaux produits.',
+        'text' => data_get($review, 'comment') ?: data_get($review, 'text') ?: 'Excellent service et très beaux produits.',
         'author' => data_get($review, 'author') ?: data_get($review, 'name') ?: 'Client satisfait',
     ])->values();
 
     if ($reviewCards->isEmpty()) {
         $reviewCards = collect([
-            ['text' => 'Produits trÃ¨s frais, Ã©quipe chaleureuse et conseils parfaits pour recevoir Ã  la maison.', 'author' => 'Marie-Claude Â· Google'],
-            ['text' => 'Belle prÃ©sentation, commandes rapides et spÃ©cialitÃ©s locales vraiment savoureuses.', 'author' => 'Jean-FranÃ§ois Â· Facebook'],
-            ['text' => 'Un commerce de confiance pour les plateaux, le poisson frais et les idÃ©es cadeaux.', 'author' => 'Sophie Â· Cliente fidÃ¨le'],
-            ['text' => 'Service attentionnÃ©, boutique propre et sÃ©lection gourmande qui donne envie de revenir.', 'author' => 'Karim Â· Avis client'],
+            ['text' => 'Produits très frais, équipe chaleureuse et conseils parfaits pour recevoir à la maison.', 'author' => 'Marie-Claude · Google'],
+            ['text' => 'Belle présentation, commandes rapides et spécialités locales vraiment savoureuses.', 'author' => 'Jean-François · Facebook'],
+            ['text' => 'Un commerce de confiance pour les plateaux, le poisson frais et les idées cadeaux.', 'author' => 'Sophie · Cliente fidèle'],
+            ['text' => 'Service attentionné, boutique propre et sélection gourmande qui donne envie de revenir.', 'author' => 'Karim · Avis client'],
         ]);
     }
 
@@ -1273,7 +1273,7 @@
             overflow: hidden;
         }
         #produits.food-section::before {
-            content: "MARCHÃ‰";
+            content: "MARCHÉ";
             position: absolute;
             font-family: 'Playfair Display', serif;
             font-size: 18vw;
@@ -1628,7 +1628,7 @@
                             @endforeach
                         </div>
                         <div class="food-hero-nav">
-                            <button type="button" id="foodHeroPrev" aria-label="Slide prÃ©cÃ©dente"><i class="fa-solid fa-arrow-left"></i></button>
+                            <button type="button" id="foodHeroPrev" aria-label="Slide précédente"><i class="fa-solid fa-arrow-left"></i></button>
                             <button type="button" id="foodHeroNext" aria-label="Slide suivante"><i class="fa-solid fa-arrow-right"></i></button>
                         </div>
                     </section>
@@ -1645,7 +1645,7 @@
                     <section class="food-section food-section-pad" id="produits">
                         <span class="food-kicker">Produits</span>
                         <h2 class="food-title">Comptoirs et produits <em>vedettes</em></h2>
-                        <p class="food-copy">Une grille commerciale inspirÃ©e du design sÃ©lectionnÃ© pour prÃ©senter prix, catÃ©gories, images et textes courts.</p>
+                        <p class="food-copy">Une grille commerciale inspirée du design sélectionné pour présenter prix, catégories, images et textes courts.</p>
                         <div class="food-product-grid">
                             @foreach($productCards as $product)
                                 <article class="food-product-card">
@@ -1665,8 +1665,8 @@
                     @include('cms::web.fallback.partials.establishment-products', [
                         'etablissement' => $etablissement,
                         'devisLink' => $devisLink,
-                        'cmsProductsTitle' => "Produits Ã  vendre de l'Ã©tablissement",
-                        'cmsProductsSubtitle' => "Catalogue connectÃ© au CMS : produits publics, disponibles et associÃ©s Ã  cet Ã©tablissement.",
+                        'cmsProductsTitle' => "Produits à vendre de l'établissement",
+                        'cmsProductsSubtitle' => "Catalogue connecté au CMS : produits publics, disponibles et associés à cet établissement.",
                         'cmsProductsSectionId' => 'produits',
                     ])
 
@@ -1683,8 +1683,8 @@
                     @if(is_blog_enabled($etablissement->id) && $foodBlogPosts->isNotEmpty())
                         <section class="food-section food-section-pad" id="blogs">
                             <span class="food-kicker">Blog</span>
-                            <h2 class="food-title">ActualitÃ©s et conseils <em>gourmands</em></h2>
-                            <p class="food-copy">Articles publiÃ©s par {{ $siteName }}.</p>
+                            <h2 class="food-title">Actualités et conseils <em>gourmands</em></h2>
+                            <p class="food-copy">Articles publiés par {{ $siteName }}.</p>
                             <div class="food-blog-grid">
                                 @foreach($foodBlogPosts as $post)
                                     @php
@@ -1701,7 +1701,7 @@
                                             <div class="food-blog-meta">
                                                 <span>{{ data_get($post, 'tag') ?: 'Blog' }}</span>
                                                 @if(data_get($post, 'date'))
-                                                    <span>â€¢</span>
+                                                    <span>•</span>
                                                     <span>{{ data_get($post, 'date') }}</span>
                                                 @endif
                                             </div>
@@ -1723,25 +1723,25 @@
                                 <span class="food-kicker">Contact</span>
                                 <h2 class="food-title">Planifiez une commande ou une demande de devis</h2>
                                 <p class="food-copy">{{ $address }}</p>
-                                @if($phone)<p><strong>TÃ©lÃ©phone :</strong> <a href="tel:{{ preg_replace('/\s+/', '', $phone) }}">{{ $phone }}</a></p>@endif
+                                @if($phone)<p><strong>Téléphone :</strong> <a href="tel:{{ preg_replace('/\s+/', '', $phone) }}">{{ $phone }}</a></p>@endif
                                 @if($email)<p><strong>Courriel :</strong> <a href="mailto:{{ $email }}">{{ $email }}</a></p>@endif
                                 <form class="food-form" id="foodContactForm" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_commerce_alimentaire">
                                     @csrf
                                     <div class="food-form-row">
-                                        <input name="first_name" placeholder="PrÃ©nom" required>
+                                        <input name="first_name" placeholder="Prénom" required>
                                         <input name="last_name" placeholder="Nom">
                                     </div>
                                     <div class="food-form-row">
                                         <input name="email" type="email" placeholder="Courriel" required>
-                                        <input name="phone" placeholder="TÃ©lÃ©phone">
+                                        <input name="phone" placeholder="Téléphone">
                                     </div>
                                     <select name="service">
                                         <option>Produits frais</option>
                                         <option>Plateaux et coffrets</option>
-                                        <option>Commande spÃ©ciale</option>
+                                        <option>Commande spéciale</option>
                                         <option>Demande de partenariat</option>
                                     </select>
-                                    <textarea name="message" placeholder="DÃ©crivez votre besoin" required></textarea>
+                                    <textarea name="message" placeholder="Décrivez votre besoin" required></textarea>
                                     <button class="food-btn food-btn-primary" type="submit">Envoyer ma demande</button>
                                 </form>
                             </div>
@@ -1846,7 +1846,7 @@
                             width="320"
                             height="180"
                             src="${videoUrl}"
-                            title="VidÃ©o Ã©tablissement"
+                            title="Vidéo établissement"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen

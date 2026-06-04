@@ -851,7 +851,7 @@
         $activityViewFolder = 'default';
         if (str_contains($activityNamesForViews, 'restaurant') || str_contains($activityNamesForViews, 'alimentation') || str_contains($activityNamesForViews, 'cuisine')) {
             $activityViewFolder = 'restaurant';
-        } elseif (str_contains($activityNamesForViews, 'hotel') || str_contains($activityNamesForViews, 'hÃ©bergement') || str_contains($activityNamesForViews, 'hebergement')) {
+        } elseif (str_contains($activityNamesForViews, 'hotel') || str_contains($activityNamesForViews, 'hébergement') || str_contains($activityNamesForViews, 'hebergement')) {
             $activityViewFolder = 'hotel';
         } elseif (str_contains($activityNamesForViews, 'voyage') || str_contains($activityNamesForViews, 'tourisme') || str_contains($activityNamesForViews, 'forfait')) {
             $activityViewFolder = 'voyage';
@@ -891,40 +891,40 @@
         $eventCards = [
             [
                 'date' => '15-24 JUIN',
-                'title' => 'Festival d\'Ã©tÃ© de QuÃ©bec',
-                'desc' => 'Le plus grand festival extÃ©rieur en AmÃ©rique du Nord, avec des artistes internationaux.',
-                'place' => 'QuÃ©bec',
-                'cat' => 'ScÃ¨nes extÃ©rieures',
+                'title' => 'Festival d\'été de Québec',
+                'desc' => 'Le plus grand festival extérieur en Amérique du Nord, avec des artistes internationaux.',
+                'place' => 'Québec',
+                'cat' => 'Scènes extérieures',
                 'img' => 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=900&q=80',
             ],
             [
-                'date' => '28 FÃ‰V - 10 MAR',
-                'title' => 'Carnaval de QuÃ©bec',
+                'date' => '28 FÉV - 10 MAR',
+                'title' => 'Carnaval de Québec',
                 'desc' => 'Le plus grand carnaval d\'hiver au monde avec Bonhomme Carnaval comme ambassadeur.',
-                'place' => 'QuÃ©bec',
-                'cat' => 'ActivitÃ©s hivernales',
+                'place' => 'Québec',
+                'cat' => 'Activités hivernales',
                 'img' => 'https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=900&q=80',
             ],
             [
-                'date' => 'AOÃ›T 2026',
+                'date' => 'AOÛT 2026',
                 'title' => 'Osheaga',
-                'desc' => 'Festival de musique et arts contemporains sur l\'Ã®le Sainte-HÃ©lÃ¨ne Ã  MontrÃ©al.',
-                'place' => 'MontrÃ©al',
+                'desc' => 'Festival de musique et arts contemporains sur l\'île Sainte-Hélène à Montréal.',
+                'place' => 'Montréal',
                 'cat' => 'Musique & Arts',
                 'img' => 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=900&q=80',
             ],
             [
                 'date' => 'OCT 2026',
                 'title' => 'Festival des couleurs',
-                'desc' => 'CÃ©lÃ©bration de l\'automne et des magnifiques paysages colorÃ©s des Cantons-de-l\'Est.',
+                'desc' => 'Célébration de l\'automne et des magnifiques paysages colorés des Cantons-de-l\'Est.',
                 'place' => 'Cantons-de-l\'Est',
                 'cat' => 'Nature & Culture',
                 'img' => 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=900&q=80',
             ],
             [
                 'date' => 'SEPT 2026',
-                'title' => 'Festival de montgolfiÃ¨res',
-                'desc' => 'Le plus grand rassemblement de montgolfiÃ¨res au Canada Ã  Saint-Jean-sur-Richelieu.',
+                'title' => 'Festival de montgolfières',
+                'desc' => 'Le plus grand rassemblement de montgolfières au Canada à Saint-Jean-sur-Richelieu.',
                 'place' => 'Saint-Jean-sur-Richelieu',
                 'cat' => 'Aventure',
                 'img' => 'https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=900&q=80',
@@ -934,46 +934,46 @@
         $destinationCards = [
             [
                 'title' => 'Laurentides',
-                'desc' => 'Paradis du ski et des activitÃ©s de plein air, lacs et montagnes Ã  perte de vue.',
+                'desc' => 'Paradis du ski et des activités de plein air, lacs et montagnes à perte de vue.',
                 'img' => 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1000&q=80',
             ],
             [
                 'title' => 'Mont-Tremblant',
-                'desc' => 'Station de ski de renommÃ©e mondiale avec village piÃ©tonnier europÃ©en.',
+                'desc' => 'Station de ski de renommée mondiale avec village piétonnier européen.',
                 'img' => 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=1000&q=80',
             ],
             [
-                'title' => 'ÃŽles de la Madeleine',
+                'title' => 'Îles de la Madeleine',
                 'desc' => 'Archipel unique avec plages de sable fin, falaises rouges et culture acadienne.',
                 'img' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80',
             ],
             [
-                'title' => 'Vieux-QuÃ©bec',
-                'desc' => 'Seule ville fortifiÃ©e d\'AmÃ©rique du Nord, patrimoine mondial de l\'UNESCO.',
+                'title' => 'Vieux-Québec',
+                'desc' => 'Seule ville fortifiée d\'Amérique du Nord, patrimoine mondial de l\'UNESCO.',
                 'img' => 'https://images.unsplash.com/photo-1534351590666-13e3e96b5017?auto=format&fit=crop&w=1000&q=80',
             ],
         ];
 
         $reviewCardsA = [
             [
-                'title' => 'VisibilitÃ© qui progresse',
-                'rating' => 'â˜…â˜…â˜…â˜…â˜… 4.9',
-                'text' => 'La visibilitÃ© de notre entreprise a augmentÃ© rapidement. Ã‰quipe proactive et orientÃ©e rÃ©sultats.',
+                'title' => 'Visibilité qui progresse',
+                'rating' => '★★★★★ 4.9',
+                'text' => 'La visibilité de notre entreprise a augmenté rapidement. Équipe proactive et orientée résultats.',
                 'user' => 'Breana Murazik',
-                'date' => '6 dÃ©cembre 2025',
+                'date' => '6 décembre 2025',
                 'votes' => '60 votes',
             ],
             [
-                'title' => 'TrÃ¨s bon accompagnement',
-                'rating' => 'â˜…â˜…â˜…â˜…â˜† 4.3',
-                'text' => 'Leur stratÃ©gie de diffusion et la structure de page ont amÃ©liorÃ© nos conversions en quelques semaines.',
+                'title' => 'Très bon accompagnement',
+                'rating' => '★★★★☆ 4.3',
+                'text' => 'Leur stratégie de diffusion et la structure de page ont amélioré nos conversions en quelques semaines.',
                 'user' => 'Kaleb Wyman',
                 'date' => '12 janvier 2026',
                 'votes' => '55 votes',
             ],
             [
                 'title' => 'Service professionnel',
-                'rating' => 'â˜…â˜…â˜…â˜…â˜… 5.0',
+                'rating' => '★★★★★ 5.0',
                 'text' => 'Support rapide, design moderne et parcours client fluide. On recommande pour les PME touristiques.',
                 'user' => 'Ideil Larson',
                 'date' => '17 janvier 2026',
@@ -984,12 +984,12 @@
         $reviewCardsB = [
             [
                 'name' => 'Rosalina D. William',
-                'text' => 'Excellent accompagnement, nos offres sont mieux prÃ©sentÃ©es et nos prospects sont plus qualifiÃ©s.',
+                'text' => 'Excellent accompagnement, nos offres sont mieux présentées et nos prospects sont plus qualifiés.',
                 'img' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
             ],
             [
                 'name' => 'Michael J. Carter',
-                'text' => 'Nos campagnes locales performent mieux depuis la nouvelle landing. Interface claire et trÃ¨s professionnelle.',
+                'text' => 'Nos campagnes locales performent mieux depuis la nouvelle landing. Interface claire et très professionnelle.',
                 'img' => 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80',
             ],
         ];
@@ -1048,7 +1048,7 @@
             $chosen = 'default';
             if (str_contains($activityText, 'restaurant') || str_contains($activityText, 'alimentation') || str_contains($activityText, 'cuisine')) {
                 $chosen = 'restaurant';
-            } elseif (str_contains($activityText, 'hotel') || str_contains($activityText, 'hÃ©bergement') || str_contains($activityText, 'hebergement')) {
+            } elseif (str_contains($activityText, 'hotel') || str_contains($activityText, 'hébergement') || str_contains($activityText, 'hebergement')) {
                 $chosen = 'hotel';
             } elseif (str_contains($activityText, 'voyage') || str_contains($activityText, 'forfait') || str_contains($activityText, 'tourisme')) {
                 $chosen = 'voyage';
@@ -1069,7 +1069,7 @@
                     <article class="lf-card">
                         <div class="lf-head">
                             <h2 class="lf-title">{{ $etablissement->name }}</h2>
-                            <p class="lf-sub">PrÃ©sence digitale performante selon vos activitÃ©s principales.</p>
+                            <p class="lf-sub">Présence digitale performante selon vos activités principales.</p>
                         </div>
                         <div class="lf-body">
                             @if($etablissement->adresse)
@@ -1089,7 +1089,7 @@
                                 @forelse($activities as $activity)
                                     <span class="lf-pill"><i class="fas fa-tag"></i> {{ $activity->name }}</span>
                                 @empty
-                                    <span class="lf-pill"><i class="fas fa-tag"></i> ActivitÃ© en configuration</span>
+                                    <span class="lf-pill"><i class="fas fa-tag"></i> Activité en configuration</span>
                                 @endforelse
                             </div>
                         </div>
@@ -1097,7 +1097,7 @@
 
                     <article class="lf-card">
                         <div class="lf-head">
-                            <h3 class="lf-title">PublicitÃ©s & promotions</h3>
+                            <h3 class="lf-title">Publicités & promotions</h3>
                             <p class="lf-sub">Carousel promotionnel pour vos visuels.</p>
                         </div>
                         <div class="lf-body">
@@ -1111,7 +1111,7 @@
                                     @empty
                                         @for($i = 1; $i <= 3; $i++)
                                             <div class="swiper-slide lf-ad-item">
-                                                <img src="https://picsum.photos/seed/lf-ad-{{ $i }}/800/420" alt="PublicitÃ© {{ $i }}">
+                                                <img src="https://picsum.photos/seed/lf-ad-{{ $i }}/800/420" alt="Publicité {{ $i }}">
                                                 <div class="lf-ad-overlay">Espace publicitaire premium</div>
                                             </div>
                                         @endfor
@@ -1168,26 +1168,26 @@
                                 <h3>Restaurant</h3>
                             </div>
                             <p style="margin:0 0 12px;color:#324a69;font-weight:600;line-height:1.6;">
-                                ExpÃ©riences culinaires et terroir en vedette.
+                                Expériences culinaires et terroir en vedette.
                                 Menus vedettes, ambiance et storytelling de marque.
-                                Promotions ciblÃ©es et mise en avant de vos spÃ©cialitÃ©s.
-                                Parcours client orientÃ© rÃ©servation et demande de devis.
+                                Promotions ciblées et mise en avant de vos spécialités.
+                                Parcours client orienté réservation et demande de devis.
                             </p>
 
                             <div class="lf-cta-3col">
                                 <article class="lf-cta-card">
                                     <h4>Activez votre espace destination maintenant</h4>
-                                    <p>Augmentez votre visibilitÃ© locale et internationale avec une prÃ©sence gÃ©ociblÃ©e Go Exploria.</p>
+                                    <p>Augmentez votre visibilité locale et internationale avec une présence géociblée Go Exploria.</p>
                                     <a href="{{ $devisLink }}" target="_blank" rel="noopener noreferrer" class="lf-cta-link"><i class="fas fa-paper-plane"></i> Demander un devis</a>
                                 </article>
                                 <article class="lf-cta-card">
                                     <h4>Activez votre espace entreprise</h4>
-                                    <p>PrÃ©sentez vos offres, services et mÃ©dias dans une vitrine professionnelle orientÃ©e conversion.</p>
+                                    <p>Présentez vos offres, services et médias dans une vitrine professionnelle orientée conversion.</p>
                                     <a href="{{ $devisLink }}" target="_blank" rel="noopener noreferrer" class="lf-cta-link"><i class="fas fa-paper-plane"></i> Demander un devis</a>
                                 </article>
                                 <article class="lf-cta-card">
                                     <h4>Activez votre espace personnel</h4>
-                                    <p>Centralisez vos favoris, interactions et contenus dans un espace moderne Ã  haute performance.</p>
+                                    <p>Centralisez vos favoris, interactions et contenus dans un espace moderne à haute performance.</p>
                                     <a href="{{ $devisLink }}" target="_blank" rel="noopener noreferrer" class="lf-cta-link"><i class="fas fa-paper-plane"></i> Demander un devis</a>
                                 </article>
                             </div>
@@ -1202,11 +1202,11 @@
 
                     <article id="section-events" class="lf-section">
                         <div class="lf-row-head">
-                            <h3>Ã‰vÃ©nements vedette au QuÃ©bec</h3>
+                            <h3>Événements vedette au Québec</h3>
                             <a href="{{ $devisLink }}" class="lf-en-savoir" target="_blank" rel="noopener noreferrer">En savoir <i class="fas fa-circle-plus"></i></a>
                         </div>
                         <div class="lf-chips" style="margin-bottom:12px;">
-                            <span class="lf-chip is-active">Toutes les vidÃ©os</span>
+                            <span class="lf-chip is-active">Toutes les vidéos</span>
                             <span class="lf-chip">Nature</span>
                             <span class="lf-chip">Culture</span>
                             <span class="lf-chip">Gastronomie</span>
@@ -1245,16 +1245,16 @@
                                     <span class="lf-destination-badge"><i class="fas fa-globe-americas"></i> Destinations</span>
                                     <span>Toutes destinations</span>
                                     <span>/</span>
-                                    <span>AmÃ©rique du Nord</span>
+                                    <span>Amérique du Nord</span>
                                     <span>/</span>
                                     <span>Canada</span>
                                     <span>/</span>
-                                    <span>QuÃ©bec</span>
+                                    <span>Québec</span>
                                 </div>
                                 <div class="lf-chips">
                                     <span class="lf-chip is-active">Toutes destinations</span>
                                     <span class="lf-chip">Patrimoine & Culture</span>
-                                    <span class="lf-chip">Villes & CitÃ©s</span>
+                                    <span class="lf-chip">Villes & Cités</span>
                                     <span class="lf-chip">Nature & Paysage</span>
                                     <span class="lf-chip">Plein air & Ski</span>
                                 </div>
@@ -1277,7 +1277,7 @@
                     @include('cms::web.fallback.partials.establishment-products', [
                         'etablissement' => $etablissement,
                         'devisLink' => $devisLink,
-                        'cmsProductsTitle' => "Produits Ã  vendre de l'Ã©tablissement",
+                        'cmsProductsTitle' => "Produits à vendre de l'établissement",
                     ])
 
                     <article id="section-reviews" class="lf-section">
@@ -1292,7 +1292,7 @@
                                     <div class="lf-review-stars">{{ $review['rating'] }}</div>
                                     <p class="lf-review-text">{{ $review['text'] }}</p>
                                     <div class="lf-review-foot">
-                                        <span>{{ $review['user'] }} Â· {{ $review['date'] }}</span>
+                                        <span>{{ $review['user'] }} · {{ $review['date'] }}</span>
                                         <span><i class="fas fa-thumbs-up"></i> {{ $review['votes'] }}</span>
                                     </div>
                                 </article>
@@ -1307,10 +1307,10 @@
                                         <h5>{{ $review['name'] }}</h5>
                                         <p>{{ $review['text'] }}</p>
                                         <div class="metrics">
-                                            <span>Rating â˜…â˜…â˜…â˜…â˜†</span>
-                                            <span>Hospitality â˜…â˜…â˜…â˜…â˜…</span>
-                                            <span>Services â˜…â˜…â˜…â˜…â˜†</span>
-                                            <span>Pricing â˜…â˜…â˜…â˜…â˜†</span>
+                                            <span>Rating ★★★★☆</span>
+                                            <span>Hospitality ★★★★★</span>
+                                            <span>Services ★★★★☆</span>
+                                            <span>Pricing ★★★★☆</span>
                                         </div>
                                     </div>
                                 </article>
@@ -1321,7 +1321,7 @@
                     @if(is_blog_enabled($etablissement->id) && collect($blogPosts ?? [])->isNotEmpty())
                         <article id="blog" class="lf-section">
                             <div class="lf-row-head">
-                                <h3>Blog & actualitÃ©s</h3>
+                                <h3>Blog & actualités</h3>
                             </div>
                             <div class="lf-events">
                                 @foreach(collect($blogPosts)->take(5) as $post)
@@ -1375,7 +1375,7 @@
                             <form id="lfLandingContactForm" class="lf-form-grid" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_activity">
                                 @csrf
                                 <div>
-                                    <input class="lf-input" type="text" name="first_name" placeholder="PrÃ©nom" required>
+                                    <input class="lf-input" type="text" name="first_name" placeholder="Prénom" required>
                                 </div>
                                 <div>
                                     <input class="lf-input" type="text" name="last_name" placeholder="Nom" required>
@@ -1384,7 +1384,7 @@
                                     <input class="lf-input" type="email" name="email" placeholder="Email" required>
                                 </div>
                                 <div>
-                                    <input class="lf-input" type="text" name="phone" placeholder="TÃ©lÃ©phone">
+                                    <input class="lf-input" type="text" name="phone" placeholder="Téléphone">
                                 </div>
                                 <div class="lf-col-full">
                                     <select class="lf-select" name="service">
@@ -1395,7 +1395,7 @@
                                     </select>
                                 </div>
                                 <div class="lf-col-full">
-                                    <textarea class="lf-textarea" name="message" placeholder="DÃ©crivez votre besoin commercial..." required></textarea>
+                                    <textarea class="lf-textarea" name="message" placeholder="Décrivez votre besoin commercial..." required></textarea>
                                 </div>
                                 <div class="lf-col-full">
                                     <button class="lf-submit" type="submit">
@@ -1416,7 +1416,7 @@
 
             <section id="section-plans" class="lf-plan-strip">
                 <h3 style="margin:0;">Nos plans disponibles</h3>
-                <p style="margin:6px 0 0;color:#607089;">AccÃ¨s direct aux dÃ©tails de chaque plan pour activer rapidement votre croissance.</p>
+                <p style="margin:6px 0 0;color:#607089;">Accès direct aux détails de chaque plan pour activer rapidement votre croissance.</p>
 
                 <div class="lf-plan-grid">
                     @forelse($plans as $plan)
@@ -1435,7 +1435,7 @@
                             <a href="{{ $devisLink }}" class="lf-plan-card" target="_blank" rel="noopener noreferrer">
                                 <div><i class="fas fa-layer-group"></i></div>
                                 <h5>Plan Go Exploria {{ $i }}</h5>
-                                <p>Activez votre espace et demandez une proposition personnalisÃ©e.</p>
+                                <p>Activez votre espace et demandez une proposition personnalisée.</p>
                                 <div class="lf-plan-price">Sur demande</div>
                             </a>
                         @endfor
@@ -1554,7 +1554,7 @@
 
                 L.marker([lat, lng], { icon: markerIcon })
                     .addTo(map)
-                    .bindPopup('<strong>{{ addslashes($etablissement->name) }}</strong><br>{{ addslashes((string) ($etablissement->adresse ?? 'Adresse non prÃ©cisÃ©e')) }}');
+                    .bindPopup('<strong>{{ addslashes($etablissement->name) }}</strong><br>{{ addslashes((string) ($etablissement->adresse ?? 'Adresse non précisée')) }}');
 
                 setTimeout(function () {
                     map.invalidateSize();

@@ -18,7 +18,7 @@
             {{-- Menu Destinations avec Mega Menu (TOUJOURS EN PREMIER) --}}
             <li class="vertical-menu-v2-item vertical-menu-v2-destinations-item">
                 <a href="#" class="vertical-menu-v2-link vertical-menu-v2-destinations-trigger">
-                    <span>ðŸŒ Destinations</span>
+                    <span>🌍 Destinations</span>
                 </a>
             </li>
             
@@ -59,14 +59,14 @@
                 </a>
             </li>
             
-            {{-- Menu horizontal ajoutÃ© sur mobile/tablette (NE PAS TOUCHER) --}}
+            {{-- Menu horizontal ajouté sur mobile/tablette (NE PAS TOUCHER) --}}
             <li class="vertical-menu-v2-item vertical-menu-v2-mobile-only">
                 <a href="#valeurs" class="vertical-menu-v2-link">
                     <span>Nos Valeurs</span>
                 </a>
             </li>
             
-            {{-- AccordÃ©on Nos Services â€” miroir exact du mega menu desktop --}}
+            {{-- Accordéon Nos Services — miroir exact du mega menu desktop --}}
             <li class="vertical-menu-v2-item vertical-menu-v2-mobile-only vertical-menu-v2-accordion">
                 <button class="vertical-menu-v2-link vertical-menu-v2-accordion-trigger" data-accordion="services">
                     <span>Nos Services</span>
@@ -76,34 +76,34 @@
                 </button>
                 <ul class="vertical-menu-v2-submenu" id="submenu-services">
 
-                    {{-- BLOC 1 : ESPACES MÃ‰DIAS --}}
+                    {{-- BLOC 1 : ESPACES MÉDIAS --}}
                     <li class="vertical-menu-v2-subcat">Espaces M&eacute;dias</li>
                     <li><a href="#tourisme-business" class="vertical-menu-v2-sublink">Espaces Tourisme et Business</a></li>
                     <li><a href="#activez-destinations" class="vertical-menu-v2-sublink">Activez votre Espaces Destinations</a></li>
-                    <li><a href="#geo-carte-videos" class="vertical-menu-v2-sublink">Espace GÃ©o-Carte-VidÃ©os</a></li>
+                    <li><a href="#geo-carte-videos" class="vertical-menu-v2-sublink">Espace Géo-Carte-Vidéos</a></li>
                     <li><a href="#multilingue" class="vertical-menu-v2-sublink">Espaces Multilingues</a></li>
                     <li><a href="#slideshow" class="vertical-menu-v2-sublink">Espaces Slide-Show Multiples</a></li>
                     <li><a href="#go-tik-tok" class="vertical-menu-v2-sublink">Espaces Go-Tik-Tok</a></li>
                     <li><a href="#my-tube" class="vertical-menu-v2-sublink">Espaces My-Tube</a></li>
-                    <li><a href="#chaine-videos" class="vertical-menu-v2-sublink">Espaces Chaine VidÃ©os</a></li>
+                    <li><a href="#chaine-videos" class="vertical-menu-v2-sublink">Espaces Chaine Vidéos</a></li>
                     <li><a href="#photos" class="vertical-menu-v2-sublink">Espaces Photos</a></li>
-                    <li><a href="#reseaux-sociaux" class="vertical-menu-v2-sublink">Espaces RÃ©seaux Sociaux</a></li>
+                    <li><a href="#reseaux-sociaux" class="vertical-menu-v2-sublink">Espaces Réseaux Sociaux</a></li>
                     <li><a href="#pinterest" class="vertical-menu-v2-sublink">Espaces Inspiration Pinterest</a></li>
                     <li><a href="#avis-clients" class="vertical-menu-v2-sublink">Espaces Avis Clients</a></li>
 
                     {{-- BLOC 2 : ESPACES NEXT LEVEL --}}
                     <li class="vertical-menu-v2-subcat">Espaces Next Level</li>
-                    <li><a href="#optimisez" class="vertical-menu-v2-sublink">Optimisez votre PrÃ©sence en Ligne</a></li>
+                    <li><a href="#optimisez" class="vertical-menu-v2-sublink">Optimisez votre Présence en Ligne</a></li>
                     <li><a href="#partenaires-master" class="vertical-menu-v2-sublink">Partenaires Master User Go Exploria</a></li>
                     <li><a href="#activez-destinations" class="vertical-menu-v2-sublink">Activez votre Espaces Destinations</a></li>
                     <li><a href="#activez-entreprises" class="vertical-menu-v2-sublink">Activez votre Espaces Entreprises</a></li>
                     <li><a href="#activez-perso" class="vertical-menu-v2-sublink">Activez votre Espaces Perso</a></li>
                     <li><a href="#plans-next-level" class="vertical-menu-v2-sublink">Espaces Plans Next Level</a></li>
-                    <li><a href="#partenaires-affilies" class="vertical-menu-v2-sublink">Espaces Partenaires AffiliÃ©s</a></li>
-                    <li><a href="#editeur-site" class="vertical-menu-v2-sublink">Espaces Ã©diteur de Site Web</a></li>
+                    <li><a href="#partenaires-affilies" class="vertical-menu-v2-sublink">Espaces Partenaires Affiliés</a></li>
+                    <li><a href="#editeur-site" class="vertical-menu-v2-sublink">Espaces éditeur de Site Web</a></li>
                     <li><a href="#editeur-entreprises" class="vertical-menu-v2-sublink">Editeur d'Espaces Entreprises</a></li>
                     <li><a href="#editeur-perso" class="vertical-menu-v2-sublink">Editeur d'Espaces Perso</a></li>
-                    <li><a href="#geo-carte-videos" class="vertical-menu-v2-sublink">Espaces GÃ©o-Carte-VidÃ©os</a></li>
+                    <li><a href="#geo-carte-videos" class="vertical-menu-v2-sublink">Espaces Géo-Carte-Vidéos</a></li>
                     <li><a href="#blog" class="vertical-menu-v2-sublink">Espaces Blog</a></li>
                     <li><a href="#api" class="vertical-menu-v2-sublink">Espaces API</a></li>
                     <li><a href="#mail" class="vertical-menu-v2-sublink">Espaces Mail</a></li>
@@ -112,7 +112,7 @@
                     <li><a href="#cta" class="vertical-menu-v2-sublink">Espaces Call-to-Actions</a></li>
                     <li><a href="#seo" class="vertical-menu-v2-sublink">Performances SEO International</a></li>
                     <li><a href="#tele-positionnement" class="vertical-menu-v2-sublink">Espaces T&eacute;l&eacute;-Positionnement</a></li>
-                    <li><a href="https://goexploriabusiness.com/welcome-2" target="_blank" class="vertical-menu-v2-sublink">Fonctionnalit&eacute;s Compl&egrave;tes â†—</a></li>
+                    <li><a href="https://goexploriabusiness.com/welcome-2" target="_blank" class="vertical-menu-v2-sublink">Fonctionnalit&eacute;s Compl&egrave;tes ↗</a></li>
 
                     {{-- BLOC 3 : RESTAURANTS ET ALIMENTATIONS --}}
                     <li class="vertical-menu-v2-subcat">Restaurants &amp; Alimentations</li>
@@ -158,7 +158,7 @@
                     <li><a href="#certificats" class="vertical-menu-v2-sublink">Certificats-Cartes-Produits Cadeaux</a></li>
                     <li><a href="#packages-cadeaux" class="vertical-menu-v2-sublink">Espaces Packages Cadeaux</a></li>
 
-                    {{-- BLOC 7 : ESPACES SPÃ‰CIALISÃ‰S --}}
+                    {{-- BLOC 7 : ESPACES SPÉCIALISÉS --}}
                     <li class="vertical-menu-v2-subcat">Espaces Sp&eacute;cialis&eacute;s</li>
                     <li><a href="#immo-quebec" class="vertical-menu-v2-sublink">Immo Qu&eacute;bec</a></li>
                     <li><a href="#chalets-a-louer" class="vertical-menu-v2-sublink">Chalets &agrave; Louer</a></li>
@@ -168,7 +168,7 @@
                     <li><a href="#maisons-chalets" class="vertical-menu-v2-sublink">Espaces Maisons Chalets &agrave; Vendre</a></li>
                     <li><a href="#projet-immo" class="vertical-menu-v2-sublink">Espaces Projet Immobilier Touristique</a></li>
 
-                    {{-- BLOC 8 : Ã€ LA UNE --}}
+                    {{-- BLOC 8 : À LA UNE --}}
                     <li class="vertical-menu-v2-subcat">&Agrave; la Une</li>
                     <li><a href="#nouvelles-heure" class="vertical-menu-v2-sublink">Espaces Nouvelles de l&apos;Heure</a></li>
                     <li><a href="#dernieres-nouvelles" class="vertical-menu-v2-sublink">Derni&egrave;re Nouvelle</a></li>

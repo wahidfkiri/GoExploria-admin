@@ -978,6 +978,17 @@ html.light .float-cta {
             </div>
             <span class="template-cta">Voir ce template</span>
           </a>
+          <a href="{{ asset('templates/next-level/autopro-garage.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
+            <div>
+              <div class="template-media">
+                <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=500&q=80" alt="AutoPro garage">
+                <div class="template-icon"><i class="fas fa-wrench" aria-hidden="true"></i></div>
+              </div>
+              <h4>AutoPro garage</h4>
+              <p>Landing compacte pour garage automobile, services, forfaits, équipe et rendez-vous.</p>
+            </div>
+            <span class="template-cta">Voir ce template</span>
+          </a>
           <a href="{{ asset('templates/next-level/media-news.html') }}" class="template-card" role="menuitem" target="_blank" rel="noopener">
             <div>
               <div class="template-media">

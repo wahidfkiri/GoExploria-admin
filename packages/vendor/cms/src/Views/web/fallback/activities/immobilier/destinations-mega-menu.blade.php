@@ -25,7 +25,7 @@
 
     {{-- Contenu principal --}}
     <div class="destinations-mega-menu-grid" id="destinationsGrid" style="display: none;">
-        {{-- Les colonnes seront gÃ©nÃ©rÃ©es dynamiquement par JavaScript --}}
+        {{-- Les colonnes seront générées dynamiquement par JavaScript --}}
     </div>
 
     {{-- Message si aucune destination --}}

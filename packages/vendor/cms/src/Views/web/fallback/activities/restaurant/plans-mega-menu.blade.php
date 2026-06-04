@@ -42,7 +42,7 @@
         [
             'title' => 'ESPACES ENTREPRISES',
             'description' => 'ACTIVEZ VOS ESPACES ENTREPRISES ICI',
-            'price' => 'Ã€ partir de 299 CAD / mois',
+            'price' => 'À partir de 299 CAD / mois',
             'icon' => 'fas fa-building',
             'color' => 'plans-mega-card-enterprise',
             'fallback' => $plansPresentationUrl,
@@ -50,23 +50,23 @@
         [
             'title' => 'ESPACES DESTINATIONS',
             'description' => 'ACTIVEZ VOS ESPACES DESTINATION ICI',
-            'price' => 'Ã€ partir de 249 CAD / mois',
+            'price' => 'À partir de 249 CAD / mois',
             'icon' => 'fas fa-map-marked-alt',
             'color' => 'plans-mega-card-destination',
             'fallback' => $plansPresentationUrl,
         ],
         [
-            'title' => 'ESPACE ACTIVITÃ‰ â†’ PRODUITS & SERVICES',
-            'description' => 'ACTIVER VOTRE ESPACE ACTIVITÃ‰ AVEC LIENS DIRECT',
-            'price' => 'Ã€ partir de 199 CAD / mois',
+            'title' => 'ESPACE ACTIVITÉ → PRODUITS & SERVICES',
+            'description' => 'ACTIVER VOTRE ESPACE ACTIVITÉ AVEC LIENS DIRECT',
+            'price' => 'À partir de 199 CAD / mois',
             'icon' => 'fas fa-box-open',
             'color' => 'plans-mega-card-activity',
             'fallback' => $plansPresentationUrl,
         ],
         [
-            'title' => 'ESPACES PARTENAIRES AFFILIÃ‰S',
-            'description' => 'ACTIVEZ VOS ESPACES PARTENAIRES AFFILIÃ‰S ICI',
-            'price' => 'Ã€ partir de 179 CAD / mois',
+            'title' => 'ESPACES PARTENAIRES AFFILIÉS',
+            'description' => 'ACTIVEZ VOS ESPACES PARTENAIRES AFFILIÉS ICI',
+            'price' => 'À partir de 179 CAD / mois',
             'icon' => 'fas fa-handshake',
             'color' => 'plans-mega-card-partner',
             'fallback' => $plansPresentationUrl,
@@ -74,7 +74,7 @@
         [
             'title' => 'ESPACES PERSO',
             'description' => 'ACTIVEZ VOS ESPACES PERSO ICI',
-            'price' => 'Ã€ partir de 99 CAD / mois',
+            'price' => 'À partir de 99 CAD / mois',
             'icon' => 'fas fa-user-circle',
             'color' => 'plans-mega-card-personal',
             'fallback' => $plansPresentationUrl,
@@ -96,22 +96,22 @@
         <i class="fas fa-times"></i>
     </button>
     <div class="plans-mega-v2-head">
-        <div class="plans-mega-v2-kicker">PASSEZ AU NIVEAU SUPÃ‰RIEURE</div>
+        <div class="plans-mega-v2-kicker">PASSEZ AU NIVEAU SUPÉRIEURE</div>
         <h3>PLANS GO EXPLORIA - NEXT LEVEL</h3>
         <!-- <p class="plans-mega-v2-intro">
             GO EXPLORIA BUSINESS - NEXT LEVEL, c'est :
         </p>
         <ul class="plans-mega-v2-points">
-            <li>âœ” Un investissement marketing massif</li>
-            <li>âœ” Une plateforme technologique complÃ¨te</li>
-            <li>âœ” Une visibilitÃ© internationale immÃ©diate</li>
-            <li>âœ” Des performances mesurables et rentables</li>
-            <li>âœ” Une solution conÃ§ue pour propulser les entreprises vers une croissance rapide et durable Ã  l'Ã©chelle mondiale.</li>
+            <li>✔ Un investissement marketing massif</li>
+            <li>✔ Une plateforme technologique complète</li>
+            <li>✔ Une visibilité internationale immédiate</li>
+            <li>✔ Des performances mesurables et rentables</li>
+            <li>✔ Une solution conçue pour propulser les entreprises vers une croissance rapide et durable à l'échelle mondiale.</li>
         </ul> -->
-        <!-- <p class="plans-mega-v2-cta-main">PASSEZ AU NIVEAU SUPÃ‰RIEURE</p>
+        <!-- <p class="plans-mega-v2-cta-main">PASSEZ AU NIVEAU SUPÉRIEURE</p>
         <p class="plans-mega-v2-cta-title">GO EXPLORIA BUSINESS - NEXT LEVEL</p>
-        <p>Plateforme marketing rÃ©gional, national et internationale, votre croissance au cÅ“ur de nos offres!</p> -->
-        <p class="plans-mega-v2-cta-end"> OBTENEZ DES RÃ‰SULTATS CONCRET.</p>
+        <p>Plateforme marketing régional, national et internationale, votre croissance au cœur de nos offres!</p> -->
+        <p class="plans-mega-v2-cta-end"> OBTENEZ DES RÉSULTATS CONCRET.</p>
         <a href="{{ url('espace-next-level/plans') }}" class="plans-mega-v2-cta-link" target="_blank" rel="noopener noreferrer">
             <span class="plans-mega-v2-cta-button">
                 <i class="fas fa-external-link-alt"></i> En savoir plus 
@@ -451,7 +451,7 @@
             clearTimeout(closeTimer);
         }
 
-        // Logique identique Ã  "Nos services"
+        // Logique identique à "Nos services"
         trigger.addEventListener('mouseenter', function() {
             cancelClose();
             openPlansMenu();

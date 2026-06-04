@@ -29,10 +29,10 @@
 
         {{-- Grille des destinations --}}
         <div class="vmenu-destinations-mega-grid" id="vDestinationsGrid" style="display: none;">
-            {{-- Les destinations seront chargÃ©es dynamiquement ici --}}
+            {{-- Les destinations seront chargées dynamiquement ici --}}
         </div>
 
-        {{-- Ã‰tat vide --}}
+        {{-- État vide --}}
         <div class="vmenu-destinations-mega-empty" id="vDestinationsEmpty" style="display: none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"></circle>

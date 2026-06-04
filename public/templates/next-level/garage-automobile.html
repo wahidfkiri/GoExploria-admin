@@ -1,14 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AutoElite Garage â€” Expert Automobile Paris</title>
+<title>AutoElite Garage — Expert Automobile Paris</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    ROOT & RESET
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 :root{
   --gold:#D4A537;
   --gold-dark:#b8891e;
@@ -34,12 +34,12 @@ ul{list-style:none;padding:0;}
 ::-webkit-scrollbar-track{background:#f0ece4;}
 ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:4px;}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    UTILS
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .container{max-width:1280px;margin:0 auto;padding:0 40px;}
 .sec-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);padding:0;margin-bottom:14px;}
-.sec-tag::before{content:'â€” ';}
+.sec-tag::before{content:'— ';}
 .sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5vw,62px);line-height:1.0;letter-spacing:1px;color:var(--dark);}
 .sec-title.white{color:#fff;}
 .sec-sub{font-size:16px;color:var(--gray);line-height:1.8;margin-top:14px;}
@@ -50,7 +50,7 @@ ul{list-style:none;padding:0;}
 .btn-dark-line{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--dark);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:14px 32px;border:2px solid var(--dark);transition:all .25s;}
 .btn-dark-line:hover{background:var(--dark);color:#fff;}
 
-/* â”€â”€ REVEAL â”€â”€ */
+/* ── REVEAL ── */
 .reveal{opacity:0;transform:translateY(40px);transition:opacity .75s ease,transform .75s ease;}
 .reveal.up{opacity:1;transform:none;}
 .reveal-left{opacity:0;transform:translateX(-50px);transition:opacity .75s ease,transform .75s ease;}
@@ -58,9 +58,9 @@ ul{list-style:none;padding:0;}
 .reveal-right{opacity:0;transform:translateX(50px);transition:opacity .75s ease,transform .75s ease;}
 .reveal-right.up{opacity:1;transform:none;}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    TOP BAR
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .topbar{background:var(--dark);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);}
 .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
 .topbar-left{display:flex;gap:28px;align-items:center;}
@@ -73,9 +73,9 @@ ul{list-style:none;padding:0;}
 .topbar-social a:hover{border-color:var(--gold);color:var(--gold);}
 .topbar-cta{background:var(--gold);color:var(--dark);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 18px;}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    NAVBAR
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .navbar{position:sticky;top:0;z-index:900;background:#fff;border-bottom:1px solid rgba(0,0,0,.08);transition:box-shadow .3s;}
 .navbar.scrolled{box-shadow:0 4px 30px rgba(0,0,0,.1);}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;}
@@ -102,9 +102,9 @@ ul{list-style:none;padding:0;}
 .mob-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;opacity:0;pointer-events:none;transition:opacity .35s;}
 .mob-overlay.open{opacity:1;pointer-events:auto;}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    HERO
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .hero{position:relative;min-height:100vh;display:flex;align-items:stretch;overflow:hidden;}
 .hero-left{flex:1.1;position:relative;display:flex;flex-direction:column;justify-content:center;padding:80px 60px 80px 80px;background:var(--dark2);}
 .hero-left::after{content:'';position:absolute;top:0;right:-1px;bottom:0;width:80px;background:var(--dark2);clip-path:polygon(0 0,100% 0,100% 100%,0 100%);z-index:2;}
@@ -132,9 +132,9 @@ ul{list-style:none;padding:0;}
 .hero-stat-num{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--dark);line-height:1;}
 .hero-stat-label{font-size:11px;font-weight:600;color:rgba(0,0,0,.6);text-transform:uppercase;letter-spacing:1.5px;margin-top:2px;}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    SERVICES STRIP
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .services-strip{background:var(--dark3);padding:0;}
 .services-strip-grid{display:grid;grid-template-columns:repeat(4,1fr);}
 .sstrip-item{padding:32px 28px;border-right:1px solid rgba(255,255,255,.06);display:flex;gap:18px;align-items:flex-start;transition:background .25s;cursor:default;}
@@ -144,9 +144,9 @@ ul{list-style:none;padding:0;}
 .sstrip-text h4{font-size:14px;font-weight:700;color:#fff;margin-bottom:5px;}
 .sstrip-text p{font-size:12px;color:var(--gray);line-height:1.6;}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    ABOUT
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .about{padding:110px 0;background:#fff;overflow:hidden;}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
 .about-imgs{position:relative;}
@@ -169,9 +169,9 @@ ul{list-style:none;padding:0;}
 .about-vid-btn-icon{width:48px;height:48px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;transition:transform .25s;}
 .about-vid-btn:hover .about-vid-btn-icon{transform:scale(1.1);}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    SERVICES FULL
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .services-full{padding:110px 0;background:var(--light-gray);}
 .services-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px;gap:32px;flex-wrap:wrap;}
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
@@ -189,9 +189,9 @@ ul{list-style:none;padding:0;}
 .srv-hover-line{position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .35s;}
 .srv-card:hover .srv-hover-line{transform:scaleX(1);}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    WHY CHOOSE US
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .why{padding:110px 0;background:#fff;}
 .why-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
 .why-img-wrap{position:relative;}
@@ -208,9 +208,9 @@ ul{list-style:none;padding:0;}
 .why-item h4{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:5px;}
 .why-item p{font-size:13px;color:var(--gray);line-height:1.7;}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    BRANDS MARQUEE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .brands{padding:50px 0;border-top:1px solid rgba(0,0,0,.07);border-bottom:1px solid rgba(0,0,0,.07);overflow:hidden;background:#fff;}
 .brands-label{text-align:center;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#bbb;margin-bottom:32px;font-weight:600;}
 .brands-track-wrap{overflow:hidden;position:relative;}
@@ -223,9 +223,9 @@ ul{list-style:none;padding:0;}
 .brand-logo:hover{color:var(--gold);}
 .brand-sep{width:4px;height:4px;border-radius:50%;background:#ddd;flex-shrink:0;}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    PORTFOLIO / GALLERY
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .portfolio{padding:110px 0;background:var(--dark2);}
 .portfolio .sec-title{color:#fff;}
 .portfolio-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:50px;flex-wrap:wrap;gap:20px;}
@@ -249,9 +249,9 @@ ul{list-style:none;padding:0;}
 .port-tag{display:inline-block;background:var(--gold);color:var(--dark);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;margin-bottom:8px;}
 .port-title{font-size:16px;font-weight:700;color:#fff;}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    PROCESS
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .process{padding:110px 0;background:var(--light-gray);}
 .process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:60px;position:relative;}
 .process-grid::before{content:'';position:absolute;top:32px;left:12.5%;right:12.5%;height:1px;background:repeating-linear-gradient(to right,var(--gold) 0,var(--gold) 14px,transparent 14px,transparent 28px);}
@@ -260,9 +260,9 @@ ul{list-style:none;padding:0;}
 .proc-step h4{font-size:15px;font-weight:800;color:var(--dark);margin-bottom:10px;}
 .proc-step p{font-size:13px;color:var(--gray);line-height:1.7;}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    COUNTERS
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .counters{padding:0;background:var(--gold);overflow:hidden;}
 .counters-inner{display:flex;}
 .cnt-item{flex:1;padding:60px 20px;text-align:center;border-right:1px solid rgba(0,0,0,.1);position:relative;}
@@ -270,9 +270,9 @@ ul{list-style:none;padding:0;}
 .cnt-num{font-family:'Bebas Neue',sans-serif;font-size:72px;color:var(--dark);line-height:1;}
 .cnt-label{font-size:12px;font-weight:700;color:rgba(0,0,0,.55);text-transform:uppercase;letter-spacing:2px;margin-top:4px;}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    TESTIMONIALS
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .testimonials{padding:110px 0;background:var(--dark2);}
 .testimonials .sec-title{color:#fff;}
 .testi-layout{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:60px;}
@@ -297,9 +297,9 @@ ul{list-style:none;padding:0;}
 .testi-dot{width:32px;height:3px;background:rgba(255,255,255,.15);cursor:pointer;transition:background .25s;}
 .testi-dot.active{background:var(--gold);}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    PRICING
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .pricing{padding:110px 0;background:#fff;}
 .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:60px;}
 .price-card{border:1px solid rgba(0,0,0,.08);padding:44px 36px;position:relative;transition:all .3s;overflow:hidden;}
@@ -323,9 +323,9 @@ ul{list-style:none;padding:0;}
 .price-btn:hover,.price-card.featured .price-btn{background:var(--gold);border-color:var(--gold);color:var(--dark);}
 .price-card.featured .price-btn:hover{background:var(--gold-dark);border-color:var(--gold-dark);}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    TEAM
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .team{padding:110px 0;background:var(--light-gray);}
 .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:60px;}
 .team-card{background:#fff;overflow:hidden;transition:all .3s;}
@@ -341,9 +341,9 @@ ul{list-style:none;padding:0;}
 .team-soc{width:30px;height:30px;border:1px solid rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s;}
 .team-soc:hover{background:var(--gold);border-color:var(--gold);}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    VIDEO CTA
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .video-cta{position:relative;height:500px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
 .video-bg{position:absolute;inset:0;}
 .video-bg img{width:100%;height:100%;object-fit:cover;}
@@ -355,9 +355,9 @@ ul{list-style:none;padding:0;}
 .video-play{width:72px;height:72px;border-radius:50%;background:var(--gold);display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:24px;transition:transform .25s;cursor:pointer;}
 .video-play:hover{transform:scale(1.1);}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    FAQ
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .faq{padding:110px 0;background:#fff;}
 .faq-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-top:60px;align-items:start;}
 .faq-img{width:100%;aspect-ratio:4/5;overflow:hidden;}
@@ -372,9 +372,9 @@ ul{list-style:none;padding:0;}
 .faq-a-inner{padding:0 0 20px;font-size:14px;color:var(--gray);line-height:1.8;}
 .faq-item.open .faq-a{max-height:200px;}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    CONTACT
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .contact{padding:110px 0;background:var(--dark2);}
 .contact .sec-title{color:#fff;}
 .contact-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:80px;margin-top:60px;}
@@ -398,9 +398,9 @@ ul{list-style:none;padding:0;}
 .form-submit{width:100%;padding:16px;background:var(--gold);color:var(--dark);border:none;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px;}
 .form-submit:hover{background:var(--gold-dark);transform:translateY(-2px);}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    MAP
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .map-section{height:400px;background:var(--dark3);position:relative;overflow:hidden;}
 .map-section img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%) brightness(.9);}
 .map-pin-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);background:#fff;padding:14px 20px;box-shadow:0 8px 40px rgba(0,0,0,.25);display:flex;align-items:center;gap:10px;white-space:nowrap;}
@@ -408,9 +408,9 @@ ul{list-style:none;padding:0;}
 .map-pin-box .pin-icon{font-size:20px;color:var(--gold);}
 .map-pin-box p{font-size:13px;font-weight:700;color:var(--dark);}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    FOOTER
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .footer{background:var(--dark);padding:80px 0 0;}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;padding-bottom:60px;border-bottom:1px solid rgba(255,255,255,.06);}
 .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:#fff;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
@@ -423,7 +423,7 @@ ul{list-style:none;padding:0;}
 .footer-col h5{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:22px;}
 .footer-col ul{display:flex;flex-direction:column;gap:10px;}
 .footer-col ul li a{font-size:13px;color:rgba(255,255,255,.38);transition:color .2s;display:flex;align-items:center;gap:8px;}
-.footer-col ul li a::before{content:'â†’';color:var(--gold);font-size:11px;opacity:0;transition:opacity .2s;}
+.footer-col ul li a::before{content:'→';color:var(--gold);font-size:11px;opacity:0;transition:opacity .2s;}
 .footer-col ul li a:hover{color:#fff;padding-left:4px;}
 .footer-col ul li a:hover::before{opacity:1;}
 .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding:20px 0;flex-wrap:wrap;gap:12px;}
@@ -432,16 +432,16 @@ ul{list-style:none;padding:0;}
 .footer-policy a{font-size:12px;color:rgba(255,255,255,.2);transition:color .2s;}
 .footer-policy a:hover{color:var(--gold);}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    BACK TO TOP
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 .back-top{position:fixed;bottom:28px;right:28px;width:46px;height:46px;background:var(--gold);color:var(--dark);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;box-shadow:0 4px 20px rgba(var(--gold-rgb),.45);opacity:0;pointer-events:none;transition:all .3s;z-index:800;border:none;}
 .back-top.show{opacity:1;pointer-events:auto;}
 .back-top:hover{background:var(--gold-dark);transform:translateY(-3px);}
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* ═══════════════════════════════════════════
    RESPONSIVE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+═══════════════════════════════════════════ */
 @media(max-width:1100px){
   .hero-left{padding:60px 40px;}
   .about-grid,.why-grid,.faq-layout,.contact-grid{grid-template-columns:1fr;gap:48px;}
@@ -493,18 +493,18 @@ ul{list-style:none;padding:0;}
 </head>
 <body>
 
-<!-- â•â•â• TOP BAR â•â•â• -->
+<!-- ═══ TOP BAR ═══ -->
 <div class="topbar">
   <div class="container">
     <div class="topbar-inner">
       <div class="topbar-left">
         <div class="topbar-item">
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          12 Rue de la MÃ©canique, 75011 Paris
+          12 Rue de la Mécanique, 75011 Paris
         </div>
         <div class="topbar-item">
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Lunâ€“Ven : 8hâ€“18h &nbsp;|&nbsp; Sam : 8hâ€“13h
+          Lun–Ven : 8h–18h &nbsp;|&nbsp; Sam : 8h–13h
         </div>
         <div class="topbar-item">
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
@@ -523,24 +523,24 @@ ul{list-style:none;padding:0;}
   </div>
 </div>
 
-<!-- â•â•â• NAVBAR â•â•â• -->
+<!-- ═══ NAVBAR ═══ -->
 <nav class="navbar" id="navbar">
   <div class="container">
     <div class="nav-inner">
       <a href="#" class="nav-logo">
-        <div class="nav-logo-icon">âš™</div>
+        <div class="nav-logo-icon">⚙</div>
         AUTO<span>ELITE</span>
       </a>
       <ul class="nav-links">
         <li class="active"><a href="#services">Services</a></li>
-        <li><a href="#portfolio">RÃ©alisations</a></li>
+        <li><a href="#portfolio">Réalisations</a></li>
         <li><a href="#pricing">Tarifs</a></li>
-        <li><a href="#team">Ã‰quipe</a></li>
+        <li><a href="#team">Équipe</a></li>
         <li><a href="#faq">FAQ</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
       <div class="nav-right">
-        <div class="nav-tel">ðŸ“ž <span>01 23 45 67 89</span></div>
+        <div class="nav-tel">📞 <span>01 23 45 67 89</span></div>
         <a href="#contact" class="btn-prim">Prendre RDV</a>
       </div>
       <div class="burger" id="burger" onclick="openMob()">
@@ -553,48 +553,48 @@ ul{list-style:none;padding:0;}
 <!-- MOBILE NAV -->
 <div class="mob-overlay" id="mobOverlay" onclick="closeMob()"></div>
 <div class="mobile-nav" id="mobileNav">
-  <button class="mobile-close" onclick="closeMob()">âœ•</button>
+  <button class="mobile-close" onclick="closeMob()">✕</button>
   <a href="#services" onclick="closeMob()">Services</a>
-  <a href="#portfolio" onclick="closeMob()">RÃ©alisations</a>
+  <a href="#portfolio" onclick="closeMob()">Réalisations</a>
   <a href="#pricing" onclick="closeMob()">Tarifs</a>
-  <a href="#team" onclick="closeMob()">Ã‰quipe</a>
+  <a href="#team" onclick="closeMob()">Équipe</a>
   <a href="#faq" onclick="closeMob()">FAQ</a>
   <a href="#contact" onclick="closeMob()">Contact</a>
-  <a href="#contact" class="mob-cta" onclick="closeMob()">ðŸ“… Prendre RDV</a>
+  <a href="#contact" class="mob-cta" onclick="closeMob()">📅 Prendre RDV</a>
 </div>
 
-<!-- â•â•â• HERO â•â•â• -->
+<!-- ═══ HERO ═══ -->
 <section class="hero">
   <div class="hero-left">
     <div class="hero-bg-pattern"></div>
     <div class="hero-content">
       <div class="hero-eyebrow">
         <div class="hero-eyebrow-line"></div>
-        <span>Garage CertifiÃ© Toutes Marques â€” Paris</span>
+        <span>Garage Certifié Toutes Marques — Paris</span>
       </div>
-      <h1>VOTRE AUTO<br><em>MÃ‰RITE</em><br>LE<br>MEILLEUR.</h1>
-      <p class="hero-desc">Expert en mÃ©canique, carrosserie et diagnostic Ã©lectronique depuis 1998. Confiance, rapiditÃ©, excellence.</p>
+      <h1>VOTRE AUTO<br><em>MÉRITE</em><br>LE<br>MEILLEUR.</h1>
+      <p class="hero-desc">Expert en mécanique, carrosserie et diagnostic électronique depuis 1998. Confiance, rapidité, excellence.</p>
       <div class="hero-actions">
-        <a href="#contact" class="btn-prim">ðŸ“… Prendre Rendez-vous</a>
+        <a href="#contact" class="btn-prim">📅 Prendre Rendez-vous</a>
         <a href="#services" class="btn-line">Voir nos services</a>
       </div>
       <div class="hero-trust">
         <div class="hero-trust-item">
-          <div class="hero-trust-icon">ðŸ†</div>
+          <div class="hero-trust-icon">🏆</div>
           <div class="hero-trust-text">
-            <strong>CertifiÃ©</strong>
+            <strong>Certifié</strong>
             Toutes marques
           </div>
         </div>
         <div class="hero-trust-item">
-          <div class="hero-trust-icon">âœ…</div>
+          <div class="hero-trust-icon">✅</div>
           <div class="hero-trust-text">
             <strong>Garantie</strong>
             12 mois / 20 000 km
           </div>
         </div>
         <div class="hero-trust-item">
-          <div class="hero-trust-icon">âš¡</div>
+          <div class="hero-trust-icon">⚡</div>
           <div class="hero-trust-text">
             <strong>Urgences</strong>
             Prise en charge rapide
@@ -609,41 +609,41 @@ ul{list-style:none;padding:0;}
     </div>
     <div class="hero-stats-bar">
       <div class="hero-stat"><div class="hero-stat-num" data-count="15000">0</div><div class="hero-stat-label">Clients satisfaits</div></div>
-      <div class="hero-stat"><div class="hero-stat-num" data-count="25">0</div><div class="hero-stat-label">Ans d'expÃ©rience</div></div>
+      <div class="hero-stat"><div class="hero-stat-num" data-count="25">0</div><div class="hero-stat-label">Ans d'expérience</div></div>
       <div class="hero-stat"><div class="hero-stat-num" data-count="98">0</div><div class="hero-stat-label">% Satisfaction</div></div>
     </div>
   </div>
 </section>
 
-<!-- â•â•â• SERVICES STRIP â•â•â• -->
+<!-- ═══ SERVICES STRIP ═══ -->
 <div class="services-strip">
   <div class="services-strip-grid">
     <div class="sstrip-item">
-      <div class="sstrip-icon">ðŸ”§</div>
-      <div class="sstrip-text"><h4>MÃ©canique GÃ©nÃ©rale</h4><p>Entretien, rÃ©vision, freins, distribution</p></div>
+      <div class="sstrip-icon">🔧</div>
+      <div class="sstrip-text"><h4>Mécanique Générale</h4><p>Entretien, révision, freins, distribution</p></div>
     </div>
     <div class="sstrip-item">
-      <div class="sstrip-icon">ðŸ”Œ</div>
-      <div class="sstrip-text"><h4>Diagnostic Ã‰lectronique</h4><p>Lecture codes, reprogrammation ECU</p></div>
+      <div class="sstrip-icon">🔌</div>
+      <div class="sstrip-text"><h4>Diagnostic Électronique</h4><p>Lecture codes, reprogrammation ECU</p></div>
     </div>
     <div class="sstrip-item">
-      <div class="sstrip-icon">ðŸš—</div>
-      <div class="sstrip-text"><h4>Carrosserie & Peinture</h4><p>DÃ©bosselage, retouche, laquage</p></div>
+      <div class="sstrip-icon">🚗</div>
+      <div class="sstrip-text"><h4>Carrosserie & Peinture</h4><p>Débosselage, retouche, laquage</p></div>
     </div>
     <div class="sstrip-item">
-      <div class="sstrip-icon">âš¡</div>
-      <div class="sstrip-text"><h4>VÃ©hicules Ã‰lectriques</h4><p>Batterie, recharge, haute tension</p></div>
+      <div class="sstrip-icon">⚡</div>
+      <div class="sstrip-text"><h4>Véhicules Électriques</h4><p>Batterie, recharge, haute tension</p></div>
     </div>
   </div>
 </div>
 
-<!-- â•â•â• ABOUT â•â•â• -->
+<!-- ═══ ABOUT ═══ -->
 <section class="about" id="about">
   <div class="container">
     <div class="about-grid">
       <div class="about-imgs reveal-left">
         <div class="about-img-main">
-          <img src="https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=900&q=85&fit=crop" alt="MÃ©canicien professionnel">
+          <img src="https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=900&q=85&fit=crop" alt="Mécanicien professionnel">
         </div>
         <div class="about-img-sub">
           <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=85&fit=crop" alt="Atelier AutoElite">
@@ -655,24 +655,24 @@ ul{list-style:none;padding:0;}
       </div>
       <div class="about-content reveal-right">
         <span class="sec-tag">Qui sommes-nous</span>
-        <h2 class="sec-title">VOTRE GARAGE DE<br>CONFIANCE Ã€ PARIS</h2>
-        <p class="sec-sub">Depuis 1998, AutoElite Garage est le partenaire de confiance des automobilistes parisiens. Nos techniciens certifiÃ©s prennent soin de votre vÃ©hicule avec le mÃªme soin qu'ils apporteraient au leur.</p>
+        <h2 class="sec-title">VOTRE GARAGE DE<br>CONFIANCE À PARIS</h2>
+        <p class="sec-sub">Depuis 1998, AutoElite Garage est le partenaire de confiance des automobilistes parisiens. Nos techniciens certifiés prennent soin de votre véhicule avec le même soin qu'ils apporteraient au leur.</p>
         <div class="about-features">
           <div class="about-feat">
-            <div class="about-feat-icon">ðŸ†</div>
-            <div><h5>Techniciens certifiÃ©s</h5><p>Formation continue par les constructeurs</p></div>
+            <div class="about-feat-icon">🏆</div>
+            <div><h5>Techniciens certifiés</h5><p>Formation continue par les constructeurs</p></div>
           </div>
           <div class="about-feat">
-            <div class="about-feat-icon">ðŸ’°</div>
+            <div class="about-feat-icon">💰</div>
             <div><h5>Devis gratuit</h5><p>Transparence totale sans surprise</p></div>
           </div>
           <div class="about-feat">
-            <div class="about-feat-icon">ðŸš˜</div>
-            <div><h5>VÃ©hicule de prÃªt</h5><p>Disponible pour toute intervention longue</p></div>
+            <div class="about-feat-icon">🚘</div>
+            <div><h5>Véhicule de prêt</h5><p>Disponible pour toute intervention longue</p></div>
           </div>
           <div class="about-feat">
-            <div class="about-feat-icon">ðŸ›¡ï¸</div>
-            <div><h5>Garantie 12 mois</h5><p>Sur piÃ¨ces et main d'Å“uvre</p></div>
+            <div class="about-feat-icon">🛡️</div>
+            <div><h5>Garantie 12 mois</h5><p>Sur pièces et main d'œuvre</p></div>
           </div>
         </div>
         <div class="about-ctas">
@@ -684,7 +684,7 @@ ul{list-style:none;padding:0;}
   </div>
 </section>
 
-<!-- â•â•â• SERVICES FULL â•â•â• -->
+<!-- ═══ SERVICES FULL ═══ -->
 <section class="services-full" id="services">
   <div class="container">
     <div class="services-header">
@@ -692,32 +692,32 @@ ul{list-style:none;padding:0;}
         <span class="sec-tag">Nos prestations</span>
         <h2 class="sec-title">TOUS NOS<br>SERVICES</h2>
       </div>
-      <p class="sec-sub reveal" style="max-width:380px;">Du diagnostic Ã  la livraison, nous couvrons l'intÃ©gralitÃ© des besoins de votre vÃ©hicule.</p>
+      <p class="sec-sub reveal" style="max-width:380px;">Du diagnostic à la livraison, nous couvrons l'intégralité des besoins de votre véhicule.</p>
     </div>
     <div class="services-grid">
       <div class="srv-card reveal">
         <div class="srv-img">
-          <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&q=80&fit=crop" alt="MÃ©canique gÃ©nÃ©rale">
+          <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&q=80&fit=crop" alt="Mécanique générale">
           <div class="srv-img-overlay"></div>
         </div>
         <div class="srv-body">
-          <div class="srv-icon">ðŸ”§</div>
-          <h3>MÃ©canique GÃ©nÃ©rale</h3>
-          <p>Vidange, freins, embrayage, suspension, distribution. PiÃ¨ces d'origine garanties constructeur pour tous les modÃ¨les.</p>
-          <div class="srv-price">Ã€ partir de 49â‚¬</div>
+          <div class="srv-icon">🔧</div>
+          <h3>Mécanique Générale</h3>
+          <p>Vidange, freins, embrayage, suspension, distribution. Pièces d'origine garanties constructeur pour tous les modèles.</p>
+          <div class="srv-price">À partir de 49€</div>
         </div>
         <div class="srv-hover-line"></div>
       </div>
       <div class="srv-card reveal">
         <div class="srv-img">
-          <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&q=80&fit=crop" alt="Diagnostic Ã©lectronique">
+          <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&q=80&fit=crop" alt="Diagnostic électronique">
           <div class="srv-img-overlay"></div>
         </div>
         <div class="srv-body">
-          <div class="srv-icon">ðŸ”Œ</div>
-          <h3>Diagnostic Ã‰lectronique</h3>
-          <p>Lecture et effacement de codes dÃ©fauts, reprogrammation calculateur, mise Ã  jour logicielle sur toutes les marques.</p>
-          <div class="srv-price">Ã€ partir de 35â‚¬</div>
+          <div class="srv-icon">🔌</div>
+          <h3>Diagnostic Électronique</h3>
+          <p>Lecture et effacement de codes défauts, reprogrammation calculateur, mise à jour logicielle sur toutes les marques.</p>
+          <div class="srv-price">À partir de 35€</div>
         </div>
         <div class="srv-hover-line"></div>
       </div>
@@ -727,9 +727,9 @@ ul{list-style:none;padding:0;}
           <div class="srv-img-overlay"></div>
         </div>
         <div class="srv-body">
-          <div class="srv-icon">ðŸŽ¨</div>
+          <div class="srv-icon">🎨</div>
           <h3>Carrosserie & Peinture</h3>
-          <p>DÃ©bosselage sans peinture, retouche teintÃ©e, rÃ©paration d'accidents et laquage cabine pressurisÃ©e.</p>
+          <p>Débosselage sans peinture, retouche teintée, réparation d'accidents et laquage cabine pressurisée.</p>
           <div class="srv-price">Devis gratuit</div>
         </div>
         <div class="srv-hover-line"></div>
@@ -740,10 +740,10 @@ ul{list-style:none;padding:0;}
           <div class="srv-img-overlay"></div>
         </div>
         <div class="srv-body">
-          <div class="srv-icon">â„ï¸</div>
+          <div class="srv-icon">❄️</div>
           <h3>Climatisation</h3>
           <p>Recharge gaz R134a et R1234yf, diagnostic circuit, remplacement compresseur, condenseur et filtres habitacle.</p>
-          <div class="srv-price">Ã€ partir de 79â‚¬</div>
+          <div class="srv-price">À partir de 79€</div>
         </div>
         <div class="srv-hover-line"></div>
       </div>
@@ -753,23 +753,23 @@ ul{list-style:none;padding:0;}
           <div class="srv-img-overlay"></div>
         </div>
         <div class="srv-body">
-          <div class="srv-icon">ðŸ›ž</div>
-          <h3>Pneumatiques & GÃ©omÃ©trie</h3>
-          <p>Montage Ã©quilibrage toutes dimensions, gÃ©omÃ©trie 3D laser, permutation et gonflage Ã  l'azote pur.</p>
-          <div class="srv-price">Ã€ partir de 15â‚¬/pneu</div>
+          <div class="srv-icon">🛞</div>
+          <h3>Pneumatiques & Géométrie</h3>
+          <p>Montage équilibrage toutes dimensions, géométrie 3D laser, permutation et gonflage à l'azote pur.</p>
+          <div class="srv-price">À partir de 15€/pneu</div>
         </div>
         <div class="srv-hover-line"></div>
       </div>
       <div class="srv-card reveal">
         <div class="srv-img">
-          <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80&fit=crop" alt="VÃ©hicules Ã©lectriques">
+          <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80&fit=crop" alt="Véhicules électriques">
           <div class="srv-img-overlay"></div>
         </div>
         <div class="srv-body">
-          <div class="srv-icon">âš¡</div>
-          <h3>VÃ©hicules Ã‰lectriques</h3>
-          <p>Maintenance batterie haute tension, diagnostic onduleurs, rÃ©paration bornes de recharge embarquÃ©es.</p>
-          <div class="srv-price">Ã€ partir de 89â‚¬</div>
+          <div class="srv-icon">⚡</div>
+          <h3>Véhicules Électriques</h3>
+          <p>Maintenance batterie haute tension, diagnostic onduleurs, réparation bornes de recharge embarquées.</p>
+          <div class="srv-price">À partir de 89€</div>
         </div>
         <div class="srv-hover-line"></div>
       </div>
@@ -777,41 +777,41 @@ ul{list-style:none;padding:0;}
   </div>
 </section>
 
-<!-- â•â•â• WHY CHOOSE US â•â•â• -->
+<!-- ═══ WHY CHOOSE US ═══ -->
 <section class="why" id="why">
   <div class="container">
     <div class="why-grid">
       <div class="why-img-wrap reveal-left">
         <div class="why-main-img">
-          <img src="https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=900&q=85&fit=crop" alt="Technicien expert">
+          <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=900&q=85&fit=crop" alt="Technicien expert">
         </div>
         <div class="why-counter-box">
           <div class="why-counter"><div class="why-counter-num" data-count="15000">0</div><div class="why-counter-lbl">Clients</div></div>
           <div class="why-counter"><div class="why-counter-num" data-count="98">0</div><div class="why-counter-lbl">% Satisfaits</div></div>
           <div class="why-counter"><div class="why-counter-num" data-count="8">0</div><div class="why-counter-lbl">Experts</div></div>
-          <div class="why-counter"><div class="why-counter-num" data-count="25">0</div><div class="why-counter-lbl">AnnÃ©es</div></div>
+          <div class="why-counter"><div class="why-counter-num" data-count="25">0</div><div class="why-counter-lbl">Années</div></div>
         </div>
       </div>
       <div class="reveal-right">
         <span class="sec-tag">Pourquoi nous choisir</span>
         <h2 class="sec-title">EXPERTISE,<br>TRANSPARENCE<br>& CONFIANCE</h2>
-        <p class="sec-sub">Plus de 25 ans au service de vos vÃ©hicules avec une Ã©quipe de passionnÃ©s certifiÃ©s. Votre satisfaction est notre prioritÃ© absolue.</p>
+        <p class="sec-sub">Plus de 25 ans au service de vos véhicules avec une équipe de passionnés certifiés. Votre satisfaction est notre priorité absolue.</p>
         <div class="why-list">
           <div class="why-item">
             <div class="why-num">01</div>
-            <div><h4>Techniciens certifiÃ©s constructeurs</h4><p>Nos Ã©quipes sont rÃ©guliÃ¨rement formÃ©es et certifiÃ©es BMW, Mercedes, Renault, Peugeot, Toyota et plus encore.</p></div>
+            <div><h4>Techniciens certifiés constructeurs</h4><p>Nos équipes sont régulièrement formées et certifiées BMW, Mercedes, Renault, Peugeot, Toyota et plus encore.</p></div>
           </div>
           <div class="why-item">
             <div class="why-num">02</div>
-            <div><h4>Tarifs clairs, devis gratuit</h4><p>Chaque intervention est prÃ©cÃ©dÃ©e d'un devis dÃ©taillÃ© et validÃ© par vous. Aucune mauvaise surprise sur la facture finale.</p></div>
+            <div><h4>Tarifs clairs, devis gratuit</h4><p>Chaque intervention est précédée d'un devis détaillé et validé par vous. Aucune mauvaise surprise sur la facture finale.</p></div>
           </div>
           <div class="why-item">
             <div class="why-num">03</div>
-            <div><h4>Garantie 12 mois toutes interventions</h4><p>PiÃ¨ces et main d'Å“uvre garanties 12 mois ou 20 000 km. Nous assumons pleinement notre responsabilitÃ©.</p></div>
+            <div><h4>Garantie 12 mois toutes interventions</h4><p>Pièces et main d'œuvre garanties 12 mois ou 20 000 km. Nous assumons pleinement notre responsabilité.</p></div>
           </div>
           <div class="why-item">
             <div class="why-num">04</div>
-            <div><h4>VÃ©hicule de prÃªt & dÃ©pannage 7j/7</h4><p>Nous mettons Ã  disposition un vÃ©hicule de remplacement et intervenons en urgence le week-end.</p></div>
+            <div><h4>Véhicule de prêt & dépannage 7j/7</h4><p>Nous mettons à disposition un véhicule de remplacement et intervenons en urgence le week-end.</p></div>
           </div>
         </div>
       </div>
@@ -819,7 +819,7 @@ ul{list-style:none;padding:0;}
   </div>
 </section>
 
-<!-- â•â•â• BRANDS â•â•â• -->
+<!-- ═══ BRANDS ═══ -->
 <div class="brands">
   <div class="brands-label">Marques que nous traitons</div>
   <div class="brands-track-wrap">
@@ -853,19 +853,19 @@ ul{list-style:none;padding:0;}
   </div>
 </div>
 
-<!-- â•â•â• PORTFOLIO â•â•â• -->
+<!-- ═══ PORTFOLIO ═══ -->
 <section class="portfolio" id="portfolio">
   <div class="container">
     <div class="portfolio-header">
       <div class="reveal">
-        <span class="sec-tag" style="color:var(--gold)">Nos rÃ©alisations</span>
+        <span class="sec-tag" style="color:var(--gold)">Nos réalisations</span>
         <h2 class="sec-title white">GALERIE DE<br>TRAVAUX</h2>
       </div>
       <div class="portfolio-filter">
         <button class="pf-btn active" data-filter="all">Tous</button>
-        <button class="pf-btn" data-filter="meca">MÃ©canique</button>
+        <button class="pf-btn" data-filter="meca">Mécanique</button>
         <button class="pf-btn" data-filter="carross">Carrosserie</button>
-        <button class="pf-btn" data-filter="elec">Ã‰lectrique</button>
+        <button class="pf-btn" data-filter="elec">Électrique</button>
       </div>
     </div>
     <div class="portfolio-grid">
@@ -875,16 +875,16 @@ ul{list-style:none;padding:0;}
         </div>
         <div class="port-overlay">
           <span class="port-tag">Carrosserie</span>
-          <div class="port-title">Restauration complÃ¨te BMW M3</div>
+          <div class="port-title">Restauration complète BMW M3</div>
         </div>
       </div>
       <div class="port-item" data-cat="meca">
         <div class="port-img">
-          <img src="https://images.unsplash.com/photo-1504215680853-026ed2a45def?w=700&q=80&fit=crop" alt="RÃ©vision moteur">
+          <img src="https://images.unsplash.com/photo-1504215680853-026ed2a45def?w=700&q=80&fit=crop" alt="Révision moteur">
         </div>
         <div class="port-overlay">
-          <span class="port-tag">MÃ©canique</span>
-          <div class="port-title">RÃ©vision moteur Porsche 911</div>
+          <span class="port-tag">Mécanique</span>
+          <div class="port-title">Révision moteur Porsche 911</div>
         </div>
       </div>
       <div class="port-item" data-cat="elec">
@@ -892,7 +892,7 @@ ul{list-style:none;padding:0;}
           <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=700&q=80&fit=crop" alt="Tesla diagnostic">
         </div>
         <div class="port-overlay">
-          <span class="port-tag">Ã‰lectrique</span>
+          <span class="port-tag">Électrique</span>
           <div class="port-title">Diagnostic Tesla Model S</div>
         </div>
       </div>
@@ -907,19 +907,19 @@ ul{list-style:none;padding:0;}
       </div>
       <div class="port-item" data-cat="meca">
         <div class="port-img">
-          <img src="https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=700&q=80&fit=crop" alt="Atelier mÃ©canique">
+          <img src="https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=700&q=80&fit=crop" alt="Atelier mécanique">
         </div>
         <div class="port-overlay">
-          <span class="port-tag">MÃ©canique</span>
-          <div class="port-title">RÃ©vision Audi RS6</div>
+          <span class="port-tag">Mécanique</span>
+          <div class="port-title">Révision Audi RS6</div>
         </div>
       </div>
       <div class="port-item" data-cat="elec">
         <div class="port-img">
-          <img src="https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=700&q=80&fit=crop" alt="Voiture Ã©lectrique">
+          <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=700&q=80&fit=crop" alt="Voiture électrique">
         </div>
         <div class="port-overlay">
-          <span class="port-tag">Ã‰lectrique</span>
+          <span class="port-tag">Électrique</span>
           <div class="port-title">Batterie Porsche Taycan</div>
         </div>
       </div>
@@ -927,39 +927,39 @@ ul{list-style:none;padding:0;}
   </div>
 </section>
 
-<!-- â•â•â• PROCESS â•â•â• -->
+<!-- ═══ PROCESS ═══ -->
 <section class="process">
   <div class="container">
     <div class="section-header reveal" style="text-align:center;margin-bottom:20px;">
-      <span class="sec-tag">Comment Ã§a marche</span>
-      <h2 class="sec-title">NOTRE PROCESSUS<br>EN 4 Ã‰TAPES</h2>
+      <span class="sec-tag">Comment ça marche</span>
+      <h2 class="sec-title">NOTRE PROCESSUS<br>EN 4 ÉTAPES</h2>
     </div>
     <div class="process-grid">
       <div class="proc-step reveal">
         <div class="proc-num">01</div>
         <h4>Prise de RDV</h4>
-        <p>En ligne, par tÃ©lÃ©phone ou directement au garage. Confirmation sous 1 heure.</p>
+        <p>En ligne, par téléphone ou directement au garage. Confirmation sous 1 heure.</p>
       </div>
       <div class="proc-step reveal">
         <div class="proc-num">02</div>
         <h4>Diagnostic complet</h4>
-        <p>Bilan 50 points, rapport dÃ©taillÃ© avec photos envoyÃ© par email.</p>
+        <p>Bilan 50 points, rapport détaillé avec photos envoyé par email.</p>
       </div>
       <div class="proc-step reveal">
         <div class="proc-num">03</div>
         <h4>Validation du devis</h4>
-        <p>Devis prÃ©cis approuvÃ© par vous avant toute intervention. ZÃ©ro surprise.</p>
+        <p>Devis précis approuvé par vous avant toute intervention. Zéro surprise.</p>
       </div>
       <div class="proc-step reveal">
         <div class="proc-num">04</div>
         <h4>Livraison & suivi</h4>
-        <p>VÃ©hicule livrÃ© lavÃ©, contrÃ´lÃ©. Suivi post-intervention assurÃ©.</p>
+        <p>Véhicule livré lavé, contrôlé. Suivi post-intervention assuré.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- â•â•â• COUNTERS â•â•â• -->
+<!-- ═══ COUNTERS ═══ -->
 <div class="counters">
   <div class="counters-inner">
     <div class="cnt-item">
@@ -968,7 +968,7 @@ ul{list-style:none;padding:0;}
     </div>
     <div class="cnt-item">
       <div class="cnt-num" data-count="25">0</div>
-      <div class="cnt-label">Ans d'expÃ©rience</div>
+      <div class="cnt-label">Ans d'expérience</div>
     </div>
     <div class="cnt-item">
       <div class="cnt-num" data-count="98">0</div>
@@ -980,12 +980,12 @@ ul{list-style:none;padding:0;}
     </div>
     <div class="cnt-item">
       <div class="cnt-num" data-count="50">0</div>
-      <div class="cnt-label">Points de contrÃ´le</div>
+      <div class="cnt-label">Points de contrôle</div>
     </div>
   </div>
 </div>
 
-<!-- â•â•â• TESTIMONIALS â•â•â• -->
+<!-- ═══ TESTIMONIALS ═══ -->
 <section class="testimonials" id="testimonials">
   <div class="container">
     <div style="text-align:center;margin-bottom:16px;" class="reveal">
@@ -998,45 +998,45 @@ ul{list-style:none;padding:0;}
           <img src="https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?w=800&q=80&fit=crop" alt="Client satisfait AutoElite">
         </div>
         <div class="testi-floating">
-          <div class="testi-floating-num">4.9â˜…</div>
+          <div class="testi-floating-num">4.9★</div>
           <div class="testi-floating-lbl">Note moyenne<br>+2400 avis Google</div>
         </div>
       </div>
       <div class="testi-slider reveal-right">
         <div class="testi-slide active">
           <div class="testi-quote-icon">"</div>
-          <div class="testi-stars">â˜…â˜…â˜…â˜…â˜…</div>
-          <div class="testi-text">Service exceptionnel ! Mon vÃ©hicule a Ã©tÃ© pris en charge le jour mÃªme. Diagnostic rapide, devis transparent, et travail impeccable. Je ne vais plus nulle part ailleurs depuis 5 ans !</div>
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">Service exceptionnel ! Mon véhicule a été pris en charge le jour même. Diagnostic rapide, devis transparent, et travail impeccable. Je ne vais plus nulle part ailleurs depuis 5 ans !</div>
           <div class="testi-author">
             <div class="testi-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80&fit=crop&crop=face" alt="Sophie Marchand"></div>
-            <div><div class="testi-name">Sophie Marchand</div><div class="testi-role">Cliente fidÃ¨le â€” BMW SÃ©rie 5</div></div>
+            <div><div class="testi-name">Sophie Marchand</div><div class="testi-role">Cliente fidèle — BMW Série 5</div></div>
           </div>
         </div>
         <div class="testi-slide">
           <div class="testi-quote-icon">"</div>
-          <div class="testi-stars">â˜…â˜…â˜…â˜…â˜…</div>
-          <div class="testi-text">Ã‰quipe trÃ¨s professionnelle et tarifs honnÃªtes. Ma Tesla a Ã©tÃ© diagnostiquÃ©e et rÃ©parÃ©e en une seule journÃ©e. Ces gars maÃ®trisent vraiment les vÃ©hicules Ã©lectriques !</div>
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">Équipe très professionnelle et tarifs honnêtes. Ma Tesla a été diagnostiquée et réparée en une seule journée. Ces gars maîtrisent vraiment les véhicules électriques !</div>
           <div class="testi-author">
             <div class="testi-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80&fit=crop&crop=face" alt="Karim Bensalem"></div>
-            <div><div class="testi-name">Karim Bensalem</div><div class="testi-role">PropriÃ©taire Tesla Model 3</div></div>
+            <div><div class="testi-name">Karim Bensalem</div><div class="testi-role">Propriétaire Tesla Model 3</div></div>
           </div>
         </div>
         <div class="testi-slide">
           <div class="testi-quote-icon">"</div>
-          <div class="testi-stars">â˜…â˜…â˜…â˜…â˜…</div>
-          <div class="testi-text">Carrosserie aprÃ¨s un accrochage. RÃ©sultat parfait, impossible de voir qu'il y avait un dommage. La peinture est parfaitement assortie Ã  la teinte d'origine. Un grand merci !</div>
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">Carrosserie après un accrochage. Résultat parfait, impossible de voir qu'il y avait un dommage. La peinture est parfaitement assortie à la teinte d'origine. Un grand merci !</div>
           <div class="testi-author">
             <div class="testi-avatar"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80&fit=crop&crop=face" alt="Marie-Claire Petit"></div>
-            <div><div class="testi-name">Marie-Claire Petit</div><div class="testi-role">Audi A3 â€” Cliente 2022</div></div>
+            <div><div class="testi-name">Marie-Claire Petit</div><div class="testi-role">Audi A3 — Cliente 2022</div></div>
           </div>
         </div>
         <div class="testi-slide">
           <div class="testi-quote-icon">"</div>
-          <div class="testi-stars">â˜…â˜…â˜…â˜…â˜…</div>
-          <div class="testi-text">Panne un vendredi soir ! Remorquage organisÃ©, rÃ©paration le samedi matin, rÃ©cupÃ©ration Ã  midi. Service dÃ©pannage bluffant. Le meilleur garage de Paris sans hÃ©sitation.</div>
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-text">Panne un vendredi soir ! Remorquage organisé, réparation le samedi matin, récupération à midi. Service dépannage bluffant. Le meilleur garage de Paris sans hésitation.</div>
           <div class="testi-author">
-            <div class="testi-avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80&fit=crop&crop=face" alt="FranÃ§ois Lambert"></div>
-            <div><div class="testi-name">FranÃ§ois Lambert</div><div class="testi-role">Renault Clio â€” Client 2021</div></div>
+            <div class="testi-avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80&fit=crop&crop=face" alt="François Lambert"></div>
+            <div><div class="testi-name">François Lambert</div><div class="testi-role">Renault Clio — Client 2021</div></div>
              </div>
         </div>
         <div class="testi-dots" id="testiDots">
@@ -1050,54 +1050,54 @@ ul{list-style:none;padding:0;}
   </div>
 </section>
 
-<!-- â•â•â• PRICING â•â•â• -->
+<!-- ═══ PRICING ═══ -->
 <section class="pricing" id="pricing">
   <div class="container">
     <div style="text-align:center;" class="reveal">
       <span class="sec-tag">Nos forfaits</span>
       <h2 class="sec-title">TARIFS<br>TRANSPARENTS</h2>
-      <p class="sec-sub" style="margin:0 auto;">Aucun frais cachÃ©. Choisissez le forfait adaptÃ© Ã  votre vÃ©hicule.</p>
+      <p class="sec-sub" style="margin:0 auto;">Aucun frais caché. Choisissez le forfait adapté à votre véhicule.</p>
     </div>
     <div class="pricing-grid">
       <div class="price-card reveal">
         <div class="price-name">Essentiel</div>
-        <div class="price-amount">49â‚¬</div>
-        <div class="price-period">RÃ©vision de base â€” parfait pour l'entretien courant</div>
+        <div class="price-amount">49€</div>
+        <div class="price-period">Révision de base — parfait pour l'entretien courant</div>
         <ul class="price-features">
-          <li class="price-feat">Vidange moteur complÃ¨te</li>
-          <li class="price-feat">VÃ©rification de tous les niveaux</li>
-          <li class="price-feat">ContrÃ´le freins avant / arriÃ¨re</li>
-          <li class="price-feat">VÃ©rification pneus &amp; pression</li>
-          <li class="price-feat">Diagnostic visuel gÃ©nÃ©ral</li>
+          <li class="price-feat">Vidange moteur complète</li>
+          <li class="price-feat">Vérification de tous les niveaux</li>
+          <li class="price-feat">Contrôle freins avant / arrière</li>
+          <li class="price-feat">Vérification pneus &amp; pression</li>
+          <li class="price-feat">Diagnostic visuel général</li>
         </ul>
         <button class="price-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Choisir ce forfait</button>
       </div>
       <div class="price-card featured reveal">
-        <div class="price-pop">â­ Le plus populaire</div>
+        <div class="price-pop">⭐ Le plus populaire</div>
         <div class="price-name">Premium</div>
-        <div class="price-amount" style="color:var(--gold);">149â‚¬</div>
-        <div class="price-period">RÃ©vision complÃ¨te 50 points â€” recommandÃ©</div>
+        <div class="price-amount" style="color:var(--gold);">149€</div>
+        <div class="price-period">Révision complète 50 points — recommandé</div>
         <ul class="price-features">
           <li class="price-feat">Tout le pack Essentiel inclus</li>
-          <li class="price-feat">Diagnostic Ã©lectronique complet</li>
+          <li class="price-feat">Diagnostic électronique complet</li>
           <li class="price-feat">Filtre air &amp; filtre habitacle</li>
-          <li class="price-feat">ContrÃ´le suspension &amp; direction</li>
+          <li class="price-feat">Contrôle suspension &amp; direction</li>
           <li class="price-feat">Rapport complet avec photos</li>
-          <li class="price-feat">Lavage extÃ©rieur offert</li>
+          <li class="price-feat">Lavage extérieur offert</li>
         </ul>
         <button class="price-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Choisir ce forfait</button>
       </div>
       <div class="price-card reveal">
         <div class="price-name">Excellence</div>
-        <div class="price-amount">299â‚¬</div>
-        <div class="price-period">RÃ©vision + carrosserie â€” protection totale</div>
+        <div class="price-amount">299€</div>
+        <div class="price-period">Révision + carrosserie — protection totale</div>
         <ul class="price-features">
           <li class="price-feat">Tout le pack Premium inclus</li>
-          <li class="price-feat">GÃ©omÃ©trie 3D laser offerte</li>
+          <li class="price-feat">Géométrie 3D laser offerte</li>
           <li class="price-feat">Polissage carrosserie complet</li>
-          <li class="price-feat">Traitement cÃ©ramique nano</li>
-          <li class="price-feat">Garantie 12 mois piÃ¨ces &amp; MO</li>
-          <li class="price-feat">Assistance routiÃ¨re 6 mois</li>
+          <li class="price-feat">Traitement céramique nano</li>
+          <li class="price-feat">Garantie 12 mois pièces &amp; MO</li>
+          <li class="price-feat">Assistance routière 6 mois</li>
         </ul>
         <button class="price-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Choisir ce forfait</button>
       </div>
@@ -1105,20 +1105,20 @@ ul{list-style:none;padding:0;}
   </div>
 </section>
 
-<!-- â•â•â• TEAM â•â•â• -->
+<!-- ═══ TEAM ═══ -->
 <section class="team" id="team">
   <div class="container">
     <div style="text-align:center;" class="reveal">
-      <span class="sec-tag">L'Ã©quipe</span>
-      <h2 class="sec-title">DES EXPERTS<br>Ã€ VOTRE SERVICE</h2>
+      <span class="sec-tag">L'équipe</span>
+      <h2 class="sec-title">DES EXPERTS<br>À VOTRE SERVICE</h2>
     </div>
     <div class="team-grid">
       <div class="team-card reveal">
         <div class="team-img"><img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&q=80&fit=crop&crop=face" alt="Marc Dubois"></div>
         <div class="team-body">
           <div class="team-name">Marc Dubois</div>
-          <div class="team-role">Chef MÃ©canicien</div>
-          <div class="team-exp">25 ans d'expÃ©rience Â· CertifiÃ© BMW &amp; Mercedes</div>
+          <div class="team-role">Chef Mécanicien</div>
+          <div class="team-exp">25 ans d'expérience · Certifié BMW &amp; Mercedes</div>
           <div class="team-social-row"><a href="#" class="team-soc">in</a><a href="#" class="team-soc">f</a></div>
         </div>
       </div>
@@ -1127,7 +1127,7 @@ ul{list-style:none;padding:0;}
         <div class="team-body">
           <div class="team-name">Sarah Martin</div>
           <div class="team-role">Expert Diagnostics</div>
-          <div class="team-exp">12 ans d'expÃ©rience Â· SpÃ©cialiste VE</div>
+          <div class="team-exp">12 ans d'expérience · Spécialiste VE</div>
           <div class="team-social-row"><a href="#" class="team-soc">in</a><a href="#" class="team-soc">f</a></div>
         </div>
       </div>
@@ -1136,7 +1136,7 @@ ul{list-style:none;padding:0;}
         <div class="team-body">
           <div class="team-name">Thomas Leroy</div>
           <div class="team-role">Carrossier Peintre</div>
-          <div class="team-exp">18 ans d'expÃ©rience Â· Peinture premium</div>
+          <div class="team-exp">18 ans d'expérience · Peinture premium</div>
           <div class="team-social-row"><a href="#" class="team-soc">in</a><a href="#" class="team-soc">f</a></div>
         </div>
       </div>
@@ -1145,7 +1145,7 @@ ul{list-style:none;padding:0;}
         <div class="team-body">
           <div class="team-name">Pierre Moreau</div>
           <div class="team-role">Directeur Technique</div>
-          <div class="team-exp">20 ans d'expÃ©rience Â· Fondateur</div>
+          <div class="team-exp">20 ans d'expérience · Fondateur</div>
           <div class="team-social-row"><a href="#" class="team-soc">in</a><a href="#" class="team-soc">f</a></div>
         </div>
       </div>
@@ -1153,58 +1153,58 @@ ul{list-style:none;padding:0;}
   </div>
 </section>
 
-<!-- â•â•â• VIDEO CTA â•â•â• -->
+<!-- ═══ VIDEO CTA ═══ -->
 <section class="video-cta">
   <div class="video-bg">
     <img src="https://images.unsplash.com/photo-1611566026373-c6c8da0ea861?w=1600&q=80&fit=crop" alt="Atelier AutoElite">
   </div>
   <div class="video-cta-content">
-    <div class="video-play">â–¶</div>
+    <div class="video-play">▶</div>
     <h2>VOTRE PROCHAIN RDV<br>EN <em>30 SECONDES</em></h2>
-    <p>RÃ©servez en ligne, par tÃ©lÃ©phone ou venez directement nous voir. Nous sommes lÃ  pour vous 6 jours sur 7.</p>
+    <p>Réservez en ligne, par téléphone ou venez directement nous voir. Nous sommes là pour vous 6 jours sur 7.</p>
     <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-      <a href="#contact" class="btn-prim">ðŸ“… Prendre Rendez-vous</a>
-      <a href="tel:+33123456789" class="btn-line">ðŸ“ž 01 23 45 67 89</a>
+      <a href="#contact" class="btn-prim">📅 Prendre Rendez-vous</a>
+      <a href="tel:+33123456789" class="btn-line">📞 01 23 45 67 89</a>
     </div>
   </div>
 </section>
 
-<!-- â•â•â• FAQ â•â•â• -->
+<!-- ═══ FAQ ═══ -->
 <section class="faq" id="faq">
   <div class="container">
     <div class="faq-layout">
       <div class="reveal-left">
         <div class="faq-img">
-          <img src="https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=900&q=80&fit=crop" alt="Atelier FAQ">
+          <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=900&q=80&fit=crop" alt="Atelier FAQ">
         </div>
       </div>
       <div class="reveal-right">
-        <span class="sec-tag">Questions frÃ©quentes</span>
+        <span class="sec-tag">Questions fréquentes</span>
         <h2 class="sec-title">VOUS AVEZ DES<br>QUESTIONS ?</h2>
         <div class="faq-list" style="margin-top:32px;">
           <div class="faq-item open">
             <div class="faq-q" onclick="toggleFaq(this)">Puis-je obtenir un devis sans engagement ?<span class="faq-icon">+</span></div>
-            <div class="faq-a"><div class="faq-a-inner">Oui, nous proposons des devis gratuits et sans engagement. Vous pouvez venir avec votre vÃ©hicule ou nous appeler. Aucune intervention ne sera rÃ©alisÃ©e sans votre validation prÃ©alable.</div></div>
+            <div class="faq-a"><div class="faq-a-inner">Oui, nous proposons des devis gratuits et sans engagement. Vous pouvez venir avec votre véhicule ou nous appeler. Aucune intervention ne sera réalisée sans votre validation préalable.</div></div>
           </div>
           <div class="faq-item">
-            <div class="faq-q" onclick="toggleFaq(this)">Combien de temps dure une rÃ©vision complÃ¨te ?<span class="faq-icon">+</span></div>
-            <div class="faq-a"><div class="faq-a-inner">Une rÃ©vision standard prend entre 2h et 4h selon l'Ã©tat du vÃ©hicule. Pour les interventions complexes, nous vous donnons une estimation prÃ©cise lors de la prise en charge.</div></div>
+            <div class="faq-q" onclick="toggleFaq(this)">Combien de temps dure une révision complète ?<span class="faq-icon">+</span></div>
+            <div class="faq-a"><div class="faq-a-inner">Une révision standard prend entre 2h et 4h selon l'état du véhicule. Pour les interventions complexes, nous vous donnons une estimation précise lors de la prise en charge.</div></div>
           </div>
           <div class="faq-item">
             <div class="faq-q" onclick="toggleFaq(this)">Travaillez-vous avec toutes les marques ?<span class="faq-icon">+</span></div>
-            <div class="faq-a"><div class="faq-a-inner">Absolument ! Nous sommes Ã©quipÃ©s pour toutes les marques, des vÃ©hicules classiques aux modÃ¨les Ã©lectriques. Nos techniciens sont formÃ©s en continu.</div></div>
+            <div class="faq-a"><div class="faq-a-inner">Absolument ! Nous sommes équipés pour toutes les marques, des véhicules classiques aux modèles électriques. Nos techniciens sont formés en continu.</div></div>
           </div>
           <div class="faq-item">
-            <div class="faq-q" onclick="toggleFaq(this)">Proposez-vous un vÃ©hicule de remplacement ?<span class="faq-icon">+</span></div>
-            <div class="faq-a"><div class="faq-a-inner">Oui, flotte de prÃªt gratuite pour nos clients Premium et Excellence, et disponible en option pour les autres forfaits.</div></div>
+            <div class="faq-q" onclick="toggleFaq(this)">Proposez-vous un véhicule de remplacement ?<span class="faq-icon">+</span></div>
+            <div class="faq-a"><div class="faq-a-inner">Oui, flotte de prêt gratuite pour nos clients Premium et Excellence, et disponible en option pour les autres forfaits.</div></div>
           </div>
           <div class="faq-item">
             <div class="faq-q" onclick="toggleFaq(this)">Quelle garantie offrez-vous sur vos travaux ?<span class="faq-icon">+</span></div>
-            <div class="faq-a"><div class="faq-a-inner">Toutes nos interventions sont garanties 12 mois ou 20 000 km, piÃ¨ces et main d'Å“uvre inclus, sans condition.</div></div>
+            <div class="faq-a"><div class="faq-a-inner">Toutes nos interventions sont garanties 12 mois ou 20 000 km, pièces et main d'œuvre inclus, sans condition.</div></div>
           </div>
           <div class="faq-item">
             <div class="faq-q" onclick="toggleFaq(this)">Acceptez-vous le paiement en plusieurs fois ?<span class="faq-icon">+</span></div>
-            <div class="faq-a"><div class="faq-a-inner">Oui, pour les factures supÃ©rieures Ã  300â‚¬, paiement en 3 ou 4 fois sans frais. CB, virement, chÃ¨que et espÃ¨ces acceptÃ©s.</div></div>
+            <div class="faq-a"><div class="faq-a-inner">Oui, pour les factures supérieures à 300€, paiement en 3 ou 4 fois sans frais. CB, virement, chèque et espèces acceptés.</div></div>
           </div>
         </div>
       </div>
@@ -1212,7 +1212,7 @@ ul{list-style:none;padding:0;}
   </div>
 </section>
 
-<!-- â•â•â• CONTACT â•â•â• -->
+<!-- ═══ CONTACT ═══ -->
 <section class="contact" id="contact">
   <div class="container">
     <div style="text-align:center;" class="reveal">
@@ -1221,72 +1221,72 @@ ul{list-style:none;padding:0;}
     </div>
     <div class="contact-grid">
       <div class="reveal-left">
-        <p class="sec-sub" style="margin-bottom:36px;">Notre Ã©quipe est disponible du lundi au vendredi de 8h Ã  18h, et le samedi de 8h Ã  13h. Urgences 7j/7.</p>
+        <p class="sec-sub" style="margin-bottom:36px;">Notre équipe est disponible du lundi au vendredi de 8h à 18h, et le samedi de 8h à 13h. Urgences 7j/7.</p>
         <div class="contact-info-list">
           <div class="contact-info-item">
-            <div class="ci-icon">ðŸ“</div>
-            <div><div class="ci-label">Adresse</div><div class="ci-val">12 Rue de la MÃ©canique</div><div class="ci-sub">75011 Paris â€” MÃ©tro Voltaire (L9)</div></div>
+            <div class="ci-icon">📍</div>
+            <div><div class="ci-label">Adresse</div><div class="ci-val">12 Rue de la Mécanique</div><div class="ci-sub">75011 Paris — Métro Voltaire (L9)</div></div>
           </div>
           <div class="contact-info-item">
-            <div class="ci-icon">ðŸ“ž</div>
-            <div><div class="ci-label">TÃ©lÃ©phone</div><div class="ci-val">01 23 45 67 89</div><div class="ci-sub">Du lundi au samedi</div></div>
+            <div class="ci-icon">📞</div>
+            <div><div class="ci-label">Téléphone</div><div class="ci-val">01 23 45 67 89</div><div class="ci-sub">Du lundi au samedi</div></div>
           </div>
           <div class="contact-info-item">
-            <div class="ci-icon">âœ‰ï¸</div>
-            <div><div class="ci-label">Email</div><div class="ci-val">contact@autoelite-garage.fr</div><div class="ci-sub">RÃ©ponse sous 2 heures</div></div>
+            <div class="ci-icon">✉️</div>
+            <div><div class="ci-label">Email</div><div class="ci-val">contact@autoelite-garage.fr</div><div class="ci-sub">Réponse sous 2 heures</div></div>
           </div>
           <div class="contact-info-item">
-            <div class="ci-icon">ðŸ•</div>
-            <div><div class="ci-label">Horaires</div><div class="ci-val">Lunâ€“Ven 8hâ€“18h Â· Sam 8hâ€“13h</div><div class="ci-sub">Urgences disponibles 7j/7</div></div>
+            <div class="ci-icon">🕐</div>
+            <div><div class="ci-label">Horaires</div><div class="ci-val">Lun–Ven 8h–18h · Sam 8h–13h</div><div class="ci-sub">Urgences disponibles 7j/7</div></div>
           </div>
         </div>
       </div>
       <div class="contact-form-wrap reveal-right">
         <h3>Envoyer un message</h3>
         <div class="form-row">
-          <div class="f-group"><label>PrÃ©nom</label><input type="text" placeholder="Jean"></div>
+          <div class="f-group"><label>Prénom</label><input type="text" placeholder="Jean"></div>
           <div class="f-group"><label>Nom</label><input type="text" placeholder="Dupont"></div>
         </div>
         <div class="form-row">
-          <div class="f-group"><label>TÃ©lÃ©phone</label><input type="tel" placeholder="06 12 34 56 78"></div>
+          <div class="f-group"><label>Téléphone</label><input type="tel" placeholder="06 12 34 56 78"></div>
           <div class="f-group"><label>Email</label><input type="email" placeholder="jean@email.fr"></div>
         </div>
-        <div class="f-group"><label>Marque et modÃ¨le du vÃ©hicule</label><input type="text" placeholder="Ex : BMW SÃ©rie 3 2020"></div>
-        <div class="f-group"><label>Service souhaitÃ©</label>
+        <div class="f-group"><label>Marque et modèle du véhicule</label><input type="text" placeholder="Ex : BMW Série 3 2020"></div>
+        <div class="f-group"><label>Service souhaité</label>
           <select>
-            <option>RÃ©vision / Entretien</option>
-            <option>MÃ©canique gÃ©nÃ©rale</option>
+            <option>Révision / Entretien</option>
+            <option>Mécanique générale</option>
             <option>Carrosserie et Peinture</option>
-            <option>Diagnostic Ã©lectronique</option>
+            <option>Diagnostic électronique</option>
             <option>Climatisation</option>
-            <option>Pneumatiques et GÃ©omÃ©trie</option>
-            <option>VÃ©hicule Ã©lectrique</option>
-            <option>Urgence / DÃ©pannage</option>
+            <option>Pneumatiques et Géométrie</option>
+            <option>Véhicule électrique</option>
+            <option>Urgence / Dépannage</option>
           </select>
         </div>
-        <div class="f-group"><label>Message</label><textarea placeholder="DÃ©crivez votre problÃ¨me ou votre demande..."></textarea></div>
-        <button class="form-submit" onclick="handleSubmit(event)">Envoyer le message â†’</button>
+        <div class="f-group"><label>Message</label><textarea placeholder="Décrivez votre problème ou votre demande..."></textarea></div>
+        <button class="form-submit" onclick="handleSubmit(event)">Envoyer le message →</button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- â•â•â• MAP â•â•â• -->
+<!-- ═══ MAP ═══ -->
 <div class="map-section">
   <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1600&q=80&fit=crop" alt="Paris">
   <div class="map-pin-box">
-    <span class="pin-icon">ðŸ“</span>
-    <p>AutoElite Garage Â· 12 Rue de la MÃ©canique, 75011 Paris</p>
+    <span class="pin-icon">📍</span>
+    <p>AutoElite Garage · 12 Rue de la Mécanique, 75011 Paris</p>
   </div>
 </div>
 
-<!-- â•â•â• FOOTER â•â•â• -->
+<!-- ═══ FOOTER ═══ -->
 <footer class="footer">
   <div class="container">
     <div class="footer-grid">
       <div>
-        <div class="footer-logo"><div class="footer-logo-icon">âš™</div>AUTO<span>ELITE</span></div>
-        <p class="footer-desc">Votre partenaire de confiance pour l'entretien et la rÃ©paration automobile depuis 1998. QualitÃ©, transparence et passion.</p>
+        <div class="footer-logo"><div class="footer-logo-icon">⚙</div>AUTO<span>ELITE</span></div>
+        <p class="footer-desc">Votre partenaire de confiance pour l'entretien et la réparation automobile depuis 1998. Qualité, transparence et passion.</p>
         <div class="footer-social">
           <a href="#" class="fsoc">f</a><a href="#" class="fsoc">in</a><a href="#" class="fsoc">ig</a><a href="#" class="fsoc">yt</a>
         </div>
@@ -1294,21 +1294,21 @@ ul{list-style:none;padding:0;}
       <div class="footer-col">
         <h5>Services</h5>
         <ul>
-          <li><a href="#services">MÃ©canique gÃ©nÃ©rale</a></li>
+          <li><a href="#services">Mécanique générale</a></li>
           <li><a href="#services">Carrosserie et Peinture</a></li>
-          <li><a href="#services">Diagnostic Ã©lectronique</a></li>
+          <li><a href="#services">Diagnostic électronique</a></li>
           <li><a href="#services">Climatisation</a></li>
           <li><a href="#services">Pneumatiques</a></li>
-          <li><a href="#services">VÃ©hicules Ã©lectriques</a></li>
+          <li><a href="#services">Véhicules électriques</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h5>Informations</h5>
         <ul>
-          <li><a href="#about">Ã€ propos</a></li>
-          <li><a href="#team">Notre Ã©quipe</a></li>
+          <li><a href="#about">À propos</a></li>
+          <li><a href="#team">Notre équipe</a></li>
           <li><a href="#portfolio">Galerie</a></li>
-          <li><a href="#testimonials">TÃ©moignages</a></li>
+          <li><a href="#testimonials">Témoignages</a></li>
           <li><a href="#pricing">Tarifs</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ul>
@@ -1319,24 +1319,24 @@ ul{list-style:none;padding:0;}
           <li><a href="#contact">Prendre RDV</a></li>
           <li><a href="tel:+33123456789">01 23 45 67 89</a></li>
           <li><a href="mailto:contact@autoelite.fr">contact@autoelite.fr</a></li>
-          <li><a href="#">12 Rue de la MÃ©canique</a></li>
+          <li><a href="#">12 Rue de la Mécanique</a></li>
           <li><a href="#">75011 Paris</a></li>
           <li><a href="#">Urgences 7j/7</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">Â© 2025 AutoElite Garage. Tous droits rÃ©servÃ©s.</div>
+      <div class="footer-copy">© 2025 AutoElite Garage. Tous droits réservés.</div>
       <div class="footer-policy">
-        <a href="#">Mentions lÃ©gales</a>
-        <a href="#">ConfidentialitÃ©</a>
+        <a href="#">Mentions légales</a>
+        <a href="#">Confidentialité</a>
         <a href="#">CGV</a>
       </div>
     </div>
   </div>
 </footer>
 
-<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">â†‘</button>
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
 function openMob(){document.getElementById('mobileNav').classList.add('open');document.getElementById('mobOverlay').classList.add('open');document.body.style.overflow='hidden';}
@@ -1357,7 +1357,7 @@ const dots=document.querySelectorAll('.testi-dot');
 function goSlide(n){slides[curSlide].classList.remove('active');dots[curSlide].classList.remove('active');curSlide=n;slides[curSlide].classList.add('active');dots[curSlide].classList.add('active');}
 setInterval(()=>goSlide((curSlide+1)%slides.length),5000);
 document.querySelectorAll('.pf-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.pf-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const f=btn.dataset.filter;document.querySelectorAll('.port-item').forEach(item=>{const show=f==='all'||item.dataset.cat===f;item.style.opacity=show?'1':'0.2';item.style.transform=show?'scale(1)':'scale(.96)';item.style.transition='all .35s';});});});
-function handleSubmit(e){e.preventDefault();const btn=e.target;btn.textContent='âœ“ Message envoyÃ© !';btn.style.background='#2a9d5c';setTimeout(()=>{btn.textContent='Envoyer le message â†’';btn.style.background='';},3000);}
+function handleSubmit(e){e.preventDefault();const btn=e.target;btn.textContent='✓ Message envoyé !';btn.style.background='#2a9d5c';setTimeout(()=>{btn.textContent='Envoyer le message →';btn.style.background='';},3000);}
 const navSections=document.querySelectorAll('section[id]');
 window.addEventListener('scroll',()=>{const pos=window.scrollY+100;navSections.forEach(s=>{const link=document.querySelector('.nav-links a[href="#'+s.id+'"]');if(!link)return;link.parentElement.classList.toggle('active',pos>=s.offsetTop&&pos<s.offsetTop+s.offsetHeight);});},{passive:true});
 </script>

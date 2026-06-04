@@ -11,7 +11,7 @@
         </div>
         <div class="ticker-item">
             <i class="fas fa-sun" style="color: #ffd700;"></i>
-            <span>QC: -5Â°C</span>
+            <span>QC: -5°C</span>
         </div>
         <div class="ticker-item">
             <i class="fas fa-gas-pump" style="color: #fff;"></i>
@@ -26,7 +26,7 @@
             <div class="mega-menu-column">
                 <a href="{{url('/landing/accessibilite')}}" class="mega-menu-item">
                     <div class="mega-menu-icon-wrapper"><i class="fas fa-wheelchair"></i></div>
-                    <span class="mega-menu-label">AccessibilitÃ©</span>
+                    <span class="mega-menu-label">Accessibilité</span>
                 </a>
                 <a href="{{url('/landing/ambulance')}}" class="mega-menu-item">
                     <div class="mega-menu-icon-wrapper"><i class="fas fa-ambulance"></i></div>
@@ -34,7 +34,7 @@
                 </a>
                 <a href="{{url('/landing/defibrillateur')}}" class="mega-menu-item">
                     <div class="mega-menu-icon-wrapper"><i class="fas fa-heartbeat"></i></div>
-                    <span class="mega-menu-label">DÃ©fibrillateur</span>
+                    <span class="mega-menu-label">Défibrillateur</span>
                 </a>
                 <a href="{{url('/landing/indigo')}}" class="mega-menu-item">
                     <div class="mega-menu-icon-wrapper"><i class="fas fa-parking"></i></div>
@@ -46,7 +46,7 @@
             <div class="mega-menu-column">
                 <a href="{{url('/landing/fabrique-quebec')}}" class="mega-menu-item">
                     <div class="mega-menu-icon-wrapper"><i class="fas fa-industry"></i></div>
-                    <span class="mega-menu-label">FabriquÃ© QuÃ©bec</span>
+                    <span class="mega-menu-label">Fabriqué Québec</span>
                 </a>
                 <a href="{{url('/landing/info-tourisme')}}" class="mega-menu-item">
                     <div class="mega-menu-icon-wrapper"><i class="fas fa-info-circle"></i></div>
@@ -58,7 +58,7 @@
                 </a>
                 <a href="{{url('/landing/experiences')}}" class="mega-menu-item">
                     <div class="mega-menu-icon-wrapper"><i class="fas fa-star"></i></div>
-                    <span class="mega-menu-label">ExpÃ©riences</span>
+                    <span class="mega-menu-label">Expériences</span>
                 </a>
             </div>
 
@@ -90,7 +90,7 @@
                 </a>
                 <a href="{{url('/landing/croisieres')}}" class="mega-menu-item">
                     <div class="mega-menu-icon-wrapper"><i class="fas fa-ship"></i></div>
-                    <span class="mega-menu-label">CroisiÃ¨res</span>
+                    <span class="mega-menu-label">Croisières</span>
                 </a>
                 <a href="{{url('/landing/billets-avion')}}" class="mega-menu-item">
                     <div class="mega-menu-icon-wrapper"><i class="fas fa-plane"></i></div>
@@ -98,7 +98,7 @@
                 </a>
                 <a href="{{url('/landing/evenements')}}" class="mega-menu-item">
                     <div class="mega-menu-icon-wrapper"><i class="fas fa-calendar-alt"></i></div>
-                    <span class="mega-menu-label">Ã‰vÃ©nements</span>
+                    <span class="mega-menu-label">Événements</span>
                 </a>
             </div>
 
@@ -118,7 +118,7 @@
                 </a>
                 <a href="{{url('/landing/canada-quebec')}}" class="mega-menu-item">
                     <div class="mega-menu-icon-wrapper"><i class="fas fa-map"></i></div>
-                    <span class="mega-menu-label">Canada QuÃ©bec</span>
+                    <span class="mega-menu-label">Canada Québec</span>
                 </a>
             </div>
         </div>
@@ -129,9 +129,9 @@
                 {{-- Slide 1: Video --}}
                 <div class="carousel-item-simple active">
                     <div class="media-container-v2">
-                        <iframe src="https://www.youtube.com/embed/hdxKTW1ER5w" title="Video QuÃ©bec"
+                        <iframe src="https://www.youtube.com/embed/hdxKTW1ER5w" title="Video Québec"
                             class="slide-media-direct"></iframe>
-                        <button class="expand-media-btn" onclick="openDedicatedVideo('hdxKTW1ER5w', 'QuÃ©bec Travel')">
+                        <button class="expand-media-btn" onclick="openDedicatedVideo('hdxKTW1ER5w', 'Québec Travel')">
                             <i class="fas fa-expand"></i>
                         </button>
                     </div>
@@ -142,7 +142,7 @@
                     <div class="media-container-v2">
                         <img src="https://picsum.photos/800/1200?random=61" class="slide-media-direct">
                         <button class="expand-media-btn"
-                            onclick="openDedicatedImage('https://picsum.photos/800/1200?random=61', 'Paysage QuÃ©bec')">
+                            onclick="openDedicatedImage('https://picsum.photos/800/1200?random=61', 'Paysage Québec')">
                             <i class="fas fa-expand"></i>
                         </button>
                     </div>
@@ -157,11 +157,11 @@
 
     {{-- Footer --}}
     <div class="mega-menu-footer-btns">
-        <a href="{{url('/landing/experiences-quebec')}}" class="footer-btn btn-quebec"><span>EXPÃ‰RIENCES
-                QUÃ‰BEC</span></a>
-        <a href="{{url('/landing/experiences-canada')}}" class="footer-btn btn-canada"><span>EXPÃ‰RIENCES
+        <a href="{{url('/landing/experiences-quebec')}}" class="footer-btn btn-quebec"><span>EXPÉRIENCES
+                QUÉBEC</span></a>
+        <a href="{{url('/landing/experiences-canada')}}" class="footer-btn btn-canada"><span>EXPÉRIENCES
                 CANADA</span></a>
-        <a href="{{url('/landing/experiences-monde')}}" class="footer-btn btn-monde"><span>EXPÃ‰RIENCES MONDE</span></a>
+        <a href="{{url('/landing/experiences-monde')}}" class="footer-btn btn-monde"><span>EXPÉRIENCES MONDE</span></a>
     </div>
 
     {{-- System-Specific Scripts --}}
@@ -170,7 +170,7 @@
         (function () {
             window.openDedicatedVideo = function (videoId, title) {
                 if (window.VideoModalInstance) {
-                    window.VideoModalInstance.open({ id: videoId, title: title, category: 'VIDÃ‰O' });
+                    window.VideoModalInstance.open({ id: videoId, title: title, category: 'VIDÉO' });
                 }
             };
 
