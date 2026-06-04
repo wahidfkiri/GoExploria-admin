@@ -153,10 +153,12 @@
                 'level' => $product->stock_management === 'sur_commande' ? 'Sur commande' : 'En stock',
                 'people' => 'Demande directe',
                 'price' => $productPrice($product),
+                'raw_price' => (float) ($product->price_ttc ?? $product->price_ht ?? 0),
                 'unit' => '',
                 'image' => $image,
                 'featured' => $index === 1,
                 'product_id' => $product->id,
+                'etablissement_id' => $product->etablissement_id,
                 'description' => $product->short_description ?: \Illuminate\Support\Str::limit(strip_tags((string) $product->long_description), 110),
             ];
         })->values()
@@ -291,6 +293,7 @@
     <script src="{{ asset('js/home-v2/mega-menu.js') }}"></script>
     <script src="{{ asset('js/home-v2/services-mega-menu-v2.js') }}"></script>
     @include('cms::web.fallback.partials.espace-forfait.scripts')
+    @include('cms::web.fallback.partials.landing-cart-drawer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

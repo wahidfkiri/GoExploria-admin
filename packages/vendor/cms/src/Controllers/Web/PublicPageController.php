@@ -10,6 +10,7 @@ use Vendor\Cms\Models\ContactMessage;
 use Vendor\Cms\Models\Media;
 use Vendor\Cms\Models\Traits\HasSettings;
 use App\Models\Etablissement;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -36,17 +37,21 @@ class PublicPageController extends Controller
             // Fallback pour la compatibilité
             $this->etablissement = $this->resolveEtablissement($request);
         }
-        
+
+        if (!$this->etablissement && $request->routeIs('cms.checkout*')) {
+            return;
+        }
+
         if (!$this->etablissement) {
             abort(404, 'Établissement non trouvé');
         }
-        
+
         // Récupérer le thème actif
         $this->loadActiveTheme();
-        
+
         // Vérifier le mode prévisualisation
         $this->checkPreviewMode($request);
-        
+
         // Enregistrer le namespace du thème
         $this->registerThemeNamespace();
     }
@@ -62,7 +67,7 @@ class PublicPageController extends Controller
                 ->where('etablissement_id', $this->etablissement->id)
                 ->first();
         }
-        
+
         // Sinon, prendre le thème actif
         if (!$this->activeTheme) {
             $this->activeTheme = \DB::connection('cms')->table('cms_themes')
@@ -72,7 +77,7 @@ class PublicPageController extends Controller
             ->select('cms_themes.*')
             ->first();
         }
-        
+
         // Log pour débogage
         if ($this->activeTheme) {
             \Log::info('Theme loaded:', [
@@ -93,14 +98,14 @@ class PublicPageController extends Controller
         if (!$this->activeTheme) {
             return;
         }
-        
+
         // Construire le chemin complet du thème
         $themePath = $this->getThemePath();
-        
+
         if ($themePath && File::exists($themePath)) {
             // Enregistrer le namespace "theme" pour ce thème
             View::addNamespace('theme', $themePath);
-            
+
             // Enregistrer un namespace spécifique par slug
             View::addNamespace('theme_' . $this->activeTheme->slug, $themePath);
         }
@@ -141,13 +146,13 @@ class PublicPageController extends Controller
     {
         $etablissement = Etablissement::findOrFail($etablissementId);
         $this->etablissement = $etablissement;
-        
+
         // Recharger le thème pour cet établissement
         $this->loadActiveTheme();
         $this->registerThemeNamespace();
-        
+
         $homePage = null;
-        
+
         // Vérifier si la colonne is_home existe
         if (Schema::connection('cms')->hasColumn('cms_pages', 'is_home')) {
             $homePage = Page::where('etablissement_id', $this->etablissement->id)
@@ -162,7 +167,7 @@ class PublicPageController extends Controller
                 ->where('status', 'published')
                 ->first();
         }
-        
+
         // Si toujours pas de page, créer une page par défaut
         if (!$homePage) {
             $homePage = $this->createDefaultHomePage();
@@ -178,11 +183,11 @@ class PublicPageController extends Controller
     {
         $etablissement = Etablissement::findOrFail($etablissementId);
         $this->etablissement = $etablissement;
-        
+
         // Recharger le thème pour cet établissement
         $this->loadActiveTheme();
         $this->registerThemeNamespace();
-        
+
         $page = Page::where('etablissement_id', $this->etablissement->id)
             ->where('slug', $slug)
             ->where('status', 'published')
@@ -197,39 +202,39 @@ class PublicPageController extends Controller
     protected function renderPage($page)
     {
         $cacheKey = $this->getCacheKey($page);
-        
+
         if (!$this->previewMode && config('cms.cache_pages', false) && Cache::has($cacheKey)) {
             $html = Cache::get($cacheKey);
             return $this->buildResponse($html, $this->buildSeoContext($page));
         }
-        
+
         $theme = $this->activeTheme;
-        
+
         if (!$theme) {
             return $this->renderFallback($page, 'Aucun thème installé. Veuillez installer et activer un thème.');
         }
-        
+
         // Récupérer le chemin du thème
         $themePath = $this->getThemePath();
-        
+
         if (!$themePath || !File::exists($themePath)) {
             return $this->renderFallback($page, "Le thème '{$theme->name}' est introuvable.");
         }
-        
+
         // Vérifier si le fichier layout existe
         $layoutFile = $themePath . '/layout.blade.php';
-        
+
         if (!File::exists($layoutFile)) {
             return $this->renderFallback($page, "Le fichier layout.blade.php est manquant dans le thème '{$theme->name}'");
         }
-        
+
         try {
             $viewData = $this->prepareViewData($page, $theme);
-            
+
             // Méthode 1: Utiliser le namespace enregistré
             if (View::exists('theme::layout')) {
                 $html = view('theme::layout', $viewData)->render();
-            } 
+            }
             // Méthode 2: Utiliser le namespace spécifique
             elseif (View::exists('theme_' . $theme->slug . '::layout')) {
                 $html = view('theme_' . $theme->slug . '::layout', $viewData)->render();
@@ -238,13 +243,13 @@ class PublicPageController extends Controller
             else {
                 $html = $this->loadViewDirectly($themePath, $viewData);
             }
-            
+
             if (!$this->previewMode && config('cms.cache_pages', false)) {
                 Cache::put($cacheKey, $html, now()->addMinutes(config('cms.page_cache_lifetime', 60)));
             }
-            
+
             return $this->buildResponse($html, $this->buildSeoContext($page));
-            
+
         } catch (\Exception $e) {
             \Log::error('Theme rendering error: ' . $e->getMessage(), [
                 'theme' => $theme->name,
@@ -252,7 +257,7 @@ class PublicPageController extends Controller
                 'page_id' => $page->id,
                 'exception' => $e
             ]);
-            
+
             return $this->renderFallback($page, "Erreur de rendu: " . $e->getMessage());
         }
     }
@@ -301,21 +306,21 @@ class PublicPageController extends Controller
     protected function loadViewDirectly($themePath, $viewData)
     {
         $layoutPath = $themePath . '/layout.blade.php';
-        
+
         if (!File::exists($layoutPath)) {
             throw new \Exception("Layout file not found: {$layoutPath}");
         }
-        
+
         // Créer un nom de vue temporaire unique
         $tempViewName = 'temp_theme_' . md5($themePath);
         $compiledPath = storage_path('framework/views/' . $tempViewName . '.blade.php');
-        
+
         if (!File::exists(dirname($compiledPath))) {
             File::makeDirectory(dirname($compiledPath), 0755, true);
         }
-        
+
         File::copy($layoutPath, $compiledPath);
-        
+
         try {
             $html = view()->file($compiledPath, $viewData)->render();
             if (File::exists($compiledPath)) {
@@ -389,6 +394,184 @@ class PublicPageController extends Controller
     /**
      * Construit la réponse HTTP
      */
+    public function checkout(Request $request)
+    {
+        $html = view('cms::web.fallback.checkout', [
+            'checkoutSubmitUrl' => route('cms.checkout.submit'),
+        ])->render();
+
+        return $this->buildResponse($html, [
+            'title' => 'Finaliser ma commande',
+            'description' => 'Finalisation des commandes produits GoExploria.',
+        ]);
+    }
+
+    public function submitCheckout(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'first_name' => ['required', 'string', 'max:120'],
+            'last_name' => ['nullable', 'string', 'max:120'],
+            'email' => ['required', 'email', 'max:180'],
+            'phone' => ['nullable', 'string', 'max:60'],
+            'company' => ['nullable', 'string', 'max:180'],
+            'message' => ['nullable', 'string', 'max:5000'],
+            'cart_payload' => ['required', 'string'],
+            'consent' => ['accepted'],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->checkoutValidationResponse($request, $validator->errors()->toArray());
+        }
+
+        $payload = json_decode((string) $request->input('cart_payload'), true);
+        if (!is_array($payload)) {
+            return $this->checkoutValidationResponse($request, ['cart_payload' => ['Panier invalide.']]);
+        }
+
+        $cartItems = collect($payload['items'] ?? $payload)
+            ->map(function ($item) {
+                return [
+                    'id' => (int) data_get($item, 'id'),
+                    'quantity' => max(1, min(999, (int) data_get($item, 'quantity', 1))),
+                ];
+            })
+            ->filter(fn ($item) => $item['id'] > 0)
+            ->groupBy('id')
+            ->map(fn ($items) => [
+                'id' => (int) $items->first()['id'],
+                'quantity' => (int) $items->sum('quantity'),
+            ])
+            ->values();
+
+        if ($cartItems->isEmpty()) {
+            return $this->checkoutValidationResponse($request, ['cart_payload' => ['Votre panier est vide.']]);
+        }
+
+        try {
+            $products = Product::query()
+                ->with(['etablissement:id,name,email_contact,phone', 'category:id,name', 'family:id,name'])
+                ->whereIn('id', $cartItems->pluck('id')->all())
+                ->where('is_available_for_sale', true)
+                ->where('is_public', true)
+                ->get()
+                ->keyBy('id');
+        } catch (\Throwable $e) {
+            \Log::warning('Unable to load checkout products: ' . $e->getMessage());
+
+            return $this->checkoutValidationResponse($request, ['cart_payload' => ['Impossible de verifier les produits du panier.']]);
+        }
+
+        $lines = $cartItems
+            ->map(function ($item) use ($products) {
+                $product = $products->get($item['id']);
+                if (!$product) {
+                    return null;
+                }
+
+                $unitPrice = (float) ($product->price_ttc ?? $product->price_ht ?? 0);
+                $quantity = (int) $item['quantity'];
+
+                return [
+                    'product_id' => $product->id,
+                    'etablissement_id' => $product->etablissement_id,
+                    'etablissement_name' => optional($product->etablissement)->name,
+                    'name' => $product->name,
+                    'reference' => $product->reference,
+                    'category' => optional($product->category)->name ?: optional($product->family)->name,
+                    'quantity' => $quantity,
+                    'unit_price' => $unitPrice,
+                    'line_total' => round($unitPrice * $quantity, 2),
+                ];
+            })
+            ->filter()
+            ->values();
+
+        if ($lines->isEmpty()) {
+            return $this->checkoutValidationResponse($request, ['cart_payload' => ['Aucun produit disponible dans ce panier.']]);
+        }
+
+        $reference = 'CMD-' . now()->format('YmdHis') . '-' . strtoupper(\Illuminate\Support\Str::random(5));
+        $visitorName = trim((string) $request->input('first_name') . ' ' . (string) $request->input('last_name'));
+        $grandTotal = round((float) $lines->sum('line_total'), 2);
+        $createdMessages = collect();
+
+        try {
+            foreach ($lines->groupBy('etablissement_id') as $etablissementId => $groupLines) {
+                $summary = $groupLines
+                    ->map(fn ($line) => '- ' . $line['name'] . ' x ' . $line['quantity'] . ' = ' . number_format($line['line_total'], 2, ',', ' ') . ' $')
+                    ->implode("\n");
+
+                $message = "Commande {$reference}\n\n"
+                    . "Client: {$visitorName}\n"
+                    . "Email: " . $request->input('email') . "\n"
+                    . "Telephone: " . ($request->input('phone') ?: '-') . "\n\n"
+                    . "Produits:\n{$summary}\n\n"
+                    . "Message client:\n" . ($request->input('message') ?: '-');
+
+                $createdMessages->push(ContactMessage::create([
+                    'etablissement_id' => (int) $etablissementId,
+                    'form_name' => 'landing_product_checkout',
+                    'source' => 'landing_checkout',
+                    'source_url' => $request->headers->get('referer') ?: $request->fullUrl(),
+                    'referrer' => $request->headers->get('referer'),
+                    'name' => $visitorName,
+                    'first_name' => $request->input('first_name'),
+                    'last_name' => $request->input('last_name'),
+                    'email' => $request->input('email'),
+                    'phone' => $request->input('phone'),
+                    'company' => $request->input('company'),
+                    'subject' => 'Commande produits ' . $reference,
+                    'message' => $message,
+                    'status' => 'new',
+                    'priority' => 'high',
+                    'consent' => true,
+                    'ip_address' => $request->ip(),
+                    'user_agent' => substr((string) $request->userAgent(), 0, 500),
+                    'metadata' => [
+                        'type' => 'product_checkout',
+                        'reference' => $reference,
+                        'grand_total' => $grandTotal,
+                        'etablissement_total' => round((float) $groupLines->sum('line_total'), 2),
+                        'items' => $groupLines->values()->all(),
+                    ],
+                ]));
+            }
+        } catch (\Throwable $e) {
+            \Log::error('Unable to save checkout request: ' . $e->getMessage(), [
+                'reference' => $reference,
+                'exception' => $e,
+            ]);
+
+            return $this->checkoutValidationResponse($request, ['checkout' => ['Impossible d enregistrer la commande.']]);
+        }
+
+        $response = [
+            'success' => true,
+            'message' => 'Votre commande a ete envoyee.',
+            'reference' => $reference,
+            'messages_count' => $createdMessages->count(),
+        ];
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json($response);
+        }
+
+        return redirect()->route('cms.checkout')->with('checkout_success', $response);
+    }
+
+    protected function checkoutValidationResponse(Request $request, array $errors)
+    {
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Merci de verifier les informations.',
+                'errors' => $errors,
+            ], 422);
+        }
+
+        return redirect()->back()->withErrors($errors)->withInput();
+    }
+
     protected function buildResponse($html, array $seoContext = [])
     {
         $html = $this->injectSeoMeta($html, $seoContext);
@@ -558,17 +741,17 @@ class PublicPageController extends Controller
                 \Log::warning('Asset not found: ' . $filePath);
                 abort(404);
             }
-            
+
             $file = file_get_contents($filePath);
             $mimeType = mime_content_type($filePath);
             $cacheControl = app()->environment('local') ? 'no-cache' : 'public, max-age=31536000, immutable';
-            
+
             return response($file, 200, [
                 'Content-Type' => $mimeType,
                 'Content-Length' => filesize($filePath),
                 'Cache-Control' => $cacheControl,
             ]);
-            
+
         } catch (\Exception $e) {
             \Log::error('Asset error: ' . $e->getMessage());
             abort(404);
@@ -584,18 +767,18 @@ class PublicPageController extends Controller
             $etablissement = Etablissement::find($etablissementId);
             if ($etablissement) {
                 $this->etablissement = $etablissement;
-                
+
                 $page404 = Page::where('etablissement_id', $this->etablissement->id)
                     ->where('slug', '404')
                     ->where('status', 'published')
                     ->first();
-                
+
                 if ($page404) {
                     return $this->renderPage($page404);
                 }
             }
         }
-        
+
         abort(404);
     }
 
@@ -608,15 +791,15 @@ class PublicPageController extends Controller
             $this->previewMode = true;
             session(['preview_theme_id' => $request->preview_theme]);
         }
-        
+
         if ($request->has('preview') && $request->preview == 'true') {
             $this->previewMode = true;
         }
-        
+
         if (session()->has('preview_theme_id')) {
             $this->previewMode = true;
         }
-        
+
         if (session()->has('page_preview')) {
             $this->previewMode = true;
         }
@@ -628,11 +811,11 @@ class PublicPageController extends Controller
     protected function getCacheKey($page)
     {
         $key = "page_{$this->etablissement->id}_{$page->id}";
-        
+
         if ($this->previewMode) {
             $key .= '_preview';
         }
-        
+
         return $key;
     }
 
@@ -644,18 +827,18 @@ class PublicPageController extends Controller
         // Par sous-domaine
         $host = $request->getHost();
         $subdomain = explode('.', $host)[0];
-        
+
         // $etablissement = Etablissement::where('subdomain', $subdomain)->first();
-        
+
         // if ($etablissement) {
         //     return $etablissement;
         // }
-        
+
         // Par paramètre
         // if ($request->has('etablissement')) {
         //     return Etablissement::where('slug', $request->etablissement)->first();
         // }
-        
+
         // Établissement par défaut
         return Etablissement::first();
     }
@@ -682,11 +865,11 @@ class PublicPageController extends Controller
             ->where('group', 'menu')
             ->where('key', 'main_menu')
             ->first();
-        
+
         if ($menuItems) {
             return $menuItems->value;
         }
-        
+
         // Menu par défaut
         return [
             ['label' => 'Accueil', 'url' => '/company/' . $this->etablissement->id, 'active' => false],
@@ -700,7 +883,7 @@ class PublicPageController extends Controller
     {
             $etablissement = \App\Models\Etablissement::findOrFail($etablissementId);
             $this->etablissement = $etablissement;
-            
+
             // Valider les données
             $request->validate([
                 'email' => 'required|email',

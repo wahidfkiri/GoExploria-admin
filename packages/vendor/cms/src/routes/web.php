@@ -12,6 +12,8 @@ use Vendor\Cms\Controllers\Web\WebThemeController;
 Route::middleware(['web'])->group(function () {
     Route::get('/chaine-videos', [WebThemeController::class, 'globalVideoChannel'])->name('cms.videos.channel');
     Route::get('/chaine-videos/search', [WebThemeController::class, 'globalVideoSearch'])->name('cms.videos.search');
+    Route::get('/achat', [PublicPageController::class, 'checkout'])->name('cms.checkout');
+    Route::post('/achat', [PublicPageController::class, 'submitCheckout'])->name('cms.checkout.submit');
 
     // Redirection de la racine vers le premier établissement
     // Route::get('/', function () {

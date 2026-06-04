@@ -1657,6 +1657,7 @@ const statsSection=document.getElementById('stats');
 if(statsSection)statsObs.observe(statsSection);
 window.addEventListener('load', initImmoMap);
 </script>
+    @include('cms::web.fallback.partials.landing-cart-drawer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

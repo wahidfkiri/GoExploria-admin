@@ -245,6 +245,7 @@
     <script src="{{ asset('js/home-v2/mega-menu.js') }}"></script>
     <script src="{{ asset('js/home-v2/services-mega-menu-v2.js') }}"></script>
     @include('cms::web.fallback.partials.immoblier.scripts')
+    @include('cms::web.fallback.partials.landing-cart-drawer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

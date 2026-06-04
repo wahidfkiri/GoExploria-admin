@@ -197,11 +197,13 @@
                 'category' => \Illuminate\Support\Str::slug($category),
                 'badge' => $product->stock_management === 'sur_commande' ? 'Sur demande' : 'Disponible',
                 'price' => $formatPrice($product->price_ttc ?? $product->price_ht ?? null),
+                'raw_price' => (float) ($product->price_ttc ?? $product->price_ht ?? 0),
                 'unit' => '',
                 'image' => $image,
                 'description' => $product->short_description ?: \Illuminate\Support\Str::limit(strip_tags((string) $product->long_description), 110),
                 'specs' => [$category, $product->stock_management === 'sur_commande' ? 'Sur commande' : 'En stock', 'Devis rapide', 'Assistance'],
                 'product_id' => $product->id,
+                'etablissement_id' => $product->etablissement_id,
             ];
         })
         ->filter(fn ($vehicle) => !empty($vehicle['name']))
@@ -382,7 +384,20 @@
                             </div>
                             <div class="car-foot">
                                 <div class="price">{{ $car['price'] }}<span>{{ $car['unit'] ?? '' }}</span></div>
-                                <a class="car-book" href="{{ $productLink }}">Voir</a>
+                                <button
+                                    class="car-book"
+                                    type="button"
+                                    data-cms-cart-add
+                                    data-product-id="{{ $car['product_id'] ?? '' }}"
+                                    data-product-name="{{ $car['name'] }}"
+                                    data-product-price="{{ $car['raw_price'] ?? 0 }}"
+                                    data-product-image="{{ $car['image'] ?? '' }}"
+                                    data-product-url="{{ $productLink }}"
+                                    data-etablissement-id="{{ $car['etablissement_id'] ?? $etablissement->id }}"
+                                    data-etablissement-name="{{ $siteName }}"
+                                >
+                                    Commander
+                                </button>
                             </div>
                         </div>
                     </article>
@@ -505,6 +520,7 @@
         function searchCars(){const select = document.getElementById('fleetSelect'); const id = select?.value || 'all'; const tab = [...document.querySelectorAll('#fleet .tab')].find(b => b.getAttribute('onclick')?.includes("'" + id + "'")) || document.querySelector('#fleet .tab'); if(tab) filterFleet(tab, id); document.getElementById('fleet')?.scrollIntoView({behavior:'smooth'});}
         const today = new Date(); const start = document.getElementById('startDate'); const end = document.getElementById('endDate'); if(start) start.value = today.toISOString().split('T')[0]; if(end){const later = new Date(today); later.setDate(today.getDate() + 3); end.value = later.toISOString().split('T')[0];}
     </script>
+    @include('cms::web.fallback.partials.landing-cart-drawer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

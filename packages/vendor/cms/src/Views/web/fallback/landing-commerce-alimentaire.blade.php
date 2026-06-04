@@ -1891,6 +1891,7 @@
             }
         })();
     </script>
+    @include('cms::web.fallback.partials.landing-cart-drawer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>

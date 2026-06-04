@@ -72,6 +72,390 @@
             }
         </style>
     @endif
+    <style>
+        .home-v2-responsive-guard,
+        .main-content,
+        .main-content > * {
+            max-width: 100%;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+        }
+
+        .main-content section,
+        .main-content .container,
+        .main-content .row {
+            max-width: 100%;
+        }
+
+        .main-content .resto-header-block,
+        .main-content .resto-header-destinations-bar,
+        .main-content .resto-dest-row,
+        .main-content .resto-actions-row,
+        .main-content .vp-dest-breadcrumb,
+        .main-content .products-vedette-v2-scroll-wrapper,
+        .main-content .events-vedette-v2-scroll-wrapper {
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        .main-content .vp-dest-breadcrumb {
+            overflow: hidden;
+        }
+
+        .main-content .vp-dest-select,
+        .main-content .resto-dest-select {
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        #geo-carte-videos {
+            width: 100%;
+            max-width: min(100%, 1440px);
+            padding-left: clamp(12px, 2.4vw, 32px);
+            padding-right: clamp(12px, 2.4vw, 32px);
+        }
+
+        #geo-carte-videos .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        #geo-carte-videos .app-container {
+            isolation: isolate;
+        }
+
+        #geo-carte-videos .sidebar-right {
+            max-width: min(350px, calc(100% - 72px));
+        }
+
+        #resto-ambiance-vedette-v2 .products-vedette-v2-scroll-wrapper,
+        #resto-ambiance-vedette-v2 .products-vedette-v2-carousel {
+            overflow: hidden;
+        }
+
+        #resto-ambiance-vedette-v2 .resto-card-name,
+        #resto-ambiance-vedette-v2 .resto-card-desc,
+        #resto-ambiance-vedette-v2 .resto-card-accord,
+        #resto-ambiance-vedette-v2 .resto-card-subcategory {
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content .resto-header-main {
+                grid-template-columns: minmax(0, 1fr) !important;
+                gap: 16px;
+            }
+
+            .main-content .resto-header-center,
+            .main-content .resto-header-logo-left,
+            .main-content .resto-header-logo-right {
+                grid-column: auto !important;
+                width: 100%;
+                max-width: 100%;
+                justify-self: center;
+            }
+
+            .main-content .resto-header-logo-left,
+            .main-content .resto-header-logo-right {
+                display: flex;
+                justify-content: center;
+            }
+
+            #resto-ambiance-vedette-v2 .resto-header-logo-left {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .main-content .resto-header-destinations-bar {
+                padding: 12px clamp(12px, 3vw, 20px);
+            }
+
+            .main-content .resto-dest-row {
+                align-items: stretch;
+            }
+
+            .main-content .resto-dest-icon-box {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .main-content .resto-dest-breadcrumb.vp-dest-breadcrumb,
+            #geo-carte-videos .resto-dest-breadcrumb {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+                width: 100%;
+                overflow: visible;
+            }
+
+            .main-content .resto-dest-sep {
+                display: none;
+            }
+
+            .main-content .vp-dest-select,
+            .main-content .resto-dest-select {
+                width: 100%;
+                min-width: 0 !important;
+                max-width: none !important;
+                font-size: 11px;
+            }
+
+            .main-content .resto-actions-row {
+                justify-content: flex-start;
+            }
+
+            .main-content .resto-header-ctas,
+            .main-content .events-vedette-v2-filters,
+            .main-content .products-vedette-v2-filters {
+                width: 100%;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .main-content .resto-header-ctas::-webkit-scrollbar,
+            .main-content .events-vedette-v2-filters::-webkit-scrollbar,
+            .main-content .products-vedette-v2-filters::-webkit-scrollbar {
+                display: none;
+            }
+
+            #geo-carte-videos.container {
+                margin-top: 28px !important;
+            }
+
+            #geo-carte-videos .section-title,
+            #geo-carte-videos .resto-header-title {
+                font-size: clamp(18px, 5vw, 30px);
+                line-height: 1.15;
+            }
+
+            #geo-carte-videos .resto-header-center h2 {
+                font-size: clamp(13px, 3.2vw, 18px);
+                line-height: 1.35;
+            }
+
+            #geo-carte-videos .app-container {
+                height: auto;
+                min-height: 0;
+                overflow: visible;
+                border-radius: 16px;
+            }
+
+            #geo-carte-videos .map-container {
+                position: relative;
+                height: min(62vh, 480px);
+                min-height: 360px;
+                border-radius: 16px;
+                overflow: hidden;
+            }
+
+            #geo-carte-videos #map {
+                min-height: 360px;
+            }
+
+            #geo-carte-videos .sidebar-right {
+                position: relative;
+                inset: auto;
+                width: 100%;
+                max-width: 100%;
+                max-height: none;
+                transform: none !important;
+                z-index: 1;
+                border-radius: 0 0 16px 16px;
+            }
+
+            #geo-carte-videos .sidebar-toggle {
+                display: none;
+            }
+
+            #geo-carte-videos .filters-section {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+                padding: 14px;
+            }
+
+            #geo-carte-videos .filter-group {
+                margin-bottom: 0;
+            }
+
+            #geo-carte-videos .filters-section .stats {
+                grid-column: 1 / -1;
+                margin-top: 0;
+            }
+
+            #geo-carte-videos .places-list {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px;
+                padding: 14px;
+            }
+
+            #geo-carte-videos .place-item {
+                margin-bottom: 0;
+            }
+
+            #resto-ambiance-vedette-v2 .resto-header-tabs {
+                width: 100%;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                padding-bottom: 4px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            #resto-ambiance-vedette-v2 .resto-header-tabs::-webkit-scrollbar {
+                display: none;
+            }
+
+            #resto-ambiance-vedette-v2 .resto-tab-btn {
+                flex: 0 0 auto;
+                white-space: nowrap;
+            }
+
+            #resto-ambiance-vedette-v2 .products-vedette-v2-scroll-container {
+                gap: 14px;
+            }
+
+            #resto-ambiance-vedette-v2 .resto-ambiance-v2-card {
+                min-width: min(260px, 58vw);
+                max-width: min(260px, 58vw);
+            }
+
+            #resto-ambiance-vedette-v2 .resto-ambiance-v2-card .resto-card-img {
+                height: 190px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-content > h1.resto-header-title {
+                font-size: 18px !important;
+                line-height: 1.2;
+                padding: 0 14px;
+                overflow-wrap: anywhere;
+            }
+
+            .main-content .resto-header-block {
+                border-radius: 0 0 14px 14px;
+                overflow: hidden;
+            }
+
+            .main-content .resto-header-main {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .main-content .resto-header-title {
+                font-size: clamp(16px, 5vw, 22px);
+                line-height: 1.18;
+                overflow-wrap: anywhere;
+            }
+
+            .main-content .resto-header-subtitle {
+                font-size: 12px;
+                line-height: 1.45;
+            }
+
+            .main-content .resto-dest-breadcrumb.vp-dest-breadcrumb,
+            #geo-carte-videos .resto-dest-breadcrumb {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content .resto-actions-row {
+                align-items: stretch;
+            }
+
+            .main-content .resto-cta-btn,
+            .main-content .resto-plans-btn,
+            .main-content .resto-events-nav-btn {
+                width: 100%;
+                min-width: 0;
+            }
+
+            #geo-carte-videos {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            #geo-carte-videos .map-container {
+                height: 420px;
+                min-height: 420px;
+            }
+
+            #geo-carte-videos #map {
+                min-height: 420px;
+            }
+
+            #geo-carte-videos .filters-section,
+            #geo-carte-videos .places-list {
+                grid-template-columns: 1fr;
+            }
+
+            #geo-carte-videos .place-actions {
+                flex-direction: column;
+            }
+
+            #geo-carte-videos .leaflet-popup-content {
+                min-width: 220px;
+            }
+
+            #geo-carte-videos .modal-content {
+                width: calc(100% - 20px);
+                margin: 20px auto;
+                border-radius: 14px;
+            }
+
+            #resto-ambiance-vedette-v2 .products-vedette-v2-container,
+            #resto-ambiance-vedette-v2 .vedette-carousel-outer {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+
+            #resto-ambiance-vedette-v2 .products-vedette-v2-scroll-container {
+                gap: 12px;
+            }
+
+            #resto-ambiance-vedette-v2 .resto-ambiance-v2-card {
+                min-width: 78vw;
+                max-width: 78vw;
+            }
+
+            #resto-ambiance-vedette-v2 .resto-ambiance-v2-card .resto-card-img {
+                height: min(58vw, 230px);
+            }
+
+            #resto-ambiance-vedette-v2 .resto-card-footer {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            #resto-ambiance-vedette-v2 .resto-card-reserve-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 420px) {
+            #resto-ambiance-vedette-v2 .resto-ambiance-v2-card {
+                min-width: 84vw;
+                max-width: 84vw;
+            }
+
+            #geo-carte-videos .map-container,
+            #geo-carte-videos #map {
+                min-height: 380px;
+                height: 380px;
+            }
+        }
+    </style>
 </head>
 <body>
     @include('home-v2.components.VerticalMenu')
