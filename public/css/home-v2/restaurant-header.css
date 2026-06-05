@@ -2136,3 +2136,83 @@
     }
 }
 
+/* ============================================================
+   RESPONSIVE GLOBAL — filtres destination partagés
+   ============================================================ */
+@media (max-width: 768px) {
+    .resto-header-destinations-bar {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .resto-dest-row {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    .resto-dest-icon-box {
+        width: 100% !important;
+        max-width: 240px !important;
+        justify-self: center !important;
+        justify-content: center !important;
+        min-width: 0 !important;
+    }
+
+    .resto-dest-breadcrumb,
+    .resto-dest-breadcrumb.vp-dest-breadcrumb,
+    .vp-dest-breadcrumb {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+    }
+
+    .resto-dest-sep {
+        display: none !important;
+    }
+
+    .vp-dest-select,
+    .resto-dest-select {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: 40px !important;
+        font-size: 12px !important;
+        white-space: normal !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1100px) {
+    .resto-dest-row {
+        align-items: stretch !important;
+    }
+
+    .resto-dest-breadcrumb.vp-dest-breadcrumb,
+    .vp-dest-breadcrumb {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(160px, 1fr)) !important;
+        gap: 8px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .resto-dest-sep {
+        display: none !important;
+    }
+
+    .vp-dest-select,
+    .resto-dest-select {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+}
+

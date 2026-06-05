@@ -287,6 +287,213 @@
     @media (max-width:992px)  { .content-wrapper{flex-direction:column} .section-title{font-size:2.5rem} .app-container{height:500px} }
     @media (max-width:768px)  { .section-title{font-size:2rem} .app-container{height:400px} .sidebar-right{width:100%;transform:translateX(100%)} .sidebar-right.active{transform:translateX(0)} .sidebar-toggle{right:20px;top:20px} .stat-item{min-width:150px;padding:20px} .stat-number{font-size:2.5rem} }
     @media (max-width:576px)  { .info-card{padding:25px} .info-title{font-size:1.5rem} .app-container{height:350px} .modal-content{width:95%;margin:20px auto} .leaflet-popup-content{min-width:240px} }
+
+    @media (max-width: 768px) {
+        #geo-carte-videos.container {
+            width: 100%;
+            max-width: 100%;
+            padding-left: 10px;
+            padding-right: 10px;
+            margin-top: 24px !important;
+            overflow: hidden;
+        }
+
+        #geo-carte-videos .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        #geo-carte-videos .resto-header-block {
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        #geo-carte-videos .resto-header-main {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            grid-template-columns: minmax(0, 1fr) !important;
+            gap: 14px;
+            width: 100%;
+            padding: 22px 14px 18px;
+            min-height: 0;
+            text-align: center;
+        }
+
+        #geo-carte-videos .resto-header-logo-left {
+            display: none !important;
+        }
+
+        #geo-carte-videos .resto-header-center,
+        #geo-carte-videos .resto-header-logo-right {
+            width: 100%;
+            max-width: 100%;
+            grid-column: auto !important;
+            justify-self: center;
+        }
+
+        #geo-carte-videos .resto-header-center {
+            order: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: center;
+        }
+
+        #geo-carte-videos .resto-header-logo-right {
+            order: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
+        }
+
+        #geo-carte-videos .resto-header-logo-right a {
+            display: inline-flex;
+            max-width: min(260px, 74vw);
+        }
+
+        #geo-carte-videos .bt-next-level-image {
+            display: block;
+            width: min(260px, 74vw);
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        #geo-carte-videos .resto-header-center .resto-header-title,
+        #geo-carte-videos .resto-header-center .resto-header-title-highlight,
+        #geo-carte-videos .resto-header-center h2 {
+            width: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            overflow-wrap: anywhere;
+            text-align: center;
+        }
+
+        #geo-carte-videos .resto-header-center .resto-header-title {
+            font-size: clamp(21px, 6vw, 30px);
+            line-height: 1.12;
+            letter-spacing: 1.6px;
+        }
+
+        #geo-carte-videos .resto-header-center .resto-header-title-highlight {
+            font-size: clamp(18px, 5.3vw, 26px);
+            line-height: 1.15;
+            letter-spacing: 1.4px;
+        }
+
+        #geo-carte-videos .resto-header-center h2 {
+            font-size: clamp(18px, 5.4vw, 25px);
+            line-height: 1.22;
+            letter-spacing: .6px;
+        }
+
+        #geo-carte-videos .resto-header-center .resto-header-subtitle {
+            max-width: 100%;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        #geo-carte-videos .resto-header-tabs {
+            width: 100%;
+            justify-content: center;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        #geo-carte-videos .resto-header-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        #geo-carte-videos .resto-tab-btn {
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
+
+        #geo-carte-videos .resto-header-destinations-bar {
+            padding: 12px;
+        }
+
+        #geo-carte-videos .resto-dest-row,
+        #geo-carte-videos .resto-dest-breadcrumb {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        #geo-carte-videos .resto-dest-icon-box {
+            justify-content: center;
+        }
+
+        #geo-carte-videos .resto-dest-select {
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        #geo-carte-videos .resto-dest-sep {
+            display: none;
+        }
+
+        #geo-carte-videos .app-container {
+            height: auto;
+            min-height: 0;
+            overflow: visible;
+            border-radius: 16px;
+        }
+
+        #geo-carte-videos .map-container {
+            position: relative;
+            height: 420px;
+            min-height: 420px;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        #geo-carte-videos #map {
+            min-height: 420px;
+        }
+
+        #geo-carte-videos .sidebar-right {
+            position: relative;
+            inset: auto;
+            width: 100%;
+            max-width: 100%;
+            transform: none !important;
+            border-radius: 0 0 16px 16px;
+        }
+
+        #geo-carte-videos .sidebar-toggle {
+            display: none;
+        }
+    }
+
+    @media (max-width: 420px) {
+        #geo-carte-videos .resto-header-main {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        #geo-carte-videos .resto-header-center .resto-header-title {
+            font-size: 21px;
+        }
+
+        #geo-carte-videos .resto-header-center .resto-header-title-highlight,
+        #geo-carte-videos .resto-header-center h2 {
+            font-size: 18px;
+        }
+
+        #geo-carte-videos .bt-next-level-image {
+            width: min(230px, 78vw);
+        }
+    }
 </style>
 
 <!-- HTML -->

@@ -350,6 +350,171 @@
     }
 }
 
+@media (max-width: 768px) {
+    #resto-ambiance-vedette-v2 {
+        overflow: hidden;
+    }
+
+    #resto-ambiance-vedette-v2 .products-vedette-v2-container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-block {
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-main {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 12px;
+        width: 100%;
+        padding: 22px 14px 18px;
+        min-height: 0;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-center,
+    #resto-ambiance-vedette-v2 .resto-header-logo-right {
+        width: 100%;
+        max-width: 100%;
+        grid-column: auto !important;
+        justify-self: center;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-center {
+        order: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-logo-right {
+        order: 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        pointer-events: auto;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-logo-right a {
+        display: inline-flex;
+        max-width: min(260px, 76vw);
+    }
+
+    #resto-ambiance-vedette-v2 .bt-next-level-image {
+        display: block;
+        width: min(260px, 76vw);
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-title {
+        width: 100%;
+        max-width: 100%;
+        font-size: clamp(21px, 6vw, 30px);
+        line-height: 1.12;
+        letter-spacing: 1.6px;
+        overflow-wrap: anywhere;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-subtitle {
+        width: 100%;
+        max-width: min(420px, 92vw);
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-tabs {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        justify-items: center;
+        overflow: visible;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-tab-btn {
+        width: min(330px, 88vw);
+        justify-content: center;
+        white-space: normal;
+        min-height: 44px;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-destinations-bar {
+        padding: 12px;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-dest-row,
+    #resto-ambiance-vedette-v2 .resto-dest-breadcrumb.vp-dest-breadcrumb {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-dest-icon-box {
+        width: 100%;
+        justify-content: center;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-dest-sep {
+        display: none;
+    }
+
+    #resto-ambiance-vedette-v2 .vp-dest-select {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-actions-row {
+        align-items: stretch;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-ctas,
+    #resto-ambiance-vedette-v2 .resto-cta-btn,
+    #resto-ambiance-vedette-v2 .resto-events-nav-btn,
+    #resto-ambiance-vedette-v2 .resto-plans-btn,
+    #resto-ambiance-vedette-v2 .resto-lang-switcher {
+        width: 100%;
+        min-width: 0;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-ctas {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 420px) {
+    #resto-ambiance-vedette-v2 .resto-header-main {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    #resto-ambiance-vedette-v2 .resto-header-title {
+        font-size: 21px;
+    }
+
+    #resto-ambiance-vedette-v2 .bt-next-level-image {
+        width: min(230px, 78vw);
+    }
+
+    #resto-ambiance-vedette-v2 .resto-tab-btn {
+        width: min(310px, 92vw);
+        font-size: 12px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
+
 /* Keep ProductsVedette logic (horizontal carousel), but with Restau card design */
 #resto-ambiance-vedette-v2 .products-vedette-v2-scroll-container {
     display: flex;
