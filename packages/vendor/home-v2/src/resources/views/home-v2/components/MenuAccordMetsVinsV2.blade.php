@@ -466,9 +466,22 @@ var _amvP = {};
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.amv-page-carousel[id^="apc-"]').forEach(function (el) {
         var id     = el.id.replace('apc-', '');
-        var slides = el.querySelectorAll('.amv-page-carousel-slide');
+        var track  = document.getElementById('apct-' + id);
+        var slides = track ? Array.from(track.querySelectorAll('.amv-page-carousel-slide')) : [];
         var total  = slides.length;
-        _amvP[id]  = { cur: 0, total: total };
+        _amvP[id]  = { cur: 0, total: total, pos: total > 1 ? 1 : 0, busy: false };
+
+        if (track && total > 1) {
+            var firstClone = slides[0].cloneNode(true);
+            var lastClone = slides[total - 1].cloneNode(true);
+            firstClone.dataset.amvClone = 'first';
+            lastClone.dataset.amvClone = 'last';
+            track.appendChild(firstClone);
+            track.insertBefore(lastClone, slides[0]);
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(-100%)';
+            if (track) track.offsetWidth;
+        }
 
         var dotsEl = document.getElementById('apcd-' + id);
         if (dotsEl) {
@@ -482,25 +495,60 @@ document.addEventListener('DOMContentLoaded', function () {
                 })(i);
             }
         }
-        amvPageGo(id, 0);
+        amvPageGo(id, 0, 0);
         setInterval(function () { amvPageNav(id, 1); }, 5000);
     });
 });
 
 function amvPageNav(id, dir) {
     var c = _amvP[id]; if (!c) return;
-    amvPageGo(id, (c.cur + dir + c.total) % c.total);
+    amvPageGo(id, (c.cur + dir + c.total) % c.total, dir);
 }
 
-function amvPageGo(id, idx) {
+function amvPageGo(id, idx, dir) {
     var c = _amvP[id]; if (!c) return;
-    c.cur = idx;
     var track = document.getElementById('apct-' + id);
-    if (track) track.style.transform = 'translateX(-' + (idx * 100) + '%)';
-    var slides = document.querySelectorAll('#apc-' + id + ' .amv-page-carousel-slide');
+    if (!track || c.total <= 0) return;
+
+    if (c.total > 1 && c.busy) return;
+
+    var prev = c.cur;
+    c.cur = idx;
+    c.pos = c.total > 1 ? idx + 1 : idx;
+
+    if (c.total > 1 && dir > 0 && prev === c.total - 1 && idx === 0) {
+        c.pos = c.total + 1;
+    } else if (c.total > 1 && dir < 0 && prev === 0 && idx === c.total - 1) {
+        c.pos = 0;
+    }
+
+    if (c.total > 1) {
+        c.busy = true;
+        track.style.transition = 'transform 0.55s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+
+    track.style.transform = 'translateX(-' + (c.pos * 100) + '%)';
+    var slides = document.querySelectorAll('#apc-' + id + ' .amv-page-carousel-slide:not([data-amv-clone])');
     slides.forEach(function (s, i) { s.classList.toggle('is-active', i === idx); });
     var dots = document.querySelectorAll('#apcd-' + id + ' .amv-page-cdot');
     dots.forEach(function (d, i) { d.classList.toggle('active', i === idx); });
+
+    if (c.total > 1) {
+        setTimeout(function () {
+            if (c.pos === 0) {
+                c.pos = c.total;
+                track.style.transition = 'none';
+                track.style.transform = 'translateX(-' + (c.pos * 100) + '%)';
+                if (track) track.offsetWidth;
+            } else if (c.pos === c.total + 1) {
+                c.pos = 1;
+                track.style.transition = 'none';
+                track.style.transform = 'translateX(-100%)';
+                if (track) track.offsetWidth;
+            }
+            c.busy = false;
+        }, 590);
+    }
 }
 
 /* ---- Tabs Carte des Vins ---- */
@@ -525,8 +573,24 @@ document.addEventListener('DOMContentLoaded', function () {
 /* ---- Carousel À propos ---- */
 var _apropos = { cur: 0, total: 0 };
 document.addEventListener('DOMContentLoaded', function () {
-    var slides = document.querySelectorAll('#apropos-carousel .amv-apropos-carousel-slide');
+    var track = document.getElementById('apropos-carousel-track');
+    var slides = track ? Array.from(track.querySelectorAll('.amv-apropos-carousel-slide')) : [];
     _apropos.total = slides.length;
+    _apropos.pos = _apropos.total > 1 ? 1 : 0;
+    _apropos.busy = false;
+
+    if (track && _apropos.total > 1) {
+        var firstClone = slides[0].cloneNode(true);
+        var lastClone = slides[_apropos.total - 1].cloneNode(true);
+        firstClone.dataset.amvClone = 'first';
+        lastClone.dataset.amvClone = 'last';
+        track.appendChild(firstClone);
+        track.insertBefore(lastClone, slides[0]);
+        track.style.transition = 'none';
+        track.style.transform = 'translateX(-100%)';
+        if (track) track.offsetWidth;
+    }
+
     var dotsEl = document.getElementById('apropos-dots');
     if (dotsEl) {
         for (var i = 0; i < _apropos.total; i++) {
@@ -539,22 +603,56 @@ document.addEventListener('DOMContentLoaded', function () {
             })(i);
         }
     }
-    aproposGo(0);
+    aproposGo(0, 0);
     setInterval(function () { aproposNav(1); }, 5500);
 });
 
 function aproposNav(dir) {
-    aproposGo((_apropos.cur + dir + _apropos.total) % _apropos.total);
+    aproposGo((_apropos.cur + dir + _apropos.total) % _apropos.total, dir);
 }
 
-function aproposGo(idx) {
+function aproposGo(idx, dir) {
+    if (!_apropos.total) return;
+    if (_apropos.total > 1 && _apropos.busy) return;
+    var prev = _apropos.cur;
     _apropos.cur = idx;
+    _apropos.pos = _apropos.total > 1 ? idx + 1 : idx;
+
+    if (_apropos.total > 1 && dir > 0 && prev === _apropos.total - 1 && idx === 0) {
+        _apropos.pos = _apropos.total + 1;
+    } else if (_apropos.total > 1 && dir < 0 && prev === 0 && idx === _apropos.total - 1) {
+        _apropos.pos = 0;
+    }
+
     var track = document.getElementById('apropos-carousel-track');
-    if (track) track.style.transform = 'translateX(-' + (idx * 100) + '%)';
-    var slides = document.querySelectorAll('#apropos-carousel .amv-apropos-carousel-slide');
+    if (track) {
+        if (_apropos.total > 1) {
+            _apropos.busy = true;
+            track.style.transition = 'transform 0.55s cubic-bezier(0.4, 0, 0.2, 1)';
+        }
+        track.style.transform = 'translateX(-' + (_apropos.pos * 100) + '%)';
+    }
+    var slides = document.querySelectorAll('#apropos-carousel .amv-apropos-carousel-slide:not([data-amv-clone])');
     slides.forEach(function (s, i) { s.classList.toggle('is-active', i === idx); });
     var dots = document.querySelectorAll('#apropos-dots .amv-page-cdot');
     dots.forEach(function (d, i) { d.classList.toggle('active', i === idx); });
+
+    if (track && _apropos.total > 1) {
+        setTimeout(function () {
+            if (_apropos.pos === 0) {
+                _apropos.pos = _apropos.total;
+                track.style.transition = 'none';
+                track.style.transform = 'translateX(-' + (_apropos.pos * 100) + '%)';
+                if (track) track.offsetWidth;
+            } else if (_apropos.pos === _apropos.total + 1) {
+                _apropos.pos = 1;
+                track.style.transition = 'none';
+                track.style.transform = 'translateX(-100%)';
+                if (track) track.offsetWidth;
+            }
+            _apropos.busy = false;
+        }, 590);
+    }
 }
 </script>
 @php

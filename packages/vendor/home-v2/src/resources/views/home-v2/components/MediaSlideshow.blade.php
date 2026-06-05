@@ -138,21 +138,68 @@
 
     var total       = {{ $total }};
     var current     = 0;
+    var position    = total > 1 ? 1 : 0;
     var isAnimating = false;
     var autoTimer   = null;
     var dots        = dotsWrap ? Array.from(dotsWrap.querySelectorAll('.mss-gallery-dot')) : [];
 
-    /* ---- Navigation ---- */
-    function goTo(n) {
-        if (isAnimating || total <= 1) return;
-        isAnimating = true;
-        current = ((n % total) + total) % total;
-        track.style.transition = 'transform ' + TRANS_DURATION + 'ms cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        track.style.transform  = 'translateX(-' + (current * 100) + '%)';
+    if (total > 1) {
+        var originalSlides = Array.from(track.children);
+        var firstClone = originalSlides[0].cloneNode(true);
+        var lastClone = originalSlides[originalSlides.length - 1].cloneNode(true);
+        firstClone.dataset.mssClone = 'first';
+        lastClone.dataset.mssClone = 'last';
+        track.appendChild(firstClone);
+        track.insertBefore(lastClone, originalSlides[0]);
+        track.style.transition = 'none';
+        track.style.transform = 'translateX(-100%)';
+    }
+
+    function updateDots() {
         dots.forEach(function (d, i) {
             d.classList.toggle('mss-gallery-dot--active', i === current);
         });
-        setTimeout(function () { isAnimating = false; }, TRANS_DURATION);
+    }
+
+    function settleLoopPosition() {
+        if (position === 0) {
+            position = total;
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(-' + (position * 100) + '%)';
+            if (track) track.offsetWidth;
+        } else if (position === total + 1) {
+            position = 1;
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(-' + (position * 100) + '%)';
+            if (track) track.offsetWidth;
+        }
+        isAnimating = false;
+    }
+
+    function moveToPosition(nextPosition, nextCurrent) {
+        if (isAnimating || total <= 1) return;
+        isAnimating = true;
+        position = nextPosition;
+        current = nextCurrent;
+        track.style.transition = 'transform ' + TRANS_DURATION + 'ms cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        track.style.transform = 'translateX(-' + (position * 100) + '%)';
+        updateDots();
+        setTimeout(settleLoopPosition, TRANS_DURATION + 30);
+    }
+
+    /* ---- Navigation ---- */
+    function goTo(n) {
+        if (isAnimating || total <= 1) return;
+        var nextCurrent = ((n % total) + total) % total;
+        var nextPosition = nextCurrent + 1;
+
+        if (current === total - 1 && nextCurrent === 0 && n > current) {
+            nextPosition = total + 1;
+        } else if (current === 0 && nextCurrent === total - 1 && n < current) {
+            nextPosition = 0;
+        }
+
+        moveToPosition(nextPosition, nextCurrent);
     }
 
     /* ---- Auto-play ---- */

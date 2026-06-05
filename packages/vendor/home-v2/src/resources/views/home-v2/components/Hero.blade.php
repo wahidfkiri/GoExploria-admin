@@ -900,9 +900,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const heroSlideDelayMs = 30000;
+    const shouldLoopHero = {{ $heroSlides->count() > 1 ? 'true' : 'false' }};
     const swiper = new Swiper(heroSwiperEl, {
-        loop: false,
-        rewind: {{ $heroSlides->count() > 1 ? 'true' : 'false' }},
+        loop: shouldLoopHero,
+        rewind: false,
+        loopAdditionalSlides: {{ max(0, $heroSlides->count()) }},
         autoplay: {
             delay: heroSlideDelayMs,
             disableOnInteraction: false,
@@ -923,6 +925,7 @@ document.addEventListener('DOMContentLoaded', function () {
         slidesPerView: 2,
         spaceBetween: 10,
         watchOverflow: true,
+        rewind: thumbnails.length > 1,
         navigation: {
             nextEl: root.querySelector('.go-hero-thumb-next'),
             prevEl: root.querySelector('.go-hero-thumb-prev')
@@ -944,18 +947,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }) : null;
 
     swiper.on('slideChange', function () {
+        const realIndex = typeof swiper.realIndex === 'number' ? swiper.realIndex : swiper.activeIndex;
         thumbnails.forEach(function (thumb, index) {
-            thumb.classList.toggle('active', index === swiper.activeIndex);
+            thumb.classList.toggle('active', index === realIndex);
         });
         syncHeroMedia(swiper.activeIndex);
         if (thumbsSwiper) {
-            thumbsSwiper.slideTo(swiper.activeIndex);
+            thumbsSwiper.slideTo(realIndex);
         }
     });
 
     thumbnails.forEach(function (thumb, index) {
         thumb.addEventListener('click', function () {
-            swiper.slideTo(index);
+            if (shouldLoopHero && typeof swiper.slideToLoop === 'function') {
+                swiper.slideToLoop(index);
+            } else {
+                swiper.slideTo(index);
+            }
             if (thumbsSwiper) {
                 thumbsSwiper.slideTo(index);
             }

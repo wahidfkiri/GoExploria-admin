@@ -118,11 +118,31 @@
                 if (nav.dataset.snbMainInit === '1') return;
                 nav.dataset.snbMainInit = '1';
 
-                const links = Array.from(nav.querySelectorAll('.snb-link[href^="#"]'));
+                let links = Array.from(nav.querySelectorAll('.snb-link[href^="#"]'));
                 const linksRow = nav.querySelector('.snb-links');
                 const leftBtn = nav.querySelector('.snb-scroll-left');
                 const rightBtn = nav.querySelector('.snb-scroll-right');
                 if (!links.length || !linksRow) return;
+
+                const setupInfiniteLoop = function () {
+                    if (linksRow.dataset.snbLoopReady === '1') return;
+                    if (links.length <= 1) return;
+
+                    Array.from(linksRow.children).forEach(function (child) {
+                        const clone = child.cloneNode(true);
+                        clone.dataset.snbClone = '1';
+                        clone.setAttribute('aria-hidden', 'true');
+                        clone.querySelectorAll('a, button').forEach(function (item) {
+                            item.setAttribute('tabindex', '-1');
+                        });
+                        linksRow.appendChild(clone);
+                    });
+
+                    linksRow.dataset.snbLoopReady = '1';
+                    links = Array.from(nav.querySelectorAll('.snb-link[href^="#"]'));
+                };
+
+                setupInfiniteLoop();
 
                 const centerLink = function (link) {
                     const targetLeft = link.offsetLeft - (linksRow.clientWidth / 2) + (link.clientWidth / 2);
@@ -167,7 +187,43 @@
                 let autoTimer = null;
                 let autoPaused = false;
 
+                const hasInfiniteLoop = function () {
+                    return linksRow.dataset.snbLoopReady === '1';
+                };
+
+                const getCycleWidth = function () {
+                    return hasInfiniteLoop() ? (linksRow.scrollWidth / 2) : 0;
+                };
+
+                const normalizeLoopPosition = function () {
+                    if (!hasInfiniteLoop()) return;
+                    const cycleWidth = getCycleWidth();
+                    if (cycleWidth <= 0) return;
+
+                    if (linksRow.scrollLeft >= cycleWidth) {
+                        linksRow.scrollLeft = linksRow.scrollLeft - cycleWidth;
+                    } else if (linksRow.scrollLeft < 0) {
+                        linksRow.scrollLeft = linksRow.scrollLeft + cycleWidth;
+                    }
+                };
+
                 const scrollByStep = function (direction) {
+                    if (hasInfiniteLoop()) {
+                        const cycleWidth = getCycleWidth();
+                        if (cycleWidth <= 0) return;
+
+                        if (direction < 0 && linksRow.scrollLeft <= step) {
+                            linksRow.scrollLeft = linksRow.scrollLeft + cycleWidth;
+                        }
+
+                        linksRow.scrollTo({
+                            left: linksRow.scrollLeft + (direction * step),
+                            behavior: 'smooth'
+                        });
+                        setTimeout(normalizeLoopPosition, 420);
+                        return;
+                    }
+
                     const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
                     if (maxLeft <= 0) return;
 
@@ -192,6 +248,16 @@
 
                 const autoTick = function () {
                     if (autoPaused) return;
+                    if (hasInfiniteLoop()) {
+                        const cycleWidth = getCycleWidth();
+                        if (cycleWidth <= 0) return;
+                        linksRow.scrollLeft = linksRow.scrollLeft + autoSpeed;
+                        if (linksRow.scrollLeft >= cycleWidth) {
+                            linksRow.scrollLeft = linksRow.scrollLeft - cycleWidth;
+                        }
+                        return;
+                    }
+
                     const maxLeft = linksRow.scrollWidth - linksRow.clientWidth;
                     if (maxLeft <= 0) return;
                     const next = linksRow.scrollLeft + autoSpeed;
