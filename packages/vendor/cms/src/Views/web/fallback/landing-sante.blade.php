@@ -284,8 +284,9 @@
                             @php
                                 $blogUrl = data_get($post, 'url') ?: '#blog';
                                 $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
+                                $blogTargetAttrs = $isExternalBlogUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
                             @endphp
-                            <a class="hl-blog" href="{{ $blogUrl }}" @if($isExternalBlogUrl) target="_blank" rel="noopener noreferrer" @endif>
+                            <a class="hl-blog" href="{{ $blogUrl }}"{!! $blogTargetAttrs !!}>
                                 <div class="hl-blog-img">
                                     @if(data_get($post, 'image'))
                                         <img src="{{ data_get($post, 'image') }}" alt="{{ data_get($post, 'title') }}">

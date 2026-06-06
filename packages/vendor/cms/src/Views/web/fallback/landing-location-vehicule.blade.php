@@ -417,8 +417,9 @@
                             $postImage = $mediaUrl(data_get($post, 'featured_image') ?: data_get($post, 'image') ?: data_get($post, 'thumbnail')) ?: ($gallery[$loop->index]['thumbnail'] ?? $gallery[0]['thumbnail']);
                             $blogUrl = data_get($post, 'url') ?: '#blog';
                             $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
+                            $blogTargetAttrs = $isExternalBlogUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
                         @endphp
-                        <a class="blog-card" href="{{ $blogUrl }}" @if($isExternalBlogUrl) target="_blank" rel="noopener noreferrer" @endif><div class="blog-img"><img src="{{ $postImage }}" alt="{{ data_get($post, 'title') }}"></div><div class="blog-body"><div class="blog-date">{{ data_get($post, 'date') ?: 'Blog' }}</div><h3 class="blog-title">{{ data_get($post, 'title') }}</h3><p class="blog-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags((string) (data_get($post, 'excerpt') ?: data_get($post, 'content'))), 140) }}</p><span class="blog-more">Lire la suite <i class="fa-solid fa-arrow-right"></i></span></div></a>
+                        <a class="blog-card" href="{{ $blogUrl }}"{!! $blogTargetAttrs !!}><div class="blog-img"><img src="{{ $postImage }}" alt="{{ data_get($post, 'title') }}"></div><div class="blog-body"><div class="blog-date">{{ data_get($post, 'date') ?: 'Blog' }}</div><h3 class="blog-title">{{ data_get($post, 'title') }}</h3><p class="blog-excerpt">{{ \Illuminate\Support\Str::limit(strip_tags((string) (data_get($post, 'excerpt') ?: data_get($post, 'content'))), 140) }}</p><span class="blog-more">Lire la suite <i class="fa-solid fa-arrow-right"></i></span></div></a>
                     @endforeach
                 </div>
             </div>

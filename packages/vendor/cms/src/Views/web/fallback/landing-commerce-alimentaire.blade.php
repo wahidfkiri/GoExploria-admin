@@ -1690,10 +1690,11 @@
                                     @php
                                         $blogUrl = data_get($post, 'url') ?: '#';
                                         $isExternalBlogUrl = \Illuminate\Support\Str::startsWith($blogUrl, ['http://', 'https://', '//']);
+                                        $blogTargetAttrs = $isExternalBlogUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
                                         $blogImage = data_get($post, 'image') ?: $foodBlogFallbackImage;
                                         $blogExcerpt = \Illuminate\Support\Str::limit(strip_tags((string) (data_get($post, 'excerpt') ?: data_get($post, 'content'))), 140);
                                     @endphp
-                                    <a class="food-blog-card" href="{{ $blogUrl }}" @if($isExternalBlogUrl) target="_blank" rel="noopener noreferrer" @endif>
+                                    <a class="food-blog-card" href="{{ $blogUrl }}"{!! $blogTargetAttrs !!}>
                                         @if($blogImage)
                                             <img src="{{ $blogImage }}" alt="{{ data_get($post, 'title') }}">
                                         @endif

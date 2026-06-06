@@ -283,8 +283,9 @@
                             @php
                                 $blogUrl = data_get($post, 'url') ?: '#blog';
                                 $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
+                                $blogTargetAttrs = $isExternalBlogUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
                             @endphp
-                            <a class="tt-blog" href="{{ $blogUrl }}" @if($isExternalBlogUrl) target="_blank" rel="noopener noreferrer" @endif>
+                            <a class="tt-blog" href="{{ $blogUrl }}"{!! $blogTargetAttrs !!}>
                                 <div class="tt-blog-img">
                                     @if(data_get($post, 'image'))
                                         <img src="{{ data_get($post, 'image') }}" alt="{{ data_get($post, 'title') }}">

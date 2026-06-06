@@ -1229,6 +1229,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
         @php
           $blogUrl = data_get($blog, 'url') ?: '#blog';
           $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
+          $blogTargetAttrs = $isExternalBlogUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
         @endphp
         <div class="blog-card{{ $loop->first ? ' featured' : '' }} reveal{{ $loop->iteration === 2 ? ' delay-1' : ($loop->iteration === 3 ? ' delay-2' : '') }}">
           <div class="blog-card-img"><img src="{{ data_get($blog, 'image') }}" alt="{{ data_get($blog, 'title') }}"></div>
@@ -1236,7 +1237,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
             <div class="blog-meta"><span class="cat">{{ data_get($blog, 'tag') }}</span><span>{{ data_get($blog, 'date') }}</span></div>
             <h3>{{ data_get($blog, 'title') }}</h3>
             <p>{{ data_get($blog, 'excerpt') }}</p>
-            <a href="{{ $blogUrl }}" class="blog-more" @if($isExternalBlogUrl) target="_blank" rel="noopener noreferrer" @endif>Lire l'article <i class="fa fa-arrow-right"></i></a>
+            <a href="{{ $blogUrl }}" class="blog-more"{!! $blogTargetAttrs !!}>Lire l'article <i class="fa fa-arrow-right"></i></a>
           </div>
         </div>
       @endforeach
@@ -1661,7 +1662,6 @@ window.addEventListener('load', initImmoMap);
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>
-
 
 
 

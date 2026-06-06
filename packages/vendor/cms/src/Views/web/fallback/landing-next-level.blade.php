@@ -1301,6 +1301,7 @@ html.light .float-cta {
         @php
           $blogUrl = data_get($blog, 'url') ?: '#blog';
           $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
+          $blogTargetAttrs = $isExternalBlogUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
           $blogClass = $loop->first ? 'blog-card featured reveal' : 'blog-card reveal' . ($loop->iteration === 2 || $loop->iteration === 5 ? ' delay-1' : ($loop->iteration === 3 ? ' delay-2' : ''));
         @endphp
         <div class="{{ $blogClass }}">
@@ -1314,7 +1315,7 @@ html.light .float-cta {
             @if($loop->first && data_get($blog, 'excerpt'))
               <p>{{ data_get($blog, 'excerpt') }}</p>
             @endif
-            <a href="{{ $blogUrl }}" class="blog-read" @if($isExternalBlogUrl) target="_blank" rel="noopener noreferrer" @endif>{{ $loop->first ? "Lire l'article" : 'Lire' }} →</a>
+            <a href="{{ $blogUrl }}" class="blog-read"{!! $blogTargetAttrs !!}>{{ $loop->first ? "Lire l'article" : 'Lire' }} →</a>
           </div>
         </div>
       @endforeach

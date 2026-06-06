@@ -1328,6 +1328,7 @@
                                     @php
                                         $blogUrl = data_get($post, 'url') ?: '#blog';
                                         $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
+                                        $blogTargetAttrs = $isExternalBlogUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
                                         $blogImage = data_get($post, 'image') ?: ($galleryImages[$loop->index] ?? $galleryImages[0] ?? null);
                                     @endphp
                                     <article class="lf-event">
@@ -1344,7 +1345,7 @@
                                             @endif
                                             <div class="lf-event-meta">
                                                 <span>{{ data_get($post, 'date') }}</span>
-                                                <a href="{{ $blogUrl }}" @if($isExternalBlogUrl) target="_blank" rel="noopener noreferrer" @endif>Lire</a>
+                                                <a href="{{ $blogUrl }}"{!! $blogTargetAttrs !!}>Lire</a>
                                             </div>
                                         </div>
                                     </article>
