@@ -147,6 +147,56 @@ class WebThemeController extends Controller
     }
 
     /**
+     * Affiche le detail public d'un article de blog d'etablissement.
+     */
+    public function showBlogPost(Request $request, $etablissementId, $slug)
+    {
+        $etablissement = Etablissement::findOrFail($etablissementId);
+        $this->etablissement = $etablissement;
+
+        if (function_exists('is_blog_enabled') && !is_blog_enabled($etablissement->id)) {
+            abort(404, 'Blog non disponible');
+        }
+
+        $post = BlogPost::query()
+            ->where('etablissement_id', $etablissement->id)
+            ->where('slug', $slug)
+            ->published()
+            ->firstOrFail();
+
+        $relatedPosts = BlogPost::query()
+            ->where('etablissement_id', $etablissement->id)
+            ->where('id', '!=', $post->id)
+            ->published()
+            ->orderByDesc('is_featured')
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at')
+            ->limit(3)
+            ->get()
+            ->map(function (BlogPost $related) {
+                $image = $this->resolveLandingAssetUrl($related->featured_image ?: $related->og_image_url);
+
+                return [
+                    'title' => $related->display_title,
+                    'excerpt' => trim((string) ($related->excerpt ?: Str::limit(strip_tags((string) $related->content), 120))),
+                    'image' => $image,
+                    'date' => optional($related->published_at ?: $related->created_at)->translatedFormat('j M Y'),
+                    'url' => $this->resolveLandingBlogUrl($related),
+                ];
+            })
+            ->values();
+
+        return view('cms::web.fallback.blog-detail', [
+            'etablissement' => $etablissement,
+            'post' => $post,
+            'relatedPosts' => $relatedPosts,
+            'featuredImageUrl' => $this->resolveLandingAssetUrl($post->featured_image ?: $post->og_image_url),
+            'brandLogoUrl' => function_exists('get_logo_url') ? get_logo_url($etablissement->id) : null,
+            'backUrl' => route('cms.company.home', ['etablissementId' => $etablissement->id]) . '#blog',
+        ]);
+    }
+
+    /**
      * Prévisualisation publique d'un thème (sans authentification)
      */
     public function publicPreview(Request $request, $etablissementId, $id)
@@ -1023,12 +1073,15 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
 
     protected function resolveLandingBlogUrl(BlogPost $post): string
     {
-        $canonical = trim((string) $post->canonical_url);
-        if ($canonical !== '' && $canonical !== '#') {
-            return $canonical;
+        $slug = trim((string) $post->slug);
+        if ($slug === '') {
+            return '#blog';
         }
 
-        return '#blog';
+        return route('cms.company.blog.show', [
+            'etablissementId' => $post->etablissement_id ?: ($this->etablissement->id ?? null),
+            'slug' => $slug,
+        ]);
     }
 
     /**

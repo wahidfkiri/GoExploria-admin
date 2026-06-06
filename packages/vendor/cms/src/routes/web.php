@@ -34,6 +34,9 @@ Route::middleware(['web'])->group(function () {
         
         // Pages dynamiques - ACCEPTE LE PARAMETRE GET preview_theme
         Route::get('/page/{slug}', [WebThemeController::class, 'showPage'])->name('page');
+
+        // Details des articles de blog publics
+        Route::get('/blog/{slug}', [WebThemeController::class, 'showBlogPost'])->name('blog.show');
         
         // Sitemap et robots
         Route::get('/sitemap.xml', [WebThemeController::class, 'sitemap'])->name('sitemap');
