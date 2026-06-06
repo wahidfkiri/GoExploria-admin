@@ -370,7 +370,7 @@ Route::get('/activites/{slug}',            [\Vendor\HomeV2\Http\Controllers\Home
 Route::get('/contact',      fn() => view('home-v2.pages.contact'))->name('contact');
 Route::get('/valeurs',      fn() => view('home-v2.pages.valeurs'))->name('valeurs');
 Route::get('/inscription',  fn() => view('home-v2.pages.inscription'))->name('inscription');
-Route::get('/mon-compte',   fn() => redirect()->route('login'))->name('mon-compte');
+Route::get('/mon-compte',   fn() => redirect()->away('https://app.goexploriabusiness.com/login'))->name('mon-compte');
 Route::get('/devis',        [DevisController::class, 'show'])->name('devis');
 Route::post('/devis',       [DevisController::class, 'submit'])->name('devis.submit');
 Route::get('/favoris',      fn() => view('home-v2.pages.favoris'))->name('favoris');
