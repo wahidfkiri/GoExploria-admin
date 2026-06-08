@@ -113,6 +113,10 @@ class Navigation {
     
     handleScroll() {
         const currentScrollY = window.scrollY;
+
+        if (!this.header) {
+            return;
+        }
         
         // Ajouter une classe au header quand on scroll (dès 10px)
         if (currentScrollY > 10) {
@@ -121,12 +125,7 @@ class Navigation {
             this.header.classList.remove('scrolled');
         }
         
-        // Cacher/afficher le header selon la direction du scroll
-        if (currentScrollY > this.lastScrollY && currentScrollY > 300) {
-            this.header.style.transform = 'translateY(-100%)';
-        } else {
-            this.header.style.transform = 'translateY(0)';
-        }
+        this.header.style.transform = '';
         
         this.lastScrollY = currentScrollY;
     }
