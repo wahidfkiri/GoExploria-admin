@@ -1293,7 +1293,18 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
         <div class="contact-card"><i class="fa fa-phone-alt"></i><div><h4>Téléphone</h4><p><a href="tel:{{ $phoneHref }}" style="color:var(--gold)">{{ $phone }}</a></p></div></div>
         <div class="contact-card"><i class="fa fa-envelope"></i><div><h4>Courriel</h4><p><a href="mailto:{{ $email }}" style="color:var(--gold)">{{ $email }}</a></p></div></div>
         <div class="contact-card"><i class="fa fa-map-marker-alt"></i><div><h4>Localisation</h4><p>{{ $address }}</p></div></div>
-        <div class="contact-card"><i class="fa fa-clock"></i><div><h4>Heures d'ouverture</h4><p>@foreach($workingHours as $row){{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}@if(!$loop->last)<br>@endif @endforeach</p></div></div>
+        <div class="contact-card">
+          <i class="fa fa-clock"></i>
+          <div>
+            <h4>Heures d'ouverture</h4>
+            <p>
+              @foreach($workingHours as $row)
+                {{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}
+                @if(!$loop->last)<br>@endif
+              @endforeach
+            </p>
+          </div>
+        </div>
         @if(!empty($socialLinks))
         <div style="margin-top:2rem">
           <h4 style="font-family:var(--font-sans);font-size:.75rem;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:1rem;color:var(--gold)">Suivez-nous</h4>
@@ -1662,6 +1673,5 @@ window.addEventListener('load', initImmoMap);
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>
-
 
 

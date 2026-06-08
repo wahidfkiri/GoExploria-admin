@@ -479,7 +479,21 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
-                <div><div class="logo"><span class="logo-mark">{{ $initials }}</span><span class="logo-text">{{ \Illuminate\Support\Str::limit($siteName, 18, '') }}<span>.</span></span></div><p>{{ $siteDescription }}</p>@if($visibleSocialLinks->isNotEmpty())<div class="social">@foreach($visibleSocialLinks as $social)@php $key = data_get($social, 'key') ?: data_get($social, 'name'); $icon = $socialIcons[$key] ?? 'fa-solid fa-share-nodes'; @endphp<a href="{{ data_get($social, 'url') }}" target="_blank" rel="noopener noreferrer"><i class="{{ $icon }}"></i></a>@endforeach</div>@endif</div>
+                <div>
+                    <div class="logo"><span class="logo-mark">{{ $initials }}</span><span class="logo-text">{{ \Illuminate\Support\Str::limit($siteName, 18, '') }}<span>.</span></span></div>
+                    <p>{{ $siteDescription }}</p>
+                    @if($visibleSocialLinks->isNotEmpty())
+                        <div class="social">
+                            @foreach($visibleSocialLinks as $social)
+                                @php
+                                    $key = data_get($social, 'key') ?: data_get($social, 'name');
+                                    $icon = $socialIcons[$key] ?? 'fa-solid fa-share-nodes';
+                                @endphp
+                                <a href="{{ data_get($social, 'url') }}" target="_blank" rel="noopener noreferrer"><i class="{{ $icon }}"></i></a>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
                 <div><h4>Vehicules</h4><ul><li><a href="#fleet">Citadines</a></li><li><a href="#fleet">Berlines</a></li><li><a href="#fleet">SUV</a></li><li><a href="#fleet">Prestige</a></li></ul></div>
                 <div><h4>Services</h4><ul><li><a href="#pricing">Courte duree</a></li><li><a href="#pricing">Longue duree</a></li><li><a href="#contact">Livraison</a></li><li><a href="#contact">Assistance</a></li></ul></div>
                 <div><h4>Contact</h4><ul><li><a href="tel:{{ $phoneDial }}">{{ $phone }}</a></li><li><a href="mailto:{{ $email }}">{{ $email }}</a></li><li><a href="#map">{{ \Illuminate\Support\Str::limit($address, 36) }}</a></li></ul></div>

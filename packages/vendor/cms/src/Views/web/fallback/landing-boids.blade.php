@@ -2246,7 +2246,8 @@
 
             <div class="fb-albums-grid" data-gjs-type="albums">
                 @foreach($facebookAlbums as $index => $album)
-                    <a class="fb-album" data-gjs-type="album" href="{{ $facebookUrl ?: '#section-facebook' }}" @if($facebookUrl) target="_blank" rel="noopener noreferrer" @endif>
+                    @php($facebookTargetAttrs = $facebookUrl ? ' target="_blank" rel="noopener noreferrer"' : '')
+                    <a class="fb-album" data-gjs-type="album" href="{{ $facebookUrl ?: '#section-facebook' }}"{!! $facebookTargetAttrs !!}>
                         <img src="{{ $album['thumbnail'] }}" alt="album" data-gjs-type="image">
                         <div class="fb-album-overlay" data-gjs-type="text">
                             {!! $facebookAlbumLabels[$index] ?? '<i class="fas fa-images"></i> Album' !!}
@@ -2289,7 +2290,7 @@
                         class="insta-card"
                         data-gjs-type="social-post"
                         href="{{ $instagramUrl ?: '#section-instagram' }}"
-                        @if($instagramUrl) target="_blank" rel="noopener noreferrer" @endif
+                        {!! $instagramUrl ? 'target="_blank" rel="noopener noreferrer"' : '' !!}
                     >
                         <img src="{{ $post['thumbnail'] }}" alt="{{ $postName }}" data-gjs-type="image">
                         <div class="insta-icon"><i class="fab fa-instagram"></i></div>
@@ -2329,8 +2330,9 @@
                     @php
                         $isLarge = $index === 0;
                         $category = $pinterestCategories[$index - 1] ?? '✨ Inspiration';
+                        $pinterestTargetAttrs = $pinterestUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
                     @endphp
-                    <a class="pin-card{{ $isLarge ? ' large' : '' }}" data-gjs-type="pin" href="{{ $pinterestUrl ?: '#section-pinterest' }}" @if($pinterestUrl) target="_blank" rel="noopener noreferrer" @endif>
+                    <a class="pin-card{{ $isLarge ? ' large' : '' }}" data-gjs-type="pin" href="{{ $pinterestUrl ?: '#section-pinterest' }}"{!! $pinterestTargetAttrs !!}>
                         <img src="{{ $pin['thumbnail'] }}" alt="Pinterest pin" data-gjs-type="image">
                         @if($isLarge)
                             <div class="pin-label" data-gjs-type="text">

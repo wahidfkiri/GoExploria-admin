@@ -284,19 +284,20 @@
                                 $blogUrl = data_get($post, 'url') ?: '#blog';
                                 $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
                                 $blogTargetAttrs = $isExternalBlogUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
+                                $blogTitle = data_get($post, 'title');
+                                $blogImage = data_get($post, 'image');
+                                $blogImageHtml = $blogImage ? '<img src="' . e($blogImage) . '" alt="' . e($blogTitle) . '">' : '';
+                                $blogExcerpt = data_get($post, 'excerpt');
+                                $blogExcerptHtml = $blogExcerpt ? '<p>' . e(\Illuminate\Support\Str::limit(strip_tags((string) $blogExcerpt), 130)) . '</p>' : '';
                             @endphp
                             <a class="tt-blog" href="{{ $blogUrl }}"{!! $blogTargetAttrs !!}>
                                 <div class="tt-blog-img">
-                                    @if(data_get($post, 'image'))
-                                        <img src="{{ data_get($post, 'image') }}" alt="{{ data_get($post, 'title') }}">
-                                    @endif
+                                    {!! $blogImageHtml !!}
                                 </div>
                                 <div class="tt-blog-body">
                                     <div class="tt-date">{{ data_get($post, 'date') ?: 'Blog' }}</div>
-                                    <h3>{{ data_get($post, 'title') }}</h3>
-                                    @if(data_get($post, 'excerpt'))
-                                        <p>{{ \Illuminate\Support\Str::limit(strip_tags((string) data_get($post, 'excerpt')), 130) }}</p>
-                                    @endif
+                                    <h3>{{ $blogTitle }}</h3>
+                                    {!! $blogExcerptHtml !!}
                                     <span class="tt-blog-more">Lire la suite <i class="fa-solid fa-arrow-right"></i></span>
                                 </div>
                             </a>
@@ -323,7 +324,20 @@
                             @if($phone)<div class="tt-info-item"><i class="fa-solid fa-phone"></i><div><strong>Téléphone</strong><a href="tel:{{ $phoneHref }}">{{ $phone }}</a></div></div>@endif
                             @if($email)<div class="tt-info-item"><i class="fa-solid fa-envelope"></i><div><strong>Courriel</strong><a href="mailto:{{ $email }}">{{ $email }}</a></div></div>@endif
                             @if($address)<div class="tt-info-item"><i class="fa-solid fa-location-dot"></i><div><strong>Adresse</strong><span>{{ $address }}</span></div></div>@endif
-                            @if(!empty($workingHours))<div class="tt-info-item"><i class="fa-solid fa-clock"></i><div><strong>Horaire</strong><span>@foreach($workingHours as $row){{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}@if(!$loop->last)<br>@endif @endforeach</span></div></div>@endif
+                            @if(!empty($workingHours))
+                                <div class="tt-info-item">
+                                    <i class="fa-solid fa-clock"></i>
+                                    <div>
+                                        <strong>Horaire</strong>
+                                        <span>
+                                            @foreach($workingHours as $row)
+                                                {{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}
+                                                @if(!$loop->last)<br>@endif
+                                            @endforeach
+                                        </span>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                         @if($socialLinks->isNotEmpty())
                             <div class="tt-social">
