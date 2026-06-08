@@ -1030,7 +1030,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
     <div class="products-hdr reveal">
       <div>
         <div class="sec-eyebrow">Nos collections</div>
-        <h2 class="sec-title">Produits <span class="text-gold">Vedette</span></h2>
+        <h2 class="sec-title">Nos Produits <span class="text-gold">disponible</span></h2>
       </div>
       <a href="#gallery" class="btn-outline" style="border-color:var(--gold);color:var(--gold)">Voir tout</a>
     </div>
@@ -1079,7 +1079,7 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 @include('cms::web.fallback.partials.establishment-products', [
   'etablissement' => $etablissement,
   'devisLink' => $devisLink,
-  'cmsProductsTitle' => "Produits à vendre de l'établissement",
+  'cmsProductsTitle' => 'Nos Produits disponible',
   'cmsProductsSubtitle' => "Maisons, chalets, services ou offres configurés dans le catalogue de cet établissement.",
   'cmsProductsSectionId' => 'products',
 ])
@@ -1672,4 +1672,3 @@ window.addEventListener('load', initImmoMap);
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>
-

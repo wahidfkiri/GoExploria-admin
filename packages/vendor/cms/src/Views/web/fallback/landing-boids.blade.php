@@ -1904,7 +1904,7 @@
                     @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
                     <article class="boids-card">
                         <div class="boids-head">
-                            <h3 class="boids-title">Produits en vedette</h3>
+                            <h3 class="boids-title">Nos Produits disponible</h3>
                             <p class="boids-sub">Sélection de produits mis en avant pour vos visiteurs.</p>
                         </div>
                         <div class="boids-body">
@@ -2076,7 +2076,7 @@
 
 @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
 <article class="boids-section" id="section-products">
-    <span class="boids-kicker"><i class="fas fa-box-open"></i> Produits Vedette</span>
+    <span class="boids-kicker"><i class="fas fa-box-open"></i> Nos Produits disponible</span>
     <div class="boids-row-head">
         <h3>Nos Matériaux Phares</h3>
         <p>Des matériaux de qualité supérieure issus de notre expertise en transformation du bois.</p>
@@ -2101,7 +2101,7 @@
 @include('cms::web.fallback.partials.establishment-products', [
     'etablissement' => $etablissement,
     'devisLink' => $devisLink,
-    'cmsProductsTitle' => "Produits à vendre de l'établissement",
+    'cmsProductsTitle' => 'Nos Produits disponible',
     'cmsProductsSubtitle' => "Les produits réellement configurés dans le CMS pour cet établissement.",
     'cmsProductsSectionId' => 'section-products',
 ])

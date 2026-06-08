@@ -353,7 +353,7 @@
     <section id="fleet">
         <div class="container">
             <div class="s-head">
-                <div><div class="s-label">Nos vehicules a vendre</div><h2 class="s-title">Vehicules<br><span class="acc">disponibles</span></h2></div>
+                <div><div class="s-label">Produits</div><h2 class="s-title">Nos Produits<br><span class="acc">disponible</span></h2></div>
                 <p class="s-sub">Cette section affiche uniquement les produits ajoutes pour cet etablissement.</p>
             </div>
             @if($vehicleCards->pluck('category')->unique()->filter()->count() > 1)

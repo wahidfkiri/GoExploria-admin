@@ -2,7 +2,7 @@
     $cmsLandingProducts = isset($cmsLandingProducts) ? collect($cmsLandingProducts) : collect();
     $cmsProductsLimit = (int) ($cmsProductsLimit ?? 8);
     $cmsProductsSectionId = $cmsProductsSectionId ?? 'produits-a-vendre';
-    $cmsProductsTitle = $cmsProductsTitle ?? 'Produits a vendre';
+    $cmsProductsTitle = 'Nos Produits disponible';
     $cmsProductsSubtitle = $cmsProductsSubtitle ?? 'Decouvrez les produits, services et offres disponibles directement aupres de cet etablissement.';
     $cmsProductsDevisLink = $devisLink ?? ($devisUrl ?? url('/devis'));
 

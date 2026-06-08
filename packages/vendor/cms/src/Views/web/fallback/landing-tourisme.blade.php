@@ -265,7 +265,7 @@
                         'cmsLandingProducts' => $cmsLandingProducts,
                         'cmsProductsLimit' => 8,
                         'cmsProductsSectionId' => 'offres-tourisme',
-                        'cmsProductsTitle' => 'Offres et expériences disponibles',
+                        'cmsProductsTitle' => 'Nos Produits disponible',
                         'cmsProductsSubtitle' => 'Les produits et forfaits publiés par cet établissement sont affichés automatiquement.'
                     ])
                 </div>

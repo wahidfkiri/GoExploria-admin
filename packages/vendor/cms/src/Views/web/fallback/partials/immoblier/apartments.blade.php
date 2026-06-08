@@ -2,7 +2,7 @@
     <div class="pc-container">
         <div class="pc-section-header pc-reveal">
             <span class="pc-eyebrow">Disponibilités</span>
-            <h2 class="pc-title">Logements et produits <em>en vedette</em></h2>
+            <h2 class="pc-title">Nos Produits <em>disponible</em></h2>
             <p class="pc-desc">Les produits réels de l’établissement sont affichés en priorité. Les cartes de démonstration apparaissent seulement si aucun produit à vendre n’est disponible.</p>
         </div>
         <div class="pc-apartment-grid">

@@ -1646,7 +1646,7 @@
                     @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
                     <section class="food-section food-section-pad" id="produits">
                         <span class="food-kicker">Produits</span>
-                        <h2 class="food-title">Comptoirs et produits <em>vedettes</em></h2>
+                        <h2 class="food-title">Nos Produits <em>disponible</em></h2>
                         <p class="food-copy">Une grille commerciale inspirée du design sélectionné pour présenter prix, catégories, images et textes courts.</p>
                         <div class="food-product-grid">
                             @foreach($productCards as $product)
@@ -1667,7 +1667,7 @@
                     @include('cms::web.fallback.partials.establishment-products', [
                         'etablissement' => $etablissement,
                         'devisLink' => $devisLink,
-                        'cmsProductsTitle' => "Produits à vendre de l'établissement",
+                        'cmsProductsTitle' => 'Nos Produits disponible',
                         'cmsProductsSubtitle' => "Catalogue connecté au CMS : produits publics, disponibles et associés à cet établissement.",
                         'cmsProductsSectionId' => 'produits',
                     ])

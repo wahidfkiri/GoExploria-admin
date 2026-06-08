@@ -266,7 +266,7 @@
                         'cmsLandingProducts' => $cmsLandingProducts,
                         'cmsProductsLimit' => 8,
                         'cmsProductsSectionId' => 'offres-sante',
-                        'cmsProductsTitle' => 'Services et offres disponibles',
+                        'cmsProductsTitle' => 'Nos Produits disponible',
                         'cmsProductsSubtitle' => 'Les produits et services publies par cet etablissement sont affiches automatiquement.'
                     ])
                 </div>

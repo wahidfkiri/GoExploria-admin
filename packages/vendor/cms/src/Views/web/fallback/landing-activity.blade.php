@@ -1279,7 +1279,7 @@
                     @include('cms::web.fallback.partials.establishment-products', [
                         'etablissement' => $etablissement,
                         'devisLink' => $devisLink,
-                        'cmsProductsTitle' => "Produits à vendre de l'établissement",
+                        'cmsProductsTitle' => 'Nos Produits disponible',
                     ])
 
                     <article id="section-reviews" class="lf-section">
