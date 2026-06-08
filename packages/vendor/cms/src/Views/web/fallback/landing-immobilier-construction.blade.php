@@ -975,17 +975,9 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 @include('cms::web.fallback.partials.landing-map-video-points')
 
 @if(collect($cmsPageSections ?? [])->isNotEmpty())
-<section id="cms-pages-content">
-  <div class="container">
     @foreach(collect($cmsPageSections) as $cmsPage)
-      <article class="cms-page-block reveal" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
-        <div class="cms-page-content">
           {!! data_get($cmsPage, 'content') !!}
-        </div>
-      </article>
     @endforeach
-  </div>
-</section>
 @endif
 
 <!-- STATS -->
