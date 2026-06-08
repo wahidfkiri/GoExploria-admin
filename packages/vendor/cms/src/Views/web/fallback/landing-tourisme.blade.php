@@ -250,6 +250,8 @@
     @endif
 
     <main>
+        @include('cms::web.fallback.partials.landing-map-video-points')
+
         @if(collect($cmsPageSections ?? [])->isNotEmpty())
                         @foreach(collect($cmsPageSections) as $cmsPage)
                                     {!! data_get($cmsPage, 'content') !!}
@@ -368,7 +370,6 @@
             </div>
         </section>
 
-        @include('cms::web.fallback.partials.landing-map-video-points')
     </main>
     @include('cms::web.fallback.partials.landing-media-slideshow')
 

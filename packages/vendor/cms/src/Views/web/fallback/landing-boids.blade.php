@@ -1978,6 +1978,8 @@
                     </article>
                     @endif
 
+                    @include('cms::web.fallback.partials.landing-map-video-points')
+
                     @if(collect($cmsPageSections ?? [])->isNotEmpty())
                         @foreach(collect($cmsPageSections) as $cmsPage)
                             <article class="boids-section boids-cms-page" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
@@ -2370,11 +2372,6 @@
                     <article class="boids-section" id="section-contact">
                         <span class="boids-kicker"><i class="fas fa-envelope-open-text"></i> Soumission</span>
                         <div class="boids-contact-grid">
-                            @if(is_maps_enabled($etablissement->id) && get_map_video_points($etablissement->id)->isNotEmpty())
-                                <div class="boids-map-wrap">
-                                    @include('cms::web.fallback.partials.landing-map-video-points', ['landingMapVariant' => 'inline'])
-                                </div>
-                            @endif
                             <form id="boidsLandingContactForm" class="boids-form" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_boids">
                                 @csrf
                                 <h4>Soumission Gratuite</h4>

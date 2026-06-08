@@ -256,6 +256,8 @@
                 @include('cms::web.fallback.partials.espace-forfait.hero')
             @endif
         @endif
+        @include('cms::web.fallback.partials.landing-map-video-points')
+
         @if(collect($cmsPageSections ?? [])->isNotEmpty())
             <section id="cms-pages-content">
                 <div class="container" style="display:grid;gap:22px;">

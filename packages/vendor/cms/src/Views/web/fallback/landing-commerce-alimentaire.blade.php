@@ -1634,6 +1634,8 @@
                     </section>
                     @endif
 
+                    @include('cms::web.fallback.partials.landing-map-video-points')
+
                     @if(collect($cmsPageSections ?? [])->isNotEmpty())
                             @foreach(collect($cmsPageSections) as $cmsPage)
                                         {!! data_get($cmsPage, 'content') !!}
@@ -1746,11 +1748,6 @@
                                     <button class="food-btn food-btn-primary" type="submit">Envoyer ma demande</button>
                                 </form>
                             </div>
-                            @if(is_maps_enabled($etablissement->id) && get_map_video_points($etablissement->id)->isNotEmpty())
-                                <div class="food-map">
-                                    @include('cms::web.fallback.partials.landing-map-video-points', ['landingMapVariant' => 'inline'])
-                                </div>
-                            @endif
                         </div>
                     </section>
                 </div>

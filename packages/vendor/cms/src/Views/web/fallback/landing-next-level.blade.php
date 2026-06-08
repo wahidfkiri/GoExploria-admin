@@ -1200,6 +1200,8 @@ html.light .float-cta {
 @endif
 @endif
 
+@include('cms::web.fallback.partials.landing-map-video-points')
+
 @if(collect($cmsPageSections ?? [])->isNotEmpty())
     @foreach(collect($cmsPageSections) as $cmsPage)
           {!! data_get($cmsPage, 'content') !!}
@@ -1432,8 +1434,6 @@ html.light .float-cta {
   </div>
 </section>
 
-<!-- MAP -->
-@include('cms::web.fallback.partials.landing-map-video-points')
 @include('cms::web.fallback.partials.landing-media-slideshow')
 @include('cms::web.fallback.partials.landing-contact-ajax')
 

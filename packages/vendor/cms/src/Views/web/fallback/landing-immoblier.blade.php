@@ -223,6 +223,8 @@
                 @include('cms::web.fallback.partials.immoblier.hero')
             @endif
         @endif
+        @include('cms::web.fallback.partials.landing-map-video-points')
+
         @if(collect($cmsPageSections ?? [])->isNotEmpty())
                 @foreach(collect($cmsPageSections) as $cmsPage)
                                 {!! data_get($cmsPage, 'content') !!}

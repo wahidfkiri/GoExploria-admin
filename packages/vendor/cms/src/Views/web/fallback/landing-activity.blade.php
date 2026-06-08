@@ -1152,6 +1152,8 @@
                     </article>
                     @endif
 
+                    @include('cms::web.fallback.partials.landing-map-video-points')
+
                     @if(collect($cmsPageSections ?? [])->isNotEmpty())
                         @foreach(collect($cmsPageSections) as $cmsPage)
                             <article class="lf-section" id="cms-page-{{ \Illuminate\Support\Str::slug(data_get($cmsPage, 'slug') ?: data_get($cmsPage, 'title') ?: $loop->iteration) }}">
@@ -1405,11 +1407,6 @@
                                 </div>
                             </form>
 
-                            @if(is_maps_enabled($etablissement->id) && get_map_video_points($etablissement->id)->isNotEmpty())
-                                <div class="lf-map-box">
-                                    @include('cms::web.fallback.partials.landing-map-video-points', ['landingMapVariant' => 'inline'])
-                                </div>
-                            @endif
                         </div>
                     </article>
                 </div>

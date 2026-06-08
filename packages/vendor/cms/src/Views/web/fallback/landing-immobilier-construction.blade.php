@@ -972,6 +972,8 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 @endif
 @endif
 
+@include('cms::web.fallback.partials.landing-map-video-points')
+
 @if(collect($cmsPageSections ?? [])->isNotEmpty())
 <section id="cms-pages-content">
   <div class="container">
@@ -1191,9 +1193,6 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
     @endif
   </div>
 </section>
-
-<!-- MAP -->
-@include('cms::web.fallback.partials.landing-map-video-points')
 
 <!-- BLOG -->
 @if(is_blog_enabled($etablissement->id))
@@ -1673,5 +1672,4 @@ window.addEventListener('load', initImmoMap);
     @include('cms::web.fallback.partials.landing-back-to-top')
 </body>
 </html>
-
 

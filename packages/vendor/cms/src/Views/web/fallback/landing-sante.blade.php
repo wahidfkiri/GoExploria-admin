@@ -243,6 +243,8 @@
     @endif
 
     <main>
+        @include('cms::web.fallback.partials.landing-map-video-points')
+
         @if(collect($cmsPageSections ?? [])->isNotEmpty())
             <section class="hl-section" id="contenu">
                 <div class="container hl-db-grid">
@@ -368,7 +370,6 @@
             </div>
         </section>
 
-        @include('cms::web.fallback.partials.landing-map-video-points')
     </main>
     @include('cms::web.fallback.partials.landing-media-slideshow')
 
