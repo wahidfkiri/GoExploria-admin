@@ -1586,7 +1586,6 @@
         <div class="food-wrap">
             <div class="food-grid">
                 <div class="food-right">
-    @include('cms::web.fallback.partials.landing-cms-header')
 
                     @if(is_slider_enabled($etablissement->id) && $heroSlides->isNotEmpty())
                     <section class="food-hero" id="hero">

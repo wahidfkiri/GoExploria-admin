@@ -5,12 +5,109 @@
 
     $landingMapVariant = $landingMapVariant ?? 'section';
     $landingMapIsInline = $landingMapVariant === 'inline';
-    $landingMapSectionTitle = function_exists('get_maps_section_title')
+    $landingMapSectionTitle = method_exists($etablissement, 'getSetting')
+        ? $etablissement->getSetting('map_section_title', null, 'general')
+        : null;
+    $landingMapSectionTitle = trim((string) $landingMapSectionTitle) !== ''
+        ? $landingMapSectionTitle
+        : (function_exists('get_maps_section_title')
         ? get_maps_section_title($etablissement->id)
-        : (($siteName ?? $etablissement->name ?? 'Carte interactive') . ' sur la carte');
+        : null);
     $landingMapSectionTitle = trim((string) $landingMapSectionTitle) !== ''
         ? $landingMapSectionTitle
         : (($siteName ?? $etablissement->name ?? 'Carte interactive') . ' sur la carte');
+
+    $landingMapMediaUrl = static function ($path) {
+        if (empty($path)) {
+            return null;
+        }
+
+        if (is_array($path)) {
+            $path = data_get($path, 'url') ?: data_get($path, 'thumbnail') ?: data_get($path, 'image') ?: data_get($path, 'path') ?: data_get($path, 0);
+        }
+
+        $path = trim((string) $path);
+        if ($path === '') {
+            return null;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['http://', 'https://', '//'])) {
+            return $path;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['/storage/'])) {
+            return asset(ltrim($path, '/'));
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['storage/'])) {
+            return asset($path);
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['/'])) {
+            return asset(ltrim($path, '/'));
+        }
+
+        return asset('storage/' . ltrim($path, '/'));
+    };
+
+    $landingMapGallerySource = collect($allGalleryMedia ?? []);
+    if ($landingMapGallerySource->isEmpty()) {
+        $landingMapGallerySource = collect($mainGalleryMedia ?? []);
+    }
+    if ($landingMapGallerySource->isEmpty()) {
+        $landingMapGallerySource = collect($galleryMedia ?? []);
+    }
+
+    $landingMapFallbackGallery = $landingMapGallerySource
+        ->map(function ($item) use ($landingMapMediaUrl) {
+            $type = strtolower((string) data_get($item, 'type', 'image'));
+            $src = $landingMapMediaUrl(data_get($item, 'url') ?: data_get($item, 'path') ?: data_get($item, 'image'));
+            $thumb = $landingMapMediaUrl(data_get($item, 'thumbnail') ?: data_get($item, 'thumb') ?: $src);
+
+            if (!$thumb || str_contains($type, 'video') || str_contains((string) $src, 'youtube.com') || str_contains((string) $src, 'youtu.be')) {
+                return null;
+            }
+
+            return [
+                'src' => $src ?: $thumb,
+                'thumb' => $thumb,
+                'caption' => data_get($item, 'name') ?: data_get($item, 'title') ?: 'Galerie',
+            ];
+        })
+        ->filter()
+        ->unique('thumb')
+        ->take(8)
+        ->values();
+
+    $landingMapNormalizeSocialUrl = static function ($url) {
+        $url = trim((string) $url);
+        if ($url === '' || $url === '#' || in_array(strtolower($url), ['null', 'undefined', 'none', 'n/a'], true)) {
+            return null;
+        }
+
+        if (!preg_match('#^(https?:)?//#i', $url) && !preg_match('#^(mailto:|tel:)#i', $url)) {
+            $url = 'https://' . ltrim($url, '/');
+        }
+
+        return $url;
+    };
+
+    $landingMapSocialLinks = collect(function_exists('get_establishment_social_links') ? get_establishment_social_links($etablissement) : ($socialLinks ?? []))
+        ->map(function ($link, $key) use ($landingMapNormalizeSocialUrl) {
+            $url = $landingMapNormalizeSocialUrl(data_get($link, 'url') ?: (is_string($link) ? $link : null));
+            if (!$url) {
+                return null;
+            }
+
+            return [
+                'key' => is_string($key) ? $key : (data_get($link, 'key') ?: data_get($link, 'name') ?: 'link'),
+                'url' => $url,
+                'label' => data_get($link, 'label') ?: data_get($link, 'name') ?: ucfirst((string) $key),
+                'icon' => data_get($link, 'icon') ?: 'fas fa-link',
+            ];
+        })
+        ->filter()
+        ->values();
     static $landingMapRenderCount = 0;
     $landingMapRenderCount++;
     $landingMapId = 'landingVideoMap' . substr(md5((string) ($etablissement->id ?? 'global')), 0, 8) . '-' . $landingMapRenderCount;
@@ -45,20 +142,85 @@
         'Autre',
     ];
 
-    $landingMapPayload = $landingMapPoints->map(function ($point) {
-        $region = trim((string) ($point->ville ?: $point->adresse ?: 'Autre région'));
+    $landingMapPayload = $landingMapPoints->map(function ($point) use ($landingMapMediaUrl, $landingMapFallbackGallery, $landingMapSocialLinks, $landingMapNormalizeSocialUrl) {
+        $region = trim((string) ($point->ville ?: $point->adresse ?: 'Autre region'));
+        $details = $point->relationLoaded('details') ? $point->details : null;
+        $pointImages = collect();
+
+        if (!empty($point->main_image)) {
+            $mainImageUrl = $landingMapMediaUrl($point->main_image);
+            if ($mainImageUrl) {
+                $pointImages->push([
+                    'src' => $mainImageUrl,
+                    'thumb' => $mainImageUrl,
+                    'caption' => $point->title ?: 'Image principale',
+                ]);
+            }
+        }
+
+        if ($point->relationLoaded('mainImage') && $point->mainImage) {
+            $mainImageUrl = $landingMapMediaUrl($point->mainImage->image ?? null);
+            $mainThumbUrl = $landingMapMediaUrl($point->mainImage->thumbnail ?? null) ?: $mainImageUrl;
+            if ($mainThumbUrl) {
+                $pointImages->push([
+                    'src' => $mainImageUrl ?: $mainThumbUrl,
+                    'thumb' => $mainThumbUrl,
+                    'caption' => $point->mainImage->caption ?: ($point->title ?: 'Image principale'),
+                ]);
+            }
+        }
+
+        if ($point->relationLoaded('images')) {
+            collect($point->images)->each(function ($image) use ($pointImages, $landingMapMediaUrl) {
+                $imageUrl = $landingMapMediaUrl($image->image ?? null);
+                $thumbUrl = $landingMapMediaUrl($image->thumbnail ?? null) ?: $imageUrl;
+                if ($thumbUrl) {
+                    $pointImages->push([
+                        'src' => $imageUrl ?: $thumbUrl,
+                        'thumb' => $thumbUrl,
+                        'caption' => $image->caption ?: 'Galerie',
+                    ]);
+                }
+            });
+        }
+
+        $pointImages = $pointImages
+            ->filter(fn ($item) => !empty($item['thumb']))
+            ->unique('thumb')
+            ->take(8)
+            ->values();
+
+        $pointSocialLinks = collect($details?->social_networks ?? [])
+            ->map(function ($link, $key) use ($landingMapNormalizeSocialUrl) {
+                $url = $landingMapNormalizeSocialUrl(data_get($link, 'url') ?: (is_string($link) ? $link : null));
+                if (!$url) {
+                    return null;
+                }
+
+                return [
+                    'key' => is_string($key) ? $key : 'link',
+                    'url' => $url,
+                    'label' => data_get($link, 'label') ?: ucfirst((string) $key),
+                    'icon' => data_get($link, 'icon') ?: 'fas fa-link',
+                ];
+            })
+            ->filter()
+            ->values();
 
         return [
             'id' => $point->id,
             'title' => $point->title ?: ($point->video_title ?? 'Point video'),
-            'description' => $point->description,
+            'description' => $details?->long_description ?: $point->description,
             'category' => $point->category ?: 'Autre',
-            'region' => $region !== '' ? $region : 'Autre région',
+            'region' => $region !== '' ? $region : 'Autre region',
             'latitude' => (float) $point->latitude,
             'longitude' => (float) $point->longitude,
             'adresse' => trim(collect([$point->adresse, $point->ville, $point->code_postal])->filter()->implode(', ')),
             'youtube_id' => $point->youtube_id,
             'embed_url' => $point->embed_url,
+            'gallery' => $pointImages->isNotEmpty() ? $pointImages : $landingMapFallbackGallery,
+            'socials' => $pointSocialLinks->isNotEmpty() ? $pointSocialLinks : $landingMapSocialLinks,
+            'website' => $landingMapNormalizeSocialUrl($details?->website ?: ($point->has_details_page ? $point->details_url : null)),
         ];
     })->values();
 
@@ -137,11 +299,22 @@
             .cms-map-video-modal-body h3{margin:0 0 12px;color:#111827;font-size:clamp(24px,3vw,36px);line-height:1.08;font-weight:950}
             .cms-map-video-modal-body p{margin:0;color:#475569;line-height:1.72}
             .cms-map-video-modal-address{margin-top:18px;padding-top:18px;border-top:1px solid #e5e7eb;color:#64748b;font-weight:750}
+            .cms-map-video-modal-section{margin-top:24px;padding-top:22px;border-top:1px solid #e5e7eb}
+            .cms-map-video-modal-section-title{display:flex;align-items:center;gap:8px;margin:0 0 14px;color:#111827;font-size:14px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+            .cms-map-video-modal-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+            .cms-map-video-modal-gallery a{position:relative;display:block;min-height:108px;border-radius:12px;overflow:hidden;background:#e5e7eb;border:1px solid #e5e7eb}
+            .cms-map-video-modal-gallery img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
+            .cms-map-video-modal-gallery a:hover img{transform:scale(1.06)}
+            .cms-map-video-modal-socials{display:flex;flex-wrap:wrap;gap:10px}
+            .cms-map-video-modal-social{display:inline-flex;align-items:center;gap:8px;min-height:40px;border-radius:999px;padding:9px 13px;background:#f5f7ff;color:#2a5bd7;text-decoration:none;font-size:13px;font-weight:850;border:1px solid #d8e2ff;transition:transform .2s,background .2s,color .2s}
+            .cms-map-video-modal-social:hover{transform:translateY(-2px);background:#2a5bd7;color:#fff}
+            .cms-map-video-modal-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;margin-top:20px;border-radius:10px;padding:10px 16px;background:#111827;color:#fff;text-decoration:none;font-weight:900}
+            .cms-map-video-modal-cta:hover{background:#2a5bd7;color:#fff}
             @keyframes cmsMapModalIn{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:translateY(0)}}
             .leaflet-popup-content-wrapper{border-radius:14px;overflow:hidden}
             .leaflet-popup-content{margin:12px}
             @media(max-width:980px){.cms-map-video-app{height:auto;min-height:0;overflow:visible}.cms-map-video-map-container{position:relative;height:430px;border-radius:20px 20px 0 0;overflow:hidden}.cms-map-video-sidebar{position:relative;inset:auto;width:100%;max-height:none;border-radius:0 0 20px 20px}.cms-map-video-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.cms-map-video-place{margin:0}.cms-map-video-head{display:block}.cms-map-video-count{margin-top:14px}}
-            @media(max-width:640px){.cms-map-video-section{padding:46px 14px}.cms-map-video-title{font-size:26px}.cms-map-video-map-container{height:380px}.cms-map-video-filters{padding:16px}.cms-map-video-list{grid-template-columns:1fr;padding:16px}.cms-map-video-place-media{height:150px}}
+            @media(max-width:640px){.cms-map-video-section{padding:46px 14px}.cms-map-video-title{font-size:26px}.cms-map-video-map-container{height:380px}.cms-map-video-filters{padding:16px}.cms-map-video-list{grid-template-columns:1fr;padding:16px}.cms-map-video-place-media{height:150px}.cms-map-video-modal-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.cms-map-video-modal-gallery a{min-height:104px}}
         </style>
     @endonce
 
@@ -326,6 +499,43 @@
                 return categoryIconMap[normalize(label)] || categoryIconMap.autre;
             };
 
+            const galleryHtml = point => {
+                const gallery = Array.isArray(point.gallery) ? point.gallery.filter(item => item && item.thumb) : [];
+                if (!gallery.length) return '';
+
+                return `
+                    <div class="cms-map-video-modal-section">
+                        <h4 class="cms-map-video-modal-section-title"><i class="fas fa-images"></i> Galerie</h4>
+                        <div class="cms-map-video-modal-gallery">
+                            ${gallery.map(item => `
+                                <a href="${esc(item.src || item.thumb)}" target="_blank" rel="noopener noreferrer" title="${esc(item.caption || point.title)}">
+                                    <img src="${esc(item.thumb)}" alt="${esc(item.caption || point.title)}" loading="lazy">
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            };
+
+            const socialsHtml = point => {
+                const socials = Array.isArray(point.socials) ? point.socials.filter(item => item && item.url) : [];
+                if (!socials.length) return '';
+
+                return `
+                    <div class="cms-map-video-modal-section">
+                        <h4 class="cms-map-video-modal-section-title"><i class="fas fa-share-nodes"></i> Réseaux sociaux</h4>
+                        <div class="cms-map-video-modal-socials">
+                            ${socials.map(item => `
+                                <a class="cms-map-video-modal-social" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(item.label || 'Réseau social')}">
+                                    <i class="${esc(item.icon || 'fas fa-link')}"></i>
+                                    <span>${esc(item.label || item.key || 'Lien')}</span>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            };
+
             const modalHtml = point => {
                 const markerMeta = categoryMarkerMeta(point.category_label);
                 return `
@@ -335,11 +545,14 @@
                     <div class="cms-map-video-modal-body">
                         <div class="cms-map-video-modal-tags">
                             <span class="cms-map-video-modal-tag"><i class="${markerMeta.icon}"></i> ${esc(point.category_label)}</span>
-                            <span class="cms-map-video-modal-tag"><i class="fas fa-location-dot"></i> ${esc(point.region || 'Autre région')}</span>
+                            <span class="cms-map-video-modal-tag"><i class="fas fa-location-dot"></i> ${esc(point.region || 'Autre region')}</span>
                         </div>
                         <h3 id="${esc(mapKey)}-modal-title">${esc(point.title)}</h3>
                         ${point.description ? `<p>${esc(point.description)}</p>` : '<p>Aucune description disponible.</p>'}
                         ${point.adresse ? `<div class="cms-map-video-modal-address"><i class="fas fa-map-marker-alt"></i> ${esc(point.adresse)}</div>` : ''}
+                        ${galleryHtml(point)}
+                        ${socialsHtml(point)}
+                        ${point.website ? `<a class="cms-map-video-modal-cta" href="${esc(point.website)}" target="_blank" rel="noopener noreferrer"><i class="fas fa-arrow-up-right-from-square"></i> Voir le site</a>` : ''}
                     </div>
                 `;
             };
@@ -366,7 +579,7 @@
                     ...point,
                     category_label: resolveCategoryLabel(point.category),
                     category_key: normalize(resolveCategoryLabel(point.category)),
-                    region_key: normalize(point.region || 'Autre région'),
+                    region_key: normalize(point.region || 'Autre region'),
                     embed_url: point.embed_url || ('https://www.youtube.com/embed/' + point.youtube_id + '?autoplay=0&rel=0&playsinline=1')
                 }));
 
@@ -427,7 +640,7 @@
                 if (!listNode) return;
 
                 if (!filteredPoints.length) {
-                    listNode.innerHTML = '<div class="cms-map-video-empty"><div><i class="fas fa-map-marker-alt"></i><h4>Aucun lieu trouvé</h4><p>Essayez une autre catégorie ou une autre région.</p></div></div>';
+                    listNode.innerHTML = '<div class="cms-map-video-empty"><div><i class="fas fa-map-marker-alt"></i><h4>Aucun lieu trouvé</h4><p>Essayez une autre catégorie ou une autre region.</p></div></div>';
                     return;
                 }
 
@@ -440,7 +653,7 @@
                         <div class="cms-map-video-place-info">
                             <div class="cms-map-video-place-meta">
                                 <span class="cms-map-video-chip"><i class="${categoryMarkerMeta(point.category_label).icon}"></i> ${esc(point.category_label)}</span>
-                                <span class="cms-map-video-region"><i class="fas fa-location-dot"></i> ${esc(point.region || 'Autre région')}</span>
+                                <span class="cms-map-video-region"><i class="fas fa-location-dot"></i> ${esc(point.region || 'Autre region')}</span>
                             </div>
                             <h4>${esc(point.title)}</h4>
                             ${point.description ? `<p>${esc(point.description).slice(0, 140)}</p>` : ''}

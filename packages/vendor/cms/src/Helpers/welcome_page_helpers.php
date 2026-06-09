@@ -1635,8 +1635,23 @@ if (!function_exists('get_map_video_points')) {
             }
 
             $hasVideosTable = \Illuminate\Support\Facades\Schema::hasTable('map_point_videos');
+            $hasImagesTable = \Illuminate\Support\Facades\Schema::hasTable('map_point_images');
+            $hasDetailsTable = \Illuminate\Support\Facades\Schema::hasTable('map_point_details');
+            $relations = ['mainImage'];
 
-            $query = \App\Models\MapPoint::with($hasVideosTable ? ['videos', 'mainImage'] : ['mainImage'])
+            if ($hasVideosTable) {
+                $relations[] = 'videos';
+            }
+
+            if ($hasImagesTable) {
+                $relations[] = 'images';
+            }
+
+            if ($hasDetailsTable) {
+                $relations[] = 'details';
+            }
+
+            $query = \App\Models\MapPoint::with($relations)
                 ->active()
                 ->where('etablissement_id', $etablissement->id)
                 ->whereNotNull('latitude')
@@ -1680,6 +1695,63 @@ if (!function_exists('get_map_video_points')) {
 
             return collect();
         }
+    }
+}
+
+if (!function_exists('get_cms_general_section_title')) {
+    /**
+     * Read a section title from cms_settings group=general.
+     */
+    function get_cms_general_section_title($etablissementId, string $key, string $fallback = ''): string
+    {
+        try {
+            $etablissement = $etablissementId
+                ? \App\Models\Etablissement::find($etablissementId)
+                : getCurrentEtablissement();
+
+            if (!$etablissement || !method_exists($etablissement, 'getSetting')) {
+                return $fallback;
+            }
+
+            $value = trim((string) ($etablissement->getSetting($key, '', 'general') ?? ''));
+
+            return $value !== '' ? $value : $fallback;
+        } catch (\Throwable $e) {
+            \Log::warning('get_cms_general_section_title error: ' . $e->getMessage(), [
+                'etablissement_id' => $etablissementId,
+                'key' => $key,
+            ]);
+
+            return $fallback;
+        }
+    }
+}
+
+if (!function_exists('get_maps_section_title')) {
+    function get_maps_section_title($etablissementId = null): string
+    {
+        return get_cms_general_section_title($etablissementId, 'map_section_title');
+    }
+}
+
+if (!function_exists('get_blog_section_title')) {
+    function get_blog_section_title($etablissementId = null): string
+    {
+        return get_cms_general_section_title($etablissementId, 'blog_section_title');
+    }
+}
+
+if (!function_exists('get_ecommerce_section_title')) {
+    function get_ecommerce_section_title($etablissementId = null): string
+    {
+        return get_cms_general_section_title($etablissementId, 'ecommerce_section_title');
+    }
+}
+
+if (!function_exists('get_slideshow_section_title')) {
+    function get_slideshow_section_title($etablissementId = null): string
+    {
+        return get_cms_general_section_title($etablissementId, 'slideshow_section_title');
     }
 }
 
