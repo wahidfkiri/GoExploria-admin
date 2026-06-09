@@ -1016,12 +1016,18 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 
 <!-- PRODUCTS -->
 @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
+@php
+  $constructionProductsSectionTitle = function_exists('get_ecommerce_section_title')
+    ? get_ecommerce_section_title($etablissement->id)
+    : 'Nos Produits disponible';
+  $constructionProductsSectionTitle = trim((string) $constructionProductsSectionTitle) !== '' ? $constructionProductsSectionTitle : 'Nos Produits disponible';
+@endphp
 <section id="products">
   <div class="container">
     <div class="products-hdr reveal">
       <div>
         <div class="sec-eyebrow">Nos collections</div>
-        <h2 class="sec-title">Nos Produits <span class="text-gold">disponible</span></h2>
+        <h2 class="sec-title">{{ $constructionProductsSectionTitle }}</h2>
       </div>
       <a href="#gallery" class="btn-outline" style="border-color:var(--gold);color:var(--gold)">Voir tout</a>
     </div>
@@ -1187,10 +1193,16 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
 
 <!-- BLOG -->
 @if(is_blog_enabled($etablissement->id))
+@php
+  $constructionBlogSectionTitle = function_exists('get_blog_section_title')
+    ? get_blog_section_title($etablissement->id)
+    : 'Blogue & Nouvelles';
+  $constructionBlogSectionTitle = trim((string) $constructionBlogSectionTitle) !== '' ? $constructionBlogSectionTitle : 'Blogue & Nouvelles';
+@endphp
 <section id="blog">
   <div class="container">
     <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem">
-      <div><div class="sec-eyebrow reveal">Actualités</div><h2 class="sec-title reveal">Blogue & <span class="text-gold">Nouvelles</span></h2></div>
+      <div><div class="sec-eyebrow reveal">Actualités</div><h2 class="sec-title reveal">{{ $constructionBlogSectionTitle }}</h2></div>
       <a href="#" class="btn-outline reveal" style="border-color:var(--gold);color:var(--gold)">Tous les articles</a>
     </div>
     @php

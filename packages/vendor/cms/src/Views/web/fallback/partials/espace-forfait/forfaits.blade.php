@@ -1,6 +1,12 @@
 ﻿<section id="forfaits">
   <div class="container">
-    <div class="forfaits-header"><div class="section-eyebrow">Produits</div><h2 class="section-title" style="color:white">Nos Produits <span class="italic">disponible</span></h2><p class="section-sub" style="color:rgba(255,255,255,.6)">{{ $cmsLandingProducts->isNotEmpty() ? 'Produits et forfaits réels configurés dans le CMS pour cet établissement.' : 'Des circuits soigneusement conçus pour tous les niveaux, incluant hébergement et accompagnement.' }}</p></div>
+    @php
+      $forfaitsProductsSectionTitle = isset($etablissement) && function_exists('get_ecommerce_section_title')
+        ? get_ecommerce_section_title($etablissement->id)
+        : 'Nos Produits disponible';
+      $forfaitsProductsSectionTitle = trim((string) $forfaitsProductsSectionTitle) !== '' ? $forfaitsProductsSectionTitle : 'Nos Produits disponible';
+    @endphp
+    <div class="forfaits-header"><div class="section-eyebrow">Produits</div><h2 class="section-title" style="color:white">{{ $forfaitsProductsSectionTitle }}</h2><p class="section-sub" style="color:rgba(255,255,255,.6)">{{ $cmsLandingProducts->isNotEmpty() ? 'Produits et forfaits réels configurés dans le CMS pour cet établissement.' : 'Des circuits soigneusement conçus pour tous les niveaux, incluant hébergement et accompagnement.' }}</p></div>
     <div class="forfaits-grid">
       @foreach($forfaitCards as $index => $item)
         @php $productLink = $devisLink . (str_contains($devisLink, '?') ? '&' : '?') . http_build_query(['etablissement_id' => $etablissement->id, 'product_id' => $item['product_id'] ?? null]); @endphp

@@ -273,11 +273,18 @@
         @endif
 
         @if(is_blog_enabled($etablissement->id) && $blogCards->isNotEmpty())
+            @php
+                $tourismeBlogSectionTitle = function_exists('get_blog_section_title')
+                    ? get_blog_section_title($etablissement->id)
+                    : 'Actualités';
+                $tourismeBlogSectionTitle = trim((string) $tourismeBlogSectionTitle) !== '' ? $tourismeBlogSectionTitle : 'Actualités';
+            @endphp
             <section class="tt-section" id="blog">
                 <div class="container">
                     <div class="tt-head">
                         <div>
                             <div class="tt-kicker">Actualités</div>
+                            <h2 class="tt-title">{{ $tourismeBlogSectionTitle }}</h2>
                         </div>
                     </div>
                     <div class="tt-blog-grid">

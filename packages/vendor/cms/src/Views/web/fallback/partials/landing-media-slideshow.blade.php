@@ -1,6 +1,10 @@
 @php
     $landingSlideshowEnabled = true;
     $landingSlideshowEtablissementId = data_get($etablissement ?? null, 'id');
+    $landingSlideshowTitle = $landingSlideshowEtablissementId && function_exists('get_slideshow_section_title')
+        ? get_slideshow_section_title($landingSlideshowEtablissementId)
+        : 'Galerie médias';
+    $landingSlideshowTitle = trim((string) $landingSlideshowTitle) !== '' ? $landingSlideshowTitle : 'Galerie médias';
 
     if ($landingSlideshowEtablissementId && function_exists('is_slideshow_enabled')) {
         $landingSlideshowEnabled = is_slideshow_enabled($landingSlideshowEtablissementId);
@@ -54,12 +58,19 @@
         <style>
             .cms-landing-slideshow-section{padding:64px 24px;background:var(--bg,#0b1220);color:var(--text,#fff)}
             .cms-landing-slideshow-section>.container{max-width:1240px;margin:0 auto}
+            .cms-landing-slideshow-head{margin-bottom:24px}
+            .cms-landing-slideshow-kicker{display:inline-flex;align-items:center;gap:8px;margin:0 0 8px;color:#f5c542;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+            .cms-landing-slideshow-title{margin:0;color:inherit;font-size:clamp(28px,4vw,46px);line-height:1.05;font-weight:950}
             .cms-landing-slideshow-section .mss-gallery-wrapper{margin-bottom:0}
         </style>
     @endonce
 
     <section class="cms-landing-slideshow-section" id="slideshow">
         <div class="container">
+            <div class="cms-landing-slideshow-head">
+                <p class="cms-landing-slideshow-kicker">Slideshow</p>
+                <h2 class="cms-landing-slideshow-title">{{ $landingSlideshowTitle }}</h2>
+            </div>
             @include('home-v2.components.MediaSlideshow', [
                 'slideshowId' => $landingSlideshowId,
                 'slides' => $landingSlideshowGroups->all(),

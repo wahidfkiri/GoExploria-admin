@@ -350,10 +350,16 @@
 
 
     @if($vehicleCards->isNotEmpty())
+    @php
+        $locationProductsSectionTitle = function_exists('get_ecommerce_section_title')
+            ? get_ecommerce_section_title($etablissement->id)
+            : 'Nos Produits disponible';
+        $locationProductsSectionTitle = trim((string) $locationProductsSectionTitle) !== '' ? $locationProductsSectionTitle : 'Nos Produits disponible';
+    @endphp
     <section id="fleet">
         <div class="container">
             <div class="s-head">
-                <div><div class="s-label">Produits</div><h2 class="s-title">Nos Produits<br><span class="acc">disponible</span></h2></div>
+                <div><div class="s-label">Produits</div><h2 class="s-title">{{ $locationProductsSectionTitle }}</h2></div>
                 <p class="s-sub">Cette section affiche uniquement les produits ajoutes pour cet etablissement.</p>
             </div>
             @if($vehicleCards->pluck('category')->unique()->filter()->count() > 1)
@@ -410,9 +416,15 @@
     @endif
 
     @if(is_blog_enabled($etablissement->id) && $blogCards->isNotEmpty())
+        @php
+            $locationBlogSectionTitle = function_exists('get_blog_section_title')
+                ? get_blog_section_title($etablissement->id)
+                : 'Conseils et actualites';
+            $locationBlogSectionTitle = trim((string) $locationBlogSectionTitle) !== '' ? $locationBlogSectionTitle : 'Conseils et actualites';
+        @endphp
         <section id="blog">
             <div class="container">
-                <div class="s-head"><div><div class="s-label">Blog</div><h2 class="s-title">Conseils<br><span class="acc">et actualites</span></h2></div></div>
+                <div class="s-head"><div><div class="s-label">Blog</div><h2 class="s-title">{{ $locationBlogSectionTitle }}</h2></div></div>
                 <div class="blog-grid">
                     @foreach($blogCards as $post)
                         @php

@@ -1259,10 +1259,16 @@ html.light .float-cta {
 
 <!-- BLOG -->
 @if(is_blog_enabled($etablissement->id))
+@php
+  $nextLevelBlogSectionTitle = function_exists('get_blog_section_title')
+    ? get_blog_section_title($etablissement->id)
+    : 'NOTRE BLOG';
+  $nextLevelBlogSectionTitle = trim((string) $nextLevelBlogSectionTitle) !== '' ? $nextLevelBlogSectionTitle : 'NOTRE BLOG';
+@endphp
 <section id="blog">
   <div class="container">
     <p class="section-label reveal">Inspirations & Conseils</p>
-    <h2 class="section-title reveal delay-1">NOTRE <span>BLOG</span></h2>
+    <h2 class="section-title reveal delay-1">{{ $nextLevelBlogSectionTitle }}</h2>
     <p class="section-sub reveal delay-2">Des articles pour inspirer vos prochains voyages, des conseils pratiques et des récits d'aventures vécues.</p>
     @php
       $nextLevelBlogFallback = collect([

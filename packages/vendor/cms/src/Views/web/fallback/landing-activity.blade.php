@@ -1321,9 +1321,15 @@
                     </article>
 
                     @if(is_blog_enabled($etablissement->id) && collect($blogPosts ?? [])->isNotEmpty())
+                        @php
+                            $activityBlogSectionTitle = function_exists('get_blog_section_title')
+                                ? get_blog_section_title($etablissement->id)
+                                : 'Blog & actualités';
+                            $activityBlogSectionTitle = trim((string) $activityBlogSectionTitle) !== '' ? $activityBlogSectionTitle : 'Blog & actualités';
+                        @endphp
                         <article id="blog" class="lf-section">
                             <div class="lf-row-head">
-                                <h3>Blog & actualités</h3>
+                                <h3>{{ $activityBlogSectionTitle }}</h3>
                             </div>
                             <div class="lf-events">
                                 @foreach(collect($blogPosts)->take(5) as $post)

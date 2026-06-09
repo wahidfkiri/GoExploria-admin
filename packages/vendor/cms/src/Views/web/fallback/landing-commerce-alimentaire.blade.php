@@ -1644,9 +1644,15 @@
 
 
                     @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
+                    @php
+                        $foodProductsSectionTitle = function_exists('get_ecommerce_section_title')
+                            ? get_ecommerce_section_title($etablissement->id)
+                            : 'Nos Produits disponible';
+                        $foodProductsSectionTitle = trim((string) $foodProductsSectionTitle) !== '' ? $foodProductsSectionTitle : 'Nos Produits disponible';
+                    @endphp
                     <section class="food-section food-section-pad" id="produits">
                         <span class="food-kicker">Produits</span>
-                        <h2 class="food-title">Nos Produits <em>disponible</em></h2>
+                        <h2 class="food-title">{{ $foodProductsSectionTitle }}</h2>
                         <p class="food-copy">Une grille commerciale inspirée du design sélectionné pour présenter prix, catégories, images et textes courts.</p>
                         <div class="food-product-grid">
                             @foreach($productCards as $product)
@@ -1683,9 +1689,15 @@
                     @include('cms::web.fallback.partials.landing-working-hours')
 
                     @if(is_blog_enabled($etablissement->id) && $foodBlogPosts->isNotEmpty())
+                        @php
+                            $foodBlogSectionTitle = function_exists('get_blog_section_title')
+                                ? get_blog_section_title($etablissement->id)
+                                : 'Actualités et conseils gourmands';
+                            $foodBlogSectionTitle = trim((string) $foodBlogSectionTitle) !== '' ? $foodBlogSectionTitle : 'Actualités et conseils gourmands';
+                        @endphp
                         <section class="food-section food-section-pad" id="blogs">
                             <span class="food-kicker">Blog</span>
-                            <h2 class="food-title">Actualités et conseils <em>gourmands</em></h2>
+                            <h2 class="food-title">{{ $foodBlogSectionTitle }}</h2>
                             <p class="food-copy">Articles publiés par {{ $siteName }}.</p>
                             <div class="food-blog-grid">
                                 @foreach($foodBlogPosts as $post)

@@ -2,7 +2,10 @@
     $cmsLandingProducts = isset($cmsLandingProducts) ? collect($cmsLandingProducts) : collect();
     $cmsProductsLimit = (int) ($cmsProductsLimit ?? 8);
     $cmsProductsSectionId = $cmsProductsSectionId ?? 'produits-a-vendre';
-    $cmsProductsTitle = 'Nos Produits disponible';
+    $cmsProductsTitle = isset($etablissement) && data_get($etablissement, 'id') && function_exists('get_ecommerce_section_title')
+        ? get_ecommerce_section_title($etablissement->id)
+        : ($cmsProductsTitle ?? 'Nos Produits disponible');
+    $cmsProductsTitle = trim((string) $cmsProductsTitle) !== '' ? $cmsProductsTitle : 'Nos Produits disponible';
     $cmsProductsSubtitle = $cmsProductsSubtitle ?? 'Decouvrez les produits, services et offres disponibles directement aupres de cet etablissement.';
     $cmsProductsDevisLink = $devisLink ?? ($devisUrl ?? url('/devis'));
 

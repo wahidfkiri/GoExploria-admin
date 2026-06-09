@@ -1902,9 +1902,15 @@
                     </article>
 
                     @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
+                    @php
+                        $boidsProductsSectionTitle = function_exists('get_ecommerce_section_title')
+                            ? get_ecommerce_section_title($etablissement->id)
+                            : 'Nos Produits disponible';
+                        $boidsProductsSectionTitle = trim((string) $boidsProductsSectionTitle) !== '' ? $boidsProductsSectionTitle : 'Nos Produits disponible';
+                    @endphp
                     <article class="boids-card">
                         <div class="boids-head">
-                            <h3 class="boids-title">Nos Produits disponible</h3>
+                            <h3 class="boids-title">{{ $boidsProductsSectionTitle }}</h3>
                             <p class="boids-sub">Sélection de produits mis en avant pour vos visiteurs.</p>
                         </div>
                         <div class="boids-body">
@@ -2075,8 +2081,15 @@
 </article>
 
 @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
+@php
+    $boidsProductsSectionTitle = $boidsProductsSectionTitle
+        ?? (function_exists('get_ecommerce_section_title')
+            ? get_ecommerce_section_title($etablissement->id)
+            : 'Nos Produits disponible');
+    $boidsProductsSectionTitle = trim((string) $boidsProductsSectionTitle) !== '' ? $boidsProductsSectionTitle : 'Nos Produits disponible';
+@endphp
 <article class="boids-section" id="section-products">
-    <span class="boids-kicker"><i class="fas fa-box-open"></i> Nos Produits disponible</span>
+    <span class="boids-kicker"><i class="fas fa-box-open"></i> {{ $boidsProductsSectionTitle }}</span>
     <div class="boids-row-head">
         <h3>Nos Matériaux Phares</h3>
         <p>Des matériaux de qualité supérieure issus de notre expertise en transformation du bois.</p>

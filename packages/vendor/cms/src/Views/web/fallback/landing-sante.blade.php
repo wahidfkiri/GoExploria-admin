@@ -274,11 +274,18 @@
         @endif
 
         @if(is_blog_enabled($etablissement->id) && $blogCards->isNotEmpty())
+            @php
+                $santeBlogSectionTitle = function_exists('get_blog_section_title')
+                    ? get_blog_section_title($etablissement->id)
+                    : 'Actualites';
+                $santeBlogSectionTitle = trim((string) $santeBlogSectionTitle) !== '' ? $santeBlogSectionTitle : 'Actualites';
+            @endphp
             <section class="hl-section" id="blog">
                 <div class="container">
                     <div class="hl-head">
                         <div>
                             <div class="hl-kicker">Actualites</div>
+                            <h2 class="hl-title">{{ $santeBlogSectionTitle }}</h2>
                         </div>
                     </div>
                     <div class="hl-blog-grid">

@@ -5,6 +5,12 @@
 
     $landingMapVariant = $landingMapVariant ?? 'section';
     $landingMapIsInline = $landingMapVariant === 'inline';
+    $landingMapSectionTitle = function_exists('get_maps_section_title')
+        ? get_maps_section_title($etablissement->id)
+        : (($siteName ?? $etablissement->name ?? 'Carte interactive') . ' sur la carte');
+    $landingMapSectionTitle = trim((string) $landingMapSectionTitle) !== ''
+        ? $landingMapSectionTitle
+        : (($siteName ?? $etablissement->name ?? 'Carte interactive') . ' sur la carte');
     static $landingMapRenderCount = 0;
     $landingMapRenderCount++;
     $landingMapId = 'landingVideoMap' . substr(md5((string) ($etablissement->id ?? 'global')), 0, 8) . '-' . $landingMapRenderCount;
@@ -144,7 +150,7 @@
             <div class="cms-map-video-head">
                 <div>
                     <p class="cms-map-video-kicker"><i class="fas fa-map-location-dot"></i> Carte interactive</p>
-                    <h2 class="cms-map-video-title">{{ $siteName ?? $etablissement->name }} sur la carte</h2>
+                    <h2 class="cms-map-video-title">{{ $landingMapSectionTitle }}</h2>
                 </div>
                 <div class="cms-map-video-count"><i class="fas fa-map-pin"></i> <span data-cms-map-total="{{ $landingMapId }}">{{ $landingMapPoints->count() }}</span> lieu{{ $landingMapPoints->count() > 1 ? 'x' : '' }} trouvé{{ $landingMapPoints->count() > 1 ? 's' : '' }}</div>
             </div>
