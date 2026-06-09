@@ -111,9 +111,27 @@
             .cms-map-video-popup h4{margin:0 0 10px;color:#111827;font-size:16px;line-height:1.25}
             .cms-map-video-popup iframe{width:100%;height:190px;border:0;border-radius:12px;background:#000}
             .cms-map-video-popup-meta{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 0;color:#64748b;font-size:12px;font-weight:700}
+            .cms-map-video-details-btn{width:100%;min-height:38px;margin-top:12px;border:0;border-radius:8px;background:#2a5bd7;color:#fff;font-size:12px;font-weight:850;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;transition:background .2s,transform .2s}
+            .cms-map-video-details-btn:hover{background:#1a3fa0;transform:translateY(-1px)}
+            .cms-map-video-place-actions{display:flex;gap:10px;margin-top:13px}
+            .cms-map-video-place-actions .cms-map-video-details-btn{margin:0;min-height:36px}
             .cms-map-video-marker{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;border:3px solid #fff;box-shadow:0 10px 28px rgba(0,0,0,.35);transition:transform .2s,box-shadow .2s}
             .cms-map-video-marker i{font-size:16px;line-height:1}
             .cms-map-video-marker.is-filtered{transform:scale(1.13);box-shadow:0 0 0 4px rgba(42,91,215,.24),0 12px 30px rgba(0,0,0,.38)}
+            .cms-map-video-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:5000;overflow:auto;padding:34px 16px}
+            .cms-map-video-modal.is-open{display:block}
+            .cms-map-video-modal-card{position:relative;width:min(920px,94vw);margin:36px auto;background:#fff;color:#111827;border-radius:20px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.35);animation:cmsMapModalIn .25s ease}
+            .cms-map-video-modal-close{position:absolute;top:16px;right:16px;z-index:3;width:42px;height:42px;border:0;border-radius:50%;background:rgba(0,0,0,.58);color:#fff;font-size:24px;line-height:1;display:grid;place-items:center;cursor:pointer;transition:background .2s,transform .2s}
+            .cms-map-video-modal-close:hover{background:rgba(0,0,0,.82);transform:rotate(90deg)}
+            .cms-map-video-modal-media{position:relative;background:#000;aspect-ratio:16/9}
+            .cms-map-video-modal-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+            .cms-map-video-modal-body{padding:clamp(22px,4vw,36px)}
+            .cms-map-video-modal-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+            .cms-map-video-modal-tag{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:7px 11px;background:#f5f7ff;color:#2a5bd7;font-size:12px;font-weight:850}
+            .cms-map-video-modal-body h3{margin:0 0 12px;color:#111827;font-size:clamp(24px,3vw,36px);line-height:1.08;font-weight:950}
+            .cms-map-video-modal-body p{margin:0;color:#475569;line-height:1.72}
+            .cms-map-video-modal-address{margin-top:18px;padding-top:18px;border-top:1px solid #e5e7eb;color:#64748b;font-weight:750}
+            @keyframes cmsMapModalIn{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:translateY(0)}}
             .leaflet-popup-content-wrapper{border-radius:14px;overflow:hidden}
             .leaflet-popup-content{margin:12px}
             @media(max-width:980px){.cms-map-video-app{height:auto;min-height:0;overflow:visible}.cms-map-video-map-container{position:relative;height:430px;border-radius:20px 20px 0 0;overflow:hidden}.cms-map-video-sidebar{position:relative;inset:auto;width:100%;max-height:none;border-radius:0 0 20px 20px}.cms-map-video-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.cms-map-video-place{margin:0}.cms-map-video-head{display:block}.cms-map-video-count{margin-top:14px}}
@@ -167,6 +185,12 @@
             </div>
         </div>
     </section>
+    <div id="{{ $landingMapId }}-modal" class="cms-map-video-modal" aria-hidden="true">
+        <div class="cms-map-video-modal-card" role="dialog" aria-modal="true" aria-labelledby="{{ $landingMapId }}-modal-title">
+            <button type="button" class="cms-map-video-modal-close" data-cms-map-modal-close="{{ $landingMapId }}" aria-label="Fermer">&times;</button>
+            <div data-cms-map-modal-content="{{ $landingMapId }}"></div>
+        </div>
+    </div>
 
     @once
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -183,6 +207,9 @@
             const countNode = document.querySelector(`[data-cms-map-count="${mapKey}"]`);
             const totalNode = document.querySelector(`[data-cms-map-total="${mapKey}"]`);
             const locateButton = document.querySelector(`[data-cms-map-locate="${mapKey}"]`);
+            const modalNode = document.getElementById(`${mapKey}-modal`);
+            const modalContentNode = document.querySelector(`[data-cms-map-modal-content="${mapKey}"]`);
+            const modalCloseButton = document.querySelector(`[data-cms-map-modal-close="${mapKey}"]`);
             const allowedCategories = @json($landingMapCategories);
             let points = @json($landingMapPayload);
 
@@ -293,6 +320,40 @@
                 return categoryIconMap[normalize(label)] || categoryIconMap.autre;
             };
 
+            const modalHtml = point => {
+                const markerMeta = categoryMarkerMeta(point.category_label);
+                return `
+                    <div class="cms-map-video-modal-media">
+                        <iframe src="${esc(point.embed_url)}" title="${esc(point.title)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="cms-map-video-modal-body">
+                        <div class="cms-map-video-modal-tags">
+                            <span class="cms-map-video-modal-tag"><i class="${markerMeta.icon}"></i> ${esc(point.category_label)}</span>
+                            <span class="cms-map-video-modal-tag"><i class="fas fa-location-dot"></i> ${esc(point.region || 'Autre région')}</span>
+                        </div>
+                        <h3 id="${esc(mapKey)}-modal-title">${esc(point.title)}</h3>
+                        ${point.description ? `<p>${esc(point.description)}</p>` : '<p>Aucune description disponible.</p>'}
+                        ${point.adresse ? `<div class="cms-map-video-modal-address"><i class="fas fa-map-marker-alt"></i> ${esc(point.adresse)}</div>` : ''}
+                    </div>
+                `;
+            };
+
+            const closeModal = () => {
+                if (!modalNode || !modalContentNode) return;
+                modalNode.classList.remove('is-open');
+                modalNode.setAttribute('aria-hidden', 'true');
+                modalContentNode.innerHTML = '';
+                document.body.style.overflow = '';
+            };
+
+            const openModal = point => {
+                if (!modalNode || !modalContentNode || !point) return;
+                modalContentNode.innerHTML = modalHtml(point);
+                modalNode.classList.add('is-open');
+                modalNode.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            };
+
             points = points
                 .filter(point => Number.isFinite(Number(point.latitude)) && Number.isFinite(Number(point.longitude)) && point.youtube_id)
                 .map(point => ({
@@ -350,6 +411,9 @@
                         <span><i class="fas fa-tag"></i> ${esc(point.category_label)}</span>
                         <span><i class="fas fa-location-dot"></i> ${esc(point.region || '')}</span>
                     </div>
+                    <button type="button" class="cms-map-video-details-btn" data-cms-map-details="${esc(point.id)}">
+                        <i class="fas fa-info-circle"></i> Voir détail
+                    </button>
                 </div>
             `;
 
@@ -374,6 +438,11 @@
                             </div>
                             <h4>${esc(point.title)}</h4>
                             ${point.description ? `<p>${esc(point.description).slice(0, 140)}</p>` : ''}
+                            <div class="cms-map-video-place-actions">
+                                <button type="button" class="cms-map-video-details-btn" data-cms-map-details="${esc(point.id)}">
+                                    <i class="fas fa-eye"></i> Voir détail
+                                </button>
+                            </div>
                         </div>
                     </article>
                 `).join('');
@@ -389,6 +458,14 @@
                         map.setView([Number(point.latitude), Number(point.longitude)], Math.max(map.getZoom(), 13), { animate: true });
                         marker.openPopup();
                         renderList(filteredPoints);
+                    });
+                });
+
+                listNode.querySelectorAll('[data-cms-map-details]').forEach(button => {
+                    button.addEventListener('click', event => {
+                        event.stopPropagation();
+                        const point = points.find(candidate => String(candidate.id) === String(button.dataset.cmsMapDetails));
+                        openModal(point);
                     });
                 });
             };
@@ -419,6 +496,16 @@
                     marker.on('click', () => {
                         activePlaceId = point.id;
                         renderList(filteredPoints);
+                    });
+                    marker.on('popupopen', event => {
+                        const popupNode = event.popup.getElement();
+                        popupNode?.querySelectorAll('[data-cms-map-details]').forEach(button => {
+                            button.addEventListener('click', clickEvent => {
+                                clickEvent.preventDefault();
+                                clickEvent.stopPropagation();
+                                openModal(point);
+                            });
+                        });
                     });
 
                     markerRefs.set(String(point.id), marker);
@@ -464,6 +551,15 @@
                 }, () => {
                     locateButton.disabled = false;
                 }, { enableHighAccuracy: true, timeout: 10000 });
+            });
+            modalCloseButton?.addEventListener('click', closeModal);
+            modalNode?.addEventListener('click', event => {
+                if (event.target === modalNode) closeModal();
+            });
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape' && modalNode?.classList.contains('is-open')) {
+                    closeModal();
+                }
             });
 
             renderMarkers();

@@ -254,7 +254,7 @@
 @endphp
 
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -874,7 +874,6 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="theme-btn" id="themeToggle" title="Changer de thème"><i class="fa fa-sun" id="themeIcon"></i></button>
       <a href="{{ $devisLink }}" class="btn-nav-cta" target="_blank" rel="noopener noreferrer">Soumission gratuite</a>
       <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
     </div>
@@ -1393,15 +1392,8 @@ if ('ResizeObserver' in window) {
   if (templateNavbar) headerResizeObserver.observe(templateNavbar);
 }
 
-/* ============ THEME ============ */
-const themeToggle = document.getElementById('themeToggle');
-const themeIcon   = document.getElementById('themeIcon');
-let isDark = true;
-themeToggle.addEventListener('click', () => {
-  isDark = !isDark;
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  themeIcon.className = isDark ? 'fa fa-sun' : 'fa fa-moon';
-});
+/* ============ LIGHT THEME ONLY ============ */
+document.documentElement.setAttribute('data-theme', 'light');
 
 /* ============ CURSOR ============ */
 const cursor = document.getElementById('cursor');

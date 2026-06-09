@@ -205,7 +205,7 @@
         return e(implode(' ', $words)) . ' <span class="gold">' . e($last) . '</span>';
     };
 @endphp<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -221,12 +221,8 @@
 <script>
 (function () {
   try {
-    const saved = localStorage.getItem('go-exploria-theme');
-    if (saved === 'light') {
-      document.documentElement.classList.add('light');
-    } else {
-      document.documentElement.classList.remove('light');
-    }
+    document.documentElement.classList.add('light');
+    localStorage.setItem('go-exploria-theme', 'light');
   } catch (error) {}
 })();
 </script>
@@ -1134,12 +1130,6 @@ html.light .float-cta {
         <button type="button" class="lang-btn" data-lang="ar" role="menuitem" aria-label="العربية"><span class="fi fi-sa lang-flag" aria-hidden="true"></span><span class="lang-code">AR</span></button>
       </div>
     </div>
-    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Changer le thème" aria-pressed="false" title="Mode clair / sombre">
-      <span class="theme-toggle-icon" aria-hidden="true">
-        <i class="fas fa-moon"></i>
-        <i class="fas fa-sun"></i>
-      </span>
-    </button>
   </div>
   <div class="hamburger" id="hamburger">
     <span></span><span></span><span></span>
@@ -1503,26 +1493,15 @@ html.light .float-cta {
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// ── THEME TOGGLE ──
+// ── LIGHT THEME ONLY ──
 (function () {
   const html = document.documentElement;
-  const btn = document.getElementById('themeToggle');
   const prefKey = 'go-exploria-theme';
 
-  if (!btn) return;
-
-  const syncThemeButton = () => {
-    btn.setAttribute('aria-pressed', html.classList.contains('light') ? 'true' : 'false');
-  };
-
-  syncThemeButton();
-  btn.addEventListener('click', () => {
-    const isLight = html.classList.toggle('light');
-    try {
-      localStorage.setItem(prefKey, isLight ? 'light' : 'dark');
-    } catch (error) {}
-    syncThemeButton();
-  });
+  html.classList.add('light');
+  try {
+    localStorage.setItem(prefKey, 'light');
+  } catch (error) {}
 })();
 
 // ── LOCAL LANGUAGE DICTIONARY ──
