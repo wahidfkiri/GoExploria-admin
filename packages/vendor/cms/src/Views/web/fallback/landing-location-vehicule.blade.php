@@ -409,9 +409,16 @@
 
     @include('cms::web.fallback.partials.landing-working-hours')
     @php
-        $locationContactTitle = function_exists('get_contact_form_title')
-            ? get_contact_form_title($etablissement->id, 'Reservez votre vehicule')
-            : 'Reservez votre vehicule';
+        $locationContactTitle = 'Reservez votre vehicule';
+        $locationContactTitleSetting = method_exists($etablissement, 'getSetting')
+            ? trim((string) ($etablissement->getSetting('contact_form_title', null, 'general') ?? ''))
+            : '';
+
+        if ($locationContactTitleSetting !== '') {
+            $locationContactTitle = $locationContactTitleSetting;
+        } elseif (function_exists('get_contact_form_title')) {
+            $locationContactTitle = get_contact_form_title($etablissement->id, $locationContactTitle);
+        }
     @endphp
 
     <section id="contact">
