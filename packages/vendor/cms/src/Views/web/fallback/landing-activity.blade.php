@@ -1228,7 +1228,12 @@
 
                     <article id="section-contact-map" class="lf-section">
                         <div class="lf-row-head">
-                            <h3>Contact rapide & carte</h3>
+                            @php
+                                $activityContactTitle = function_exists('get_contact_form_title')
+                                    ? get_contact_form_title($etablissement->id, 'Contact rapide & carte')
+                                    : 'Contact rapide & carte';
+                            @endphp
+                            <h3>{{ $activityContactTitle }}</h3>
                         </div>
 
                         <div class="lf-contact-map">

@@ -1,8 +1,13 @@
 ﻿<section class="pc-section pc-contact" id="contact">
     <div class="pc-container pc-contact-grid">
         <div class="pc-reveal">
+            @php
+                $immoblierContactTitle = function_exists('get_contact_form_title')
+                    ? get_contact_form_title($etablissement->id, 'Planifiez une visite')
+                    : 'Planifiez une visite';
+            @endphp
             <span class="pc-eyebrow">Contact</span>
-            <h2 class="pc-title">Planifiez une <em>visite</em></h2>
+            <h2 class="pc-title">{{ $immoblierContactTitle }}</h2>
             <p class="pc-desc">Remplissez le formulaire pour demander les disponibilités, poser une question ou organiser une visite personnalisée.</p>
             <form class="pc-form" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_immoblier">
                 @csrf

@@ -1229,8 +1229,13 @@ footer{background:#050505;color:rgba(255,255,255,.55);padding:4.5rem 2.5rem 2rem
   <div class="container">
     <div class="contact-grid">
       <div class="reveal">
+        @php
+          $constructionContactTitle = function_exists('get_contact_form_title')
+            ? get_contact_form_title($etablissement->id, 'Parlez-nous de votre projet')
+            : 'Parlez-nous de votre projet';
+        @endphp
         <div class="sec-eyebrow">Contactez-nous</div>
-        <h2 style="font-family:var(--font-serif);font-size:2.2rem;margin-bottom:.5rem">Parlez-nous de votre <span class="text-gold">projet</span></h2>
+        <h2 style="font-family:var(--font-serif);font-size:2.2rem;margin-bottom:.5rem">{{ $constructionContactTitle }}</h2>
         <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:2rem">Remplissez le formulaire ci-dessous et notre équipe vous contactera dans les 24 heures.</p>
         <form method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_immobilier_construction">
           @csrf

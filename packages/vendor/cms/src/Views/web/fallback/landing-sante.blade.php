@@ -320,10 +320,15 @@
 
         <section class="hl-section alt" id="contact">
             <div class="container">
+                @php
+                    $santeContactTitle = function_exists('get_contact_form_title')
+                        ? get_contact_form_title($etablissement->id, 'Envoyer une demande')
+                        : 'Envoyer une demande';
+                @endphp
                 <div class="hl-head">
                     <div>
                         <div class="hl-kicker">Contact</div>
-                        <h2 class="hl-title">Envoyer une demande</h2>
+                        <h2 class="hl-title">{{ $santeContactTitle }}</h2>
                     </div>
                     <p class="hl-sub">Le message est enregistre dans les contacts CMS et transmis avec les informations saisies.</p>
                 </div>

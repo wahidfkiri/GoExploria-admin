@@ -1755,6 +1755,13 @@ if (!function_exists('get_slideshow_section_title')) {
     }
 }
 
+if (!function_exists('get_contact_form_title')) {
+    function get_contact_form_title($etablissementId = null, string $fallback = ''): string
+    {
+        return get_cms_general_section_title($etablissementId, 'contact_form_title', $fallback);
+    }
+}
+
 if (!function_exists('get_map_points_json')) {
     /**
      * Get map points serialised as JSON — ready to be injected into a JS variable.

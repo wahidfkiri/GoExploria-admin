@@ -1,7 +1,12 @@
 <section id="contact">
   <div class="container">
+    @php
+      $forfaitContactTitle = function_exists('get_contact_form_title')
+        ? get_contact_form_title($etablissement->id, 'Parlez-nous de votre projet')
+        : 'Parlez-nous de votre projet';
+    @endphp
     <div class="section-eyebrow">Contactez-nous</div>
-    <h2 class="section-title">Parlez-nous de votre <span class="italic">projet</span></h2>
+    <h2 class="section-title">{{ $forfaitContactTitle }}</h2>
     <p class="section-sub">Remplissez le formulaire et notre équipe vous contactera pour confirmer les disponibilités.</p>
     <div class="contact-grid">
       <div>
@@ -20,7 +25,7 @@
       </div>
       <form class="contact-form" id="tlContactForm" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_espace_forfait">
         @csrf
-        <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin:0 0 24px">Demande de réservation</h3>
+        <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin:0 0 24px">{{ $forfaitContactTitle }}</h3>
         <div class="form-row">
           <div class="form-group"><label>Prénom</label><input name="first_name" type="text" placeholder="Jean" required></div>
           <div class="form-group"><label>Nom</label><input name="last_name" type="text" placeholder="Tremblay"></div>

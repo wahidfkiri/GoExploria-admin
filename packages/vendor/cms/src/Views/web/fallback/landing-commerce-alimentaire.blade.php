@@ -1705,8 +1705,13 @@
                     <section class="food-section food-section-pad" id="contact" style="padding:20px;">
                         <div class="food-contact-grid">
                             <div>
+                                @php
+                                    $foodContactTitle = function_exists('get_contact_form_title')
+                                        ? get_contact_form_title($etablissement->id, 'Planifiez une commande ou une demande de devis')
+                                        : 'Planifiez une commande ou une demande de devis';
+                                @endphp
                                 <span class="food-kicker">Contact</span>
-                                <h2 class="food-title">Planifiez une commande ou une demande de devis</h2>
+                                <h2 class="food-title">{{ $foodContactTitle }}</h2>
                                 <p class="food-copy">{{ $address }}</p>
                                 @if($phone)<p><strong>Téléphone :</strong> <a href="tel:{{ preg_replace('/\s+/', '', $phone) }}">{{ $phone }}</a></p>@endif
                                 @if($email)<p><strong>Courriel :</strong> <a href="mailto:{{ $email }}">{{ $email }}</a></p>@endif

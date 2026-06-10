@@ -1278,8 +1278,13 @@ html.light .float-cta {
 
 <section id="contact">
   <div class="container">
+    @php
+      $nextLevelContactTitle = function_exists('get_contact_form_title')
+        ? get_contact_form_title($etablissement->id, 'CONTACTEZ-NOUS')
+        : 'CONTACTEZ-NOUS';
+    @endphp
     <p class="section-label reveal">Parlons de votre voyage</p>
-    <h2 class="section-title reveal delay-1">CONTACTEZ-<span>NOUS</span></h2>
+    <h2 class="section-title reveal delay-1">{{ $nextLevelContactTitle }}</h2>
     <div class="contact-grid">
       <div class="contact-info reveal-left">
         <h3>Planifions votre aventure</h3>

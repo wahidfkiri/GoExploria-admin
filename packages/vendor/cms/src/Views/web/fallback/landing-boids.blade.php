@@ -2371,7 +2371,12 @@
                         <div class="boids-contact-grid">
                             <form id="boidsLandingContactForm" class="boids-form" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_boids">
                                 @csrf
-                                <h4>Soumission Gratuite</h4>
+                                @php
+                                    $boidsContactTitle = function_exists('get_contact_form_title')
+                                        ? get_contact_form_title($etablissement->id, 'Soumission Gratuite')
+                                        : 'Soumission Gratuite';
+                                @endphp
+                                <h4>{{ $boidsContactTitle }}</h4>
                                 <p>Decrivez votre projet et nous vous recontactons rapidement.</p>
                                 <div class="boids-form-grid">
                                     <input class="boids-input" type="text" name="first_name" placeholder="Prenom" required>

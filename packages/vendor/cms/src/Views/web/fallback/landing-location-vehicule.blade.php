@@ -408,12 +408,17 @@
     @endif
 
     @include('cms::web.fallback.partials.landing-working-hours')
+    @php
+        $locationContactTitle = function_exists('get_contact_form_title')
+            ? get_contact_form_title($etablissement->id, 'Reservez votre vehicule')
+            : 'Reservez votre vehicule';
+    @endphp
 
     <section id="contact">
         <div class="container contact-layout">
             <div>
                 <div class="s-label">Reservation</div>
-                <h2 class="s-title">Reservez<br><span class="acc">votre vehicule</span></h2>
+                <h2 class="s-title">{{ $locationContactTitle }}</h2>
                 <div class="contact-info">
                     <div class="c-item"><div class="c-icon"><i class="fa-solid fa-phone"></i></div><div><div class="c-label">Telephone</div><div class="c-val"><a href="tel:{{ $phoneDial }}">{{ $phone }}</a></div></div></div>
                     <div class="c-item"><div class="c-icon"><i class="fa-solid fa-envelope"></i></div><div><div class="c-label">Email</div><div class="c-val"><a href="mailto:{{ $email }}">{{ $email }}</a></div></div></div>
@@ -432,7 +437,7 @@
             <form class="contact-form" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing_location_vehicule">
                 @csrf
                 <input type="hidden" name="etablissement_id" value="{{ $etablissement->id }}">
-                <div class="form-title">Demande de reservation</div>
+                <div class="form-title">{{ $locationContactTitle }}</div>
                 <div class="form-grid">
                     <div class="fg"><label>Prenom</label><input name="first_name" type="text" required></div>
                     <div class="fg"><label>Nom</label><input name="last_name" type="text"></div>

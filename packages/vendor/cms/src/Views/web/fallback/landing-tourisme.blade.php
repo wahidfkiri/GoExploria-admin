@@ -318,10 +318,15 @@
 
         <section class="tt-section alt" id="contact">
             <div class="container">
+                @php
+                    $tourismeContactTitle = function_exists('get_contact_form_title')
+                        ? get_contact_form_title($etablissement->id, 'Préparer une demande')
+                        : 'Préparer une demande';
+                @endphp
                 <div class="tt-head">
                     <div>
                         <div class="tt-kicker">Contact</div>
-                        <h2 class="tt-title">Préparer une demande</h2>
+                        <h2 class="tt-title">{{ $tourismeContactTitle }}</h2>
                     </div>
                     <p class="tt-sub">Envoyez votre demande directement à l’établissement. Le message est enregistré dans les contacts CMS.</p>
                 </div>
