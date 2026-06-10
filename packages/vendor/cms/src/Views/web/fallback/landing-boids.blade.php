@@ -1648,7 +1648,7 @@
             ?: $etablissement->getSetting('address', null, 'general')
             ?: $etablissement->getSetting('adresse', null, 'general')
             ?: $etablissement->adresse
-            ?: 'Adresse en cours de configuration';
+            ?: null;
         $hours = $etablissement->getSetting('opening_hours', [], 'company');
         $workingHours = normalize_cms_opening_hours($hours, $workingHours ?? []);
 
@@ -1656,19 +1656,7 @@
         if ($gallery->isEmpty()) {
             $gallery = collect($galleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
         }
-        $galleryFallback = collect([
-            ['thumbnail' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/GALLERY_01.jpg', 'name' => 'Projet 1'],
-            ['thumbnail' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/GALLERY_02.jpg', 'name' => 'Projet 2'],
-            ['thumbnail' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/GALLERY_03.jpg', 'name' => 'Projet 3'],
-            ['thumbnail' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/GALLERY_04.jpg', 'name' => 'Projet 4'],
-            ['thumbnail' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/GALLERY_05.jpg', 'name' => 'Projet 5'],
-            ['thumbnail' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/GALLERY_06.jpg', 'name' => 'Projet 6'],
-            ['thumbnail' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/GALLERY_07.jpg', 'name' => 'Projet 7'],
-            ['thumbnail' => 'https://moulinascielanaudiere.com/wp-content/uploads/2025/05/GALLERY_08.jpg', 'name' => 'Projet 8'],
-        ]);
-        if ($gallery->isEmpty()) {
-            $gallery = $galleryFallback;
-        }
+        $galleryFallback = collect();
 
         $mainImage = $gallery->first()['thumbnail'] ?? null;
         $secondImage = $gallery->skip(1)->first()['thumbnail'] ?? $mainImage;
@@ -1901,7 +1889,7 @@
                         </div>
                     </article>
 
-                    @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
+                    @if(false && !empty($showFallbackProducts) && !$cmsHasLiveProducts)
                     @php
                         $boidsProductsSectionTitle = function_exists('get_ecommerce_section_title')
                             ? get_ecommerce_section_title($etablissement->id)
@@ -1974,13 +1962,9 @@
                     </article>
     @include('cms::web.fallback.partials.landing-cms-header')
 
-                    @if(is_slider_enabled($etablissement->id))
+                    @if(is_slider_enabled($etablissement->id) && has_slider($etablissement->id))
                     <article class="boids-section boids-hero-embed" id="section-hero">
-                        @if(has_slider($etablissement->id))
-                            {!! get_slider_html($etablissement->id) !!}
-                        @else
-                            @include("cms::web.fallback.activities.$activityViewFolder.hero", ['hideSearchBarV2' => true])
-                        @endif
+                        {!! get_slider_html($etablissement->id) !!}
                     </article>
                     @endif
 
@@ -2080,7 +2064,7 @@
     </div>
 </article>
 
-@if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
+@if(false && !empty($showFallbackProducts) && !$cmsHasLiveProducts)
 @php
     $boidsProductsSectionTitle = $boidsProductsSectionTitle
         ?? (function_exists('get_ecommerce_section_title')

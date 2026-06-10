@@ -888,111 +888,10 @@
         }
         $cmsHasLiveProducts = $cmsLandingProducts->isNotEmpty();
 
-        $eventCards = [
-            [
-                'date' => '15-24 JUIN',
-                'title' => 'Festival d\'été de Québec',
-                'desc' => 'Le plus grand festival extérieur en Amérique du Nord, avec des artistes internationaux.',
-                'place' => 'Québec',
-                'cat' => 'Scènes extérieures',
-                'img' => 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=900&q=80',
-            ],
-            [
-                'date' => '28 FÉV - 10 MAR',
-                'title' => 'Carnaval de Québec',
-                'desc' => 'Le plus grand carnaval d\'hiver au monde avec Bonhomme Carnaval comme ambassadeur.',
-                'place' => 'Québec',
-                'cat' => 'Activités hivernales',
-                'img' => 'https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=900&q=80',
-            ],
-            [
-                'date' => 'AOÛT 2026',
-                'title' => 'Osheaga',
-                'desc' => 'Festival de musique et arts contemporains sur l\'île Sainte-Hélène à Montréal.',
-                'place' => 'Montréal',
-                'cat' => 'Musique & Arts',
-                'img' => 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=900&q=80',
-            ],
-            [
-                'date' => 'OCT 2026',
-                'title' => 'Festival des couleurs',
-                'desc' => 'Célébration de l\'automne et des magnifiques paysages colorés des Cantons-de-l\'Est.',
-                'place' => 'Cantons-de-l\'Est',
-                'cat' => 'Nature & Culture',
-                'img' => 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=900&q=80',
-            ],
-            [
-                'date' => 'SEPT 2026',
-                'title' => 'Festival de montgolfières',
-                'desc' => 'Le plus grand rassemblement de montgolfières au Canada à Saint-Jean-sur-Richelieu.',
-                'place' => 'Saint-Jean-sur-Richelieu',
-                'cat' => 'Aventure',
-                'img' => 'https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=900&q=80',
-            ],
-        ];
-
-        $destinationCards = [
-            [
-                'title' => 'Laurentides',
-                'desc' => 'Paradis du ski et des activités de plein air, lacs et montagnes à perte de vue.',
-                'img' => 'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1000&q=80',
-            ],
-            [
-                'title' => 'Mont-Tremblant',
-                'desc' => 'Station de ski de renommée mondiale avec village piétonnier européen.',
-                'img' => 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&w=1000&q=80',
-            ],
-            [
-                'title' => 'Îles de la Madeleine',
-                'desc' => 'Archipel unique avec plages de sable fin, falaises rouges et culture acadienne.',
-                'img' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80',
-            ],
-            [
-                'title' => 'Vieux-Québec',
-                'desc' => 'Seule ville fortifiée d\'Amérique du Nord, patrimoine mondial de l\'UNESCO.',
-                'img' => 'https://images.unsplash.com/photo-1534351590666-13e3e96b5017?auto=format&fit=crop&w=1000&q=80',
-            ],
-        ];
-
-        $reviewCardsA = [
-            [
-                'title' => 'Visibilité qui progresse',
-                'rating' => '★★★★★ 4.9',
-                'text' => 'La visibilité de notre entreprise a augmenté rapidement. Équipe proactive et orientée résultats.',
-                'user' => 'Breana Murazik',
-                'date' => '6 décembre 2025',
-                'votes' => '60 votes',
-            ],
-            [
-                'title' => 'Très bon accompagnement',
-                'rating' => '★★★★☆ 4.3',
-                'text' => 'Leur stratégie de diffusion et la structure de page ont amélioré nos conversions en quelques semaines.',
-                'user' => 'Kaleb Wyman',
-                'date' => '12 janvier 2026',
-                'votes' => '55 votes',
-            ],
-            [
-                'title' => 'Service professionnel',
-                'rating' => '★★★★★ 5.0',
-                'text' => 'Support rapide, design moderne et parcours client fluide. On recommande pour les PME touristiques.',
-                'user' => 'Ideil Larson',
-                'date' => '17 janvier 2026',
-                'votes' => '62 votes',
-            ],
-        ];
-
-        $reviewCardsB = [
-            [
-                'name' => 'Rosalina D. William',
-                'text' => 'Excellent accompagnement, nos offres sont mieux présentées et nos prospects sont plus qualifiés.',
-                'img' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
-            ],
-            [
-                'name' => 'Michael J. Carter',
-                'text' => 'Nos campagnes locales performent mieux depuis la nouvelle landing. Interface claire et très professionnelle.',
-                'img' => 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80',
-            ],
-        ];
+        $eventCards = [];
+        $destinationCards = [];
+        $reviewCardsA = [];
+        $reviewCardsB = [];
 
         $activityText = $activities
             ->pluck('name')
@@ -1000,38 +899,7 @@
             ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
             ->implode(' ');
 
-        $galleryByActivity = [
-            'restaurant' => [
-                'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?auto=format&fit=crop&w=700&q=80',
-            ],
-            'hotel' => [
-                'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1455587734955-081b22074882?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=700&q=80',
-            ],
-            'voyage' => [
-                'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1527631746610-bca00a040d60?auto=format&fit=crop&w=700&q=80',
-            ],
-            'immobilier' => [
-                'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=700&q=80',
-            ],
-            'default' => [
-                'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=700&q=80',
-                'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=700&q=80',
-            ],
-        ];
+        $galleryByActivity = [];
 
         $galleryImages = [];
 
@@ -1044,20 +912,7 @@
                 ->all();
         }
 
-        if (count($galleryImages) === 0) {
-            $chosen = 'default';
-            if (str_contains($activityText, 'restaurant') || str_contains($activityText, 'alimentation') || str_contains($activityText, 'cuisine')) {
-                $chosen = 'restaurant';
-            } elseif (str_contains($activityText, 'hotel') || str_contains($activityText, 'hébergement') || str_contains($activityText, 'hebergement')) {
-                $chosen = 'hotel';
-            } elseif (str_contains($activityText, 'voyage') || str_contains($activityText, 'forfait') || str_contains($activityText, 'tourisme')) {
-                $chosen = 'voyage';
-            } elseif (str_contains($activityText, 'immo') || str_contains($activityText, 'chalet') || str_contains($activityText, 'maison')) {
-                $chosen = 'immobilier';
-            }
-
-            $galleryImages = $galleryByActivity[$chosen];
-        }
+        if (count($galleryImages) === 0) $galleryImages = [];
 
         $galleryImages = array_slice($galleryImages, 0, 4);
     @endphp
@@ -1142,13 +997,9 @@
                     @include("cms::web.fallback.activities.$activityViewFolder.header")
     @include('cms::web.fallback.partials.landing-cms-header')
 
-                    @if(is_slider_enabled($etablissement->id))
+                    @if(is_slider_enabled($etablissement->id) && has_slider($etablissement->id))
                     <article id="section-hero"  style="margin-top:0px !important;" class="lf-section lf-hero-embed">
-                        @if(has_slider($etablissement->id))
-                            {!! get_slider_html($etablissement->id) !!}
-                        @else
-                            @include("cms::web.fallback.activities.$activityViewFolder.hero", ['hideSearchBarV2' => true])
-                        @endif
+                        {!! get_slider_html($etablissement->id) !!}
                     </article>
                     @endif
 
@@ -1426,23 +1277,15 @@
                     @forelse($plans as $plan)
                         @php
                             $priceValue = $plan->price !== null ? (float) $plan->price : 0.0;
-                            $priceText = $priceValue > 0 ? number_format($priceValue, 0, ',', ' ') . ' ' . ($plan->currency ?: 'CAD') : 'Sur demande';
+                            $priceText = $priceValue > 0 ? number_format($priceValue, 0, ',', ' ') . ' ' . ($plan->currency ?: 'CAD') : null;
                         @endphp
                         <a href="{{ url('/plan-detail/' . ($plan->slug ?: $plan->id)) }}" class="lf-plan-card" target="_blank" rel="noopener noreferrer">
                             <div><i class="{{ str_contains((string) $plan->icon, 'fa') ? $plan->icon : 'fas fa-layer-group' }}"></i></div>
                             <h5>{{ $plan->name }}</h5>
                             <p>{{ \Illuminate\Support\Str::limit(strip_tags((string) $plan->description), 90) }}</p>
-                            <div class="lf-plan-price">{{ $priceText }}</div>
+                            @if($priceText)<div class="lf-plan-price">{{ $priceText }}</div>@endif
                         </a>
                     @empty
-                        @for($i = 1; $i <= 4; $i++)
-                            <a href="{{ $devisLink }}" class="lf-plan-card" target="_blank" rel="noopener noreferrer">
-                                <div><i class="fas fa-layer-group"></i></div>
-                                <h5>Plan Go Exploria {{ $i }}</h5>
-                                <p>Activez votre espace et demandez une proposition personnalisée.</p>
-                                <div class="lf-plan-price">Sur demande</div>
-                            </a>
-                        @endfor
                     @endforelse
                 </div>
             </section>

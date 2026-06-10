@@ -404,9 +404,7 @@
             const fallbackLat = Number(mapNode.dataset.lat || 46.8139);
             const fallbackLng = Number(mapNode.dataset.lng || -71.2082);
             let points = @json($mapPoints);
-            if (!points.length) {
-                points = [{ title: @json($siteName), description: @json($address), lat: fallbackLat, lng: fallbackLng }];
-            }
+            if (!points.length) return;
 
             const map = L.map(mapNode, { scrollWheelZoom: false }).setView([Number(points[0].lat || fallbackLat), Number(points[0].lng || fallbackLng)], points.length > 1 ? 10 : 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

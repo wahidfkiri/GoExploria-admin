@@ -4,20 +4,16 @@
     $siteDescription = $etablissement->getSetting('description', null, 'general')
         ?: $etablissement->getSetting('site_description', null, 'general')
         ?: get_site_description($etablissement->id)
-        ?: 'Location de voitures, SUV, utilitaires et vehicules premium avec reservation rapide.';
+        ?: '';
     $brandLogo = get_logo_url($etablissement->id) ?: ($brandLogoUrl ?? null);
     $initials = collect(explode(' ', $siteName))->filter()->take(2)->map(fn ($part) => mb_substr($part, 0, 1, 'UTF-8'))->implode('') ?: 'LV';
-    $phone = $etablissement->getSetting('phone', null, 'company') ?: $etablissement->getSetting('phone', null, 'general') ?: $etablissement->getSetting('telephone', null, 'general') ?: ($etablissement->phone ?? null) ?: ($etablissement->telephone ?? null) ?: '+1 514 000 0000';
+    $phone = $etablissement->getSetting('phone', null, 'company') ?: $etablissement->getSetting('phone', null, 'general') ?: $etablissement->getSetting('telephone', null, 'general') ?: ($etablissement->phone ?? null) ?: ($etablissement->telephone ?? null) ?: null;
     $phoneDial = preg_replace('/\D+/', '', $phone);
     $phoneDial = strlen($phoneDial) === 10 ? '+1' . $phoneDial : $phoneDial;
-    $email = $etablissement->getSetting('email', null, 'company') ?: $etablissement->getSetting('email', null, 'general') ?: $etablissement->getSetting('email_contact', null, 'general') ?: ($etablissement->email_contact ?? null) ?: ($etablissement->email ?? null) ?: 'reservation@goexploria.com';
-    $address = $etablissement->getSetting('address', null, 'company') ?: $etablissement->getSetting('adress', null, 'company') ?: $etablissement->getSetting('address', null, 'general') ?: $etablissement->getSetting('adresse', null, 'general') ?: ($etablissement->adresse ?? null) ?: 'Agence principale';
+    $email = $etablissement->getSetting('email', null, 'company') ?: $etablissement->getSetting('email', null, 'general') ?: $etablissement->getSetting('email_contact', null, 'general') ?: ($etablissement->email_contact ?? null) ?: ($etablissement->email ?? null) ?: null;
+    $address = $etablissement->getSetting('address', null, 'company') ?: $etablissement->getSetting('adress', null, 'company') ?: $etablissement->getSetting('address', null, 'general') ?: $etablissement->getSetting('adresse', null, 'general') ?: ($etablissement->adresse ?? null) ?: null;
     $hours = $etablissement->getSetting('opening_hours', [], 'company');
-    $workingHours = normalize_cms_opening_hours($hours, [
-        ['day' => 'Lundi au vendredi', 'hours' => '08h00 - 19h00'],
-        ['day' => 'Samedi', 'hours' => '09h00 - 17h00'],
-        ['day' => 'Dimanche', 'hours' => 'Sur reservation'],
-    ]);
+    $workingHours = normalize_cms_opening_hours($hours, $workingHours ?? []);
     $openingHoursText = format_cms_opening_hours($workingHours);
     $socialLinks = $socialLinks ?? get_establishment_social_links($etablissement);
     $visibleSocialLinks = collect($socialLinks ?? [])->filter(fn ($item) => !empty(data_get($item, 'url')))->values();
@@ -63,16 +59,7 @@
         return asset('storage/' . ltrim($path, '/'));
     };
 
-    $fallbackImages = collect([
-        ['thumbnail' => 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1800&q=85', 'name' => 'Voiture sportive'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=1800&q=85', 'name' => 'Berline premium'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1800&q=85', 'name' => 'SUV aventure'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=1200&q=85', 'name' => 'Vehicule electrique'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=1200&q=85', 'name' => '4x4 premium'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1541348263662-e068662d82af?w=1200&q=85', 'name' => 'Business'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1200&q=85', 'name' => 'Route ouverte'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1441148345475-03a2e82f9719?w=1200&q=85', 'name' => 'Road trip'],
-    ]);
+    $fallbackImages = collect();
 
     $normalizeVehicleMedia = static function ($items, $fallback) use ($mediaUrl) {
         $media = collect($items ?? [])->map(function ($row) use ($mediaUrl) {
@@ -88,13 +75,12 @@
     };
 
     $gallery = $normalizeVehicleMedia($mainGalleryMedia ?? [], collect());
-    if ($gallery->isEmpty()) $gallery = $normalizeVehicleMedia($galleryMedia ?? [], $fallbackImages);
-    while ($gallery->count() < 8) $gallery = $gallery->concat($fallbackImages)->values();
+    if ($gallery->isEmpty()) $gallery = $normalizeVehicleMedia($galleryMedia ?? [], collect());
     $instagramGallery = $normalizeVehicleMedia($instagramGalleryMedia ?? [], $gallery);
     $facebookGallery = $normalizeVehicleMedia($facebookGalleryMedia ?? [], $gallery);
     $pinterestGallery = $normalizeVehicleMedia($pinterestGalleryMedia ?? [], $gallery);
 
-    $fallbackYoutubeId = $youtubeIdFromUrl($socialLinks['youtube']['url'] ?? null) ?: 'MfAAJgCzOAs';
+    $fallbackYoutubeId = $youtubeIdFromUrl($socialLinks['youtube']['url'] ?? null);
     $vehicleMapQuery = collect();
     try {
         if (class_exists(\App\Models\MapPoint::class) && \Illuminate\Support\Facades\Schema::hasTable('map_points')) {
@@ -123,21 +109,9 @@
             'lat' => (float) $point->latitude,
             'lng' => (float) $point->longitude,
             'address' => $point->adresse ?: trim(collect([$point->ville, $point->code_postal])->filter()->implode(' ')),
-            'video_embed' => 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&muted=1&playsinline=1&rel=0&modestbranding=1',
+            'video_embed' => $youtubeId ? 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&muted=1&playsinline=1&rel=0&modestbranding=1' : null,
         ];
     })->values();
-
-    if ($vehicleMapPoints->isEmpty()) {
-        $vehicleMapPoints = collect([[
-            'title' => $siteName,
-            'description' => $siteDescription,
-            'category' => 'vehicule',
-            'lat' => $mapLat,
-            'lng' => $mapLng,
-            'address' => $address,
-            'video_embed' => 'https://www.youtube.com/embed/' . $fallbackYoutubeId . '?autoplay=1&mute=1&muted=1&playsinline=1&rel=0&modestbranding=1',
-        ]]);
-    }
 
     $heroSlides = collect(get_slider_items($etablissement->id))->map(function ($slider) use ($mediaUrl, $youtubeIdFromUrl) {
         $type = strtolower((string) (data_get($slider, 'type') ?: 'image'));
@@ -184,7 +158,7 @@
     } catch (\Throwable $e) { $cmsLandingProducts = collect(); }
 
     $formatPrice = static function ($value) {
-        return $value === null || $value === '' ? 'Sur demande' : number_format((float) $value, 0, ',', ' ') . ' $';
+        return $value === null || $value === '' ? null : number_format((float) $value, 0, ',', ' ') . ' $';
     };
     $vehicleCards = $cmsLandingProducts
         ->map(function ($product, $index) use ($mediaUrl, $formatPrice, $gallery) {
@@ -219,19 +193,12 @@
 
     $reviewCards = collect($reviews ?? [])->take(6)->map(function ($review) {
         return [
-            'author' => data_get($review, 'author') ?: data_get($review, 'name') ?: 'Client satisfait',
-            'source' => data_get($review, 'role') ?: data_get($review, 'source') ?: 'Avis verifie',
-            'text' => \Illuminate\Support\Str::limit(strip_tags((string) (data_get($review, 'comment') ?: data_get($review, 'text') ?: 'Service rapide, vehicule propre et reservation simple.')), 280),
+            'author' => data_get($review, 'author') ?: data_get($review, 'name'),
+            'source' => data_get($review, 'role') ?: data_get($review, 'source'),
+            'text' => \Illuminate\Support\Str::limit(strip_tags((string) (data_get($review, 'comment') ?: data_get($review, 'text'))), 280),
             'rating' => max(1, min(5, (int) (data_get($review, 'rating') ?: 5))),
         ];
-    })->values();
-    if ($reviewCards->isEmpty()) {
-        $reviewCards = collect([
-            ['author' => 'Marc L.', 'source' => 'Client affaires', 'rating' => 5, 'text' => 'Vehicule impeccable, pret a l heure et service tres professionnel.'],
-            ['author' => 'Sophie M.', 'source' => 'Road trip famille', 'rating' => 5, 'text' => 'Reservation simple, SUV propre et retour sans attente.'],
-            ['author' => 'Karim B.', 'source' => 'Location premium', 'rating' => 5, 'text' => 'Tarifs clairs, equipe reactive et voiture exactement comme annoncee.'],
-        ]);
-    }
+    })->filter(fn ($review) => !empty($review['author']) && !empty($review['text']))->values();
     $blogCards = collect($blogPosts ?? [])->take(3);
 @endphp
 <!DOCTYPE html>
@@ -428,7 +395,7 @@
                 <div class="blog-grid">
                     @foreach($blogCards as $post)
                         @php
-                            $postImage = $mediaUrl(data_get($post, 'featured_image') ?: data_get($post, 'image') ?: data_get($post, 'thumbnail')) ?: ($gallery[$loop->index]['thumbnail'] ?? $gallery[0]['thumbnail']);
+                            $postImage = $mediaUrl(data_get($post, 'featured_image') ?: data_get($post, 'image') ?: data_get($post, 'thumbnail'));
                             $blogUrl = data_get($post, 'url') ?: '#blog';
                             $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
                             $blogTargetAttrs = $isExternalBlogUrl ? ' target="_blank" rel="noopener noreferrer"' : '';

@@ -183,9 +183,7 @@
                                         data-etablissement-name="{{ $siteName }}"
                                     >Commander</button>
                                 </div>
-                                @if($formattedPrice)
-                                    <div class="rest-price">{{ $formattedPrice }}</div>
-                                @endif
+                                {!! $formattedPrice ? '<div class="rest-price">' . e($formattedPrice) . '</div>' : '' !!}
                             </article>
                         @endforeach
                     </div>

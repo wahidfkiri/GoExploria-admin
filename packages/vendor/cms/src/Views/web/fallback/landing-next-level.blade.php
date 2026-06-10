@@ -3,15 +3,28 @@
     $siteDescription = $etablissement->getSetting('description', null, 'general')
         ?: $etablissement->getSetting('site_description', null, 'general')
         ?: get_site_description($etablissement->id)
-        ?: 'Des expériences de voyage uniques et inoubliables pour passer au niveau supérieur.';
+        ?: '';
     $devisLink = $devisUrl ?? route('devis');
     $hours = $etablissement->getSetting('opening_hours', [], 'company');
-    $workingHours = normalize_cms_opening_hours($hours, [
-        ['day' => 'Lun-Sam', 'hours' => '9h-19h'],
-        ['day' => 'Dim', 'hours' => '10h-16h'],
-    ]);
+    $workingHours = normalize_cms_opening_hours($hours, $workingHours ?? []);
     $openingHoursText = format_cms_opening_hours($workingHours);
     $socialLinks = $socialLinks ?? get_establishment_social_links($etablissement);
+    $visibleSocialLinks = collect($socialLinks ?? [])->filter(fn ($link) => !empty(data_get($link, 'url')))->values();
+    $phone = $etablissement->getSetting('phone', null, 'company')
+        ?: $etablissement->getSetting('phone', null, 'general')
+        ?: $etablissement->getSetting('telephone', null, 'general')
+        ?: ($etablissement->phone ?? null)
+        ?: ($etablissement->telephone ?? null);
+    $email = $etablissement->getSetting('email', null, 'company')
+        ?: $etablissement->getSetting('email', null, 'general')
+        ?: $etablissement->getSetting('email_contact', null, 'general')
+        ?: ($etablissement->email_contact ?? null)
+        ?: ($etablissement->email ?? null);
+    $address = $etablissement->getSetting('address', null, 'company')
+        ?: $etablissement->getSetting('adress', null, 'company')
+        ?: $etablissement->getSetting('address', null, 'general')
+        ?: $etablissement->getSetting('adresse', null, 'general')
+        ?: ($etablissement->adresse ?? null);
     $heroPrimaryCtaText = $etablissement->getSetting('hero_cta_text', null, 'landing')
         ?: $etablissement->getSetting('cta_text', null, 'general');
     $heroPrimaryCtaUrl = $etablissement->getSetting('hero_cta_url', null, 'landing')
@@ -56,7 +69,7 @@
         return $raw;
     };
 
-    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($mediaUrl, $heroEmbedUrl, $siteName, $siteDescription, $heroPrimaryCtaText, $heroPrimaryCtaUrl) {
+    $heroSlides = collect($sliders ?? [])->map(function ($slider) use ($mediaUrl, $heroEmbedUrl) {
         $type = strtolower((string) data_get($slider, 'type', 'image'));
         $url = $mediaUrl(data_get($slider, 'image_url') ?: data_get($slider, 'thumbnail_url') ?: data_get($slider, 'video_url') ?: data_get($slider, 'url') ?: data_get($slider, 'image_path'));
         $embed = $heroEmbedUrl(data_get($slider, 'video_embed_url') ?: data_get($slider, 'embed') ?: ($type === 'iframe' ? data_get($slider, 'url') : null));
@@ -64,30 +77,13 @@
             'type' => $type,
             'url' => $url,
             'embed' => $embed,
-            'title' => data_get($slider, 'title') ?: $siteName,
-            'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: $siteDescription,
-            'button_text' => data_get($slider, 'button_text') ?: $heroPrimaryCtaText,
-            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: $heroPrimaryCtaUrl,
+            'title' => data_get($slider, 'title'),
+            'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description'),
+            'button_text' => data_get($slider, 'button_text'),
+            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link'),
         ];
     })->filter(fn ($slide) => !empty($slide['url']) || !empty($slide['embed']))->values();
-
-    if ($heroSlides->isEmpty()) {
-        $heroSlides = collect([
-            ['type' => 'image', 'url' => 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1920&q=80', 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
-            ['type' => 'image', 'url' => 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80', 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
-            ['type' => 'image', 'url' => 'https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=1920&q=80', 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
-        ]);
-    }
-
-    $nextLevelGalleryFallback = collect([
-        ['thumbnail' => 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80', 'name' => 'Sahara Marocain'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80', 'name' => 'Alpes Suisses'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80', 'name' => 'Maldives'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=600&q=80', 'name' => 'Outback Australien'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80', 'name' => 'Fjords Norvégiens'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=600&q=80', 'name' => 'Santorin'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=600&q=80', 'name' => 'Bali'],
-    ]);
+    $nextLevelGalleryFallback = collect();
 
     $normalizeNextLevelMedia = static function ($items, $fallback) use ($mediaUrl) {
         $media = collect($items ?? [])->map(function ($row) use ($mediaUrl) {
@@ -104,20 +100,11 @@
 
     $nextLevelGallery = $normalizeNextLevelMedia($mainGalleryMedia ?? [], collect());
     if ($nextLevelGallery->isEmpty()) {
-        $nextLevelGallery = $normalizeNextLevelMedia($galleryMedia ?? [], $nextLevelGalleryFallback);
+        $nextLevelGallery = $normalizeNextLevelMedia($galleryMedia ?? [], collect());
     }
-    $nextLevelInstagram = $normalizeNextLevelMedia($instagramGalleryMedia ?? [], collect([
-        ['thumbnail' => 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&q=80', 'name' => 'Instagram 1'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1502791451862-7bd8c1df43a7?w=400&q=80', 'name' => 'Instagram 2'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&q=80', 'name' => 'Instagram 3'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=400&q=80', 'name' => 'Instagram 4'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1510797215324-95aa89f43c33?w=400&q=80', 'name' => 'Instagram 5'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=400&q=80', 'name' => 'Instagram 6'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1539635278303-d4002c07eae3?w=400&q=80', 'name' => 'Instagram 7'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400&q=80', 'name' => 'Instagram 8'],
-    ]));
-    $nextLevelFacebook = $normalizeNextLevelMedia($facebookGalleryMedia ?? [], $nextLevelGallery);
-    $nextLevelPinterest = $normalizeNextLevelMedia($pinterestGalleryMedia ?? [], $nextLevelGallery);
+    $nextLevelInstagram = $normalizeNextLevelMedia($instagramGalleryMedia ?? [], collect());
+    $nextLevelFacebook = $normalizeNextLevelMedia($facebookGalleryMedia ?? [], collect());
+    $nextLevelPinterest = $normalizeNextLevelMedia($pinterestGalleryMedia ?? [], collect());
 
     $youtubeIdFromUrl = static function ($value) {
         $raw = trim((string) $value);
@@ -171,32 +158,16 @@
     $nextLevelMapPoints = $mapQuery->map(function ($point) use ($youtubeIdFromUrl) {
         $video = optional($point->videos->first());
         $youtubeId = $point->youtube_id ?: $video->youtube_id ?: $youtubeIdFromUrl($point->youtube_url ?: $video->youtube_url);
-        $youtubeId = $youtubeId ?: 'MfAAJgCzOAs';
-
         return [
             'title' => $point->title ?: 'Point Go Exploria',
             'description' => \Illuminate\Support\Str::limit(strip_tags((string) $point->description), 160),
             'category' => strtolower((string) ($point->category ?: 'autre')),
             'lat' => (float) $point->latitude,
             'lng' => (float) $point->longitude,
-            'address' => $point->adresse ?: trim(collect([$point->ville, $point->code_postal])->filter()->implode(' ')) ?: 'Québec, Canada',
-            'video_embed' => 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&muted=1&playsinline=1&rel=0&modestbranding=1',
+            'address' => $point->adresse ?: trim(collect([$point->ville, $point->code_postal])->filter()->implode(' ')),
+            'video_embed' => $youtubeId ? 'https://www.youtube.com/embed/' . $youtubeId . '?autoplay=1&mute=1&muted=1&playsinline=1&rel=0&modestbranding=1' : null,
         ];
     })->values();
-
-    if ($nextLevelMapPoints->isEmpty()) {
-        $nextLevelMapPoints = collect([
-            [
-                'title' => 'Go Exploria — Québec',
-                'description' => 'Découvrez nos points d’intérêt et expériences vidéo.',
-                'category' => 'tourism',
-                'lat' => 46.8139,
-                'lng' => -71.2080,
-                'address' => 'Québec, Canada',
-                'video_embed' => 'https://www.youtube.com/embed/MfAAJgCzOAs?autoplay=1&mute=1&muted=1&playsinline=1&rel=0&modestbranding=1',
-            ],
-        ]);
-    }
 
     $heroTitleParts = static function ($title) {
         $words = preg_split('/\s+/', trim((string) $title));
@@ -1204,96 +1175,68 @@ html.light .float-cta {
 
 
 <!-- SOCIAL FEED -->
+@if($nextLevelInstagram->isNotEmpty() || $nextLevelFacebook->isNotEmpty() || $nextLevelPinterest->isNotEmpty())
 <section id="social">
   <div class="container">
     <p class="section-label reveal">Suivez-nous</p>
     <h2 class="section-title reveal delay-1">NOS <span>RÉSEAUX</span></h2>
-    <p class="section-sub reveal delay-2">Rejoignez notre communauté de voyageurs et partagez vos aventures avec le hashtag #GoExploriaNextLevel</p>
     <div class="social-tabs reveal delay-3">
-      <button class="social-tab active" onclick="switchFeed(this,'instagram')"><i class="fab fa-instagram" aria-hidden="true"></i> Instagram</button>
-      <button class="social-tab" onclick="switchFeed(this,'facebook')"><i class="fab fa-facebook-f" aria-hidden="true"></i> Facebook</button>
-      <button class="social-tab" onclick="switchFeed(this,'pinterest')"><i class="fab fa-pinterest-p" aria-hidden="true"></i> Pinterest</button>
+      @if($nextLevelInstagram->isNotEmpty())<button class="social-tab active" onclick="switchFeed(this,'instagram')"><i class="fab fa-instagram" aria-hidden="true"></i> Instagram</button>@endif
+      @if($nextLevelFacebook->isNotEmpty())<button class="social-tab{{ $nextLevelInstagram->isEmpty() ? ' active' : '' }}" onclick="switchFeed(this,'facebook')"><i class="fab fa-facebook-f" aria-hidden="true"></i> Facebook</button>@endif
+      @if($nextLevelPinterest->isNotEmpty())<button class="social-tab{{ $nextLevelInstagram->isEmpty() && $nextLevelFacebook->isEmpty() ? ' active' : '' }}" onclick="switchFeed(this,'pinterest')"><i class="fab fa-pinterest-p" aria-hidden="true"></i> Pinterest</button>@endif
     </div>
-    <div id="instagram-feed">
-      <div class="social-handle reveal">
-        <div class="social-handle-icon"><i class="fab fa-instagram" aria-hidden="true"></i></div>
-        <div class="social-handle-text">
-          <strong>@GoExploriaNextLevel</strong>
-          <span>12.4K abonnés · 340 publications</span>
-        </div>
-      </div>
+    @if($nextLevelInstagram->isNotEmpty())
+    <div id="instagram-feed" style="{{ $nextLevelInstagram->isNotEmpty() ? '' : 'display:none' }}">
       <div class="swiper social-feed-swiper">
         <div class="swiper-wrapper" id="insta-grid">
         </div>
         <div class="swiper-pagination"></div>
       </div>
     </div>
-    <div id="facebook-feed" style="display:none">
-      <div class="social-handle reveal">
-        <div class="social-handle-icon"><i class="fab fa-facebook-f" aria-hidden="true"></i></div>
-        <div class="social-handle-text">
-          <strong>Go Exploria Next Level</strong>
-          <span>8.2K J'aime · 8.7K abonnés</span>
-        </div>
-      </div>
+    @endif
+    @if($nextLevelFacebook->isNotEmpty())
+    <div id="facebook-feed" style="{{ $nextLevelInstagram->isEmpty() ? '' : 'display:none' }}">
       <div class="swiper social-feed-swiper">
         <div class="swiper-wrapper" id="fb-grid"></div>
         <div class="swiper-pagination"></div>
       </div>
     </div>
-    <div id="pinterest-feed" style="display:none">
-      <div class="social-handle reveal">
-        <div class="social-handle-icon"><i class="fab fa-pinterest-p" aria-hidden="true"></i></div>
-        <div class="social-handle-text">
-          <strong>GoExploriaTravel</strong>
-          <span>3.1K abonnés · 24 tableaux</span>
-        </div>
-      </div>
+    @endif
+    @if($nextLevelPinterest->isNotEmpty())
+    <div id="pinterest-feed" style="{{ $nextLevelInstagram->isEmpty() && $nextLevelFacebook->isEmpty() ? '' : 'display:none' }}">
       <div class="swiper social-feed-swiper">
         <div class="swiper-wrapper" id="pin-grid"></div>
         <div class="swiper-pagination"></div>
       </div>
     </div>
+    @endif
   </div>
 </section>
+@endif
 
 <!-- BLOG -->
-@if(is_blog_enabled($etablissement->id))
+@if(is_blog_enabled($etablissement->id) && collect($blogPosts ?? [])->filter(fn ($post) => trim((string) data_get($post, 'title')) !== '')->isNotEmpty())
 @php
   $nextLevelBlogSectionTitle = function_exists('get_blog_section_title')
     ? get_blog_section_title($etablissement->id)
-    : 'NOTRE BLOG';
-  $nextLevelBlogSectionTitle = trim((string) $nextLevelBlogSectionTitle) !== '' ? $nextLevelBlogSectionTitle : 'NOTRE BLOG';
+    : '';
+  $nextLevelBlogSectionTitle = trim((string) $nextLevelBlogSectionTitle);
+  $nextLevelBlogs = collect($blogPosts ?? [])->filter(fn ($post) => trim((string) data_get($post, 'title')) !== '')->take(5)->values()->map(function ($post) {
+    return [
+      'title' => data_get($post, 'title'),
+      'excerpt' => data_get($post, 'excerpt'),
+      'image' => data_get($post, 'image'),
+      'tag' => data_get($post, 'tag'),
+      'date' => data_get($post, 'date'),
+      'reading_time' => data_get($post, 'reading_time'),
+      'url' => data_get($post, 'url') ?: '#blog',
+    ];
+  });
 @endphp
 <section id="blog">
   <div class="container">
     <p class="section-label reveal">Inspirations & Conseils</p>
-    <h2 class="section-title reveal delay-1">{{ $nextLevelBlogSectionTitle }}</h2>
-    <p class="section-sub reveal delay-2">Des articles pour inspirer vos prochains voyages, des conseils pratiques et des récits d'aventures vécues.</p>
-    @php
-      $nextLevelBlogFallback = collect([
-        ['title' => '10 Secrets Pour Préparer Un Trek Au Sahara Sans Stress', 'excerpt' => 'Tout ce que vous devez savoir avant de partir en expédition désert : équipement, hydratation, budget, et les erreurs à éviter absolument.', 'image' => 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=900&q=80', 'tag' => 'À La Une', 'date' => '12 Jan 2025', 'reading_time' => 8, 'url' => '#blog'],
-        ['title' => 'Les 5 Randonnées Incontournables Du Maghreb', 'excerpt' => '', 'image' => 'https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=600&q=80', 'tag' => 'Trekking', 'date' => '5 Fév 2025', 'reading_time' => 5, 'url' => '#blog'],
-        ['title' => 'Pourquoi Le Voyage Transforme Votre Mental', 'excerpt' => '', 'image' => 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=600&q=80', 'tag' => 'Bien-être', 'date' => '20 Fév 2025', 'reading_time' => 4, 'url' => '#blog'],
-        ['title' => 'Immersion Berbère : Vivre Avec Les Nomades Du Désert', 'excerpt' => '', 'image' => 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=600&q=80', 'tag' => 'Culture', 'date' => '3 Mar 2025', 'reading_time' => 6, 'url' => '#blog'],
-        ['title' => 'Budget Voyage : Voyager Mieux Pour Moins Cher', 'excerpt' => '', 'image' => 'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?w=600&q=80', 'tag' => 'Conseil', 'date' => '15 Mar 2025', 'reading_time' => 3, 'url' => '#blog'],
-      ]);
-      $nextLevelBlogs = collect($blogPosts ?? [])->take(5)->values()->map(function ($post, $index) use ($nextLevelBlogFallback) {
-        $fallback = $nextLevelBlogFallback->get($index, $nextLevelBlogFallback->first());
-        return [
-          'title' => data_get($post, 'title') ?: data_get($fallback, 'title'),
-          'excerpt' => data_get($post, 'excerpt') ?: data_get($fallback, 'excerpt'),
-          'image' => data_get($post, 'image') ?: data_get($fallback, 'image'),
-          'tag' => data_get($post, 'tag') ?: data_get($fallback, 'tag'),
-          'date' => data_get($post, 'date') ?: data_get($fallback, 'date'),
-          'reading_time' => data_get($post, 'reading_time') ?: data_get($fallback, 'reading_time'),
-          'url' => data_get($post, 'url') ?: '#blog',
-        ];
-      });
-      if ($nextLevelBlogs->isEmpty()) {
-        $nextLevelBlogs = $nextLevelBlogFallback;
-      }
-    @endphp
+    @if($nextLevelBlogSectionTitle !== '')<h2 class="section-title reveal delay-1">{{ $nextLevelBlogSectionTitle }}</h2>@endif
     <div class="blog-grid">
       @foreach($nextLevelBlogs as $blog)
         @php
@@ -1303,12 +1246,20 @@ html.light .float-cta {
           $blogClass = $loop->first ? 'blog-card featured reveal' : 'blog-card reveal' . ($loop->iteration === 2 || $loop->iteration === 5 ? ' delay-1' : ($loop->iteration === 3 ? ' delay-2' : ''));
         @endphp
         <div class="{{ $blogClass }}">
-          <div class="blog-img">
-            <img src="{{ data_get($blog, 'image') }}" alt="{{ data_get($blog, 'title') }}">
-            <span class="blog-tag">{{ data_get($blog, 'tag') }}</span>
-          </div>
+          @if(data_get($blog, 'image'))
+            <div class="blog-img">
+              <img src="{{ data_get($blog, 'image') }}" alt="{{ data_get($blog, 'title') }}">
+              @if(data_get($blog, 'tag'))<span class="blog-tag">{{ data_get($blog, 'tag') }}</span>@endif
+            </div>
+          @endif
           <div class="blog-body">
-            <div class="blog-meta"><span>{{ data_get($blog, 'date') }}</span><span>·</span><span>{{ data_get($blog, 'reading_time') }} min{{ $loop->first ? ' de lecture' : '' }}</span></div>
+            @if(data_get($blog, 'date') || data_get($blog, 'reading_time'))
+              <div class="blog-meta">
+                @if(data_get($blog, 'date'))<span>{{ data_get($blog, 'date') }}</span>@endif
+                @if(data_get($blog, 'date') && data_get($blog, 'reading_time'))<span>·</span>@endif
+                @if(data_get($blog, 'reading_time'))<span>{{ data_get($blog, 'reading_time') }} min{{ $loop->first ? ' de lecture' : '' }}</span>@endif
+              </div>
+            @endif
             <h3>{{ data_get($blog, 'title') }}</h3>
             @if($loop->first && data_get($blog, 'excerpt'))
               <p>{{ data_get($blog, 'excerpt') }}</p>
@@ -1332,38 +1283,45 @@ html.light .float-cta {
     <div class="contact-grid">
       <div class="contact-info reveal-left">
         <h3>Planifions votre aventure</h3>
-        <p style="font-size:14px;color:var(--muted);line-height:1.9;margin-bottom:32px;">Notre équipe de passionnés est à votre disposition pour vous aider à concevoir le voyage de vos rêves. Répondons à vos questions dans les 24h.</p>
-        <div class="contact-item">
-          <div class="contact-icon"><i class="fas fa-location-dot" aria-hidden="true"></i></div>
-          <div>
-            <strong>Adresse</strong>
-            <span>Québec, Canada</span>
+        @if($address)
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-location-dot" aria-hidden="true"></i></div>
+            <div>
+              <strong>Adresse</strong>
+              <span>{{ $address }}</span>
+            </div>
           </div>
-        </div>
-        <div class="contact-item">
-          <div class="contact-icon"><i class="fas fa-phone" aria-hidden="true"></i></div>
-          <div>
-            <strong>Téléphone</strong>
-            <span>(418) 525-7748</span>
+        @endif
+        @if($phone)
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-phone" aria-hidden="true"></i></div>
+            <div>
+              <strong>Téléphone</strong>
+              <span>{{ $phone }}</span>
+            </div>
           </div>
-        </div>
-        <div class="contact-item">
-          <div class="contact-icon"><i class="fas fa-envelope" aria-hidden="true"></i></div>
-          <div>
-            <strong>Email</strong>
-            <span>info@goexploriabusiness.com</span>
+        @endif
+        @if($email)
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-envelope" aria-hidden="true"></i></div>
+            <div>
+              <strong>Email</strong>
+              <span>{{ $email }}</span>
+            </div>
           </div>
-        </div>
-        <div class="contact-item">
-          <div class="contact-icon"><i class="fas fa-clock" aria-hidden="true"></i></div>
-          <div>
-            <strong>Horaires</strong>
-            <span>{{ $openingHoursText }}</span>
+        @endif
+        @if($openingHoursText)
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-clock" aria-hidden="true"></i></div>
+            <div>
+              <strong>Horaires</strong>
+              <span>{{ $openingHoursText }}</span>
+            </div>
           </div>
-        </div>
-        @if(!empty($socialLinks))
+        @endif
+        @if($visibleSocialLinks->isNotEmpty())
           <div class="contact-socials">
-            @foreach($socialLinks as $link)
+            @foreach($visibleSocialLinks as $link)
               <a href="{{ $link['url'] }}" class="social-btn" aria-label="{{ $link['label'] }}" target="_blank" rel="noopener noreferrer"><i class="{{ $link['icon'] }}" aria-hidden="true"></i></a>
             @endforeach
           </div>

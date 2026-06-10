@@ -53,20 +53,11 @@
         ?: $etablissement->getSetting('address', null, 'general')
         ?: $etablissement->getSetting('adresse', null, 'general')
         ?: $etablissement->adresse
-        ?: 'Adresse en cours de configuration';
+        ?: null;
     $hours = $etablissement->getSetting('opening_hours', [], 'company');
     $workingHours = normalize_cms_opening_hours($hours, $workingHours ?? []);
 
-    $fallbackImages = collect([
-        ['thumbnail' => 'https://images.pexels.com/photos/3296434/pexels-photo-3296434.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Comptoir de produits frais'],
-        ['thumbnail' => 'https://images.pexels.com/photos/566345/pexels-photo-566345.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Fruits de mer'],
-        ['thumbnail' => 'https://images.pexels.com/photos/3655916/pexels-photo-3655916.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Saumon fumé artisanal'],
-        ['thumbnail' => 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Épicerie fine'],
-        ['thumbnail' => 'https://images.pexels.com/photos/4397919/pexels-photo-4397919.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Produits naturels'],
-        ['thumbnail' => 'https://images.pexels.com/photos/6249501/pexels-photo-6249501.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Coffrets gourmands'],
-        ['thumbnail' => 'https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Plats préparés'],
-        ['thumbnail' => 'https://images.pexels.com/photos/1295138/pexels-photo-1295138.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&fit=crop', 'name' => 'Approvisionnement local'],
-    ]);
+    $fallbackImages = collect();
 
     $gallery = collect($mainGalleryMedia ?? [])
         ->map(fn ($row) => [
@@ -88,10 +79,6 @@
             ])
             ->filter(fn ($row) => !empty($row['thumbnail']))
             ->values();
-    }
-
-    if ($gallery->isEmpty()) {
-        $gallery = $fallbackImages;
     }
 
     if ($gallery->count() < 12 && $gallery->isNotEmpty()) {
@@ -196,34 +183,18 @@
         ->sortBy('order')
         ->values();
 
-    $productCards = [
-        ['tag' => 'Arrivage', 'title' => 'Poissons frais', 'desc' => 'Sélection quotidienne, conseils de cuisson et découpes sur demande.', 'price' => '18,95 $ / lb', 'image' => $gallery->get(0)['thumbnail'] ?? $fallbackImages->get(0)['thumbnail']],
-        ['tag' => 'Signature', 'title' => 'Fruits de mer', 'desc' => 'Huîtres, crevettes et plateaux prêts à servir pour vos événements.', 'price' => 'À partir de 29 $', 'image' => $gallery->get(1)['thumbnail'] ?? $fallbackImages->get(1)['thumbnail']],
-        ['tag' => 'Maison', 'title' => 'Fumoir artisanal', 'desc' => 'Saumon fumé, marinades et spécialités préparées avec soin.', 'price' => '14,50 $ / portion', 'image' => $gallery->get(2)['thumbnail'] ?? $fallbackImages->get(2)['thumbnail']],
-        ['tag' => 'Terroir', 'title' => 'Épicerie fine', 'desc' => 'Sauces, conserves, condiments, produits locaux et idées cadeaux.', 'price' => 'Dès 8,95 $', 'image' => $gallery->get(3)['thumbnail'] ?? $fallbackImages->get(3)['thumbnail']],
-        ['tag' => 'Santé', 'title' => 'Produits naturels', 'desc' => 'Options bio, sans gluten et recettes équilibrées pour le quotidien.', 'price' => 'Dès 6,50 $', 'image' => $gallery->get(4)['thumbnail'] ?? $fallbackImages->get(4)['thumbnail']],
-        ['tag' => 'Cadeau', 'title' => 'Coffrets gourmands', 'desc' => 'Coffrets personnalisés pour clients, employés et occasions spéciales.', 'price' => 'À partir de 39 $', 'image' => $gallery->get(5)['thumbnail'] ?? $fallbackImages->get(5)['thumbnail']],
-    ];
+    $productCards = [];
 
     $reviewCards = collect($reviews ?? [])->take(4)->map(fn ($review) => [
-        'text' => data_get($review, 'comment') ?: data_get($review, 'text') ?: 'Excellent service et très beaux produits.',
-        'author' => data_get($review, 'author') ?: data_get($review, 'name') ?: 'Client satisfait',
-    ])->values();
-
-    if ($reviewCards->isEmpty()) {
-        $reviewCards = collect([
-            ['text' => 'Produits très frais, équipe chaleureuse et conseils parfaits pour recevoir à la maison.', 'author' => 'Marie-Claude · Google'],
-            ['text' => 'Belle présentation, commandes rapides et spécialités locales vraiment savoureuses.', 'author' => 'Jean-François · Facebook'],
-            ['text' => 'Un commerce de confiance pour les plateaux, le poisson frais et les idées cadeaux.', 'author' => 'Sophie · Cliente fidèle'],
-            ['text' => 'Service attentionné, boutique propre et sélection gourmande qui donne envie de revenir.', 'author' => 'Karim · Avis client'],
-        ]);
-    }
+        'text' => data_get($review, 'comment') ?: data_get($review, 'text'),
+        'author' => data_get($review, 'author') ?: data_get($review, 'name'),
+    ])->filter(fn ($review) => !empty($review['text']) && !empty($review['author']))->values();
 
     $foodBlogPosts = collect($blogPosts ?? [])
         ->filter(fn ($post) => trim((string) data_get($post, 'title')) !== '')
         ->take(3)
         ->values();
-    $foodBlogFallbackImage = $gallery->first()['thumbnail'] ?? $fallbackImages->first()['thumbnail'];
+    $foodBlogFallbackImage = null;
 
     $instagramPosts = collect($instagramGalleryMedia ?? [])->filter(fn ($row) => !empty($row['thumbnail']))->values();
     if ($instagramPosts->isEmpty()) {
@@ -1642,7 +1613,7 @@
                     @endif
 
 
-                    @if(!empty($showFallbackProducts) && !$cmsHasLiveProducts)
+                    @if(false && !empty($showFallbackProducts) && !$cmsHasLiveProducts)
                     @php
                         $foodProductsSectionTitle = function_exists('get_ecommerce_section_title')
                             ? get_ecommerce_section_title($etablissement->id)
@@ -1704,7 +1675,7 @@
                                         $blogUrl = data_get($post, 'url') ?: '#';
                                         $isExternalBlogUrl = \Illuminate\Support\Str::startsWith($blogUrl, ['http://', 'https://', '//']);
                                         $blogTargetAttrs = $isExternalBlogUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
-                                        $blogImage = data_get($post, 'image') ?: $foodBlogFallbackImage;
+                                        $blogImage = data_get($post, 'image');
                                         $blogExcerpt = \Illuminate\Support\Str::limit(strip_tags((string) (data_get($post, 'excerpt') ?: data_get($post, 'content'))), 140);
                                     @endphp
                                     <a class="food-blog-card" href="{{ $blogUrl }}"{!! $blogTargetAttrs !!}>

@@ -4,7 +4,7 @@
     $siteDescription = $etablissement->getSetting('description', null, 'general')
         ?: $etablissement->getSetting('site_description', null, 'general')
         ?: get_site_description($etablissement->id)
-        ?: 'Appartements lumineux, espaces verts, stationnement inclus et emplacement privilégié à proximité des services.';
+        ?: '';
     $heroPrimaryCtaText = $etablissement->getSetting('hero_cta_text', null, 'landing')
         ?: $etablissement->getSetting('cta_text', null, 'general');
     $heroPrimaryCtaUrl = $etablissement->getSetting('hero_cta_url', null, 'landing')
@@ -13,16 +13,13 @@
     $heroSecondaryCtaUrl = $etablissement->getSetting('hero_secondary_cta_url', null, 'landing');
     $slogan = trim((string) $etablissement->getSetting('slogan', null, 'general')) ?: '';
     $brandLogo = get_logo_url($etablissement->id) ?: ($brandLogoUrl ?? null);
-    $phone = $etablissement->getSetting('phone', null, 'company') ?: $etablissement->getSetting('phone', null, 'general') ?: $etablissement->getSetting('telephone', null, 'general') ?: ($etablissement->phone ?? null) ?: ($etablissement->telephone ?? null) ?: '(418) 525-7748';
+    $phone = $etablissement->getSetting('phone', null, 'company') ?: $etablissement->getSetting('phone', null, 'general') ?: $etablissement->getSetting('telephone', null, 'general') ?: ($etablissement->phone ?? null) ?: ($etablissement->telephone ?? null) ?: null;
     $phoneDial = preg_replace('/\D+/', '', $phone);
     $phoneDial = strlen($phoneDial) === 10 ? '+1' . $phoneDial : $phoneDial;
-    $email = $etablissement->getSetting('email', null, 'general') ?: $etablissement->getSetting('email_contact', null, 'general') ?: ($etablissement->email_contact ?? null) ?: ($etablissement->email ?? null) ?: 'info@goexploriabusiness.com';
-    $address = $etablissement->getSetting('address', null, 'company') ?: $etablissement->getSetting('adress', null, 'company') ?: $etablissement->getSetting('address', null, 'general') ?: $etablissement->getSetting('adresse', null, 'general') ?: ($etablissement->adresse ?? null) ?: 'Rue des Jonquilles, Rivière-du-Loup, QC';
+    $email = $etablissement->getSetting('email', null, 'general') ?: $etablissement->getSetting('email_contact', null, 'general') ?: ($etablissement->email_contact ?? null) ?: ($etablissement->email ?? null) ?: null;
+    $address = $etablissement->getSetting('address', null, 'company') ?: $etablissement->getSetting('adress', null, 'company') ?: $etablissement->getSetting('address', null, 'general') ?: $etablissement->getSetting('adresse', null, 'general') ?: ($etablissement->adresse ?? null) ?: null;
     $hours = $etablissement->getSetting('opening_hours', [], 'company');
-    $workingHours = normalize_cms_opening_hours($hours, [
-        ['day' => 'Lundi au vendredi', 'hours' => '9h à 17h'],
-        ['day' => 'Visites', 'hours' => 'Sur rendez-vous'],
-    ]);
+    $workingHours = normalize_cms_opening_hours($hours, $workingHours ?? []);
     $socialLinks = $socialLinks ?? get_establishment_social_links($etablissement);
     $facebookUrl = $socialLinks['facebook']['url'] ?? null;
     $instagramUrl = $socialLinks['instagram']['url'] ?? null;
@@ -77,16 +74,7 @@
         return $raw;
     };
 
-    $fallbackImages = collect([
-        ['thumbnail' => 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1800&q=85', 'name' => 'Appartement lumineux'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1560448075-bb485b067938?w=1800&q=85', 'name' => 'Salon contemporain'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1800&q=85', 'name' => 'Chambre confortable'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1800&q=85', 'name' => 'Cuisine équipée'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1800&q=85', 'name' => 'Espace de vie'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1800&q=85', 'name' => 'Immeuble résidentiel'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=85', 'name' => 'Extérieur paisible'],
-        ['thumbnail' => 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1800&q=85', 'name' => 'Décor soigné'],
-    ]);
+    $fallbackImages = collect();
 
     $gallery = collect($mainGalleryMedia ?? [])->map(function ($row) use ($mediaUrl) {
         $url = $mediaUrl(data_get($row, 'thumbnail') ?: data_get($row, 'url') ?: data_get($row, 'path'));
@@ -108,10 +96,6 @@
             ];
         })->filter(fn ($row) => !empty($row['thumbnail']))->values();
     }
-    if ($gallery->isEmpty()) {
-        $gallery = $fallbackImages;
-    }
-    while ($gallery->count() < 8) $gallery = $gallery->concat($fallbackImages)->values();
 
     $normalizeSocialMedia = static function ($items, $fallback) use ($mediaUrl) {
         $media = collect($items ?? [])->map(function ($row) use ($mediaUrl) {
@@ -137,26 +121,13 @@
             'type' => $type,
             'url' => $url,
             'embed' => $embed,
-            'title' => data_get($slider, 'title') ?: $siteName,
-            'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description') ?: $siteDescription,
-            'button_text' => data_get($slider, 'button_text') ?: $heroPrimaryCtaText,
-            'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link') ?: $heroPrimaryCtaUrl,
+        'title' => data_get($slider, 'title'),
+        'subtitle' => data_get($slider, 'subtitle') ?: data_get($slider, 'description'),
+        'button_text' => data_get($slider, 'button_text'),
+        'button_url' => data_get($slider, 'button_url') ?: data_get($slider, 'button_link'),
         ];
     })->filter(fn ($slide) => !empty($slide['url']) || !empty($slide['embed']))->values();
-    if ($heroSlides->isEmpty()) {
-        $heroSlides = collect([
-            ['type' => 'image', 'url' => $gallery[0]['thumbnail'], 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
-            ['type' => 'image', 'url' => $gallery[1]['thumbnail'], 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
-            ['type' => 'image', 'url' => $gallery[2]['thumbnail'], 'embed' => null, 'title' => $siteName, 'subtitle' => $siteDescription, 'button_text' => $heroPrimaryCtaText, 'button_url' => $heroPrimaryCtaUrl],
-        ]);
-    }
-
-    $fallbackApartments = collect([
-        ['title' => '3 1/2 lumineux', 'tag' => 'Disponible', 'price' => 'À partir de 925 $', 'surface' => '720 pi²', 'rooms' => '1 chambre', 'floor' => '2e étage', 'image' => $gallery[0]['thumbnail'], 'desc' => 'Appartement confortable avec cuisine équipée, grand salon et belle lumière naturelle.'],
-        ['title' => '4 1/2 familial', 'tag' => 'Vedette', 'price' => 'À partir de 1 175 $', 'surface' => '920 pi²', 'rooms' => '2 chambres', 'floor' => 'Rez-de-chaussée', 'image' => $gallery[1]['thumbnail'], 'desc' => 'Logement spacieux, stationnement inclus et accès rapide aux services du quartier.'],
-        ['title' => '5 1/2 prestige', 'tag' => 'Grand espace', 'price' => 'Sur demande', 'surface' => '1 150 pi²', 'rooms' => '3 chambres', 'floor' => 'Étage supérieur', 'image' => $gallery[2]['thumbnail'], 'desc' => 'Idéal pour famille ou télétravail, avec rangements, balcon et atmosphère calme.'],
-    ]);
-    $apartmentCards = $fallbackApartments;
+    $apartmentCards = collect();
 
     $amenities = collect([
         ['title' => 'Stationnement inclus', 'text' => 'Accès pratique pour résidents et visiteurs.'],
@@ -169,19 +140,12 @@
 
     $reviewCards = collect($reviews ?? [])->take(5)->map(function ($review) {
         return [
-            'text' => \Illuminate\Support\Str::limit(strip_tags((string) (data_get($review, 'comment') ?: data_get($review, 'text') ?: 'Très belle expérience et service professionnel.')), 240),
-            'author' => \Illuminate\Support\Str::limit(strip_tags((string) (data_get($review, 'author') ?: data_get($review, 'name') ?: 'Client satisfait')), 80),
-            'source' => \Illuminate\Support\Str::limit(strip_tags((string) (data_get($review, 'source') ?: 'Google')), 40),
+            'text' => \Illuminate\Support\Str::limit(strip_tags((string) (data_get($review, 'comment') ?: data_get($review, 'text'))), 240),
+            'author' => \Illuminate\Support\Str::limit(strip_tags((string) (data_get($review, 'author') ?: data_get($review, 'name'))), 80),
+            'source' => \Illuminate\Support\Str::limit(strip_tags((string) data_get($review, 'source')), 40),
             'rating' => max(0, min(5, (float) (data_get($review, 'rating') ?: 5))),
         ];
-    })->values();
-    if ($reviewCards->isEmpty()) {
-        $reviewCards = collect([
-            ['author' => 'Camille L.', 'source' => 'Google', 'rating' => 5, 'text' => 'Appartement propre, lumineux et très bien situé. Le processus de location a été simple du début à la fin.'],
-            ['author' => 'Nicolas B.', 'source' => 'Facebook', 'rating' => 5, 'text' => 'Gestion professionnelle, réponses rapides et immeuble tranquille. Je recommande sans hésiter.'],
-            ['author' => 'Sophie T.', 'source' => 'Google', 'rating' => 5, 'text' => 'Bel environnement, proche de tout, avec un vrai sentiment de confort au quotidien.'],
-        ]);
-    }
+    })->filter(fn ($review) => !empty($review['text']) && !empty($review['author']))->values();
 
     $pcConfig = [
         'siteName' => $siteName,
@@ -216,10 +180,10 @@
     <main class="pc-page">
         <!-- @include('cms::web.fallback.partials.immoblier.nav') -->
     @include('cms::web.fallback.partials.landing-cms-header')
-        @if(is_slider_enabled($etablissement->id))
+        @if(is_slider_enabled($etablissement->id) && ($heroSlides->isNotEmpty() || has_slider($etablissement->id)))
             @if(has_slider($etablissement->id))
                 {!! get_slider_html($etablissement->id) !!}
-            @else
+            @elseif($heroSlides->isNotEmpty())
                 @include('cms::web.fallback.partials.immoblier.hero')
             @endif
         @endif
@@ -230,9 +194,12 @@
                                 {!! data_get($cmsPage, 'content') !!}
                 @endforeach
         @endif
-        @include('cms::web.fallback.partials.immoblier.gallery')
-        @include('cms::web.fallback.partials.immoblier.amenities')
-        @include('cms::web.fallback.partials.immoblier.social')
+        @if($gallery->isNotEmpty())
+            @include('cms::web.fallback.partials.immoblier.gallery')
+        @endif
+        @if($instagramGallery->isNotEmpty() || $facebookGallery->isNotEmpty() || $pinterestGallery->isNotEmpty())
+            @include('cms::web.fallback.partials.immoblier.social')
+        @endif
         @include('cms::web.fallback.partials.landing-working-hours')
         @include('cms::web.fallback.partials.immoblier.contact')
         @include('cms::web.fallback.partials.immoblier.map-cta')
