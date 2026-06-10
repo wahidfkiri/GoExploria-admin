@@ -143,8 +143,6 @@
             </section>
         @endif
 
-        @include('cms::web.fallback.partials.landing-database-content')
-
         @if($cmsLandingProducts->isNotEmpty())
             <section class="rest-section alt" id="produits">
                 <div class="restaurant-container">

@@ -734,11 +734,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             $slideshowMediaGroups = $this->buildLandingSlideshowGroups($landingMedia['all']);
         }
         $blogPosts = $this->getLandingBlogPosts();
-        $cmsPageSections = $this->getActiveTemplatePageSections($activeEtablissementTemplates)
-            ->concat($this->getLandingCmsPageSections())
-            ->filter(fn ($section) => trim((string) data_get($section, 'content')) !== '')
-            ->unique(fn ($section) => (string) data_get($section, 'source', 'cms_page') . ':' . (string) data_get($section, 'id'))
-            ->values();
+        $cmsPageSections = $this->getActiveTemplatePageSections($activeEtablissementTemplates);
         $videoChannelVideos = $this->getLandingVideoChannelItems();
 
         $activitySections = $this->buildActivitySections($activities);
