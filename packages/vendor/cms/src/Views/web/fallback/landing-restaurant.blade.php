@@ -209,25 +209,29 @@
                         </div>
                     </div>
                     <div class="rest-blog-grid">
-                        @foreach($blogCards as $post)
-                            @php
+                        <?php foreach ($blogCards as $post): ?>
+                            <?php
                                 $blogUrl = data_get($post, 'url') ?: '#blog';
                                 $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
                                 $blogTargetAttrs = $isExternalBlogUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
                                 $blogImage = data_get($post, 'image');
-                            @endphp
+                            ?>
                             <a class="rest-blog" href="{{ $blogUrl }}"{!! $blogTargetAttrs !!}>
-                                @if($blogImage)
+                                <?php if ($blogImage): ?>
                                     <div class="rest-blog-img"><img src="{{ $blogImage }}" alt="{{ data_get($post, 'title') }}"></div>
-                                @endif
+                                <?php endif; ?>
                                 <div class="rest-blog-body">
-                                    @if(data_get($post, 'date'))<div class="rest-date">{{ data_get($post, 'date') }}</div>@endif
+                                    <?php if (data_get($post, 'date')): ?>
+                                        <div class="rest-date">{{ data_get($post, 'date') }}</div>
+                                    <?php endif; ?>
                                     <h3>{{ data_get($post, 'title') }}</h3>
-                                    @if(data_get($post, 'excerpt'))<p>{{ \Illuminate\Support\Str::limit(strip_tags((string) data_get($post, 'excerpt')), 130) }}</p>@endif
+                                    <?php if (data_get($post, 'excerpt')): ?>
+                                        <p>{{ \Illuminate\Support\Str::limit(strip_tags((string) data_get($post, 'excerpt')), 130) }}</p>
+                                    <?php endif; ?>
                                     <span class="rest-more">Lire la suite <i class="fa-solid fa-arrow-right"></i></span>
                                 </div>
                             </a>
-                        @endforeach
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </section>
@@ -244,14 +248,21 @@
                         @if($email)<div class="rest-info-item"><i class="fa-solid fa-envelope"></i><a href="mailto:{{ $email }}">{{ $email }}</a></div>@endif
                         @if($address)<div class="rest-info-item"><i class="fa-solid fa-location-dot"></i><span>{{ $address }}</span></div>@endif
                         @if(!empty($workingHours))
-                            <div class="rest-info-item"><i class="fa-solid fa-clock"></i><span>@foreach($workingHours as $row){{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}@if(!$loop->last)<br>@endif @endforeach</span></div>
+                            <div class="rest-info-item">
+                                <i class="fa-solid fa-clock"></i>
+                                <span>
+                                    <?php foreach ($workingHours as $index => $row): ?>
+                                        {{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}<?php if ($index < count($workingHours) - 1): ?><br><?php endif; ?>
+                                    <?php endforeach; ?>
+                                </span>
+                            </div>
                         @endif
                     </div>
                     @if($socialLinks->isNotEmpty())
                         <div class="rest-social">
-                            @foreach($socialLinks as $link)
+                            <?php foreach ($socialLinks as $link): ?>
                                 <a href="{{ data_get($link, 'url') }}" target="_blank" rel="noopener noreferrer" aria-label="{{ data_get($link, 'label') }}"><i class="{{ data_get($link, 'icon') ?: 'fa-solid fa-share-nodes' }}"></i></a>
-                            @endforeach
+                            <?php endforeach; ?>
                         </div>
                     @endif
                 </div>
