@@ -1964,7 +1964,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'place immoblier' => 'cms::web.fallback.landing-immobilier-construction',
             'place immobilier' => 'cms::web.fallback.landing-immobilier-construction',
             'portfolio' => 'cms::web.fallback.landing-next-level',
-            'restaurant' => 'cms::web.fallback.landing-restaurant',
+            'restaurant' => 'cms::web.fallback.landing-commerce-alimentaire',
             'saas' => 'cms::web.fallback.landing-next-level',
             'services' => 'cms::web.fallback.landing-next-level',
             'tourisme' => 'cms::web.fallback.landing-tourisme',
@@ -2083,11 +2083,8 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 'commerce alimentaire', 'alimentaire', 'alimentation', 'epicerie', 'épicerie',
                 'marche', 'marché', 'supermarche', 'supermarché', 'poissonnerie', 'boucherie',
                 'fromagerie', 'boulangerie', 'patisserie', 'pâtisserie', 'terroir',
-                'traiteur', 'gourmet', 'fine food',
-            ],
-            'cms::web.fallback.landing-restaurant' => [
-                'restaurant', 'restaurants', 'restauration', 'cafe', 'café', 'bar', 'brasserie',
-                'bistro', 'cuisine', 'table gastronomique', 'gastronomie',
+                'traiteur', 'gourmet', 'fine food', 'restaurant', 'restaurants', 'restauration',
+                'cafe', 'café', 'bar', 'brasserie', 'bistro', 'cuisine', 'table gastronomique', 'gastronomie',
             ],
             'cms::web.fallback.landing-location-vehicule' => [
                 'location vehicule', 'location véhicule', 'location véhicules',
@@ -3059,5 +3056,3 @@ protected function getThemePath($theme)
         ];
     }
 }
-
-
