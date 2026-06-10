@@ -28,12 +28,6 @@
         return asset('storage/' . ltrim($path, '/'));
     };
 
-    $gallery = collect($mainGalleryMedia ?? []);
-    if ($gallery->isEmpty()) $gallery = collect($galleryMedia ?? []);
-    if ($gallery->isEmpty()) $gallery = collect($allGalleryMedia ?? []);
-    $heroImage = $assetUrl(data_get($gallery->first(), 'thumbnail') ?: data_get($gallery->first(), 'url'))
-        ?: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1800&q=85&auto=format&fit=crop';
-
     $youtubeIdFromUrl = static function ($value) {
         $value = trim((string) $value);
         if ($value === '') return null;
@@ -76,15 +70,15 @@
 
     $productPrice = static function ($product) {
         $value = $product->price_ttc ?? $product->price_ht ?? null;
-        if ($value === null || $value === '') return 'Sur demande';
+        if ($value === null || $value === '') return null;
         return number_format((float) $value, 2, ',', ' ') . ' $';
     };
 
     $blogCards = collect($blogPosts ?? [])->filter(fn ($post) => trim((string) data_get($post, 'title')) !== '')->take(3)->values();
     $blogSectionTitle = function_exists('get_blog_section_title') ? get_blog_section_title($etablissement->id) : '';
-    $blogSectionTitle = trim((string) $blogSectionTitle) !== '' ? $blogSectionTitle : 'Actualites du restaurant';
+    $blogSectionTitle = trim((string) $blogSectionTitle);
     $productSectionTitle = function_exists('get_ecommerce_section_title') ? get_ecommerce_section_title($etablissement->id) : '';
-    $productSectionTitle = trim((string) $productSectionTitle) !== '' ? $productSectionTitle : 'Nos produits disponibles';
+    $productSectionTitle = trim((string) $productSectionTitle);
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -105,7 +99,7 @@
         *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:var(--font-body);background:var(--cream);color:var(--ink);overflow-x:hidden}a{text-decoration:none;color:inherit}img,video,iframe{max-width:100%}.restaurant-page{background:var(--cream)}.restaurant-container{width:min(1180px,calc(100% - 40px));margin:auto}
         .rest-hero{position:relative;min-height:92vh;display:flex;align-items:center;overflow:hidden;padding:150px 0 90px}.rest-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center}.rest-hero-bg:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,rgba(250,247,242,.94) 38%,rgba(250,247,242,.34) 100%)}.rest-hero-bg iframe{position:absolute;inset:50% auto auto 50%;width:177.78vh;height:56.25vw;min-width:100%;min-height:100%;transform:translate(-50%,-50%);border:0;pointer-events:none}.rest-hero-bg video,.rest-hero-bg img{width:100%;height:100%;object-fit:cover}.rest-hero-content{position:relative;z-index:2;max-width:680px}.rest-kicker{display:inline-flex;align-items:center;gap:.7rem;font-size:.75rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.4rem}.rest-kicker:before{content:"";width:32px;height:1px;background:var(--gold)}.rest-h1{font-family:var(--font-display);font-size:clamp(3.2rem,6vw,6rem);font-weight:300;line-height:1.05;margin:0 0 1.4rem}.rest-h1 em{font-style:italic;color:var(--gold)}.rest-desc{font-size:1.05rem;font-weight:300;color:var(--ink-soft);line-height:1.75;max-width:500px;margin:0 0 2.2rem}.rest-actions{display:flex;gap:1rem;flex-wrap:wrap}.rest-btn{display:inline-flex;align-items:center;gap:.6rem;background:var(--ink);color:var(--cream);padding:.9rem 2rem;font-size:.82rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:0;cursor:pointer;transition:.25s}.rest-btn:hover{background:var(--gold);transform:translateY(-1px)}
         .rest-section{padding:6rem 0}.rest-section.alt{background:var(--section-alt)}.rest-head{display:flex;justify-content:space-between;align-items:end;gap:2rem;margin-bottom:3rem}.rest-tag{display:inline-flex;align-items:center;gap:.7rem;font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}.rest-tag:before{content:"";width:24px;height:1px;background:var(--gold)}.rest-title{font-family:var(--font-display);font-size:clamp(2.2rem,4vw,3.4rem);font-weight:300;line-height:1.12;margin:0}.rest-sub{color:var(--ink-soft);line-height:1.75;max-width:520px;margin:.7rem 0 0}
-        .rest-products{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:2px}.rest-product{background:var(--warm-white);display:grid;grid-template-columns:110px 1fr auto;gap:1.2rem;align-items:flex-start;padding:1.5rem;border:1px solid var(--border);transition:box-shadow .25s}.rest-product:hover{box-shadow:var(--shadow)}.rest-product-img{width:110px;height:110px;object-fit:cover;background:var(--section-alt)}.rest-product h3{font-family:var(--font-display);font-size:1.25rem;margin:.1rem 0 .35rem}.rest-product p{font-size:.86rem;color:var(--ink-soft);line-height:1.55;margin:0}.rest-price{font-family:var(--font-display);font-size:1.15rem;font-weight:600;color:var(--gold);white-space:nowrap}.rest-order{grid-column:2/-1;width:max-content;margin-top:.8rem;border:1px solid var(--ink);background:transparent;color:var(--ink);padding:.55rem 1rem;font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}.rest-order:hover{background:var(--ink);color:var(--cream)}
+        .rest-products{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:2px}.rest-product{background:var(--warm-white);display:grid;grid-template-columns:110px 1fr auto;gap:1.2rem;align-items:flex-start;padding:1.5rem;border:1px solid var(--border);transition:box-shadow .25s}.rest-product.no-image{grid-template-columns:1fr auto}.rest-product:hover{box-shadow:var(--shadow)}.rest-product-img{width:110px;height:110px;object-fit:cover;background:var(--section-alt)}.rest-product h3{font-family:var(--font-display);font-size:1.25rem;margin:.1rem 0 .35rem}.rest-product p{font-size:.86rem;color:var(--ink-soft);line-height:1.55;margin:0}.rest-price{font-family:var(--font-display);font-size:1.15rem;font-weight:600;color:var(--gold);white-space:nowrap}.rest-order{grid-column:2/-1;width:max-content;margin-top:.8rem;border:1px solid var(--ink);background:transparent;color:var(--ink);padding:.55rem 1rem;font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}.rest-product.no-image .rest-order{grid-column:1/-1}.rest-order:hover{background:var(--ink);color:var(--cream)}
         .rest-blog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem}.rest-blog{background:var(--warm-white);border:1px solid var(--border);overflow:hidden;transition:.25s}.rest-blog:hover{box-shadow:var(--shadow);transform:translateY(-4px)}.rest-blog-img{height:230px;background:var(--section-alt)}.rest-blog-img img{width:100%;height:100%;object-fit:cover}.rest-blog-body{padding:1.5rem}.rest-date{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.7rem}.rest-blog h3{font-family:var(--font-display);font-size:1.45rem;line-height:1.15;margin:0 0 .6rem}.rest-blog p{font-size:.9rem;color:var(--ink-soft);line-height:1.65;margin:0}.rest-more{display:inline-flex;gap:.45rem;align-items:center;margin-top:1rem;color:var(--gold);font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
         .rest-contact{background:var(--ink);color:var(--cream)}.rest-contact .rest-title{color:var(--cream)}.rest-contact .rest-sub{color:rgba(255,255,255,.66)}.rest-contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:4rem}.rest-info{display:grid;gap:1rem;margin-top:1.5rem}.rest-info-item{display:flex;gap:.8rem;color:rgba(255,255,255,.68);line-height:1.55}.rest-info-item i{color:var(--gold-light);margin-top:.15rem}.rest-social{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.5rem}.rest-social a{width:42px;height:42px;border:1px solid rgba(255,255,255,.18);display:grid;place-items:center;color:var(--gold-light)}.rest-social a:hover{background:var(--gold);color:#fff}.rest-form{display:grid;gap:1rem}.rest-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.rest-field label{display:block;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:.45rem}.rest-field input,.rest-field select,.rest-field textarea{width:100%;padding:.9rem 1rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);color:var(--cream);font:inherit;outline:none}.rest-field select option{background:var(--ink)}.rest-field textarea{min-height:120px;resize:vertical}.rest-submit{width:max-content;background:var(--gold);color:#fff;border:0;padding:.9rem 1.8rem;font-size:.78rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}.rest-submit:hover{background:var(--gold-light)}
         .rest-footer{padding:2rem 0;background:#0f0b08;color:rgba(255,255,255,.58)}.rest-footer .restaurant-container{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}.rest-footer strong{color:#fff}
@@ -119,10 +113,10 @@
     <main class="restaurant-page">
         @if(is_slider_enabled($etablissement->id) && has_slider($etablissement->id))
             {!! get_slider_html($etablissement->id) !!}
-        @else
+        @elseif(is_slider_enabled($etablissement->id) && $heroSlides->isNotEmpty())
             @php($hero = $heroSlides->first())
             <section class="rest-hero" id="top">
-                <div class="rest-hero-bg" style="background-image:url('{{ $hero['url'] ?? $heroImage }}')">
+                <div class="rest-hero-bg" @if(!empty($hero['url']) && ($hero['type'] ?? 'image') !== 'video') style="background-image:url('{{ $hero['url'] }}')" @endif>
                     @if(!empty($hero['embed']))
                         <iframe src="{{ $hero['embed'] }}" title="{{ $hero['title'] ?: $siteName }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
                     @elseif(!empty($hero['url']) && ($hero['type'] ?? 'image') === 'video')
@@ -133,18 +127,17 @@
                 </div>
                 <div class="restaurant-container">
                     <div class="rest-hero-content">
-                        <div class="rest-kicker">Restaurant</div>
-                        <h1 class="rest-h1">{{ $hero['title'] ?: $siteName }}</h1>
-                        @if($hero['subtitle'] ?? $siteDescription)
-                            <p class="rest-desc">{{ $hero['subtitle'] ?: $siteDescription }}</p>
+                        @if(!empty($hero['title']))
+                            <h1 class="rest-h1">{{ $hero['title'] }}</h1>
                         @endif
-                        <div class="rest-actions">
-                            @if(!empty($hero['button_text']) && !empty($hero['button_url']))
+                        @if(!empty($hero['subtitle']))
+                            <p class="rest-desc">{{ $hero['subtitle'] }}</p>
+                        @endif
+                        @if(!empty($hero['button_text']) && !empty($hero['button_url']))
+                            <div class="rest-actions">
                                 <a class="rest-btn" href="{{ $hero['button_url'] }}" target="_blank" rel="noopener noreferrer">{{ $hero['button_text'] }} <i class="fa-solid fa-arrow-right"></i></a>
-                            @else
-                                <a class="rest-btn" href="#contact">Contacter <i class="fa-solid fa-arrow-right"></i></a>
-                            @endif
-                        </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </section>
@@ -156,21 +149,25 @@
                     <div class="rest-head">
                         <div>
                             <div class="rest-tag">Carte & produits</div>
-                            <h2 class="rest-title">{{ $productSectionTitle }}</h2>
+                            @if($productSectionTitle !== '')
+                                <h2 class="rest-title">{{ $productSectionTitle }}</h2>
+                            @endif
                         </div>
-                        <p class="rest-sub">Produits publics et disponibles ajoutes pour cet etablissement.</p>
                     </div>
                     <div class="rest-products">
                         @foreach($cmsLandingProducts as $product)
                             @php
-                                $image = $assetUrl($product->main_image ?: data_get($product->gallery_images, 0)) ?: $heroImage;
-                                $label = optional($product->category)->name ?: optional($product->family)->name ?: 'Restaurant';
+                                $image = $assetUrl($product->main_image ?: data_get($product->gallery_images, 0));
+                                $label = optional($product->category)->name ?: optional($product->family)->name;
                                 $productLink = $devisLink . (str_contains($devisLink, '?') ? '&' : '?') . http_build_query(['etablissement_id' => $etablissement->id, 'product_id' => $product->id]);
+                                $formattedPrice = $productPrice($product);
                             @endphp
-                            <article class="rest-product">
-                                <img class="rest-product-img" src="{{ $image }}" alt="{{ $product->name }}">
+                            <article class="rest-product{{ $image ? '' : ' no-image' }}">
+                                @if($image)
+                                    <img class="rest-product-img" src="{{ $image }}" alt="{{ $product->name }}">
+                                @endif
                                 <div>
-                                    <div class="rest-date">{{ $label }}</div>
+                                    @if($label)<div class="rest-date">{{ $label }}</div>@endif
                                     <h3>{{ $product->name }}</h3>
                                     @if($product->description)<p>{{ \Illuminate\Support\Str::limit(strip_tags((string) $product->description), 120) }}</p>@endif
                                     <button
@@ -186,7 +183,9 @@
                                         data-etablissement-name="{{ $siteName }}"
                                     >Commander</button>
                                 </div>
-                                <div class="rest-price">{{ $productPrice($product) }}</div>
+                                @if($formattedPrice)
+                                    <div class="rest-price">{{ $formattedPrice }}</div>
+                                @endif
                             </article>
                         @endforeach
                     </div>
@@ -200,7 +199,9 @@
                     <div class="rest-head">
                         <div>
                             <div class="rest-tag">Blog</div>
-                            <h2 class="rest-title">{{ $blogSectionTitle }}</h2>
+                            @if($blogSectionTitle !== '')
+                                <h2 class="rest-title">{{ $blogSectionTitle }}</h2>
+                            @endif
                         </div>
                     </div>
                     <div class="rest-blog-grid">
@@ -209,12 +210,14 @@
                                 $blogUrl = data_get($post, 'url') ?: '#blog';
                                 $isExternalBlogUrl = !\Illuminate\Support\Str::startsWith($blogUrl, '#');
                                 $blogTargetAttrs = $isExternalBlogUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
-                                $blogImage = data_get($post, 'image') ?: $heroImage;
+                                $blogImage = data_get($post, 'image');
                             @endphp
                             <a class="rest-blog" href="{{ $blogUrl }}"{!! $blogTargetAttrs !!}>
-                                <div class="rest-blog-img"><img src="{{ $blogImage }}" alt="{{ data_get($post, 'title') }}"></div>
+                                @if($blogImage)
+                                    <div class="rest-blog-img"><img src="{{ $blogImage }}" alt="{{ data_get($post, 'title') }}"></div>
+                                @endif
                                 <div class="rest-blog-body">
-                                    <div class="rest-date">{{ data_get($post, 'date') ?: 'Blog' }}</div>
+                                    @if(data_get($post, 'date'))<div class="rest-date">{{ data_get($post, 'date') }}</div>@endif
                                     <h3>{{ data_get($post, 'title') }}</h3>
                                     @if(data_get($post, 'excerpt'))<p>{{ \Illuminate\Support\Str::limit(strip_tags((string) data_get($post, 'excerpt')), 130) }}</p>@endif
                                     <span class="rest-more">Lire la suite <i class="fa-solid fa-arrow-right"></i></span>
