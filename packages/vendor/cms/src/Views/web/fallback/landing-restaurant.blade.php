@@ -155,21 +155,25 @@
                         </div>
                     </div>
                     <div class="rest-products">
-                        @foreach($cmsLandingProducts as $product)
-                            @php
+                        <?php foreach ($cmsLandingProducts as $product): ?>
+                            <?php
                                 $image = $assetUrl($product->main_image ?: data_get($product->gallery_images, 0));
                                 $label = optional($product->category)->name ?: optional($product->family)->name;
                                 $productLink = $devisLink . (str_contains($devisLink, '?') ? '&' : '?') . http_build_query(['etablissement_id' => $etablissement->id, 'product_id' => $product->id]);
                                 $formattedPrice = $productPrice($product);
-                            @endphp
+                            ?>
                             <article class="rest-product{{ $image ? '' : ' no-image' }}">
-                                @if($image)
+                                <?php if ($image): ?>
                                     <img class="rest-product-img" src="{{ $image }}" alt="{{ $product->name }}">
-                                @endif
+                                <?php endif; ?>
                                 <div>
-                                    @if($label)<div class="rest-date">{{ $label }}</div>@endif
+                                    <?php if ($label): ?>
+                                        <div class="rest-date">{{ $label }}</div>
+                                    <?php endif; ?>
                                     <h3>{{ $product->name }}</h3>
-                                    @if($product->description)<p>{{ \Illuminate\Support\Str::limit(strip_tags((string) $product->description), 120) }}</p>@endif
+                                    <?php if ($product->description): ?>
+                                        <p>{{ \Illuminate\Support\Str::limit(strip_tags((string) $product->description), 120) }}</p>
+                                    <?php endif; ?>
                                     <button
                                         class="rest-order"
                                         type="button"
@@ -183,9 +187,11 @@
                                         data-etablissement-name="{{ $siteName }}"
                                     >Commander</button>
                                 </div>
-                                {!! $formattedPrice ? '<div class="rest-price">' . e($formattedPrice) . '</div>' : '' !!}
+                                <?php if ($formattedPrice): ?>
+                                    <div class="rest-price">{{ $formattedPrice }}</div>
+                                <?php endif; ?>
                             </article>
-                        @endforeach
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </section>
