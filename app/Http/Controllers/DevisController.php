@@ -50,7 +50,6 @@ class DevisController extends Controller
             'city' => ['nullable', 'string', 'max:120'],
             'country' => ['nullable', 'string', 'max:120'],
             'preferred_contact' => ['required', 'in:email,phone,whatsapp,zoom'],
-            'service_subject' => ['required', 'string', 'max:160'],
             'service_quantities' => ['required', 'array', 'min:1'],
             'service_quantities.*' => ['nullable', 'integer', 'min:0', 'max:999'],
             'plan_interest' => ['nullable', 'string', 'max:180'],
@@ -66,6 +65,8 @@ class DevisController extends Controller
             'media_files.*.max' => 'Chaque fichier doit faire moins de 20 Mo.',
             'consent.accepted' => 'Veuillez accepter la politique de confidentialite.',
         ]);
+
+        $validated['service_subject'] = 'Demande de devis services';
 
         $selectedQuantities = collect($validated['service_quantities'] ?? [])
             ->mapWithKeys(fn ($quantity, $serviceId) => [(int) $serviceId => max(0, (int) $quantity)])

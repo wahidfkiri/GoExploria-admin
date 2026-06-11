@@ -195,7 +195,7 @@
         }
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: 1fr;
             gap: 14px;
         }
         .service-card {
@@ -577,18 +577,7 @@
                 </div>
 
                 <div class="form-block">
-                    <h2 class="block-title"><span class="step">2</span> Sujet et services sélectionnés</h2>
-
-                    <div class="form-group">
-                        <label for="service_subject">Sujet de votre demande *</label>
-                        <select id="service_subject" name="service_subject" required>
-                            <option value="">Sélectionner un sujet</option>
-                            @foreach($serviceSubjects as $subject)
-                                <option value="{{ $subject }}" @selected(old('service_subject') === $subject)>{{ $subject }}</option>
-                            @endforeach
-                        </select>
-                        @error('service_subject')<span class="field-error">{{ $message }}</span>@enderror
-                    </div>
+                    <h2 class="block-title"><span class="step">2</span> Services sélectionnés</h2>
 
                     @if($servicesCatalog->isNotEmpty())
                         <div class="services-grid" id="servicesGrid">
