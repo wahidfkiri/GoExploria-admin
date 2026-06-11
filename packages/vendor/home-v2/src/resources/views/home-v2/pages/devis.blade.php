@@ -3,7 +3,11 @@
 
     $plans = collect($plans ?? []);
     $serviceSubjects = $serviceSubjects ?? [];
-    $servicesCatalog = $servicesCatalog ?? [];
+    $servicesCatalog = collect($billingServices ?? $servicesCatalog ?? []);
+    $oldServiceQuantities = collect(old('service_quantities', []))
+        ->mapWithKeys(fn ($quantity, $serviceId) => [(string) $serviceId => max(0, (int) $quantity)])
+        ->all();
+    $servicesCatalogJson = $servicesCatalog->values()->toJson(JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_TAG);
 
     $planColors = ['plan-card-a', 'plan-card-b', 'plan-card-c', 'plan-card-d', 'plan-card-e'];
 
@@ -191,32 +195,172 @@
         }
         .services-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
         }
-        .service-item {
+        .service-card {
             border: 1px solid #dbe5f5;
-            border-radius: 12px;
+            border-radius: 16px;
             background: #f9fbff;
-            padding: 10px 12px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 116px minmax(0, 1fr);
+            min-height: 136px;
+            transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+        }
+        .service-card.is-selected {
+            border-color: #d4af37;
+            box-shadow: 0 14px 30px rgba(21, 44, 83, .12);
+            transform: translateY(-1px);
+        }
+        .service-media {
+            position: relative;
+            background: linear-gradient(135deg, #12284a, #1d4f85);
+            min-height: 136px;
+        }
+        .service-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .service-media-placeholder {
+            width: 100%;
+            height: 100%;
+            min-height: 136px;
+            display: grid;
+            place-items: center;
+            color: rgba(255,255,255,.88);
+            font-size: 30px;
+        }
+        .service-body {
+            padding: 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .service-top {
             display: flex;
             align-items: flex-start;
-            gap: 10px;
+            justify-content: space-between;
+            gap: 12px;
         }
-        .service-item input {
-            margin-top: 2px;
-            accent-color: #d4af37;
-        }
-        .service-item strong {
+        .service-title {
             font-size: 14px;
+            font-weight: 900;
             color: #10233f;
-            display: block;
-            margin-bottom: 3px;
+            line-height: 1.35;
         }
-        .service-item small {
+        .service-description {
             font-size: 12.5px;
             color: #6a7a95;
             line-height: 1.45;
+        }
+        .service-price {
+            white-space: nowrap;
+            text-align: right;
+            color: #0f1f3a;
+            font-weight: 900;
+            font-size: 14px;
+        }
+        .service-price small {
+            display: block;
+            color: #73839d;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .service-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            font-size: 11px;
+            color: #556784;
+        }
+        .service-pill {
+            border-radius: 999px;
+            background: #eef4ff;
+            border: 1px solid #dce8fb;
+            padding: 5px 8px;
+            font-weight: 800;
+        }
+        .qty-control {
+            margin-top: auto;
+            display: grid;
+            grid-template-columns: 34px 58px 34px minmax(92px, 1fr);
+            gap: 8px;
+            align-items: center;
+        }
+        .qty-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            border: 1px solid #d4dfef;
+            background: #fff;
+            color: #10233f;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        .qty-input {
+            height: 34px;
+            text-align: center;
+            border-radius: 10px;
+            border: 1px solid #d4dfef;
+            font-weight: 900;
+        }
+        .line-total {
+            text-align: right;
+            font-size: 12px;
+            color: #50617d;
+            font-weight: 800;
+        }
+        .empty-services {
+            border: 1px dashed #b9c7dc;
+            border-radius: 14px;
+            background: #f8fbff;
+            padding: 18px;
+            color: #5d6d88;
+            line-height: 1.6;
+        }
+        .quote-summary {
+            margin-top: 14px;
+            border-radius: 14px;
+            background: #0f1f3a;
+            color: #fff;
+            padding: 16px;
+            position: sticky;
+            top: 96px;
+        }
+        .quote-summary h3 {
+            margin: 0 0 12px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,.12);
+            color: rgba(255,255,255,.84);
+            font-size: 13px;
+        }
+        .summary-line strong {
+            color: #fff;
+        }
+        .summary-line.total {
+            border-bottom: 0;
+            font-size: 18px;
+            font-weight: 900;
+            color: #fff;
+            padding-top: 12px;
+        }
+        .summary-help {
+            margin: 10px 0 0;
+            color: rgba(255,255,255,.7);
+            font-size: 12px;
+            line-height: 1.5;
         }
         .consent {
             display: flex;
@@ -334,6 +478,9 @@
             .quote-shell { padding: 28px 14px 60px; margin-top: 112px; }
             .quote-form-card { padding: 16px; }
             .grid-2, .grid-3, .services-grid { grid-template-columns: 1fr; }
+            .service-card { grid-template-columns: 1fr; }
+            .service-media, .service-media-placeholder { min-height: 180px; }
+            .quote-summary { position: static; }
             .quote-head { padding: 18px; }
         }
     </style>
@@ -443,24 +590,84 @@
                         @error('service_subject')<span class="field-error">{{ $message }}</span>@enderror
                     </div>
 
-                    <div class="services-grid">
-                        @foreach($servicesCatalog as $service)
-                            @php $checked = in_array($service['label'], old('selected_services', []), true); @endphp
-                            <label class="service-item">
-                                <input
-                                    type="checkbox"
-                                    name="selected_services[]"
-                                    value="{{ $service['label'] }}"
-                                    @checked($checked)
-                                >
-                                <span>
-                                    <strong>{{ $service['label'] }}</strong>
-                                    <small>{{ $service['description'] }}</small>
-                                </span>
-                            </label>
-                        @endforeach
-                    </div>
-                    @error('selected_services')<span class="field-error">{{ $message }}</span>@enderror
+                    @if($servicesCatalog->isNotEmpty())
+                        <div class="services-grid" id="servicesGrid">
+                            @foreach($servicesCatalog as $service)
+                                @php
+                                    $serviceId = (string) data_get($service, 'id');
+                                    $quantity = $oldServiceQuantities[$serviceId] ?? 0;
+                                    $price = (float) data_get($service, 'unit_price', 0);
+                                    $taxRate = (float) data_get($service, 'tax_rate', 0);
+                                    $discount = (float) data_get($service, 'discount_percentage', 0);
+                                @endphp
+                                <article class="service-card {{ $quantity > 0 ? 'is-selected' : '' }}" data-service-card data-service-id="{{ $serviceId }}">
+                                    <div class="service-media">
+                                        @if(data_get($service, 'image_url'))
+                                            <img src="{{ data_get($service, 'image_url') }}" alt="{{ data_get($service, 'title') }}">
+                                        @else
+                                            <div class="service-media-placeholder"><i class="fas fa-briefcase"></i></div>
+                                        @endif
+                                    </div>
+                                    <div class="service-body">
+                                        <div class="service-top">
+                                            <div>
+                                                <div class="service-title">{{ data_get($service, 'title') }}</div>
+                                                @if(data_get($service, 'description'))
+                                                    <div class="service-description">{{ Str::limit(strip_tags((string) data_get($service, 'description')), 110) }}</div>
+                                                @endif
+                                            </div>
+                                            <div class="service-price">
+                                                {{ number_format($price, 2, ',', ' ') }} CAD
+                                                <small>HT / {{ data_get($service, 'billing_unit', 'forfait') }}</small>
+                                            </div>
+                                        </div>
+                                        <div class="service-meta">
+                                            <span class="service-pill">TVA {{ number_format($taxRate, 2, ',', ' ') }}%</span>
+                                            @if($discount > 0)
+                                                <span class="service-pill">Remise {{ number_format($discount, 2, ',', ' ') }}%</span>
+                                            @endif
+                                            @if(data_get($service, 'etablissement_name'))
+                                                <span class="service-pill">{{ data_get($service, 'etablissement_name') }}</span>
+                                            @endif
+                                        </div>
+                                        <div class="qty-control">
+                                            <button class="qty-btn" type="button" data-qty-minus data-service-id="{{ $serviceId }}">-</button>
+                                            <input
+                                                class="qty-input"
+                                                type="number"
+                                                min="0"
+                                                max="999"
+                                                step="1"
+                                                name="service_quantities[{{ $serviceId }}]"
+                                                value="{{ $quantity }}"
+                                                data-service-qty
+                                                data-service-id="{{ $serviceId }}"
+                                                aria-label="Quantite {{ data_get($service, 'title') }}"
+                                            >
+                                            <button class="qty-btn" type="button" data-qty-plus data-service-id="{{ $serviceId }}">+</button>
+                                            <div class="line-total" data-line-total="{{ $serviceId }}">0,00 CAD TTC</div>
+                                        </div>
+                                    </div>
+                                </article>
+                            @endforeach
+                        </div>
+                        <div class="quote-summary" id="quoteSummary">
+                            <h3>Calcul automatique</h3>
+                            <div class="summary-line"><span>Total services HT</span><strong data-summary="gross">0,00 CAD</strong></div>
+                            <div class="summary-line"><span>Remise</span><strong data-summary="discount">0,00 CAD</strong></div>
+                            <div class="summary-line"><span>Total HT apres remise</span><strong data-summary="subtotal">0,00 CAD</strong></div>
+                            <div class="summary-line"><span>TVA / taxes</span><strong data-summary="tax">0,00 CAD</strong></div>
+                            <div class="summary-line total"><span>Total TTC</span><strong data-summary="total">0,00 CAD</strong></div>
+                            <p class="summary-help">Le calcul final est enregistre dans la demande avec les quantites choisies.</p>
+                        </div>
+                    @else
+                        <div class="empty-services">
+                            Aucun service de devis n'est configure actuellement dans <strong>billing_request_services</strong>.
+                            Ajoutez des services actifs avec prix, image et taxe pour les afficher ici.
+                        </div>
+                    @endif
+                    @error('service_quantities')<span class="field-error">{{ $message }}</span>@enderror
+                    @error('service_quantities.*')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
 
                 <div class="form-block">
@@ -573,5 +780,88 @@
 <script src="{{ asset('js/home-v2/mega-menu.js') }}"></script>
 <script src="{{ asset('js/home-v2/destinations-mega-menu.js') }}"></script>
 <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
+<script>
+    window.devisBillingServices = {!! $servicesCatalogJson ?: '[]' !!};
+    (function () {
+        const services = new Map((window.devisBillingServices || []).map((service) => [String(service.id), service]));
+        const formatter = new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' });
+        const summary = document.getElementById('quoteSummary');
+
+        function money(value) {
+            return formatter.format(Number.isFinite(value) ? value : 0);
+        }
+
+        function quantityInput(id) {
+            return document.querySelector('[data-service-qty][data-service-id="' + id + '"]');
+        }
+
+        function setQuantity(id, value) {
+            const input = quantityInput(id);
+            if (!input) return;
+            input.value = Math.max(0, Math.min(999, parseInt(value || 0, 10) || 0));
+            recalculate();
+        }
+
+        function recalculate() {
+            let gross = 0;
+            let discountTotal = 0;
+            let subtotal = 0;
+            let tax = 0;
+            let total = 0;
+
+            services.forEach((service, id) => {
+                const input = quantityInput(id);
+                const qty = Math.max(0, parseInt(input?.value || 0, 10) || 0);
+                const unit = Number(service.unit_price || 0);
+                const rate = Number(service.tax_rate || 0);
+                const discountRate = Number(service.discount_percentage || 0);
+                const lineGross = unit * qty;
+                const lineDiscount = lineGross * (discountRate / 100);
+                const lineSubtotal = lineGross - lineDiscount;
+                const lineTax = lineSubtotal * (rate / 100);
+                const lineTotal = lineSubtotal + lineTax;
+
+                gross += lineGross;
+                discountTotal += lineDiscount;
+                subtotal += lineSubtotal;
+                tax += lineTax;
+                total += lineTotal;
+
+                document.querySelector('[data-line-total="' + id + '"]')?.replaceChildren(document.createTextNode(money(lineTotal) + ' TTC'));
+                document.querySelector('[data-service-card][data-service-id="' + id + '"]')?.classList.toggle('is-selected', qty > 0);
+            });
+
+            if (!summary) return;
+            summary.querySelector('[data-summary="gross"]').textContent = money(gross);
+            summary.querySelector('[data-summary="discount"]').textContent = '- ' + money(discountTotal);
+            summary.querySelector('[data-summary="subtotal"]').textContent = money(subtotal);
+            summary.querySelector('[data-summary="tax"]').textContent = money(tax);
+            summary.querySelector('[data-summary="total"]').textContent = money(total);
+        }
+
+        document.addEventListener('click', function (event) {
+            const plus = event.target.closest('[data-qty-plus]');
+            const minus = event.target.closest('[data-qty-minus]');
+            if (plus) {
+                const id = plus.getAttribute('data-service-id');
+                const input = quantityInput(id);
+                setQuantity(id, (parseInt(input?.value || 0, 10) || 0) + 1);
+            }
+            if (minus) {
+                const id = minus.getAttribute('data-service-id');
+                const input = quantityInput(id);
+                setQuantity(id, (parseInt(input?.value || 0, 10) || 0) - 1);
+            }
+        });
+
+        document.addEventListener('input', function (event) {
+            if (event.target.matches('[data-service-qty]')) {
+                recalculate();
+            }
+        });
+
+        recalculate();
+    })();
+</script>
 </body>
 </html>
