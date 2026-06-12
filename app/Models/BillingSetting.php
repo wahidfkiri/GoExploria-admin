@@ -31,6 +31,7 @@ class BillingSetting extends Model
         'default_shipping_fees',
         'default_administration_fees',
         'default_discount_percentage',
+        'default_discount_id',
         'default_tax_ids',
         'cheque_order',
         'bank_details',
@@ -58,6 +59,7 @@ class BillingSetting extends Model
         'default_shipping_fees' => 'decimal:2',
         'default_administration_fees' => 'decimal:2',
         'default_discount_percentage' => 'decimal:2',
+        'default_discount_id' => 'integer',
         'default_tax_ids' => 'array',
         'bank_details' => 'array',
         'metadata' => 'array',
@@ -74,6 +76,11 @@ class BillingSetting extends Model
     public function etablissement()
     {
         return $this->belongsTo(Etablissement::class);
+    }
+
+    public function defaultDiscount()
+    {
+        return $this->belongsTo(BillingDiscount::class, 'default_discount_id');
     }
 
     public function getNextInvoiceNumber()

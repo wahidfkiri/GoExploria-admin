@@ -204,8 +204,8 @@
             background: #f9fbff;
             overflow: hidden;
             display: grid;
-            grid-template-columns: 116px minmax(0, 1fr);
-            min-height: 136px;
+            grid-template-columns: minmax(240px, 32%) minmax(0, 1fr);
+            min-height: 210px;
             transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
         }
         .service-card.is-selected {
@@ -216,7 +216,7 @@
         .service-media {
             position: relative;
             background: linear-gradient(135deg, #12284a, #1d4f85);
-            min-height: 136px;
+            min-height: 210px;
         }
         .service-media img {
             width: 100%;
@@ -227,17 +227,17 @@
         .service-media-placeholder {
             width: 100%;
             height: 100%;
-            min-height: 136px;
+            min-height: 210px;
             display: grid;
             place-items: center;
             color: rgba(255,255,255,.88);
-            font-size: 30px;
+            font-size: 44px;
         }
         .service-body {
-            padding: 13px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
         .service-top {
             display: flex;
@@ -587,7 +587,8 @@
                                     $quantity = $oldServiceQuantities[$serviceId] ?? 0;
                                     $price = (float) data_get($service, 'unit_price', 0);
                                     $taxRate = (float) data_get($service, 'tax_rate', 0);
-                                    $discount = (float) data_get($service, 'discount_percentage', 0);
+                                    $discount = (float) data_get($service, 'discount.value', data_get($service, 'discount_percentage', 0));
+                                    $discountType = data_get($service, 'discount.type', 'percentage');
                                 @endphp
                                 <article class="service-card {{ $quantity > 0 ? 'is-selected' : '' }}" data-service-card data-service-id="{{ $serviceId }}">
                                     <div class="service-media">
@@ -613,7 +614,9 @@
                                         <div class="service-meta">
                                             <span class="service-pill">TVA {{ number_format($taxRate, 2, ',', ' ') }}%</span>
                                             @if($discount > 0)
-                                                <span class="service-pill">Remise {{ number_format($discount, 2, ',', ' ') }}%</span>
+                                                <span class="service-pill">
+                                                    Remise {{ $discountType === 'fixed' ? number_format($discount, 2, ',', ' ') . ' CAD' : number_format($discount, 2, ',', ' ') . '%' }}
+                                                </span>
                                             @endif
                                             @if(data_get($service, 'etablissement_name'))
                                                 <span class="service-pill">{{ data_get($service, 'etablissement_name') }}</span>
@@ -644,6 +647,7 @@
                             <h3>Calcul automatique</h3>
                             <div class="summary-line"><span>Total services HT</span><strong data-summary="gross">0,00 CAD</strong></div>
                             <div class="summary-line"><span>Remise</span><strong data-summary="discount">0,00 CAD</strong></div>
+                            <div class="summary-line"><span>Frais</span><strong data-summary="fees">0,00 CAD</strong></div>
                             <div class="summary-line"><span>Total HT apres remise</span><strong data-summary="subtotal">0,00 CAD</strong></div>
                             <div class="summary-line"><span>TVA / taxes</span><strong data-summary="tax">0,00 CAD</strong></div>
                             <div class="summary-line total"><span>Total TTC</span><strong data-summary="total">0,00 CAD</strong></div>
@@ -794,18 +798,48 @@
         function recalculate() {
             let gross = 0;
             let discountTotal = 0;
+            let feesTotal = 0;
             let subtotal = 0;
             let tax = 0;
             let total = 0;
+            const groups = new Map();
+
+            services.forEach((service, id) => {
+                const input = quantityInput(id);
+                const qty = Math.max(0, parseInt(input?.value || 0, 10) || 0);
+                const unit = Number(service.unit_price || 0);
+                const lineGross = unit * qty;
+                const groupId = String(service.etablissement_id || 'global');
+                if (!groups.has(groupId)) {
+                    groups.set(groupId, {
+                        gross: 0,
+                        discount: service.discount || { type: 'percentage', value: Number(service.discount_percentage || 0) },
+                        shipping: Number(service.shipping_fees || 0),
+                        administration: Number(service.administration_fees || 0),
+                        feesTaxRate: Number(service.fees_tax_rate || 0),
+                    });
+                }
+                groups.get(groupId).gross += lineGross;
+            });
+
+            groups.forEach((group) => {
+                const discountValue = Math.max(0, Number(group.discount?.value || 0));
+                group.discountAmount = group.gross <= 0 || discountValue <= 0
+                    ? 0
+                    : group.discount?.type === 'fixed'
+                        ? Math.min(group.gross, discountValue)
+                        : group.gross * (Math.min(100, discountValue) / 100);
+                group.fees = group.gross > 0 ? Math.max(0, group.shipping) + Math.max(0, group.administration) : 0;
+            });
 
             services.forEach((service, id) => {
                 const input = quantityInput(id);
                 const qty = Math.max(0, parseInt(input?.value || 0, 10) || 0);
                 const unit = Number(service.unit_price || 0);
                 const rate = Number(service.tax_rate || 0);
-                const discountRate = Number(service.discount_percentage || 0);
                 const lineGross = unit * qty;
-                const lineDiscount = lineGross * (discountRate / 100);
+                const group = groups.get(String(service.etablissement_id || 'global')) || { gross: 0, discountAmount: 0 };
+                const lineDiscount = group.gross > 0 ? group.discountAmount * (lineGross / group.gross) : 0;
                 const lineSubtotal = lineGross - lineDiscount;
                 const lineTax = lineSubtotal * (rate / 100);
                 const lineTotal = lineSubtotal + lineTax;
@@ -820,9 +854,21 @@
                 document.querySelector('[data-service-card][data-service-id="' + id + '"]')?.classList.toggle('is-selected', qty > 0);
             });
 
+            groups.forEach((group) => {
+                if (group.gross <= 0 || group.fees <= 0) {
+                    return;
+                }
+                const feeTax = group.fees * (Math.max(0, group.feesTaxRate) / 100);
+                feesTotal += group.fees;
+                subtotal += group.fees;
+                tax += feeTax;
+                total += group.fees + feeTax;
+            });
+
             if (!summary) return;
             summary.querySelector('[data-summary="gross"]').textContent = money(gross);
             summary.querySelector('[data-summary="discount"]').textContent = '- ' + money(discountTotal);
+            summary.querySelector('[data-summary="fees"]').textContent = money(feesTotal);
             summary.querySelector('[data-summary="subtotal"]').textContent = money(subtotal);
             summary.querySelector('[data-summary="tax"]').textContent = money(tax);
             summary.querySelector('[data-summary="total"]').textContent = money(total);

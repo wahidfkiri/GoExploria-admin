@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DevisRequest;
+use App\Models\BillingDiscount;
 use App\Models\BillingRequest;
 use App\Models\BillingRequestService;
 use App\Models\BillingSetting;
@@ -212,7 +213,9 @@ class DevisController extends Controller
             ->orderBy('title')
             ->get()
             ->map(function (BillingRequestService $service): array {
-                $taxRate = $this->serviceTaxRate($service, $this->billingSettingFor((int) $service->etablissement_id));
+                $setting = $this->billingSettingFor((int) $service->etablissement_id);
+                $taxRate = $this->serviceTaxRate($service, $setting);
+                $discountRule = $this->discountRuleFor((int) $service->etablissement_id, $setting);
 
                 return [
                     'id' => (int) $service->id,
@@ -225,7 +228,12 @@ class DevisController extends Controller
                     'tax_rate' => $taxRate,
                     'billing_unit' => (string) ($service->billing_unit ?: 'forfait'),
                     'is_featured' => (bool) $service->is_featured,
-                    'discount_percentage' => (float) ($this->billingSettingFor((int) $service->etablissement_id)?->default_discount_percentage ?? 0),
+                    'discount' => $discountRule,
+                    'discount_percentage' => $discountRule['type'] === 'percentage' ? (float) $discountRule['value'] : 0.0,
+                    'shipping_fees' => (float) ($setting?->default_shipping_fees ?? 0),
+                    'administration_fees' => (float) ($setting?->default_administration_fees ?? 0),
+                    'fees_tax_rate' => $this->serviceTaxRateFromComponents($this->defaultTaxComponents($setting)),
+                    'currency' => (string) ($setting?->currency ?: 'CAD'),
                 ];
             });
     }
@@ -236,7 +244,11 @@ class DevisController extends Controller
             ->groupBy('etablissement_id')
             ->map(function (Collection $services, int $etablissementId) use ($validated, $request, $selectedQuantities, $selectedServiceLabels): BillingRequest {
                 $setting = $this->billingSettingFor($etablissementId);
-                $discountPercentage = max(0, min(100, (float) ($setting?->default_discount_percentage ?? 0)));
+                $discountRule = $this->discountRuleFor($etablissementId, $setting);
+                $serviceGrossTotal = $services->sum(function (BillingRequestService $service) use ($selectedQuantities): float {
+                    return round((float) $service->unit_price * (int) $selectedQuantities->get($service->id, 1), 2);
+                });
+                $requestDiscountAmount = $this->discountAmountFor($serviceGrossTotal, $discountRule);
                 $taxesBreakdown = [];
                 $subtotal = 0.0;
                 $taxTotal = 0.0;
@@ -246,7 +258,9 @@ class DevisController extends Controller
                     $quantity = (int) $selectedQuantities->get($service->id, 1);
                     $unitPrice = round((float) $service->unit_price, 2);
                     $grossSubtotal = round($unitPrice * $quantity, 2);
-                    $discountAmount = round($grossSubtotal * ($discountPercentage / 100), 2);
+                    $discountAmount = $serviceGrossTotal > 0
+                        ? round($requestDiscountAmount * ($grossSubtotal / $serviceGrossTotal), 2)
+                        : 0.0;
                     $lineSubtotal = round($grossSubtotal - $discountAmount, 2);
                     $taxComponents = $this->serviceTaxComponents($service, $setting);
                     $taxRate = round(array_sum(array_column($taxComponents, 'rate')), 3);
@@ -282,8 +296,47 @@ class DevisController extends Controller
                             'billing_unit' => $service->billing_unit,
                             'image_url' => $service->image_url,
                             'gross_subtotal' => $grossSubtotal,
-                            'discount_percentage' => $discountPercentage,
+                            'discount_rule' => $discountRule,
                             'discount_amount' => $discountAmount,
+                            'tax_components' => $taxComponents,
+                        ],
+                    ];
+                }
+
+                foreach ($this->billingFeeLines($setting) as $feeLine) {
+                    $taxComponents = $this->defaultTaxComponents($setting);
+                    $taxRate = round(array_sum(array_column($taxComponents, 'rate')), 3);
+                    $lineSubtotal = round((float) $feeLine['amount'], 2);
+                    $taxAmount = round($lineSubtotal * ($taxRate / 100), 2);
+                    $lineTotal = round($lineSubtotal + $taxAmount, 2);
+
+                    foreach ($taxComponents as $component) {
+                        $code = $component['code'];
+                        $amount = round($lineSubtotal * (((float) $component['rate']) / 100), 2);
+                        $taxesBreakdown[$code] ??= [
+                            'name' => $component['name'],
+                            'code' => $code,
+                            'rate' => (float) $component['rate'],
+                            'amount' => 0.0,
+                        ];
+                        $taxesBreakdown[$code]['amount'] = round($taxesBreakdown[$code]['amount'] + $amount, 2);
+                    }
+
+                    $subtotal = round($subtotal + $lineSubtotal, 2);
+                    $taxTotal = round($taxTotal + $taxAmount, 2);
+                    $linePayloads[] = [
+                        'billing_request_service_id' => null,
+                        'line_number' => count($linePayloads) + 1,
+                        'title' => $feeLine['title'],
+                        'description' => $feeLine['description'],
+                        'quantity' => 1,
+                        'unit_price' => $lineSubtotal,
+                        'subtotal' => $lineSubtotal,
+                        'tax_rate' => $taxRate,
+                        'tax_amount' => $taxAmount,
+                        'total' => $lineTotal,
+                        'metadata' => [
+                            'type' => $feeLine['type'],
                             'tax_components' => $taxComponents,
                         ],
                     ];
@@ -312,7 +365,11 @@ class DevisController extends Controller
                         'plan_interest' => $validated['plan_interest'] ?? null,
                         'budget' => $validated['budget'] ?? null,
                         'project_deadline' => $validated['project_deadline'] ?? null,
-                        'default_discount_percentage' => $discountPercentage,
+                        'discount_rule' => $discountRule,
+                        'discount_amount' => $requestDiscountAmount,
+                        'default_shipping_fees' => (float) ($setting?->default_shipping_fees ?? 0),
+                        'default_administration_fees' => (float) ($setting?->default_administration_fees ?? 0),
+                        'currency' => (string) ($setting?->currency ?: 'CAD'),
                         'client_ip' => $request->ip(),
                         'user_agent' => (string) $request->userAgent(),
                         'source_url' => (string) $request->headers->get('referer', ''),
@@ -339,7 +396,12 @@ class DevisController extends Controller
 
     private function serviceTaxRate(BillingRequestService $service, ?BillingSetting $setting = null): float
     {
-        return round(array_sum(array_column($this->serviceTaxComponents($service, $setting), 'rate')), 3);
+        return $this->serviceTaxRateFromComponents($this->serviceTaxComponents($service, $setting));
+    }
+
+    private function serviceTaxRateFromComponents(array $components): float
+    {
+        return round(array_sum(array_column($components, 'rate')), 3);
     }
 
     private function serviceTaxComponents(BillingRequestService $service, ?BillingSetting $setting = null): array
@@ -365,12 +427,27 @@ class DevisController extends Controller
             ->filter()
             ->values();
 
-        if ($defaultTaxIds->isEmpty()) {
+        return $this->taxComponentsFromIds($defaultTaxIds);
+    }
+
+    private function defaultTaxComponents(?BillingSetting $setting = null): array
+    {
+        $defaultTaxIds = collect($setting?->default_tax_ids ?? [])
+            ->map(fn ($id) => (int) $id)
+            ->filter()
+            ->values();
+
+        return $this->taxComponentsFromIds($defaultTaxIds);
+    }
+
+    private function taxComponentsFromIds(Collection $taxIds): array
+    {
+        if ($taxIds->isEmpty()) {
             return [];
         }
 
         return Tax::query()
-            ->whereIn('id', $defaultTaxIds->all())
+            ->whereIn('id', $taxIds->all())
             ->where('is_active', true)
             ->orderBy('id')
             ->get()
@@ -380,6 +457,100 @@ class DevisController extends Controller
                 'rate' => (float) $tax->rate,
             ])
             ->all();
+    }
+
+    private function discountRuleFor(int $etablissementId, ?BillingSetting $setting = null): array
+    {
+        $discount = null;
+
+        if ($setting?->default_discount_id) {
+            $discount = BillingDiscount::query()
+                ->active()
+                ->where('id', $setting->default_discount_id)
+                ->first();
+        }
+
+        if (!$discount) {
+            $discount = BillingDiscount::query()
+                ->active()
+                ->where('etablissement_id', $etablissementId)
+                ->where('is_default', true)
+                ->orderByDesc('id')
+                ->first();
+        }
+
+        if (!$discount) {
+            $discount = BillingDiscount::query()
+                ->active()
+                ->whereNull('etablissement_id')
+                ->where('is_default', true)
+                ->orderByDesc('id')
+                ->first();
+        }
+
+        if ($discount) {
+            return [
+                'id' => (int) $discount->id,
+                'name' => (string) $discount->name,
+                'code' => (string) ($discount->code ?: ''),
+                'type' => $discount->type === 'fixed' ? 'fixed' : 'percentage',
+                'value' => (float) $discount->value,
+                'source' => 'billing_discounts',
+            ];
+        }
+
+        $legacyPercentage = (float) ($setting?->default_discount_percentage ?? 0);
+
+        return [
+            'id' => null,
+            'name' => $legacyPercentage > 0 ? 'Remise par defaut' : '',
+            'code' => '',
+            'type' => 'percentage',
+            'value' => max(0, min(100, $legacyPercentage)),
+            'source' => 'billing_settings',
+        ];
+    }
+
+    private function discountAmountFor(float $amount, array $discountRule): float
+    {
+        $value = max(0, (float) ($discountRule['value'] ?? 0));
+
+        if ($amount <= 0 || $value <= 0) {
+            return 0.0;
+        }
+
+        if (($discountRule['type'] ?? 'percentage') === 'fixed') {
+            return round(min($amount, $value), 2);
+        }
+
+        return round($amount * (min(100, $value) / 100), 2);
+    }
+
+    private function billingFeeLines(?BillingSetting $setting = null): array
+    {
+        $lines = [];
+        $shipping = (float) ($setting?->default_shipping_fees ?? 0);
+        $administration = (float) ($setting?->default_administration_fees ?? 0);
+
+        if ($shipping > 0) {
+            $lines[] = [
+                'type' => 'shipping',
+                'title' => 'Frais de livraison',
+                'description' => 'Frais de livraison par defaut',
+                'amount' => $shipping,
+            ];
+        }
+
+        if ($administration > 0) {
+            $lines[] = [
+                'type' => 'administration',
+                'title' => 'Frais administratifs',
+                'description' => 'Frais administratifs par defaut',
+                'amount' => $administration,
+            ];
+        }
+
+        return $lines;
     }
 
     private function resolveServiceImageUrl(?string $imageUrl): ?string
