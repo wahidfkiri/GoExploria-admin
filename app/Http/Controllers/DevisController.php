@@ -56,7 +56,8 @@ class DevisController extends Controller
             'plan_interest' => ['nullable', 'string', 'max:180'],
             'budget' => ['nullable', 'string', 'max:120'],
             'project_deadline' => ['nullable', 'date'],
-            'project_details' => ['required', 'string', 'min:10', 'max:4000'],
+            // Make project details optional
+            'project_details' => ['nullable', 'string', 'min:10', 'max:4000'],
             'media_files' => ['nullable', 'array', 'max:10'],
             'media_files.*' => ['file', 'max:20480', 'mimes:jpg,jpeg,png,gif,webp,bmp,svg,pdf,csv,txt,xls,xlsx,ods,doc,docx,ppt,pptx,zip,rar'],
             'consent' => ['accepted'],
@@ -68,6 +69,9 @@ class DevisController extends Controller
         ]);
 
         $validated['service_subject'] = 'Demande de devis services';
+
+        // Ensure the key exists and is null when not provided so downstream code can rely on it
+        $validated['project_details'] = $validated['project_details'] ?? null;
 
         $selectedQuantities = collect($validated['service_quantities'] ?? [])
             ->mapWithKeys(fn ($quantity, $serviceId) => [(int) $serviceId => max(0, (int) $quantity)])
@@ -150,7 +154,7 @@ class DevisController extends Controller
             'plan_interest' => $validated['plan_interest'] ?? null,
             'budget' => $validated['budget'] ?? null,
             'project_deadline' => $validated['project_deadline'] ?? null,
-            'project_details' => $validated['project_details'],
+            'project_details' => $validated['project_details'] ?? null,
             'media_files' => $storedMedia,
             'email_sent' => false,
             'email_error' => null,
@@ -352,7 +356,7 @@ class DevisController extends Controller
                     'company' => $validated['company'] ?? null,
                     'city' => $validated['city'] ?? null,
                     'country' => $validated['country'] ?? null,
-                    'message' => $validated['project_details'],
+                    'message' => $validated['project_details'] ?? null,
                     'subtotal' => $subtotal,
                     'tax_total' => $taxTotal,
                     'total' => round($subtotal + $taxTotal, 2),

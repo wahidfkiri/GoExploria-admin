@@ -696,8 +696,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="project_details">Description de votre besoin *</label>
-                        <textarea id="project_details" name="project_details" rows="6" required placeholder="Décrivez précisément vos attentes, objectifs, délais et contraintes.">{{ old('project_details') }}</textarea>
+                        <label for="project_details">Description de votre besoin</label>
+                        <textarea id="project_details" name="project_details" rows="6" placeholder="Décrivez précisément vos attentes, objectifs, délais et contraintes.">{{ old('project_details') }}</textarea>
                         @error('project_details')<span class="field-error">{{ $message }}</span>@enderror
                     </div>
 
