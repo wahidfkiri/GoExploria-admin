@@ -277,12 +277,9 @@
             font-size: 11px;
             color: #556784;
         }
+        /* Hide service pills on the Devis page (they're redundant in the quote form) */
         .service-pill {
-            border-radius: 999px;
-            background: #eef4ff;
-            border: 1px solid #dce8fb;
-            padding: 5px 8px;
-            font-weight: 800;
+            display: none !important;
         }
         .qty-control {
             margin-top: auto;
@@ -612,15 +609,17 @@
                                             </div>
                                         </div>
                                         <div class="service-meta">
-                                            <span class="service-pill">TVA {{ number_format($taxRate, 2, ',', ' ') }}%</span>
-                                            @if($discount > 0)
-                                                <span class="service-pill">
-                                                    Remise {{ $discountType === 'fixed' ? number_format($discount, 2, ',', ' ') . ' CAD' : number_format($discount, 2, ',', ' ') . '%' }}
-                                                </span>
-                                            @endif
-                                            @if(data_get($service, 'etablissement_name'))
-                                                <span class="service-pill">{{ data_get($service, 'etablissement_name') }}</span>
-                                            @endif
+                                            @unless(Str::contains(request()->path(), 'devis'))
+                                                <span class="service-pill">TVA {{ number_format($taxRate, 2, ',', ' ') }}%</span>
+                                                @if($discount > 0)
+                                                    <span class="service-pill">
+                                                        Remise {{ $discountType === 'fixed' ? number_format($discount, 2, ',', ' ') . ' CAD' : number_format($discount, 2, ',', ' ') . '%' }}
+                                                    </span>
+                                                @endif
+                                                @if(data_get($service, 'etablissement_name'))
+                                                    <span class="service-pill">{{ data_get($service, 'etablissement_name') }}</span>
+                                                @endif
+                                            @endunless
                                         </div>
                                         <div class="qty-control">
                                             <button class="qty-btn" type="button" data-qty-minus data-service-id="{{ $serviceId }}">-</button>
