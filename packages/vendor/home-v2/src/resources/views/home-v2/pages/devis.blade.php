@@ -808,6 +808,17 @@
                 return [];
             }
 
+            // Parse a tax rate value robustly (handles "5", "5.0", "5%", "5,00" etc.)
+            function parseRate(val) {
+                if (val === null || val === undefined) return 0;
+                const s = String(val).trim();
+                if (s === '') return 0;
+                // remove percent sign and whitespace, normalize comma to dot
+                const cleaned = s.replace(/\s*%\s*$/,'').replace(',', '.').replace('%', '');
+                const num = parseFloat(cleaned);
+                return Number.isFinite(num) ? num : 0;
+            }
+
         function money(value) {
             return formatter.format(Number.isFinite(value) ? value : 0);
         }
@@ -879,18 +890,21 @@
                 let lineTax = 0; // used only for per-line display
                 if (Array.isArray(comps) && comps.length > 0) {
                     comps.forEach(function (comp) {
-                        const rateComp = Number(comp.rate || 0);
+                        const rateComp = parseRate(comp.rate);
                         const code = String(comp.code || 'TAX');
                         // accumulate taxable base for this tax code
                         taxesBase[code] = (taxesBase[code] || 0) + lineSubtotal;
                         taxRates[code] = rateComp;
-                        taxNames[code] = comp.name || code;
-                        // per-line tax for display
+                        // strip any percent from the stored name to avoid duplicate "%" in UI
+                        const rawName = comp.name || code;
+                        const cleanName = String(rawName).replace(/\s*\d+([.,]\d+)?\s*%/g, '').trim();
+                        taxNames[code] = cleanName || code;
+                        // per-line tax for display (kept for per-line total)
                         const amount = lineSubtotal * (rateComp / 100);
                         lineTax += amount;
                     });
                 } else {
-                    const rate = Number(service.tax_rate || 0);
+                    const rate = parseRate(service.tax_rate);
                     const code = 'TAX';
                     if (rate > 0) {
                         taxesBase[code] = (taxesBase[code] || 0) + lineSubtotal;
@@ -920,14 +934,15 @@
                 // compute fees tax base using default tax components if available
                 if (Array.isArray(group.defaultTaxComponents) && group.defaultTaxComponents.length > 0) {
                     group.defaultTaxComponents.forEach(function (comp) {
-                        const rateComp = Number(comp.rate || 0);
+                        const rateComp = parseRate(comp.rate);
                         const code = String(comp.code || 'TAX');
                         taxesBase[code] = (taxesBase[code] || 0) + group.fees;
                         taxRates[code] = rateComp;
-                        taxNames[code] = comp.name || code;
+                        const rawName = comp.name || code;
+                        taxNames[code] = String(rawName).replace(/\s*\d+([.,]\d+)?\s*%/g, '').trim() || code;
                     });
                 } else {
-                    const rate = Number(group.feesTaxRate || 0);
+                    const rate = parseRate(group.feesTaxRate);
                     if (rate > 0) {
                         const code = 'TAX';
                         taxesBase[code] = (taxesBase[code] || 0) + group.fees;
