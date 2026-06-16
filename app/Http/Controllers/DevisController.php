@@ -227,6 +227,10 @@ class DevisController extends Controller
                 $taxRate = $this->serviceTaxRate($service, $setting);
                 $discountRule = $this->discountRuleFor((int) $service->etablissement_id, $setting);
 
+                // Include tax components so the front-end can compute multi-component taxes
+                $taxComponents = $this->serviceTaxComponents($service, $setting);
+                $defaultTaxComponents = $this->defaultTaxComponents($setting);
+
                 return [
                     'id' => (int) $service->id,
                     'etablissement_id' => (int) $service->etablissement_id,
@@ -236,13 +240,16 @@ class DevisController extends Controller
                     'image_url' => $this->resolveServiceImageUrl($service->image_url),
                     'unit_price' => (float) $service->unit_price,
                     'tax_rate' => $taxRate,
+                    'tax_components' => $taxComponents,
+                    'default_tax_components' => $defaultTaxComponents,
                     'billing_unit' => (string) ($service->billing_unit ?: 'forfait'),
                     'is_featured' => (bool) $service->is_featured,
                     'discount' => $discountRule,
                     'discount_percentage' => $discountRule['type'] === 'percentage' ? (float) $discountRule['value'] : 0.0,
                     'shipping_fees' => (float) ($setting?->default_shipping_fees ?? 0),
                     'administration_fees' => (float) ($setting?->default_administration_fees ?? 0),
-                    'fees_tax_rate' => $this->serviceTaxRateFromComponents($this->defaultTaxComponents($setting)),
+                    'fees_tax_rate' => $this->serviceTaxRateFromComponents($defaultTaxComponents),
+                    'fees_tax_components' => $defaultTaxComponents,
                     'currency' => (string) ($setting?->currency ?: 'CAD'),
                 ];
             });

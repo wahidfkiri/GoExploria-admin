@@ -648,7 +648,14 @@
                             <div class="summary-line"><span>Remise</span><strong data-summary="discount">0,00 CAD</strong></div>
                             <div class="summary-line"><span>Frais</span><strong data-summary="fees">0,00 CAD</strong></div>
                             <div class="summary-line"><span>Total HT apres remise</span><strong data-summary="subtotal">0,00 CAD</strong></div>
-                            <div class="summary-line"><span>TVA / taxes</span><strong data-summary="tax">0,00 CAD</strong></div>
+
+                            <div id="taxBreakdownContainer" style="margin-top:8px;">
+                                <div class="summary-line"><span>TVA / taxes</span><strong data-summary="tax">0,00 CAD</strong></div>
+                                <div id="taxBreakdownList" style="margin-top:6px;color:rgba(255,255,255,.84);font-size:12px;">
+                                    <!-- breakdown inserted here -->
+                                </div>
+                            </div>
+
                             <div class="summary-line total"><span>Total TTC</span><strong data-summary="total">0,00 CAD</strong></div>
                             <p class="summary-help">Le calcul final est enregistre dans la demande avec les quantites choisies.</p>
                         </div>
@@ -785,10 +792,21 @@
 <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
 <script>
     window.devisBillingServices = {!! $servicesCatalogJson ?: '[]' !!};
-    (function () {
+        (function () {
         const services = new Map((window.devisBillingServices || []).map((service) => [String(service.id), service]));
         const formatter = new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' });
         const summary = document.getElementById('quoteSummary');
+
+            // Helper to safely get tax components from service or defaults
+            function serviceTaxComponents(service) {
+                if (Array.isArray(service.tax_components) && service.tax_components.length > 0) {
+                    return service.tax_components;
+                }
+                if (Array.isArray(service.default_tax_components) && service.default_tax_components.length > 0) {
+                    return service.default_tax_components;
+                }
+                return [];
+            }
 
         function money(value) {
             return formatter.format(Number.isFinite(value) ? value : 0);
@@ -805,7 +823,7 @@
             recalculate();
         }
 
-        function recalculate() {
+            function recalculate() {
             let gross = 0;
             let discountTotal = 0;
             let feesTotal = 0;
@@ -813,6 +831,7 @@
             let tax = 0;
             let total = 0;
             const groups = new Map();
+            const taxesByCode = {};
 
             services.forEach((service, id) => {
                 const input = quantityInput(id);
@@ -827,6 +846,7 @@
                         shipping: Number(service.shipping_fees || 0),
                         administration: Number(service.administration_fees || 0),
                         feesTaxRate: Number(service.fees_tax_rate || 0),
+                        defaultTaxComponents: Array.isArray(service.default_tax_components) ? service.default_tax_components : [],
                     });
                 }
                 groups.get(groupId).gross += lineGross;
@@ -846,12 +866,33 @@
                 const input = quantityInput(id);
                 const qty = Math.max(0, parseInt(input?.value || 0, 10) || 0);
                 const unit = Number(service.unit_price || 0);
-                const rate = Number(service.tax_rate || 0);
                 const lineGross = unit * qty;
                 const group = groups.get(String(service.etablissement_id || 'global')) || { gross: 0, discountAmount: 0 };
                 const lineDiscount = group.gross > 0 ? group.discountAmount * (lineGross / group.gross) : 0;
                 const lineSubtotal = lineGross - lineDiscount;
-                const lineTax = lineSubtotal * (rate / 100);
+
+                // compute tax using components when available (supports multi-component taxes)
+                const comps = serviceTaxComponents(service);
+                let lineTax = 0;
+                if (Array.isArray(comps) && comps.length > 0) {
+                    comps.forEach(function (comp) {
+                        const rateComp = Number(comp.rate || 0);
+                        const amount = lineSubtotal * (rateComp / 100);
+                        lineTax += amount;
+                        const code = String(comp.code || 'TAX');
+                        taxesByCode[code] = taxesByCode[code] || { name: comp.name || code, code: code, rate: rateComp, amount: 0 };
+                        taxesByCode[code].amount = (taxesByCode[code].amount || 0) + amount;
+                    });
+                } else {
+                    const rate = Number(service.tax_rate || 0);
+                    const amount = lineSubtotal * (rate / 100);
+                    lineTax += amount;
+                    if (rate > 0) {
+                        taxesByCode['TAX'] = taxesByCode['TAX'] || { name: 'Taxe', code: 'TAX', rate: rate, amount: 0 };
+                        taxesByCode['TAX'].amount = (taxesByCode['TAX'].amount || 0) + amount;
+                    }
+                }
+
                 const lineTotal = lineSubtotal + lineTax;
 
                 gross += lineGross;
@@ -868,7 +909,26 @@
                 if (group.gross <= 0 || group.fees <= 0) {
                     return;
                 }
-                const feeTax = group.fees * (Math.max(0, group.feesTaxRate) / 100);
+
+                // compute fees tax using default tax components if available
+                let feeTax = 0;
+                if (Array.isArray(group.defaultTaxComponents) && group.defaultTaxComponents.length > 0) {
+                    group.defaultTaxComponents.forEach(function (comp) {
+                        const rateComp = Number(comp.rate || 0);
+                        const amount = group.fees * (rateComp / 100);
+                        feeTax += amount;
+                        const code = String(comp.code || 'TAX');
+                        taxesByCode[code] = taxesByCode[code] || { name: comp.name || code, code: code, rate: rateComp, amount: 0 };
+                        taxesByCode[code].amount = (taxesByCode[code].amount || 0) + amount;
+                    });
+                } else {
+                    feeTax = group.fees * (Math.max(0, group.feesTaxRate) / 100);
+                    if (group.feesTaxRate > 0) {
+                        taxesByCode['TAX'] = taxesByCode['TAX'] || { name: 'Taxe', code: 'TAX', rate: group.feesTaxRate, amount: 0 };
+                        taxesByCode['TAX'].amount = (taxesByCode['TAX'].amount || 0) + feeTax;
+                    }
+                }
+
                 feesTotal += group.fees;
                 subtotal += group.fees;
                 tax += feeTax;
@@ -882,6 +942,23 @@
             summary.querySelector('[data-summary="subtotal"]').textContent = money(subtotal);
             summary.querySelector('[data-summary="tax"]').textContent = money(tax);
             summary.querySelector('[data-summary="total"]').textContent = money(total);
+
+            // Render tax breakdown list
+            const breakdownContainer = document.getElementById('taxBreakdownList');
+            if (breakdownContainer) {
+                breakdownContainer.replaceChildren();
+                const codes = Object.keys(taxesByCode);
+                if (codes.length === 0) {
+                    // show nothing
+                } else {
+                    codes.forEach(function (code) {
+                        const item = taxesByCode[code];
+                        const div = document.createElement('div');
+                        div.textContent = `${item.name} (${item.code}) ${money(item.amount)} (${Number(item.rate).toFixed(2)}%)`;
+                        breakdownContainer.appendChild(div);
+                    });
+                }
+            }
         }
 
         document.addEventListener('click', function (event) {
