@@ -831,6 +831,9 @@
             let tax = 0;
             let total = 0;
             const groups = new Map();
+            const taxesBase = {};
+            const taxRates = {};
+            const taxNames = {};
             const taxesByCode = {};
 
             services.forEach((service, id) => {
@@ -871,26 +874,31 @@
                 const lineDiscount = group.gross > 0 ? group.discountAmount * (lineGross / group.gross) : 0;
                 const lineSubtotal = lineGross - lineDiscount;
 
-                // compute tax using components when available (supports multi-component taxes)
+                // compute tax base/components for aggregated calculation (supports multi-component taxes)
                 const comps = serviceTaxComponents(service);
-                let lineTax = 0;
+                let lineTax = 0; // used only for per-line display
                 if (Array.isArray(comps) && comps.length > 0) {
                     comps.forEach(function (comp) {
                         const rateComp = Number(comp.rate || 0);
+                        const code = String(comp.code || 'TAX');
+                        // accumulate taxable base for this tax code
+                        taxesBase[code] = (taxesBase[code] || 0) + lineSubtotal;
+                        taxRates[code] = rateComp;
+                        taxNames[code] = comp.name || code;
+                        // per-line tax for display
                         const amount = lineSubtotal * (rateComp / 100);
                         lineTax += amount;
-                        const code = String(comp.code || 'TAX');
-                        taxesByCode[code] = taxesByCode[code] || { name: comp.name || code, code: code, rate: rateComp, amount: 0 };
-                        taxesByCode[code].amount = (taxesByCode[code].amount || 0) + amount;
                     });
                 } else {
                     const rate = Number(service.tax_rate || 0);
+                    const code = 'TAX';
+                    if (rate > 0) {
+                        taxesBase[code] = (taxesBase[code] || 0) + lineSubtotal;
+                        taxRates[code] = rate;
+                        taxNames[code] = taxNames[code] || 'Taxe';
+                    }
                     const amount = lineSubtotal * (rate / 100);
                     lineTax += amount;
-                    if (rate > 0) {
-                        taxesByCode['TAX'] = taxesByCode['TAX'] || { name: 'Taxe', code: 'TAX', rate: rate, amount: 0 };
-                        taxesByCode['TAX'].amount = (taxesByCode['TAX'].amount || 0) + amount;
-                    }
                 }
 
                 const lineTotal = lineSubtotal + lineTax;
@@ -898,8 +906,7 @@
                 gross += lineGross;
                 discountTotal += lineDiscount;
                 subtotal += lineSubtotal;
-                tax += lineTax;
-                total += lineTotal;
+                // NOTE: do not add tax or total here — we'll compute aggregated taxes and total after rounding
 
                 document.querySelector('[data-line-total="' + id + '"]')?.replaceChildren(document.createTextNode(money(lineTotal) + ' TTC'));
                 document.querySelector('[data-service-card][data-service-id="' + id + '"]')?.classList.toggle('is-selected', qty > 0);
@@ -910,30 +917,45 @@
                     return;
                 }
 
-                // compute fees tax using default tax components if available
-                let feeTax = 0;
+                // compute fees tax base using default tax components if available
                 if (Array.isArray(group.defaultTaxComponents) && group.defaultTaxComponents.length > 0) {
                     group.defaultTaxComponents.forEach(function (comp) {
                         const rateComp = Number(comp.rate || 0);
-                        const amount = group.fees * (rateComp / 100);
-                        feeTax += amount;
                         const code = String(comp.code || 'TAX');
-                        taxesByCode[code] = taxesByCode[code] || { name: comp.name || code, code: code, rate: rateComp, amount: 0 };
-                        taxesByCode[code].amount = (taxesByCode[code].amount || 0) + amount;
+                        taxesBase[code] = (taxesBase[code] || 0) + group.fees;
+                        taxRates[code] = rateComp;
+                        taxNames[code] = comp.name || code;
                     });
                 } else {
-                    feeTax = group.fees * (Math.max(0, group.feesTaxRate) / 100);
-                    if (group.feesTaxRate > 0) {
-                        taxesByCode['TAX'] = taxesByCode['TAX'] || { name: 'Taxe', code: 'TAX', rate: group.feesTaxRate, amount: 0 };
-                        taxesByCode['TAX'].amount = (taxesByCode['TAX'].amount || 0) + feeTax;
+                    const rate = Number(group.feesTaxRate || 0);
+                    if (rate > 0) {
+                        const code = 'TAX';
+                        taxesBase[code] = (taxesBase[code] || 0) + group.fees;
+                        taxRates[code] = rate;
+                        taxNames[code] = taxNames[code] || 'Taxe';
                     }
                 }
 
                 feesTotal += group.fees;
                 subtotal += group.fees;
-                tax += feeTax;
-                total += group.fees + feeTax;
+                // NOTE: do not add tax or total here — aggregated taxes & total are computed below
             });
+
+            // Compute aggregated taxes from bases (ensures taxes are rate% of taxable base)
+            let computedTaxTotal = 0;
+            Object.keys(taxesBase).forEach(function (code) {
+                const base = Number(taxesBase[code] || 0);
+                const rate = Number(taxRates[code] || 0);
+                let amount = base * (rate / 100);
+                // round to cents
+                amount = Math.round(amount * 100) / 100;
+                taxesByCode[code] = { name: taxNames[code] || code, code: code, rate: rate, amount: amount };
+                computedTaxTotal += amount;
+            });
+
+            // Final totals using aggregated tax
+            tax = Math.round(computedTaxTotal * 100) / 100;
+            total = Math.round((subtotal + tax) * 100) / 100;
 
             if (!summary) return;
             summary.querySelector('[data-summary="gross"]').textContent = money(gross);
