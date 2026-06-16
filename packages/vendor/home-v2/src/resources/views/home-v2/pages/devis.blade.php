@@ -757,6 +757,17 @@
                     <div class="plan-price">Sur demande</div>
                 </a>
             @endforelse
+                @if(!empty($activeTaxes) && $activeTaxes->isNotEmpty())
+                    <div class="plans-title" style="margin-top:12px;">
+                        <h3>Taxes actives</h3>
+                        <p>Taxes globales actuellement actives</p>
+                        <ul style="margin:8px 0 0;padding-left:18px;color:#6a7a95;">
+                            @foreach($activeTaxes as $tax)
+                                <li>{{ $tax->name }} ({{ $tax->code }}): {{ number_format($tax->rate, 2, ',', ' ') }}%</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
         </aside>
     </div>
 </div>

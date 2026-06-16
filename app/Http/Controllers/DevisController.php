@@ -31,11 +31,17 @@ class DevisController extends Controller
 
         $billingServices = $this->billingServicesCatalog($request->integer('etablissement_id') ?: null);
 
+        $activeTaxes = Tax::query()
+            ->where('is_active', true)
+            ->orderBy('id')
+            ->get(['id', 'name', 'code', 'rate']);
+
         return view('home-v2.pages.devis', [
             'plans' => $plans,
             'serviceSubjects' => $this->serviceSubjects(),
             'servicesCatalog' => $billingServices,
             'billingServices' => $billingServices,
+            'activeTaxes' => $activeTaxes,
         ]);
     }
 
