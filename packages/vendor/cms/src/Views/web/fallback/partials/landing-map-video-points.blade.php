@@ -286,7 +286,7 @@
             .cms-map-video-marker{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;border:3px solid #fff;box-shadow:0 10px 28px rgba(0,0,0,.35);transition:transform .2s,box-shadow .2s}
             .cms-map-video-marker i{font-size:16px;line-height:1}
             .cms-map-video-marker.is-filtered{transform:scale(1.13);box-shadow:0 0 0 4px rgba(42,91,215,.24),0 12px 30px rgba(0,0,0,.38)}
-            .cms-map-video-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:5000;overflow:auto;padding:34px 16px}
+            .cms-map-video-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:99999;overflow:auto;padding:34px 16px}
             .cms-map-video-modal.is-open{display:block}
             .cms-map-video-modal-card{position:relative;width:min(920px,94vw);margin:36px auto;background:#fff;color:#111827;border-radius:20px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.35);animation:cmsMapModalIn .25s ease}
             .cms-map-video-modal-close{position:absolute;top:16px;right:16px;z-index:3;width:42px;height:42px;border:0;border-radius:50%;background:rgba(0,0,0,.58);color:#fff;font-size:24px;line-height:1;display:grid;place-items:center;cursor:pointer;transition:background .2s,transform .2s}

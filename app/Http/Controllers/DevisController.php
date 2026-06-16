@@ -410,19 +410,21 @@ class DevisController extends Controller
 
     private function serviceTaxComponents(BillingRequestService $service, ?BillingSetting $setting = null): array
     {
-        if ((float) $service->tax_rate > 0) {
-            return [[
-                'name' => optional($service->tax)->name ?: 'Taxe',
-                'code' => optional($service->tax)->code ?: 'TAX',
-                'rate' => (float) $service->tax_rate,
-            ]];
-        }
-
+        // Prefer the Tax relation (table `taxes`) when present so taxes come from the taxes table.
         if ($service->tax) {
             return [[
                 'name' => (string) $service->tax->name,
                 'code' => (string) $service->tax->code,
                 'rate' => (float) $service->tax->rate,
+            ]];
+        }
+
+        // Fall back to the numeric tax_rate on the service if no Tax relation is set.
+        if ((float) $service->tax_rate > 0) {
+            return [[
+                'name' => optional($service->tax)->name ?: 'Taxe',
+                'code' => optional($service->tax)->code ?: 'TAX',
+                'rate' => (float) $service->tax_rate,
             ]];
         }
 
