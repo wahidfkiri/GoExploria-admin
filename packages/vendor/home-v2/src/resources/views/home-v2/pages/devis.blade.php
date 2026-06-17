@@ -588,42 +588,125 @@
             position: relative;
             animation: modalZoomIn 0.3s ease;
             cursor: default;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .modal-content img {
+        .modal-image-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            min-height: 200px;
+        }
+        .modal-image-wrapper img {
             max-width: 92vw;
-            max-height: 85vh;
+            max-height: 80vh;
             object-fit: contain;
             border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
             display: block;
             background: #1a1a2e;
+            transition: transform 0.3s ease;
         }
-        .modal-close {
+        .modal-image-wrapper img.zoomed-in {
+            transform: scale(1.8);
+            cursor: grab;
+        }
+        .modal-image-wrapper img.zoomed-in:active {
+            cursor: grabbing;
+        }
+        .modal-controls {
             position: absolute;
-            top: -50px;
-            right: -4px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .modal-controls button {
+            pointer-events: auto;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            width: 44px;
-            height: 44px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.5);
             color: #fff;
-            font-size: 22px;
+            font-size: 20px;
             cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s ease, transform 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+        .modal-controls button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        .modal-controls button:active {
+            transform: scale(0.95);
+        }
+        .modal-controls button.zoom-btn {
+            width: 44px;
+            height: 44px;
+            font-size: 16px;
+        }
+        .modal-top-controls {
+            position: absolute;
+            top: -56px;
+            right: 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            z-index: 10;
+        }
+        .modal-top-controls button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-top-controls button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        .modal-close {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
         }
         .modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
             transform: rotate(90deg);
         }
         .modal-caption {
-            position: absolute;
-            bottom: -48px;
-            left: 0;
-            right: 0;
+            margin-top: 12px;
             text-align: center;
             color: rgba(255, 255, 255, 0.85);
             font-size: 14px;
@@ -632,10 +715,27 @@
             background: rgba(0, 0, 0, 0.4);
             border-radius: 8px;
             backdrop-filter: blur(4px);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
             border: 1px solid rgba(255, 255, 255, 0.05);
+            max-width: 90%;
+        }
+        .modal-zoom-indicator {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 12px;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-zoom-indicator.visible {
+            opacity: 1;
         }
 
         @keyframes modalFadeIn {
@@ -660,22 +760,40 @@
             .quote-summary { position: static; }
             .quote-head { padding: 18px; }
             .form-actions { grid-template-columns: 1fr; }
-            .modal-content img {
+            .modal-image-wrapper img {
                 max-width: 95vw;
-                max-height: 80vh;
+                max-height: 75vh;
+            }
+            .modal-image-wrapper img.zoomed-in {
+                transform: scale(1.5);
             }
             .modal-caption {
-                bottom: -40px;
                 font-size: 12px;
-                white-space: normal;
                 padding: 8px 12px;
+                margin-top: 8px;
+            }
+            .modal-controls button {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            .modal-controls button.zoom-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 14px;
+            }
+            .modal-top-controls {
+                top: -48px;
+            }
+            .modal-top-controls button {
+                width: 34px;
+                height: 34px;
+                font-size: 14px;
             }
             .modal-close {
-                top: -44px;
-                right: 0;
                 width: 38px;
                 height: 38px;
-                font-size: 18px;
+                font-size: 16px;
             }
         }
     </style>
@@ -1001,10 +1119,29 @@
 <!-- Modal pour l'affichage des images -->
 <div class="modal-overlay" id="imageModal" onclick="closeImageModal(event)">
     <div class="modal-content" onclick="event.stopPropagation();">
-        <button class="modal-close" onclick="closeImageModal()" aria-label="Fermer">
-            <i class="fas fa-times"></i>
-        </button>
-        <img id="modalImage" src="" alt="Aperçu du service">
+        <div class="modal-top-controls">
+            <button onclick="zoomOutImage()" title="Réduire" aria-label="Réduire">
+                <i class="fas fa-search-minus"></i>
+            </button>
+            <button onclick="zoomInImage()" title="Agrandir" aria-label="Agrandir">
+                <i class="fas fa-search-plus"></i>
+            </button>
+            <button class="modal-close" onclick="closeImageModal()" aria-label="Fermer">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-image-wrapper" id="modalImageWrapper">
+            <img id="modalImage" src="" alt="Aperçu du service">
+            <div class="modal-controls">
+                <button onclick="zoomOutImage()" title="Réduire" aria-label="Réduire" class="zoom-btn">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button onclick="zoomInImage()" title="Agrandir" aria-label="Agrandir" class="zoom-btn">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="modal-zoom-indicator" id="zoomIndicator">100%</div>
+        </div>
         <div class="modal-caption" id="modalCaption"></div>
     </div>
 </div>
@@ -1078,7 +1215,6 @@
             const taxesByCode = {};
             const discountLabels = new Set();
 
-            // === 1. Calcul du total brut (services) ===
             services.forEach((service, id) => {
                 const input = quantityInput(id);
                 const qty = Math.max(0, parseInt(input?.value || 0, 10) || 0);
@@ -1101,7 +1237,6 @@
                 group.totalGross = (group.totalGross || 0) + lineGross;
             });
 
-            // === 2. Calcul des remises et des sous-totaux par groupe ===
             groups.forEach((group) => {
                 const discountValue = Math.max(0, Number(group.discount?.value || 0));
                 group.discountAmount = group.totalGross <= 0 || discountValue <= 0
@@ -1113,11 +1248,9 @@
                     discountLabels.add(discountLabel(group.discount));
                 }
                 
-                // Calcul des frais (shipping + administration) seulement si des services sont sélectionnés
                 group.fees = group.totalGross > 0 ? Math.max(0, group.shipping) + Math.max(0, group.administration) : 0;
             });
 
-            // === 3. Calcul détaillé par service (affichage HT uniquement) ===
             services.forEach((service, id) => {
                 const input = quantityInput(id);
                 const qty = Math.max(0, parseInt(input?.value || 0, 10) || 0);
@@ -1131,12 +1264,10 @@
                 discountTotal += lineDiscount;
                 subtotal += lineSubtotal;
 
-                // Afficher le total par ligne en HT (sans taxe)
                 document.querySelector('[data-line-total="' + id + '"]')?.replaceChildren(document.createTextNode(money(lineSubtotal) + ' HT'));
                 document.querySelector('[data-service-card][data-service-id="' + id + '"]')?.classList.toggle('is-selected', qty > 0);
             });
 
-            // === 4. Ajout des frais au subtotal ===
             groups.forEach((group) => {
                 if (group.totalGross <= 0 || group.fees <= 0) {
                     return;
@@ -1145,8 +1276,6 @@
                 subtotal += group.fees;
             });
 
-            // === 5. Calcul GLOBAL des taxes sur le subtotal ===
-            // Utiliser les taxes actives globales
             if (activeTaxes.length > 0) {
                 activeTaxes.forEach(function(tax) {
                     const code = String(tax.code || 'TAX');
@@ -1158,7 +1287,6 @@
                 });
             }
 
-            // Appliquer les taxes sur le subtotal global
             let computedTaxTotal = 0;
             Object.keys(taxRates).forEach(function(code) {
                 const rate = Number(taxRates[code] || 0);
@@ -1178,7 +1306,6 @@
             tax = Math.round(computedTaxTotal * 100) / 100;
             total = Math.round((subtotal + tax) * 100) / 100;
 
-            // === 6. Mise à jour du résumé ===
             if (!summary) return;
             summary.querySelector('[data-summary="gross"]').textContent = money(gross);
             summary.querySelector('[data-summary="discount"]').textContent = '- ' + money(discountTotal);
@@ -1196,7 +1323,6 @@
                 }
             }
 
-            // Mise à jour du breakdown des taxes
             const breakdownContainer = document.getElementById('taxBreakdownList');
             if (breakdownContainer) {
                 breakdownContainer.replaceChildren();
@@ -1249,13 +1375,104 @@
             }
         });
 
-        // === Gestion du modal d'images ===
+        // === Gestion du modal d'images avec zoom ===
         const modal = document.getElementById('imageModal');
         const modalImg = document.getElementById('modalImage');
         const modalCaption = document.getElementById('modalCaption');
+        const imageWrapper = document.getElementById('modalImageWrapper');
+        const zoomIndicator = document.getElementById('zoomIndicator');
+        let currentZoom = 1;
+        const minZoom = 0.5;
+        const maxZoom = 3;
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+
+        function updateZoom() {
+            if (!modalImg) return;
+            const zoom = currentZoom;
+            modalImg.style.transform = `scale(${zoom}) translate(${translateX}px, ${translateY}px)`;
+            modalImg.classList.toggle('zoomed-in', zoom > 1);
+            if (zoomIndicator) {
+                zoomIndicator.textContent = Math.round(zoom * 100) + '%';
+                zoomIndicator.classList.add('visible');
+                clearTimeout(zoomIndicator._timeout);
+                zoomIndicator._timeout = setTimeout(function() {
+                    zoomIndicator.classList.remove('visible');
+                }, 2000);
+            }
+        }
+
+        window.zoomInImage = function() {
+            if (currentZoom < maxZoom) {
+                currentZoom = Math.min(currentZoom + 0.25, maxZoom);
+                updateZoom();
+            }
+        };
+
+        window.zoomOutImage = function() {
+            if (currentZoom > minZoom) {
+                currentZoom = Math.max(currentZoom - 0.25, minZoom);
+                if (currentZoom === 1) {
+                    translateX = 0;
+                    translateY = 0;
+                }
+                updateZoom();
+            }
+        };
+
+        function resetZoom() {
+            currentZoom = 1;
+            translateX = 0;
+            translateY = 0;
+            updateZoom();
+        }
+
+        // Gestion du drag pour l'image zoomée
+        function startDrag(e) {
+            if (currentZoom <= 1) return;
+            isDragging = true;
+            const touch = e.touches ? e.touches[0] : e;
+            startX = touch.clientX - translateX;
+            startY = touch.clientY - translateY;
+            modalImg.style.cursor = 'grabbing';
+            e.preventDefault();
+        }
+
+        function moveDrag(e) {
+            if (!isDragging) return;
+            const touch = e.touches ? e.touches[0] : e;
+            translateX = touch.clientX - startX;
+            translateY = touch.clientY - startY;
+            updateZoom();
+            e.preventDefault();
+        }
+
+        function endDrag() {
+            isDragging = false;
+            modalImg.style.cursor = 'grab';
+        }
+
+        // Événements de drag
+        modalImg?.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', moveDrag);
+        document.addEventListener('mouseup', endDrag);
+        modalImg?.addEventListener('touchstart', startDrag, { passive: false });
+        document.addEventListener('touchmove', moveDrag, { passive: false });
+        document.addEventListener('touchend', endDrag);
+
+        // Zoom avec la molette
+        modalImg?.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                window.zoomInImage();
+            } else {
+                window.zoomOutImage();
+            }
+        }, { passive: false });
 
         window.openImageModal = function(imageSrc, imageAlt) {
             if (!modal || !modalImg) return;
+            resetZoom();
             modalImg.src = imageSrc;
             modalImg.alt = imageAlt || 'Aperçu du service';
             if (modalCaption) {
@@ -1270,15 +1487,29 @@
             if (!modal) return;
             modal.classList.remove('is-active');
             document.body.style.overflow = '';
+            resetZoom();
         };
 
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeImageModal();
             }
+            if (event.key === '+' || event.key === '=') {
+                if (modal.classList.contains('is-active')) {
+                    event.preventDefault();
+                    zoomInImage();
+                }
+            }
+            if (event.key === '-') {
+                if (modal.classList.contains('is-active')) {
+                    event.preventDefault();
+                    zoomOutImage();
+                }
+            }
         });
 
         modal?.addEventListener('wheel', function(event) {
+            if (event.target === modalImg) return;
             event.stopPropagation();
         }, { passive: true });
 
