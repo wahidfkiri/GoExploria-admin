@@ -1109,7 +1109,7 @@
 
                     <label class="consent">
                         <input type="checkbox" name="consent" value="1" @checked(old('consent'))>
-                        <span>J'accepte que mes informations soient utilisées pour le traitement de ma demande de devis.</span>
+                        <span style="color:#ffc439;">J'accepte que mes informations soient utilisées pour le traitement de ma demande de devis.</span>
                     </label>
                     @error('consent')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
