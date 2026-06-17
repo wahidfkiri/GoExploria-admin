@@ -781,7 +781,6 @@
                                     $serviceId = (string) data_get($service, 'id');
                                     $quantity = $oldServiceQuantities[$serviceId] ?? 0;
                                     $price = (float) data_get($service, 'unit_price', 0);
-                                    $taxRate = (float) data_get($service, 'tax_rate', 0);
                                     $discount = (float) data_get($service, 'discount.value', data_get($service, 'discount_percentage', 0));
                                     $discountType = data_get($service, 'discount.type', 'percentage');
                                 @endphp
@@ -807,7 +806,6 @@
                                             </div>
                                         </div>
                                         <div class="service-meta">
-                                            <span class="service-pill">TVA {{ number_format($taxRate, 2, ',', ' ') }}%</span>
                                             @if($discount > 0)
                                                 <span class="service-pill">
                                                     Remise {{ $discountType === 'fixed' ? number_format($discount, 2, ',', ' ') . ' CAD' : number_format($discount, 2, ',', ' ') . '%' }}
@@ -832,7 +830,7 @@
                                                 aria-label="Quantite {{ data_get($service, 'title') }}"
                                             >
                                             <button class="qty-btn" type="button" data-qty-plus data-service-id="{{ $serviceId }}">+</button>
-                                            <div class="line-total" data-line-total="{{ $serviceId }}">0,00 CAD TTC</div>
+                                            <div class="line-total" data-line-total="{{ $serviceId }}">0,00 CAD HT</div>
                                         </div>
                                     </div>
                                 </article>
@@ -859,7 +857,7 @@
 
                             <div id="taxBreakdownContainer" style="margin-top:8px;">
                                 <div class="summary-line">
-                                    <span>TVA / taxes</span>
+                                    <span>TVA / taxes (globales)</span>
                                     <strong data-summary="tax">0,00 CAD</strong>
                                 </div>
                                 <div id="taxBreakdownList" style="margin-top:6px;color:rgba(255,255,255,.84);font-size:12px;">
@@ -868,7 +866,8 @@
                             </div>
 
                             <div class="summary-line total"><span>Total TTC</span><strong data-summary="total">0,00 CAD</strong></div>
-                            <p class="summary-help">Les taxes sont appliquées globalement sur le total HT après remise.</p>
+                            <p class="summary-help">✓ Les taxes sont appliquées UNIQUEMENT sur le total global HT après remise.<br>
+                            ✓ Chaque ligne affiche son montant HT sans taxe individuelle.</p>
                         </div>
                     @else
                         <div class="empty-services">
@@ -1031,30 +1030,6 @@
         const formatter = new Intl.NumberFormat('fr-CA', { style: 'currency', currency: currency });
         const summary = document.getElementById('quoteSummary');
 
-        // Helper to safely get tax components from service
-        function serviceTaxComponents(service) {
-            // Utiliser les taxes actives globales si disponibles
-            if (activeTaxes.length > 0) {
-                return activeTaxes.map(function (tax) {
-                    return {
-                        name: tax.name,
-                        code: tax.code,
-                        rate: tax.rate
-                    };
-                });
-            }
-            
-            // Sinon, utiliser les composants du service ou les tax_components par défaut
-            if (Array.isArray(service.tax_components) && service.tax_components.length > 0) {
-                return service.tax_components;
-            }
-            if (Array.isArray(service.default_tax_components) && service.default_tax_components.length > 0) {
-                return service.default_tax_components;
-            }
-            return [];
-        }
-
-        // Parse a tax rate value robustly
         function parseRate(val) {
             if (val === null || val === undefined) return 0;
             const s = String(val).trim();
@@ -1116,8 +1091,6 @@
                         discount: service.discount || { type: 'percentage', value: Number(service.discount_percentage || 0) },
                         shipping: Number(service.shipping_fees || 0),
                         administration: Number(service.administration_fees || 0),
-                        feesTaxRate: Number(service.fees_tax_rate || 0),
-                        defaultTaxComponents: Array.isArray(service.default_tax_components) ? service.default_tax_components : [],
                         services: [],
                         totalGross: 0
                     });
@@ -1144,7 +1117,7 @@
                 group.fees = group.totalGross > 0 ? Math.max(0, group.shipping) + Math.max(0, group.administration) : 0;
             });
 
-            // === 3. Calcul détaillé par service (pour l'affichage ligne par ligne) ===
+            // === 3. Calcul détaillé par service (affichage HT uniquement) ===
             services.forEach((service, id) => {
                 const input = quantityInput(id);
                 const qty = Math.max(0, parseInt(input?.value || 0, 10) || 0);
@@ -1153,35 +1126,13 @@
                 const group = groups.get(String(service.etablissement_id || 'global'));
                 const lineDiscount = group && group.totalGross > 0 ? group.discountAmount * (lineGross / group.totalGross) : 0;
                 const lineSubtotal = lineGross - lineDiscount;
-                
-                // Collecter les taux de taxe pour le calcul global
-                const comps = serviceTaxComponents(service);
-                if (Array.isArray(comps) && comps.length > 0) {
-                    comps.forEach(function (comp) {
-                        const rateComp = parseRate(comp.rate);
-                        const code = String(comp.code || 'TAX');
-                        const rawName = comp.name || code;
-                        const cleanName = String(rawName).replace(/\s*\d+([.,]\d+)?\s*%/g, '').trim();
-                        taxNames[code] = taxNames[code] || cleanName || code;
-                        taxRates[code] = Math.max(taxRates[code] || 0, rateComp);
-                    });
-                } else {
-                    const rate = parseRate(service.tax_rate);
-                    const code = 'TAX';
-                    if (rate > 0) {
-                        taxRates[code] = Math.max(taxRates[code] || 0, rate);
-                        taxNames[code] = taxNames[code] || 'Taxe';
-                    }
-                }
 
                 gross += lineGross;
                 discountTotal += lineDiscount;
                 subtotal += lineSubtotal;
 
-                // Afficher le total par ligne (avec taxe locale pour information)
-                const totalTaxRate = Object.values(taxRates).reduce((sum, r) => sum + r, 0);
-                const lineTax = lineSubtotal * (totalTaxRate / 100);
-                document.querySelector('[data-line-total="' + id + '"]')?.replaceChildren(document.createTextNode(money(lineSubtotal + lineTax) + ' TTC'));
+                // Afficher le total par ligne en HT (sans taxe)
+                document.querySelector('[data-line-total="' + id + '"]')?.replaceChildren(document.createTextNode(money(lineSubtotal) + ' HT'));
                 document.querySelector('[data-service-card][data-service-id="' + id + '"]')?.classList.toggle('is-selected', qty > 0);
             });
 
@@ -1195,14 +1146,15 @@
             });
 
             // === 5. Calcul GLOBAL des taxes sur le subtotal ===
-            const subtotalBeforeTax = subtotal;
-            
-            // Si aucun taux de taxe n'a été trouvé, utiliser les taxes actives par défaut
-            if (Object.keys(taxRates).length === 0 && activeTaxes.length > 0) {
+            // Utiliser les taxes actives globales
+            if (activeTaxes.length > 0) {
                 activeTaxes.forEach(function(tax) {
                     const code = String(tax.code || 'TAX');
-                    taxRates[code] = parseRate(tax.rate);
-                    taxNames[code] = taxNames[code] || tax.name || code;
+                    const rate = parseRate(tax.rate);
+                    if (rate > 0 && subtotal > 0) {
+                        taxRates[code] = rate;
+                        taxNames[code] = taxNames[code] || tax.name || code;
+                    }
                 });
             }
 
@@ -1210,8 +1162,8 @@
             let computedTaxTotal = 0;
             Object.keys(taxRates).forEach(function(code) {
                 const rate = Number(taxRates[code] || 0);
-                if (rate > 0 && subtotalBeforeTax > 0) {
-                    let amount = subtotalBeforeTax * (rate / 100);
+                if (rate > 0 && subtotal > 0) {
+                    let amount = subtotal * (rate / 100);
                     amount = Math.round(amount * 100) / 100;
                     taxesByCode[code] = { 
                         name: taxNames[code] || code, 
@@ -1223,7 +1175,6 @@
                 }
             });
 
-            // Arrondir le total des taxes
             tax = Math.round(computedTaxTotal * 100) / 100;
             total = Math.round((subtotal + tax) * 100) / 100;
 
@@ -1367,7 +1318,6 @@
                     attributes: false
                 });
             }
-            // Initial calculation
             recalculate();
         });
 
@@ -1376,7 +1326,6 @@
             recalculate();
         });
 
-        // Expose recalculate globally for debugging if needed
         window.recalculate = recalculate;
     })();
 </script>
