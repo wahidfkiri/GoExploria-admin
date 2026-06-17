@@ -11,6 +11,7 @@ use App\Models\PaymentTransaction;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use RuntimeException;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
@@ -37,8 +38,7 @@ class DevisPayPalCheckoutService
         $gateway = $this->gatewayFor($etablissementId);
         $requestIds = $billingRequests->pluck('id')->map(fn ($id) => (int) $id)->all();
 
-        $provider = $this->paypalProvider($currency);
-        $order = $provider->setRequestHeader('Prefer', 'return=representation')->createOrder([
+        $orderPayload = [
             'intent' => 'CAPTURE',
             'purchase_units' => [[
                 'reference_id' => 'devis-' . $devisRequest->id,
@@ -58,16 +58,44 @@ class DevisPayPalCheckoutService
                 'return_url' => route('devis.paypal.success'),
                 'cancel_url' => route('devis.paypal.cancel'),
             ],
-        ]);
+        ];
+
+        try {
+            $provider = $this->paypalProvider($currency);
+            $order = $provider->setRequestHeader('Prefer', 'return=representation')->createOrder($orderPayload);
+        } catch (Throwable $e) {
+            Log::error('PayPal createOrder exception for devis', [
+                'devis_request_id' => $devisRequest->id ?? null,
+                'billing_request_ids' => $requestIds,
+                'amount' => $amount,
+                'currency' => $currency,
+                'etablissement_id' => $etablissementId,
+                'customer_email' => $devisRequest->email ?? null,
+                'payload' => $orderPayload,
+                'exception_message' => $e->getMessage(),
+                'exception_class' => \get_class($e),
+                'exception_trace' => $e->getTraceAsString(),
+            ]);
+
+            throw $e;
+        }
 
         $paypalOrderId = (string) ($order['id'] ?? '');
         $approvalUrl = $this->approvalUrl($order);
 
         if ($paypalOrderId === '' || $approvalUrl === '') {
+            Log::error('PayPal returned invalid order/approval link for devis', [
+                'devis_request_id' => $devisRequest->id ?? null,
+                'billing_request_ids' => $requestIds,
+                'amount' => $amount,
+                'currency' => $currency,
+                'order' => $order,
+            ]);
+
             throw new RuntimeException('PayPal n a pas retourne de lien de paiement valide.');
         }
-
-        DB::transaction(function () use ($amount, $currency, $etablissementId, $customer, $gateway, $requestIds, $devisRequest, $paypalOrderId, $order): void {
+        try {
+            DB::transaction(function () use ($amount, $currency, $etablissementId, $customer, $gateway, $requestIds, $devisRequest, $paypalOrderId, $order): void {
             $payment = Payment::create([
                 'etablissement_id' => $etablissementId,
                 'client_id' => $customer->id,
@@ -85,7 +113,7 @@ class DevisPayPalCheckoutService
                 ],
             ]);
 
-            PaymentTransaction::create([
+                PaymentTransaction::create([
                 'etablissement_id' => $etablissementId,
                 'payment_id' => $payment->id,
                 'client_id' => $customer->id,
@@ -106,7 +134,21 @@ class DevisPayPalCheckoutService
                     'receipt_sent' => false,
                 ],
             ]);
-        });
+            });
+        } catch (Throwable $e) {
+            Log::error('Failed to persist PayPal payment/transaction for devis', [
+                'devis_request_id' => $devisRequest->id ?? null,
+                'billing_request_ids' => $requestIds,
+                'amount' => $amount,
+                'currency' => $currency,
+                'paypal_order' => $order,
+                'exception_message' => $e->getMessage(),
+                'exception_class' => \get_class($e),
+                'exception_trace' => $e->getTraceAsString(),
+            ]);
+
+            throw $e;
+        }
 
         return $approvalUrl;
     }
@@ -140,11 +182,30 @@ class DevisPayPalCheckoutService
 
         $currency = strtoupper((string) $transaction->currency);
         $provider = $this->paypalProvider($currency);
-        $captureResponse = $provider->setRequestHeader('Prefer', 'return=representation')->capturePaymentOrder($paypalOrderId);
+        try {
+            $captureResponse = $provider->setRequestHeader('Prefer', 'return=representation')->capturePaymentOrder($paypalOrderId);
+        } catch (Throwable $e) {
+            Log::error('PayPal capturePaymentOrder exception', [
+                'paypal_order_id' => $paypalOrderId,
+                'transaction_id' => $transaction->id ?? null,
+                'currency' => $currency,
+                'exception_message' => $e->getMessage(),
+                'exception_class' => \get_class($e),
+                'exception_trace' => $e->getTraceAsString(),
+            ]);
+
+            throw $e;
+        }
         $capture = data_get($captureResponse, 'purchase_units.0.payments.captures.0', []);
         $captureStatus = strtoupper((string) ($capture['status'] ?? $captureResponse['status'] ?? ''));
 
         if ($captureStatus !== 'COMPLETED') {
+            Log::warning('PayPal capture returned non-COMPLETED status', [
+                'paypal_order_id' => $paypalOrderId,
+                'transaction_id' => $transaction->id ?? null,
+                'capture_status' => $captureStatus,
+                'capture_response' => $captureResponse,
+            ]);
             $transaction->update([
                 'status' => 'failed',
                 'gateway_status' => $captureStatus ?: 'FAILED',
@@ -257,10 +318,22 @@ class DevisPayPalCheckoutService
 
     private function paypalProvider(string $currency): PayPalClient
     {
-        $provider = new PayPalClient($this->paypalConfig($currency));
-        $provider->getAccessToken();
+        try {
+            $provider = new PayPalClient($this->paypalConfig($currency));
+            $provider->getAccessToken();
 
-        return $provider;
+            return $provider;
+        } catch (Throwable $e) {
+            Log::error('PayPal provider initialization failed', [
+                'currency' => $currency,
+                'paypal_mode' => config('paypal.mode'),
+                'exception_message' => $e->getMessage(),
+                'exception_class' => \get_class($e),
+                'exception_trace' => $e->getTraceAsString(),
+            ]);
+
+            throw $e;
+        }
     }
 
     private function paypalConfig(string $currency): array

@@ -219,12 +219,43 @@
             position: relative;
             background: linear-gradient(135deg, #12284a, #1d4f85);
             min-height: 210px;
+            overflow: hidden;
         }
         .service-media img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
+            cursor: pointer;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+        .service-media img:hover {
+            transform: scale(1.03);
+            filter: brightness(1.05);
+        }
+        .service-media::after {
+            content: '\f00e';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .service-media:hover::after {
+            opacity: 1;
         }
         .service-media-placeholder {
             width: 100%;
@@ -279,7 +310,6 @@
             font-size: 11px;
             color: #556784;
         }
-        /* Hide service pills on the Devis page (they're redundant in the quote form) */
         .service-pill {
             display: none !important;
         }
@@ -299,6 +329,10 @@
             color: #10233f;
             font-weight: 900;
             cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .qty-btn:hover {
+            background: #f0f4fe;
         }
         .qty-input {
             height: 34px;
@@ -357,6 +391,7 @@
             font-weight: 900;
             color: #fff;
             padding-top: 12px;
+            border-top: 2px solid rgba(255,255,255,.2);
         }
         .summary-tax-list {
             margin: 10px 0 4px;
@@ -472,6 +507,15 @@
             font-size: 14px;
             color: #6a7a95;
         }
+        .plans-title ul {
+            margin: 8px 0 0;
+            padding-left: 18px;
+            color: #6a7a95;
+        }
+        .plans-title ul li {
+            font-size: 13px;
+            padding: 2px 0;
+        }
         .plan-card {
             display: block;
             text-decoration: none;
@@ -518,6 +562,91 @@
         .plan-card-d { background: linear-gradient(135deg, #5d2d91 0%, #8f56c4 100%); }
         .plan-card-e { background: linear-gradient(135deg, #842f52 0%, #ca4d85 100%); }
 
+        /* Modal pour l'affichage des images */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.88);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            animation: modalFadeIn 0.3s ease;
+            padding: 20px;
+        }
+        .modal-overlay.is-active {
+            display: flex;
+        }
+        .modal-content {
+            max-width: 92vw;
+            max-height: 92vh;
+            position: relative;
+            animation: modalZoomIn 0.3s ease;
+            cursor: default;
+        }
+        .modal-content img {
+            max-width: 92vw;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            display: block;
+            background: #1a1a2e;
+        }
+        .modal-close {
+            position: absolute;
+            top: -50px;
+            right: -4px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        .modal-caption {
+            position: absolute;
+            bottom: -48px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            backdrop-filter: blur(4px);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes modalZoomIn {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
         @media (max-width: 1080px) {
             .quote-grid { grid-template-columns: 1fr; }
             .plans-column { position: static; }
@@ -531,6 +660,23 @@
             .quote-summary { position: static; }
             .quote-head { padding: 18px; }
             .form-actions { grid-template-columns: 1fr; }
+            .modal-content img {
+                max-width: 95vw;
+                max-height: 80vh;
+            }
+            .modal-caption {
+                bottom: -40px;
+                font-size: 12px;
+                white-space: normal;
+                padding: 8px 12px;
+            }
+            .modal-close {
+                top: -44px;
+                right: 0;
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
         }
     </style>
 </head>
@@ -557,7 +703,7 @@
             @endif
             @if ($errors->any())
                 <div class="alert alert-ko">
-                    Merci de corriger les champs en erreur avant d’envoyer votre demande.
+                    Merci de corriger les champs en erreur avant d'envoyer votre demande.
                 </div>
             @endif
 
@@ -642,7 +788,7 @@
                                 <article class="service-card {{ $quantity > 0 ? 'is-selected' : '' }}" data-service-card data-service-id="{{ $serviceId }}">
                                     <div class="service-media">
                                         @if(data_get($service, 'image_url'))
-                                            <img src="{{ data_get($service, 'image_url') }}" alt="{{ data_get($service, 'title') }}">
+                                            <img src="{{ data_get($service, 'image_url') }}" alt="{{ data_get($service, 'title') }}" loading="lazy">
                                         @else
                                             <div class="service-media-placeholder"><i class="fas fa-briefcase"></i></div>
                                         @endif
@@ -661,17 +807,15 @@
                                             </div>
                                         </div>
                                         <div class="service-meta">
-                                            @unless(Str::contains(request()->path(), 'devis'))
-                                                <span class="service-pill">TVA {{ number_format($taxRate, 2, ',', ' ') }}%</span>
-                                                @if($discount > 0)
-                                                    <span class="service-pill">
-                                                        Remise {{ $discountType === 'fixed' ? number_format($discount, 2, ',', ' ') . ' CAD' : number_format($discount, 2, ',', ' ') . '%' }}
-                                                    </span>
-                                                @endif
-                                                @if(data_get($service, 'etablissement_name'))
-                                                    <span class="service-pill">{{ data_get($service, 'etablissement_name') }}</span>
-                                                @endif
-                                            @endunless
+                                            <span class="service-pill">TVA {{ number_format($taxRate, 2, ',', ' ') }}%</span>
+                                            @if($discount > 0)
+                                                <span class="service-pill">
+                                                    Remise {{ $discountType === 'fixed' ? number_format($discount, 2, ',', ' ') . ' CAD' : number_format($discount, 2, ',', ' ') . '%' }}
+                                                </span>
+                                            @endif
+                                            @if(data_get($service, 'etablissement_name'))
+                                                <span class="service-pill">{{ data_get($service, 'etablissement_name') }}</span>
+                                            @endif
                                         </div>
                                         <div class="qty-control">
                                             <button class="qty-btn" type="button" data-qty-minus data-service-id="{{ $serviceId }}">-</button>
@@ -699,11 +843,11 @@
                             <div class="summary-line"><span>Total services HT</span><strong data-summary="gross">0,00 CAD</strong></div>
                             <div class="summary-line is-hidden" data-discount-line><span data-discount-label>Remise</span><strong data-summary="discount">0,00 CAD</strong></div>
                             <div class="summary-line"><span>Frais</span><strong data-summary="fees">0,00 CAD</strong></div>
-                            <div class="summary-line"><span>Total HT apres remise</span><strong data-summary="subtotal">0,00 CAD</strong></div>
+                            <div class="summary-line"><span>Total HT après remise</span><strong data-summary="subtotal">0,00 CAD</strong></div>
 
                             @if($activeTaxes->isNotEmpty())
                                 <div class="summary-tax-list">
-                                    <div class="summary-tax-title">Taxes actives appliquees</div>
+                                    <div class="summary-tax-title">Taxes actives (appliquées globalement)</div>
                                     @foreach($activeTaxes as $tax)
                                         <div class="summary-tax-row">
                                             <span>{{ $tax->name }} ({{ $tax->code }})</span>
@@ -714,18 +858,21 @@
                             @endif
 
                             <div id="taxBreakdownContainer" style="margin-top:8px;">
-                                <div class="summary-line"><span>TVA / taxes</span><strong data-summary="tax">0,00 CAD</strong></div>
+                                <div class="summary-line">
+                                    <span>TVA / taxes</span>
+                                    <strong data-summary="tax">0,00 CAD</strong>
+                                </div>
                                 <div id="taxBreakdownList" style="margin-top:6px;color:rgba(255,255,255,.84);font-size:12px;">
                                     <!-- breakdown inserted here -->
                                 </div>
                             </div>
 
                             <div class="summary-line total"><span>Total TTC</span><strong data-summary="total">0,00 CAD</strong></div>
-                            <p class="summary-help">Le calcul final est enregistre dans la demande avec les quantites choisies.</p>
+                            <p class="summary-help">Les taxes sont appliquées globalement sur le total HT après remise.</p>
                         </div>
                     @else
                         <div class="empty-services">
-                            Aucun service de devis n'est configure actuellement dans <strong>billing_request_services</strong>.
+                            Aucun service de devis n'est configuré actuellement dans <strong>billing_request_services</strong>.
                             Ajoutez des services actifs avec prix, image et taxe pour les afficher ici.
                         </div>
                     @endif
@@ -774,7 +921,7 @@
 
                     <label class="consent">
                         <input type="checkbox" name="consent" value="1" @checked(old('consent'))>
-                        <span>J’accepte que mes informations soient utilisées pour le traitement de ma demande de devis.</span>
+                        <span>J'accepte que mes informations soient utilisées pour le traitement de ma demande de devis.</span>
                     </label>
                     @error('consent')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
@@ -834,22 +981,34 @@
                     <div class="plan-price">Sur demande</div>
                 </a>
             @endforelse
-                @if(!empty($activeTaxes) && $activeTaxes->isNotEmpty())
-                    <div class="plans-title" style="margin-top:12px;">
-                        <h3>Taxes actives</h3>
-                        <p>Taxes globales actuellement actives</p>
-                        <ul style="margin:8px 0 0;padding-left:18px;color:#6a7a95;">
-                            @foreach($activeTaxes as $tax)
-                                <li>{{ $tax->name }} ({{ $tax->code }}): {{ number_format($tax->rate, 2, ',', ' ') }}%</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+
+            @if(!empty($activeTaxes) && $activeTaxes->isNotEmpty())
+                <div class="plans-title" style="margin-top:12px;">
+                    <h3>Taxes actives</h3>
+                    <p>Taxes globales actuellement actives</p>
+                    <ul>
+                        @foreach($activeTaxes as $tax)
+                            <li>{{ $tax->name }} ({{ $tax->code }}): {{ number_format($tax->rate, 2, ',', ' ') }}%</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </aside>
     </div>
 </div>
 
 @include('home-v2.components.Footer')
+
+<!-- Modal pour l'affichage des images -->
+<div class="modal-overlay" id="imageModal" onclick="closeImageModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation();">
+        <button class="modal-close" onclick="closeImageModal()" aria-label="Fermer">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="modalImage" src="" alt="Aperçu du service">
+        <div class="modal-caption" id="modalCaption"></div>
+    </div>
+</div>
 
 <script src="{{ asset('js/home-v2/navigation.js') }}"></script>
 <script src="{{ asset('js/home-v2/menu-api-service.js') }}"></script>
@@ -863,7 +1022,8 @@
 <script>
     window.devisBillingServices = {!! $servicesCatalogJson ?: '[]' !!};
     window.devisActiveTaxes = {!! $activeTaxesJson ?: '[]' !!};
-        (function () {
+
+    (function () {
         const services = new Map((window.devisBillingServices || []).map((service) => [String(service.id), service]));
         const activeTaxes = Array.isArray(window.devisActiveTaxes) ? window.devisActiveTaxes : [];
         const firstCurrency = (window.devisBillingServices || []).find((service) => service.currency)?.currency || 'CAD';
@@ -871,36 +1031,38 @@
         const formatter = new Intl.NumberFormat('fr-CA', { style: 'currency', currency: currency });
         const summary = document.getElementById('quoteSummary');
 
-            // Helper to safely get tax components from service or defaults
-            function serviceTaxComponents(service) {
-                if (Array.isArray(service.tax_components) && service.tax_components.length > 0) {
-                    return service.tax_components;
-                }
-                if (Array.isArray(service.default_tax_components) && service.default_tax_components.length > 0) {
-                    return service.default_tax_components;
-                }
-                if (activeTaxes.length > 0) {
-                    return activeTaxes.map(function (tax) {
-                        return {
-                            name: tax.name,
-                            code: tax.code,
-                            rate: tax.rate
-                        };
-                    });
-                }
-                return [];
+        // Helper to safely get tax components from service
+        function serviceTaxComponents(service) {
+            // Utiliser les taxes actives globales si disponibles
+            if (activeTaxes.length > 0) {
+                return activeTaxes.map(function (tax) {
+                    return {
+                        name: tax.name,
+                        code: tax.code,
+                        rate: tax.rate
+                    };
+                });
             }
+            
+            // Sinon, utiliser les composants du service ou les tax_components par défaut
+            if (Array.isArray(service.tax_components) && service.tax_components.length > 0) {
+                return service.tax_components;
+            }
+            if (Array.isArray(service.default_tax_components) && service.default_tax_components.length > 0) {
+                return service.default_tax_components;
+            }
+            return [];
+        }
 
-            // Parse a tax rate value robustly (handles "5", "5.0", "5%", "5,00" etc.)
-            function parseRate(val) {
-                if (val === null || val === undefined) return 0;
-                const s = String(val).trim();
-                if (s === '') return 0;
-                // remove percent sign and whitespace, normalize comma to dot
-                const cleaned = s.replace(/\s*%\s*$/,'').replace(',', '.').replace('%', '');
-                const num = parseFloat(cleaned);
-                return Number.isFinite(num) ? num : 0;
-            }
+        // Parse a tax rate value robustly
+        function parseRate(val) {
+            if (val === null || val === undefined) return 0;
+            const s = String(val).trim();
+            if (s === '') return 0;
+            const cleaned = s.replace(/\s*%\s*$/,'').replace(',', '.').replace('%', '');
+            const num = parseFloat(cleaned);
+            return Number.isFinite(num) ? num : 0;
+        }
 
         function money(value) {
             return formatter.format(Number.isFinite(value) ? value : 0);
@@ -917,7 +1079,18 @@
             recalculate();
         }
 
-            function recalculate() {
+        function discountLabel(discount) {
+            const name = String(discount?.name || 'Remise').trim() || 'Remise';
+            const value = Math.max(0, Number(discount?.value || 0));
+
+            if (discount?.type === 'fixed') {
+                return `${name} (${money(value)})`;
+            }
+
+            return `${name} (${Math.min(100, value).toFixed(2)}%)`;
+        }
+
+        function recalculate() {
             let gross = 0;
             let discountTotal = 0;
             let feesTotal = 0;
@@ -925,12 +1098,12 @@
             let tax = 0;
             let total = 0;
             const groups = new Map();
-            const taxesBase = {};
             const taxRates = {};
             const taxNames = {};
             const taxesByCode = {};
             const discountLabels = new Set();
 
+            // === 1. Calcul du total brut (services) ===
             services.forEach((service, id) => {
                 const input = quantityInput(id);
                 const qty = Math.max(0, parseInt(input?.value || 0, 10) || 0);
@@ -945,120 +1118,116 @@
                         administration: Number(service.administration_fees || 0),
                         feesTaxRate: Number(service.fees_tax_rate || 0),
                         defaultTaxComponents: Array.isArray(service.default_tax_components) ? service.default_tax_components : [],
+                        services: [],
+                        totalGross: 0
                     });
                 }
-                groups.get(groupId).gross += lineGross;
+                const group = groups.get(groupId);
+                group.services = group.services || [];
+                group.services.push({ service, qty, lineGross });
+                group.totalGross = (group.totalGross || 0) + lineGross;
             });
 
+            // === 2. Calcul des remises et des sous-totaux par groupe ===
             groups.forEach((group) => {
                 const discountValue = Math.max(0, Number(group.discount?.value || 0));
-                group.discountAmount = group.gross <= 0 || discountValue <= 0
+                group.discountAmount = group.totalGross <= 0 || discountValue <= 0
                     ? 0
                     : group.discount?.type === 'fixed'
-                        ? Math.min(group.gross, discountValue)
-                        : group.gross * (Math.min(100, discountValue) / 100);
+                        ? Math.min(group.totalGross, discountValue)
+                        : group.totalGross * (Math.min(100, discountValue) / 100);
                 if (group.discountAmount > 0) {
                     discountLabels.add(discountLabel(group.discount));
                 }
-                group.fees = group.gross > 0 ? Math.max(0, group.shipping) + Math.max(0, group.administration) : 0;
+                
+                // Calcul des frais (shipping + administration) seulement si des services sont sélectionnés
+                group.fees = group.totalGross > 0 ? Math.max(0, group.shipping) + Math.max(0, group.administration) : 0;
             });
 
+            // === 3. Calcul détaillé par service (pour l'affichage ligne par ligne) ===
             services.forEach((service, id) => {
                 const input = quantityInput(id);
                 const qty = Math.max(0, parseInt(input?.value || 0, 10) || 0);
                 const unit = Number(service.unit_price || 0);
                 const lineGross = unit * qty;
-                const group = groups.get(String(service.etablissement_id || 'global')) || { gross: 0, discountAmount: 0 };
-                const lineDiscount = group.gross > 0 ? group.discountAmount * (lineGross / group.gross) : 0;
+                const group = groups.get(String(service.etablissement_id || 'global'));
+                const lineDiscount = group && group.totalGross > 0 ? group.discountAmount * (lineGross / group.totalGross) : 0;
                 const lineSubtotal = lineGross - lineDiscount;
-
-                // compute tax base/components for aggregated calculation (supports multi-component taxes)
+                
+                // Collecter les taux de taxe pour le calcul global
                 const comps = serviceTaxComponents(service);
-                let lineTax = 0; // used only for per-line display
                 if (Array.isArray(comps) && comps.length > 0) {
                     comps.forEach(function (comp) {
                         const rateComp = parseRate(comp.rate);
                         const code = String(comp.code || 'TAX');
-                        // accumulate taxable base for this tax code
-                        taxesBase[code] = (taxesBase[code] || 0) + lineSubtotal;
-                        taxRates[code] = rateComp;
-                        // strip any percent from the stored name to avoid duplicate "%" in UI
                         const rawName = comp.name || code;
                         const cleanName = String(rawName).replace(/\s*\d+([.,]\d+)?\s*%/g, '').trim();
-                        taxNames[code] = cleanName || code;
-                        // per-line tax for display (kept for per-line total)
-                        const amount = lineSubtotal * (rateComp / 100);
-                        lineTax += amount;
+                        taxNames[code] = taxNames[code] || cleanName || code;
+                        taxRates[code] = Math.max(taxRates[code] || 0, rateComp);
                     });
                 } else {
                     const rate = parseRate(service.tax_rate);
                     const code = 'TAX';
                     if (rate > 0) {
-                        taxesBase[code] = (taxesBase[code] || 0) + lineSubtotal;
-                        taxRates[code] = rate;
+                        taxRates[code] = Math.max(taxRates[code] || 0, rate);
                         taxNames[code] = taxNames[code] || 'Taxe';
                     }
-                    const amount = lineSubtotal * (rate / 100);
-                    lineTax += amount;
                 }
-
-                const lineTotal = lineSubtotal + lineTax;
 
                 gross += lineGross;
                 discountTotal += lineDiscount;
                 subtotal += lineSubtotal;
-                // NOTE: do not add tax or total here — we'll compute aggregated taxes and total after rounding
 
-                document.querySelector('[data-line-total="' + id + '"]')?.replaceChildren(document.createTextNode(money(lineTotal) + ' TTC'));
+                // Afficher le total par ligne (avec taxe locale pour information)
+                const totalTaxRate = Object.values(taxRates).reduce((sum, r) => sum + r, 0);
+                const lineTax = lineSubtotal * (totalTaxRate / 100);
+                document.querySelector('[data-line-total="' + id + '"]')?.replaceChildren(document.createTextNode(money(lineSubtotal + lineTax) + ' TTC'));
                 document.querySelector('[data-service-card][data-service-id="' + id + '"]')?.classList.toggle('is-selected', qty > 0);
             });
 
+            // === 4. Ajout des frais au subtotal ===
             groups.forEach((group) => {
-                if (group.gross <= 0 || group.fees <= 0) {
+                if (group.totalGross <= 0 || group.fees <= 0) {
                     return;
                 }
-
-                // compute fees tax base using default tax components if available
-                if (Array.isArray(group.defaultTaxComponents) && group.defaultTaxComponents.length > 0) {
-                    group.defaultTaxComponents.forEach(function (comp) {
-                        const rateComp = parseRate(comp.rate);
-                        const code = String(comp.code || 'TAX');
-                        taxesBase[code] = (taxesBase[code] || 0) + group.fees;
-                        taxRates[code] = rateComp;
-                        const rawName = comp.name || code;
-                        taxNames[code] = String(rawName).replace(/\s*\d+([.,]\d+)?\s*%/g, '').trim() || code;
-                    });
-                } else {
-                    const rate = parseRate(group.feesTaxRate);
-                    if (rate > 0) {
-                        const code = 'TAX';
-                        taxesBase[code] = (taxesBase[code] || 0) + group.fees;
-                        taxRates[code] = rate;
-                        taxNames[code] = taxNames[code] || 'Taxe';
-                    }
-                }
-
                 feesTotal += group.fees;
                 subtotal += group.fees;
-                // NOTE: do not add tax or total here — aggregated taxes & total are computed below
             });
 
-            // Compute aggregated taxes from bases (ensures taxes are rate% of taxable base)
+            // === 5. Calcul GLOBAL des taxes sur le subtotal ===
+            const subtotalBeforeTax = subtotal;
+            
+            // Si aucun taux de taxe n'a été trouvé, utiliser les taxes actives par défaut
+            if (Object.keys(taxRates).length === 0 && activeTaxes.length > 0) {
+                activeTaxes.forEach(function(tax) {
+                    const code = String(tax.code || 'TAX');
+                    taxRates[code] = parseRate(tax.rate);
+                    taxNames[code] = taxNames[code] || tax.name || code;
+                });
+            }
+
+            // Appliquer les taxes sur le subtotal global
             let computedTaxTotal = 0;
-            Object.keys(taxesBase).forEach(function (code) {
-                const base = Number(taxesBase[code] || 0);
+            Object.keys(taxRates).forEach(function(code) {
                 const rate = Number(taxRates[code] || 0);
-                let amount = base * (rate / 100);
-                // round to cents
-                amount = Math.round(amount * 100) / 100;
-                taxesByCode[code] = { name: taxNames[code] || code, code: code, rate: rate, amount: amount };
-                computedTaxTotal += amount;
+                if (rate > 0 && subtotalBeforeTax > 0) {
+                    let amount = subtotalBeforeTax * (rate / 100);
+                    amount = Math.round(amount * 100) / 100;
+                    taxesByCode[code] = { 
+                        name: taxNames[code] || code, 
+                        code: code, 
+                        rate: rate, 
+                        amount: amount 
+                    };
+                    computedTaxTotal += amount;
+                }
             });
 
-            // Final totals using aggregated tax
+            // Arrondir le total des taxes
             tax = Math.round(computedTaxTotal * 100) / 100;
             total = Math.round((subtotal + tax) * 100) / 100;
 
+            // === 6. Mise à jour du résumé ===
             if (!summary) return;
             summary.querySelector('[data-summary="gross"]').textContent = money(gross);
             summary.querySelector('[data-summary="discount"]').textContent = '- ' + money(discountTotal);
@@ -1066,6 +1235,7 @@
             summary.querySelector('[data-summary="subtotal"]').textContent = money(subtotal);
             summary.querySelector('[data-summary="tax"]').textContent = money(tax);
             summary.querySelector('[data-summary="total"]').textContent = money(total);
+            
             const discountLine = summary.querySelector('[data-discount-line]');
             if (discountLine) {
                 discountLine.classList.toggle('is-hidden', discountTotal <= 0);
@@ -1075,35 +1245,38 @@
                 }
             }
 
-            // Render tax breakdown list
+            // Mise à jour du breakdown des taxes
             const breakdownContainer = document.getElementById('taxBreakdownList');
             if (breakdownContainer) {
                 breakdownContainer.replaceChildren();
                 const codes = Object.keys(taxesByCode);
-                if (codes.length === 0) {
-                    // show nothing
-                } else {
+                if (codes.length > 0) {
                     codes.forEach(function (code) {
                         const item = taxesByCode[code];
                         const div = document.createElement('div');
-                        div.textContent = `${item.name} (${item.code}) ${money(item.amount)} (${Number(item.rate).toFixed(2)}%)`;
+                        div.style.display = 'flex';
+                        div.style.justifyContent = 'space-between';
+                        div.style.padding = '2px 0';
+                        const labelSpan = document.createElement('span');
+                        labelSpan.textContent = `${item.name} (${item.code}) ${Number(item.rate).toFixed(2)}%`;
+                        const valueSpan = document.createElement('strong');
+                        valueSpan.textContent = money(item.amount);
+                        valueSpan.style.color = '#fff';
+                        div.appendChild(labelSpan);
+                        div.appendChild(valueSpan);
                         breakdownContainer.appendChild(div);
                     });
+                } else {
+                    const div = document.createElement('div');
+                    div.textContent = 'Aucune taxe appliquée';
+                    div.style.color = 'rgba(255,255,255,0.6)';
+                    div.style.fontStyle = 'italic';
+                    breakdownContainer.appendChild(div);
                 }
             }
         }
 
-        function discountLabel(discount) {
-            const name = String(discount?.name || 'Remise').trim() || 'Remise';
-            const value = Math.max(0, Number(discount?.value || 0));
-
-            if (discount?.type === 'fixed') {
-                return `${name} (${money(value)})`;
-            }
-
-            return `${name} (${Math.min(100, value).toFixed(2)}%)`;
-        }
-
+        // === Gestion des événements ===
         document.addEventListener('click', function (event) {
             const plus = event.target.closest('[data-qty-plus]');
             const minus = event.target.closest('[data-qty-minus]');
@@ -1125,7 +1298,86 @@
             }
         });
 
-        recalculate();
+        // === Gestion du modal d'images ===
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalCaption = document.getElementById('modalCaption');
+
+        window.openImageModal = function(imageSrc, imageAlt) {
+            if (!modal || !modalImg) return;
+            modalImg.src = imageSrc;
+            modalImg.alt = imageAlt || 'Aperçu du service';
+            if (modalCaption) {
+                modalCaption.textContent = imageAlt || 'Service GoExploria';
+            }
+            modal.classList.add('is-active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeImageModal = function(event) {
+            if (event && event.target !== event.currentTarget) return;
+            if (!modal) return;
+            modal.classList.remove('is-active');
+            document.body.style.overflow = '';
+        };
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+
+        modal?.addEventListener('wheel', function(event) {
+            event.stopPropagation();
+        }, { passive: true });
+
+        function initImageClickHandlers() {
+            document.querySelectorAll('.service-media img').forEach(function(img) {
+                const card = img.closest('.service-card');
+                const title = card?.querySelector('.service-title')?.textContent?.trim() || img.alt || 'Service GoExploria';
+                img.style.cursor = 'pointer';
+                img.title = 'Cliquez pour agrandir';
+                
+                img.removeEventListener('click', imageClickHandler);
+                img.addEventListener('click', imageClickHandler);
+                img.dataset.serviceTitle = title;
+            });
+        }
+
+        function imageClickHandler(event) {
+            event.stopPropagation();
+            const img = event.currentTarget;
+            const src = img.getAttribute('src');
+            if (!src) return;
+            const title = img.dataset.serviceTitle || img.alt || 'Service GoExploria';
+            openImageModal(src, title);
+        }
+
+        const observer = new MutationObserver(function() {
+            initImageClickHandlers();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initImageClickHandlers();
+            const servicesGrid = document.getElementById('servicesGrid');
+            if (servicesGrid) {
+                observer.observe(servicesGrid, {
+                    childList: true,
+                    subtree: true,
+                    attributes: false
+                });
+            }
+            // Initial calculation
+            recalculate();
+        });
+
+        window.addEventListener('load', function() {
+            initImageClickHandlers();
+            recalculate();
+        });
+
+        // Expose recalculate globally for debugging if needed
+        window.recalculate = recalculate;
     })();
 </script>
 </body>
