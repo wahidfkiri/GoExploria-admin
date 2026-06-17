@@ -9,6 +9,7 @@ use App\Models\BillingRequestService;
 use App\Models\BillingSetting;
 use App\Models\Plan;
 use App\Models\Tax;
+use App\Services\Payment\DevisPayPalCheckoutService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -45,9 +46,10 @@ class DevisController extends Controller
         ]);
     }
 
-    public function submit(Request $request): RedirectResponse
+    public function submit(Request $request, DevisPayPalCheckoutService $paypalCheckout): RedirectResponse
     {
         $validated = $request->validate([
+            'checkout_action' => ['nullable', 'in:request,pay_now'],
             'etablissement_id' => ['nullable', 'integer', 'exists:etablissements,id'],
             'first_name' => ['required', 'string', 'max:120'],
             'last_name' => ['required', 'string', 'max:120'],
@@ -75,6 +77,7 @@ class DevisController extends Controller
         ]);
 
         $validated['service_subject'] = 'Demande de devis services';
+        $checkoutAction = $validated['checkout_action'] ?? 'request';
 
         // Ensure the key exists and is null when not provided so downstream code can rely on it
         $validated['project_details'] = $validated['project_details'] ?? null;
@@ -160,7 +163,7 @@ class DevisController extends Controller
             'plan_interest' => $validated['plan_interest'] ?? null,
             'budget' => $validated['budget'] ?? null,
             'project_deadline' => $validated['project_deadline'] ?? null,
-            'project_details' => $validated['project_details'] ?? null,
+            'project_details' => $validated['project_details'] ?? '',
             'media_files' => $storedMedia,
             'email_sent' => false,
             'email_error' => null,
@@ -207,9 +210,52 @@ class DevisController extends Controller
             ]);
         }
 
+        if ($checkoutAction === 'pay_now') {
+            try {
+                $approvalUrl = $paypalCheckout->createCheckout($billingRequests, $devisRequest);
+
+                return redirect()->away($approvalUrl);
+            } catch (Throwable $e) {
+                report($e);
+
+                return redirect()
+                    ->route('devis')
+                    ->with('error', 'Votre demande a ete enregistree, mais le paiement PayPal n a pas pu demarrer. Notre equipe vous contactera rapidement.');
+            }
+        }
+
         return redirect()
             ->route('devis')
             ->with('success', 'Votre demande de devis a bien ete enregistree et envoyee. Notre equipe vous repondra rapidement.');
+    }
+
+    public function paypalSuccess(Request $request, DevisPayPalCheckoutService $paypalCheckout): RedirectResponse
+    {
+        $paypalOrderId = (string) $request->query('token', $request->query('order_id', ''));
+
+        try {
+            $result = $paypalCheckout->captureCheckout($paypalOrderId);
+            $message = $result['receipt_sent']
+                ? 'Paiement confirme avec succes. Votre recu a ete envoye par email.'
+                : 'Paiement confirme avec succes. Le recu sera envoye par notre equipe.';
+
+            return redirect()->route('devis')->with('success', $message);
+        } catch (Throwable $e) {
+            report($e);
+
+            return redirect()
+                ->route('devis')
+                ->with('error', 'Nous n avons pas pu confirmer le paiement PayPal. Si le montant a ete debite, contactez notre equipe avec votre reference PayPal.');
+        }
+    }
+
+    public function paypalCancel(Request $request, DevisPayPalCheckoutService $paypalCheckout): RedirectResponse
+    {
+        $paypalCheckout->cancelCheckout((string) $request->query('token', ''));
+
+        return redirect()
+            ->route('devis')
+            ->with('error', 'Paiement PayPal annule. Votre demande de devis reste enregistree.');
     }
 
     private function billingServicesCatalog(?int $etablissementId = null): Collection
@@ -423,8 +469,8 @@ class DevisController extends Controller
 
     private function serviceTaxComponents(BillingRequestService $service, ?BillingSetting $setting = null): array
     {
-        // Prefer the Tax relation (table `taxes`) when present so taxes come from the taxes table.
-        if ($service->tax) {
+        // Prefer the Tax relation (table `taxes`) when present and active.
+        if ($service->tax && $service->tax->is_active) {
             return [[
                 'name' => (string) $service->tax->name,
                 'code' => (string) $service->tax->code,
@@ -441,12 +487,7 @@ class DevisController extends Controller
             ]];
         }
 
-        $defaultTaxIds = collect($setting?->default_tax_ids ?? [])
-            ->map(fn ($id) => (int) $id)
-            ->filter()
-            ->values();
-
-        return $this->taxComponentsFromIds($defaultTaxIds);
+        return $this->defaultTaxComponents($setting);
     }
 
     private function defaultTaxComponents(?BillingSetting $setting = null): array
@@ -456,7 +497,11 @@ class DevisController extends Controller
             ->filter()
             ->values();
 
-        return $this->taxComponentsFromIds($defaultTaxIds);
+        if ($defaultTaxIds->isNotEmpty()) {
+            return $this->taxComponentsFromIds($defaultTaxIds);
+        }
+
+        return $this->activeTaxComponents();
     }
 
     private function taxComponentsFromIds(Collection $taxIds): array
@@ -470,6 +515,20 @@ class DevisController extends Controller
             ->where('is_active', true)
             ->orderBy('id')
             ->get()
+            ->map(fn (Tax $tax) => [
+                'name' => (string) $tax->name,
+                'code' => (string) $tax->code,
+                'rate' => (float) $tax->rate,
+            ])
+            ->all();
+    }
+
+    private function activeTaxComponents(): array
+    {
+        return Tax::query()
+            ->where('is_active', true)
+            ->orderBy('id')
+            ->get(['name', 'code', 'rate'])
             ->map(fn (Tax $tax) => [
                 'name' => (string) $tax->name,
                 'code' => (string) $tax->code,

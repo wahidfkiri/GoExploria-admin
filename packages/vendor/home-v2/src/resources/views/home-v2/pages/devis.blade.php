@@ -8,6 +8,8 @@
         ->mapWithKeys(fn ($quantity, $serviceId) => [(string) $serviceId => max(0, (int) $quantity)])
         ->all();
     $servicesCatalogJson = $servicesCatalog->values()->toJson(JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_TAG);
+    $activeTaxes = collect($activeTaxes ?? []);
+    $activeTaxesJson = $activeTaxes->values()->toJson(JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_TAG);
 
     $planColors = ['plan-card-a', 'plan-card-b', 'plan-card-c', 'plan-card-d', 'plan-card-e'];
 
@@ -346,12 +348,42 @@
         .summary-line strong {
             color: #fff;
         }
+        .summary-line.is-hidden {
+            display: none;
+        }
         .summary-line.total {
             border-bottom: 0;
             font-size: 18px;
             font-weight: 900;
             color: #fff;
             padding-top: 12px;
+        }
+        .summary-tax-list {
+            margin: 10px 0 4px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.12);
+        }
+        .summary-tax-title {
+            color: rgba(255,255,255,.72);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 6px;
+        }
+        .summary-tax-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            color: rgba(255,255,255,.86);
+            font-size: 12px;
+            padding: 3px 0;
+        }
+        .summary-tax-row strong {
+            color: #fff;
+            white-space: nowrap;
         }
         .summary-help {
             margin: 10px 0 0;
@@ -393,6 +425,25 @@
         .submit-btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 14px 28px rgba(15, 31, 58, 0.25);
+        }
+        .form-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .form-actions .submit-btn {
+            margin-top: 0;
+        }
+        .submit-btn--request {
+            background: linear-gradient(135deg, #0f1f3a 0%, #23457a 100%);
+        }
+        .submit-btn--paypal {
+            background: linear-gradient(135deg, #ffc439 0%, #f4ad18 100%);
+            color: #10233f;
+        }
+        .submit-btn--paypal:hover {
+            box-shadow: 0 14px 28px rgba(244, 173, 24, 0.28);
         }
         .plans-column {
             position: sticky;
@@ -479,6 +530,7 @@
             .service-media, .service-media-placeholder { min-height: 180px; }
             .quote-summary { position: static; }
             .quote-head { padding: 18px; }
+            .form-actions { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -645,9 +697,21 @@
                         <div class="quote-summary" id="quoteSummary">
                             <h3>Calcul automatique</h3>
                             <div class="summary-line"><span>Total services HT</span><strong data-summary="gross">0,00 CAD</strong></div>
-                            <div class="summary-line"><span>Remise</span><strong data-summary="discount">0,00 CAD</strong></div>
+                            <div class="summary-line is-hidden" data-discount-line><span data-discount-label>Remise</span><strong data-summary="discount">0,00 CAD</strong></div>
                             <div class="summary-line"><span>Frais</span><strong data-summary="fees">0,00 CAD</strong></div>
                             <div class="summary-line"><span>Total HT apres remise</span><strong data-summary="subtotal">0,00 CAD</strong></div>
+
+                            @if($activeTaxes->isNotEmpty())
+                                <div class="summary-tax-list">
+                                    <div class="summary-tax-title">Taxes actives appliquees</div>
+                                    @foreach($activeTaxes as $tax)
+                                        <div class="summary-tax-row">
+                                            <span>{{ $tax->name }} ({{ $tax->code }})</span>
+                                            <strong>{{ number_format((float) $tax->rate, 2, ',', ' ') }}%</strong>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
 
                             <div id="taxBreakdownContainer" style="margin-top:8px;">
                                 <div class="summary-line"><span>TVA / taxes</span><strong data-summary="tax">0,00 CAD</strong></div>
@@ -726,10 +790,16 @@
                     </div>
                 </div>
 
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-paper-plane"></i>
-                    Envoyer ma demande de devis
-                </button>
+                <div class="form-actions">
+                    <button type="submit" name="checkout_action" value="request" class="submit-btn submit-btn--request">
+                        <i class="fas fa-paper-plane"></i>
+                        Envoyer ma demande de devis
+                    </button>
+                    <button type="submit" name="checkout_action" value="pay_now" class="submit-btn submit-btn--paypal">
+                        <i class="fab fa-paypal"></i>
+                        Payer maintenant
+                    </button>
+                </div>
             </form>
         </div>
 
@@ -792,9 +862,13 @@
 <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
 <script>
     window.devisBillingServices = {!! $servicesCatalogJson ?: '[]' !!};
+    window.devisActiveTaxes = {!! $activeTaxesJson ?: '[]' !!};
         (function () {
         const services = new Map((window.devisBillingServices || []).map((service) => [String(service.id), service]));
-        const formatter = new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' });
+        const activeTaxes = Array.isArray(window.devisActiveTaxes) ? window.devisActiveTaxes : [];
+        const firstCurrency = (window.devisBillingServices || []).find((service) => service.currency)?.currency || 'CAD';
+        const currency = /^[A-Z]{3}$/.test(String(firstCurrency).toUpperCase()) ? String(firstCurrency).toUpperCase() : 'CAD';
+        const formatter = new Intl.NumberFormat('fr-CA', { style: 'currency', currency: currency });
         const summary = document.getElementById('quoteSummary');
 
             // Helper to safely get tax components from service or defaults
@@ -804,6 +878,15 @@
                 }
                 if (Array.isArray(service.default_tax_components) && service.default_tax_components.length > 0) {
                     return service.default_tax_components;
+                }
+                if (activeTaxes.length > 0) {
+                    return activeTaxes.map(function (tax) {
+                        return {
+                            name: tax.name,
+                            code: tax.code,
+                            rate: tax.rate
+                        };
+                    });
                 }
                 return [];
             }
@@ -846,6 +929,7 @@
             const taxRates = {};
             const taxNames = {};
             const taxesByCode = {};
+            const discountLabels = new Set();
 
             services.forEach((service, id) => {
                 const input = quantityInput(id);
@@ -873,6 +957,9 @@
                     : group.discount?.type === 'fixed'
                         ? Math.min(group.gross, discountValue)
                         : group.gross * (Math.min(100, discountValue) / 100);
+                if (group.discountAmount > 0) {
+                    discountLabels.add(discountLabel(group.discount));
+                }
                 group.fees = group.gross > 0 ? Math.max(0, group.shipping) + Math.max(0, group.administration) : 0;
             });
 
@@ -979,6 +1066,14 @@
             summary.querySelector('[data-summary="subtotal"]').textContent = money(subtotal);
             summary.querySelector('[data-summary="tax"]').textContent = money(tax);
             summary.querySelector('[data-summary="total"]').textContent = money(total);
+            const discountLine = summary.querySelector('[data-discount-line]');
+            if (discountLine) {
+                discountLine.classList.toggle('is-hidden', discountTotal <= 0);
+                const label = summary.querySelector('[data-discount-label]');
+                if (label) {
+                    label.textContent = discountLabels.size > 0 ? Array.from(discountLabels).join(' + ') : 'Remise';
+                }
+            }
 
             // Render tax breakdown list
             const breakdownContainer = document.getElementById('taxBreakdownList');
@@ -996,6 +1091,17 @@
                     });
                 }
             }
+        }
+
+        function discountLabel(discount) {
+            const name = String(discount?.name || 'Remise').trim() || 'Remise';
+            const value = Math.max(0, Number(discount?.value || 0));
+
+            if (discount?.type === 'fixed') {
+                return `${name} (${money(value)})`;
+            }
+
+            return `${name} (${Math.min(100, value).toFixed(2)}%)`;
         }
 
         document.addEventListener('click', function (event) {

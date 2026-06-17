@@ -373,6 +373,8 @@ Route::get('/inscription',  fn() => view('home-v2.pages.inscription'))->name('in
 Route::get('/mon-compte',   fn() => redirect()->away('https://app.goexploriabusiness.com/login'))->name('mon-compte');
 Route::get('/devis',        [DevisController::class, 'show'])->name('devis');
 Route::post('/devis',       [DevisController::class, 'submit'])->name('devis.submit');
+Route::get('/devis/paypal/success', [DevisController::class, 'paypalSuccess'])->name('devis.paypal.success');
+Route::get('/devis/paypal/cancel',  [DevisController::class, 'paypalCancel'])->name('devis.paypal.cancel');
 Route::get('/favoris',      fn() => view('home-v2.pages.favoris'))->name('favoris');
 Route::get('/panier',       fn() => view('home-v2.pages.panier'))->name('panier');
 Route::get('/politique-confidentialite', fn() => view('home-v2.pages.privacy-policy'))->name('privacy.policy');
