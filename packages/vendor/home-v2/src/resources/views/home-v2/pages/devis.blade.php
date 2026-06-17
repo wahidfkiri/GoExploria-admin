@@ -14,7 +14,6 @@
     // Récupérer les discounts disponibles
     $availableDiscounts = \App\Models\BillingDiscount::query()
         ->active()
-        ->orderBy('sort_order')
         ->orderBy('id')
         ->get(['id', 'name', 'code', 'type', 'value', 'description']);
     $availableDiscountsJson = $availableDiscounts->values()->toJson(JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_TAG);
