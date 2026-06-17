@@ -11,6 +11,14 @@
     $activeTaxes = collect($activeTaxes ?? []);
     $activeTaxesJson = $activeTaxes->values()->toJson(JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_TAG);
 
+    // Récupérer les discounts disponibles
+    $availableDiscounts = \App\Models\BillingDiscount::query()
+        ->active()
+        ->orderBy('sort_order')
+        ->orderBy('id')
+        ->get(['id', 'name', 'code', 'type', 'value', 'description']);
+    $availableDiscountsJson = $availableDiscounts->values()->toJson(JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_TAG);
+
     $planColors = ['plan-card-a', 'plan-card-b', 'plan-card-c', 'plan-card-d', 'plan-card-e'];
 
     $iconClass = static function ($icon): string {
@@ -562,6 +570,53 @@
         .plan-card-d { background: linear-gradient(135deg, #5d2d91 0%, #8f56c4 100%); }
         .plan-card-e { background: linear-gradient(135deg, #842f52 0%, #ca4d85 100%); }
 
+        /* Styles pour le sélecteur de discount */
+        .discount-selector {
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .discount-selector label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 6px;
+        }
+        .discount-selector select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+        .discount-selector select:focus {
+            border-color: #d4af37;
+        }
+        .discount-selector select option {
+            background: #1a2a4a;
+            color: #fff;
+        }
+        .discount-selector .discount-info {
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 4px;
+            font-style: italic;
+        }
+        .discount-selector .discount-info strong {
+            color: #d4af37;
+        }
+
         /* Modal pour l'affichage des images */
         .modal-overlay {
             position: fixed;
@@ -899,8 +954,6 @@
                                     $serviceId = (string) data_get($service, 'id');
                                     $quantity = $oldServiceQuantities[$serviceId] ?? 0;
                                     $price = (float) data_get($service, 'unit_price', 0);
-                                    $discount = (float) data_get($service, 'discount.value', data_get($service, 'discount_percentage', 0));
-                                    $discountType = data_get($service, 'discount.type', 'percentage');
                                 @endphp
                                 <article class="service-card {{ $quantity > 0 ? 'is-selected' : '' }}" data-service-card data-service-id="{{ $serviceId }}">
                                     <div class="service-media">
@@ -924,11 +977,6 @@
                                             </div>
                                         </div>
                                         <div class="service-meta">
-                                            @if($discount > 0)
-                                                <span class="service-pill">
-                                                    Remise {{ $discountType === 'fixed' ? number_format($discount, 2, ',', ' ') . ' CAD' : number_format($discount, 2, ',', ' ') . '%' }}
-                                                </span>
-                                            @endif
                                             @if(data_get($service, 'etablissement_name'))
                                                 <span class="service-pill">{{ data_get($service, 'etablissement_name') }}</span>
                                             @endif
@@ -954,6 +1002,8 @@
                                 </article>
                             @endforeach
                         </div>
+
+                        <!-- Sélecteur de discount -->
                         <div class="quote-summary" id="quoteSummary">
                             <h3>Calcul automatique</h3>
                             <div class="summary-line"><span>Total services HT</span><strong data-summary="gross">0,00 CAD</strong></div>
@@ -984,6 +1034,28 @@
                             </div>
 
                             <div class="summary-line total"><span>Total TTC</span><strong data-summary="total">0,00 CAD</strong></div>
+
+                            <!-- Sélecteur de discount -->
+                            <div class="discount-selector">
+                                <label for="discount_select">Code de réduction</label>
+                                <select id="discount_select" name="discount_id">
+                                    <option value="">Aucune remise</option>
+                                    @foreach($availableDiscounts as $discount)
+                                        <option value="{{ $discount->id }}" 
+                                            data-type="{{ $discount->type }}" 
+                                            data-value="{{ $discount->value }}"
+                                            data-name="{{ $discount->name }}">
+                                            {{ $discount->name }} 
+                                            ({{ $discount->type === 'fixed' ? number_format($discount->value, 2, ',', ' ') . ' CAD' : number_format($discount->value, 2, ',', ' ') . '%' }})
+                                            @if($discount->code) - {{ $discount->code }} @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="discount-info" id="discountInfo">
+                                    Sélectionnez un code de réduction pour l'appliquer à votre commande
+                                </div>
+                            </div>
+
                             <p class="summary-help">✓ Les taxes sont appliquées UNIQUEMENT sur le total global HT après remise.<br>
                             ✓ Chaque ligne affiche son montant HT sans taxe individuelle.</p>
                         </div>
@@ -1054,6 +1126,9 @@
                     </div>
                 </div>
 
+                <!-- Champ caché pour le discount sélectionné -->
+                <input type="hidden" name="selected_discount_id" id="selected_discount_id" value="">
+
                 <div class="form-actions">
                     <button type="submit" name="checkout_action" value="request" class="submit-btn submit-btn--request">
                         <i class="fas fa-paper-plane"></i>
@@ -1110,6 +1185,23 @@
                     </ul>
                 </div>
             @endif
+
+            @if($availableDiscounts->isNotEmpty())
+                <div class="plans-title" style="margin-top:12px;">
+                    <h3>Codes promo disponibles</h3>
+                    <p>Codes de réduction actifs</p>
+                    <ul>
+                        @foreach($availableDiscounts as $discount)
+                            <li>
+                                <strong>{{ $discount->name }}</strong>
+                                @if($discount->code) ({{ $discount->code }}) @endif
+                                : {{ $discount->type === 'fixed' ? number_format($discount->value, 2, ',', ' ') . ' CAD' : number_format($discount->value, 2, ',', ' ') . '%' }}
+                                @if($discount->description) - {{ $discount->description }} @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </aside>
     </div>
 </div>
@@ -1158,14 +1250,21 @@
 <script>
     window.devisBillingServices = {!! $servicesCatalogJson ?: '[]' !!};
     window.devisActiveTaxes = {!! $activeTaxesJson ?: '[]' !!};
+    window.availableDiscounts = {!! $availableDiscountsJson ?: '[]' !!};
 
     (function () {
         const services = new Map((window.devisBillingServices || []).map((service) => [String(service.id), service]));
         const activeTaxes = Array.isArray(window.devisActiveTaxes) ? window.devisActiveTaxes : [];
+        const availableDiscounts = Array.isArray(window.availableDiscounts) ? window.availableDiscounts : [];
         const firstCurrency = (window.devisBillingServices || []).find((service) => service.currency)?.currency || 'CAD';
         const currency = /^[A-Z]{3}$/.test(String(firstCurrency).toUpperCase()) ? String(firstCurrency).toUpperCase() : 'CAD';
         const formatter = new Intl.NumberFormat('fr-CA', { style: 'currency', currency: currency });
         const summary = document.getElementById('quoteSummary');
+        const discountSelect = document.getElementById('discount_select');
+        const discountInfo = document.getElementById('discountInfo');
+        const selectedDiscountId = document.getElementById('selected_discount_id');
+
+        let selectedDiscount = null;
 
         function parseRate(val) {
             if (val === null || val === undefined) return 0;
@@ -1191,15 +1290,28 @@
             recalculate();
         }
 
-        function discountLabel(discount) {
-            const name = String(discount?.name || 'Remise').trim() || 'Remise';
-            const value = Math.max(0, Number(discount?.value || 0));
+        function getDiscountFromSelect() {
+            const select = discountSelect;
+            if (!select) return null;
+            const selectedOption = select.options[select.selectedIndex];
+            if (!selectedOption || !selectedOption.value) return null;
+            
+            return {
+                id: parseInt(selectedOption.value),
+                name: selectedOption.dataset.name || 'Remise',
+                type: selectedOption.dataset.type || 'percentage',
+                value: parseFloat(selectedOption.dataset.value) || 0
+            };
+        }
 
-            if (discount?.type === 'fixed') {
-                return `${name} (${money(value)})`;
+        function updateDiscountInfo(discount) {
+            if (!discountInfo) return;
+            if (!discount) {
+                discountInfo.innerHTML = 'Sélectionnez un code de réduction pour l\'appliquer à votre commande';
+                return;
             }
-
-            return `${name} (${Math.min(100, value).toFixed(2)}%)`;
+            const value = discount.type === 'fixed' ? money(discount.value) : discount.value.toFixed(2) + '%';
+            discountInfo.innerHTML = `<strong>${discount.name}</strong> : ${value} de réduction appliquée sur le total HT`;
         }
 
         function recalculate() {
@@ -1213,7 +1325,10 @@
             const taxRates = {};
             const taxNames = {};
             const taxesByCode = {};
-            const discountLabels = new Set();
+
+            // Récupérer le discount sélectionné
+            selectedDiscount = getDiscountFromSelect();
+            updateDiscountInfo(selectedDiscount);
 
             services.forEach((service, id) => {
                 const input = quantityInput(id);
@@ -1224,7 +1339,6 @@
                 if (!groups.has(groupId)) {
                     groups.set(groupId, {
                         gross: 0,
-                        discount: service.discount || { type: 'percentage', value: Number(service.discount_percentage || 0) },
                         shipping: Number(service.shipping_fees || 0),
                         administration: Number(service.administration_fees || 0),
                         services: [],
@@ -1237,45 +1351,57 @@
                 group.totalGross = (group.totalGross || 0) + lineGross;
             });
 
+            // Calcul des remises
+            let globalDiscountAmount = 0;
+            const discountRule = selectedDiscount;
+            
+            // Calcul du total brut global
             groups.forEach((group) => {
-                const discountValue = Math.max(0, Number(group.discount?.value || 0));
-                group.discountAmount = group.totalGross <= 0 || discountValue <= 0
-                    ? 0
-                    : group.discount?.type === 'fixed'
-                        ? Math.min(group.totalGross, discountValue)
-                        : group.totalGross * (Math.min(100, discountValue) / 100);
-                if (group.discountAmount > 0) {
-                    discountLabels.add(discountLabel(group.discount));
-                }
-                
-                group.fees = group.totalGross > 0 ? Math.max(0, group.shipping) + Math.max(0, group.administration) : 0;
+                gross += group.totalGross;
             });
 
+            // Application de la remise globale
+            if (discountRule && gross > 0) {
+                const value = Math.max(0, discountRule.value);
+                if (discountRule.type === 'fixed') {
+                    globalDiscountAmount = Math.min(gross, value);
+                } else {
+                    globalDiscountAmount = gross * (Math.min(100, value) / 100);
+                }
+                discountTotal = globalDiscountAmount;
+            }
+
+            // Calcul détaillé par service
             services.forEach((service, id) => {
                 const input = quantityInput(id);
                 const qty = Math.max(0, parseInt(input?.value || 0, 10) || 0);
                 const unit = Number(service.unit_price || 0);
                 const lineGross = unit * qty;
                 const group = groups.get(String(service.etablissement_id || 'global'));
-                const lineDiscount = group && group.totalGross > 0 ? group.discountAmount * (lineGross / group.totalGross) : 0;
+                
+                // Répartition proportionnelle de la remise
+                const lineDiscount = group && group.totalGross > 0 && globalDiscountAmount > 0 
+                    ? globalDiscountAmount * (lineGross / group.totalGross) 
+                    : 0;
                 const lineSubtotal = lineGross - lineDiscount;
 
-                gross += lineGross;
-                discountTotal += lineDiscount;
                 subtotal += lineSubtotal;
 
                 document.querySelector('[data-line-total="' + id + '"]')?.replaceChildren(document.createTextNode(money(lineSubtotal) + ' HT'));
                 document.querySelector('[data-service-card][data-service-id="' + id + '"]')?.classList.toggle('is-selected', qty > 0);
             });
 
+            // Ajout des frais
             groups.forEach((group) => {
-                if (group.totalGross <= 0 || group.fees <= 0) {
-                    return;
+                if (group.totalGross <= 0) return;
+                const fees = Math.max(0, group.shipping) + Math.max(0, group.administration);
+                if (fees > 0) {
+                    feesTotal += fees;
+                    subtotal += fees;
                 }
-                feesTotal += group.fees;
-                subtotal += group.fees;
             });
 
+            // Calcul des taxes globales
             if (activeTaxes.length > 0) {
                 activeTaxes.forEach(function(tax) {
                     const code = String(tax.code || 'TAX');
@@ -1306,9 +1432,10 @@
             tax = Math.round(computedTaxTotal * 100) / 100;
             total = Math.round((subtotal + tax) * 100) / 100;
 
+            // Mise à jour du résumé
             if (!summary) return;
             summary.querySelector('[data-summary="gross"]').textContent = money(gross);
-            summary.querySelector('[data-summary="discount"]').textContent = '- ' + money(discountTotal);
+            summary.querySelector('[data-summary="discount"]').textContent = discountTotal > 0 ? '- ' + money(discountTotal) : '0,00 CAD';
             summary.querySelector('[data-summary="fees"]').textContent = money(feesTotal);
             summary.querySelector('[data-summary="subtotal"]').textContent = money(subtotal);
             summary.querySelector('[data-summary="tax"]').textContent = money(tax);
@@ -1318,11 +1445,12 @@
             if (discountLine) {
                 discountLine.classList.toggle('is-hidden', discountTotal <= 0);
                 const label = summary.querySelector('[data-discount-label]');
-                if (label) {
-                    label.textContent = discountLabels.size > 0 ? Array.from(discountLabels).join(' + ') : 'Remise';
+                if (label && discountRule) {
+                    label.textContent = discountRule.name || 'Remise';
                 }
             }
 
+            // Mise à jour du breakdown des taxes
             const breakdownContainer = document.getElementById('taxBreakdownList');
             if (breakdownContainer) {
                 breakdownContainer.replaceChildren();
@@ -1351,6 +1479,11 @@
                     breakdownContainer.appendChild(div);
                 }
             }
+
+            // Mettre à jour le champ caché avec l'ID du discount sélectionné
+            if (selectedDiscountId) {
+                selectedDiscountId.value = selectedDiscount ? selectedDiscount.id : '';
+            }
         }
 
         // === Gestion des événements ===
@@ -1374,6 +1507,13 @@
                 recalculate();
             }
         });
+
+        // Écouter le changement de discount
+        if (discountSelect) {
+            discountSelect.addEventListener('change', function() {
+                recalculate();
+            });
+        }
 
         // === Gestion du modal d'images avec zoom ===
         const modal = document.getElementById('imageModal');
@@ -1427,7 +1567,6 @@
             updateZoom();
         }
 
-        // Gestion du drag pour l'image zoomée
         function startDrag(e) {
             if (currentZoom <= 1) return;
             isDragging = true;
@@ -1452,7 +1591,6 @@
             modalImg.style.cursor = 'grab';
         }
 
-        // Événements de drag
         modalImg?.addEventListener('mousedown', startDrag);
         document.addEventListener('mousemove', moveDrag);
         document.addEventListener('mouseup', endDrag);
@@ -1460,7 +1598,6 @@
         document.addEventListener('touchmove', moveDrag, { passive: false });
         document.addEventListener('touchend', endDrag);
 
-        // Zoom avec la molette
         modalImg?.addEventListener('wheel', function(e) {
             e.preventDefault();
             if (e.deltaY < 0) {
