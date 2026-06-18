@@ -12,8 +12,6 @@ class BillingRequest extends Model
 
     protected $fillable = [
         'request_number',
-        'etablissement_id',
-        'client_etablissement_id',
         'quote_id',
         'invoice_id',
         'status',
@@ -27,6 +25,9 @@ class BillingRequest extends Model
         'country',
         'message',
         'subtotal',
+        'discount_type',
+        'discount_value',
+        'discount_amount',
         'tax_total',
         'total',
         'taxes_breakdown',
@@ -37,6 +38,8 @@ class BillingRequest extends Model
 
     protected $casts = [
         'subtotal' => 'decimal:2',
+        'discount_value' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
         'tax_total' => 'decimal:2',
         'total' => 'decimal:2',
         'taxes_breakdown' => 'array',
@@ -44,16 +47,6 @@ class BillingRequest extends Model
         'submitted_at' => 'datetime',
         'processed_at' => 'datetime',
     ];
-
-    public function etablissement()
-    {
-        return $this->belongsTo(Etablissement::class);
-    }
-
-    public function clientEtablissement()
-    {
-        return $this->belongsTo(Etablissement::class, 'client_etablissement_id');
-    }
 
     public function quote()
     {

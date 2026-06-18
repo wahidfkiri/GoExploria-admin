@@ -11,7 +11,6 @@ class BillingDiscount extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'etablissement_id',
         'name',
         'code',
         'type',
@@ -28,11 +27,6 @@ class BillingDiscount extends Model
         'is_active' => 'boolean',
         'metadata' => 'array',
     ];
-
-    public function etablissement()
-    {
-        return $this->belongsTo(Etablissement::class);
-    }
 
     public function scopeActive($query)
     {

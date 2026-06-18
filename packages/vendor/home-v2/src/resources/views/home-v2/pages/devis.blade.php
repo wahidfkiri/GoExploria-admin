@@ -881,10 +881,6 @@
 
             <form method="POST" action="{{ route('devis.submit') }}" enctype="multipart/form-data">
                 @csrf
-                @if(request()->filled('etablissement_id'))
-                    <input type="hidden" name="etablissement_id" value="{{ request('etablissement_id') }}">
-                @endif
-
                 <div class="form-block">
                     <h2 class="block-title"><span class="step">1</span> Informations client</h2>
                     <div class="grid-2">

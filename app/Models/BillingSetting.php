@@ -10,7 +10,6 @@ class BillingSetting extends Model
     use HasFactory;
 
     protected $fillable = [
-        'etablissement_id',
         'hide_invoice_button',
         'last_invoice_number',
         'invoice_prefix',
@@ -73,10 +72,6 @@ class BillingSetting extends Model
         'quote_number_length' => 'integer'
     ];
 
-    public function etablissement()
-    {
-        return $this->belongsTo(Etablissement::class);
-    }
 
     public function defaultDiscount()
     {

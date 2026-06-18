@@ -11,7 +11,6 @@ class BillingRequestService extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'etablissement_id',
         'tax_id',
         'title',
         'description',
@@ -33,11 +32,6 @@ class BillingRequestService extends Model
         'is_featured' => 'boolean',
         'metadata' => 'array',
     ];
-
-    public function etablissement()
-    {
-        return $this->belongsTo(Etablissement::class);
-    }
 
     public function tax()
     {

@@ -19,6 +19,11 @@ use Throwable;
 
 class DevisPayPalCheckoutService
 {
+    private const DEFAULT_CURRENCY = 'CAD';
+
+    /**
+     * Crée une session de paiement PayPal
+     */
     public function createCheckout(Collection $billingRequests, DevisRequest $devisRequest): string
     {
         $billingRequests = $billingRequests->filter(fn ($request) => $request instanceof BillingRequest)->values();
@@ -29,13 +34,12 @@ class DevisPayPalCheckoutService
 
         $amount = $this->totalAmount($billingRequests);
         if ($amount <= 0) {
-            throw new RuntimeException('Le montant a payer doit etre superieur a zero.');
+            throw new RuntimeException('Le montant à payer doit être supérieur à zéro.');
         }
 
         $currency = $this->currencyFor($billingRequests);
-        $etablissementId = (int) $billingRequests->first()->etablissement_id;
-        $customer = $this->customerFor($devisRequest, $etablissementId);
-        $gateway = $this->gatewayFor($etablissementId);
+        $customer = $this->customerFor($devisRequest);
+        $gateway = $this->gatewayFor();
         $requestIds = $billingRequests->pluck('id')->map(fn ($id) => (int) $id)->all();
 
         $orderPayload = [
@@ -52,7 +56,7 @@ class DevisPayPalCheckoutService
             ]],
             'application_context' => [
                 'brand_name' => 'GoExploria',
-                'locale' => config('paypal.locale', 'fr_CA'),
+                'locale' => str_replace('_', '-', config('paypal.locale', 'fr-FR')),
                 'shipping_preference' => 'NO_SHIPPING',
                 'user_action' => 'PAY_NOW',
                 'return_url' => route('devis.paypal.success'),
@@ -69,7 +73,6 @@ class DevisPayPalCheckoutService
                 'billing_request_ids' => $requestIds,
                 'amount' => $amount,
                 'currency' => $currency,
-                'etablissement_id' => $etablissementId,
                 'customer_email' => $devisRequest->email ?? null,
                 'payload' => $orderPayload,
                 'exception_message' => $e->getMessage(),
@@ -92,48 +95,46 @@ class DevisPayPalCheckoutService
                 'order' => $order,
             ]);
 
-            throw new RuntimeException('PayPal n a pas retourne de lien de paiement valide.');
+            throw new RuntimeException('PayPal n\'a pas retourné de lien de paiement valide.');
         }
+
         try {
-            DB::transaction(function () use ($amount, $currency, $etablissementId, $customer, $gateway, $requestIds, $devisRequest, $paypalOrderId, $order): void {
-            $payment = Payment::create([
-                'etablissement_id' => $etablissementId,
-                'client_id' => $customer->id,
-                'payment_date' => now()->toDateString(),
-                'amount' => $amount,
-                'method' => 'paypal',
-                'transaction_id' => $paypalOrderId,
-                'status' => 'en_attente',
-                'notes' => 'Paiement PayPal cree depuis la page devis.',
-                'metadata' => [
-                    'source' => 'devis_page',
-                    'devis_request_id' => (int) $devisRequest->id,
-                    'billing_request_ids' => $requestIds,
-                    'paypal_order_id' => $paypalOrderId,
-                ],
-            ]);
+            DB::transaction(function () use ($amount, $currency, $customer, $gateway, $requestIds, $devisRequest, $paypalOrderId, $order): void {
+                $payment = Payment::create([
+                    'payment_date' => now()->toDateString(),
+                    'amount' => $amount,
+                    'method' => 'paypal',
+                    'transaction_id' => $paypalOrderId,
+                    'status' => 'en_attente',
+                    'notes' => 'Paiement PayPal créé depuis la page devis.',
+                    'metadata' => [
+                        'source' => 'devis_page',
+                        'devis_request_id' => (int) $devisRequest->id,
+                        'billing_request_ids' => $requestIds,
+                        'paypal_order_id' => $paypalOrderId,
+                    ],
+                ]);
 
                 PaymentTransaction::create([
-                'etablissement_id' => $etablissementId,
-                'payment_id' => $payment->id,
-                'client_id' => $customer->id,
-                'payment_gateway_id' => $gateway?->id,
-                'gateway_type' => 'paypal',
-                'amount' => $amount,
-                'currency' => $currency,
-                'status' => 'pending',
-                'gateway_transaction_id' => $paypalOrderId,
-                'gateway_status' => (string) ($order['status'] ?? 'CREATED'),
-                'gateway_response' => $order,
-                'metadata' => [
-                    'source' => 'devis_page',
-                    'devis_request_id' => (int) $devisRequest->id,
-                    'billing_request_ids' => $requestIds,
-                    'customer_email' => $devisRequest->email,
-                    'approval_created_at' => now()->toIso8601String(),
-                    'receipt_sent' => false,
-                ],
-            ]);
+                    'payment_id' => $payment->id,
+                    'client_id' => $customer->id,
+                    'payment_gateway_id' => $gateway?->id,
+                    'gateway_type' => 'paypal',
+                    'amount' => $amount,
+                    'currency' => $currency,
+                    'status' => 'pending',
+                    'gateway_transaction_id' => $paypalOrderId,
+                    'gateway_status' => (string) ($order['status'] ?? 'CREATED'),
+                    'gateway_response' => $order,
+                    'metadata' => [
+                        'source' => 'devis_page',
+                        'devis_request_id' => (int) $devisRequest->id,
+                        'billing_request_ids' => $requestIds,
+                        'customer_email' => $devisRequest->email,
+                        'approval_created_at' => now()->toIso8601String(),
+                        'receipt_sent' => false,
+                    ],
+                ]);
             });
         } catch (Throwable $e) {
             Log::error('Failed to persist PayPal payment/transaction for devis', [
@@ -153,6 +154,9 @@ class DevisPayPalCheckoutService
         return $approvalUrl;
     }
 
+    /**
+     * Capture le paiement PayPal
+     */
     public function captureCheckout(string $paypalOrderId): array
     {
         $paypalOrderId = trim($paypalOrderId);
@@ -182,6 +186,7 @@ class DevisPayPalCheckoutService
 
         $currency = strtoupper((string) $transaction->currency);
         $provider = $this->paypalProvider($currency);
+
         try {
             $captureResponse = $provider->setRequestHeader('Prefer', 'return=representation')->capturePaymentOrder($paypalOrderId);
         } catch (Throwable $e) {
@@ -196,6 +201,7 @@ class DevisPayPalCheckoutService
 
             throw $e;
         }
+
         $capture = data_get($captureResponse, 'purchase_units.0.payments.captures.0', []);
         $captureStatus = strtoupper((string) ($capture['status'] ?? $captureResponse['status'] ?? ''));
 
@@ -206,11 +212,12 @@ class DevisPayPalCheckoutService
                 'capture_status' => $captureStatus,
                 'capture_response' => $captureResponse,
             ]);
+
             $transaction->update([
                 'status' => 'failed',
                 'gateway_status' => $captureStatus ?: 'FAILED',
                 'gateway_response' => $captureResponse,
-                'error_message' => 'Capture PayPal non complete.',
+                'error_message' => 'Capture PayPal non complète.',
             ]);
 
             $transaction->payment?->update([
@@ -220,7 +227,7 @@ class DevisPayPalCheckoutService
                 ]),
             ]);
 
-            throw new RuntimeException('Le paiement PayPal n a pas ete confirme.');
+            throw new RuntimeException('Le paiement PayPal n\'a pas été confirmé.');
         }
 
         $receiptSent = false;
@@ -286,6 +293,9 @@ class DevisPayPalCheckoutService
         ];
     }
 
+    /**
+     * Annule le paiement PayPal
+     */
     public function cancelCheckout(?string $paypalOrderId): void
     {
         $paypalOrderId = trim((string) $paypalOrderId);
@@ -307,15 +317,18 @@ class DevisPayPalCheckoutService
         $transaction->update([
             'status' => 'failed',
             'gateway_status' => 'CANCELLED',
-            'notes' => trim(($transaction->notes ? $transaction->notes . "\n" : '') . 'Paiement annule par le client.'),
+            'notes' => trim(($transaction->notes ? $transaction->notes . "\n" : '') . 'Paiement annulé par le client.'),
         ]);
 
         $transaction->payment?->update([
             'status' => 'echoue',
-            'notes' => trim(($transaction->payment->notes ? $transaction->payment->notes . "\n" : '') . 'Paiement PayPal annule par le client.'),
+            'notes' => trim(($transaction->payment->notes ? $transaction->payment->notes . "\n" : '') . 'Paiement PayPal annulé par le client.'),
         ]);
     }
 
+    /**
+     * Récupère le provider PayPal
+     */
     private function paypalProvider(string $currency): PayPalClient
     {
         try {
@@ -336,14 +349,20 @@ class DevisPayPalCheckoutService
         }
     }
 
+    /**
+     * Configuration PayPal
+     */
     private function paypalConfig(string $currency): array
     {
         $config = config('paypal');
-        $config['currency'] = strtoupper($currency ?: ($config['currency'] ?? 'CAD'));
+        $config['currency'] = strtoupper($currency ?: ($config['currency'] ?? self::DEFAULT_CURRENCY));
 
         return $config;
     }
 
+    /**
+     * Extrait l'URL d'approbation PayPal
+     */
     private function approvalUrl(array $order): string
     {
         foreach (($order['links'] ?? []) as $link) {
@@ -355,11 +374,13 @@ class DevisPayPalCheckoutService
         return '';
     }
 
-    private function customerFor(DevisRequest $devisRequest, int $etablissementId): Customer
+    /**
+     * Crée ou récupère un client
+     */
+    private function customerFor(DevisRequest $devisRequest): Customer
     {
         return Customer::updateOrCreate(
             [
-                'etablissement_id' => $etablissementId,
                 'email' => $devisRequest->email,
             ],
             [
@@ -375,38 +396,48 @@ class DevisPayPalCheckoutService
         );
     }
 
-    private function gatewayFor(int $etablissementId): ?PaymentGateway
+    /**
+     * Récupère la passerelle de paiement
+     */
+    private function gatewayFor(): ?PaymentGateway
     {
         return PaymentGateway::query()
             ->where('type', 'paypal')
             ->where('is_active', true)
-            ->where(function ($query) use ($etablissementId): void {
-                $query->where('etablissement_id', $etablissementId)
-                    ->orWhere('is_default', true);
-            })
-            ->orderByRaw('CASE WHEN etablissement_id = ? THEN 0 ELSE 1 END', [$etablissementId])
-            ->orderByDesc('is_default')
+            ->where('is_default', true)
             ->orderBy('order')
             ->first();
     }
 
+    /**
+     * Calcule le montant total
+     */
     private function totalAmount(Collection $billingRequests): float
     {
         return round($billingRequests->sum(fn (BillingRequest $request) => (float) $request->total), 2);
     }
 
+    /**
+     * Récupère la devise
+     */
     private function currencyFor(Collection $billingRequests): string
     {
-        $currency = (string) data_get($billingRequests->first()?->metadata, 'currency', config('paypal.currency', 'CAD'));
+        $currency = (string) data_get($billingRequests->first()?->metadata, 'currency', config('paypal.currency', self::DEFAULT_CURRENCY));
 
-        return strtoupper($currency ?: 'CAD');
+        return strtoupper($currency ?: self::DEFAULT_CURRENCY);
     }
 
+    /**
+     * Formate le montant pour PayPal
+     */
     private function paypalAmount(float $amount): string
     {
         return number_format(round($amount, 2), 2, '.', '');
     }
 
+    /**
+     * Envoie le reçu de paiement
+     */
     private function sendReceipt(PaymentTransaction $transaction): void
     {
         $payment = $transaction->payment;
@@ -414,7 +445,7 @@ class DevisPayPalCheckoutService
         $email = (string) ($customer?->email ?: data_get($transaction->metadata, 'customer_email', ''));
 
         if ($email === '') {
-            throw new RuntimeException('Adresse email client manquante pour le recu.');
+            throw new RuntimeException('Adresse email client manquante pour le reçu.');
         }
 
         $billingRequestIds = collect(data_get($transaction->metadata, 'billing_request_ids', []))
@@ -437,10 +468,13 @@ class DevisPayPalCheckoutService
         ], function ($message) use ($email, $customer, $payment): void {
             $name = trim((string) ($customer?->nom_complet ?? ''));
             $message->to($email, $name !== '' ? $name : null)
-                ->subject('Votre recu de paiement GoExploria ' . ($payment?->payment_reference ? '- ' . $payment->payment_reference : ''));
+                ->subject('Votre reçu de paiement GoExploria ' . ($payment?->payment_reference ? '- ' . $payment->payment_reference : ''));
         });
     }
 
+    /**
+     * Marque l'envoi du reçu
+     */
     private function markReceiptSent(PaymentTransaction $transaction, bool $sent, ?string $error = null): void
     {
         $fresh = $transaction->fresh();

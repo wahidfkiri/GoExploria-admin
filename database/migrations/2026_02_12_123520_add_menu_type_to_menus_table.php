@@ -14,7 +14,9 @@ class AddMenuTypeToMenusTable extends Migration
     public function up()
     {
         Schema::table('menus', function (Blueprint $table) {
-            $table->string('menu_type', 50)->nullable()->after('reference_id');
+            if (!Schema::hasColumn('menus', 'menu_type')) {
+                $table->string('menu_type', 50)->nullable()->after('reference_id');
+            }
             // ou avec d'autres options :
             // $table->string('menu_type', 50)->default('regular');
             // $table->string('menu_type', 50)->after('nom_colonne');
@@ -30,7 +32,9 @@ class AddMenuTypeToMenusTable extends Migration
     public function down()
     {
         Schema::table('menus', function (Blueprint $table) {
-            $table->dropColumn('menu_type');
+            if (Schema::hasColumn('menus', 'menu_type')) {
+                $table->dropColumn('menu_type');
+            }
         });
     }
 }
