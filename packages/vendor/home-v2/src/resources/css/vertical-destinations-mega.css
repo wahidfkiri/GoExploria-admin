@@ -226,6 +226,16 @@
     height: 20px;
     stroke: #6c757d;
     flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+/* Rotation de la flèche quand la section est expanded */
+.vmenu-dest-section.expanded > .vmenu-dest-section-header .vmenu-dest-section-arrow {
+    transform: rotate(180deg);
+}
+
+.vmenu-dest-subsection.expanded > .vmenu-dest-section-header .vmenu-dest-section-arrow {
+    transform: rotate(180deg);
 }
 
 /* Contenu de section (Pays) */
@@ -410,3 +420,4 @@
         padding-left: 30px;
     }
 }
+

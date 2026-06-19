@@ -373,15 +373,19 @@ class VideoCarousel {
             }
             
             video.play().catch(err => {
-                if (err && err.name === 'AbortError') return;
                 console.log('Erreur de lecture vidéo:', err);
             });
         }
         
-        if (iframe && iframe.contentWindow) {
-            try {
-                iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
-            } catch (e) { /* ignore */ }
+        if (iframe) {
+            // Pour YouTube/Vimeo : On force le rechargement avec autoplay=1 pour s'assurer que ça démarre
+            let src = iframe.src;
+            if (src.includes('autoplay=0')) {
+                src = src.replace('autoplay=0', 'autoplay=1');
+            } else if (!src.includes('autoplay=')) {
+                src += (src.includes('?') ? '&' : '?') + 'autoplay=1';
+            }
+            iframe.src = src;
         }
     }
     
@@ -394,10 +398,13 @@ class VideoCarousel {
             video.pause();
         }
         
-        if (iframe && iframe.contentWindow) {
-            try {
-                iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
-            } catch (e) { /* ignore */ }
+        if (iframe) {
+            // Arrêter la vidéo en mettant autoplay=0
+            let src = iframe.src;
+            if (src.includes('autoplay=1')) {
+                src = src.replace('autoplay=1', 'autoplay=0');
+            }
+            iframe.src = src;
         }
     }
     

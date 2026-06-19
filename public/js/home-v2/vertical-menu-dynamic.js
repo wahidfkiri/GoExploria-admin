@@ -14,6 +14,9 @@ class VerticalMenuDynamic {
         this.isOpen = false;
         this.menus = [];
         
+        // Empêcher la fermeture du menu pour certains déclencheurs
+        this.destinationTrigger = null;
+        
         this.init();
     }
     
@@ -99,11 +102,25 @@ class VerticalMenuDynamic {
         // Utiliser une icône par défaut si icon est null
         const iconPath = menu.icon || 'header_info/info.png';
         
+        // Vérifier si c'est le menu Destinations (par titre ou slug)
+        const isDestinations = menu.title === 'Destinations' || 
+                             menu.slug === 'destinations' || 
+                             menu.title === 'Destination' ||
+                             menu.slug === 'destination';
+        
         if (hasChildren) {
             // Menu avec sous-menus (accordéon)
             return `
-                <li class="vertical-menu-v2-item vertical-menu-v2-accordion">
-                    <a href="#" class="vertical-menu-v2-link vertical-menu-v2-accordion-trigger">
+                <li class="vertical-menu-v2-item vertical-menu-v2-accordion ${isDestinations ? 'vertical-menu-v2-destinations' : ''}">
+                    <a href="#" class="vertical-menu-v2-link vertical-menu-v2-accordion-trigger ${isDestinations ? 'vertical-menu-v2-destinations-trigger' : ''}" ${isDestinations ? 'data-destinations="true"' : ''}>
+                        ${isDestinations ? `
+                            <span class="vertical-menu-v2-destinations-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </span>
+                        ` : ''}
                         <span>${menu.title}</span>
                         <svg class="vertical-menu-v2-accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="6 9 12 15 18 9"></polyline>
@@ -118,7 +135,15 @@ class VerticalMenuDynamic {
             // Menu simple sans sous-menus
             return `
                 <li class="vertical-menu-v2-item">
-                    <a href="${url}" class="vertical-menu-v2-link">
+                    <a href="${url}" class="vertical-menu-v2-link ${isDestinations ? 'vertical-menu-v2-destinations-link' : ''}" ${isDestinations ? 'data-destinations="true"' : ''}>
+                        ${isDestinations ? `
+                            <span class="vertical-menu-v2-destinations-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </span>
+                        ` : ''}
                         <span>${menu.title}</span>
                     </a>
                 </li>
@@ -212,7 +237,7 @@ class VerticalMenuDynamic {
     
     initMenuEvents() {
         // Gestion de l'accordéon
-        const accordionTriggers = this.menuList.querySelectorAll('.vertical-menu-v2-accordion-trigger');
+        const accordionTriggers = this.menuList.querySelectorAll('.vertical-menu-v2-accordion-trigger:not(.vertical-menu-v2-destinations-trigger)');
         
         accordionTriggers.forEach(trigger => {
             trigger.addEventListener('click', (e) => {
@@ -234,8 +259,36 @@ class VerticalMenuDynamic {
             });
         });
         
-        // Fermer le menu au clic sur un lien simple
-        const simpleLinks = this.menuList.querySelectorAll('.vertical-menu-v2-link:not(.vertical-menu-v2-accordion-trigger)');
+        // Gestion spéciale pour Destinations - NE PAS fermer le menu
+        const destinationsTriggers = this.menuList.querySelectorAll('.vertical-menu-v2-destinations-trigger, .vertical-menu-v2-destinations-link');
+        destinationsTriggers.forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Si c'est un accordéon trigger, gérer l'ouverture/fermeture
+                if (trigger.classList.contains('vertical-menu-v2-accordion-trigger')) {
+                    const parentItem = trigger.closest('.vertical-menu-v2-accordion');
+                    const isActive = parentItem.classList.contains('active');
+                    
+                    // Fermer tous les autres accordéons
+                    this.menuList.querySelectorAll('.vertical-menu-v2-accordion').forEach(item => {
+                        if (item !== parentItem) {
+                            item.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle l'accordéon actuel
+                    parentItem.classList.toggle('active');
+                }
+                
+                // NE PAS fermer le menu - le mega menu doit rester ouvert
+                console.log('🔗 Clic sur Destinations - Menu vertical reste ouvert');
+            });
+        });
+        
+        // Fermer le menu au clic sur un lien simple (exclure Destinations)
+        const simpleLinks = this.menuList.querySelectorAll('.vertical-menu-v2-link:not(.vertical-menu-v2-accordion-trigger):not(.vertical-menu-v2-destinations-trigger):not(.vertical-menu-v2-destinations-link)');
         simpleLinks.forEach(link => {
             link.addEventListener('click', () => {
                 this.closeMenu();
@@ -246,7 +299,11 @@ class VerticalMenuDynamic {
         const subLinks = this.menuList.querySelectorAll('.vertical-menu-v2-sublink');
         subLinks.forEach(link => {
             link.addEventListener('click', () => {
-                this.closeMenu();
+                // Vérifier si le sous-lien est dans un menu Destinations
+                const parentDestinations = link.closest('.vertical-menu-v2-destinations');
+                if (!parentDestinations) {
+                    this.closeMenu();
+                }
             });
         });
     }

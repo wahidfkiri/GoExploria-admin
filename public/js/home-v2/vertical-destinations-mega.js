@@ -16,6 +16,9 @@ class VerticalDestinationsMegaMenu {
         this.isLoaded = false;
         this.hideTimeout = null;
         
+        // Référence au menu vertical parent
+        this.parentMenu = window.verticalMenuDynamic;
+        
         this.init();
     }
     
@@ -34,25 +37,38 @@ class VerticalDestinationsMegaMenu {
         this.trigger.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            
+            // NE PAS fermer le menu vertical parent
+            // Au lieu de cela, on bascule le mega menu
             this.isOpen ? this.hide() : this.show();
         });
 
+        // Fermer le mega menu si on clique ailleurs (sauf sur le trigger)
         document.addEventListener('click', (e) => {
             if (!this.megaMenu.contains(e.target) && !this.trigger.contains(e.target)) {
                 this.hide();
             }
         });
 
+        // Fermer avec la touche Escape
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') this.hide();
+            if (e.key === 'Escape') {
+                this.hide();
+            }
         });
 
         // Bouton de fermeture
         if (this.closeBtn) {
-            this.closeBtn.addEventListener('click', () => {
+            this.closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 this.hide();
             });
         }
+        
+        // Empêcher la propagation des clics à l'intérieur du mega menu
+        this.megaMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
     }
     
     async show() {
@@ -63,6 +79,12 @@ class VerticalDestinationsMegaMenu {
         this.isOpen = true;
         this.megaMenu.classList.add('active');
         
+        // S'assurer que le menu vertical reste ouvert
+        if (this.parentMenu && !this.parentMenu.isOpen) {
+            // Si le menu vertical est fermé, on l'ouvre
+            this.parentMenu.openMenu();
+        }
+        
         // Charger les destinations si pas encore chargées
         if (!this.isLoaded) {
             await this.loadDestinations();
@@ -72,6 +94,9 @@ class VerticalDestinationsMegaMenu {
     hide() {
         this.isOpen = false;
         this.megaMenu.classList.remove('active');
+        
+        // Ne pas fermer le menu vertical parent - l'utilisateur doit le faire manuellement
+        // ou via d'autres interactions
     }
     
     scheduleHide() {
@@ -345,6 +370,20 @@ class VerticalDestinationsMegaMenu {
         this.loader.style.display = 'none';
         this.grid.style.display = 'none';
         this.empty.style.display = 'flex';
+    }
+    
+    // Méthode pour forcer la fermeture du mega menu
+    forceHide() {
+        this.isOpen = false;
+        this.megaMenu.classList.remove('active');
+    }
+    
+    // Méthode pour réinitialiser complètement
+    reset() {
+        this.forceHide();
+        this.isLoaded = false;
+        this.grid.innerHTML = '';
+        this.showLoader();
     }
 }
 

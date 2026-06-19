@@ -96,7 +96,7 @@ class BusinessTourismApp {
     }
     
     addMarkers() {
-        if (!this.map) return;
+        if (!this.map || typeof L === 'undefined') return;
         Object.values(this.markers).forEach(m => m.remove());
         this.markers = {};
         

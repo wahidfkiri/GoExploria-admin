@@ -336,32 +336,6 @@ html {
     color: var(--accent-gold);
 }
 
-.nav-menu li a.nav-video-channel-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 8px 12px;
-    border: 1px solid rgba(212, 175, 55, 0.28);
-    border-radius: 999px;
-    background: rgba(212, 175, 55, 0.08);
-    color: var(--accent-gold);
-    white-space: nowrap;
-}
-
-.nav-menu li a.nav-video-channel-link::after {
-    display: none;
-}
-
-.nav-menu li a.nav-video-channel-link i {
-    font-size: 12px;
-}
-
-.nav-menu li a.nav-video-channel-link:hover {
-    background: rgba(212, 175, 55, 0.16);
-    border-color: rgba(212, 175, 55, 0.5);
-    color: var(--accent-gold);
-}
-
 /* Icône bonhomme Mon Compte */
 .nav-account-icon {
     display: flex !important;
@@ -1070,11 +1044,6 @@ iframe.video-background {
 
     .nav-menu li a {
         font-size: 12px;
-    }
-
-    .nav-menu li a.nav-video-channel-link {
-        padding: 7px 10px;
-        gap: 6px;
     }
 
     .hero-main {
