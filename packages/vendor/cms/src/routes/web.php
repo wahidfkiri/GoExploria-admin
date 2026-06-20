@@ -85,8 +85,8 @@ Route::middleware(['web'])->group(function () {
         Route::get('/{slug}', [WebThemeController::class, 'home'])->name('home.slug');
 
         // Route pour l'affichage du thème en iframe (sans layout parent)
-        Route::get('/preview/iframe/{themeId?}/{slug?}', [App\Http\Controllers\ThemeIframeController::class, 'show'])
-         ->name('cms.company.theme.iframe');
+        // Route::get('/preview/iframe/{themeId?}/{slug?}', [App\Http\Controllers\ThemeIframeController::class, 'show'])
+        //  ->name('cms.company.theme.iframe');
     });
     
     // Route pour les assets des thèmes (en dehors du préfixe company)

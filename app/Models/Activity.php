@@ -189,4 +189,61 @@ class Activity extends Model
         // Si les tags sont une chaîne séparée par des virgules
         return array_map('trim', explode(',', $this->tags));
     }
+
+
+/**
+ * Relation avec les contenus de page
+ */
+public function pageContents()
+{
+    return $this->hasMany(PageContent::class);
+}
+
+/**
+ * Relation avec les contenus par type
+ */
+public function pageContentsByType($type)
+{
+    return $this->pageContents()->where('type', $type)->orderBy('order');
+}
+
+/**
+ * Récupérer les événements
+ */
+public function events()
+{
+    return $this->pageContentsByType('event');
+}
+
+/**
+ * Récupérer les blogs
+ */
+public function blogs()
+{
+    return $this->pageContentsByType('blog');
+}
+
+/**
+ * Récupérer les vidéos
+ */
+public function videos()
+{
+    return $this->pageContentsByType('video');
+}
+
+/**
+ * Récupérer le contenu "À propos"
+ */
+public function about()
+{
+    return $this->pageContentsByType('about')->first();
+}
+
+/**
+ * Récupérer les contenus actifs
+ */
+public function activePageContents()
+{
+    return $this->pageContents()->where('is_active', true);
+}
 }

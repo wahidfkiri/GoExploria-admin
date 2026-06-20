@@ -49,6 +49,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demande de devis | GoExploria</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -858,7 +859,7 @@
 
 <div class="quote-shell">
     <div class="quote-head">
-        <h1>Demande de devis personnalisée</h1>
+        <h1>AFFICHEZ-VOUS personnalisée</h1>
         <p>
             Décrivez votre besoin, sélectionnez vos services et recevez une proposition claire par notre équipe.
             Nous traitons votre demande rapidement et vous accompagnons vers le plan le plus adapté.
