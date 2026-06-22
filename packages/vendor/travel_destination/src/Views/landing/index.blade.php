@@ -132,7 +132,7 @@
         @foreach($videos as $video)
           <div class="swiper-slide hero__slide hero__slide--video">
             @if($isYouTube($video->video_url))
-              <iframe class="hero__video-bg" src="{{ $youTubeEmbed($video->video_url) }}" frameborder="0" allow="autoplay; encrypted-media" sandbox="allow-scripts allow-same-origin" loading="lazy"></iframe>
+              <iframe class="hero__video-bg" src="{{ $youTubeEmbed($video->video_url) }}" frameborder="0" allow="autoplay; encrypted-media" loading="lazy"></iframe>
             @else
               <video class="hero__video-bg" src="{{ $video->video_url }}" autoplay muted loop playsinline loading="lazy"></video>
             @endif
@@ -146,7 +146,7 @@
                 <div class="hero__desc">{!! $video->content ?? '' !!}</div>
                 <div class="hero__ctas">
                   @if($video->button_text && $video->button_url)
-                    <a href="{{ $video->button_url }}" class="btn btn--amber" target="_blank" rel="noopener">{{ $video->button_text }}</a>
+                    <a href="{{ $video->button_url }}" class="btn btn--amber" rel="noopener">{{ $video->button_text }}</a>
                   @else
                     <a href="#destinations" class="btn btn--amber">Explorer</a>
                   @endif
@@ -166,7 +166,7 @@
               <div class="hero__desc">{!! $slide->content ?? '' !!}</div>
               <div class="hero__ctas">
                 @if($slide->button_text && $slide->button_url)
-                  <a href="{{ $slide->button_url }}" class="btn btn--amber" target="_blank" rel="noopener">{{ $slide->button_text }}</a>
+                  <a href="{{ $slide->button_url }}" class="btn btn--amber" rel="noopener">{{ $slide->button_text }}</a>
                 @else
                   <a href="#destinations" class="btn btn--amber">Explorer</a>
                 @endif
