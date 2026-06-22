@@ -19,7 +19,7 @@
 <header class="nav" id="navbar" role="banner">
   <div class="nav__container">
     <a href="{{ url('/') }}" class="nav__logo" aria-label="GoExploria Home">
-      <img src="{{ asset('logo.png') }}" alt="GoExploria" style="height:36px;width:auto" />
+      <img src="{{ asset('logo.png') }}" alt="GoExploria" />
     </a>
 
     <nav class="nav__links" aria-label="Primary navigation">
