@@ -132,7 +132,7 @@
         @foreach($videos as $video)
           <div class="swiper-slide hero__slide hero__slide--video">
             @if($isYouTube($video->video_url))
-              <iframe class="hero__video-bg" src="{{ $youTubeEmbed($video->video_url) }}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
+              <iframe class="hero__video-bg" src="{{ $youTubeEmbed($video->video_url) }}" frameborder="0" allow="autoplay; encrypted-media" sandbox="allow-scripts allow-same-origin" loading="lazy"></iframe>
             @else
               <video class="hero__video-bg" src="{{ $video->video_url }}" autoplay muted loop playsinline loading="lazy"></video>
             @endif
