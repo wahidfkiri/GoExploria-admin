@@ -221,7 +221,6 @@
       var iframe = slide.querySelector('iframe.hero__video-bg');
       var vid = slide.querySelector('video.hero__video-bg');
       var src = iframe ? iframe.src : (vid ? vid.currentSrc || vid.querySelector('source')?.src || vid.src : null);
-      on(slide, 'click', function (e) { if (src) open(src); });
     });
     on(closeBtn, 'click', closeV);
     on(backdrop, 'click', closeV);
