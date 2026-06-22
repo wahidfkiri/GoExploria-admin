@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="{{ $heroSlide?->meta_description ?? 'Explore ' . $entity->name }}" />
+  <meta name="description" content="{{ $heroSlide?->meta_description ?? 'Découvrez ' . $entity->name }}" />
   <title>{{ $entity->name }} – GoExploria</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,11 +18,11 @@
 
 <header class="nav" id="navbar" role="banner">
   <div class="nav__container">
-    <a href="{{ url('/') }}" class="nav__logo" aria-label="GoExploria Home">
+    <a href="{{ url('/') }}" class="nav__logo" aria-label="Accueil GoExploria">
       <img src="{{ asset('logo.png') }}" alt="GoExploria" />
     </a>
 
-    <nav class="nav__links" aria-label="Primary navigation">
+    <nav class="nav__links" aria-label="Navigation principale">
       <div class="nav__dropdown-wrap">
         <a href="#destinations" class="nav__link">Destinations <span style="font-size:0.6em;margin-left:4px">&#9662;</span></a>
         @if(isset($childEntities) && $childEntities->count() > 0)
@@ -40,23 +40,23 @@
           </div>
         @endif
       </div>
-      <a href="#tours" class="nav__link">Tours</a>
-      <a href="#hotels" class="nav__link">Hotels</a>
-      <a href="#packages" class="nav__link">Packages</a>
-      <a href="#blog" class="nav__link">Journal</a>
+      <a href="#tours" class="nav__link">Visites</a>
+      <a href="#hotels" class="nav__link">Hôtels</a>
+      <a href="#packages" class="nav__link">Forfaits</a>
+      <a href="#blog" class="nav__link">Blog</a>
     </nav>
 
     <div class="nav__actions">
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+      <button class="theme-toggle" id="themeToggle" aria-label="Mode sombre/clair">
         <svg class="theme-toggle__sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
         <svg class="theme-toggle__moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <button class="nav__search-btn" id="navSearchBtn" aria-label="Open search">
+      <button class="nav__search-btn" id="navSearchBtn" aria-label="Ouvrir la recherche">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       </button>
     </div>
 
-    <button class="nav__hamburger" id="hamburger" aria-label="Toggle mobile menu" aria-expanded="false">
+    <button class="nav__hamburger" id="hamburger" aria-label="Menu mobile" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -73,18 +73,18 @@
           </div>
         @endif
       </div>
-      <a href="#tours" class="mobile-menu__link">Tours</a>
-      <a href="#hotels" class="mobile-menu__link">Hotels</a>
-      <a href="#packages" class="mobile-menu__link">Packages</a>
-      <a href="#blog" class="mobile-menu__link">Journal</a>
+      <a href="#tours" class="mobile-menu__link">Visites</a>
+      <a href="#hotels" class="mobile-menu__link">Hôtels</a>
+      <a href="#packages" class="mobile-menu__link">Forfaits</a>
+      <a href="#blog" class="mobile-menu__link">Blog</a>
     </div>
   </div>
 
   <div class="search-overlay" id="searchOverlay" aria-hidden="true">
-    <button class="search-overlay__close" id="closeSearch" aria-label="Close search">&times;</button>
+    <button class="search-overlay__close" id="closeSearch" aria-label="Fermer la recherche">&times;</button>
     <div class="search-overlay__inner">
-      <p class="search-overlay__hint">Where would you like to go?</p>
-      <input type="text" class="search-overlay__input" placeholder="Search destinations, hotels, tours…" aria-label="Search" />
+      <p class="search-overlay__hint">Où souhaitez-vous aller ?</p>
+      <input type="text" class="search-overlay__input" placeholder="Rechercher destinations, hôtels, visites…" aria-label="Rechercher" />
       <div class="search-overlay__suggestions">
         @if($childEntities)
           @foreach($childEntities->take(6) as $child)
@@ -96,7 +96,7 @@
   </div>
 </header>
 
-<section class="hero" id="hero" aria-label="{{ $entity->name }} hero">
+<section class="hero" id="hero" aria-label="Bannière {{ $entity->name }}">
   <div class="hero__wordmark" aria-hidden="true">{{ strtoupper($entity->name) }}</div>
 
 @php
@@ -126,16 +126,16 @@
             <div class="hero__overlay"></div>
             <div class="hero__content">
               @if($video->title || $video->meta_title || $video->content)
-                <span class="hero__eyebrow">{{ $video->meta_title ?? 'Featured Video' }}</span>
+                <span class="hero__eyebrow">{{ $video->meta_title ?? 'Vidéo à la une' }}</span>
                 <h1 class="hero__title">{{ $video->title ?? $entity->name }}</h1>
                 <div class="hero__desc">{!! $video->content ?? '' !!}</div>
                 <div class="hero__ctas">
                   @if($video->button_text && $video->button_url)
                     <a href="{{ $video->button_url }}" class="btn btn--amber" target="_blank" rel="noopener">{{ $video->button_text }}</a>
                   @else
-                    <a href="#destinations" class="btn btn--amber">Explore Tours</a>
+                    <a href="#destinations" class="btn btn--amber">Explorer</a>
                   @endif
-                  <a href="#about" class="btn btn--glass">Learn More</a>
+                  <a href="#about" class="btn btn--glass">En savoir plus</a>
                 </div>
               @endif
             </div>
@@ -147,16 +147,16 @@
             <div class="hero__bg" style="background-image:url('{{ $slide->image_url ?? $entity->image ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1600&q=85' }}')"></div>
             <div class="hero__overlay"></div>
             <div class="hero__content">
-              <span class="hero__eyebrow">{{ $slide->meta_title ?? 'Featured Destination' }}</span>
+              <span class="hero__eyebrow">{{ $slide->meta_title ?? 'Destination à la une' }}</span>
               <h1 class="hero__title">{{ $entity->name }}<br/>@if(isset($entity->country))<em>{{ $entity->country->name }}</em>@endif</h1>
               <div class="hero__desc">{!! $slide->content ?? '' !!}</div>
               <div class="hero__ctas">
                 @if($slide->button_text && $slide->button_url)
                   <a href="{{ $slide->button_url }}" class="btn btn--amber" target="_blank" rel="noopener">{{ $slide->button_text }}</a>
                 @else
-                  <a href="#destinations" class="btn btn--amber">Explore Tours</a>
+                  <a href="#destinations" class="btn btn--amber">Explorer</a>
                 @endif
-                <a href="#about" class="btn btn--glass">Learn More</a>
+                <a href="#about" class="btn btn--glass">En savoir plus</a>
               </div>
             </div>
           </div>
@@ -166,12 +166,12 @@
           <div class="hero__bg" style="background-image:url('{{ $entity->image ?? $heroImage ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1600&q=85' }}')"></div>
           <div class="hero__overlay"></div>
           <div class="hero__content">
-            <span class="hero__eyebrow">Explore</span>
+            <span class="hero__eyebrow">Explorer</span>
             <h1 class="hero__title">{{ $entity->name }}</h1>
-            <div class="hero__desc">Discover the beauty and wonders of {{ $entity->name }}</div>
+            <div class="hero__desc">Découvrez la beauté et les merveilles de {{ $entity->name }}</div>
             <div class="hero__ctas">
-              <a href="#destinations" class="btn btn--amber">Explore Destinations</a>
-              <a href="#about" class="btn btn--glass">Learn More</a>
+              <a href="#destinations" class="btn btn--amber">Explorer</a>
+              <a href="#about" class="btn btn--glass">En savoir plus</a>
             </div>
           </div>
         </div>
@@ -180,13 +180,13 @@
 
     @if($hasMultipleSlides)
       <div class="swiper-pagination hero-pagination"></div>
-      <div class="swiper-button-prev hero-prev" aria-label="Previous slide"></div>
-      <div class="swiper-button-next hero-next" aria-label="Next slide"></div>
+      <div class="swiper-button-prev hero-prev" aria-label="Diapositive précédente"></div>
+      <div class="swiper-button-next hero-next" aria-label="Diapositive suivante"></div>
     @endif
   </div>
 
   @if(count($stats) > 0)
-    <div class="hero__stats" aria-label="Key statistics">
+    <div class="hero__stats" aria-label="Statistiques clés">
       @foreach($stats as $i => $stat)
         <div class="hero__stat">
           <span class="hero__stat-num counter" data-target="{{ preg_replace('/[^0-9]/', '', $stat['value']) }}">0</span>
@@ -200,16 +200,16 @@
     </div>
   @endif
 
-  <a href="#destinations" class="scroll-indicator" aria-label="Scroll to destinations">
+  <a href="#destinations" class="scroll-indicator" aria-label="Défiler vers les destinations">
     <span class="scroll-indicator__line"></span>
-    <span class="scroll-indicator__label">Scroll</span>
+    <span class="scroll-indicator__label">Défiler</span>
   </a>
 </section>
 
 @if($breadcrumb->count() > 1)
   <section class="breadcrumb-section">
     <div class="container">
-      <nav class="breadcrumb" aria-label="Breadcrumb">
+      <nav class="breadcrumb" aria-label="Fil d'Ariane">
         <ol>
           @foreach($breadcrumb as $i => $crumb)
             <li>
@@ -229,18 +229,18 @@
 <section class="map-section section" id="map" aria-labelledby="map-heading">
   <div class="container">
     <div class="section-header reveal-up">
-      <span class="eyebrow">Explore</span>
-      <h2 class="section-title" id="map-heading">Discover Points of Interest</h2>
-      <p class="section-subtitle">Click on markers to learn more about each destination</p>
+      <span class="eyebrow">Explorer</span>
+      <h2 class="section-title" id="map-heading">Découvrez les points d'intérêt</h2>
+      <p class="section-subtitle">Cliquez sur les marqueurs pour en savoir plus</p>
     </div>
     <div class="map-geo-filter" id="mapGeoFilter">
       <div class="map-geo-filter__wrapper">
-        <input type="text" class="map-geo-filter__search" id="mapGeoSearch" placeholder="Search destination..." autocomplete="off">
+        <input type="text" class="map-geo-filter__search" id="mapGeoSearch" placeholder="Rechercher une destination..." autocomplete="off">
         <div class="map-geo-filter__dropdown" id="mapGeoDropdown"></div>
       </div>
     </div>
     <div class="map-filters reveal-up" id="mapFilters">
-      <button class="map-filter-btn active" data-filter="all">All</button>
+      <button class="map-filter-btn active" data-filter="all">Tous</button>
     </div>
     <div class="map-wrapper">
       <div id="travel-map" class="travel-map"></div>
@@ -261,7 +261,7 @@
         <div class="map-modal__description"></div>
         <div class="map-modal__meta" id="mapModalMeta"></div>
         <div class="map-modal__actions">
-          <a href="#" class="btn btn--primary" id="mapModalWebsite" target="_blank" rel="noopener">Visit Website</a>
+          <a href="#" class="btn btn--primary" id="mapModalWebsite" target="_blank" rel="noopener">Visiter le site</a>
         </div>
       </div>
     </div>
@@ -274,8 +274,8 @@
       <div class="about-grid">
         <div class="about-content reveal-up">
           <div class="section-header" style="text-align:left">
-            <span class="eyebrow">{{ $aboutContents->first()->meta_title ?? 'About' }}</span>
-            <h2 class="section-title" id="about-heading">{{ $aboutContents->first()->title ?? 'About ' . $entity->name }}</h2>
+            <span class="eyebrow">{{ $aboutContents->first()->meta_title ?? 'À propos' }}</span>
+            <h2 class="section-title" id="about-heading">{{ $aboutContents->first()->title ?? 'À propos de ' . $entity->name }}</h2>
           </div>
           <div class="about-text">
             {!! $aboutContents->first()->content ?? '' !!}
@@ -293,15 +293,15 @@
   <section class="destinations section" id="destinations" aria-labelledby="dest-heading">
     <div class="container">
       <div class="section-header reveal-up">
-        <span class="eyebrow">Explore</span>
+        <span class="eyebrow">Explorer</span>
         <h2 class="section-title" id="dest-heading">
           @if($destinations->count() > 0)
-            {{ $destinations->first()->title ?? 'Popular Destinations' }}
+            {{ $destinations->first()->title ?? 'Destinations populaires' }}
           @else
-            {{ $childEntities->count() > 0 ? 'Explore ' . $entity->name : 'Popular Destinations' }}
+            {{ $childEntities->count() > 0 ? 'Explorer ' . $entity->name : 'Destinations populaires' }}
           @endif
         </h2>
-        <div class="section-sub">{!! $destinations->first()->content ?? ($childEntities->count() > 0 ? 'Discover the best places in ' . $entity->name : 'Handpicked destinations for you') !!}</div>
+        <div class="section-sub">{!! $destinations->first()->content ?? ($childEntities->count() > 0 ? 'Découvrez les meilleurs endroits de ' . $entity->name : 'Des destinations sélectionnées pour vous') !!}</div>
       </div>
       <div class="dest-grid reveal-up" id="destGrid">
         @php $destCount = 0; @endphp
@@ -310,14 +310,18 @@
             @php $destCount++; @endphp
             <article class="dest-card{{ $i >= 3 ? ' dest-card--extra' : '' }}" tabindex="0"{!! $i >= 3 ? ' style="display:none"' : '' !!}>
               <div class="dest-card__img-wrap">
-                <img src="{{ $child->image ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80' }}" alt="{{ $child->name }}" loading="lazy" class="dest-card__img" />
+                @if($child->image)
+                  <img src="{{ $child->image }}" alt="{{ $child->name }}" loading="lazy" class="dest-card__img" />
+                @else
+                  <div class="dest-card__img-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                @endif
                 <span class="dest-card__badge">{{ $typeLabels[$normalizedType] ?? 'Destination' }}</span>
               </div>
               <div class="dest-card__body">
                 <div class="dest-card__meta"><span class="dest-card__country">{{ $entity->name }}</span></div>
                 <h3 class="dest-card__name">{{ $child->name }}</h3>
                 <div class="dest-card__tags">@if(isset($child->population))<span class="tag">{{ number_format($child->population) }} hab</span>@endif</div>
-                <div class="dest-card__footer"><a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $child->slug ?? $child->id]) }}" class="btn btn--sm btn--amber">Explore</a></div>
+                <div class="dest-card__footer"><a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $child->slug ?? $child->id]) }}" class="btn btn--sm btn--amber">Explorer</a></div>
               </div>
             </article>
           @endforeach
@@ -326,7 +330,12 @@
           @foreach($destinations as $i => $dest)
             @php $totalIdx = $destCount + $i; @endphp
             <article class="dest-card{{ $totalIdx >= 3 ? ' dest-card--extra' : '' }}" tabindex="0"{!! $totalIdx >= 3 ? ' style="display:none"' : '' !!}>
-              <div class="dest-card__img-wrap"><img src="{{ $dest->image_url ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80' }}" alt="{{ $dest->title }}" loading="lazy" class="dest-card__img" /></div>
+              <div class="dest-card__img-wrap">
+                @if($dest->image_url)
+                  <img src="{{ $dest->image_url }}" alt="{{ $dest->title }}" loading="lazy" class="dest-card__img" />
+                @else
+                  <div class="dest-card__img-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                @endif</div>
               <div class="dest-card__body">
                 <h3 class="dest-card__name">{{ $dest->title }}</h3>
                 <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px">{{ Str::limit(strip_tags($dest->content ?? ''), 100) }}</p>
@@ -360,8 +369,8 @@
   <section class="testimonials section section--alt" aria-labelledby="test-heading">
     <div class="container">
       <div class="section-header reveal-up">
-        <span class="eyebrow">Testimonials</span>
-        <h2 class="section-title" id="test-heading">What Travelers Say</h2>
+        <span class="eyebrow">Témoignages</span>
+        <h2 class="section-title" id="test-heading">Ce que disent les voyageurs</h2>
       </div>
       <div class="swiper testimonials-swiper reveal-up">
         <div class="swiper-wrapper">
@@ -371,10 +380,10 @@
                 <div class="test-card__stars">{!! str_repeat('★', $test->testimonial_rating ?? 5) !!}</div>
                 <div class="test-card__quote">{!! $test->testimonial_content ?? $test->content !!}</div>
                 <div class="test-card__author">
-                  <img src="{{ $test->image_url ?? 'https://i.pravatar.cc/48?img=' . $loop->index }}" alt="{{ $test->testimonial_name ?? 'Traveler' }}" />
+                  <img src="{{ $test->image_url ?? 'https://i.pravatar.cc/48?img=' . $loop->index }}" alt="{{ $test->testimonial_name ?? 'Voyageur' }}" />
                   <div>
-                    <strong>{{ $test->testimonial_name ?? 'Anonymous' }}</strong>
-                    <span>{{ $test->testimonial_role ?? 'Traveler' }}</span>
+                    <strong>{{ $test->testimonial_name ?? 'Anonyme' }}</strong>
+                    <span>{{ $test->testimonial_role ?? 'Voyageur' }}</span>
                   </div>
                 </div>
               </div>
@@ -391,8 +400,8 @@
   <section class="events section" aria-labelledby="events-heading">
     <div class="container">
       <div class="section-header reveal-up">
-        <span class="eyebrow">Mark Your Calendar</span>
-        <h2 class="section-title" id="events-heading">Upcoming Events</h2>
+        <span class="eyebrow">Réservez la date</span>
+        <h2 class="section-title" id="events-heading">Événements à venir</h2>
       </div>
       <div class="events-grid reveal-up">
         @foreach($events as $event)
@@ -402,8 +411,8 @@
               <span class="event-card__month">{{ $event->event_start_date ? strtoupper(date('M', strtotime($event->event_start_date))) : '---' }}</span>
             </div>
             <div class="event-card__body">
-              <span class="event-card__type">{{ $event->title ?? 'Event' }}</span>
-              <h3 class="event-card__name">{!! $event->content ?? 'Event' !!}</h3>
+              <span class="event-card__type">{{ $event->title ?? 'Événement' }}</span>
+              <h3 class="event-card__name">{!! $event->content ?? 'Événement' !!}</h3>
               <p class="event-card__location">{{ $event->event_location ? '📍 ' . $event->event_location : '' }}</p>
             </div>
           </article>
@@ -417,11 +426,11 @@
   <section class="gallery section section--alt" aria-labelledby="gallery-heading">
     <div class="container">
       <div class="section-header reveal-up">
-        <span class="eyebrow">Gallery</span>
-        <h2 class="section-title" id="gallery-heading">Moments Captured</h2>
+        <span class="eyebrow">Galerie</span>
+        <h2 class="section-title" id="gallery-heading">Instants capturés</h2>
       </div>
       <div class="gallery-filters reveal-up">
-        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn active" data-filter="all">Tous</button>
         @foreach($galleryItems->unique('meta_title') as $item)
           @if($item->meta_title)
             <button class="filter-btn" data-filter="{{ Str::slug($item->meta_title) }}">{{ $item->meta_title }}</button>
@@ -431,9 +440,9 @@
       <div class="masonry-gallery reveal-up">
         @foreach($galleryItems as $i => $item)
           <div class="masonry-item @if($i === 0)masonry-item--tall @endif @if($i === 3)masonry-item--wide @endif" data-category="{{ Str::slug($item->meta_title ?? 'all') }}">
-            <img src="{{ $item->image_url ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80' }}" alt="{{ $item->title ?? 'Gallery' }}" loading="lazy" />
+            <img src="{{ $item->image_url ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80' }}" alt="{{ $item->title ?? 'Galerie' }}" loading="lazy" />
             <div class="masonry-item__overlay">
-              <button class="lightbox-trigger" data-img="{{ $item->image_url ?? '' }}" aria-label="View larger">&plus;</button>
+              <button class="lightbox-trigger" data-img="{{ $item->image_url ?? '' }}" aria-label="Agrandir">&plus;</button>
             </div>
           </div>
         @endforeach
@@ -443,18 +452,18 @@
 @endif
 
 <div class="lightbox" id="lightbox" hidden>
-  <button class="lightbox__close" id="lightboxClose" aria-label="Close lightbox">&times;</button>
-  <button class="lightbox__nav lightbox__nav--prev" id="lightboxPrev" aria-label="Previous image">&lsaquo;</button>
-  <button class="lightbox__nav lightbox__nav--next" id="lightboxNext" aria-label="Next image">&rsaquo;</button>
+  <button class="lightbox__close" id="lightboxClose" aria-label="Fermer la visionneuse">&times;</button>
+  <button class="lightbox__nav lightbox__nav--prev" id="lightboxPrev" aria-label="Image précédente">&lsaquo;</button>
+  <button class="lightbox__nav lightbox__nav--next" id="lightboxNext" aria-label="Image suivante">&rsaquo;</button>
   <div class="lightbox__img-wrap">
-    <img id="lightboxImg" src="" alt="Gallery image" />
+    <img id="lightboxImg" src="" alt="Image de la galerie" />
   </div>
 </div>
 
 <div class="video-popup" id="videoPopup" hidden>
   <div class="video-popup__backdrop" id="videoBackdrop"></div>
   <div class="video-popup__inner">
-    <button class="video-popup__close" id="videoClose" aria-label="Close video">&times;</button>
+    <button class="video-popup__close" id="videoClose" aria-label="Fermer la vidéo">&times;</button>
     <video controls autoplay class="video-popup__video">
       <source src="" type="video/mp4" />
     </video>
@@ -466,7 +475,7 @@
     <div class="container container--narrow">
       <div class="section-header reveal-up">
         <span class="eyebrow">FAQ</span>
-        <h2 class="section-title" id="faq-heading">Frequently Asked Questions</h2>
+        <h2 class="section-title" id="faq-heading">Questions fréquentes</h2>
       </div>
       <div class="faq-list reveal-up">
         @foreach($faqs as $faq)
@@ -489,21 +498,21 @@
   <section class="blog-section section section--alt" id="blog" aria-labelledby="blog-heading">
     <div class="container">
       <div class="section-header reveal-up">
-        <span class="eyebrow">Journal</span>
-        <h2 class="section-title" id="blog-heading">Latest Stories</h2>
+        <span class="eyebrow">Blog</span>
+        <h2 class="section-title" id="blog-heading">Derniers articles</h2>
       </div>
       <div class="blog-grid reveal-up">
         @foreach($blogs as $i => $post)
           <article class="blog-card @if($i === 0)blog-card--featured @endif">
             <div class="blog-card__img-wrap">
               <img src="{{ $post->image_url ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80' }}" alt="{{ $post->title }}" loading="lazy" />
-              <span class="blog-card__cat">{{ $post->blog_category ?? 'Travel' }}</span>
+              <span class="blog-card__cat">{{ $post->blog_category ?? 'Voyage' }}</span>
             </div>
             <div class="blog-card__body">
               <div class="blog-card__meta">{{ $post->published_at ? date('M d, Y', strtotime($post->published_at)) : '' }} &middot; {{ $post->blog_author ?? 'GoExploria' }}</div>
               <h3 class="blog-card__title">{{ $post->title }}</h3>
               <p>{{ $post->blog_excerpt ?? Str::limit(strip_tags($post->content ?? ''), 120) }}</p>
-              <a href="#" class="blog-card__link">Read More &rarr;</a>
+              <a href="#" class="blog-card__link">Lire la suite &rarr;</a>
             </div>
           </article>
         @endforeach
@@ -516,8 +525,8 @@
   <section class="contact-section section" id="contact" aria-labelledby="contact-heading">
     <div class="container">
       <div class="section-header reveal-up">
-        <span class="eyebrow">Get in Touch</span>
-        <h2 class="section-title" id="contact-heading">Contact Us</h2>
+        <span class="eyebrow">Prenez contact</span>
+        <h2 class="section-title" id="contact-heading">Contactez-nous</h2>
       </div>
       <div class="contact-grid reveal-up">
         <div class="contact-info">
@@ -535,7 +544,7 @@
               <div class="contact-detail">
                 <span class="contact-detail__icon">&#9742;</span>
                 <div>
-                  <strong>Phone</strong>
+                  <strong>Téléphone</strong>
                   <p>{{ $contact->contact_phone }}</p>
                 </div>
               </div>
@@ -544,7 +553,7 @@
               <div class="contact-detail">
                 <span class="contact-detail__icon">&#9873;</span>
                 <div>
-                  <strong>Address</strong>
+                  <strong>Adresse</strong>
                   <p>{{ $contact->contact_address }}</p>
                 </div>
               </div>
@@ -553,7 +562,7 @@
               <div class="contact-detail">
                 <span class="contact-detail__icon">&#128339;</span>
                 <div>
-                  <strong>Hours</strong>
+                  <strong>Horaires</strong>
                   <p>{{ $contact->contact_hours }}</p>
                 </div>
               </div>
@@ -563,12 +572,12 @@
         <form class="contact-form" action="{{ url('/contact') }}" method="POST">
           @csrf
           <div class="contact-form__row">
-            <input type="text" id="name" name="name" placeholder="Your Name" required class="contact-form__input" />
-            <input type="email" id="email" name="email" placeholder="Your Email" required class="contact-form__input" />
+            <input type="text" id="name" name="name" placeholder="Votre nom" required class="contact-form__input" />
+            <input type="email" id="email" name="email" placeholder="Votre email" required class="contact-form__input" />
           </div>
-          <input type="text" id="subject" name="subject" placeholder="Subject" class="contact-form__input" />
-          <textarea id="message" name="message" placeholder="Your Message" rows="5" required class="contact-form__input contact-form__textarea"></textarea>
-          <button type="submit" class="btn btn--amber contact-form__btn">Send Message</button>
+          <input type="text" id="subject" name="subject" placeholder="Sujet" class="contact-form__input" />
+          <textarea id="message" name="message" placeholder="Votre message" rows="5" required class="contact-form__input contact-form__textarea"></textarea>
+          <button type="submit" class="btn btn--amber contact-form__btn">Envoyer</button>
         </form>
       </div>
     </div>
@@ -580,24 +589,24 @@
     <div class="footer__grid">
       <div class="footer__col">
         <h4 class="footer__brand">GoExploria</h4>
-        <p>Curated travel experiences across the world's most extraordinary destinations.</p>
+        <p>Des expériences de voyage sélectionnées à travers les destinations les plus extraordinaires du monde.</p>
       </div>
       <div class="footer__col">
-        <h4>Quick Links</h4>
+        <h4>Liens rapides</h4>
         <a href="#destinations">Destinations</a>
-        <a href="#tours">Tours</a>
-        <a href="#packages">Packages</a>
-        <a href="#blog">Journal</a>
+        <a href="#tours">Visites</a>
+        <a href="#packages">Forfaits</a>
+        <a href="#blog">Blog</a>
       </div>
       <div class="footer__col">
-        <h4>Support</h4>
-        <a href="#contact">Contact Us</a>
+        <h4>Assistance</h4>
+        <a href="#contact">Contactez-nous</a>
         <a href="#">FAQ</a>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
+        <a href="#">Politique de confidentialité</a>
+        <a href="#">Conditions d'utilisation</a>
       </div>
       <div class="footer__col">
-        <h4>Follow Us</h4>
+        <h4>Suivez-nous</h4>
         <div class="footer__social">
           <a href="#" class="social-link" aria-label="Facebook">f</a>
           <a href="#" class="social-link" aria-label="Instagram">in</a>
@@ -607,12 +616,12 @@
       </div>
     </div>
     <div class="footer__bottom">
-      <p>&copy; {{ date('Y') }} GoExploria. All rights reserved.</p>
+      <p>&copy; {{ date('Y') }} GoExploria. Tous droits réservés.</p>
     </div>
   </div>
 </footer>
 
-<button class="back-to-top" id="backToTop" aria-label="Back to top">&uarr;</button>
+<button class="back-to-top" id="backToTop" aria-label="Retour en haut">&uarr;</button>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -683,7 +692,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var geoDropdown = document.getElementById('mapGeoDropdown');
   var geoOptions = [];
   if (geoSearch && geoDropdown && childType && childEntities.length) {
-    geoOptions = [{ label: 'All ' + entityName, value: '', type: '' }].concat(
+    geoOptions = [{ label: 'Tout ' + entityName, value: '', type: '' }].concat(
       childEntities.map(function (ce) { return { label: ce.name, value: ce.slug, type: ce.type }; })
     );
     function renderGeoOptions(filter) {
@@ -758,12 +767,19 @@ document.addEventListener('DOMContentLoaded', function () {
   function rebuildCategoryFilters(categories, data) {
     var filterEl = document.getElementById('mapFilters');
     if (!filterEl) return;
-    filterEl.innerHTML = '<button class="map-filter-btn active" data-filter="all">All</button>';
+    filterEl.innerHTML = '<button class="map-filter-btn active" data-filter="all">Tous</button>';
     mapCategories && Object.keys(mapCategories).forEach(function (slug) {
+      var cat = mapCategories[slug];
       var btn = document.createElement('button');
       btn.className = 'map-filter-btn';
       btn.setAttribute('data-filter', slug);
-      btn.textContent = mapCategories[slug].name || slug;
+      var iconHtml = '';
+      if (cat.image) {
+        iconHtml = '<img src="' + cat.image + '" alt="" class="map-filter-btn__img" />';
+      } else if (cat.icon_class) {
+        iconHtml = '<span class="' + cat.icon_class + '" style="color:' + (cat.color || '#e74c3c') + '"></span>';
+      }
+      btn.innerHTML = iconHtml ? '<span class="map-filter-btn__icon">' + iconHtml + '</span><span class="map-filter-btn__label">' + (cat.name || slug) + '</span>' : (cat.name || slug);
       filterEl.appendChild(btn);
     });
     filterEl.querySelectorAll('.map-filter-btn').forEach(function (btn) {
@@ -864,7 +880,7 @@ document.addEventListener('DOMContentLoaded', function () {
     html += '<div class="map-popup__body">';
     html += '<h4 class="map-popup__title">' + escapeHtml(p.title) + '</h4>';
     if (p.description) html += '<p class="map-popup__desc">' + escapeHtml(p.description.substring(0, 120)) + '</p>';
-    html += '<button class="map-popup__detail-btn" data-index="' + idx + '">View Details</button>';
+    html += '<button class="map-popup__detail-btn" data-index="' + idx + '">Voir détails</button>';
     html += '</div></div>';
     return html;
   }
@@ -901,12 +917,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (point.category) metaHtml += '<span class="map-modal__tag">' + escapeHtml(point.category) + '</span>';
     if (point.city) metaHtml += '<span class="map-modal__tag">' + escapeHtml(point.city) + '</span>';
     if (point.details) {
-      if (point.details.rating) metaHtml += '<span class="map-modal__rating">&#9733; ' + point.details.rating + (point.details.reviews_count ? ' (' + point.details.reviews_count + ' reviews)' : '') + '</span>';
+      if (point.details.rating) metaHtml += '<span class="map-modal__rating">&#9733; ' + point.details.rating + (point.details.reviews_count ? ' (' + point.details.reviews_count + ' avis)' : '') + '</span>';
       if (point.details.phone) metaHtml += '<span class="map-modal__meta-item">&#9742; ' + escapeHtml(point.details.phone) + '</span>';
       if (point.details.email) metaHtml += '<span class="map-modal__meta-item">&#9993; ' + escapeHtml(point.details.email) + '</span>';
       if (point.details.horaires) metaHtml += '<span class="map-modal__meta-item">&#9200; ' + escapeHtml(point.details.horaires) + '</span>';
       if (point.details.tarifs) metaHtml += '<span class="map-modal__meta-item">&#36; ' + escapeHtml(point.details.tarifs) + '</span>';
-      if (point.details.services) metaHtml += '<div class="map-modal__services"><strong>Services:</strong> ' + escapeHtml(point.details.services) + '</div>';
+      if (point.details.services) metaHtml += '<div class="map-modal__services"><strong>Services :</strong> ' + escapeHtml(point.details.services) + '</div>';
     }
     mc.innerHTML = metaHtml;
     var galleryEl = document.getElementById('mapModalGallery');
