@@ -23,27 +23,38 @@
     </a>
 
     <nav class="nav__links" aria-label="Navigation principale">
-      <div class="nav__dropdown-wrap">
-        <a href="#destinations" class="nav__link">Destinations <span style="font-size:0.6em;margin-left:4px">&#9662;</span></a>
-        @if(isset($childEntities) && $childEntities->count() > 0)
-          <div class="nav__mega">
-            @foreach($childEntities as $ce)
-              <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id]) }}" class="nav__mega-item">
-                @if($ce->image)
-                  <img src="{{ $ce->image }}" alt="{{ $ce->name }}" loading="lazy" />
-                @else
-                  <div class="nav__mega-img-placeholder"></div>
-                @endif
-                <span>{{ $ce->name }}</span>
-              </a>
-            @endforeach
+      @php
+        $navSections = [];
+        if ($aboutContents->count() > 0) $navSections[] = ['id' => 'about', 'label' => 'À propos'];
+        if ($destinations->count() > 0 || $childEntities->count() > 0) $navSections[] = ['id' => 'destinations', 'label' => 'Destinations'];
+        if ($testimonials->count() > 0) $navSections[] = ['id' => 'testimonials', 'label' => 'Témoignages'];
+        if ($events->count() > 0) $navSections[] = ['id' => 'events', 'label' => 'Événements'];
+        if ($galleryItems->count() > 0) $navSections[] = ['id' => 'gallery', 'label' => 'Galerie'];
+        if ($faqs->count() > 0) $navSections[] = ['id' => 'faq', 'label' => 'FAQ'];
+        if ($blogs->count() > 0) $navSections[] = ['id' => 'blog', 'label' => 'Blog'];
+        if ($contactInfo->count() > 0) $navSections[] = ['id' => 'contact', 'label' => 'Contact'];
+      @endphp
+      @foreach($navSections as $ns)
+        @if($ns['id'] === 'destinations')
+          <div class="nav__dropdown-wrap">
+            <a href="#{{ $ns['id'] }}" class="nav__link">{{ $ns['label'] }} <span style="font-size:0.6em;margin-left:4px">&#9662;</span></a>
+            @if(isset($childEntities) && $childEntities->count() > 0)
+              <div class="nav__mega">
+                @foreach($childEntities as $ce)
+                  <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id]) }}" class="nav__mega-item">
+                    @if($ce->image) <img src="{{ $ce->image }}" alt="{{ $ce->name }}" loading="lazy" />
+                    @else <div class="nav__mega-img-placeholder"></div>
+                    @endif
+                    <span>{{ $ce->name }}</span>
+                  </a>
+                @endforeach
+              </div>
+            @endif
           </div>
+        @else
+          <a href="#{{ $ns['id'] }}" class="nav__link">{{ $ns['label'] }}</a>
         @endif
-      </div>
-      <a href="#tours" class="nav__link">Visites</a>
-      <a href="#hotels" class="nav__link">Hôtels</a>
-      <a href="#packages" class="nav__link">Forfaits</a>
-      <a href="#blog" class="nav__link">Blog</a>
+      @endforeach
     </nav>
 
     <div class="nav__actions">
@@ -63,20 +74,22 @@
 
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
     <div class="mobile-menu__inner">
-      <div class="mobile-menu__group">
-        <a href="#destinations" class="mobile-menu__link mobile-menu__link--parent">Destinations</a>
-        @if(isset($childEntities) && $childEntities->count() > 0)
-          <div class="mobile-menu__sublinks">
-            @foreach($childEntities as $ce)
-              <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id]) }}" class="mobile-menu__link mobile-menu__link--sub">{{ $ce->name }}</a>
-            @endforeach
+      @foreach($navSections as $ns)
+        @if($ns['id'] === 'destinations')
+          <div class="mobile-menu__group">
+            <a href="#{{ $ns['id'] }}" class="mobile-menu__link mobile-menu__link--parent">{{ $ns['label'] }}</a>
+            @if(isset($childEntities) && $childEntities->count() > 0)
+              <div class="mobile-menu__sublinks">
+                @foreach($childEntities as $ce)
+                  <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id]) }}" class="mobile-menu__link mobile-menu__link--sub">{{ $ce->name }}</a>
+                @endforeach
+              </div>
+            @endif
           </div>
+        @else
+          <a href="#{{ $ns['id'] }}" class="mobile-menu__link">{{ $ns['label'] }}</a>
         @endif
-      </div>
-      <a href="#tours" class="mobile-menu__link">Visites</a>
-      <a href="#hotels" class="mobile-menu__link">Hôtels</a>
-      <a href="#packages" class="mobile-menu__link">Forfaits</a>
-      <a href="#blog" class="mobile-menu__link">Blog</a>
+      @endforeach
     </div>
   </div>
 
@@ -107,7 +120,7 @@
   $youTubeEmbed = function($url) {
     if (!$url) return '';
     preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/', $url, $m);
-    return isset($m[1]) ? 'https://www.youtube.com/embed/' . $m[1] . '?autoplay=1&mute=1&loop=1&playlist=' . $m[1] . '&controls=0&showinfo=0&rel=0' : '';
+    return isset($m[1]) ? 'https://www.youtube.com/embed/' . $m[1] . '?autoplay=1&mute=1&loop=1&playlist=' . $m[1] . '&controls=0&showinfo=0&rel=0&enablejsapi=1' : '';
   };
   $showVideosOnly = $videos->count() > 0;
   $hasMultipleSlides = $showVideosOnly ? $videos->count() > 1 : $heroContents->count() > 1;
@@ -123,6 +136,7 @@
             @else
               <video class="hero__video-bg" src="{{ $video->video_url }}" autoplay muted loop playsinline loading="lazy"></video>
             @endif
+            <button class="hero__video-toggle" aria-label="Lecture/Pause">&#10074;&#10074;</button>
             <div class="hero__overlay"></div>
             <div class="hero__content">
               @if($video->title || $video->meta_title || $video->content)
@@ -626,6 +640,37 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="{{ asset('vendor/travel-destination/js/travel-destination.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.hero__video-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var slide = btn.closest('.hero__slide--video');
+      if (!slide) return;
+      var iframe = slide.querySelector('iframe.hero__video-bg');
+      var video = slide.querySelector('video.hero__video-bg');
+      if (iframe) {
+        var paused = btn.getAttribute('data-paused') === '1';
+        if (paused) {
+          iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+          btn.innerHTML = '&#10074;&#10074;';
+          btn.setAttribute('data-paused', '0');
+        } else {
+          iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+          btn.innerHTML = '&#9654;';
+          btn.setAttribute('data-paused', '1');
+        }
+      } else if (video) {
+        if (video.paused) {
+          video.play();
+          btn.innerHTML = '&#10074;&#10074;';
+        } else {
+          video.pause();
+          btn.innerHTML = '&#9654;';
+        }
+      }
+    });
+  });
+});
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var mapEl = document.getElementById('travel-map');
