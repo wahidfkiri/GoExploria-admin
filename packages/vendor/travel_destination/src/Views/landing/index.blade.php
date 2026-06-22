@@ -130,7 +130,11 @@
                 <h1 class="hero__title">{{ $video->title ?? $entity->name }}</h1>
                 <div class="hero__desc">{!! $video->content ?? '' !!}</div>
                 <div class="hero__ctas">
-                  <a href="#destinations" class="btn btn--amber">Explore Tours</a>
+                  @if($video->button_text && $video->button_url)
+                    <a href="{{ $video->button_url }}" class="btn btn--amber" target="_blank" rel="noopener">{{ $video->button_text }}</a>
+                  @else
+                    <a href="#destinations" class="btn btn--amber">Explore Tours</a>
+                  @endif
                   <a href="#about" class="btn btn--glass">Learn More</a>
                 </div>
               @endif
@@ -147,7 +151,11 @@
               <h1 class="hero__title">{{ $entity->name }}<br/>@if(isset($entity->country))<em>{{ $entity->country->name }}</em>@endif</h1>
               <div class="hero__desc">{!! $slide->content ?? '' !!}</div>
               <div class="hero__ctas">
-                <a href="#destinations" class="btn btn--amber">Explore Tours</a>
+                @if($slide->button_text && $slide->button_url)
+                  <a href="{{ $slide->button_url }}" class="btn btn--amber" target="_blank" rel="noopener">{{ $slide->button_text }}</a>
+                @else
+                  <a href="#destinations" class="btn btn--amber">Explore Tours</a>
+                @endif
                 <a href="#about" class="btn btn--glass">Learn More</a>
               </div>
             </div>
@@ -300,7 +308,7 @@
         @if($childEntities->count() > 0)
           @foreach($childEntities as $i => $child)
             @php $destCount++; @endphp
-            <article class="dest-card{{ $i >= 3 ? ' dest-card--extra' : '' }}" tabindex="0"{{ $i >= 3 ? ' style="display:none"' : '' }}>
+            <article class="dest-card{{ $i >= 3 ? ' dest-card--extra' : '' }}" tabindex="0"{!! $i >= 3 ? ' style="display:none"' : '' !!}>
               <div class="dest-card__img-wrap">
                 <img src="{{ $child->image ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80' }}" alt="{{ $child->name }}" loading="lazy" class="dest-card__img" />
                 <span class="dest-card__badge">{{ $typeLabels[$normalizedType] ?? 'Destination' }}</span>
@@ -317,7 +325,7 @@
         @if($destinations->count() > 0)
           @foreach($destinations as $i => $dest)
             @php $totalIdx = $destCount + $i; @endphp
-            <article class="dest-card{{ $totalIdx >= 3 ? ' dest-card--extra' : '' }}" tabindex="0"{{ $totalIdx >= 3 ? ' style="display:none"' : '' }}>
+            <article class="dest-card{{ $totalIdx >= 3 ? ' dest-card--extra' : '' }}" tabindex="0"{!! $totalIdx >= 3 ? ' style="display:none"' : '' !!}>
               <div class="dest-card__img-wrap"><img src="{{ $dest->image_url ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80' }}" alt="{{ $dest->title }}" loading="lazy" class="dest-card__img" /></div>
               <div class="dest-card__body">
                 <h3 class="dest-card__name">{{ $dest->title }}</h3>
