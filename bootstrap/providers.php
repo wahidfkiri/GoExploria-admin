@@ -11,4 +11,5 @@ return [
     Vendor\Cms\CmsServiceProvider::class,
     Vendor\MailMarketing\MailMarketingServiceProvider::class,
     Vendor\Activities\ActivitiesServiceProvider::class,
+    Vendor\TravelDestination\TravelDestinationServiceProvider::class,
 ];

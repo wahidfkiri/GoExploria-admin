@@ -488,6 +488,59 @@
         .submit-btn--paypal:hover {
             box-shadow: 0 14px 28px rgba(244, 173, 24, 0.28);
         }
+        .submit-btn.is-loading {
+            pointer-events: none;
+            opacity: .7;
+        }
+        .submit-btn.is-loading::after {
+            content: '';
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: devis-spin .6s linear infinite;
+            display: inline-block;
+        }
+        @keyframes devis-spin {
+            to { transform: rotate(360deg); }
+        }
+        .field-error {
+            color: #e74c3c;
+            font-size: 13px;
+            display: block;
+            margin-top: 4px;
+        }
+        .is-invalid {
+            border-color: #e74c3c !important;
+        }
+        #devis-toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 99999;
+            background: #27ae60;
+            color: #fff;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 8px 30px rgba(39,174,96,.35);
+            transform: translateX(120%);
+            transition: transform .35s cubic-bezier(.22,.68,0,1);
+            max-width: 420px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.4;
+        }
+        #devis-toast.is-visible {
+            transform: translateX(0);
+        }
+        #devis-toast i {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
         .plans-column {
             position: sticky;
             top: 88px;
@@ -880,6 +933,7 @@
                 </div>
             @endif
 
+            <div id="devis-alerts"></div>
             <form method="POST" action="{{ route('devis.submit') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="form-block">
@@ -1105,8 +1159,8 @@
                     </div>
 
                     <label class="consent">
-                        <input type="checkbox" name="consent" value="1" @checked(old('consent'))>
-                        <span style="color:#ffc439;">J'accepte que mes informations soient utilisées pour le traitement de ma demande de devis.</span>
+                        <input type="checkbox" name="consent" value="1" checked>
+                        <span style="color:#ffc439;font-size:15px;font-weight:700;">J'accepte que mes informations soient utilisées pour le traitement de ma demande de devis.</span>
                     </label>
                     @error('consent')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
@@ -1203,6 +1257,8 @@
 </div>
 
 @include('home-v2.components.Footer')
+
+<div id="devis-toast"><i class="fas fa-check-circle"></i><span id="devis-toast-msg"></span></div>
 
 <!-- Modal pour l'affichage des images -->
 <div class="modal-overlay" id="imageModal" onclick="closeImageModal(event)">
@@ -1692,6 +1748,121 @@
 
         window.recalculate = recalculate;
     })();
+</script>
+<script>
+(function() {
+    var toast = document.getElementById('devis-toast');
+    var toastMsg = document.getElementById('devis-toast-msg');
+    var toastTimer;
+
+    function showToast(msg) {
+        toastMsg.textContent = msg;
+        toast.classList.add('is-visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function() { toast.classList.remove('is-visible'); }, 5000);
+    }
+
+    var form = document.querySelector('form[action*="devis"]');
+    if (!form) return;
+
+    var alertsContainer = document.getElementById('devis-alerts');
+    var lastClickBtn = null;
+
+    form.querySelectorAll('button[type="submit"]').forEach(function(btn) {
+        btn.addEventListener('click', function() { lastClickBtn = this; });
+    });
+
+    function showAlert(type, message) {
+        var div = document.createElement('div');
+        div.className = type === 'success' ? 'alert alert-ok' : 'alert alert-ko';
+        div.textContent = message;
+        alertsContainer.replaceChildren(div);
+        div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function clearFieldErrors() {
+        form.querySelectorAll('.field-error').forEach(function(el) { el.remove(); });
+        form.querySelectorAll('.is-invalid').forEach(function(el) { el.classList.remove('is-invalid'); });
+    }
+
+    function showFieldErrors(errors) {
+        for (var field in errors) {
+            if (!errors.hasOwnProperty(field)) continue;
+            var baseField = field.split('.')[0];
+            var input = form.querySelector('[name="' + field + '"]')
+                || form.querySelector('[name="' + baseField + '"]')
+                || form.querySelector('[name="' + baseField + '[]"]')
+                || form.querySelector('[name^="' + baseField + '["]');
+            if (!input) continue;
+            input.classList.add('is-invalid');
+            var span = document.createElement('span');
+            span.className = 'field-error';
+            span.textContent = errors[field][0] || 'Erreur';
+            input.parentNode.appendChild(span);
+        }
+    }
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        var submitter = e.submitter || lastClickBtn;
+        if (!submitter) {
+            form.submit();
+            return;
+        }
+        lastClickBtn = null;
+
+        var formData = new FormData(form);
+        if (submitter.name) {
+            formData.append(submitter.name, submitter.value);
+        }
+
+        form.querySelectorAll('button[type="submit"]').forEach(function(btn) { btn.disabled = true; });
+        submitter.classList.add('is-loading');
+        clearFieldErrors();
+
+        try {
+            var response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: formData,
+            });
+
+            var data = await response.json();
+
+            if (!response.ok) {
+                if (response.status === 422 && data.errors) {
+                    showFieldErrors(data.errors);
+                    if (data.message) showAlert('error', data.message);
+                } else if (data.error) {
+                    showAlert('error', data.error);
+                } else {
+                    showAlert('error', 'Une erreur est survenue. Veuillez réessayer.');
+                }
+                return;
+            }
+
+            if (data.paypal_url) {
+                window.location.href = data.paypal_url;
+                return;
+            }
+
+            if (data.success) {
+                form.reset();
+                if (window.recalculate) window.recalculate();
+                showToast(data.success);
+            }
+        } catch (err) {
+            showAlert('error', 'Erreur de connexion. Veuillez vérifier votre réseau et réessayer.');
+        } finally {
+            form.querySelectorAll('button[type="submit"]').forEach(function(btn) { btn.disabled = false; });
+            submitter.classList.remove('is-loading');
+        }
+    });
+})();
 </script>
 </body>
 </html>

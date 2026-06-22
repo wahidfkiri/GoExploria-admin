@@ -17,6 +17,8 @@ class PageContent extends Model
 
     protected $fillable = [
         'activity_id',
+        'pageable_type',
+        'pageable_id',
         'type',
         'title',
         'content',
@@ -84,12 +86,14 @@ class PageContent extends Model
             return null;
         }
 
-        // Si le chemin contient déjà 'storage/', on l'utilise directement
+        if (Str::startsWith($this->image, 'http://') || Str::startsWith($this->image, 'https://')) {
+            return $this->image;
+        }
+
         if (Str::startsWith($this->image, 'storage/')) {
             return asset($this->image);
         }
 
-        // Sinon, on ajoute 'storage/'
         if (Storage::disk('public')->exists($this->image)) {
             return asset('storage/' . $this->image);
         }
@@ -192,4 +196,31 @@ class PageContent extends Model
         ];
         return $icons[$this->type] ?? 'file-alt';
     }
+
+
+// Ajouter ces méthodes à la fin de la classe
+
+/**
+ * Relation polymorphique avec le parent (Activity ou Destination)
+ */
+public function pageable()
+{
+    return $this->morphTo();
+}
+
+/**
+ * Scope pour récupérer les contenus par type de parent
+ */
+public function scopeByPageableType($query, $type)
+{
+    return $query->where('pageable_type', $type);
+}
+
+/**
+ * Scope pour récupérer les contenus par ID de parent
+ */
+public function scopeByPageableId($query, $id)
+{
+    return $query->where('pageable_id', $id);
+}
 }

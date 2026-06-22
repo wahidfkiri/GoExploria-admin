@@ -5,6 +5,7 @@ namespace App\Services\Payment;
 use App\Models\BillingRequest;
 use App\Models\Customer;
 use App\Models\DevisRequest;
+use App\Models\Etablissement;
 use App\Models\Payment;
 use App\Models\PaymentGateway;
 use App\Models\PaymentTransaction;
@@ -98,9 +99,12 @@ class DevisPayPalCheckoutService
             throw new RuntimeException('PayPal n\'a pas retourné de lien de paiement valide.');
         }
 
+        $etablissementId = $gateway?->etablissement_id ?? Etablissement::first()?->id;
+
         try {
-            DB::transaction(function () use ($amount, $currency, $customer, $gateway, $requestIds, $devisRequest, $paypalOrderId, $order): void {
+            DB::transaction(function () use ($amount, $currency, $customer, $gateway, $requestIds, $devisRequest, $paypalOrderId, $order, $etablissementId): void {
                 $payment = Payment::create([
+                    'etablissement_id' => $etablissementId,
                     'payment_date' => now()->toDateString(),
                     'amount' => $amount,
                     'method' => 'paypal',
@@ -116,6 +120,7 @@ class DevisPayPalCheckoutService
                 ]);
 
                 PaymentTransaction::create([
+                    'etablissement_id' => $etablissementId,
                     'payment_id' => $payment->id,
                     'client_id' => $customer->id,
                     'payment_gateway_id' => $gateway?->id,

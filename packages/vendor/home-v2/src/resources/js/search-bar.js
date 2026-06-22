@@ -235,18 +235,15 @@ class SearchBarV2 {
     }
 
     getDestinationUrl(dest) {
-        if (dest.url) return dest.url;
-        if (dest.path) return '/' + String(dest.path).replace(/^\/+/, '');
-
         var slug = dest.slug || this.slugify(dest.name || '');
         switch (dest.type) {
-            case 'continent': return '/destinations/continent/' + slug;
-            case 'country': return '/destinations/pays/' + slug;
-            case 'province': return '/destinations/province/' + slug;
-            case 'region': return '/destinations/region/' + slug;
-            case 'ville': return '/destinations/ville/' + slug;
+            case 'continent': return '/travel-destination/continent/' + slug;
+            case 'country': return '/travel-destination/country/' + slug;
+            case 'province': return '/travel-destination/province/' + slug;
+            case 'region': return '/travel-destination/region/' + slug;
+            case 'ville': return '/travel-destination/city/' + slug;
             case 'etablissement': return '/company/' + dest.id + '/' + (slug || ('etablissement-' + dest.id));
-            case 'secteur': return '/destinations/secteur/' + slug;
+            case 'secteur': return '/travel-destination/secteur/' + slug;
             default: return '#';
         }
     }

@@ -128,8 +128,6 @@ class MegaMenuService {
 
     getDestinationUrl(destination) {
         if (!destination) return '#';
-        if (destination.url) return destination.url;
-        if (destination.path) return '/' + String(destination.path).replace(/^\/+/, '');
 
         const type = destination.type || 'continent';
         const slug = destination.slug || this.slugify(destination.name || destination.code || '');
@@ -138,16 +136,7 @@ class MegaMenuService {
             return `/company/${destination.id}/${slug || ('etablissement-' + destination.id)}`;
         }
 
-        const legacy = {
-            continent: 'continent',
-            country: 'pays',
-            province: 'province',
-            region: 'region',
-            ville: 'ville',
-            secteur: 'secteur'
-        };
-
-        return `/destinations/${legacy[type] || type}/${slug}`;
+        return `/travel-destination/${type}/${slug}`;
     }
 
     slugify(value) {

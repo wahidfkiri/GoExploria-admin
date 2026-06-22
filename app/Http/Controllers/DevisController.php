@@ -10,6 +10,7 @@ use App\Models\BillingSetting;
 use App\Models\Plan;
 use App\Models\Tax;
 use App\Services\Payment\DevisPayPalCheckoutService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -54,7 +55,7 @@ class DevisController extends Controller
     /**
      * Soumet une demande de devis
      */
-    public function submit(Request $request, DevisPayPalCheckoutService $paypalCheckout): RedirectResponse
+    public function submit(Request $request, DevisPayPalCheckoutService $paypalCheckout): RedirectResponse|JsonResponse
     {
         $validated = $request->validate([
             'checkout_action' => ['nullable', 'in:request,pay_now'],
@@ -86,18 +87,19 @@ class DevisController extends Controller
         $checkoutAction = $validated['checkout_action'] ?? 'request';
         $validated['project_details'] = $validated['project_details'] ?? null;
 
-        // Traitement des quantités sélectionnées
         $selectedQuantities = collect($validated['service_quantities'] ?? [])
             ->mapWithKeys(fn ($quantity, $serviceId) => [(int) $serviceId => max(0, (int) $quantity)])
             ->filter(fn (int $quantity) => $quantity > 0);
 
         if ($selectedQuantities->isEmpty()) {
+            if ($request->wantsJson()) {
+                return response()->json(['error' => 'Veuillez sélectionner au moins un service avec une quantité supérieure à zéro.'], 422);
+            }
             return back()
                 ->withErrors(['service_quantities' => 'Veuillez sélectionner au moins un service avec une quantité supérieure à zéro.'])
                 ->withInput();
         }
 
-        // Récupération des services sélectionnés
         $selectedServices = BillingRequestService::query()
             ->with('tax')
             ->active()
@@ -106,12 +108,14 @@ class DevisController extends Controller
             ->keyBy('id');
 
         if ($selectedServices->count() !== $selectedQuantities->count()) {
+            if ($request->wantsJson()) {
+                return response()->json(['error' => 'Un ou plusieurs services sélectionnés ne sont plus disponibles.'], 422);
+            }
             return back()
                 ->withErrors(['service_quantities' => 'Un ou plusieurs services sélectionnés ne sont plus disponibles.'])
                 ->withInput();
         }
 
-        // Labels des services pour l'affichage
         $selectedServiceLabels = $selectedServices
             ->map(fn (BillingRequestService $service) => $service->title . ' x' . $selectedQuantities->get($service->id, 1))
             ->values()
@@ -119,25 +123,27 @@ class DevisController extends Controller
 
         $validated['selected_services'] = $selectedServiceLabels;
 
-        // Gestion des fichiers médias
         $storedMedia = $this->handleMediaFiles($request);
 
-        // Création des demandes de facturation
         $billingRequests = collect();
 
         DB::transaction(function () use ($validated, $request, $selectedServices, $selectedQuantities, $selectedServiceLabels, &$billingRequests): void {
             $billingRequests = $this->createBillingRequestsFromServices($validated, $request, $selectedServices, $selectedQuantities, $selectedServiceLabels);
         });
 
-        // Création de la demande de devis
         $devisRequest = $this->createDevisRequest($validated, $request, $storedMedia);
 
-        // Envoi de l'email
         $this->sendDevisEmail($devisRequest, $validated, $storedMedia, $billingRequests);
 
-        // Gestion du paiement PayPal si demandé
         if ($checkoutAction === 'pay_now') {
+            if ($request->wantsJson()) {
+                return $this->handlePayPalPaymentJson($billingRequests, $devisRequest);
+            }
             return $this->handlePayPalPayment($billingRequests, $devisRequest);
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => 'Votre demande de devis a bien été enregistrée et envoyée. Notre équipe vous répondra rapidement.']);
         }
 
         return redirect()
@@ -754,6 +760,22 @@ class DevisController extends Controller
             return redirect()
                 ->route('devis')
                 ->with('error', 'Votre demande a été enregistrée, mais le paiement PayPal n\'a pas pu démarrer. Notre équipe vous contactera rapidement.');
+        }
+    }
+
+    private function handlePayPalPaymentJson(Collection $billingRequests, DevisRequest $devisRequest): JsonResponse
+    {
+        try {
+            $paypalCheckout = app(DevisPayPalCheckoutService::class);
+            $approvalUrl = $paypalCheckout->createCheckout($billingRequests, $devisRequest);
+
+            return response()->json(['paypal_url' => $approvalUrl]);
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'error' => 'Votre demande a été enregistrée, mais le paiement PayPal n\'a pas pu démarrer. Notre équipe vous contactera rapidement.',
+            ], 500);
         }
     }
 

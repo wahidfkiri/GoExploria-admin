@@ -44,7 +44,8 @@
             "Vendor\\Destination\\": "packages/vendor/destination/src/",
             "Vendor\\Cms\\": "packages/vendor/cms/src",
             "Vendor\\MailMarketing\\": "packages/vendor/mail-marketing/src/",
-            "Vendor\\Activities\\": "packages/vendor/activities/src/"
+            "Vendor\\Activities\\": "packages/vendor/activities/src/",
+            "Vendor\\TravelDestination\\": "packages/vendor/travel_destination/src/"
         },
         "files": [
             "app/Helpers/helpers.php",

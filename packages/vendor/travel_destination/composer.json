@@ -1,0 +1,28 @@
+{
+    "name": "vendor/travel-destination",
+    "description": "Travel Destination Landing Pages - Dynamic destination pages powered by page_contents",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Vendor\\TravelDestination\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "GoExploria",
+            "email": "dev@goexploria.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^10.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Vendor\\TravelDestination\\TravelDestinationServiceProvider"
+            ]
+        }
+    }
+}

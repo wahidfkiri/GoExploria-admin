@@ -15,6 +15,7 @@ class MapPoint extends Model
         'title',
         'description',
         'category',
+        'map_category_id',
         'type',
         'main_image',
         'youtube_url',
@@ -76,6 +77,11 @@ class MapPoint extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function mapCategory()
+    {
+        return $this->belongsTo(MapCategory::class);
+    }
+
     // Scopes
     public function scopeActive($query)
     {
@@ -95,7 +101,9 @@ class MapPoint extends Model
 
     public function scopeByCategory($query, $category)
     {
-        return $query->where('category', $category);
+        return $query->whereHas('mapCategory', function($q) use ($category) {
+            $q->where('slug', $category);
+        });
     }
 
     // Accesseurs
@@ -106,7 +114,15 @@ class MapPoint extends Model
         }
         
         if ($this->main_image) {
-            return asset('storage/' . $this->main_image);
+            if (preg_match('/^https?:\/\//i', $this->main_image)) {
+                return $this->main_image;
+            }
+
+            if (str_starts_with($this->main_image, '/storage/') || str_starts_with($this->main_image, 'storage/')) {
+                return url('/' . ltrim($this->main_image, '/'));
+            }
+
+            return asset('storage/' . ltrim($this->main_image, '/'));
         }
         
         return asset('images/default-placeholder.jpg');
