@@ -434,12 +434,16 @@
 @php
   $galleryImages = collect();
   foreach ($galleryItems as $item) {
+    $cat = is_string($item->meta_title) ? Str::slug($item->meta_title) : 'all';
+    $title = is_string($item->title) ? $item->title : 'Galerie';
     if (!empty($item->extra_data['gallery']) && is_array($item->extra_data['gallery'])) {
       foreach ($item->extra_data['gallery'] as $imgUrl) {
-        $galleryImages->push(['url' => $imgUrl, 'category' => Str::slug($item->meta_title ?? 'all'), 'title' => $item->title ?? 'Galerie']);
+        if (is_string($imgUrl)) {
+          $galleryImages->push(['url' => $imgUrl, 'category' => $cat, 'title' => $title]);
+        }
       }
-    } elseif ($item->image_url) {
-      $galleryImages->push(['url' => $item->image_url, 'category' => Str::slug($item->meta_title ?? 'all'), 'title' => $item->title ?? 'Galerie']);
+    } elseif (is_string($item->image_url)) {
+      $galleryImages->push(['url' => $item->image_url, 'category' => $cat, 'title' => $title]);
     }
   }
 @endphp
@@ -453,7 +457,7 @@
       <div class="gallery-filters reveal-up">
         <button class="filter-btn active" data-filter="all">Tous</button>
         @foreach($galleryItems->unique('meta_title') as $item)
-          @if($item->meta_title)
+          @if(is_string($item->meta_title) && $item->meta_title)
             <button class="filter-btn" data-filter="{{ Str::slug($item->meta_title) }}">{{ $item->meta_title }}</button>
           @endif
         @endforeach
