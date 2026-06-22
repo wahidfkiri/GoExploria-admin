@@ -26,7 +26,7 @@
       @php
         $navSections = [];
         if ($aboutContents->count() > 0) $navSections[] = ['id' => 'about', 'label' => 'À propos'];
-        if ($destinations->count() > 0 || $childEntities->count() > 0) $navSections[] = ['id' => 'destinations', 'label' => 'Destinations'];
+        if ($destinations->count() > 0 || $childEntities->count() > 0 || (isset($destinationActivities) && $destinationActivities->count() > 0)) $navSections[] = ['id' => 'destinations', 'label' => 'Destinations'];
         if ($testimonials->count() > 0) $navSections[] = ['id' => 'testimonials', 'label' => 'Témoignages'];
         if ($events->count() > 0) $navSections[] = ['id' => 'events', 'label' => 'Événements'];
         if ($galleryItems->count() > 0) $navSections[] = ['id' => 'gallery', 'label' => 'Galerie'];
