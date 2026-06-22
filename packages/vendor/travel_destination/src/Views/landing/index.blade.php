@@ -19,12 +19,27 @@
 <header class="nav" id="navbar" role="banner">
   <div class="nav__container">
     <a href="{{ url('/') }}" class="nav__logo" aria-label="GoExploria Home">
-      <span class="nav__logo-mark">G</span>
-      <span class="nav__logo-text">oExploria</span>
+      <img src="{{ asset('logo.png') }}" alt="GoExploria" style="height:36px;width:auto" />
     </a>
 
     <nav class="nav__links" aria-label="Primary navigation">
-      <a href="#destinations" class="nav__link">Destinations</a>
+      <div class="nav__dropdown-wrap">
+        <a href="#destinations" class="nav__link">Destinations <span style="font-size:0.6em;margin-left:4px">&#9662;</span></a>
+        @if(isset($childEntities) && $childEntities->count() > 0)
+          <div class="nav__mega">
+            @foreach($childEntities as $ce)
+              <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id]) }}" class="nav__mega-item">
+                @if($ce->image)
+                  <img src="{{ $ce->image }}" alt="{{ $ce->name }}" loading="lazy" />
+                @else
+                  <div class="nav__mega-img-placeholder"></div>
+                @endif
+                <span>{{ $ce->name }}</span>
+              </a>
+            @endforeach
+          </div>
+        @endif
+      </div>
       <a href="#tours" class="nav__link">Tours</a>
       <a href="#hotels" class="nav__link">Hotels</a>
       <a href="#packages" class="nav__link">Packages</a>
@@ -39,7 +54,6 @@
       <button class="nav__search-btn" id="navSearchBtn" aria-label="Open search">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       </button>
-      <a href="{{ url('/contact') }}" class="btn btn--amber nav__book">Book Now</a>
     </div>
 
     <button class="nav__hamburger" id="hamburger" aria-label="Toggle mobile menu" aria-expanded="false">
@@ -49,14 +63,20 @@
 
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
     <div class="mobile-menu__inner">
-      <a href="#destinations" class="mobile-menu__link">Destinations</a>
+      <div class="mobile-menu__group">
+        <a href="#destinations" class="mobile-menu__link mobile-menu__link--parent">Destinations</a>
+        @if(isset($childEntities) && $childEntities->count() > 0)
+          <div class="mobile-menu__sublinks">
+            @foreach($childEntities as $ce)
+              <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id]) }}" class="mobile-menu__link mobile-menu__link--sub">{{ $ce->name }}</a>
+            @endforeach
+          </div>
+        @endif
+      </div>
       <a href="#tours" class="mobile-menu__link">Tours</a>
       <a href="#hotels" class="mobile-menu__link">Hotels</a>
       <a href="#packages" class="mobile-menu__link">Packages</a>
       <a href="#blog" class="mobile-menu__link">Journal</a>
-      <div class="mobile-menu__actions">
-        <a href="{{ url('/contact') }}" class="btn btn--amber">Book Now</a>
-      </div>
     </div>
   </div>
 
@@ -275,37 +295,30 @@
         </h2>
         <div class="section-sub">{!! $destinations->first()->content ?? ($childEntities->count() > 0 ? 'Discover the best places in ' . $entity->name : 'Handpicked destinations for you') !!}</div>
       </div>
-      <div class="dest-grid reveal-up">
+      <div class="dest-grid reveal-up" id="destGrid">
+        @php $destCount = 0; @endphp
         @if($childEntities->count() > 0)
-          @foreach($childEntities as $child)
-            <article class="dest-card" tabindex="0">
+          @foreach($childEntities as $i => $child)
+            @php $destCount++; @endphp
+            <article class="dest-card{{ $i >= 3 ? ' dest-card--extra' : '' }}" tabindex="0"{{ $i >= 3 ? ' style="display:none"' : '' }}>
               <div class="dest-card__img-wrap">
                 <img src="{{ $child->image ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80' }}" alt="{{ $child->name }}" loading="lazy" class="dest-card__img" />
                 <span class="dest-card__badge">{{ $typeLabels[$normalizedType] ?? 'Destination' }}</span>
               </div>
               <div class="dest-card__body">
-                <div class="dest-card__meta">
-                  <span class="dest-card__country">{{ $entity->name }}</span>
-                </div>
+                <div class="dest-card__meta"><span class="dest-card__country">{{ $entity->name }}</span></div>
                 <h3 class="dest-card__name">{{ $child->name }}</h3>
-                <div class="dest-card__tags">
-                  @if(isset($child->population))
-                    <span class="tag">{{ number_format($child->population) }} hab</span>
-                  @endif
-                </div>
-                <div class="dest-card__footer">
-                  <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $child->slug ?? $child->id]) }}" class="btn btn--sm btn--amber">Explore</a>
-                </div>
+                <div class="dest-card__tags">@if(isset($child->population))<span class="tag">{{ number_format($child->population) }} hab</span>@endif</div>
+                <div class="dest-card__footer"><a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $child->slug ?? $child->id]) }}" class="btn btn--sm btn--amber">Explore</a></div>
               </div>
             </article>
           @endforeach
         @endif
         @if($destinations->count() > 0)
-          @foreach($destinations as $dest)
-            <article class="dest-card" tabindex="0">
-              <div class="dest-card__img-wrap">
-                <img src="{{ $dest->image_url ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80' }}" alt="{{ $dest->title }}" loading="lazy" class="dest-card__img" />
-              </div>
+          @foreach($destinations as $i => $dest)
+            @php $totalIdx = $destCount + $i; @endphp
+            <article class="dest-card{{ $totalIdx >= 3 ? ' dest-card--extra' : '' }}" tabindex="0"{{ $totalIdx >= 3 ? ' style="display:none"' : '' }}>
+              <div class="dest-card__img-wrap"><img src="{{ $dest->image_url ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80' }}" alt="{{ $dest->title }}" loading="lazy" class="dest-card__img" /></div>
               <div class="dest-card__body">
                 <h3 class="dest-card__name">{{ $dest->title }}</h3>
                 <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px">{{ Str::limit(strip_tags($dest->content ?? ''), 100) }}</p>
@@ -314,6 +327,23 @@
           @endforeach
         @endif
       </div>
+      @if(($childEntities->count() + $destinations->count()) > 3)
+        <div style="text-align:center;margin-top:24px">
+          <button id="showAllDestBtn" class="btn btn--amber" style="cursor:pointer">Afficher tous</button>
+        </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          var btn = document.getElementById('showAllDestBtn');
+          if (!btn) return;
+          btn.addEventListener('click', function () {
+            var showing = btn.getAttribute('data-showing') === '1';
+            document.querySelectorAll('.dest-card--extra').forEach(function (el) { el.style.display = showing ? 'none' : ''; });
+            btn.textContent = showing ? 'Afficher tous' : 'Afficher moins';
+            btn.setAttribute('data-showing', showing ? '0' : '1');
+          });
+        });
+        </script>
+      @endif
     </div>
   </section>
 @endif
