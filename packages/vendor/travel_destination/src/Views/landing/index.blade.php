@@ -431,6 +431,19 @@
 @endif
 
 @if($galleryItems->count() > 0)
+@php
+  $galleryImages = collect();
+  foreach ($galleryItems as $item) {
+    if (!empty($item->extra_data['gallery']) && is_array($item->extra_data['gallery'])) {
+      foreach ($item->extra_data['gallery'] as $imgUrl) {
+        $galleryImages->push(['url' => $imgUrl, 'category' => Str::slug($item->meta_title ?? 'all'), 'title' => $item->title ?? 'Galerie']);
+      }
+    } elseif ($item->image_url) {
+      $galleryImages->push(['url' => $item->image_url, 'category' => Str::slug($item->meta_title ?? 'all'), 'title' => $item->title ?? 'Galerie']);
+    }
+  }
+@endphp
+@if($galleryImages->count() > 0)
   <section class="gallery section section--alt" aria-labelledby="gallery-heading">
     <div class="container">
       <div class="section-header reveal-up">
@@ -446,17 +459,18 @@
         @endforeach
       </div>
       <div class="masonry-gallery reveal-up">
-        @foreach($galleryItems as $i => $item)
-          <div class="masonry-item @if($i === 0)masonry-item--tall @endif @if($i === 3)masonry-item--wide @endif" data-category="{{ Str::slug($item->meta_title ?? 'all') }}">
-            <img src="{{ $item->image_url ?? 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80' }}" alt="{{ $item->title ?? 'Galerie' }}" loading="lazy" />
+        @foreach($galleryImages as $i => $img)
+          <div class="masonry-item @if($i === 0)masonry-item--tall @endif @if($i === 3)masonry-item--wide @endif" data-category="{{ $img['category'] }}">
+            <img src="{{ $img['url'] }}" alt="{{ $img['title'] }}" loading="lazy" />
             <div class="masonry-item__overlay">
-              <button class="lightbox-trigger" data-img="{{ $item->image_url ?? '' }}" aria-label="Agrandir">&plus;</button>
+              <button class="lightbox-trigger" data-img="{{ $img['url'] }}" aria-label="Agrandir">&plus;</button>
             </div>
           </div>
         @endforeach
       </div>
     </div>
   </section>
+@endif
 @endif
 
 <div class="lightbox" id="lightbox" hidden>
