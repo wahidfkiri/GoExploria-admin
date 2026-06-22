@@ -136,6 +136,7 @@
             @else
               <video class="hero__video-bg" src="{{ $video->video_url }}" autoplay muted loop playsinline loading="lazy"></video>
             @endif
+            <div class="hero__click-capture"></div>
             <button class="hero__video-toggle" aria-label="Lecture/Pause">&#10074;&#10074;</button>
             <div class="hero__overlay"></div>
             <div class="hero__content">
@@ -149,7 +150,6 @@
                   @else
                     <a href="#destinations" class="btn btn--amber">Explorer</a>
                   @endif
-                  <a href="#about" class="btn btn--glass">En savoir plus</a>
                 </div>
               @endif
             </div>
@@ -170,7 +170,6 @@
                 @else
                   <a href="#destinations" class="btn btn--amber">Explorer</a>
                 @endif
-                <a href="#about" class="btn btn--glass">En savoir plus</a>
               </div>
             </div>
           </div>
@@ -185,7 +184,6 @@
             <div class="hero__desc">Découvrez la beauté et les merveilles de {{ $entity->name }}</div>
             <div class="hero__ctas">
               <a href="#destinations" class="btn btn--amber">Explorer</a>
-              <a href="#about" class="btn btn--glass">En savoir plus</a>
             </div>
           </div>
         </div>
@@ -214,10 +212,6 @@
     </div>
   @endif
 
-  <a href="#destinations" class="scroll-indicator" aria-label="Défiler vers les destinations">
-    <span class="scroll-indicator__line"></span>
-    <span class="scroll-indicator__label">Défiler</span>
-  </a>
 </section>
 
 @if($breadcrumb->count() > 1)
