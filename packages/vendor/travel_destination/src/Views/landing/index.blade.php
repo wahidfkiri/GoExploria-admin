@@ -48,6 +48,28 @@
                     <span>{{ $ce->name }}</span>
                   </a>
                 @endforeach
+                @if(isset($destinationActivities) && $destinationActivities->count() > 0)
+                  <div class="nav__mega-divider"></div>
+                  @foreach($destinationActivities as $act)
+                    <a href="{{ route('activity.show', ['slug' => $act->slug]) }}" class="nav__mega-item nav__mega-item--activity">
+                      @if($act->image_url) <img src="{{ $act->image_url }}" alt="{{ $act->name }}" loading="lazy" />
+                      @else <div class="nav__mega-img-placeholder nav__mega-img-placeholder--act"></div>
+                      @endif
+                      <span>{{ $act->name }}</span>
+                    </a>
+                  @endforeach
+                @endif
+              </div>
+            @elseif(isset($destinationActivities) && $destinationActivities->count() > 0)
+              <div class="nav__mega">
+                @foreach($destinationActivities as $act)
+                  <a href="{{ route('activity.show', ['slug' => $act->slug]) }}" class="nav__mega-item nav__mega-item--activity">
+                    @if($act->image_url) <img src="{{ $act->image_url }}" alt="{{ $act->name }}" loading="lazy" />
+                    @else <div class="nav__mega-img-placeholder nav__mega-img-placeholder--act"></div>
+                    @endif
+                    <span>{{ $act->name }}</span>
+                  </a>
+                @endforeach
               </div>
             @endif
           </div>
@@ -82,6 +104,14 @@
               <div class="mobile-menu__sublinks">
                 @foreach($childEntities as $ce)
                   <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id]) }}" class="mobile-menu__link mobile-menu__link--sub">{{ $ce->name }}</a>
+                @endforeach
+              </div>
+            @endif
+            @if(isset($destinationActivities) && $destinationActivities->count() > 0)
+              <div class="mobile-menu__sublinks">
+                <span class="mobile-menu__sublinks-label">Activités</span>
+                @foreach($destinationActivities as $act)
+                  <a href="{{ route('activity.show', ['slug' => $act->slug]) }}" class="mobile-menu__link mobile-menu__link--sub">{{ $act->name }}</a>
                 @endforeach
               </div>
             @endif

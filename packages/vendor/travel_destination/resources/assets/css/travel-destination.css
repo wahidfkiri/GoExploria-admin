@@ -513,6 +513,17 @@ h4 { font-size: 1rem; font-weight: 600; }
   background: var(--navy-3);
 }
 .nav__mega-item span { text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.nav__mega-divider {
+  grid-column: 1 / -1; height: 1px;
+  background: var(--glass-border); margin: 4px 0;
+}
+.nav__mega-item--activity img { aspect-ratio: 1/1; border-radius: 50%; }
+.nav__mega-img-placeholder--act { aspect-ratio: 1/1; border-radius: 50%; }
+.mobile-menu__sublinks-label {
+  display: block; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--amber); padding: 8px 20px 4px;
+}
 /* Responsive */
 @media (max-width: 900px) {
   .nav__links { display: none; }

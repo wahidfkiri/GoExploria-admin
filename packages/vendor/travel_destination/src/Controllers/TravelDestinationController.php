@@ -82,6 +82,7 @@ class TravelDestinationController extends Controller
         $heroSlide = $heroContents->first();
         $heroImage = $heroSlide?->image_url ?? $entity->image ?? null;
         $mapCategories = MapCategory::where('is_active', true)->orderBy('sort_order')->get(['slug', 'name', 'icon_class', 'color', 'image']);
+        $destinationActivities = method_exists($entity, 'activities') ? $entity->activities()->where('is_active', true)->get() : collect();
 
         return view('travel-destination::landing.index', compact(
             'entity',
@@ -102,7 +103,8 @@ class TravelDestinationController extends Controller
             'contactInfo',
             'destinations',
             'childEntities',
-            'mapCategories'
+            'mapCategories',
+            'destinationActivities'
         ));
     }
 
