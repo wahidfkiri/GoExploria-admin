@@ -714,8 +714,19 @@ document.addEventListener('DOMContentLoaded', function () {
   var mapEl = document.getElementById('travel-map');
   if (!mapEl) return;
 
-  var entityLat = {{ is_numeric($entity->latitude) ? $entity->latitude : 0 }};
-  var entityLng = {{ is_numeric($entity->longitude) ? $entity->longitude : 0 }};
+  @php
+    $centerLat = is_numeric($entity->latitude) ? (float)$entity->latitude : null;
+    $centerLng = is_numeric($entity->longitude) ? (float)$entity->longitude : null;
+    if (is_null($centerLat) && isset($childEntities) && $childEntities->count() > 0) {
+      $withLat = $childEntities->filter(fn($ce) => is_numeric($ce->latitude));
+      if ($withLat->count() > 0) {
+        $centerLat = ((float)$withLat->min('latitude') + (float)$withLat->max('latitude')) / 2;
+        $centerLng = ((float)$withLat->min('longitude') + (float)$withLat->max('longitude')) / 2;
+      }
+    }
+  @endphp
+  var entityLat = {{ $centerLat ?? 0 }};
+  var entityLng = {{ $centerLng ?? 0 }};
   var entityName = {!! json_encode($entity->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var entityType = {!! json_encode($normalizedType, JSON_UNESCAPED_UNICODE) !!};
   var mapPointsUrl = '{{ route("travel-destination.map-points", ["type" => $normalizedType, "slug" => $slug], false) }}';
