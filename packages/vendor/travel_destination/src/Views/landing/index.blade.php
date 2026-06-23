@@ -26,7 +26,8 @@
       @php
         $navSections = [];
         if ($aboutContents->count() > 0) $navSections[] = ['id' => 'about', 'label' => 'À propos'];
-        if ($destinations->count() > 0 || $childEntities->count() > 0 || (isset($destinationActivities) && $destinationActivities->count() > 0)) $navSections[] = ['id' => 'destinations', 'label' => 'Destinations'];
+        if ($destinations->count() > 0 || $childEntities->count() > 0) $navSections[] = ['id' => 'destinations', 'label' => 'Destinations'];
+        if (isset($destinationActivities) && $destinationActivities->count() > 0) $navSections[] = ['id' => 'activities', 'label' => 'Activités'];
         if ($testimonials->count() > 0) $navSections[] = ['id' => 'testimonials', 'label' => 'Témoignages'];
         if ($events->count() > 0) $navSections[] = ['id' => 'events', 'label' => 'Événements'];
         if ($galleryItems->count() > 0) $navSections[] = ['id' => 'gallery', 'label' => 'Galerie'];
@@ -49,30 +50,22 @@
                     <span>{{ $ce->name }}</span>
                   </a>
                 @endforeach
-                @if(isset($destinationActivities) && $destinationActivities->count() > 0)
-                  <div class="nav__mega-divider"></div>
-                  @foreach($destinationActivities as $act)
-                    <a href="{{ route('activity.show', ['slug' => $act->slug]) }}" class="nav__mega-item nav__mega-item--activity">
-                      @if($act->image_url) <img src="{{ $act->image_url }}" alt="{{ $act->name }}" loading="lazy" />
-                      @else <div class="nav__mega-img-placeholder nav__mega-img-placeholder--act"></div>
-                      @endif
-                      <span>{{ $act->name }}</span>
-                    </a>
-                  @endforeach
-                @endif
-              </div>
-            @elseif(isset($destinationActivities) && $destinationActivities->count() > 0)
-              <div class="nav__mega">
-                @foreach($destinationActivities as $act)
-                  <a href="{{ route('activity.show', ['slug' => $act->slug]) }}" class="nav__mega-item nav__mega-item--activity">
-                    @if($act->image_url) <img src="{{ $act->image_url }}" alt="{{ $act->name }}" loading="lazy" />
-                    @else <div class="nav__mega-img-placeholder nav__mega-img-placeholder--act"></div>
-                    @endif
-                    <span>{{ $act->name }}</span>
-                  </a>
-                @endforeach
               </div>
             @endif
+          </div>
+        @elseif($ns['id'] === 'activities')
+          <div class="nav__dropdown-wrap">
+            <a href="#activites" class="nav__link">Activités <span style="font-size:0.6em;margin-left:4px">&#9662;</span></a>
+            <div class="nav__mega">
+              @foreach($destinationActivities as $act)
+                <a href="{{ route('activity.show', ['slug' => $act->slug]) }}" class="nav__mega-item nav__mega-item--activity">
+                  @if($act->image_url) <img src="{{ $act->image_url }}" alt="{{ $act->name }}" loading="lazy" />
+                  @else <div class="nav__mega-img-placeholder nav__mega-img-placeholder--act"></div>
+                  @endif
+                  <span>{{ $act->name }}</span>
+                </a>
+              @endforeach
+            </div>
           </div>
         @else
           <a href="#{{ $ns['id'] }}" class="nav__link">{{ $ns['label'] }}</a>
@@ -108,14 +101,15 @@
                 @endforeach
               </div>
             @endif
-            @if(isset($destinationActivities) && $destinationActivities->count() > 0)
-              <div class="mobile-menu__sublinks">
-                <span class="mobile-menu__sublinks-label">Activités</span>
-                @foreach($destinationActivities as $act)
-                  <a href="{{ route('activity.show', ['slug' => $act->slug]) }}" class="mobile-menu__link mobile-menu__link--sub">{{ $act->name }}</a>
-                @endforeach
-              </div>
-            @endif
+          </div>
+        @elseif($ns['id'] === 'activities')
+          <div class="mobile-menu__group">
+            <a href="#activites" class="mobile-menu__link mobile-menu__link--parent">Activités</a>
+            <div class="mobile-menu__sublinks">
+              @foreach($destinationActivities as $act)
+                <a href="{{ route('activity.show', ['slug' => $act->slug]) }}" class="mobile-menu__link mobile-menu__link--sub">{{ $act->name }}</a>
+              @endforeach
+            </div>
           </div>
         @else
           <a href="#{{ $ns['id'] }}" class="mobile-menu__link">{{ $ns['label'] }}</a>
