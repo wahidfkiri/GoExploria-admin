@@ -87,6 +87,7 @@ class TravelDestinationController extends Controller
         return view('travel-destination::landing.index', compact(
             'entity',
             'normalizedType',
+            'slug',
             'breadcrumb',
             'hierarchy',
             'stats',

@@ -33,6 +33,7 @@
         if ($faqs->count() > 0) $navSections[] = ['id' => 'faq', 'label' => 'FAQ'];
         if ($blogs->count() > 0) $navSections[] = ['id' => 'blog', 'label' => 'Blog'];
         if ($contactInfo->count() > 0) $navSections[] = ['id' => 'contact', 'label' => 'Contact'];
+        $navSections[] = ['id' => 'map', 'label' => 'Carte'];
       @endphp
       @foreach($navSections as $ns)
         @if($ns['id'] === 'destinations')
@@ -41,7 +42,7 @@
             @if(isset($childEntities) && $childEntities->count() > 0)
               <div class="nav__mega">
                 @foreach($childEntities as $ce)
-                  <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id]) }}" class="nav__mega-item">
+                  <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id, 'slug2' => Str::slug($ce->name ?? $ce->id)]) }}" class="nav__mega-item">
                     @if($ce->image) <img src="{{ $ce->image }}" alt="{{ $ce->name }}" loading="lazy" />
                     @else <div class="nav__mega-img-placeholder"></div>
                     @endif
@@ -103,7 +104,7 @@
             @if(isset($childEntities) && $childEntities->count() > 0)
               <div class="mobile-menu__sublinks">
                 @foreach($childEntities as $ce)
-                  <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id]) }}" class="mobile-menu__link mobile-menu__link--sub">{{ $ce->name }}</a>
+                  <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id, 'slug2' => Str::slug($ce->name ?? $ce->id)]) }}" class="mobile-menu__link mobile-menu__link--sub">{{ $ce->name }}</a>
                 @endforeach
               </div>
             @endif
@@ -359,7 +360,7 @@
                 <div class="dest-card__meta"><span class="dest-card__country">{{ $entity->name }}</span></div>
                 <h3 class="dest-card__name">{{ $child->name }}</h3>
                 <div class="dest-card__tags">@if(isset($child->population))<span class="tag">{{ number_format($child->population) }} hab</span>@endif</div>
-                <div class="dest-card__footer"><a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $child->slug ?? $child->id]) }}" class="btn btn--sm btn--amber">Explorer</a></div>
+                <div class="dest-card__footer"><a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $child->slug ?? $child->id, 'slug2' => Str::slug($child->name ?? $child->id)]) }}" class="btn btn--sm btn--amber">Explorer</a></div>
               </div>
             </article>
           @endforeach
@@ -723,7 +724,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var entityLng = {{ is_numeric($entity->longitude) ? $entity->longitude : 0 }};
   var entityName = {!! json_encode($entity->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var entityType = {!! json_encode($normalizedType, JSON_UNESCAPED_UNICODE) !!};
-  var mapPointsUrl = '{{ url()->current() }}/map-points';
+  var mapPointsUrl = '{{ route("travel-destination.map-points", ["type" => $normalizedType, "slug" => $slug], false) }}';
   var childEntities = {!! json_encode($childEntities->map(function($ce) {
         $typeName = strtolower(class_basename($ce));
         $zMap = ['continent' => 3, 'country' => 5, 'province' => 7, 'region' => 9, 'ville' => 11, 'city' => 11, 'secteur' => 13];
@@ -732,7 +733,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var mapCategories = {!! json_encode($mapCategories->keyBy('slug')->map(function($mc) {
         return ['name' => $mc->name, 'icon_class' => $mc->icon_class, 'color' => $mc->color, 'image' => $mc->image];
       })->toArray(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
-  var defaultZoom = entityLat ? 6 : 2;
+  var zoomByType = { continent: 3, country: 5, province: 7, region: 9, ville: 11, city: 11, secteur: 13 };
+  var defaultZoom = entityLat ? (zoomByType[entityType] || 6) : 2;
   var center = entityLat ? [entityLat, entityLng] : [20, 0];
 
   var map = L.map('travel-map', {
