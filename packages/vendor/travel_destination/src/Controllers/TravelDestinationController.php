@@ -147,16 +147,23 @@ class TravelDestinationController extends Controller
         $query = MapPoint::with(['details', 'images', 'mainImage'])->active();
 
         if ($target->latitude && $target->longitude) {
-            $query->whereBetween('latitude', [$target->latitude - $radius, $target->latitude + $radius])
-                  ->whereBetween('longitude', [$target->longitude - $radius, $target->longitude + $radius]);
-        } elseif ($targetType === 'continent' && method_exists($target, 'countries')) {
-            $countryIds = $target->countries()->active()->pluck('id');
-            $bounds = \App\Models\Country::whereIn('id', $countryIds)
-                ->selectRaw('MIN(latitude) as min_lat, MAX(latitude) as max_lat, MIN(longitude) as min_lng, MAX(longitude) as max_lng')
-                ->first();
-            if ($bounds && $bounds->min_lat) {
-                $query->whereBetween('latitude', [$bounds->min_lat - 2, $bounds->max_lat + 2])
-                      ->whereBetween('longitude', [$bounds->min_lng - 2, $bounds->max_lng + 2]);
+            // Compute bounding box from child entities for accurate coverage
+            $childEntities = $this->getChildEntities($targetType, $target);
+            $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
+            if ($childrenWithLat->count() > 0) {
+                $padding = match ($targetType) {
+                    'continent' => 2,
+                    'country' => 1.5,
+                    'province' => 1,
+                    'region' => 0.5,
+                    default => 0.3,
+                };
+                $query->whereBetween('latitude', [$childrenWithLat->min('latitude') - $padding, $childrenWithLat->max('latitude') + $padding])
+                      ->whereBetween('longitude', [$childrenWithLat->min('longitude') - $padding, $childrenWithLat->max('longitude') + $padding]);
+            } else {
+                // Fallback to fixed radius around entity center
+                $query->whereBetween('latitude', [$target->latitude - $radius, $target->latitude + $radius])
+                      ->whereBetween('longitude', [$target->longitude - $radius, $target->longitude + $radius]);
             }
         }
 
