@@ -719,19 +719,19 @@ document.addEventListener('DOMContentLoaded', function () {
   var mapEl = document.getElementById('travel-map');
   if (!mapEl) return;
 
-  var entityLat = {{ $entity->latitude ?? 0 }};
-  var entityLng = {{ $entity->longitude ?? 0 }};
-  var entityName = {!! json_encode($entity->name ?? '') !!};
-  var entityType = {!! json_encode($normalizedType) !!};
+  var entityLat = {{ is_numeric($entity->latitude) ? $entity->latitude : 0 }};
+  var entityLng = {{ is_numeric($entity->longitude) ? $entity->longitude : 0 }};
+  var entityName = {!! json_encode($entity->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
+  var entityType = {!! json_encode($normalizedType, JSON_UNESCAPED_UNICODE) !!};
   var mapPointsUrl = '{{ url()->current() }}/map-points';
   var childEntities = {!! json_encode($childEntities->map(function($ce) {
         $typeName = strtolower(class_basename($ce));
         $zMap = ['continent' => 3, 'country' => 5, 'province' => 7, 'region' => 9, 'ville' => 11, 'city' => 11, 'secteur' => 13];
-        return ['name' => $ce->name, 'slug' => $ce->slug ?? $ce->id, 'type' => class_basename($ce), 'latitude' => $ce->latitude, 'longitude' => $ce->longitude, 'zoom' => $zMap[$typeName] ?? 10];
-      })->values()) !!};
+        return ['name' => $ce->name, 'slug' => $ce->slug ?? (string)$ce->id, 'type' => class_basename($ce), 'latitude' => $ce->latitude ? (float)$ce->latitude : null, 'longitude' => $ce->longitude ? (float)$ce->longitude : null, 'zoom' => $zMap[$typeName] ?? 10];
+      })->values(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var mapCategories = {!! json_encode($mapCategories->keyBy('slug')->map(function($mc) {
         return ['name' => $mc->name, 'icon_class' => $mc->icon_class, 'color' => $mc->color, 'image' => $mc->image];
-      })) !!};
+      })->toArray(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var defaultZoom = entityLat ? 6 : 2;
   var center = entityLat ? [entityLat, entityLng] : [20, 0];
 

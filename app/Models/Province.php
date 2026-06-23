@@ -38,7 +38,7 @@ class Province extends Model
     ];
 
 
-    public function activities(): BelongsToMany
+    public function activities()
     {
         return $this->belongsToMany(Activity::class, 'activity_province')
                     ->withTimestamps();
