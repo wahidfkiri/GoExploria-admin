@@ -204,24 +204,6 @@
             50% { transform: translate(-50%, -50%) scale(1.05); }
         }
 
-        .video-badge-slide {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            z-index: 5;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(8px);
-            padding: 8px 16px;
-            border-radius: 50px;
-            color: white;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-        .video-badge-slide i { color: var(--orange); }
-
         .hero-content {
             position: relative;
             z-index: 4;
@@ -232,28 +214,11 @@
             padding: 0 80px;
             max-width: 800px;
         }
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,107,53,0.2);
-            border: 1px solid rgba(255,107,53,0.5);
-            color: var(--orange);
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 8px 16px;
-            border-radius: 50px;
-            width: fit-content;
-            margin-bottom: 24px;
-            animation: fadeUp 0.8s ease 0.2s both;
-        }
         .hero-title {
             font-family: 'Montserrat', sans-serif;
             font-weight: 900;
-            font-size: clamp(42px, 6vw, 80px);
-            line-height: 1.05;
+            font-size: 40px;
+            line-height: 1.15;
             color: white;
             margin-bottom: 20px;
             animation: fadeUp 0.8s ease 0.4s both;
@@ -270,13 +235,6 @@
             max-width: 520px;
             animation: fadeUp 0.8s ease 0.6s both;
         }
-        .hero-actions {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            animation: fadeUp 0.8s ease 0.8s both;
-        }
-
         .btn-primary {
             background: var(--orange);
             color: white;
@@ -373,12 +331,6 @@
             .hero-swiper .swiper-button-prev {
                 display: none;
             }
-            .video-badge-slide {
-                bottom: 80px;
-                right: 20px;
-                font-size: 10px;
-                padding: 4px 12px;
-            }
             .hero-slide .video-bg iframe {
                 width: 177.78vw;
                 height: 100vh;
@@ -388,14 +340,8 @@
         }
 
         @media (max-width: 480px) {
-            .hero-title { font-size: 32px; }
+            .hero-title { font-size: 30px; }
             .hero-subtitle { font-size: 15px; }
-            .hero-actions { flex-direction: column; }
-            .btn-primary, .btn-secondary { 
-                width: 100%; 
-                justify-content: center;
-                padding: 14px 24px;
-            }
         }
 
         /* ===== SECTION BASE ===== */
@@ -796,64 +742,6 @@
             line-height: 1.7;
         }
 
-        /* ===== CTA ===== */
-        #cta {
-            background: linear-gradient(135deg, var(--orange) 0%, #E8420A 100%);
-            padding: 90px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        #cta::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 500px; height: 500px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.07);
-        }
-        #cta::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -5%;
-            width: 300px; height: 300px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.05);
-        }
-        .cta-inner {
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-        .cta-inner h2 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            font-size: clamp(30px, 4vw, 52px);
-            color: white;
-            margin-bottom: 16px;
-        }
-        .cta-inner p {
-            font-size: 18px;
-            color: rgba(255,255,255,0.85);
-            margin-bottom: 40px;
-        }
-        .btn-white {
-            background: white;
-            color: var(--orange);
-            padding: 18px 40px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 16px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-        }
-        .btn-white:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
-
         /* ===== CONTACT ===== */
         #contact { background: var(--navy); padding: 100px 0 0; }
         .contact-grid {
@@ -1132,24 +1020,9 @@
                     <i class="fas fa-play"></i>
                 </div>
                 
-                <div class="video-badge-slide">
-                    <i class="fas fa-video"></i> Vidéo
-                </div>
-                
                 <div class="hero-content">
-                    <div class="hero-badge"><i class="fas fa-star"></i> {{ $slideBadge }}</div>
                     <h1 class="hero-title">{!! $slideTitle !!}</h1>
                     <p class="hero-subtitle">{{ $slideSubtitle }}</p>
-                    <div class="hero-actions">
-                        <a href="#" class="btn-primary" onclick="event.preventDefault();playVideoSlide({{ $slideIndex }})">
-                            <i class="fas fa-play"></i> {{ $slidePrimaryText }}
-                        </a>
-                        @if($slideSecondaryText)
-                        <a href="{{ $slideSecondaryLink }}" class="btn-secondary">
-                            <i class="fas fa-calendar"></i> {{ $slideSecondaryText }}
-                        </a>
-                        @endif
-                    </div>
                 </div>
             </div>
             @endforeach
@@ -1174,7 +1047,7 @@
             <div class="about-content reveal reveal-delay-2">
                 <div class="section-eyebrow">À Propos</div>
                 <h2 class="section-title">{{ $about->title ?? 'Découvrez Notre Activité' }}</h2>
-                <p class="section-subtitle">{{ $about->content ?? '' }}</p>
+                <p class="section-subtitle">{{ strip_tags($about->content ?? '') }}</p>
                 @if($about->about_values)
                 <ul class="about-features">
                     @foreach(explode("\n", $about->about_values) as $value)
@@ -1359,17 +1232,6 @@
 </section>
 @endif
 
-<!-- ===== CTA ===== -->
-<section id="cta">
-    <div class="container">
-        <div class="cta-inner">
-            <h2>Prêt à Vivre Cette<br>Expérience Unique ?</h2>
-            <p>Rejoignez-nous et découvrez une aventure inoubliable.</p>
-            <a href="#contact" class="btn-white"><i class="fas fa-rocket"></i> Démarrer l'Aventure</a>
-        </div>
-    </div>
-</section>
-
 <!-- ===== CONTACT ===== -->
 @if($contact)
 <section id="contact">
@@ -1378,7 +1240,7 @@
             <div class="contact-info reveal">
                 <div class="section-eyebrow" style="color:var(--orange)">Contact</div>
                 <h2 class="section-title" style="color:white">Parlons de<br>Votre Projet</h2>
-                <p class="section-subtitle" style="color:rgba(255,255,255,0.6);margin-bottom:40px">{{ $contact->content ?? 'Notre équipe est disponible pour répondre à toutes vos questions.' }}</p>
+                <p class="section-subtitle" style="color:rgba(255,255,255,0.6);margin-bottom:40px">{{ strip_tags($contact->content ?? 'Notre équipe est disponible pour répondre à toutes vos questions.') }}</p>
                 <div class="contact-details">
                     <div class="contact-detail-item">
                         <div class="contact-detail-icon"><i class="fas fa-envelope"></i></div>
@@ -1567,8 +1429,8 @@
             playBtn.classList.add('hidden');
         }
         
-        // Charger la vidéo
-        iframe.src = videoUrl;
+        // Charger la vidéo avec autoplay
+        iframe.src = videoUrl + (videoUrl.includes('?') ? '&' : '?') + 'autoplay=1';
         
         // Mettre en pause l'autoplay du slider
         if (heroSwiper) {

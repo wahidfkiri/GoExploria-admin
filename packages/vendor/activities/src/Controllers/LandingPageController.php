@@ -39,6 +39,10 @@ class LandingPageController extends Controller
             ->orderBy('order')
             ->get();
 
+        if ($contents->isEmpty()) {
+            abort(404);
+        }
+
         // Grouper par type
         $groupedContents = $contents->groupBy('type');
 
