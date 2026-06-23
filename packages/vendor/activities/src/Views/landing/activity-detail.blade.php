@@ -175,35 +175,6 @@
             z-index: 3;
         }
 
-        .video-play-icon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 5;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: rgba(255,107,53,0.85);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 40px;
-            cursor: pointer;
-            transition: all 0.4s;
-            animation: pulse 2s ease-in-out infinite;
-            box-shadow: 0 0 40px rgba(255,107,53,0.4);
-        }
-        .video-play-icon:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-            background: var(--orange);
-        }
-        @keyframes pulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.05); }
-        }
-
         .hero-content {
             position: relative;
             z-index: 4;
@@ -318,11 +289,6 @@
 
         @media (max-width: 768px) {
             .hero-content { padding: 0 24px; }
-            .video-play-icon {
-                width: 70px;
-                height: 70px;
-                font-size: 28px;
-            }
             .hero-swiper .swiper-pagination {
                 left: 24px;
                 bottom: 20px;
@@ -923,38 +889,7 @@
             .form-row { grid-template-columns: 1fr; }
             .footer-inner { flex-direction: column; align-items: flex-start; }
         }
-        /* ===== VIDEO PLAY BUTTON ===== */
-.video-play-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 5;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: rgba(255,107,53,0.85);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 40px;
-    cursor: pointer;
-    transition: all 0.4s;
-    animation: pulse 2s ease-in-out infinite;
-    box-shadow: 0 0 40px rgba(255,107,53,0.4);
-}
-.video-play-icon:hover {
-    transform: translate(-50%, -50%) scale(1.1);
-    background: var(--orange);
-}
-.video-play-icon.hidden {
-    display: none !important;
-}
-@keyframes pulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); }
-    50% { transform: translate(-50%, -50%) scale(1.05); }
-}
+
     </style>
 </head>
 <body>
@@ -1002,23 +937,14 @@
             <div class="swiper-slide hero-slide" data-type="{{ $slideType }}" data-index="{{ $slideIndex }}">
                 <!-- Vidéo en full width cover -->
                 <div class="video-bg" id="videoBg-{{ $slideIndex }}">
-                    @if($slideThumbnail)
-                        <div class="video-thumbnail" id="thumbnail-{{ $slideIndex }}" style="background-image:url('{{ $slideThumbnail }}');background-size:cover;background-position:center;width:100%;height:100%;"></div>
-                    @endif
                     <iframe id="heroVideo-{{ $slideIndex }}" 
-                            data-src="{{ $slideVideoUrl }}"
-                            src="about:blank"
+                            src="{{ $slideVideoUrl }}?autoplay=1"
                             allow="autoplay; encrypted-media; fullscreen"
                             allowfullscreen
-                            style="width:100%;height:100%;border:none;display:none;position:relative;z-index:2;object-fit:cover;">
+                            style="width:100%;height:100%;border:none;position:relative;z-index:2;object-fit:cover;">
                     </iframe>
                 </div>
                 <div class="slide-overlay-video"></div>
-                
-                <!-- Bouton Play -->
-                <div class="video-play-icon" id="playBtn-{{ $slideIndex }}" onclick="playVideoSlide({{ $slideIndex }})">
-                    <i class="fas fa-play"></i>
-                </div>
                 
                 <div class="hero-content">
                     <h1 class="hero-title">{!! $slideTitle !!}</h1>
@@ -1047,7 +973,7 @@
             <div class="about-content reveal reveal-delay-2">
                 <div class="section-eyebrow">À Propos</div>
                 <h2 class="section-title">{{ $about->title ?? 'Découvrez Notre Activité' }}</h2>
-                <p class="section-subtitle">{{ strip_tags($about->content ?? '') }}</p>
+                {!! $about->content ?? '' !!}
                 @if($about->about_values)
                 <ul class="about-features">
                     @foreach(explode("\n", $about->about_values) as $value)
@@ -1060,7 +986,6 @@
                     @endforeach
                 </ul>
                 @endif
-                <a href="#contact" class="btn-primary">Nous Contacter <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
     </div>
@@ -1371,80 +1296,12 @@
         },
         on: {
             slideChange: function() {
-                // Arrêter toutes les vidéos quand on change de slide
                 document.querySelectorAll('.hero-slide iframe').forEach(iframe => {
-                    iframe.style.display = 'none';
-                    iframe.classList.remove('active');
-                    iframe.src = 'about:blank';
-                });
-                // Réafficher les thumbnails et les boutons play
-                document.querySelectorAll('.hero-slide .video-thumbnail').forEach(el => {
-                    if (el) el.style.display = 'block';
-                });
-                document.querySelectorAll('.video-play-icon').forEach(el => {
-                    if (el) el.style.display = 'flex';
-                    el.classList.remove('hidden');
+                    iframe.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
                 });
             }
         }
     });
-
-    // ===== FUNCTION PLAY VIDEO =====
-    function playVideoSlide(index) {
-        const iframe = document.getElementById('heroVideo-' + index);
-        const thumbnail = document.getElementById('thumbnail-' + index);
-        const playBtn = document.getElementById('playBtn-' + index);
-        
-        if (!iframe) {
-            console.error('Iframe not found for index:', index);
-            return;
-        }
-        
-        // Récupérer l'URL de la vidéo depuis data-src
-        const videoUrl = iframe.getAttribute('data-src');
-        
-        if (!videoUrl) {
-            console.error('Video URL not found for index:', index);
-            return;
-        }
-        
-        // Vérifier si la vidéo est déjà en cours de lecture
-        if (iframe.style.display === 'block' && iframe.src !== 'about:blank') {
-            return;
-        }
-        
-        // Afficher l'iframe
-        iframe.style.display = 'block';
-        iframe.classList.add('active');
-        iframe.style.pointerEvents = 'auto';
-        
-        // Cacher la thumbnail
-        if (thumbnail) {
-            thumbnail.style.display = 'none';
-        }
-        
-        // Cacher le bouton play
-        if (playBtn) {
-            playBtn.style.display = 'none';
-            playBtn.classList.add('hidden');
-        }
-        
-        // Charger la vidéo avec autoplay
-        iframe.src = videoUrl + (videoUrl.includes('?') ? '&' : '?') + 'autoplay=1';
-        
-        // Mettre en pause l'autoplay du slider
-        if (heroSwiper) {
-            heroSwiper.autoplay.stop();
-        }
-        
-        // Reprendre l'autoplay après 15 secondes d'inactivité
-        clearTimeout(window.videoTimeout);
-        window.videoTimeout = setTimeout(() => {
-            if (heroSwiper) {
-                heroSwiper.autoplay.start();
-            }
-        }, 15000);
-    }
 
     // ===== GESTION DU FULLSCREEN =====
     document.addEventListener('fullscreenchange', function() {
