@@ -146,25 +146,23 @@ class TravelDestinationController extends Controller
 
         $query = MapPoint::with(['details', 'images', 'mainImage'])->active();
 
-        if ($target->latitude && $target->longitude) {
-            // Compute bounding box from child entities for accurate coverage
-            $childEntities = $this->getChildEntities($targetType, $target);
-            $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
-            if ($childrenWithLat->count() > 0) {
-                $padding = match ($targetType) {
-                    'continent' => 2,
-                    'country' => 1.5,
-                    'province' => 1,
-                    'region' => 0.5,
-                    default => 0.3,
-                };
-                $query->whereBetween('latitude', [$childrenWithLat->min('latitude') - $padding, $childrenWithLat->max('latitude') + $padding])
-                      ->whereBetween('longitude', [$childrenWithLat->min('longitude') - $padding, $childrenWithLat->max('longitude') + $padding]);
-            } else {
-                // Fallback to fixed radius around entity center
-                $query->whereBetween('latitude', [$target->latitude - $radius, $target->latitude + $radius])
-                      ->whereBetween('longitude', [$target->longitude - $radius, $target->longitude + $radius]);
-            }
+        // Try child entities first for accurate bounds (works even if entity lacks lat/lng)
+        $childEntities = $this->getChildEntities($targetType, $target);
+        $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
+        if ($childrenWithLat->count() > 0) {
+            $padding = match ($targetType) {
+                'continent' => 2,
+                'country' => 1.5,
+                'province' => 1,
+                'region' => 0.5,
+                default => 0.3,
+            };
+            $query->whereBetween('latitude', [$childrenWithLat->min('latitude') - $padding, $childrenWithLat->max('latitude') + $padding])
+                  ->whereBetween('longitude', [$childrenWithLat->min('longitude') - $padding, $childrenWithLat->max('longitude') + $padding]);
+        } elseif ($target->latitude && $target->longitude) {
+            // Fallback to fixed radius around entity center
+            $query->whereBetween('latitude', [$target->latitude - $radius, $target->latitude + $radius])
+                  ->whereBetween('longitude', [$target->longitude - $radius, $target->longitude + $radius]);
         }
 
         $points = $query->orderBy('is_featured', 'desc')->orderBy('views', 'desc')->limit(100)->get();
