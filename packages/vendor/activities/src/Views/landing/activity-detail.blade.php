@@ -1097,7 +1097,7 @@
 
 <!-- NAV -->
 <nav id="navbar">
-    <a href="{{ route('landing.home') }}" class="nav-logo">
+    <a href="{{ url('/') }}" class="nav-logo">
         <img src="{{asset('logo.png')}}" alt="Logo" class="logo-img" width="160px;">
     </a>
     <ul class="nav-links">

@@ -1,9 +1,9 @@
 /* ============================================
    MEGA MENU DESTINATIONS - Menu Vertical
-   Style personnalisé pour éviter les conflits
+   Version statique - Design modernisé
    ============================================ */
 
-/* Container principal du mega menu */
+/* Container principal */
 .vmenu-destinations-mega {
     position: fixed;
     top: 0;
@@ -11,48 +11,48 @@
     width: 550px;
     height: 100vh;
     background: #ffffff;
-    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 4px 0 40px rgba(0, 0, 0, 0.1);
     z-index: 1150;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .vmenu-destinations-mega.active {
-    left: 380px; /* S'ouvre juste après le menu vertical (380px de largeur) */
+    left: 0;
 }
 
-/* Header du mega menu */
+/* Header */
 .vmenu-destinations-mega-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 25px;
-    background: #f8f9fa;
-    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border-bottom: 1px solid #e9ecef;
     flex-shrink: 0;
 }
 
 .vmenu-destinations-mega-title {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     margin: 0;
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 700;
     color: #1a2942;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
 }
 
 .vmenu-destinations-mega-icon {
-    width: 28px;
-    height: 28px;
-    stroke-width: 2.5;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    width: 24px;
+    height: 24px;
+    color: #d4af37;
 }
 
 .vmenu-destinations-mega-close {
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(0, 0, 0, 0.04);
     border: none;
     border-radius: 8px;
     padding: 8px;
@@ -60,16 +60,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #6c757d;
+    transition: background 0.2s, color 0.2s;
 }
 
 .vmenu-destinations-mega-close:hover {
-    background: rgba(212, 175, 55, 0.2);
+    background: rgba(0, 0, 0, 0.08);
+    color: #1a2942;
 }
 
 .vmenu-destinations-mega-close svg {
-    width: 20px;
-    height: 20px;
-    stroke: #1a2942;
+    width: 18px;
+    height: 18px;
 }
 
 /* Contenu scrollable */
@@ -77,49 +79,25 @@
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 20px;
+    padding: 16px;
+    background: #ffffff;
 }
 
-/* Scrollbar personnalisée */
 .vmenu-destinations-mega-content::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 .vmenu-destinations-mega-content::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: transparent;
 }
 
 .vmenu-destinations-mega-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
 }
 
 .vmenu-destinations-mega-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* Loader */
-.vmenu-destinations-mega-loader {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    gap: 20px;
-}
-
-.vmenu-destinations-spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #d4af37;
-    border-radius: 50%;
-}
-
-.vmenu-destinations-mega-loader p {
-    color: #6c757d;
-    font-size: 14px;
-    margin: 0;
+    background: rgba(0, 0, 0, 0.2);
 }
 
 /* État vide */
@@ -130,50 +108,52 @@
     justify-content: center;
     padding: 60px 20px;
     gap: 15px;
+    color: #6c757d;
 }
 
 .vmenu-destinations-mega-empty svg {
-    width: 60px;
-    height: 60px;
-    stroke: #6c757d;
+    width: 48px;
+    height: 48px;
 }
 
 .vmenu-destinations-mega-empty p {
-    color: #6c757d;
     font-size: 14px;
     margin: 0;
 }
 
-/* Grille des destinations */
+/* Grille */
 .vmenu-destinations-mega-grid {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
 }
 
-/* Section de destination (Continent) */
+/* Section continent */
 .vmenu-dest-section {
     background: #f8f9fa;
     border-radius: 12px;
     overflow: hidden;
     border: 1px solid #e9ecef;
+    transition: border-color 0.2s;
 }
 
 .vmenu-dest-section:hover {
-    background: #ffffff;
     border-color: rgba(212, 175, 55, 0.5);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Header de section (Continent) */
+.vmenu-dest-section.expanded {
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+/* Header de section */
 .vmenu-dest-section-header {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding: 15px 18px;
+    gap: 12px;
+    padding: 14px 16px;
     cursor: pointer;
-    background: #ffffff;
-    border-bottom: 1px solid #e9ecef;
+    background: transparent;
+    user-select: none;
 }
 
 .vmenu-dest-section-header:hover {
@@ -181,13 +161,12 @@
 }
 
 .vmenu-dest-section-image {
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
     border-radius: 10px;
     object-fit: cover;
     flex-shrink: 0;
     border: 2px solid #e9ecef;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .vmenu-dest-section-info {
@@ -196,10 +175,10 @@
 }
 
 .vmenu-dest-section-name {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: #1a2942;
-    margin: 0 0 4px 0;
+    margin: 0 0 2px 0;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -208,183 +187,205 @@
 .vmenu-dest-name-link {
     color: #1a2942;
     text-decoration: none;
+    transition: color 0.2s;
 }
 
 .vmenu-dest-name-link:hover {
     color: #d4af37;
-    text-decoration: underline;
 }
 
 .vmenu-dest-section-count {
-    font-size: 12px;
+    font-size: 11px;
     color: #6c757d;
     margin: 0;
 }
 
 .vmenu-dest-section-arrow {
-    width: 20px;
-    height: 20px;
-    stroke: #6c757d;
+    width: 18px;
+    height: 18px;
+    color: #6c757d;
     flex-shrink: 0;
     transition: transform 0.3s ease;
 }
 
-/* Rotation de la flèche quand la section est expanded */
 .vmenu-dest-section.expanded > .vmenu-dest-section-header .vmenu-dest-section-arrow {
     transform: rotate(180deg);
 }
 
-.vmenu-dest-subsection.expanded > .vmenu-dest-section-header .vmenu-dest-section-arrow {
-    transform: rotate(180deg);
-}
-
-/* Contenu de section (Pays) */
+/* Contenu de section */
 .vmenu-dest-section-content {
     max-height: 0;
     overflow: hidden;
+    transition: max-height 0.35s ease;
 }
 
 .vmenu-dest-section.expanded .vmenu-dest-section-content {
-    max-height: 2000px;
+    max-height: 3000px;
 }
 
 .vmenu-dest-section-list {
-    padding: 10px;
+    padding: 8px 12px 12px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
 }
 
-/* Sous-sections (pays, provinces, régions, villes) */
+/* Sous-section pays */
 .vmenu-dest-subsection {
-    grid-column: 1 / -1;
-    margin-bottom: 8px;
-}
-
-.vmenu-dest-subsection .vmenu-dest-section-header {
-    padding: 12px 15px;
-    background: #f8f9fa;
-}
-
-.vmenu-dest-subsection .vmenu-dest-section-image {
-    width: 40px;
-    height: 40px;
-}
-
-.vmenu-dest-subsection .vmenu-dest-section-name {
-    font-size: 14px;
-}
-
-.vmenu-dest-subsection .vmenu-dest-section-count {
-    font-size: 11px;
-}
-
-.vmenu-dest-subsection .vmenu-dest-section-arrow {
-    width: 16px;
-    height: 16px;
-}
-
-/* Niveaux imbriqués - réduire la taille progressivement */
-.vmenu-dest-subsection .vmenu-dest-subsection .vmenu-dest-section-header {
-    padding: 10px 12px;
-    padding-left: 25px;
-}
-
-.vmenu-dest-subsection .vmenu-dest-subsection .vmenu-dest-section-image {
-    width: 35px;
-    height: 35px;
-}
-
-.vmenu-dest-subsection .vmenu-dest-subsection .vmenu-dest-section-name {
-    font-size: 13px;
-}
-
-.vmenu-dest-subsection .vmenu-dest-subsection .vmenu-dest-subsection .vmenu-dest-section-header {
-    padding: 8px 10px;
-    padding-left: 35px;
-}
-
-.vmenu-dest-subsection .vmenu-dest-subsection .vmenu-dest-subsection .vmenu-dest-section-image {
-    width: 30px;
-    height: 30px;
-}
-
-.vmenu-dest-subsection .vmenu-dest-subsection .vmenu-dest-subsection .vmenu-dest-section-name {
-    font-size: 12px;
-}
-
-/* Loader dans les sections */
-.vmenu-dest-section-loader {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-}
-
-/* Item de destination (Pays, Ville, etc.) */
-.vmenu-dest-item {
-    display: flex;
-    flex-direction: column;
     background: #ffffff;
     border-radius: 10px;
-    overflow: hidden;
-    text-decoration: none;
     border: 1px solid #e9ecef;
-    min-height: 120px;
+    overflow: hidden;
 }
 
-.vmenu-dest-item:hover {
-    background: rgba(212, 175, 55, 0.05);
-    border-color: rgba(212, 175, 55, 0.5);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.vmenu-dest-subsection-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
 }
 
-.vmenu-dest-item-image {
-    width: 100%;
-    height: 70px;
+.vmenu-dest-subsection-header:hover {
+    background: rgba(212, 175, 55, 0.04);
+}
+
+.vmenu-dest-subsection-image {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     object-fit: cover;
-    background: #f8f9fa;
     flex-shrink: 0;
+    border: 1px solid #e9ecef;
 }
 
-.vmenu-dest-item-info {
-    padding: 10px;
+.vmenu-dest-subsection-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a2942;
+    margin: 0 0 1px 0;
+}
+
+.vmenu-dest-subsection-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.vmenu-dest-subsection.expanded .vmenu-dest-subsection-content {
+    max-height: 2000px;
+}
+
+.vmenu-dest-subsection-list {
+    padding: 4px 8px 10px;
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
+/* Items de destination (pays / provinces) */
+.vmenu-dest-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #ffffff;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 1px solid #e9ecef;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.vmenu-dest-item:hover {
+    background: rgba(212, 175, 55, 0.05);
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.vmenu-dest-item--sub {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border-color: #f0f0f0;
+}
+
+.vmenu-dest-item-image {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.vmenu-dest-item--sub .vmenu-dest-item-image {
+    width: 28px;
+    height: 28px;
+}
+
 .vmenu-dest-item-name {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     color: #1a2942;
-    margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 0.2s;
 }
 
-.vmenu-dest-item-type {
-    font-size: 11px;
-    color: #6c757d;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.vmenu-dest-item--sub .vmenu-dest-item-name {
+    font-size: 12px;
 }
 
-/* Badge pour le nombre d'enfants */
-.vmenu-dest-badge {
-    display: inline-flex;
+.vmenu-dest-item:hover .vmenu-dest-item-name {
+    color: #d4af37;
+}
+
+/* Cartes des sections (Médias, Next Level, etc.) */
+.vmenu-section-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: #ffffff;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 1px solid #e9ecef;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.vmenu-section-card:hover {
+    background: rgba(212, 175, 55, 0.05);
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.vmenu-section-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(212, 175, 55, 0.2);
+    font-size: 18px;
     color: #d4af37;
-    font-size: 11px;
+    flex-shrink: 0;
+}
+
+.vmenu-section-card-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.vmenu-section-card-name {
+    font-size: 14px;
     font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-left: 8px;
+    color: #1a2942;
+    margin-bottom: 2px;
+}
+
+.vmenu-section-card-desc {
+    font-size: 12px;
+    color: #6c757d;
 }
 
 /* Responsive */
@@ -393,31 +394,10 @@
         width: 100%;
         left: -100%;
     }
-    
-    .vmenu-destinations-mega.active {
-        left: 0;
-    }
 }
 
 @media (max-width: 768px) {
     .vmenu-dest-section-list {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    }
-    
-    .vmenu-dest-item-image {
-        height: 60px;
-    }
-    
-    .vmenu-dest-subsection .vmenu-dest-section-header {
-        padding: 10px 12px;
-    }
-    
-    .vmenu-dest-subsection .vmenu-dest-subsection .vmenu-dest-section-header {
-        padding-left: 20px;
-    }
-    
-    .vmenu-dest-subsection .vmenu-dest-subsection .vmenu-dest-subsection .vmenu-dest-section-header {
-        padding-left: 30px;
+        grid-template-columns: 1fr;
     }
 }
-

@@ -116,12 +116,13 @@
 }
 
 .vertical-menu-v2-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: #1a2942;
     margin: 0;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+}
+
+.vertical-menu-v2-logo {
+    height: 40px;
+    width: auto;
+    display: block;
 }
 
 .vertical-menu-v2-close {
@@ -207,6 +208,20 @@
 
 .vertical-menu-v2-link span {
     flex: 1;
+}
+
+.vertical-menu-v2-open-icon {
+    width: 16px;
+    height: 16px;
+    color: #94a3b8;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.vertical-menu-v2-destinations-item.active .vertical-menu-v2-open-icon,
+.vertical-menu-v2-section-item.active .vertical-menu-v2-open-icon {
+    transform: rotate(180deg);
+    color: #d4af37;
 }
 
 /* Items mobiles uniquement (cachés par défaut) */
