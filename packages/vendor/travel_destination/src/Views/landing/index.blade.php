@@ -142,10 +142,11 @@
     if (!$url) return false;
     return preg_match('/(youtube\.com|youtu\.be)/i', $url);
   };
-  $youTubeEmbed = function($url) {
+  $youTubeEmbed = function($url, $muted = true) {
     if (!$url) return '';
     preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/', $url, $m);
-    return isset($m[1]) ? 'https://www.youtube.com/embed/' . $m[1] . '?autoplay=1&mute=1&loop=1&playlist=' . $m[1] . '&controls=0&showinfo=0&rel=0&enablejsapi=1' : '';
+    $muteParam = $muted ? '1' : '0';
+    return isset($m[1]) ? 'https://www.youtube.com/embed/' . $m[1] . '?autoplay=1&mute=' . $muteParam . '&loop=1&playlist=' . $m[1] . '&controls=0&showinfo=0&rel=0&enablejsapi=1' : '';
   };
   $showVideosOnly = $videos->count() > 0;
   $hasMultipleSlides = $showVideosOnly ? $videos->count() > 1 : $heroContents->count() > 1;
@@ -155,11 +156,12 @@
     <div class="swiper-wrapper">
       @if($showVideosOnly)
         @foreach($videos as $video)
+          @php $videoMuted = $video->video_muted ?? true; @endphp
           <div class="swiper-slide hero__slide hero__slide--video">
             @if($isYouTube($video->video_url))
-              <iframe class="hero__video-bg" src="{{ $youTubeEmbed($video->video_url) }}" frameborder="0" allow="autoplay; encrypted-media" loading="lazy"></iframe>
+              <iframe class="hero__video-bg" src="{{ $youTubeEmbed($video->video_url, $videoMuted) }}" frameborder="0" allow="autoplay; encrypted-media" loading="lazy"></iframe>
             @else
-              <video class="hero__video-bg" src="{{ $video->video_url }}" autoplay muted loop playsinline loading="lazy"></video>
+              <video class="hero__video-bg" src="{{ $video->video_url }}" autoplay @if($videoMuted) muted @endif loop playsinline loading="lazy"></video>
             @endif
             <div class="hero__click-capture"></div>
             <button class="hero__video-toggle" aria-label="Lecture/Pause">&#10074;&#10074;</button>

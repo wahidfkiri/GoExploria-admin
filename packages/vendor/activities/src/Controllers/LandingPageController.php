@@ -61,7 +61,8 @@ class LandingPageController extends Controller
 
         // Ajouter les vidéos comme slides
         foreach ($videos as $video) {
-            $videoUrl = $this->getHeroVideoEmbedUrl($video->video_url);
+            $videoMuted = $video->video_muted ?? true;
+            $videoUrl = $this->getHeroVideoEmbedUrl($video->video_url, $videoMuted);
 
             if (!$videoUrl) {
                 continue;
@@ -246,55 +247,56 @@ class LandingPageController extends Controller
  * @param string|null $url
  * @return string|null
  */
-private function getHeroVideoEmbedUrl($url)
+private function getHeroVideoEmbedUrl($url, $muted = true)
 {
     if (empty($url)) {
         return null;
     }
 
-    // Nettoyer l'URL
     $url = trim($url);
+
+    $muteParam = $muted ? '1' : '0';
 
     // YouTube - Format standard
     if (preg_match('/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/', $url, $matches)) {
-        return 'https://www.youtube.com/embed/' . $matches[1] . '?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&enablejsapi=1';
+        return 'https://www.youtube.com/embed/' . $matches[1] . '?autoplay=1&mute=' . $muteParam . '&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&enablejsapi=1';
     }
-    
+
     // YouTube - Format court
     if (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
-        return 'https://www.youtube.com/embed/' . $matches[1] . '?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&enablejsapi=1';
+        return 'https://www.youtube.com/embed/' . $matches[1] . '?autoplay=1&mute=' . $muteParam . '&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&enablejsapi=1';
     }
 
     // YouTube - Format embed déjà
     if (preg_match('/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
         if (strpos($url, 'autoplay') === false) {
-            return $url . (strpos($url, '?') !== false ? '&' : '?') . 'autoplay=1&mute=1&controls=1';
+            return $url . (strpos($url, '?') !== false ? '&' : '?') . 'autoplay=1&mute=' . $muteParam . '&controls=1';
         }
         return $url;
     }
 
     // Vimeo
     if (preg_match('/vimeo\.com\/(\d+)/', $url, $matches)) {
-        return 'https://player.vimeo.com/video/' . $matches[1] . '?autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0&badge=0&controls=1&background=0';
+        return 'https://player.vimeo.com/video/' . $matches[1] . '?autoplay=1&muted=' . $muteParam . '&loop=1&title=0&byline=0&portrait=0&badge=0&controls=1&background=0';
     }
 
     // Vimeo - Format embed déjà
     if (preg_match('/player\.vimeo\.com\/video\/(\d+)/', $url, $matches)) {
         if (strpos($url, 'autoplay') === false) {
-            return $url . (strpos($url, '?') !== false ? '&' : '?') . 'autoplay=1&muted=1&controls=1';
+            return $url . (strpos($url, '?') !== false ? '&' : '?') . 'autoplay=1&muted=' . $muteParam . '&controls=1';
         }
         return $url;
     }
 
     // Dailymotion
     if (preg_match('/dailymotion\.com\/video\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
-        return 'https://www.dailymotion.com/embed/video/' . $matches[1] . '?autoplay=1&mute=1&controls=1';
+        return 'https://www.dailymotion.com/embed/video/' . $matches[1] . '?autoplay=1&mute=' . $muteParam . '&controls=1';
     }
 
     // Dailymotion - Format embed déjà
     if (preg_match('/dailymotion\.com\/embed\/video\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
         if (strpos($url, 'autoplay') === false) {
-            return $url . (strpos($url, '?') !== false ? '&' : '?') . 'autoplay=1&mute=1&controls=1';
+            return $url . (strpos($url, '?') !== false ? '&' : '?') . 'autoplay=1&mute=' . $muteParam . '&controls=1';
         }
         return $url;
     }
