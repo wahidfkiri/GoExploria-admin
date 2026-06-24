@@ -914,7 +914,7 @@
     <div class="quote-head">
         <h1>VOTRE DEVIS / FACTURE</h1>
         <p>
-            AFFICHEZ VOTRE ESPACE ENTREPRISES, DESTINATIONS, ACTIVITÉS ET PERSO <br>
+            AFFICHEZ VOTRE ESPACE ENTREPRISES, DESTINATIONS, PERSO <br>
         </p>
     </div>
 
