@@ -1226,7 +1226,7 @@
                 
                 <div class="hero-content">
                     <h1 class="hero-title">{!! $slideTitle !!}</h1>
-                    <p class="hero-subtitle">{{ $slideSubtitle }}</p>
+                    <p class="hero-subtitle">{!! $slideSubtitle !!}</p>
                     @if($slideButtonText && $slideButtonUrl)
                     <a href="{{ $slideButtonUrl }}" class="hero-btn" target="_blank" rel="noopener">{{ $slideButtonText }}</a>
                     @endif
