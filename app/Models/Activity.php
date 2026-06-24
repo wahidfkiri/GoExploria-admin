@@ -194,11 +194,11 @@ class Activity extends Model
 
 
 /**
- * Relation avec les contenus de page
+ * Relation polymorphique avec les contenus de page
  */
 public function pageContents()
 {
-    return $this->hasMany(PageContent::class);
+    return $this->morphMany(PageContent::class, 'pageable');
 }
 
 /**

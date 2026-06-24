@@ -63,7 +63,7 @@
                             <span>Chaîne vidéos</span>
                         </a>
                     </li>
-                    <li class="nav-menu-v2-has-plans" id="plansMenuItem">
+                    <li class="nav-menu-v2-has-plans" style="display:none" id="plansMenuItem">
                         <a href="#section-nos-plans" id="plansMenuTrigger">{{ __('home-v2.header.menu.plans') }}</a>
                     </li>
                     <li><a href="{{ route('contact') }}">{{ __('home-v2.header.menu.contact') }}</a></li>
@@ -83,7 +83,7 @@
                 </a>
                 <a href="{{ route('devis') }}" class="nav-devis-btn" target="_blank" rel="noopener noreferrer" aria-label="Demander un devis">
                     <i class="fas fa-file-signature" aria-hidden="true"></i>
-                    <span>Demander un devis</span>
+                    <span>AFFICHEZ VOUS</span>
                 </a>
                 {{-- â€”â€” Language Switcher â€”â€” --}}
                 <div class="lang-switcher" id="langSwitcher">

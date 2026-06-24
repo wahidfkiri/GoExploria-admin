@@ -912,10 +912,9 @@
 
 <div class="quote-shell">
     <div class="quote-head">
-        <h1>AFFICHEZ-VOUS personnalisée</h1>
+        <h1>VOTRE DEVIS / FACTURE</h1>
         <p>
-            Décrivez votre besoin, sélectionnez vos services et recevez une proposition claire par notre équipe.
-            Nous traitons votre demande rapidement et vous accompagnons vers le plan le plus adapté.
+            AFFICHEZ VOTRE ESPACE ENTREPRISES, DESTINATIONS, ACTIVITÉS ET PERSO <br>
         </p>
     </div>
 
