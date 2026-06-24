@@ -937,7 +937,7 @@
                 @csrf
                 <div class="form-block">
                     <h2 class="block-title"><span class="step">1</span> Informations client</h2>
-                    <div class="grid-2">
+                    <div class="grid-1">
                         <div class="form-group">
                             <label for="company">Entreprise</label>
                             <input id="company" name="company" type="text" value="{{ old('company') }}">
@@ -970,7 +970,7 @@
                         </div>
                     </div>
 
-                    <div class="grid-3">
+                    <div class="grid-2">
                         <div class="form-group">
                             <label for="city">Ville</label>
                             <input id="city" name="city" type="text" value="{{ old('city') }}">
