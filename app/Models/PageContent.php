@@ -55,6 +55,7 @@ class PageContent extends Model
         'button_text',
         'button_url',
         'extra_data',
+        'video_muted',
     ];
 
     protected $casts = [
@@ -68,7 +69,10 @@ class PageContent extends Model
         'event_price' => 'decimal:2',
         'event_is_free' => 'boolean',
         'testimonial_rating' => 'integer',
+        'button_text' => 'string',
+        'button_url' => 'string',
         'extra_data' => 'array',
+        'video_muted' => 'boolean',
     ];
 
     /**
