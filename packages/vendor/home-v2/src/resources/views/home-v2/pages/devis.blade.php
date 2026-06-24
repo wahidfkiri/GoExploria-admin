@@ -943,6 +943,8 @@
                             <input id="company" name="company" type="text" value="{{ old('company') }}">
                             @error('company')<span class="field-error">{{ $message }}</span>@enderror
                         </div>
+                    </div>
+                    <div class="grid-2">                                    
                         <div class="form-group">
                             <label for="first_name">Prénom *</label>
                             <input id="first_name" name="first_name" type="text" value="{{ old('first_name') }}" required>
