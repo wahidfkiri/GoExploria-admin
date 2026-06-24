@@ -9,6 +9,7 @@ use App\Models\Region;
 use App\Models\Ville;
 use App\Models\Secteur;
 use App\Models\Etablissement;
+use App\Models\Activity;
 use Vendor\Cms\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
@@ -456,7 +457,18 @@ class DestinationService
         } catch (\Exception $e) {
             $results['etablissements'] = collect([]);
         }
-        
+
+        try {
+            if (!$type || $type === 'activity') {
+                $results['activities'] = Activity::active()
+                    ->where('name', 'like', "%{$query}%")
+                    ->limit(10)
+                    ->get(['id', 'name', 'slug', 'description', 'image', 'is_active']);
+            }
+        } catch (\Exception $e) {
+            $results['activities'] = collect([]);
+        }
+
         return $results;
     }
 

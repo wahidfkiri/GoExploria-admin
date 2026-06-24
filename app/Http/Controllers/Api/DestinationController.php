@@ -160,7 +160,7 @@ class DestinationController extends Controller
     {
         $request->validate([
             'query' => 'required|string|min:2',
-            'type' => 'nullable|in:continent,country,province,region,ville,secteur,etablissement',
+            'type' => 'nullable|in:continent,country,province,region,ville,secteur,etablissement,activity',
         ]);
 
         $results = $this->destinationService->search(
@@ -275,6 +275,7 @@ class DestinationController extends Controller
             'villes' => $this->enrichCollection($results['villes'] ?? collect(), 'ville'),
             'secteurs' => $this->enrichCollection($results['secteurs'] ?? collect(), 'secteur'),
             'etablissements' => collect($results['etablissements'] ?? [])->map(fn ($item) => $this->establishmentPayload($item))->values(),
+            'activities' => $this->enrichCollection($results['activities'] ?? collect(), 'activity'),
         ];
     }
 
@@ -348,6 +349,7 @@ class DestinationController extends Controller
             'region' => $this->joinPath($this->pathForProvince($this->provinceForRegion($item)), $slug),
             'ville' => $this->joinPath($this->pathForVilleParent($item), $slug),
             'secteur' => $this->joinPath($this->pathForRegion($this->regionForSecteur($item)), $slug),
+            'activity' => 'activity/' . $slug,
             default => $slug,
         };
     }

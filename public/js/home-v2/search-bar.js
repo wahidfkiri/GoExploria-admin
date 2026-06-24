@@ -21,7 +21,7 @@ class SearchBarV2 {
         this.minQueryLength = 2;
         this.endpoint = '/api/v1/destinations/search';
 
-        this.typeOrder = ['continent', 'country', 'province', 'region', 'ville', 'etablissement', 'secteur'];
+        this.typeOrder = ['continent', 'country', 'province', 'region', 'ville', 'etablissement', 'secteur', 'activity'];
         this.typeLabel = {
             continent: 'Continent',
             country: 'Pays',
@@ -29,7 +29,8 @@ class SearchBarV2 {
             region: 'Région',
             ville: 'Ville',
             etablissement: 'Établissement',
-            secteur: 'Secteur'
+            secteur: 'Secteur',
+            activity: 'Activité'
         };
 
         this.init();
@@ -95,7 +96,8 @@ class SearchBarV2 {
             regions: 'region',
             villes: 'ville',
             etablissements: 'etablissement',
-            secteurs: 'secteur'
+            secteurs: 'secteur',
+            activities: 'activity'
         };
 
         var results = [];
@@ -230,6 +232,7 @@ class SearchBarV2 {
             case 'ville': return 'fas fa-city';
             case 'etablissement': return 'fas fa-store';
             case 'secteur': return 'fas fa-location-dot';
+            case 'activity': return 'fas fa-running';
             default: return 'fas fa-location-dot';
         }
     }
@@ -244,6 +247,7 @@ class SearchBarV2 {
             case 'ville': return '/travel-destination/city/' + slug;
             case 'etablissement': return '/company/' + dest.id + '/' + (slug || ('etablissement-' + dest.id));
             case 'secteur': return '/travel-destination/secteur/' + slug;
+            case 'activity': return '/activity/' + slug;
             default: return '#';
         }
     }
