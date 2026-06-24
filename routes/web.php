@@ -365,7 +365,7 @@ Route::prefix('pages')->name('pages.')->group(function () {
 Route::get('/categories',                  [\Vendor\HomeV2\Http\Controllers\HomeV2Controller::class, 'categoriesIndex'])->name('categories.index');
 Route::get('/categories/{slug}',           [\Vendor\HomeV2\Http\Controllers\HomeV2Controller::class, 'showCategory'])->name('category.show');
 Route::get('/activites/{slug}',            function () {
-    return redirect()->url('/activity/' . request()->route('slug'));
+    return redirect('/activity/' . request()->route('slug'));
 })->name('activity.show');
 
 // Pages principales du Header
