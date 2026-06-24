@@ -59,7 +59,7 @@
             height: 72px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 32px;
             transition: background 0.4s, box-shadow 0.4s;
             background: rgba(10,22,40,0.97);
             box-shadow: 0 4px 24px rgba(0,0,0,0.3);
@@ -982,6 +982,9 @@
 
 <!-- NAV -->
 <nav id="navbar">
+    <a href="{{ route('landing.home') }}" class="nav-logo">
+        <img src="{{asset('logo.png')}}" alt="Logo" class="logo-img" width="160px;">
+    </a>
     <ul class="nav-links">
         @if(isset($navCategories) && $navCategories->count() > 0)
         <li class="nav-dropdown-wrap">
@@ -1024,9 +1027,6 @@
         <li><a href="#contact" class="nav-cta">Nous Contacter</a></li>
         @endif
     </ul>
-    <a href="{{ route('landing.home') }}" class="nav-logo">
-        <img src="{{asset('logo.png')}}" alt="Logo" class="logo-img" width="160px;">
-    </a>
 </nav>
 
 <!-- ===== HERO ===== -->
