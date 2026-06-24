@@ -123,8 +123,7 @@
             display: none;
             position: absolute;
             top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
             background: var(--navy);
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -1067,7 +1066,6 @@
         @media (max-width: 768px) {
             .nav-mega {
                 position: static;
-                transform: none;
                 min-width: auto;
                 max-width: none;
                 grid-template-columns: 1fr;
