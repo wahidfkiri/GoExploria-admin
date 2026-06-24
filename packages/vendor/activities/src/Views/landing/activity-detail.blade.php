@@ -276,6 +276,22 @@
             max-width: 520px;
             animation: fadeUp 0.8s ease 0.6s both;
         }
+        .hero-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--orange);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+            align-self: flex-start;
+            animation: fadeUp 0.8s ease 0.8s both;
+        }
+        .hero-btn:hover { background: var(--orange-light); transform: translateY(-2px); }
         .btn-primary {
             background: var(--orange);
             color: white;
@@ -966,9 +982,6 @@
 
 <!-- NAV -->
 <nav id="navbar">
-    <a href="{{ route('landing.home') }}" class="nav-logo">
-        <img src="{{asset('logo.png')}}" alt="Logo" class="logo-img" width="160px;">
-    </a>
     <ul class="nav-links">
         @if(isset($navCategories) && $navCategories->count() > 0)
         <li class="nav-dropdown-wrap">
@@ -1011,6 +1024,9 @@
         <li><a href="#contact" class="nav-cta">Nous Contacter</a></li>
         @endif
     </ul>
+    <a href="{{ route('landing.home') }}" class="nav-logo">
+        <img src="{{asset('logo.png')}}" alt="Logo" class="logo-img" width="160px;">
+    </a>
 </nav>
 
 <!-- ===== HERO ===== -->
@@ -1029,6 +1045,8 @@
                 $slidePrimaryText = $slide['primary_btn_text'] ?? 'Lire la vidéo';
                 $slideSecondaryText = $slide['secondary_btn_text'] ?? null;
                 $slideSecondaryLink = $slide['secondary_btn_link'] ?? '#about';
+                $slideButtonText = $slide['button_text'] ?? null;
+                $slideButtonUrl = $slide['button_url'] ?? null;
             @endphp
             <div class="swiper-slide hero-slide" data-type="{{ $slideType }}" data-index="{{ $slideIndex }}">
                 <!-- Vidéo en full width cover -->
@@ -1045,6 +1063,9 @@
                 <div class="hero-content">
                     <h1 class="hero-title">{!! $slideTitle !!}</h1>
                     <p class="hero-subtitle">{{ $slideSubtitle }}</p>
+                    @if($slideButtonText && $slideButtonUrl)
+                    <a href="{{ $slideButtonUrl }}" class="hero-btn" target="_blank" rel="noopener">{{ $slideButtonText }}</a>
+                    @endif
                 </div>
             </div>
             @endforeach

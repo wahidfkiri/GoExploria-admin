@@ -52,6 +52,8 @@ class PageContent extends Model
         'contact_message',
         'about_subtitle',
         'about_values',
+        'button_text',
+        'button_url',
         'extra_data',
     ];
 

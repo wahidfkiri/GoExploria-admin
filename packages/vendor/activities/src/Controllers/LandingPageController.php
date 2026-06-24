@@ -82,6 +82,8 @@ class LandingPageController extends Controller
                 'primary_btn_link' => '#hero',
                 'secondary_btn_text' => 'En savoir plus',
                 'secondary_btn_link' => '#about',
+                'button_text' => $video->button_text ?? null,
+                'button_url' => $video->button_url ?? null,
             ];
         }
 
