@@ -963,9 +963,126 @@
             .contact-grid { grid-template-columns: 1fr; gap: 50px; }
             .faq-grid { grid-template-columns: 1fr; }
         }
+        /* ===== HAMBURGER ===== */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            margin-left: auto;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #fff;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        /* ===== MOBILE MENU ===== */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 72px; left: 0; right: 0; bottom: 0;
+            background: var(--navy);
+            z-index: 999;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .mobile-menu.open { display: block; }
+        .mobile-menu-inner { display: flex; flex-direction: column; gap: 4px; }
+        .mobile-menu-link {
+            display: block;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background 0.2s, color 0.2s;
+        }
+        .mobile-menu-link:hover { background: rgba(255,107,53,0.1); color: var(--orange); }
+        .mobile-menu-toggle {
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mobile-menu-arrow { font-size: 0.7em; transition: transform 0.3s; }
+        .mobile-menu-toggle.active .mobile-menu-arrow { transform: rotate(180deg); }
+        .mobile-menu-sublinks {
+            display: none;
+            padding-left: 16px;
+            margin-bottom: 8px;
+        }
+        .mobile-menu-sublinks.open { display: block; }
+        .mobile-menu-subgroup { margin-bottom: 8px; }
+        .mobile-menu-cat-title {
+            color: var(--orange);
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 6px 16px;
+        }
+        .mobile-menu-link--sub {
+            padding: 8px 16px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .mobile-menu-link--sub img,
+        .mobile-menu-placeholder {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: var(--navy-mid);
+        }
+        .mobile-menu-cta {
+            background: var(--orange);
+            color: #fff !important;
+            text-align: center;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+        .mobile-menu-cta:hover { background: var(--orange-light) !important; color: #fff !important; }
+
+        /* ===== NAV MEGA RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .nav-mega { grid-template-columns: repeat(3, 1fr); min-width: 500px; }
+        }
+        @media (max-width: 768px) {
+            .nav-mega {
+                position: static;
+                transform: none;
+                min-width: auto;
+                max-width: none;
+                grid-template-columns: 1fr;
+                padding: 8px;
+                box-shadow: none;
+                border: none;
+                background: transparent;
+            }
+            .nav-dropdown-wrap:hover .nav-mega { display: none; }
+        }
+
         @media (max-width: 768px) {
             nav { padding: 0 20px; }
             .nav-links { display: none; }
+            .hamburger { display: flex; }
             section { padding: 70px 0; }
             .container { padding: 0 20px; }
             .section-header { flex-direction: column; align-items: flex-start; }
@@ -1027,7 +1144,56 @@
         <li><a href="#contact" class="nav-cta">Nous Contacter</a></li>
         @endif
     </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+    </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <div class="mobile-menu-inner">
+        @if(isset($navCategories) && $navCategories->count() > 0)
+        <div class="mobile-menu-group">
+            <button class="mobile-menu-link mobile-menu-toggle" aria-expanded="false">
+                Activités <span class="mobile-menu-arrow">&#9662;</span>
+            </button>
+            <div class="mobile-menu-sublinks">
+                @foreach($navCategories as $cat)
+                <div class="mobile-menu-subgroup">
+                    <div class="mobile-menu-cat-title">{{ $cat->name }}</div>
+                    @foreach($cat->activities as $act)
+                    <a href="{{ route('landing.activity.show', $act->slug) }}" class="mobile-menu-link mobile-menu-link--sub">
+                        @if($act->image_url) <img src="{{ $act->image_url }}" alt="{{ $act->name }}" loading="lazy" />
+                        @else <div class="mobile-menu-placeholder"></div>
+                        @endif
+                        {{ $act->name }}
+                    </a>
+                    @endforeach
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+        @if($about)
+        <a href="#about" class="mobile-menu-link">À propos</a>
+        @endif
+        @if(isset($events) && $events->count() > 0)
+        <a href="#evenements" class="mobile-menu-link">Événements</a>
+        @endif
+        @if(isset($blogs) && $blogs->count() > 0)
+        <a href="#blog" class="mobile-menu-link">Blog</a>
+        @endif
+        @if(isset($testimonials) && $testimonials->count() > 0)
+        <a href="#avis" class="mobile-menu-link">Avis</a>
+        @endif
+        @if(isset($faqs) && $faqs->count() > 0)
+        <a href="#faq" class="mobile-menu-link">FAQ</a>
+        @endif
+        @if($contact)
+        <a href="#contact" class="mobile-menu-link mobile-menu-cta">Nous Contacter</a>
+        @endif
+    </div>
+</div>
 
 <!-- ===== HERO ===== -->
 @if(count($heroSlides) > 0)
@@ -1460,6 +1626,34 @@
         });
         navLinks.forEach(a => {
             a.style.color = a.getAttribute('href') === `#${current}` ? 'var(--orange)' : '';
+        });
+    });
+
+    // ===== MOBILE MENU =====
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+        const open = mobileMenu.classList.toggle('open');
+        hamburger.classList.toggle('active');
+        hamburger.setAttribute('aria-expanded', open);
+        mobileMenu.setAttribute('aria-hidden', !open);
+        document.body.style.overflow = open ? 'hidden' : '';
+    });
+    // Accordéon Activités dans le menu mobile
+    document.querySelectorAll('.mobile-menu-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.classList.toggle('active');
+            btn.nextElementSibling.classList.toggle('open');
+        });
+    });
+    // Fermer le menu mobile au clic sur un lien
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+            hamburger.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
+            mobileMenu.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
         });
     });
 
