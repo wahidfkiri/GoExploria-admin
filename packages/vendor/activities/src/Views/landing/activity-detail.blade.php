@@ -115,6 +115,76 @@
         }
         .nav-cta:hover { background: var(--orange-light); transform: translateY(-1px); }
 
+        /* ===== MEGA MENU ACTIVITÉS ===== */
+        .nav-dropdown-wrap { position: relative; }
+        .nav-link-dropdown { cursor: pointer; }
+        .dropdown-arrow { font-size: 0.6em; margin-left: 4px; }
+        .nav-mega {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--navy);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            min-width: 600px;
+            max-width: 800px;
+            box-shadow: var(--shadow-lg);
+            z-index: 999;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        }
+        .nav-dropdown-wrap:hover .nav-mega { display: grid; }
+        .nav-mega-col { break-inside: avoid; }
+        .nav-mega-cat-title {
+            color: var(--orange);
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .nav-mega-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 8px;
+            color: rgba(255,255,255,0.75);
+            font-size: 0.78rem;
+            transition: background 0.2s, color 0.2s;
+            text-decoration: none;
+            margin-bottom: 2px;
+        }
+        .nav-mega-item:hover { background: rgba(255,107,53,0.1); color: var(--orange); }
+        .nav-mega-item img,
+        .nav-mega-placeholder {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .nav-mega-placeholder {
+            background: var(--navy-mid);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            color: var(--gray-mid);
+        }
+        .nav-mega-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        @media (max-width: 900px) {
+            .nav-mega { min-width: 400px; max-width: 500px; grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .nav-mega { min-width: 260px; max-width: 300px; grid-template-columns: 1fr; padding: 12px; }
+            .nav-mega-item { font-size: 0.72rem; }
+        }
+
         /* ===== HERO ===== */
         #hero {
             position: relative;
@@ -900,20 +970,46 @@
         <img src="{{asset('logo.png')}}" alt="Logo" class="logo-img" width="160px;">
     </a>
     <ul class="nav-links">
+        @if(isset($navCategories) && $navCategories->count() > 0)
+        <li class="nav-dropdown-wrap">
+            <a href="#activites" class="nav-link-dropdown">Activités <span class="dropdown-arrow">&#9662;</span></a>
+            <div class="nav-mega">
+                @foreach($navCategories as $cat)
+                <div class="nav-mega-col">
+                    <div class="nav-mega-cat-title">{{ $cat->name }}</div>
+                    @foreach($cat->activities as $act)
+                    <a href="{{ route('landing.activity.show', $act->slug) }}" class="nav-mega-item">
+                        @if($act->image_url)
+                        <img src="{{ $act->image_url }}" alt="{{ $act->name }}" loading="lazy" />
+                        @else
+                        <div class="nav-mega-placeholder"></div>
+                        @endif
+                        <span>{{ $act->name }}</span>
+                    </a>
+                    @endforeach
+                </div>
+                @endforeach
+            </div>
+        </li>
+        @endif
+        @if($about)
         <li><a href="#about">À propos</a></li>
-        @if($events->count() > 0)
+        @endif
+        @if(isset($events) && $events->count() > 0)
         <li><a href="#evenements">Événements</a></li>
         @endif
-        @if($blogs->count() > 0)
+        @if(isset($blogs) && $blogs->count() > 0)
         <li><a href="#blog">Blog</a></li>
         @endif
-        @if($testimonials->count() > 0)
+        @if(isset($testimonials) && $testimonials->count() > 0)
         <li><a href="#avis">Avis</a></li>
         @endif
-        @if($faqs->count() > 0)
+        @if(isset($faqs) && $faqs->count() > 0)
         <li><a href="#faq">FAQ</a></li>
         @endif
+        @if($contact)
         <li><a href="#contact" class="nav-cta">Nous Contacter</a></li>
+        @endif
     </ul>
 </nav>
 

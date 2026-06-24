@@ -5,6 +5,7 @@ namespace Vendor\Activities\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
+use App\Models\Category;
 use App\Models\PageContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -98,6 +99,14 @@ class LandingPageController extends Controller
         // Catégories d'activités (pour la section)
         $categories = $this->getCategories();
 
+        // Catégories avec activités pour le mega menu du header
+        $navCategories = Category::where('is_active', true)
+            ->with(['activities' => function ($q) {
+                $q->where('is_active', true);
+            }])
+            ->get()
+            ->filter(fn($cat) => $cat->activities->isNotEmpty());
+
         // Partenaires
         $partners = $this->getPartners();
 
@@ -115,6 +124,7 @@ class LandingPageController extends Controller
             'featuredEvents',
             'stats',
             'categories',
+            'navCategories',
             'partners'
         ));
     }
