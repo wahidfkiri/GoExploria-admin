@@ -587,11 +587,11 @@
             padding: 2px 0;
         }
         .plan-card {
-            display: block;
-            text-decoration: none;
+            display: grid;
+            grid-template-columns: 130px 1fr;
             color: #fff;
             border-radius: 14px;
-            padding: 14px;
+            overflow: hidden;
             box-shadow: 0 10px 24px rgba(12, 30, 58, 0.18);
             transition: transform .2s ease, box-shadow .2s ease;
         }
@@ -599,44 +599,71 @@
             transform: translateY(-2px);
             box-shadow: 0 16px 28px rgba(12, 30, 58, 0.26);
         }
+        .plan-card-image {
+            position: relative;
+            min-height: 130px;
+            background: rgba(0,0,0,.25);
+            overflow: hidden;
+        }
+        .plan-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            cursor: pointer;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+        .plan-card-image img:hover {
+            transform: scale(1.05);
+            filter: brightness(1.08);
+        }
+        .plan-card-image .img-placeholder {
+            width: 100%;
+            height: 100%;
+            min-height: 130px;
+            display: grid;
+            place-items: center;
+            font-size: 32px;
+            color: rgba(255,255,255,.7);
+        }
+        .plan-card-body {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
         .plan-card-head {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
+            justify-content: flex-end;
         }
         .plan-card-head i {
-            font-size: 18px;
-        }
-        .plan-card-head .card-thumb {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            object-fit: cover;
+            font-size: 16px;
+            color: rgba(255,255,255,.7);
         }
         .plan-card h4 {
-            margin: 0 0 6px;
-            font-size: 16px;
+            margin: 0;
+            font-size: 15px;
             font-weight: 900;
-            line-height: 1.35;
+            line-height: 1.3;
         }
         .plan-card p {
             margin: 0;
-            font-size: 13px;
-            line-height: 1.5;
-            color: rgba(255, 255, 255, 0.88);
+            font-size: 12px;
+            line-height: 1.45;
+            color: rgba(255, 255, 255, 0.85);
         }
         .plan-price {
-            margin-top: 10px;
+            margin-top: auto;
             font-size: 14px;
             font-weight: 800;
             color: #fff7d8;
         }
-        .plan-card-a { background: linear-gradient(135deg, #0b5fb3 0%, #0e84d8 100%); }
-        .plan-card-b { background: linear-gradient(135deg, #126d67 0%, #2cae9f 100%); }
-        .plan-card-c { background: linear-gradient(135deg, #824a12 0%, #d2912f 100%); }
-        .plan-card-d { background: linear-gradient(135deg, #5d2d91 0%, #8f56c4 100%); }
-        .plan-card-e { background: linear-gradient(135deg, #842f52 0%, #ca4d85 100%); }
+        .plan-card-a .plan-card-body { background: linear-gradient(135deg, #0b5fb3 0%, #0e84d8 100%); }
+        .plan-card-b .plan-card-body { background: linear-gradient(135deg, #126d67 0%, #2cae9f 100%); }
+        .plan-card-c .plan-card-body { background: linear-gradient(135deg, #824a12 0%, #d2912f 100%); }
+        .plan-card-d .plan-card-body { background: linear-gradient(135deg, #5d2d91 0%, #8f56c4 100%); }
+        .plan-card-e .plan-card-body { background: linear-gradient(135deg, #842f52 0%, #ca4d85 100%); }
 
         /* Styles pour le sélecteur de discount */
         .discount-selector {
@@ -880,6 +907,8 @@
             .grid-2, .grid-3, .services-grid { grid-template-columns: 1fr; }
             .service-card { grid-template-columns: 1fr; }
             .service-media, .service-media-placeholder { min-height: 180px; }
+            .plan-card { grid-template-columns: 1fr; }
+            .plan-card-image { min-height: 160px; }
             .quote-summary { position: static; }
             .quote-head { padding: 18px; }
             .form-actions { grid-template-columns: 1fr; }
@@ -1220,27 +1249,35 @@
                     $imageUrl = data_get($service, 'image_url');
                 @endphp
                 <div class="plan-card {{ $color }}">
-                    <div class="plan-card-head">
+                    <div class="plan-card-image">
                         @if($imageUrl)
-                            <img src="{{ $imageUrl }}" alt="{{ data_get($service, 'title') }}" class="card-thumb" loading="lazy">
+                            <img src="{{ $imageUrl }}" alt="{{ data_get($service, 'title') }}" loading="lazy">
                         @else
-                            <i class="fas fa-briefcase"></i>
+                            <div class="img-placeholder"><i class="fas fa-briefcase"></i></div>
                         @endif
-                        <i class="fas fa-arrow-up-right-from-square"></i>
                     </div>
-                    <h4>{{ data_get($service, 'title') }}</h4>
-                    <p>{{ Str::limit(strip_tags((string) data_get($service, 'description')), 95) ?: 'Service professionnel GoExploria.' }}</p>
-                    <div class="plan-price">{{ $formatServicePrice($service) }}</div>
+                    <div class="plan-card-body">
+                        <div class="plan-card-head">
+                            <i class="fas fa-arrow-up-right-from-square"></i>
+                        </div>
+                        <h4>{{ data_get($service, 'title') }}</h4>
+                        <p>{{ Str::limit(strip_tags((string) data_get($service, 'description')), 80) ?: 'Service professionnel GoExploria.' }}</p>
+                        <div class="plan-price">{{ $formatServicePrice($service) }}</div>
+                    </div>
                 </div>
             @empty
                 <div class="plan-card plan-card-a">
-                    <div class="plan-card-head">
-                        <i class="fas fa-briefcase"></i>
-                        <i class="fas fa-arrow-up-right-from-square"></i>
+                    <div class="plan-card-image">
+                        <div class="img-placeholder"><i class="fas fa-briefcase"></i></div>
                     </div>
-                    <h4>Services GoExploria</h4>
-                    <p>Découvrez nos services de création de sites web, marketing digital et bien plus.</p>
-                    <div class="plan-price">Sur demande</div>
+                    <div class="plan-card-body">
+                        <div class="plan-card-head">
+                            <i class="fas fa-arrow-up-right-from-square"></i>
+                        </div>
+                        <h4>Services GoExploria</h4>
+                        <p>Découvrez nos services de création de sites web, marketing digital et bien plus.</p>
+                        <div class="plan-price">Sur demande</div>
+                    </div>
                 </div>
             @endforelse
 
