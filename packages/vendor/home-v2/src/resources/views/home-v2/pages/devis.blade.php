@@ -42,6 +42,15 @@
         $cycle = $plan->billing_cycle === 'yearly' ? '/an' : '/mois';
         return number_format((float) $price, 0, ',', ' ') . ' ' . ($plan->currency ?: 'CAD') . ' ' . $cycle;
     };
+
+    $formatServicePrice = static function ($service): string {
+        $price = (float) data_get($service, 'unit_price', 0);
+        if ($price <= 0) {
+            return 'Sur demande';
+        }
+        $unit = data_get($service, 'billing_unit', 'forfait');
+        return number_format($price, 2, ',', ' ') . ' CAD / ' . $unit;
+    };
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -598,6 +607,12 @@
         }
         .plan-card-head i {
             font-size: 18px;
+        }
+        .plan-card-head .card-thumb {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            object-fit: cover;
         }
         .plan-card h4 {
             margin: 0 0 6px;
@@ -1195,34 +1210,38 @@
 
         <aside class="plans-column">
             <div class="plans-title">
-                <h3>Plans disponibles</h3>
-                <p>Comparez rapidement nos plans et choisissez la formule adaptée à votre projet.</p>
+                <h3>Nos services</h3>
+                <p>Sélectionnez les services adaptés à votre projet dans le formulaire ci-contre.</p>
             </div>
 
-            @forelse($plans as $index => $plan)
+            @forelse($servicesCatalog as $service)
                 @php
-                    $color = $planColors[$index % count($planColors)];
-                    $url = !empty($plan->slug) ? url('/plan-detail/' . $plan->slug) : url('/plans-detail');
+                    $color = $planColors[$loop->index % count($planColors)];
+                    $imageUrl = data_get($service, 'image_url');
                 @endphp
-                <a href="{{ $url }}" class="plan-card {{ $color }}" target="_blank" rel="noopener noreferrer">
+                <div class="plan-card {{ $color }}">
                     <div class="plan-card-head">
-                        <i class="{{ $iconClass($plan->icon) }}"></i>
+                        @if($imageUrl)
+                            <img src="{{ $imageUrl }}" alt="{{ data_get($service, 'title') }}" class="card-thumb" loading="lazy">
+                        @else
+                            <i class="fas fa-briefcase"></i>
+                        @endif
                         <i class="fas fa-arrow-up-right-from-square"></i>
                     </div>
-                    <h4>{{ $plan->name }}</h4>
-                    <p>{{ Str::limit(strip_tags((string) $plan->description), 95) ?: 'Plan professionnel pour accélérer votre croissance digitale.' }}</p>
-                    <div class="plan-price">{{ $formatPrice($plan) }}</div>
-                </a>
+                    <h4>{{ data_get($service, 'title') }}</h4>
+                    <p>{{ Str::limit(strip_tags((string) data_get($service, 'description')), 95) ?: 'Service professionnel GoExploria.' }}</p>
+                    <div class="plan-price">{{ $formatServicePrice($service) }}</div>
+                </div>
             @empty
-                <a href="{{ url('/plans-detail') }}" class="plan-card plan-card-a" target="_blank" rel="noopener noreferrer">
+                <div class="plan-card plan-card-a">
                     <div class="plan-card-head">
-                        <i class="fas fa-layer-group"></i>
+                        <i class="fas fa-briefcase"></i>
                         <i class="fas fa-arrow-up-right-from-square"></i>
                     </div>
-                    <h4>Plans GoExploria</h4>
-                    <p>Découvrez nos offres Business, Destinations, Partenaires et Espaces médias.</p>
+                    <h4>Services GoExploria</h4>
+                    <p>Découvrez nos services de création de sites web, marketing digital et bien plus.</p>
                     <div class="plan-price">Sur demande</div>
-                </a>
+                </div>
             @endforelse
 
             @if(!empty($activeTaxes) && $activeTaxes->isNotEmpty())
