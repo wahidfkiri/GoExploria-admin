@@ -151,7 +151,7 @@
                 {{-- Slide 3: Pub vidéo --}}
                 <div class="carousel-item-simple active">
                     <div class="media-container-v2 ad-container">
-                        <div id="ad-zone-milieu_page"></div>
+                        @adZone('milieu_page')
                         <button class="expand-media-btn" onclick="document.getElementById('ad-zone-milieu_page').click()">
                             <i class="fas fa-play"></i>
                         </button>
