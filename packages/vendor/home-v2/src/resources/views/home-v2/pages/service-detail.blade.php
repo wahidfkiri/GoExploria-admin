@@ -301,7 +301,7 @@
         <h2 class="section-title-premium">En savoir <span class="gradient-premium">plus</span></h2>
       </div>
       <div class="description-content">
-        {!! nl2br(e($serviceDescription)) !!}
+        {!! $serviceDescription !!}
       </div>
 
       <div class="info-grid">
