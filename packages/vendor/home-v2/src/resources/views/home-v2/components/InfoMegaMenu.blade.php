@@ -186,6 +186,14 @@
                         @php
                             $ytId = $embedYouTubeUrl($ad->video_url);
                         @endphp
+                        @if($ad->destination_url)
+                        <a href="{{ $ad->destination_url }}" target="{{ $ad->open_new_tab ? '_blank' : '_self' }}"
+                            class="ad-title-link" title="{{ $ad->titre }}">
+                            <span class="ad-title">{{ $ad->titre }}</span>
+                        </a>
+                        @else
+                        <span class="ad-title">{{ $ad->titre }}</span>
+                        @endif
                         @if($ytId)
                             <iframe src="https://www.youtube.com/embed/{{ $ytId }}?autoplay=0&mute=0&controls=1"
                                 title="{{ $ad->titre }}" class="slide-media-direct"
@@ -232,6 +240,21 @@
                 CANADA</span></a>
         <a href="{{url('/landing/experiences-monde')}}" class="footer-btn btn-monde"><span>EXPÉRIENCES MONDE</span></a>
     </div>
+
+    <style>
+        .ad-title-link { text-decoration: none; display: block; }
+        .ad-title {
+            display: block;
+            text-align: center;
+            padding: 6px 10px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f1f3a;
+            background: rgba(255,255,255,0.9);
+            border-bottom: 1px solid #dde7f6;
+        }
+        .ad-title-link:hover .ad-title { color: #4f46e5; }
+    </style>
 
     {{-- System-Specific Scripts --}}
 
