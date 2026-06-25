@@ -252,7 +252,7 @@
             <span class="gradient-premium">{{ $serviceTitle }}</span>
           </h1>
           <p class="hero-desc-premium">
-            {{ $serviceDescription !== '' ? $serviceDescription : 'Service professionnel GoExploria pour booster votre activité.' }}
+            {!! $serviceDescription !== '' ? strip_tags($serviceDescription) : 'Service professionnel GoExploria pour booster votre activité.' !!}
           </p>
           <div style="display: flex; gap: 16px; flex-wrap: wrap;">
             <a href="{{ route('devis') }}" class="btn-premium-primary">
@@ -301,7 +301,7 @@
         <h2 class="section-title-premium">En savoir <span class="gradient-premium">plus</span></h2>
       </div>
       <div class="description-content">
-        {!! $serviceDescription !!}
+        {!! strip_tags($serviceDescription) !!}
       </div>
 
       <div class="info-grid">
