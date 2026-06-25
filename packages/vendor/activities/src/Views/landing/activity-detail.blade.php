@@ -1609,7 +1609,7 @@
                 toggle.setAttribute('data-paused', '1');
             }
             heroAutoPauseTimer = null;
-        }, 5000);
+        }, 15000);
     }
 
     const heroSwiper = new Swiper('.hero-swiper', {

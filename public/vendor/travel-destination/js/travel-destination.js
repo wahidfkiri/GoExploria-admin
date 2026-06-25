@@ -72,7 +72,7 @@
     if (!el) return;
     var heroSwiper = new Swiper('.hero-swiper', {
       loop: true, speed: 1000,
-      autoplay: { delay: 8000, disableOnInteraction: false },
+      autoplay: { delay: 15000, disableOnInteraction: false },
       effect: 'fade', fadeEffect: { crossFade: true },
       pagination: { el: '.hero-pagination', clickable: true },
       navigation: { prevEl: '.hero-prev', nextEl: '.hero-next' },
