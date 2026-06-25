@@ -148,6 +148,16 @@
                     </div>
                 </div>
 
+                {{-- Slide 3: Pub vidéo --}}
+                <div class="carousel-item-simple">
+                    <div class="media-container-v2 ad-container">
+                        <div id="ad-zone-milieu_page"></div>
+                        <button class="expand-media-btn" onclick="document.getElementById('ad-zone-milieu_page').click()">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                </div>
+
                 {{-- Navigation --}}
                 <button class="mega-nav-btn prev" id="mediaPrev"><i class="fas fa-chevron-left"></i></button>
                 <button class="mega-nav-btn next" id="mediaNext"><i class="fas fa-chevron-right"></i></button>
