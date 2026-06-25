@@ -180,11 +180,14 @@
 
                 {{-- Ads videos depuis la table ads --}}
                 @forelse($videoAds as $ad)
+                @php
+                    $ytId = $embedYouTubeUrl($ad->video_url);
+                    $adOnclick = $ytId
+                        ? "openDedicatedVideo('$ytId', '" . e($ad->titre) . "')"
+                        : "openDedicatedImage('" . e($ad->video_url) . "', '" . e($ad->titre) . "')";
+                @endphp
                 <div class="carousel-item-simple{{ $loop->first ? ' active' : '' }}">
                     <div class="media-container-v2 ad-container">
-                        @php
-                            $ytId = $embedYouTubeUrl($ad->video_url);
-                        @endphp
                         @if($ad->destination_url)
                         <a href="{{ $ad->destination_url }}" target="{{ $ad->open_new_tab ? '_blank' : '_self' }}"
                             class="ad-title-link" title="{{ $ad->titre }}">
@@ -209,8 +212,7 @@
                             <i class="fas fa-external-link-alt"></i>
                         </a>
                         @else
-                        <button class="expand-media-btn"
-                            onclick="{{ $ytId ? "openDedicatedVideo('$ytId', '".e($ad->titre)."')" : "openDedicatedImage('".e($ad->video_url)."', '".e($ad->titre)."')" }}">
+                        <button class="expand-media-btn" onclick="{{ $adOnclick }}">
                             <i class="fas fa-expand"></i>
                         </button>
                         @endif
