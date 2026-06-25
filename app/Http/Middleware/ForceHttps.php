@@ -9,33 +9,27 @@ use Symfony\Component\HttpFoundation\Response;
 class ForceHttps
 {
     /**
-     * Redirect requests to canonical HTTPS URL in production.
+     * Redirect all requests to canonical HTTPS non-www URL
+     * when FORCE_HTTPS is enabled in .env.
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! app()->environment('production')) {
+        if (! config('app.force_https')) {
             return $next($request);
         }
 
         $forwardedProto = strtolower(trim((string) explode(',', (string) $request->header('x-forwarded-proto'))[0]));
-        $isForwardedHttps = $forwardedProto === 'https';
-        $isHttps = $request->secure() || $isForwardedHttps;
+        $isHttps = $request->secure() || $forwardedProto === 'https';
 
         $currentHost = $request->getHost();
         $canonicalHost = preg_replace('/^www\./i', '', $currentHost);
-        $hasWww = ! empty($canonicalHost) && strcasecmp($currentHost, $canonicalHost) !== 0;
-        $forceHttps = (bool) config('app.force_https');
 
-        // Always canonicalize www.* to https://non-www
-        if ($hasWww) {
-            $targetUrl = 'https://' . $canonicalHost . $request->getRequestUri();
-            return redirect()->to($targetUrl, 301);
-        }
+        $canonicalUrl = 'https://' . $canonicalHost . $request->getRequestUri();
+        $currentScheme = $isHttps ? 'https' : 'http';
+        $currentUrl = $currentScheme . '://' . $currentHost . $request->getRequestUri();
 
-        // Optional HTTP -> HTTPS redirect for non-www domains
-        if ($forceHttps && ! $isHttps) {
-            $targetUrl = 'https://' . ($canonicalHost ?: $currentHost) . $request->getRequestUri();
-            return redirect()->to($targetUrl, 301);
+        if ($currentUrl !== $canonicalUrl) {
+            return redirect()->to($canonicalUrl, 301);
         }
 
         return $next($request);
