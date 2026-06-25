@@ -179,7 +179,7 @@
                 </div>
 
                 {{-- Ads videos depuis la table ads --}}
-                @forelse($videoAds as $ad)
+                @foreach($videoAds as $ad)
                 @php
                     $ytId = $embedYouTubeUrl($ad->video_url);
                     $adOnclick = $ytId
@@ -218,7 +218,7 @@
                         @endif
                     </div>
                 </div>
-                @endforelse
+                @endforeach
 
                 {{-- Navigation --}}
                 <button class="mega-nav-btn prev" id="mediaPrev"><i class="fas fa-chevron-left"></i></button>
