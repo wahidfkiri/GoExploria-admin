@@ -201,6 +201,7 @@
             width: 100%;
             height: 100%;
         }
+        .hero-swiper .swiper-slide:not(.swiper-slide-active) { pointer-events: none; }
 
         /* Video Background - Full Width Cover */
         .hero-slide .video-bg {
