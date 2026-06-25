@@ -84,7 +84,8 @@
           var vids = prev ? prev.querySelectorAll('video, iframe') : [];
           vids.forEach(function (v) { if (v.tagName === 'VIDEO') { v.pause(); } else if (v.tagName === 'IFRAME') { v.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } });
           var curVids = curr ? curr.querySelectorAll('video, iframe') : [];
-          curVids.forEach(function (v) { if (v.tagName === 'VIDEO') { v.play().catch(function () {}); } else if (v.tagName === 'IFRAME') { v.src = v.src.replace('&autoplay=0', '&autoplay=1'); } });
+          curVids.forEach(function (v) { if (v.tagName === 'VIDEO') { v.play().catch(function () {}); } else if (v.tagName === 'IFRAME') { v.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*'); } });
+          (curr ? curr.querySelectorAll('.hero__video-toggle') : []).forEach(function (btn) { btn.innerHTML = '&#10074;&#10074;'; btn.setAttribute('data-paused', '0'); });
         },
       },
     });

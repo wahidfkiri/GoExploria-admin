@@ -227,6 +227,24 @@
             pointer-events: none;
         }
 
+        .hero__click-capture {
+            position: absolute; inset: 0; z-index: 5;
+            cursor: default;
+        }
+
+        .hero__video-toggle {
+            position: absolute; bottom: 100px; right: 24px; z-index: 10;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.3);
+            color: #fff; font-size: 0.85rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s; backdrop-filter: blur(8px);
+            line-height: 1;
+        }
+        .hero__video-toggle:hover {
+            background: rgba(0,0,0,0.7); border-color: #fff;
+        }
+
         .video-thumbnail {
             position: absolute;
             inset: 0;
@@ -1215,6 +1233,7 @@
             <div class="swiper-slide hero-slide" data-type="{{ $slideType }}" data-index="{{ $slideIndex }}">
                 <!-- Vidéo en full width cover -->
                 <div class="video-bg" id="videoBg-{{ $slideIndex }}">
+                    <div class="hero__click-capture"></div>
                     <iframe id="heroVideo-{{ $slideIndex }}" 
                             src="{{ $slideVideoUrl }}"
                             allow="autoplay; encrypted-media; fullscreen"
@@ -1222,6 +1241,7 @@
                     </iframe>
                 </div>
                 <div class="slide-overlay-video"></div>
+                <button class="hero__video-toggle" type="button" aria-label="Lecture/Pause vidéo">&#10074;&#10074;</button>
                 
                 <div class="hero-content">
                     <h1 class="hero-title">{!! $slideTitle !!}</h1>
@@ -1577,10 +1597,34 @@
         on: {
             slideChange: function() {
                 document.querySelectorAll('.hero-slide iframe').forEach(iframe => {
-                    iframe.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+                    iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                });
+                document.querySelectorAll('.hero__video-toggle').forEach(btn => {
+                    btn.innerHTML = '&#10074;&#10074;';
+                    btn.setAttribute('data-paused', '0');
                 });
             }
         }
+    });
+
+    // ===== PAUSE/PLAY VIDEO TOGGLE =====
+    document.querySelectorAll('.hero__video-toggle').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var slide = btn.closest('.hero-slide');
+            if (!slide) return;
+            var iframe = slide.querySelector('iframe');
+            if (!iframe) return;
+            var paused = btn.getAttribute('data-paused') === '1';
+            if (paused) {
+                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                btn.innerHTML = '&#10074;&#10074;';
+                btn.setAttribute('data-paused', '0');
+            } else {
+                iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                btn.innerHTML = '&#9654;';
+                btn.setAttribute('data-paused', '1');
+            }
+        });
     });
 
     // ===== GESTION DU FULLSCREEN =====
