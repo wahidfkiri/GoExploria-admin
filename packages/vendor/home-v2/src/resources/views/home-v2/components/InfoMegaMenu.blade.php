@@ -127,7 +127,7 @@
         <div class="mega-menu-carousel-clean">
             <div class="carousel-media-viewport" id="exclusiveMediaViewport">
                 {{-- Slide 1: Video --}}
-                <div class="carousel-item-simple active">
+                <div class="carousel-item-simple ">
                     <div class="media-container-v2">
                         <iframe src="https://www.youtube.com/embed/hdxKTW1ER5w" title="Video Québec"
                             class="slide-media-direct"></iframe>
@@ -149,7 +149,7 @@
                 </div>
 
                 {{-- Slide 3: Pub vidéo --}}
-                <div class="carousel-item-simple">
+                <div class="carousel-item-simple active">
                     <div class="media-container-v2 ad-container">
                         <div id="ad-zone-milieu_page"></div>
                         <button class="expand-media-btn" onclick="document.getElementById('ad-zone-milieu_page').click()">
