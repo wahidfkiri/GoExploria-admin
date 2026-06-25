@@ -1,5 +1,35 @@
 <script src="https://admin.goexploriabusiness.com/ads-widget/loader.js" async></script>
 @php(ob_start());@endphp
+@php
+    use Illuminate\Support\Facades\DB;
+
+    $videoAds = DB::table('ads')
+        ->where('status', 'active')
+        ->whereNotNull('video_url')
+        ->where('video_url', '!=', '')
+        ->where(function ($q) {
+            $q->whereNull('start_date')->orWhere('start_date', '<=', now()->toDateString());
+        })
+        ->where(function ($q) {
+            $q->whereNull('end_date')->orWhere('end_date', '>=', now()->toDateString());
+        })
+        ->where(function ($q) {
+            $q->whereNull('budget_total')
+              ->orWhereRaw('budget_total > COALESCE(budget_spent, 0)');
+        })
+        ->orderBy('priority')
+        ->orderByDesc('id')
+        ->get();
+
+    $isYouTubeUrl = function (string $url): bool {
+        return preg_match('/(?:youtube\.com|youtu\.be)/i', $url) === 1;
+    };
+
+    $embedYouTubeUrl = function (string $url): ?string {
+        preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $url, $m);
+        return $m[1] ?? null;
+    };
+@endphp
 
 {{-- Info Mega Menu Component Compact --}}
 <div class="header-mega-menu info-mega-menu-v2 compact-menu" id="infoMegaMenuV2">
@@ -149,16 +179,43 @@
                     </div>
                 </div>
 
-                {{-- Slide 3: Pub vidéo --}}
-                <div class="carousel-item-simple active">
+                {{-- Ads videos depuis la table ads --}}
+                @forelse($videoAds as $ad)
+                <div class="carousel-item-simple{{ $loop->first ? ' active' : '' }}">
                     <div class="media-container-v2 ad-container">
-                       
-<div class="am-zone" data-zone="milieu_page"></div>
-                        <button class="expand-media-btn" onclick="document.getElementById('ad-zone-milieu_page').click()">
-                            <i class="fas fa-play"></i>
+                        @php
+                            $ytId = $embedYouTubeUrl($ad->video_url);
+                        @endphp
+                        @if($ytId)
+                            <iframe src="https://www.youtube.com/embed/{{ $ytId }}?autoplay=0&mute=0&controls=1"
+                                title="{{ $ad->titre }}" class="slide-media-direct"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+                        @else
+                            <video class="slide-media-direct" controls preload="metadata" playsinline>
+                                <source src="{{ $ad->video_url }}">
+                            </video>
+                        @endif
+                        @if($ad->destination_url)
+                        <a href="{{ $ad->destination_url }}" target="{{ $ad->open_new_tab ? '_blank' : '_self' }}"
+                            class="expand-media-btn" title="{{ $ad->titre }}">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        @else
+                        <button class="expand-media-btn"
+                            onclick="{{ $ytId ? "openDedicatedVideo('$ytId', '".e($ad->titre)."')" : "openDedicatedImage('".e($ad->video_url)."', '".e($ad->titre)."')" }}">
+                            <i class="fas fa-expand"></i>
                         </button>
+                        @endif
                     </div>
                 </div>
+                @empty
+                <div class="carousel-item-simple active">
+                    <div class="media-container-v2 ad-container">
+                        <div class="am-zone" data-zone="milieu_page"></div>
+                    </div>
+                </div>
+                @endforelse
 
                 {{-- Navigation --}}
                 <button class="mega-nav-btn prev" id="mediaPrev"><i class="fas fa-chevron-left"></i></button>
