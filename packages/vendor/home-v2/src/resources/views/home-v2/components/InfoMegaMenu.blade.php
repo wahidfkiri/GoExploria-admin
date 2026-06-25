@@ -1,4 +1,4 @@
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 @php
     use Illuminate\Support\Facades\DB;
 
@@ -20,11 +20,11 @@
         ->orderByDesc('id')
         ->get();
 
-    $isYouTubeUrl = function (string $url): bool {
+    $isYouTubeUrl = function ($url) {
         return preg_match('/(?:youtube\.com|youtu\.be)/i', $url) === 1;
     };
 
-    $embedYouTubeUrl = function (string $url): ?string {
+    $embedYouTubeUrl = function ($url) {
         preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $url, $m);
         return $m[1] ?? null;
     };
