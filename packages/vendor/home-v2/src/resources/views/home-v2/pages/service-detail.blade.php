@@ -14,7 +14,7 @@
     $currentLanguage = $supportedLocales[$currentLocale];
 
     $serviceTitle = trim((string) ($service->title ?? ''));
-    $serviceDescription = trim((string) ($service->description ?? ''));
+    $serviceDescription = $service->description ?? '';
     $serviceImageUrl = $service->image_url ?? null;
     $servicePrice = (float) ($service->unit_price ?? 0);
     $serviceCurrency = 'CAD';
@@ -252,7 +252,7 @@
             <span class="gradient-premium">{{ $serviceTitle }}</span>
           </h1>
           <p class="hero-desc-premium">
-            {!! $serviceDescription !== '' ? strip_tags($serviceDescription) : 'Service professionnel GoExploria pour booster votre activité.' !!}
+            {!! $serviceDescription !== '' ? $serviceDescription : 'Service professionnel GoExploria pour booster votre activité.' !!}
           </p>
           <div style="display: flex; gap: 16px; flex-wrap: wrap;">
             <a href="{{ route('devis') }}" class="btn-premium-primary">
@@ -301,7 +301,7 @@
         <h2 class="section-title-premium">En savoir <span class="gradient-premium">plus</span></h2>
       </div>
       <div class="description-content">
-        {!! strip_tags($serviceDescription) !!}
+        {!! $serviceDescription !!}
       </div>
 
       <div class="info-grid">
