@@ -535,16 +535,14 @@
             font-size: 14px;
             font-weight: 600;
             box-shadow: 0 8px 30px rgba(39,174,96,.35);
-            transform: translateX(120%);
-            transition: transform .35s cubic-bezier(.22,.68,0,1);
             max-width: 420px;
-            display: flex;
+            display: none;
             align-items: center;
             gap: 10px;
             line-height: 1.4;
         }
         #devis-toast.is-visible {
-            transform: translateX(0);
+            display: flex;
         }
         #devis-toast i {
             font-size: 20px;

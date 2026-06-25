@@ -1576,11 +1576,34 @@
     });
 
     // ===== HERO SWIPER =====
+    var heroAutoPauseTimer = null;
+
+    function clearHeroAutoPause() {
+        if (heroAutoPauseTimer) {
+            clearTimeout(heroAutoPauseTimer);
+            heroAutoPauseTimer = null;
+        }
+    }
+
+    function startHeroAutoPause(slide) {
+        clearHeroAutoPause();
+        heroAutoPauseTimer = setTimeout(function() {
+            var iframe = slide.querySelector('iframe');
+            var toggle = slide.querySelector('.hero__video-toggle');
+            if (iframe && toggle && toggle.getAttribute('data-paused') === '0') {
+                iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                toggle.innerHTML = '&#9654;';
+                toggle.setAttribute('data-paused', '1');
+            }
+            heroAutoPauseTimer = null;
+        }, 5000);
+    }
+
     const heroSwiper = new Swiper('.hero-swiper', {
         loop: true,
         speed: 900,
         autoplay: { 
-            delay: 6000, 
+            delay: 8000, 
             disableOnInteraction: false,
             pauseOnMouseEnter: true
         },
@@ -1596,13 +1619,18 @@
         },
         on: {
             slideChange: function() {
-                document.querySelectorAll('.hero-slide iframe').forEach(iframe => {
+                clearHeroAutoPause();
+                var curr = this.slides[this.activeIndex];
+                document.querySelectorAll('.hero-slide iframe').forEach(function(iframe) {
                     iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
                 });
-                document.querySelectorAll('.hero__video-toggle').forEach(btn => {
+                document.querySelectorAll('.hero__video-toggle').forEach(function(btn) {
                     btn.innerHTML = '&#10074;&#10074;';
                     btn.setAttribute('data-paused', '0');
                 });
+                if (curr) {
+                    startHeroAutoPause(curr);
+                }
             }
         }
     });
@@ -1623,6 +1651,13 @@
                 iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
                 btn.innerHTML = '&#9654;';
                 btn.setAttribute('data-paused', '1');
+            }
+            // Reset auto-pause timer on manual toggle
+            if (!paused) {
+                clearHeroAutoPause();
+            } else {
+                clearHeroAutoPause();
+                startHeroAutoPause(slide);
             }
         });
     });
