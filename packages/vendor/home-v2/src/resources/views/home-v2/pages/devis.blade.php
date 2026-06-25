@@ -1245,23 +1245,25 @@
                     $color = $planColors[$loop->index % count($planColors)];
                     $imageUrl = data_get($service, 'image_url');
                 @endphp
-                <div class="plan-card {{ $color }}">
-                    <div class="plan-card-image">
-                        @if($imageUrl)
-                            <img src="{{ $imageUrl }}" alt="{{ data_get($service, 'title') }}" loading="lazy">
-                        @else
-                            <div class="img-placeholder"><i class="fas fa-briefcase"></i></div>
-                        @endif
-                    </div>
-                    <div class="plan-card-body">
-                        <div class="plan-card-head">
-                            <i class="fas fa-arrow-up-right-from-square"></i>
+                <a href="{{ route('devis.service.detail', data_get($service, 'id')) }}" target="_blank" class="plan-card-link" style="display: block; text-decoration: none; color: inherit;">
+                    <div class="plan-card {{ $color }}">
+                        <div class="plan-card-image">
+                            @if($imageUrl)
+                                <img src="{{ $imageUrl }}" alt="{{ data_get($service, 'title') }}" loading="lazy">
+                            @else
+                                <div class="img-placeholder"><i class="fas fa-briefcase"></i></div>
+                            @endif
                         </div>
-                        <h4>{{ data_get($service, 'title') }}</h4>
-                        <p>{{ Str::limit(strip_tags((string) data_get($service, 'description')), 80) ?: 'Service professionnel GoExploria.' }}</p>
-                        <div class="plan-price">{{ $formatServicePrice($service) }}</div>
+                        <div class="plan-card-body">
+                            <div class="plan-card-head">
+                                <i class="fas fa-arrow-up-right-from-square"></i>
+                            </div>
+                            <h4>{{ data_get($service, 'title') }}</h4>
+                            <p>{{ Str::limit(strip_tags((string) data_get($service, 'description')), 80) ?: 'Service professionnel GoExploria.' }}</p>
+                            <div class="plan-price">{{ $formatServicePrice($service) }}</div>
+                        </div>
                     </div>
-                </div>
+                </a>
             @empty
                 <div class="plan-card plan-card-a">
                     <div class="plan-card-image">

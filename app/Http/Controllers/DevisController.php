@@ -26,6 +26,19 @@ class DevisController extends Controller
     private const DEFAULT_CURRENCY = 'CAD';
 
     /**
+     * Affiche le détail d'un service de devis (billing_request_services)
+     */
+    public function serviceDetail(BillingRequestService $billingRequestService): View
+    {
+        app()->setLocale('fr');
+        session(['locale' => 'fr']);
+
+        return view('home-v2.pages.service-detail', [
+            'service' => $billingRequestService,
+        ]);
+    }
+
+    /**
      * Affiche la page de demande de devis
      */
     public function show(Request $request): View
