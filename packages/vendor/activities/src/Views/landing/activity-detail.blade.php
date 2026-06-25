@@ -233,10 +233,10 @@
         }
 
         .hero__video-toggle {
-            position: absolute; bottom: 100px; right: 24px; z-index: 10;
+            position: absolute; bottom: 100px; right: 24px; z-index: 100;
             width: 44px; height: 44px; border-radius: 50%;
             background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.3);
-            color: #fff; font-size: 0.85rem; cursor: pointer;
+            color: #fff; font-size: 0.85rem; cursor: pointer !important;
             display: flex; align-items: center; justify-content: center;
             transition: all 0.3s; backdrop-filter: blur(8px);
             line-height: 1;
@@ -246,10 +246,10 @@
         }
 
         .hero__video-mute {
-            position: absolute; bottom: 100px; right: 76px; z-index: 10;
+            position: absolute; bottom: 100px; right: 76px; z-index: 100;
             width: 44px; height: 44px; border-radius: 50%;
             background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.3);
-            color: #fff; font-size: 1rem; cursor: pointer;
+            color: #fff; font-size: 1rem; cursor: pointer !important;
             display: flex; align-items: center; justify-content: center;
             transition: all 0.3s; backdrop-filter: blur(8px);
         }
