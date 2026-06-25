@@ -294,6 +294,15 @@ h4 { font-size: 1rem; font-weight: 600; }
   transition: all 0.3s; backdrop-filter: blur(8px);
 }
 .hero__video-toggle:hover { background: rgba(0,0,0,0.7); border-color: #fff; }
+.hero__video-mute {
+  position: absolute; bottom: 120px; right: 76px; z-index: 10;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.3);
+  color: #fff; font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s; backdrop-filter: blur(8px);
+}
+.hero__video-mute:hover { background: rgba(0,0,0,0.7); border-color: #fff; }
 .hero-prev, .hero-next { width: 48px !important; height: 48px !important; background: var(--glass-bg) !important; backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 50% !important; color: white !important; transition: all var(--transition); }
 .hero-prev:hover, .hero-next:hover { background: var(--amber) !important; border-color: var(--amber); }
 .hero-prev::after, .hero-next::after { font-size: 1rem !important; font-weight: 700; }

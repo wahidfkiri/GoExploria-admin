@@ -245,6 +245,18 @@
             background: rgba(0,0,0,0.7); border-color: #fff;
         }
 
+        .hero__video-mute {
+            position: absolute; bottom: 100px; right: 76px; z-index: 10;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.3);
+            color: #fff; font-size: 1rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s; backdrop-filter: blur(8px);
+        }
+        .hero__video-mute:hover {
+            background: rgba(0,0,0,0.7); border-color: #fff;
+        }
+
         .video-thumbnail {
             position: absolute;
             inset: 0;
@@ -1242,6 +1254,7 @@
                 </div>
                 <div class="slide-overlay-video"></div>
                 <button class="hero__video-toggle" type="button" aria-label="Lecture/Pause vidéo">&#10074;&#10074;</button>
+                <button class="hero__video-mute" type="button" aria-label="Son activé/désactivé"><i class="fas fa-volume-xmark"></i></button>
                 
                 <div class="hero-content">
                     <h1 class="hero-title">{!! $slideTitle !!}</h1>
@@ -1603,7 +1616,7 @@
         loop: true,
         speed: 900,
         autoplay: { 
-            delay: 8000, 
+            delay: 15000, 
             disableOnInteraction: false,
             pauseOnMouseEnter: true
         },
@@ -1627,6 +1640,10 @@
                 document.querySelectorAll('.hero__video-toggle').forEach(function(btn) {
                     btn.innerHTML = '&#10074;&#10074;';
                     btn.setAttribute('data-paused', '0');
+                });
+                document.querySelectorAll('.hero__video-mute').forEach(function(btn) {
+                    btn.innerHTML = '<i class="fas fa-volume-xmark"></i>';
+                    btn.setAttribute('data-muted', '1');
                 });
                 if (curr) {
                     startHeroAutoPause(curr);
@@ -1658,6 +1675,26 @@
             } else {
                 clearHeroAutoPause();
                 startHeroAutoPause(slide);
+            }
+        });
+    });
+
+    // ===== MUTE/UNMUTE VIDEO TOGGLE =====
+    document.querySelectorAll('.hero__video-mute').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var slide = btn.closest('.hero-slide');
+            if (!slide) return;
+            var iframe = slide.querySelector('iframe');
+            if (!iframe) return;
+            var muted = btn.getAttribute('data-muted') === '1';
+            if (muted) {
+                iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+                btn.innerHTML = '<i class=\"fas fa-volume-high\"></i>';
+                btn.setAttribute('data-muted', '0');
+            } else {
+                iframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
+                btn.innerHTML = '<i class=\"fas fa-volume-xmark\"></i>';
+                btn.setAttribute('data-muted', '1');
             }
         });
     });

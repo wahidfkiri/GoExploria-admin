@@ -86,6 +86,7 @@
           var curVids = curr ? curr.querySelectorAll('video, iframe') : [];
           curVids.forEach(function (v) { if (v.tagName === 'VIDEO') { v.play().catch(function () {}); } else if (v.tagName === 'IFRAME') { v.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*'); } });
           (curr ? curr.querySelectorAll('.hero__video-toggle') : []).forEach(function (btn) { btn.innerHTML = '&#10074;&#10074;'; btn.setAttribute('data-paused', '0'); });
+          (curr ? curr.querySelectorAll('.hero__video-mute') : []).forEach(function (btn) { btn.innerHTML = '<i class=\"fas fa-volume-xmark\"></i>'; btn.setAttribute('data-muted', '1'); });
         },
       },
     });

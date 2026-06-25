@@ -165,6 +165,7 @@
             @endif
             <div class="hero__click-capture"></div>
             <button class="hero__video-toggle" aria-label="Lecture/Pause">&#10074;&#10074;</button>
+            <button class="hero__video-mute" aria-label="Son activé/désactivé"><i class="fas fa-volume-xmark"></i></button>
             <div class="hero__overlay"></div>
             <div class="hero__content">
               @if($video->title || $video->meta_title || $video->content)
@@ -706,6 +707,33 @@ document.addEventListener('DOMContentLoaded', function () {
           video.pause();
           btn.innerHTML = '&#9654;';
         }
+      }
+    });
+  });
+
+  // ===== MUTE/UNMUTE VIDEO TOGGLE =====
+  document.querySelectorAll('.hero__video-mute').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var slide = btn.closest('.hero__slide--video');
+      if (!slide) return;
+      var iframe = slide.querySelector('iframe.hero__video-bg');
+      var video = slide.querySelector('video.hero__video-bg');
+      if (iframe) {
+        var muted = btn.getAttribute('data-muted') === '1';
+        if (muted) {
+          iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+          btn.innerHTML = '<i class=\"fas fa-volume-high\"></i>';
+          btn.setAttribute('data-muted', '0');
+        } else {
+          iframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
+          btn.innerHTML = '<i class=\"fas fa-volume-xmark\"></i>';
+          btn.setAttribute('data-muted', '1');
+        }
+      } else if (video) {
+        var muted = video.muted;
+        video.muted = !muted;
+        btn.innerHTML = muted ? '<i class=\"fas fa-volume-high\"></i>' : '<i class=\"fas fa-volume-xmark\"></i>';
+        btn.setAttribute('data-muted', muted ? '0' : '1');
       }
     });
   });
