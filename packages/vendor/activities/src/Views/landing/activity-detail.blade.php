@@ -1216,10 +1216,9 @@
                 <!-- Vidéo en full width cover -->
                 <div class="video-bg" id="videoBg-{{ $slideIndex }}">
                     <iframe id="heroVideo-{{ $slideIndex }}" 
-                            src="{{ $slideVideoUrl }}?autoplay=1"
+                            src="{{ $slideVideoUrl }}"
                             allow="autoplay; encrypted-media; fullscreen"
-                            allowfullscreen
-                            style="width:100%;height:100%;border:none;position:relative;z-index:2;object-fit:cover;">
+                            allowfullscreen>
                     </iframe>
                 </div>
                 <div class="slide-overlay-video"></div>

@@ -110,7 +110,7 @@
         }
         .quote-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 360px;
+            grid-template-columns: minmax(0, 1fr) 400px;
             gap: 20px;
             align-items: start;
         }
@@ -589,20 +589,22 @@
         .plan-card {
             display: grid;
             grid-template-columns: 130px 1fr;
-            color: #fff;
+            color: #0f1f3a;
             border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 10px 24px rgba(12, 30, 58, 0.18);
+            background: #fff;
+            border: 1px solid #dde7f6;
+            box-shadow: 0 8px 20px rgba(12, 30, 58, 0.1);
             transition: transform .2s ease, box-shadow .2s ease;
         }
         .plan-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 16px 28px rgba(12, 30, 58, 0.26);
+            box-shadow: 0 14px 28px rgba(12, 30, 58, 0.16);
         }
         .plan-card-image {
             position: relative;
             min-height: 130px;
-            background: rgba(0,0,0,.25);
+            background: #f0f4fe;
             overflow: hidden;
         }
         .plan-card-image img {
@@ -624,13 +626,14 @@
             display: grid;
             place-items: center;
             font-size: 32px;
-            color: rgba(255,255,255,.7);
+            color: #8a9bb8;
         }
         .plan-card-body {
             padding: 14px;
             display: flex;
             flex-direction: column;
             gap: 5px;
+            background: #fff;
         }
         .plan-card-head {
             display: flex;
@@ -639,31 +642,27 @@
         }
         .plan-card-head i {
             font-size: 16px;
-            color: rgba(255,255,255,.7);
+            color: #8a9bb8;
         }
         .plan-card h4 {
             margin: 0;
             font-size: 15px;
             font-weight: 900;
             line-height: 1.3;
+            color: #0f1f3a;
         }
         .plan-card p {
             margin: 0;
             font-size: 12px;
             line-height: 1.45;
-            color: rgba(255, 255, 255, 0.85);
+            color: #556784;
         }
         .plan-price {
             margin-top: auto;
             font-size: 14px;
             font-weight: 800;
-            color: #fff7d8;
+            color: #0f1f3a;
         }
-        .plan-card-a .plan-card-body { background: linear-gradient(135deg, #0b5fb3 0%, #0e84d8 100%); }
-        .plan-card-b .plan-card-body { background: linear-gradient(135deg, #126d67 0%, #2cae9f 100%); }
-        .plan-card-c .plan-card-body { background: linear-gradient(135deg, #824a12 0%, #d2912f 100%); }
-        .plan-card-d .plan-card-body { background: linear-gradient(135deg, #5d2d91 0%, #8f56c4 100%); }
-        .plan-card-e .plan-card-body { background: linear-gradient(135deg, #842f52 0%, #ca4d85 100%); }
 
         /* Styles pour le sélecteur de discount */
         .discount-selector {

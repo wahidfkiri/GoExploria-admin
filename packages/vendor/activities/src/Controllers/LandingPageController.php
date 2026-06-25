@@ -259,46 +259,43 @@ private function getHeroVideoEmbedUrl($url, $muted = true)
 
     // YouTube - Format standard
     if (preg_match('/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/', $url, $matches)) {
-        return 'https://www.youtube.com/embed/' . $matches[1] . '?autoplay=1&mute=' . $muteParam . '&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&enablejsapi=1';
+        $vid = $matches[1];
+        return 'https://www.youtube.com/embed/' . $vid . '?autoplay=1&mute=' . $muteParam . '&loop=1&playlist=' . $vid . '&rel=0&modestbranding=1&controls=0&showinfo=0&iv_load_policy=3&enablejsapi=1&playsinline=1';
     }
 
     // YouTube - Format court
     if (preg_match('/youtu\.be\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
-        return 'https://www.youtube.com/embed/' . $matches[1] . '?autoplay=1&mute=' . $muteParam . '&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&enablejsapi=1';
+        $vid = $matches[1];
+        return 'https://www.youtube.com/embed/' . $vid . '?autoplay=1&mute=' . $muteParam . '&loop=1&playlist=' . $vid . '&rel=0&modestbranding=1&controls=0&showinfo=0&iv_load_policy=3&enablejsapi=1&playsinline=1';
     }
 
     // YouTube - Format embed déjà
     if (preg_match('/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
-        if (strpos($url, 'autoplay') === false) {
-            return $url . (strpos($url, '?') !== false ? '&' : '?') . 'autoplay=1&mute=' . $muteParam . '&controls=1';
-        }
-        return $url;
+        $vid = $matches[1];
+        $separator = (strpos($url, '?') !== false) ? '&' : '?';
+        return $url . $separator . 'autoplay=1&mute=' . $muteParam . '&loop=1&playlist=' . $vid . '&controls=0&playsinline=1';
     }
 
     // Vimeo
     if (preg_match('/vimeo\.com\/(\d+)/', $url, $matches)) {
-        return 'https://player.vimeo.com/video/' . $matches[1] . '?autoplay=1&muted=' . $muteParam . '&loop=1&title=0&byline=0&portrait=0&badge=0&controls=1&background=0';
+        return 'https://player.vimeo.com/video/' . $matches[1] . '?autoplay=1&muted=' . $muteParam . '&loop=1&title=0&byline=0&portrait=0&badge=0&controls=0&background=1';
     }
 
     // Vimeo - Format embed déjà
     if (preg_match('/player\.vimeo\.com\/video\/(\d+)/', $url, $matches)) {
-        if (strpos($url, 'autoplay') === false) {
-            return $url . (strpos($url, '?') !== false ? '&' : '?') . 'autoplay=1&muted=' . $muteParam . '&controls=1';
-        }
-        return $url;
+        $separator = (strpos($url, '?') !== false) ? '&' : '?';
+        return $url . $separator . 'autoplay=1&muted=' . $muteParam . '&loop=1&controls=0&background=1';
     }
 
     // Dailymotion
     if (preg_match('/dailymotion\.com\/video\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
-        return 'https://www.dailymotion.com/embed/video/' . $matches[1] . '?autoplay=1&mute=' . $muteParam . '&controls=1';
+        return 'https://www.dailymotion.com/embed/video/' . $matches[1] . '?autoplay=1&mute=' . $muteParam . '&controls=0&loop=1';
     }
 
     // Dailymotion - Format embed déjà
     if (preg_match('/dailymotion\.com\/embed\/video\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
-        if (strpos($url, 'autoplay') === false) {
-            return $url . (strpos($url, '?') !== false ? '&' : '?') . 'autoplay=1&mute=' . $muteParam . '&controls=1';
-        }
-        return $url;
+        $separator = (strpos($url, '?') !== false) ? '&' : '?';
+        return $url . $separator . 'autoplay=1&mute=' . $muteParam . '&controls=0&loop=1';
     }
 
     return null;
