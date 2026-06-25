@@ -1633,10 +1633,13 @@
         on: {
             slideChange: function() {
                 clearHeroAutoPause();
+                var prev = this.slides[this.previousIndex];
                 var curr = this.slides[this.activeIndex];
-                document.querySelectorAll('.hero-slide iframe').forEach(function(iframe) {
-                    iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-                });
+                if (prev) {
+                    prev.querySelectorAll('iframe').forEach(function(iframe) {
+                        iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                    });
+                }
                 document.querySelectorAll('.hero__video-toggle').forEach(function(btn) {
                     btn.innerHTML = '&#10074;&#10074;';
                     btn.setAttribute('data-paused', '0');
