@@ -1,4 +1,3 @@
-<script src="https://admin.goexploriabusiness.com/ads-widget/loader.js" async></script>
 @php(ob_start());@endphp
 @php
     use Illuminate\Support\Facades\DB;
@@ -215,12 +214,6 @@
                             <i class="fas fa-expand"></i>
                         </button>
                         @endif
-                    </div>
-                </div>
-                @empty
-                <div class="carousel-item-simple active">
-                    <div class="media-container-v2 ad-container">
-                        <div class="am-zone" data-zone="milieu_page"></div>
                     </div>
                 </div>
                 @endforelse
