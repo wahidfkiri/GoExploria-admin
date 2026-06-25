@@ -251,9 +251,11 @@
           <h1 class="hero-title-premium">
             <span class="gradient-premium">{{ $serviceTitle }}</span>
           </h1>
-          <p class="hero-desc-premium">
-            {!! $serviceDescription !== '' ? $serviceDescription : 'Service professionnel GoExploria pour booster votre activité.' !!}
-          </p>
+          
+{!! $serviceDescription !== '' 
+    ? \Illuminate\Support\Str::limit(strip_tags($serviceDescription), 500)
+    : 'Service professionnel GoExploria pour booster votre activité.' 
+!!}          
           <div style="display: flex; gap: 16px; flex-wrap: wrap;">
             <a href="{{ route('devis') }}" class="btn-premium-primary">
               <i class="fas fa-file-invoice"></i> Demander un devis
