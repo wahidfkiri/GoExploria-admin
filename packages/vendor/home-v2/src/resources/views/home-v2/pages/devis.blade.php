@@ -1245,7 +1245,7 @@
                     $color = $planColors[$loop->index % count($planColors)];
                     $imageUrl = data_get($service, 'image_url');
                 @endphp
-                <a href="{{ route('devis.service.detail', data_get($service, 'id')) }}" target="_blank" class="plan-card-link" style="display: block; text-decoration: none; color: inherit;">
+                <a href="{{ route('devis.service.detail', [data_get($service, 'id'), Str::slug(data_get($service, 'title'))]) }}" target="_blank" class="plan-card-link" style="display: block; text-decoration: none; color: inherit;">
                     <div class="plan-card {{ $color }}">
                         <div class="plan-card-image">
                             @if($imageUrl)

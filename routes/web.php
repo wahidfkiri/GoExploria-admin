@@ -377,7 +377,7 @@ Route::get('/devis',        [DevisController::class, 'show'])->name('devis');
 Route::post('/confirm/devis',       [DevisController::class, 'submit'])->name('devis.submit');
 Route::get('/devis/paypal/success', [DevisController::class, 'paypalSuccess'])->name('devis.paypal.success');
 Route::get('/devis/paypal/cancel',  [DevisController::class, 'paypalCancel'])->name('devis.paypal.cancel');
-Route::get('/devis/service/{billingRequestService}', [DevisController::class, 'serviceDetail'])->name('devis.service.detail');
+Route::get('/devis/service/{billingRequestService}/{slug?}', [DevisController::class, 'serviceDetail'])->name('devis.service.detail');
 Route::get('/favoris',      fn() => view('home-v2.pages.favoris'))->name('favoris');
 Route::get('/panier',       fn() => view('home-v2.pages.panier'))->name('panier');
 Route::get('/politique-confidentialite', fn() => view('home-v2.pages.privacy-policy'))->name('privacy.policy');
