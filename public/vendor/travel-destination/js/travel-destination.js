@@ -78,6 +78,16 @@
       navigation: { prevEl: '.hero-prev', nextEl: '.hero-next' },
       keyboard: { enabled: true },
       on: {
+        init: function () {
+          var active = this.slides[this.activeIndex];
+          this.slides.forEach(function (s, i) {
+            if (s === active) return;
+            s.querySelectorAll('video, iframe').forEach(function (v) {
+              if (v.tagName === 'VIDEO') { v.pause(); }
+              else if (v.tagName === 'IFRAME') { v.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); }
+            });
+          });
+        },
         slideChange: function () {
           var prev = this.slides[this.previousIndex];
           var curr = this.slides[this.activeIndex];

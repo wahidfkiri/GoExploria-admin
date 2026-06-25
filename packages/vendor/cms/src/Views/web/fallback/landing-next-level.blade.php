@@ -2369,27 +2369,26 @@ function withHeroAudioParams(src, enabled) {
 }
 
 function syncHeroAudio() {
-  const slides = document.querySelectorAll('.hero-swiper .swiper-slide');
-  slides.forEach((slide) => {
-    const shouldPlaySound = heroAudioEnabled && slide.classList.contains('swiper-slide-active');
-    slide.querySelectorAll('video').forEach((video) => {
-      video.muted = !shouldPlaySound;
-      video.defaultMuted = !shouldPlaySound;
-      video.volume = shouldPlaySound ? 1 : 0;
-      if (shouldPlaySound) {
-        video.removeAttribute('muted');
-      } else {
-        video.setAttribute('muted', 'muted');
-      }
-      video.play().catch(() => {});
-    });
-    slide.querySelectorAll('iframe').forEach((iframe) => {
-      const currentSrc = iframe.getAttribute('src') || '';
-      const nextSrc = withHeroAudioParams(currentSrc, shouldPlaySound);
-      if (nextSrc && nextSrc !== currentSrc) {
-        iframe.setAttribute('src', nextSrc);
-      }
-    });
+  const activeSlide = document.querySelector('.hero-swiper .swiper-slide-active');
+  if (!activeSlide) return;
+  const shouldPlaySound = heroAudioEnabled;
+  activeSlide.querySelectorAll('video').forEach((video) => {
+    video.muted = !shouldPlaySound;
+    video.defaultMuted = !shouldPlaySound;
+    video.volume = shouldPlaySound ? 1 : 0;
+    if (shouldPlaySound) {
+      video.removeAttribute('muted');
+    } else {
+      video.setAttribute('muted', 'muted');
+    }
+    video.play().catch(() => {});
+  });
+  activeSlide.querySelectorAll('iframe').forEach((iframe) => {
+    const currentSrc = iframe.getAttribute('src') || '';
+    const nextSrc = withHeroAudioParams(currentSrc, shouldPlaySound);
+    if (nextSrc && nextSrc !== currentSrc) {
+      iframe.setAttribute('src', nextSrc);
+    }
   });
 
   if (heroAudioBtn) {
