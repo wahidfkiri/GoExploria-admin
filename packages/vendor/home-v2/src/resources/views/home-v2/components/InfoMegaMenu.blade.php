@@ -1,3 +1,4 @@
+<script src="https://admin.goexploriabusiness.com/ads-widget/loader.js" async></script>
 @php(ob_start());@endphp
 
 {{-- Info Mega Menu Component Compact --}}
@@ -151,7 +152,8 @@
                 {{-- Slide 3: Pub vidéo --}}
                 <div class="carousel-item-simple active">
                     <div class="media-container-v2 ad-container">
-                        @adZone('milieu_page')
+                       
+<div class="am-zone" data-zone="milieu_page"></div>
                         <button class="expand-media-btn" onclick="document.getElementById('ad-zone-milieu_page').click()">
                             <i class="fas fa-play"></i>
                         </button>
