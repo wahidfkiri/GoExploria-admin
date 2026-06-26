@@ -42,48 +42,50 @@ $businessCats = $businessType
 $buildDestBreadcrumb = function ($activity) {
     $paths = [];
     foreach ($activity->cities as $city) {
-        $parts = [$city->name];
-        if ($r = $city->region) {
-            array_unshift($parts, $r->name);
-            if ($p = $r->province) {
-                array_unshift($parts, $p->name);
-                if ($c = $p->country) {
-                    array_unshift($parts, $c->name);
-                    if ($ct = $c->continent) array_unshift($parts, $ct->name);
-                }
-            }
-        }
-        $paths[] = implode(' > ', $parts);
+        $chain = [];
+        if ($ct = $city->region?->province?->country?->continent)
+            $chain[] = '<a href="' . route('destinations.continent', $ct->slug ?? $ct->id) . '" class="dest-link">' . e($ct->name) . '</a>';
+        if ($c = $city->region?->province?->country)
+            $chain[] = '<a href="' . route('destinations.country', $c->slug ?? $c->id) . '" class="dest-link">' . e($c->name) . '</a>';
+        if ($p = $city->region?->province)
+            $chain[] = '<a href="' . route('destinations.province', $p->slug ?? $p->id) . '" class="dest-link">' . e($p->name) . '</a>';
+        if ($r = $city->region)
+            $chain[] = '<a href="' . route('destinations.region', $r->slug ?? $r->id) . '" class="dest-link">' . e($r->name) . '</a>';
+        $chain[] = '<a href="' . route('destinations.ville', $city->slug ?? $city->id) . '" class="dest-link">' . e($city->name) . '</a>';
+        $paths[] = implode(' <span class="dest-arrow">&gt;</span> ', $chain);
     }
     foreach ($activity->regions as $region) {
-        $parts = [$region->name];
-        if ($p = $region->province) {
-            array_unshift($parts, $p->name);
-            if ($c = $p->country) {
-                array_unshift($parts, $c->name);
-                if ($ct = $c->continent) array_unshift($parts, $ct->name);
-            }
-        }
-        $path = implode(' > ', $parts);
+        $chain = [];
+        if ($ct = $region->province?->country?->continent)
+            $chain[] = '<a href="' . route('destinations.continent', $ct->slug ?? $ct->id) . '" class="dest-link">' . e($ct->name) . '</a>';
+        if ($c = $region->province?->country)
+            $chain[] = '<a href="' . route('destinations.country', $c->slug ?? $c->id) . '" class="dest-link">' . e($c->name) . '</a>';
+        if ($p = $region->province)
+            $chain[] = '<a href="' . route('destinations.province', $p->slug ?? $p->id) . '" class="dest-link">' . e($p->name) . '</a>';
+        $chain[] = '<a href="' . route('destinations.region', $region->slug ?? $region->id) . '" class="dest-link">' . e($region->name) . '</a>';
+        $path = implode(' <span class="dest-arrow">&gt;</span> ', $chain);
         if (!in_array($path, $paths)) $paths[] = $path;
     }
     foreach ($activity->provinces as $province) {
-        $parts = [$province->name];
-        if ($c = $province->country) {
-            array_unshift($parts, $c->name);
-            if ($ct = $c->continent) array_unshift($parts, $ct->name);
-        }
-        $path = implode(' > ', $parts);
+        $chain = [];
+        if ($ct = $province->country?->continent)
+            $chain[] = '<a href="' . route('destinations.continent', $ct->slug ?? $ct->id) . '" class="dest-link">' . e($ct->name) . '</a>';
+        if ($c = $province->country)
+            $chain[] = '<a href="' . route('destinations.country', $c->slug ?? $c->id) . '" class="dest-link">' . e($c->name) . '</a>';
+        $chain[] = '<a href="' . route('destinations.province', $province->slug ?? $province->id) . '" class="dest-link">' . e($province->name) . '</a>';
+        $path = implode(' <span class="dest-arrow">&gt;</span> ', $chain);
         if (!in_array($path, $paths)) $paths[] = $path;
     }
     foreach ($activity->countries as $country) {
-        $parts = [$country->name];
-        if ($ct = $country->continent) array_unshift($parts, $ct->name);
-        $path = implode(' > ', $parts);
+        $chain = [];
+        if ($ct = $country->continent)
+            $chain[] = '<a href="' . route('destinations.continent', $ct->slug ?? $ct->id) . '" class="dest-link">' . e($ct->name) . '</a>';
+        $chain[] = '<a href="' . route('destinations.country', $country->slug ?? $country->id) . '" class="dest-link">' . e($country->name) . '</a>';
+        $path = implode(' <span class="dest-arrow">&gt;</span> ', $chain);
         if (!in_array($path, $paths)) $paths[] = $path;
     }
     foreach ($activity->continents as $continent) {
-        $path = $continent->name;
+        $path = '<a href="' . route('destinations.continent', $continent->slug ?? $continent->id) . '" class="dest-link">' . e($continent->name) . '</a>';
         if (!in_array($path, $paths)) $paths[] = $path;
     }
     return $paths;
@@ -118,14 +120,14 @@ $buildDestBreadcrumb = function ($activity) {
                     @forelse($cat->activities as $act)
                         @php $destPaths = $buildDestBreadcrumb($act); @endphp
                         <a href="{{ route('activity.show', $act->slug ?? $act->id) }}" class="cat-mega-act-link">
-                            <span class="cat-mega-act-dot"></span><span class="cat-mega-act-name">{{ $act->name }}</span>
                             @if(!empty($destPaths))
                                 <span class="cat-mega-dest-breadcrumb">
                                     @foreach($destPaths as $i => $path)
-                                        <span class="dest-crumb">{{ $path }}</span>@if($i < count($destPaths) - 1)<span class="dest-sep"> • </span>@endif
+                                        <span class="dest-crumb">{!! $path !!}</span>@if($i < count($destPaths) - 1)<span class="dest-sep"> • </span>@endif
                                     @endforeach
                                 </span>
                             @endif
+                            <span class="cat-mega-act-name">{{ $act->name }}</span>
                         </a>
                     @empty
                         <div class="cat-mega-empty">{{ $tr('Aucune activité') }}</div>
@@ -173,14 +175,14 @@ $buildDestBreadcrumb = function ($activity) {
                     @forelse($cat->activities as $act)
                         @php $destPaths = $buildDestBreadcrumb($act); @endphp
                         <a href="{{ route('activity.show', $act->slug ?? $act->id) }}" class="cat-mega-act-link">
-                            <span class="cat-mega-act-dot"></span><span class="cat-mega-act-name">{{ $act->name }}</span>
                             @if(!empty($destPaths))
                                 <span class="cat-mega-dest-breadcrumb">
                                     @foreach($destPaths as $i => $path)
-                                        <span class="dest-crumb">{{ $path }}</span>@if($i < count($destPaths) - 1)<span class="dest-sep"> • </span>@endif
+                                        <span class="dest-crumb">{!! $path !!}</span>@if($i < count($destPaths) - 1)<span class="dest-sep"> • </span>@endif
                                     @endforeach
                                 </span>
                             @endif
+                            <span class="cat-mega-act-name">{{ $act->name }}</span>
                         </a>
                     @empty
                         <div class="cat-mega-empty">{{ $tr('Aucune activité') }}</div>
@@ -202,11 +204,14 @@ $buildDestBreadcrumb = function ($activity) {
 </div>
 
 <style>
-.cat-mega-act-link { display: flex; flex-direction: column; gap: 1px; }
-.cat-mega-act-name { font-weight: 600; }
-.cat-mega-dest-breadcrumb { font-size: 10px; color: #6b7280; line-height: 1.3; }
+.cat-mega-act-link { display: flex; flex-direction: column; gap: 1px; padding: 4px 0; }
+.cat-mega-act-name { font-weight: 600; font-size: 13px; }
+.cat-mega-dest-breadcrumb { font-size: 11px; font-weight: 700; line-height: 1.4; color: #374151; }
+.dest-link { color: #4f46e5; text-decoration: none; }
+.dest-link:hover { text-decoration: underline; }
+.dest-arrow { color: #9ca3af; margin: 0 1px; font-weight: 400; }
 .dest-crumb { white-space: nowrap; }
-.dest-sep { color: #9ca3af; margin: 0 2px; }
+.dest-sep { color: #9ca3af; margin: 0 3px; font-weight: 400; font-size: 10px; }
 </style>
 
 <script>
