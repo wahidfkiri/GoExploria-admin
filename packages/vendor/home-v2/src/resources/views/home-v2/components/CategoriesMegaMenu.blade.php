@@ -21,7 +21,14 @@ $tourismeType  = CategorieType::where('name', 'like', '%tourisme%')->orWhere('na
 $businessType  = CategorieType::where('name', 'like', '%business%')->orWhere('name', 'like', '%Business%')->first();
 
 $activitiesQuery = function($q) {
-    $q->where('is_active', true)->orderBy('name');
+    $q->where('is_active', true)->orderBy('name')
+      ->with([
+          'continents',
+          'countries.continent',
+          'provinces.country.continent',
+          'regions.province.country.continent',
+          'cities.region.province.country.continent',
+      ]);
 };
 
 $tourismeCats = $tourismeType
@@ -31,6 +38,56 @@ $tourismeCats = $tourismeType
 $businessCats = $businessType
     ? $businessType->categories()->with(['activities' => $activitiesQuery])->where('is_active', true)->orderBy('name')->get()
     : collect();
+
+$buildDestBreadcrumb = function ($activity) {
+    $paths = [];
+    foreach ($activity->cities as $city) {
+        $parts = [$city->name];
+        if ($r = $city->region) {
+            array_unshift($parts, $r->name);
+            if ($p = $r->province) {
+                array_unshift($parts, $p->name);
+                if ($c = $p->country) {
+                    array_unshift($parts, $c->name);
+                    if ($ct = $c->continent) array_unshift($parts, $ct->name);
+                }
+            }
+        }
+        $paths[] = implode(' > ', $parts);
+    }
+    foreach ($activity->regions as $region) {
+        $parts = [$region->name];
+        if ($p = $region->province) {
+            array_unshift($parts, $p->name);
+            if ($c = $p->country) {
+                array_unshift($parts, $c->name);
+                if ($ct = $c->continent) array_unshift($parts, $ct->name);
+            }
+        }
+        $path = implode(' > ', $parts);
+        if (!in_array($path, $paths)) $paths[] = $path;
+    }
+    foreach ($activity->provinces as $province) {
+        $parts = [$province->name];
+        if ($c = $province->country) {
+            array_unshift($parts, $c->name);
+            if ($ct = $c->continent) array_unshift($parts, $ct->name);
+        }
+        $path = implode(' > ', $parts);
+        if (!in_array($path, $paths)) $paths[] = $path;
+    }
+    foreach ($activity->countries as $country) {
+        $parts = [$country->name];
+        if ($ct = $country->continent) array_unshift($parts, $ct->name);
+        $path = implode(' > ', $parts);
+        if (!in_array($path, $paths)) $paths[] = $path;
+    }
+    foreach ($activity->continents as $continent) {
+        $path = $continent->name;
+        if (!in_array($path, $paths)) $paths[] = $path;
+    }
+    return $paths;
+};
 @endphp
 
 {{-- ── PANEL TOURISME ── --}}
@@ -59,8 +116,16 @@ $businessCats = $businessType
                 <div class="cat-mega-activities {{ $index === 0 ? 'visible' : '' }}"
                      id="cat-acts-t{{ $cat->id }}">
                     @forelse($cat->activities as $act)
+                        @php $destPaths = $buildDestBreadcrumb($act); @endphp
                         <a href="{{ route('activity.show', $act->slug ?? $act->id) }}" class="cat-mega-act-link">
-                            <span class="cat-mega-act-dot"></span>{{ $act->name }}
+                            <span class="cat-mega-act-dot"></span><span class="cat-mega-act-name">{{ $act->name }}</span>
+                            @if(!empty($destPaths))
+                                <span class="cat-mega-dest-breadcrumb">
+                                    @foreach($destPaths as $i => $path)
+                                        <span class="dest-crumb">{{ $path }}</span>@if($i < count($destPaths) - 1)<span class="dest-sep"> • </span>@endif
+                                    @endforeach
+                                </span>
+                            @endif
                         </a>
                     @empty
                         <div class="cat-mega-empty">{{ $tr('Aucune activité') }}</div>
@@ -106,8 +171,16 @@ $businessCats = $businessType
                 <div class="cat-mega-activities {{ $index === 0 ? 'visible' : '' }}"
                      id="cat-acts-b{{ $cat->id }}">
                     @forelse($cat->activities as $act)
+                        @php $destPaths = $buildDestBreadcrumb($act); @endphp
                         <a href="{{ route('activity.show', $act->slug ?? $act->id) }}" class="cat-mega-act-link">
-                            <span class="cat-mega-act-dot"></span>{{ $act->name }}
+                            <span class="cat-mega-act-dot"></span><span class="cat-mega-act-name">{{ $act->name }}</span>
+                            @if(!empty($destPaths))
+                                <span class="cat-mega-dest-breadcrumb">
+                                    @foreach($destPaths as $i => $path)
+                                        <span class="dest-crumb">{{ $path }}</span>@if($i < count($destPaths) - 1)<span class="dest-sep"> • </span>@endif
+                                    @endforeach
+                                </span>
+                            @endif
                         </a>
                     @empty
                         <div class="cat-mega-empty">{{ $tr('Aucune activité') }}</div>
@@ -127,6 +200,14 @@ $businessCats = $businessType
         @endif
     </div>
 </div>
+
+<style>
+.cat-mega-act-link { display: flex; flex-direction: column; gap: 1px; }
+.cat-mega-act-name { font-weight: 600; }
+.cat-mega-dest-breadcrumb { font-size: 10px; color: #6b7280; line-height: 1.3; }
+.dest-crumb { white-space: nowrap; }
+.dest-sep { color: #9ca3af; margin: 0 2px; }
+</style>
 
 <script>
 /* Fonction partagée de positionnement et gestion des panels */
