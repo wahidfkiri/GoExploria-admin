@@ -84,6 +84,36 @@ class TravelDestinationController extends Controller
         $mapCategories = MapCategory::where('is_active', true)->orderBy('sort_order')->get(['slug', 'name', 'icon_class', 'color', 'image']);
         $destinationActivities = method_exists($entity, 'activities') ? $entity->activities()->where('is_active', true)->get() : collect();
 
+        $mapPoints = collect();
+        if (in_array($normalizedType, ['continent', 'country', 'province', 'region', 'city', 'secteur'])) {
+            $radius = match ($normalizedType) {
+                'continent' => 45,
+                'country' => 10,
+                'province' => 3.5,
+                'region' => 1.5,
+                'city' => 0.3,
+                'secteur' => 0.15,
+                default => 5,
+            };
+            $q = MapPoint::with(['details', 'images', 'mainImage'])->active()->whereNotNull('adresse');
+            $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
+            if ($childrenWithLat->count() > 0) {
+                $padding = match ($normalizedType) {
+                    'continent' => 2,
+                    'country' => 1.5,
+                    'province' => 1,
+                    'region' => 0.5,
+                    default => 0.3,
+                };
+                $q->whereBetween('latitude', [$childrenWithLat->min('latitude') - $padding, $childrenWithLat->max('latitude') + $padding])
+                  ->whereBetween('longitude', [$childrenWithLat->min('longitude') - $padding, $childrenWithLat->max('longitude') + $padding]);
+            } elseif ($entity->latitude && $entity->longitude) {
+                $q->whereBetween('latitude', [$entity->latitude - $radius, $entity->latitude + $radius])
+                  ->whereBetween('longitude', [$entity->longitude - $radius, $entity->longitude + $radius]);
+            }
+            $mapPoints = $q->orderBy('is_featured', 'desc')->orderBy('views', 'desc')->limit(500)->get();
+        }
+
         return view('travel-destination::landing.index', compact(
             'entity',
             'normalizedType',
@@ -105,7 +135,8 @@ class TravelDestinationController extends Controller
             'destinations',
             'childEntities',
             'mapCategories',
-            'destinationActivities'
+            'destinationActivities',
+            'mapPoints'
         ));
     }
 
