@@ -7,6 +7,7 @@ use App\Models\BillingDiscount;
 use App\Models\BillingRequest;
 use App\Models\BillingRequestService;
 use App\Models\BillingSetting;
+use App\Models\MapPoint;
 use App\Models\Plan;
 use App\Models\Tax;
 use App\Services\Payment\DevisPayPalCheckoutService;
@@ -33,8 +34,19 @@ class DevisController extends Controller
         app()->setLocale('fr');
         session(['locale' => 'fr']);
 
+        $mapPoints = MapPoint::with(['details', 'mainImage'])
+            ->active()
+            ->whereNotNull('adresse')
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->orderBy('is_featured', 'desc')
+            ->orderBy('views', 'desc')
+            ->limit(500)
+            ->get();
+
         return view('home-v2.pages.service-detail', [
             'service' => $billingRequestService,
+            'mapPoints' => $mapPoints,
         ]);
     }
 

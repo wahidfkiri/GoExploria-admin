@@ -32,6 +32,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -347,6 +348,43 @@
     </div>
   </section>
 
+  @if(isset($mapPoints) && $mapPoints->count() > 0)
+  <section class="map-points-section" style="padding:64px 0;background:#f9fafb">
+    <div class="container">
+      <div class="section-header" style="text-align:center;margin-bottom:32px">
+        <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:8px">Découvrez les points d'intérêt</h2>
+        <p style="color:#6b7280">Cliquez sur les marqueurs pour en savoir plus</p>
+      </div>
+      <div id="travel-map" style="height:500px;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:40px"></div>
+      <div class="map-points-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px">
+        @foreach($mapPoints as $point)
+          <div class="map-point-card" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);transition:transform .2s">
+            @if($point->mainImage)
+              <img src="{{ $point->mainImage->url }}" alt="{{ $point->title }}" style="width:100%;height:180px;object-fit:cover" loading="lazy">
+            @elseif($point->youtube_id)
+              <div style="width:100%;height:180px;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px">
+                <i class="fas fa-play-circle" style="font-size:40px;opacity:.6"></i>
+              </div>
+            @endif
+            <div style="padding:18px">
+              <h3 style="margin:0 0 6px;font-size:17px">{{ $point->title }}</h3>
+              @if($point->adresse)
+                <p style="margin:0 0 4px;font-size:13px;color:#666"><i class="fas fa-map-marker-alt" style="margin-right:6px;color:#4f46e5"></i>{{ $point->adresse }}{{ $point->ville ? ', ' . $point->ville : '' }}</p>
+              @endif
+              @if($point->description)
+                <p style="margin:0 0 8px;font-size:13px;color:#888;line-height:1.4">{{ \Illuminate\Support\Str::limit($point->description, 120) }}</p>
+              @endif
+              @if($point->details && $point->details->phone)
+                <p style="margin:0;font-size:13px;color:#666"><i class="fas fa-phone" style="margin-right:6px;color:#4f46e5"></i>{{ $point->details->phone }}</p>
+              @endif
+            </div>
+          </div>
+        @endforeach
+      </div>
+    </div>
+  </section>
+  @endif
+
   <footer class="footer-premium">
     <div class="container">
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 48px;">
@@ -371,13 +409,79 @@
     </div>
   </footer>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    window.addEventListener('scroll', function() {
-      const nav = document.getElementById('nav');
-      if (window.scrollY > 50) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
+    document.addEventListener('DOMContentLoaded', function () {
+      var mapEl = document.getElementById('travel-map');
+      if (!mapEl) return;
+
+      var mapPoints = {!! json_encode($mapPoints->map(function($p) {
+        $img = $p->mainImage ? $p->mainImage->url : ($p->youtube_id ? 'https://img.youtube.com/vi/' . $p->youtube_id . '/hqdefault.jpg' : null);
+        return [
+          'id' => $p->id,
+          'title' => $p->title,
+          'description' => $p->description,
+          'latitude' => (float)$p->latitude,
+          'longitude' => (float)$p->longitude,
+          'category' => $p->category,
+          'address' => $p->adresse,
+          'city' => $p->ville,
+          'thumbnail' => $img,
+          'is_featured' => (bool)$p->is_featured,
+          'phone' => $p->details?->phone,
+        ];
+      })->values(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
+
+      var map = L.map('travel-map', {
+        center: [20, 0],
+        zoom: 2,
+        zoomControl: true,
+        scrollWheelZoom: true,
+        worldCopyJump: true
+      });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(map);
+
+      var markers = L.markerClusterGroup ? L.markerClusterGroup() : null;
+
+      mapPoints.forEach(function(p) {
+        if (!p.latitude || !p.longitude) return;
+        var color = '#4f46e5';
+        var icon = L.divIcon({
+          className: 'custom-marker',
+          html: '<div style="background:' + color + ';width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:2px solid #fff"><i class="fas fa-map-pin"></i></div>',
+          iconSize: [32, 32],
+          iconAnchor: [16, 16],
+          popupAnchor: [0, -20]
+        });
+        var marker = L.marker([p.latitude, p.longitude], { icon: icon });
+        var popupHtml = '<div style="min-width:220px"><strong>' + p.title + '</strong>';
+        if (p.address) popupHtml += '<br><span style="font-size:12px;color:#666">' + p.address + (p.city ? ', ' + p.city : '') + '</span>';
+        if (p.description) popupHtml += '<br><span style="font-size:12px;color:#888">' + p.description.substring(0, 100) + '</span>';
+        if (p.phone) popupHtml += '<br><span style="font-size:12px;color:#666"><i class="fas fa-phone"></i> ' + p.phone + '</span>';
+        popupHtml += '</div>';
+        marker.bindPopup(popupHtml);
+
+        if (markers) {
+          markers.addLayer(marker);
+        } else {
+          marker.addTo(map);
+        }
+      });
+
+      if (markers) {
+        map.addLayer(markers);
+      }
+
+      if (mapPoints.length > 0) {
+        var latLngs = mapPoints.filter(function(p) { return p.latitude && p.longitude; }).map(function(p) { return [p.latitude, p.longitude]; });
+        if (latLngs.length > 1) {
+          map.fitBounds(latLngs, { padding: [30, 30], maxZoom: 12 });
+        }
       }
     });
   </script>
