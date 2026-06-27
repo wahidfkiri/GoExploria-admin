@@ -313,9 +313,27 @@
       </div>
       <div class="ads-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px">
         @foreach($ads as $ad)
+          @php
+            $isYoutube = $ad->video_url && preg_match('/(youtube\.com|youtu\.be)/i', $ad->video_url);
+            $isLocalVideo = $ad->video_url && !$isYoutube && preg_match('/\.(mp4|webm|ogg)$/i', $ad->video_url);
+            $ytId = '';
+            if ($isYoutube) {
+                preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/', $ad->video_url, $m);
+                $ytId = $m[1] ?? '';
+            }
+          @endphp
           <a href="{{ $ad->destination_url ?? '#' }}" target="{{ $ad->open_new_tab ? '_blank' : '_self' }}" rel="noopener" class="ad-card" style="display:block;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;transition:all var(--transition);text-decoration:none;color:inherit">
             @if($ad->image_path)
               <img src="{{ $ad->image_path }}" alt="{{ $ad->titre }}" style="width:100%;height:180px;object-fit:cover;display:block" loading="lazy">
+            @elseif($isYoutube && $ytId)
+              <div style="position:relative;width:100%;height:180px;background:#000;overflow:hidden">
+                <img src="https://img.youtube.com/vi/{{ $ytId }}/hqdefault.jpg" alt="{{ $ad->titre }}" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.25);transition:background 0.3s" onmouseover="this.style.background='rgba(0,0,0,0.4)'" onmouseout="this.style.background='rgba(0,0,0,0.25)'">
+                  <i class="fab fa-youtube" style="font-size:44px;color:#ff0000;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5))"></i>
+                </div>
+              </div>
+            @elseif($isLocalVideo)
+              <video src="{{ $ad->video_url }}" style="width:100%;height:180px;object-fit:cover;display:block" muted preload="metadata" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0"></video>
             @elseif($ad->video_url)
               <div style="width:100%;height:180px;background:var(--navy-3);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-muted)">
                 <i class="fas fa-play-circle" style="font-size:40px;margin-right:8px"></i> Vidéo
@@ -835,6 +853,39 @@ document.addEventListener('DOMContentLoaded', function () {
   var mapCategories = {!! json_encode($mapCategories->keyBy('slug')->map(function($mc) {
         return ['name' => $mc->name, 'icon_class' => $mc->icon_class, 'color' => $mc->color, 'image' => $mc->image];
       })->toArray(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
+  var serverPoints = {!! json_encode($mapPoints->map(function($p) {
+        $img = $p->mainImage ? $p->mainImage->url : ($p->youtube_id ? 'https://img.youtube.com/vi/' . $p->youtube_id . '/hqdefault.jpg' : null);
+        return [
+          'id' => $p->id,
+          'title' => $p->title,
+          'description' => $p->description,
+          'latitude' => (float)$p->latitude,
+          'longitude' => (float)$p->longitude,
+          'category' => $p->category,
+          'type' => $p->type,
+          'adresse' => $p->adresse,
+          'ville' => $p->ville,
+          'youtube_url' => $p->youtube_url,
+          'youtube_id' => $p->youtube_id,
+          'thumbnail' => $img,
+          'is_featured' => (bool)$p->is_featured,
+          'has_details_page' => (bool)$p->has_details_page,
+          'views' => $p->views,
+          'details' => $p->details ? [
+            'long_description' => $p->details->long_description,
+            'phone' => $p->details->phone,
+            'email' => $p->details->email,
+            'website' => $p->details->website,
+            'horaires' => $p->details->horaires,
+            'services' => $p->details->services,
+            'tarifs' => $p->details->tarifs,
+            'rating' => (float)$p->details->rating,
+            'reviews_count' => $p->details->reviews_count,
+            'slug' => $p->details->slug,
+          ] : null,
+          'images' => $p->images->map(fn($img) => ['url' => $img->url, 'thumbnail' => $img->thumb_url, 'caption' => $img->caption, 'is_main' => (bool)$img->is_main])->toArray(),
+        ];
+      })->values(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var zoomByType = { continent: 3, country: 5, province: 7, region: 9, ville: 11, city: 11, secteur: 13 };
   var defaultZoom = entityLat ? (zoomByType[entityType] || 6) : 2;
   var center = entityLat ? [entityLat, entityLng] : [20, 0];
@@ -922,7 +973,34 @@ document.addEventListener('DOMContentLoaded', function () {
     geoSearch.value = geoOptions[0].label;
   }
 
+  function renderPointsOnMap(data) {
+    markersLayer.clearLayers();
+    pointsData = [];
+    currentPointsData = data;
+    var bounds = [];
+    var categories = {};
+    var markerIndex = 0;
+    data.forEach(function (p) {
+      var cat = p.category || 'other';
+      if (!categories[cat]) categories[cat] = true;
+      pointsData.push(p);
+      var popupHtml = buildPopupHtml(p, markerIndex);
+      var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured) })
+        .addTo(markersLayer)
+        .bindPopup(popupHtml, { maxWidth: 320, className: 'map-popup-wrapper' });
+      marker._pointIndex = markerIndex;
+      markerIndex++;
+      bounds.push([p.latitude, p.longitude]);
+    });
+    if (bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+    rebuildCategoryFilters(categories, data);
+  }
+
   function reloadMapPoints() {
+    if (serverPoints && serverPoints.length) {
+      renderPointsOnMap(serverPoints);
+      return;
+    }
     fetch(mapPointsUrl)
       .then(function (r) { return r.json(); })
       .then(function (res) {
@@ -932,26 +1010,7 @@ document.addEventListener('DOMContentLoaded', function () {
           return;
         }
         console.log('Map points received:', res.data.length);
-        markersLayer.clearLayers();
-        pointsData = [];
-        currentPointsData = res.data;
-        var bounds = [];
-        var categories = {};
-        var markerIndex = 0;
-        res.data.forEach(function (p) {
-          var cat = p.category || 'other';
-          if (!categories[cat]) categories[cat] = true;
-          pointsData.push(p);
-          var popupHtml = buildPopupHtml(p, markerIndex);
-          var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured) })
-            .addTo(markersLayer)
-            .bindPopup(popupHtml, { maxWidth: 320, className: 'map-popup-wrapper' });
-          marker._pointIndex = markerIndex;
-          markerIndex++;
-          bounds.push([p.latitude, p.longitude]);
-        });
-        if (bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
-        rebuildCategoryFilters(categories, res.data);
+        renderPointsOnMap(res.data);
       })
       .catch(function (err) { console.error('Map reload error:', err); var mapEl = document.getElementById('travel-map'); if (mapEl) mapEl.insertAdjacentHTML('afterend', '<div style="padding:12px;background:#fee;color:#c00;border-radius:8px">Map points failed to load: ' + err.message + '</div>'); });
   }

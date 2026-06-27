@@ -1481,9 +1481,27 @@
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px">
             @foreach($ads as $ad)
+            @php
+                $isYoutube = $ad->video_url && preg_match('/(youtube\.com|youtu\.be)/i', $ad->video_url);
+                $isLocalVideo = $ad->video_url && !$isYoutube && preg_match('/\.(mp4|webm|ogg)$/i', $ad->video_url);
+                $ytId = '';
+                if ($isYoutube) {
+                    preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/', $ad->video_url, $m);
+                    $ytId = $m[1] ?? '';
+                }
+            @endphp
             <a href="{{ $ad->destination_url ?? '#' }}" target="{{ $ad->open_new_tab ? '_blank' : '_self' }}" rel="noopener" style="display:block;background:var(--card-bg,#111827);border:1px solid var(--border,rgba(232,213,176,0.12));border-radius:var(--radius-md,16px);overflow:hidden;transition:all 0.35s ease;text-decoration:none;color:inherit" onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
                 @if($ad->image_path)
                 <img src="{{ $ad->image_path }}" alt="{{ $ad->titre }}" style="width:100%;height:180px;object-fit:cover;display:block" loading="lazy">
+                @elseif($isYoutube && $ytId)
+                <div style="position:relative;width:100%;height:180px;background:#000;overflow:hidden">
+                    <img src="https://img.youtube.com/vi/{{ $ytId }}/hqdefault.jpg" alt="{{ $ad->titre }}" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.25);transition:background 0.3s" onmouseover="this.style.background='rgba(0,0,0,0.4)'" onmouseout="this.style.background='rgba(0,0,0,0.25)'">
+                        <i class="fab fa-youtube" style="font-size:44px;color:#ff0000;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5))"></i>
+                    </div>
+                </div>
+                @elseif($isLocalVideo)
+                <video src="{{ $ad->video_url }}" style="width:100%;height:180px;object-fit:cover;display:block" muted preload="metadata" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0"></video>
                 @elseif($ad->video_url)
                 <div style="width:100%;height:180px;background:var(--navy-3,#1c2333);display:flex;align-items:center;justify-content:center;color:var(--text-muted,#8a95a8);font-size:14px">
                     <i class="fas fa-play-circle" style="font-size:40px;margin-right:8px"></i> Vidéo
