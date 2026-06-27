@@ -304,6 +304,36 @@
   </div>
 </div>
 
+@if(isset($ads) && $ads->count() > 0)
+  <section class="ads-section section" id="ads" aria-labelledby="ads-heading">
+    <div class="container">
+      <div class="section-header reveal-up">
+        <span class="eyebrow">Sponsorisé</span>
+        <h2 class="section-title" id="ads-heading">Publicités</h2>
+      </div>
+      <div class="ads-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px">
+        @foreach($ads as $ad)
+          <a href="{{ $ad->destination_url ?? '#' }}" target="{{ $ad->open_new_tab ? '_blank' : '_self' }}" rel="noopener" class="ad-card" style="display:block;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;transition:all var(--transition);text-decoration:none;color:inherit">
+            @if($ad->image_path)
+              <img src="{{ $ad->image_path }}" alt="{{ $ad->titre }}" style="width:100%;height:180px;object-fit:cover;display:block" loading="lazy">
+            @elseif($ad->video_url)
+              <div style="width:100%;height:180px;background:var(--navy-3);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-muted)">
+                <i class="fas fa-play-circle" style="font-size:40px;margin-right:8px"></i> Vidéo
+              </div>
+            @endif
+            <div style="padding:16px">
+              <h3 style="margin:0 0 6px;font-size:15px;font-weight:600;color:var(--text-main)">{{ $ad->titre }}</h3>
+              @if($ad->description)
+                <p style="margin:0;font-size:13px;color:var(--text-muted);line-height:1.5">{{ \Illuminate\Support\Str::limit($ad->description, 100) }}</p>
+              @endif
+            </div>
+          </a>
+        @endforeach
+      </div>
+    </div>
+  </section>
+@endif
+
 @if($mapPoints->count() > 0)
   <section class="map-points-section section" id="map-points" aria-labelledby="map-points-heading">
     <div class="container">

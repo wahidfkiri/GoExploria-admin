@@ -1471,6 +1471,37 @@
 </section>
 @endif
 
+<!-- ===== ADS ===== -->
+@if(isset($ads) && $ads->count() > 0)
+<section id="ads" style="padding:80px 0;background:var(--section-bg, #0a0e1a)">
+    <div class="container">
+        <div class="section-header" style="text-align:center;margin-bottom:48px">
+            <div class="section-eyebrow" style="color:var(--orange)">Sponsorisé</div>
+            <h2 class="section-title" style="color:white">Publicités</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px">
+            @foreach($ads as $ad)
+            <a href="{{ $ad->destination_url ?? '#' }}" target="{{ $ad->open_new_tab ? '_blank' : '_self' }}" rel="noopener" style="display:block;background:var(--card-bg,#111827);border:1px solid var(--border,rgba(232,213,176,0.12));border-radius:var(--radius-md,16px);overflow:hidden;transition:all 0.35s ease;text-decoration:none;color:inherit" onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+                @if($ad->image_path)
+                <img src="{{ $ad->image_path }}" alt="{{ $ad->titre }}" style="width:100%;height:180px;object-fit:cover;display:block" loading="lazy">
+                @elseif($ad->video_url)
+                <div style="width:100%;height:180px;background:var(--navy-3,#1c2333);display:flex;align-items:center;justify-content:center;color:var(--text-muted,#8a95a8);font-size:14px">
+                    <i class="fas fa-play-circle" style="font-size:40px;margin-right:8px"></i> Vidéo
+                </div>
+                @endif
+                <div style="padding:16px">
+                    <h3 style="margin:0 0 6px;font-size:15px;font-weight:600;color:white">{{ $ad->titre }}</h3>
+                    @if($ad->description)
+                    <p style="margin:0;font-size:13px;color:var(--text-muted,#8a95a8);line-height:1.5">{{ \Illuminate\Support\Str::limit($ad->description, 100) }}</p>
+                    @endif
+                </div>
+            </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
 <!-- ===== CONTACT ===== -->
 @if($contact)
 <section id="contact">

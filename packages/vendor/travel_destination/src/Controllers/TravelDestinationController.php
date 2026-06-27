@@ -9,6 +9,7 @@ use App\Models\PageContent;
 use App\Services\DestinationService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class TravelDestinationController extends Controller
@@ -114,6 +115,21 @@ class TravelDestinationController extends Controller
             $mapPoints = $q->orderBy('is_featured', 'desc')->orderBy('views', 'desc')->limit(500)->get();
         }
 
+        $ads = DB::table('ads')
+            ->where('status', 'active')
+            ->where(function ($q) {
+                $q->whereNull('start_date')->orWhere('start_date', '<=', now()->toDateString());
+            })
+            ->where(function ($q) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', now()->toDateString());
+            })
+            ->where(function ($q) {
+                $q->whereNull('budget_total')->orWhereRaw('budget_total > COALESCE(budget_spent, 0)');
+            })
+            ->orderBy('priority')
+            ->orderByDesc('id')
+            ->get();
+
         return view('travel-destination::landing.index', compact(
             'entity',
             'normalizedType',
@@ -136,7 +152,8 @@ class TravelDestinationController extends Controller
             'childEntities',
             'mapCategories',
             'destinationActivities',
-            'mapPoints'
+            'mapPoints',
+            'ads'
         ));
     }
 

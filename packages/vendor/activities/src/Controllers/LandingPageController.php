@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\PageContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class LandingPageController extends Controller
@@ -113,6 +114,21 @@ class LandingPageController extends Controller
         // Partenaires
         $partners = $this->getPartners();
 
+        $ads = DB::table('ads')
+            ->where('status', 'active')
+            ->where(function ($q) {
+                $q->whereNull('start_date')->orWhere('start_date', '<=', now()->toDateString());
+            })
+            ->where(function ($q) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', now()->toDateString());
+            })
+            ->where(function ($q) {
+                $q->whereNull('budget_total')->orWhereRaw('budget_total > COALESCE(budget_spent, 0)');
+            })
+            ->orderBy('priority')
+            ->orderByDesc('id')
+            ->get();
+
         return view('activities::landing.activity-detail', compact(
             'activity',
             'groupedContents',
@@ -128,7 +144,8 @@ class LandingPageController extends Controller
             'stats',
             'categories',
             'navCategories',
-            'partners'
+            'partners',
+            'ads'
         ));
     }
 
