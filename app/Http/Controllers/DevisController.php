@@ -7,6 +7,7 @@ use App\Models\BillingDiscount;
 use App\Models\BillingRequest;
 use App\Models\BillingRequestService;
 use App\Models\BillingSetting;
+use App\Models\MapCategory;
 use App\Models\MapPoint;
 use App\Models\Plan;
 use App\Models\Tax;
@@ -34,7 +35,7 @@ class DevisController extends Controller
         app()->setLocale('fr');
         session(['locale' => 'fr']);
 
-        $mapPoints = MapPoint::with(['details', 'mainImage'])
+        $mapPoints = MapPoint::with(['details', 'images', 'mainImage'])
             ->active()
             ->whereNotNull('adresse')
             ->whereNotNull('latitude')
@@ -44,9 +45,12 @@ class DevisController extends Controller
             ->limit(500)
             ->get();
 
+        $mapCategories = MapCategory::where('is_active', true)->orderBy('sort_order')->get(['slug', 'name', 'icon_class', 'color', 'image']);
+
         return view('home-v2.pages.service-detail', [
             'service' => $billingRequestService,
             'mapPoints' => $mapPoints,
+            'mapCategories' => $mapCategories,
         ]);
     }
 

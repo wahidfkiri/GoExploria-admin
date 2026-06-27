@@ -33,6 +33,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="{{ asset('vendor/travel-destination/css/travel-destination.css') }}" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -349,40 +350,47 @@
   </section>
 
   @if(isset($mapPoints) && $mapPoints->count() > 0)
-  <section class="map-points-section" style="padding:64px 0;background:#f9fafb">
+  <section class="map-section section" id="map" aria-labelledby="map-heading">
     <div class="container">
-      <div class="section-header" style="text-align:center;margin-bottom:32px">
-        <h2 style="font-size:1.8rem;font-weight:700;margin-bottom:8px">Découvrez les points d'intérêt</h2>
-        <p style="color:#6b7280">Cliquez sur les marqueurs pour en savoir plus</p>
+      <div class="section-header reveal-up">
+        <span class="eyebrow">Explorer</span>
+        <h2 class="section-title" id="map-heading">Découvrez les points d'intérêt</h2>
+        <p class="section-subtitle">Cliquez sur les marqueurs pour en savoir plus</p>
       </div>
-      <div id="travel-map" style="height:500px;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:40px"></div>
-      <div class="map-points-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px">
-        @foreach($mapPoints as $point)
-          <div class="map-point-card" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);transition:transform .2s">
-            @if($point->mainImage)
-              <img src="{{ $point->mainImage->url }}" alt="{{ $point->title }}" style="width:100%;height:180px;object-fit:cover" loading="lazy">
-            @elseif($point->youtube_id)
-              <div style="width:100%;height:180px;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px">
-                <i class="fas fa-play-circle" style="font-size:40px;opacity:.6"></i>
-              </div>
-            @endif
-            <div style="padding:18px">
-              <h3 style="margin:0 0 6px;font-size:17px">{{ $point->title }}</h3>
-              @if($point->adresse)
-                <p style="margin:0 0 4px;font-size:13px;color:#666"><i class="fas fa-map-marker-alt" style="margin-right:6px;color:#4f46e5"></i>{{ $point->adresse }}{{ $point->ville ? ', ' . $point->ville : '' }}</p>
-              @endif
-              @if($point->description)
-                <p style="margin:0 0 8px;font-size:13px;color:#888;line-height:1.4">{{ \Illuminate\Support\Str::limit($point->description, 120) }}</p>
-              @endif
-              @if($point->details && $point->details->phone)
-                <p style="margin:0;font-size:13px;color:#666"><i class="fas fa-phone" style="margin-right:6px;color:#4f46e5"></i>{{ $point->details->phone }}</p>
-              @endif
-            </div>
-          </div>
-        @endforeach
+      <div class="map-geo-filter" id="mapGeoFilter">
+        <div class="map-geo-filter__wrapper">
+          <input type="text" class="map-geo-filter__search" id="mapGeoSearch" placeholder="Rechercher une destination..." autocomplete="off">
+          <div class="map-geo-filter__dropdown" id="mapGeoDropdown"></div>
+        </div>
+      </div>
+      <div class="map-filters reveal-up" id="mapFilters">
+        <button class="map-filter-btn active" data-filter="all">Tous</button>
+      </div>
+      <div class="map-wrapper">
+        <div id="travel-map" class="travel-map"></div>
       </div>
     </div>
   </section>
+
+  <!-- Map Detail Modal -->
+  <div class="map-modal" id="mapDetailModal">
+    <div class="map-modal__backdrop" id="mapModalBackdrop"></div>
+    <div class="map-modal__content">
+      <button class="map-modal__close" id="mapModalClose">&times;</button>
+      <div class="map-modal__body">
+        <div class="map-modal__video" id="mapModalVideo"></div>
+        <div class="map-modal__gallery" id="mapModalGallery"></div>
+        <div class="map-modal__info">
+          <h3 class="map-modal__title" id="map-modal-title"></h3>
+          <div class="map-modal__description"></div>
+          <div class="map-modal__meta" id="mapModalMeta"></div>
+          <div class="map-modal__actions">
+            <a href="#" class="btn btn--primary" id="mapModalWebsite" target="_blank" rel="noopener">Visiter le site</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   @endif
 
   <footer class="footer-premium">
@@ -410,80 +418,300 @@
   </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="{{ asset('vendor/travel-destination/js/travel-destination.js') }}"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var mapEl = document.getElementById('travel-map');
-      if (!mapEl) return;
+  document.addEventListener('DOMContentLoaded', function () {
+    var mapEl = document.getElementById('travel-map');
+    if (!mapEl) return;
 
-      var mapPoints = {!! json_encode($mapPoints->map(function($p) {
-        $img = $p->mainImage ? $p->mainImage->url : ($p->youtube_id ? 'https://img.youtube.com/vi/' . $p->youtube_id . '/hqdefault.jpg' : null);
-        return [
-          'id' => $p->id,
-          'title' => $p->title,
-          'description' => $p->description,
-          'latitude' => (float)$p->latitude,
-          'longitude' => (float)$p->longitude,
-          'category' => $p->category,
-          'address' => $p->adresse,
-          'city' => $p->ville,
-          'thumbnail' => $img,
-          'is_featured' => (bool)$p->is_featured,
-          'phone' => $p->details?->phone,
-        ];
-      })->values(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
+    var rawPoints = {!! json_encode($mapPoints->map(function($p) {
+      $img = $p->mainImage ? $p->mainImage->url : ($p->youtube_id ? 'https://img.youtube.com/vi/' . $p->youtube_id . '/hqdefault.jpg' : null);
+      return [
+        'id' => $p->id,
+        'title' => $p->title,
+        'description' => $p->description,
+        'latitude' => (float)$p->latitude,
+        'longitude' => (float)$p->longitude,
+        'category' => $p->category,
+        'adresse' => $p->adresse,
+        'ville' => $p->ville,
+        'youtube_url' => $p->youtube_url,
+        'youtube_id' => $p->youtube_id,
+        'thumbnail' => $img,
+        'is_featured' => (bool)$p->is_featured,
+        'details' => $p->details ? [
+          'long_description' => $p->details->long_description,
+          'phone' => $p->details->phone,
+          'email' => $p->details->email,
+          'website' => $p->details->website,
+          'horaires' => $p->details->horaires,
+          'services' => $p->details->services,
+          'tarifs' => $p->details->tarifs,
+          'rating' => (float)$p->details->rating,
+          'reviews_count' => $p->details->reviews_count,
+          'slug' => $p->details->slug,
+        ] : null,
+        'images' => $p->images->map(fn($img) => ['url' => $img->url, 'thumbnail' => $img->thumb_url, 'caption' => $img->caption, 'is_main' => (bool)$img->is_main])->toArray(),
+      ];
+    })->values(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
 
-      var map = L.map('travel-map', {
-        center: [20, 0],
-        zoom: 2,
-        zoomControl: true,
-        scrollWheelZoom: true,
-        worldCopyJump: true
+    var mapCategories = {!! json_encode($mapCategories->keyBy('slug')->map(function($mc) {
+      return ['name' => $mc->name, 'icon_class' => $mc->icon_class, 'color' => $mc->color, 'image' => $mc->image];
+    })->toArray(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
+
+    var entityName = 'Monde';
+    var entityType = 'continent';
+    var zoomByType = { continent: 2, country: 5, province: 7, region: 9, ville: 11, city: 11, secteur: 13 };
+    var defaultZoom = 2;
+    var center = [20, 0];
+    var childEntities = [];
+
+    var map = L.map('travel-map', {
+      center: center,
+      zoom: defaultZoom,
+      zoomControl: true,
+      scrollWheelZoom: true
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '\u00a9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    map.whenReady(function () { map.invalidateSize(); });
+
+    var markersLayer = L.layerGroup().addTo(map);
+
+    var pointsData = [];
+    var currentPointsData = [];
+
+    function zoomToEntity(lat, lng, zoom) {
+      if (lat !== undefined && lat !== null && lng !== undefined && lng !== null) {
+        map.flyTo([lat, lng], zoom || defaultZoom, { duration: 1 });
+      }
+    }
+
+    function reloadMapPoints() {
+      markersLayer.clearLayers();
+      pointsData = [];
+      currentPointsData = rawPoints;
+      var bounds = [];
+      var categories = {};
+      var markerIndex = 0;
+      rawPoints.forEach(function (p) {
+        var cat = p.category || 'other';
+        if (!categories[cat]) categories[cat] = true;
+        pointsData.push(p);
+        var popupHtml = buildPopupHtml(p, markerIndex);
+        var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured) })
+          .addTo(markersLayer)
+          .bindPopup(popupHtml, { maxWidth: 320, className: 'map-popup-wrapper' });
+        marker._pointIndex = markerIndex;
+        markerIndex++;
+        bounds.push([p.latitude, p.longitude]);
       });
+      if (bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+      rebuildCategoryFilters(categories, rawPoints);
+    }
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19
-      }).addTo(map);
-
-      var markers = L.markerClusterGroup ? L.markerClusterGroup() : null;
-
-      mapPoints.forEach(function(p) {
-        if (!p.latitude || !p.longitude) return;
-        var color = '#4f46e5';
-        var icon = L.divIcon({
-          className: 'custom-marker',
-          html: '<div style="background:' + color + ';width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:2px solid #fff"><i class="fas fa-map-pin"></i></div>',
-          iconSize: [32, 32],
-          iconAnchor: [16, 16],
-          popupAnchor: [0, -20]
-        });
-        var marker = L.marker([p.latitude, p.longitude], { icon: icon });
-        var popupHtml = '<div style="min-width:220px"><strong>' + p.title + '</strong>';
-        if (p.address) popupHtml += '<br><span style="font-size:12px;color:#666">' + p.address + (p.city ? ', ' + p.city : '') + '</span>';
-        if (p.description) popupHtml += '<br><span style="font-size:12px;color:#888">' + p.description.substring(0, 100) + '</span>';
-        if (p.phone) popupHtml += '<br><span style="font-size:12px;color:#666"><i class="fas fa-phone"></i> ' + p.phone + '</span>';
-        popupHtml += '</div>';
-        marker.bindPopup(popupHtml);
-
-        if (markers) {
-          markers.addLayer(marker);
-        } else {
-          marker.addTo(map);
+    function rebuildCategoryFilters(categories, data) {
+      var filterEl = document.getElementById('mapFilters');
+      if (!filterEl) return;
+      filterEl.innerHTML = '<button class="map-filter-btn active" data-filter="all">Tous</button>';
+      mapCategories && Object.keys(mapCategories).forEach(function (slug) {
+        var cat = mapCategories[slug];
+        var btn = document.createElement('button');
+        btn.className = 'map-filter-btn';
+        btn.setAttribute('data-filter', slug);
+        var iconHtml = '';
+        if (cat.image) {
+          iconHtml = '<img src="' + cat.image + '" alt="" class="map-filter-btn__img" />';
+        } else if (cat.icon_class) {
+          iconHtml = '<span class="' + cat.icon_class + '" style="color:' + (cat.color || '#e74c3c') + '"></span>';
         }
+        btn.innerHTML = iconHtml ? '<span class="map-filter-btn__icon">' + iconHtml + '</span><span class="map-filter-btn__label">' + (cat.name || slug) + '</span>' : (cat.name || slug);
+        filterEl.appendChild(btn);
       });
+      filterEl.querySelectorAll('.map-filter-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          filterEl.querySelectorAll('.map-filter-btn').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          var filter = btn.getAttribute('data-filter');
+          markersLayer.clearLayers();
+          data.forEach(function (p, idx) {
+            if (filter === 'all' || resolveCategorySlug(p.category) === filter) {
+              var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured) })
+                .addTo(markersLayer)
+                .bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper' });
+              marker._pointIndex = idx;
+            }
+          });
+        });
+      });
+    }
 
-      if (markers) {
-        map.addLayer(markers);
+    function youtubeEmbedUrl(youtubeUrl, youtubeId) {
+      var id = youtubeId || '';
+      if (!id && youtubeUrl) {
+        var m = youtubeUrl.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+        if (m) id = m[1];
+      }
+      return id ? 'https://www.youtube.com/embed/' + id + '?autoplay=1' : '';
+    }
+
+    function getCategoryData(category) {
+      if (!category) return null;
+      if (mapCategories[category]) return mapCategories[category];
+      var aliasMap = {
+        'adventure': 'sport', 'nature': 'natural', 'culture': 'cultural',
+        'history': 'historic', 'science': 'museum', 'family': 'entertainment',
+        'park': 'parc', 'video_map': 'entertainment'
+      };
+      var alias = aliasMap[category];
+      if (alias && mapCategories[alias]) return mapCategories[alias];
+      return null;
+    }
+
+    function resolveCategorySlug(category) {
+      if (!category) return null;
+      if (mapCategories[category]) return category;
+      var aliasMap = {
+        'adventure': 'sport', 'nature': 'natural', 'culture': 'cultural',
+        'history': 'historic', 'science': 'museum', 'family': 'entertainment',
+        'park': 'parc', 'video_map': 'entertainment'
+      };
+      return aliasMap[category] || null;
+    }
+
+    function getMarkerIcon(category, featured) {
+      var size = featured ? 40 : 32;
+      var catData = getCategoryData(category);
+      if (catData && catData.image) {
+        return L.divIcon({
+          className: 'map-marker',
+          html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background-size:cover;background-image:url(' + catData.image + ');box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff"></div>',
+          iconSize: [size + 4, size + 4],
+          iconAnchor: [(size + 4) / 2, size + 4]
+        });
+      } else if (catData && catData.icon_class) {
+        var color = catData.color || '#e74c3c';
+        return L.divIcon({
+          className: 'map-marker',
+          html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff"><span class="' + catData.icon_class + '" style="font-size:' + Math.round(size * 0.55) + 'px;color:#fff"></span></div>',
+          iconSize: [size + 4, size + 4],
+          iconAnchor: [(size + 4) / 2, size + 4]
+        });
+      }
+      var colors = { sightseeing: '#e74c3c', museum: '#3498db', restaurant: '#f39c12', hotel: '#2ecc71', adventure: '#9b59b6', shopping: '#1abc9c', default: '#e74c3c' };
+      var color = colors[category] || colors.default;
+      return L.divIcon({
+        className: 'map-marker',
+        html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff"><svg viewBox="0 0 24 24" width="' + Math.round(size * 0.6) + '" height="' + Math.round(size * 0.6) + '" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>',
+        iconSize: [size + 4, size + 4],
+        iconAnchor: [(size + 4) / 2, size + 4]
+      });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      var d = document.createElement('div');
+      d.appendChild(document.createTextNode(str));
+      return d.innerHTML;
+    }
+
+    function buildPopupHtml(p, idx) {
+      var embedUrl = (p.youtube_url || p.youtube_id) ? youtubeEmbedUrl(p.youtube_url, p.youtube_id) : '';
+      var html = '<div class="map-popup">';
+      if (embedUrl) {
+        html += '<div class="map-popup__video">';
+        html += '<iframe src="' + embedUrl + '" frameborder="0" allowfullscreen></iframe>';
+        html += '</div>';
+      }
+      html += '<div class="map-popup__body">';
+      html += '<h4 class="map-popup__title">' + escapeHtml(p.title) + '</h4>';
+      if (p.description) html += '<p class="map-popup__desc">' + escapeHtml(p.description.substring(0, 120)) + '</p>';
+      html += '<button class="map-popup__detail-btn" data-index="' + idx + '">Voir détails</button>';
+      html += '</div></div>';
+      return html;
+    }
+
+    reloadMapPoints();
+
+    map.on('popupopen', function (e) {
+      var container = e.popup.getElement();
+      if (!container) return;
+      container.querySelectorAll('.map-popup__detail-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var idx = parseInt(btn.getAttribute('data-index'));
+          var point = pointsData[idx];
+          if (point) showPlaceModal(point);
+        });
+      });
+    });
+
+    function showPlaceModal(point) {
+      var modal = document.getElementById('mapDetailModal');
+      var mc = document.getElementById('mapModalMeta');
+      if (!modal || !mc) return;
+      document.getElementById('map-modal-title').textContent = point.title || 'Details';
+
+      var videoEl = document.getElementById('mapModalVideo');
+      var embedModalUrl = (point.youtube_url || point.youtube_id) ? youtubeEmbedUrl(point.youtube_url, point.youtube_id) : '';
+      if (videoEl) {
+        videoEl.innerHTML = embedModalUrl ? '<iframe src="' + embedModalUrl.replace('?autoplay=1', '?autoplay=0&rel=0') + '" frameborder="0" allowfullscreen></iframe>' : '';
       }
 
-      if (mapPoints.length > 0) {
-        var latLngs = mapPoints.filter(function(p) { return p.latitude && p.longitude; }).map(function(p) { return [p.latitude, p.longitude]; });
-        if (latLngs.length > 1) {
-          map.fitBounds(latLngs, { padding: [30, 30], maxZoom: 12 });
-        }
+      var descEl = modal.querySelector('.map-modal__description');
+      descEl.innerHTML = point.details && point.details.long_description ? point.details.long_description : (point.description || '');
+      var metaHtml = '';
+      if (point.category) metaHtml += '<span class="map-modal__tag">' + escapeHtml(point.category) + '</span>';
+      if (point.city) metaHtml += '<span class="map-modal__tag">' + escapeHtml(point.city) + '</span>';
+      if (point.details) {
+        if (point.details.rating) metaHtml += '<span class="map-modal__rating">&#9733; ' + point.details.rating + (point.details.reviews_count ? ' (' + point.details.reviews_count + ' avis)' : '') + '</span>';
+        if (point.details.phone) metaHtml += '<span class="map-modal__meta-item">&#9742; ' + escapeHtml(point.details.phone) + '</span>';
+        if (point.details.email) metaHtml += '<span class="map-modal__meta-item">&#9993; ' + escapeHtml(point.details.email) + '</span>';
+        if (point.details.horaires) metaHtml += '<span class="map-modal__meta-item">&#9200; ' + escapeHtml(point.details.horaires) + '</span>';
+        if (point.details.tarifs) metaHtml += '<span class="map-modal__meta-item">&#36; ' + escapeHtml(point.details.tarifs) + '</span>';
+        if (point.details.services) metaHtml += '<div class="map-modal__services"><strong>Services :</strong> ' + escapeHtml(point.details.services) + '</div>';
+      }
+      mc.innerHTML = metaHtml;
+      var galleryEl = document.getElementById('mapModalGallery');
+      galleryEl.innerHTML = '';
+      if (point.images && point.images.length) {
+        point.images.forEach(function (img) {
+          var el = document.createElement('img');
+          el.src = img.thumbnail || img.url;
+          el.alt = img.caption || '';
+          el.loading = 'lazy';
+          galleryEl.appendChild(el);
+        });
+      }
+      var websiteLink = document.getElementById('mapModalWebsite');
+      if (point.details && point.details.website) {
+        websiteLink.href = point.details.website;
+        websiteLink.style.display = 'inline-flex';
+      } else {
+        websiteLink.style.display = 'none';
+      }
+      modal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePlaceModal() {
+      var modal = document.getElementById('mapDetailModal');
+      if (!modal) return;
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('mapModalClose').addEventListener('click', closePlaceModal);
+    document.getElementById('mapModalBackdrop').addEventListener('click', closePlaceModal);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        var modal = document.getElementById('mapDetailModal');
+        if (modal && modal.style.display === 'block') closePlaceModal();
       }
     });
+  });
   </script>
 </body>
 </html>
