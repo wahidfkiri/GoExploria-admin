@@ -352,43 +352,6 @@
   </section>
 @endif
 
-@if($mapPoints->count() > 0)
-  <section class="map-points-section section" id="map-points" aria-labelledby="map-points-heading">
-    <div class="container">
-      <div class="section-header reveal-up">
-        <span class="eyebrow">Points d'intérêt</span>
-        <h2 class="section-title" id="map-points-heading">Lieux à découvrir dans {{ $entity->name }}</h2>
-        <p class="section-subtitle">Adresses et informations pratiques</p>
-      </div>
-      <div class="map-points-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;margin-top:30px">
-        @foreach($mapPoints as $point)
-          <div class="map-point-card" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);transition:transform .2s">
-            @if($point->mainImage)
-              <img src="{{ $point->mainImage->url }}" alt="{{ $point->title }}" style="width:100%;height:180px;object-fit:cover" loading="lazy">
-            @elseif($point->youtube_id)
-              <div style="width:100%;height:180px;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px">
-                <i class="fas fa-play-circle" style="font-size:40px;opacity:.6"></i>
-              </div>
-            @endif
-            <div style="padding:18px">
-              <h3 style="margin:0 0 6px;font-size:17px">{{ $point->title }}</h3>
-              @if($point->adresse)
-                <p style="margin:0 0 4px;font-size:13px;color:#666"><i class="fas fa-map-marker-alt" style="margin-right:6px;color:var(--primary,#007bff)"></i>{{ $point->adresse }}{{ $point->ville ? ', ' . $point->ville : '' }}</p>
-              @endif
-              @if($point->description)
-                <p style="margin:0 0 8px;font-size:13px;color:#888;line-height:1.4">{{ \Illuminate\Support\Str::limit($point->description, 120) }}</p>
-              @endif
-              @if($point->details && $point->details->phone)
-                <p style="margin:0;font-size:13px;color:#666"><i class="fas fa-phone" style="margin-right:6px;color:var(--primary,#007bff)"></i>{{ $point->details->phone }}</p>
-              @endif
-            </div>
-          </div>
-        @endforeach
-      </div>
-    </div>
-  </section>
-@endif
-
 @if($aboutContents->count() > 0)
   <section class="about-section section" id="about" aria-labelledby="about-heading">
     <div class="container">
