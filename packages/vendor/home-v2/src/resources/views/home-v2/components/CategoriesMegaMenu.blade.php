@@ -45,48 +45,48 @@ $buildDestBreadcrumb = function ($activity) {
     foreach ($activity->cities as $city) {
         $chain = [];
         if ($ct = $city->region?->province?->country?->continent)
-            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'continent', 'slug' => $slugify($ct)]) . '" class="dest-link">' . e($ct->name) . '</a>';
+            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'continent', 'slug' => $ct->slug ?? $ct->id, 'slug2' => $slugify($ct)]) . '" class="dest-link">' . e($ct->name) . '</a>';
         if ($c = $city->region?->province?->country)
-            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'country', 'slug' => $slugify($c)]) . '" class="dest-link">' . e($c->name) . '</a>';
+            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'country', 'slug' => $c->slug ?? $c->id, 'slug2' => $slugify($c)]) . '" class="dest-link">' . e($c->name) . '</a>';
         if ($p = $city->region?->province)
-            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'province', 'slug' => $slugify($p)]) . '" class="dest-link">' . e($p->name) . '</a>';
+            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'province', 'slug' => $p->slug ?? $p->id, 'slug2' => $slugify($p)]) . '" class="dest-link">' . e($p->name) . '</a>';
         if ($r = $city->region)
-            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'region', 'slug' => $slugify($r)]) . '" class="dest-link">' . e($r->name) . '</a>';
-        $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'city', 'slug' => $slugify($city)]) . '" class="dest-link">' . e($city->name) . '</a>';
+            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'region', 'slug' => $r->slug ?? $r->id, 'slug2' => $slugify($r)]) . '" class="dest-link">' . e($r->name) . '</a>';
+        $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'city', 'slug' => $city->slug ?? $city->id, 'slug2' => $slugify($city)]) . '" class="dest-link">' . e($city->name) . '</a>';
         $paths[] = implode(' <span class="dest-arrow">&gt;</span> ', $chain);
     }
     foreach ($activity->regions as $region) {
         $chain = [];
         if ($ct = $region->province?->country?->continent)
-            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'continent', 'slug' => $slugify($ct)]) . '" class="dest-link">' . e($ct->name) . '</a>';
+            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'continent', 'slug' => $ct->slug ?? $ct->id, 'slug2' => $slugify($ct)]) . '" class="dest-link">' . e($ct->name) . '</a>';
         if ($c = $region->province?->country)
-            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'country', 'slug' => $slugify($c)]) . '" class="dest-link">' . e($c->name) . '</a>';
+            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'country', 'slug' => $c->slug ?? $c->id, 'slug2' => $slugify($c)]) . '" class="dest-link">' . e($c->name) . '</a>';
         if ($p = $region->province)
-            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'province', 'slug' => $slugify($p)]) . '" class="dest-link">' . e($p->name) . '</a>';
-        $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'region', 'slug' => $slugify($region)]) . '" class="dest-link">' . e($region->name) . '</a>';
+            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'province', 'slug' => $p->slug ?? $p->id, 'slug2' => $slugify($p)]) . '" class="dest-link">' . e($p->name) . '</a>';
+        $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'region', 'slug' => $region->slug ?? $region->id, 'slug2' => $slugify($region)]) . '" class="dest-link">' . e($region->name) . '</a>';
         $path = implode(' <span class="dest-arrow">&gt;</span> ', $chain);
         if (!in_array($path, $paths)) $paths[] = $path;
     }
     foreach ($activity->provinces as $province) {
         $chain = [];
         if ($ct = $province->country?->continent)
-            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'continent', 'slug' => $slugify($ct)]) . '" class="dest-link">' . e($ct->name) . '</a>';
+            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'continent', 'slug' => $ct->slug ?? $ct->id, 'slug2' => $slugify($ct)]) . '" class="dest-link">' . e($ct->name) . '</a>';
         if ($c = $province->country)
-            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'country', 'slug' => $slugify($c)]) . '" class="dest-link">' . e($c->name) . '</a>';
-        $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'province', 'slug' => $slugify($province)]) . '" class="dest-link">' . e($province->name) . '</a>';
+            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'country', 'slug' => $c->slug ?? $c->id, 'slug2' => $slugify($c)]) . '" class="dest-link">' . e($c->name) . '</a>';
+        $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'province', 'slug' => $province->slug ?? $province->id, 'slug2' => $slugify($province)]) . '" class="dest-link">' . e($province->name) . '</a>';
         $path = implode(' <span class="dest-arrow">&gt;</span> ', $chain);
         if (!in_array($path, $paths)) $paths[] = $path;
     }
     foreach ($activity->countries as $country) {
         $chain = [];
         if ($ct = $country->continent)
-            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'continent', 'slug' => $slugify($ct)]) . '" class="dest-link">' . e($ct->name) . '</a>';
-        $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'country', 'slug' => $slugify($country)]) . '" class="dest-link">' . e($country->name) . '</a>';
+            $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'continent', 'slug' => $ct->slug ?? $ct->id, 'slug2' => $slugify($ct)]) . '" class="dest-link">' . e($ct->name) . '</a>';
+        $chain[] = '<a href="' . route('travel-destination.show', ['type' => 'country', 'slug' => $country->slug ?? $country->id, 'slug2' => $slugify($country)]) . '" class="dest-link">' . e($country->name) . '</a>';
         $path = implode(' <span class="dest-arrow">&gt;</span> ', $chain);
         if (!in_array($path, $paths)) $paths[] = $path;
     }
     foreach ($activity->continents as $continent) {
-        $path = '<a href="' . route('travel-destination.show', ['type' => 'continent', 'slug' => $slugify($continent)]) . '" class="dest-link">' . e($continent->name) . '</a>';
+        $path = '<a href="' . route('travel-destination.show', ['type' => 'continent', 'slug' => $continent->slug ?? $continent->id, 'slug2' => $slugify($continent)]) . '" class="dest-link">' . e($continent->name) . '</a>';
         if (!in_array($path, $paths)) $paths[] = $path;
     }
     return $paths;
