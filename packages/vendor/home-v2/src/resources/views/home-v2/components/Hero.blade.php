@@ -620,6 +620,7 @@
     }
 
     .go-home-hero .search-bar-v2 {
+        display: block;
         width: min(1180px, 100%);
         margin: 0 auto;
         background: rgba(5,15,35,.62);

@@ -46,42 +46,42 @@ class Etablissement extends Model
     /**
      * Relation avec l'utilisateur
      */
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function continent(): BelongsTo
+    public function continent()
     {
         return $this->belongsTo(Continent::class);
     }
 
-    public function country(): BelongsTo
+    public function country()
     {
         return $this->belongsTo(Country::class);
     }
 
-    public function province(): BelongsTo
+    public function province()
     {
         return $this->belongsTo(Province::class);
     }
 
-    public function region(): BelongsTo
+    public function region()
     {
         return $this->belongsTo(Region::class);
     }
 
-    public function villeRelation(): BelongsTo
+    public function villeRelation()
     {
         return $this->belongsTo(Ville::class, 'ville_id');
     }
 
-    public function secteur(): BelongsTo
+    public function secteur()
     {
         return $this->belongsTo(Secteur::class);
     }
 
-    public function primaryActivity(): BelongsTo
+    public function primaryActivity()
     {
         return $this->belongsTo(Activity::class, 'primary_activity_id');
     }
@@ -89,7 +89,7 @@ class Etablissement extends Model
     /**
      * Relation Many-to-Many avec les activités
      */
-    public function activities(): BelongsToMany
+    public function activities()
     {
         return $this->belongsToMany(Activity::class)
                     ->withTimestamps()
@@ -99,7 +99,7 @@ class Etablissement extends Model
     /**
      * Relation Many-to-Many avec les activités actives seulement
      */
-    public function activeActivities(): BelongsToMany
+    public function activeActivities()
     {
         return $this->belongsToMany(Activity::class)
                     ->wherePivot('is_active', true)

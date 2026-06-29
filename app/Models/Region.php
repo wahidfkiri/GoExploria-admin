@@ -56,7 +56,7 @@ class Region extends Model
 }
 
     // Relation avec la province
-    public function province(): BelongsTo
+    public function province()
     {
         return $this->belongsTo(Province::class);
     }

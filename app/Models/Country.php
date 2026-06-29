@@ -43,7 +43,7 @@ class Country extends Model
     ];
 
     // Relation avec le continent
-    public function continent(): BelongsTo
+    public function continent()
     {
         return $this->belongsTo(Continent::class);
     }

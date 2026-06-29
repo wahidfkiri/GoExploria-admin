@@ -44,7 +44,7 @@ class Secteur extends Model
     ];
 
     // Relation avec la région
-    public function region(): BelongsTo
+    public function region()
     {
         return $this->belongsTo(Region::class);
     }
