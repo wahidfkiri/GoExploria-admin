@@ -14,7 +14,7 @@
     backdrop-filter: blur(5px);
     opacity: 0;
     visibility: hidden;
-    z-index: 10050;
+    z-index: 10100;
 }
 
 .vertical-menu-v2-overlay.active {
@@ -31,7 +31,7 @@
     height: 100vh;
     background: #ffffff;
     box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15);
-    z-index: 10100;
+    z-index: 10150;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -463,7 +463,7 @@
     flex-direction: column;
     gap: 6px;
     padding: 10px;
-    z-index: 1050;
+    z-index: 10080;
     position: relative;
 }
 

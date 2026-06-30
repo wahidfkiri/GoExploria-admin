@@ -34,7 +34,7 @@
     <nav class="header-nav">
         <div class="nav-container">
             <div class="nav-left">
-                <button class="vertical-menu-v2-trigger" id="openVerticalMenu" aria-label="Menu Principal">
+                <button class="vertical-menu-v2-trigger menu-toggle" id="openVerticalMenu" aria-label="Menu Principal">
                     <span></span>
                     <span></span>
                     <span></span>

@@ -5,7 +5,7 @@
 
 class Navigation {
     constructor() {
-        this.menuToggle = document.querySelector('.menu-toggle');
+        this.menuToggle = document.querySelector('.menu-toggle') || document.getElementById('openVerticalMenu');
         this.navMenu = document.querySelector('.nav-center');
         this.header = document.querySelector('.header-v2');
         this.scrollBtn = document.querySelector('.hero-scroll-btn');
@@ -14,10 +14,21 @@ class Navigation {
         this.isSearchOpen = false;
         this.lastScrollY = window.scrollY;
         
+        if (window.__navigationInstance) return;
+        window.__navigationInstance = this;
+        
         this.init();
     }
     
     init() {
+        // Toggle menu mobile via le bouton hamburger
+        if (this.menuToggle) {
+            this.menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleMenu();
+            });
+        }
+        
         // Toggle recherche mobile
         if (this.mobileSearchTrigger) {
             this.mobileSearchTrigger.addEventListener('click', (e) => {
@@ -61,6 +72,7 @@ class Navigation {
             if (this.isMenuOpen && 
                 navCenter &&
                 !navCenter.contains(e.target) && 
+                this.menuToggle &&
                 !this.menuToggle.contains(e.target)) {
                 this.toggleMenu();
             }
@@ -88,7 +100,6 @@ class Navigation {
             if (this.menuToggle) this.menuToggle.classList.add('active');
             document.body.style.overflow = 'hidden';
             
-            // Fermer la recherche si le menu s'ouvre
             if (this.isSearchOpen) this.toggleMobileSearch();
         } else {
             if (navCenter) navCenter.classList.remove('active');
@@ -105,7 +116,6 @@ class Navigation {
             if (searchBar) searchBar.classList.add('active');
             if (this.mobileSearchTrigger) this.mobileSearchTrigger.classList.add('active');
             
-            // Fermer le menu si la recherche s'ouvre
             if (this.isMenuOpen) this.toggleMenu();
         } else {
             if (searchBar) searchBar.classList.remove('active');
@@ -120,7 +130,6 @@ class Navigation {
             return;
         }
         
-        // Ajouter une classe au header quand on scroll (dès 10px)
         if (currentScrollY > 10) {
             this.header.classList.add('scrolled');
         } else {
@@ -158,7 +167,8 @@ class Navigation {
     }
 }
 
-// Initialiser la navigation quand le DOM est prêt
 document.addEventListener('DOMContentLoaded', () => {
-    new Navigation();
+    if (!window.__navigationInstance) {
+        new Navigation();
+    }
 });

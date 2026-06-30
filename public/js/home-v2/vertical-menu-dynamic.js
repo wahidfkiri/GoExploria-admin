@@ -348,7 +348,10 @@ class VerticalMenuDynamic {
 
 // Initialiser le menu vertical quand le DOM est prêt
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.__verticalMenuDynamicInitialized) return;
+    
     if (window.menuApiService) {
+        window.__verticalMenuDynamicInitialized = true;
         window.verticalMenuDynamic = new VerticalMenuDynamic();
     } else {
         console.error('MenuApiService non disponible - Vérifier que menu-api-service.js est chargé avant');

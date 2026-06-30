@@ -202,7 +202,6 @@
         @endif
         @include('cms::web.fallback.partials.landing-working-hours')
         @include('cms::web.fallback.partials.immoblier.contact')
-        @include('cms::web.fallback.partials.immoblier.map-cta')
         @include('cms::web.fallback.partials.landing-media-slideshow')
         @include('cms::web.fallback.partials.landing-contact-ajax')
         @include('cms::web.fallback.partials.landing-cms-footer')

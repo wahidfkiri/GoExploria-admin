@@ -133,8 +133,8 @@ html {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 10000;
-    /* SUR-ÉLEVÉ : Doit être au dessus du Hero (1000) */
+    z-index: 10060;
+    /* SUR-ÉLEVÉ : Doit être au dessus du Hero (1000) et des activity headers (10050) */
     background-color: var(--navy-dark);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -1097,7 +1097,7 @@ iframe.video-background {
         align-items: center;
         justify-content: center;
         transition: left 0.3s ease;
-        z-index: 999;
+        z-index: 10070;
     }
 
     .nav-center.active {
