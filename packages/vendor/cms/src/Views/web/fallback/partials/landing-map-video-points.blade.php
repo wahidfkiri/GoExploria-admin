@@ -475,10 +475,9 @@
         function rebuildCategoryFilters() {
             var el = document.getElementById('mapFilters');
             if (!el) return;
-            var visibleData = activeRegion === 'all' ? allPoints : allPoints.filter(function (p) { return (p.region || 'Autre region') === activeRegion; });
             var h = '<button class="map-filter-btn' + (activeCategory === 'all' ? ' active' : '') + '" data-filter="all">Tous</button>';
             var seen = {};
-            visibleData.forEach(function (p) {
+            allPoints.forEach(function (p) {
                 var c = p.category || 'Autre';
                 if (seen[c]) return;
                 seen[c] = true;
