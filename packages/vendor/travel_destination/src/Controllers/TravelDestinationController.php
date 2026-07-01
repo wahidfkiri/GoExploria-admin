@@ -96,7 +96,7 @@ class TravelDestinationController extends Controller
                 'secteur' => 0.15,
                 default => 5,
             };
-            $q = MapPoint::with(['details', 'images', 'mainImage'])->active()->whereNotNull('adresse');
+            $q = MapPoint::with(['details', 'images', 'mainImage'])->active();
             $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
             if ($childrenWithLat->count() > 0) {
                 $padding = match ($normalizedType) {
