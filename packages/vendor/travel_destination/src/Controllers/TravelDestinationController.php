@@ -97,20 +97,22 @@ class TravelDestinationController extends Controller
                 default => 5,
             };
             $q = MapPoint::with(['details', 'images', 'mainImage'])->active();
-            $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
-            if ($childrenWithLat->count() > 0) {
-                $padding = match ($normalizedType) {
-                    'continent' => 2,
-                    'country' => 1.5,
-                    'province' => 1,
-                    'region' => 0.5,
-                    default => 0.3,
-                };
-                $q->whereBetween('latitude', [$childrenWithLat->min('latitude') - $padding, $childrenWithLat->max('latitude') + $padding])
-                  ->whereBetween('longitude', [$childrenWithLat->min('longitude') - $padding, $childrenWithLat->max('longitude') + $padding]);
-            } elseif ($entity->latitude && $entity->longitude) {
-                $q->whereBetween('latitude', [$entity->latitude - $radius, $entity->latitude + $radius])
-                  ->whereBetween('longitude', [$entity->longitude - $radius, $entity->longitude + $radius]);
+            if ($normalizedType !== 'continent') {
+                $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
+                if ($childrenWithLat->count() > 0) {
+                    $padding = match ($normalizedType) {
+                        'continent' => 2,
+                        'country' => 1.5,
+                        'province' => 1,
+                        'region' => 0.5,
+                        default => 0.3,
+                    };
+                    $q->whereBetween('latitude', [$childrenWithLat->min('latitude') - $padding, $childrenWithLat->max('latitude') + $padding])
+                      ->whereBetween('longitude', [$childrenWithLat->min('longitude') - $padding, $childrenWithLat->max('longitude') + $padding]);
+                } elseif ($entity->latitude && $entity->longitude) {
+                    $q->whereBetween('latitude', [$entity->latitude - $radius, $entity->latitude + $radius])
+                      ->whereBetween('longitude', [$entity->longitude - $radius, $entity->longitude + $radius]);
+                }
             }
             $mapPoints = $q->orderBy('is_featured', 'desc')->orderBy('views', 'desc')->limit(500)->get();
         }
@@ -194,23 +196,26 @@ class TravelDestinationController extends Controller
 
         $query = MapPoint::with(['details', 'images', 'mainImage'])->active();
 
-        // Try child entities first for accurate bounds (works even if entity lacks lat/lng)
-        $childEntities = $this->getChildEntities($targetType, $target);
-        $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
-        if ($childrenWithLat->count() > 0) {
-            $padding = match ($targetType) {
-                'continent' => 2,
-                'country' => 1.5,
-                'province' => 1,
-                'region' => 0.5,
-                default => 0.3,
-            };
-            $query->whereBetween('latitude', [$childrenWithLat->min('latitude') - $padding, $childrenWithLat->max('latitude') + $padding])
-                  ->whereBetween('longitude', [$childrenWithLat->min('longitude') - $padding, $childrenWithLat->max('longitude') + $padding]);
-        } elseif ($target->latitude && $target->longitude) {
-            // Fallback to fixed radius around entity center
-            $query->whereBetween('latitude', [$target->latitude - $radius, $target->latitude + $radius])
-                  ->whereBetween('longitude', [$target->longitude - $radius, $target->longitude + $radius]);
+        // For continents, show all map points worldwide (no geo-restriction)
+        if ($targetType !== 'continent') {
+            // Try child entities first for accurate bounds (works even if entity lacks lat/lng)
+            $childEntities = $this->getChildEntities($targetType, $target);
+            $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
+            if ($childrenWithLat->count() > 0) {
+                $padding = match ($targetType) {
+                    'continent' => 2,
+                    'country' => 1.5,
+                    'province' => 1,
+                    'region' => 0.5,
+                    default => 0.3,
+                };
+                $query->whereBetween('latitude', [$childrenWithLat->min('latitude') - $padding, $childrenWithLat->max('latitude') + $padding])
+                      ->whereBetween('longitude', [$childrenWithLat->min('longitude') - $padding, $childrenWithLat->max('longitude') + $padding]);
+            } elseif ($target->latitude && $target->longitude) {
+                // Fallback to fixed radius around entity center
+                $query->whereBetween('latitude', [$target->latitude - $radius, $target->latitude + $radius])
+                      ->whereBetween('longitude', [$target->longitude - $radius, $target->longitude + $radius]);
+            }
         }
 
         $points = $query->orderBy('is_featured', 'desc')->orderBy('views', 'desc')->limit(100)->get();
