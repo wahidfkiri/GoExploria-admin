@@ -255,6 +255,12 @@
             .cms-map-video-filter-group{margin-bottom:14px}
             .cms-map-video-filter-group label{display:block;margin-bottom:6px;color:#1a1d28;font-size:.88rem;font-weight:800}
             .cms-map-video-filter-group i{color:#2a5bd7;margin-right:6px}
+            .cms-map-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+            .cms-map-filter-btn{padding:8px 16px;border:1px solid #d8e2ff;border-radius:999px;font-size:.82rem;font-weight:700;color:#64748b;cursor:pointer;background:#fff;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
+            .cms-map-filter-btn:hover{border-color:#2a5bd7;color:#2a5bd7;background:#f5f7ff}
+            .cms-map-filter-btn.active{background:#2a5bd7;color:#fff;border-color:#2a5bd7}
+            .cms-map-filter-btn__icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;font-size:.9rem;flex-shrink:0}
+            .cms-map-filter-btn__label{white-space:nowrap}
             .cms-map-video-select{width:100%;min-height:42px;border:1px solid #d8e2ff;border-radius:10px;background:#fff;color:#1a1d28;padding:9px 12px;font:inherit;font-size:.92rem;font-weight:650;outline:none;transition:border-color .2s,box-shadow .2s}
             .cms-map-video-select:focus{border-color:#2a5bd7;box-shadow:0 0 0 3px rgba(42,91,215,.12)}
             .cms-map-video-locate{width:100%;min-height:42px;border:0;border-radius:10px;background:linear-gradient(90deg,#2a5bd7,#1a3fa0);color:#fff;font-weight:850;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
@@ -335,13 +341,13 @@
                 <aside class="cms-map-video-sidebar">
                     <div class="cms-map-video-filters">
                         <div class="cms-map-video-filter-group">
-                            <label for="{{ $landingMapId }}-category"><i class="fas fa-tag"></i> Catégorie</label>
-                            <select id="{{ $landingMapId }}-category" class="cms-map-video-select" data-cms-map-category="{{ $landingMapId }}">
-                                <option value="all">Toutes les catégories</option>
+                            <label><i class="fas fa-tag"></i> Catégorie</label>
+                            <div class="cms-map-filters" data-cms-map-filters="{{ $landingMapId }}">
+                                <button class="cms-map-filter-btn active" data-filter="all">Tous</button>
                                 @foreach($landingMapCategories as $category)
-                                    <option value="{{ $category }}">{{ $category }}</option>
+                                    <button class="cms-map-filter-btn" data-filter="{{ $category }}">{{ $category }}</button>
                                 @endforeach
-                            </select>
+                            </div>
                         </div>
                         <div class="cms-map-video-filter-group">
                             <label for="{{ $landingMapId }}-region"><i class="fas fa-location-dot"></i> Région</label>
@@ -380,7 +386,8 @@
             if (!mapNode || !window.L) return;
 
             const mapKey = @json($landingMapId);
-            const categorySelect = document.querySelector(`[data-cms-map-category="${mapKey}"]`);
+            const filtersNode = document.querySelector(`[data-cms-map-filters="${mapKey}"]`);
+            const categoryBtns = filtersNode ? [...filtersNode.querySelectorAll('.cms-map-filter-btn')] : [];
             const regionSelect = document.querySelector(`[data-cms-map-region="${mapKey}"]`);
             const listNode = document.querySelector(`[data-cms-map-list="${mapKey}"]`);
             const countNode = document.querySelector(`[data-cms-map-count="${mapKey}"]`);
@@ -611,8 +618,13 @@
             const markerRefs = new Map();
             let activePlaceId = null;
 
+            const getSelectedCategory = () => {
+                const active = categoryBtns.find(btn => btn.classList.contains('active'));
+                return active ? active.dataset.filter : 'all';
+            };
+
             const getFilteredPoints = () => {
-                const category = categorySelect?.value || 'all';
+                const category = getSelectedCategory();
                 const region = regionSelect?.value || 'all';
 
                 return points.filter(point => {
@@ -744,9 +756,13 @@
                 setTimeout(() => map.invalidateSize(), 120);
             };
 
-            categorySelect?.addEventListener('change', () => {
-                activePlaceId = null;
-                renderMarkers();
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    activePlaceId = null;
+                    renderMarkers();
+                });
             });
             regionSelect?.addEventListener('change', () => {
                 activePlaceId = null;
