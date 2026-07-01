@@ -67,7 +67,7 @@
                         <a href="#section-nos-plans" id="plansMenuTrigger">{{ __('home-v2.header.menu.plans') }}</a>
                     </li>
                     <li><a href="{{ route('contact') }}">{{ __('home-v2.header.menu.contact') }}</a></li>
-                    <li><a href="{{ route('mon-compte') }}" class="nav-account-icon" title="{{ __('home-v2.common.account') }}" aria-label="{{ __('home-v2.common.account') }}"><i class="fas fa-user-circle"></i> Mon Compte</a></li>
+                    <li><a href="{{ route('mon-compte') }}" class="nav-account-icon" title="{{ __('home-v2.common.account') }}" aria-label="{{ __('home-v2.common.account') }}"><i class="fas fa-user-circle"></i>Activer Mon Compte</a></li>
                 </ul>
             </div>
             

@@ -372,7 +372,7 @@ Route::get('/activites/{slug}',            function () {
 Route::get('/contact',      fn() => view('home-v2.pages.contact'))->name('contact');
 Route::get('/valeurs',      fn() => view('home-v2.pages.valeurs'))->name('valeurs');
 Route::get('/inscription',  fn() => view('home-v2.pages.inscription'))->name('inscription');
-Route::get('/mon-compte',   fn() => redirect()->away('https://app.goexploriabusiness.com/login'))->name('mon-compte');
+Route::get('/mon-compte',   fn() => redirect()->away('https://app.goexploriabusiness.com/register'))->name('mon-compte');
 Route::get('/devis',        [DevisController::class, 'show'])->name('devis');
 Route::post('/confirm/devis',       [DevisController::class, 'submit'])->name('devis.submit');
 Route::get('/devis/paypal/success', [DevisController::class, 'paypalSuccess'])->name('devis.paypal.success');
