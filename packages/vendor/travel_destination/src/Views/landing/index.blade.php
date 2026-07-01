@@ -966,6 +966,26 @@ document.addEventListener('DOMContentLoaded', function () {
     rebuildCategoryFilters(categories, data);
   }
 
+  function renderChildEntities() {
+    if (!childEntities || !childEntities.length) return;
+    markersLayer.clearLayers();
+    var bounds = [];
+    childEntities.forEach(function (ce) {
+      if (!ce.latitude || !ce.longitude) return;
+      var marker = L.marker([ce.latitude, ce.longitude], {
+        icon: L.divIcon({
+          className: 'map-marker map-marker--child',
+          html: '<div style="width:28px;height:28px;border-radius:50%;background:var(--amber,#f5a623);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff;font-size:14px;font-weight:700;color:#000">' + ce.name.charAt(0) + '</div>',
+          iconSize: [32, 32],
+          iconAnchor: [16, 32]
+        })
+      }).addTo(markersLayer);
+      marker.bindPopup('<strong>' + ce.name + '</strong><br><a href="/travel-destination/' + (childType || 'country') + '/' + ce.slug + '" style="color:var(--amber,#f5a623)">Voir les d\u00e9tails</a>');
+      bounds.push([ce.latitude, ce.longitude]);
+    });
+    if (bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 5 });
+  }
+
   function reloadMapPoints() {
     if (serverPoints && serverPoints.length) {
       renderPointsOnMap(serverPoints);
@@ -975,8 +995,8 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(function (r) { return r.json(); })
       .then(function (res) {
         if (!res.success || !res.data || !res.data.length) {
-          markersLayer.clearLayers();
-          if (entityLat) map.setView([entityLat, entityLng], defaultZoom);
+          if (geoFilterActive) { markersLayer.clearLayers(); return; }
+          renderChildEntities();
           return;
         }
         console.log('Map points received:', res.data.length);
