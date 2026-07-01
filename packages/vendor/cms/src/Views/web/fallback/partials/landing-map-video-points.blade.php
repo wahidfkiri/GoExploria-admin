@@ -251,12 +251,11 @@
             .eyebrow{display:inline-block;font-size:0.75rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--td-amber);margin-bottom:0.75rem}
             .section-title{font-family:'Italiana',serif;color:var(--td-sand);font-size:clamp(28px,4vw,46px);line-height:1.05;font-weight:900}
             .section-subtitle{margin-top:12px;font-size:1rem;color:var(--td-text-muted)}
-            .reveal-up{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease;transition-delay:var(--delay,0s)}
-            .reveal-up.revealed{opacity:1;transform:translateY(0)}
-            .map-section{background:var(--td-section-alt);position:relative;overflow:hidden}
-            .map-section:before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--td-amber),var(--td-amber-dark))}
+            .map-section{position:relative;overflow:hidden;padding:64px 24px}
             .map-section.is-inline{padding:0;background:transparent;height:100%;min-height:420px}
             .map-section.is-inline:before{display:none}
+            .map-section.is-inline .container{width:100%;max-width:none}
+            .map-section:before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--td-amber),var(--td-amber-dark))}
             .map-wrapper{border-radius:var(--td-radius-md);overflow:hidden;box-shadow:var(--td-shadow)}
             .travel-map{width:100%;height:500px;z-index:1}
             .travel-map .leaflet-container{font-family:'DM Sans',sans-serif;background:var(--td-navy)}
@@ -276,6 +275,9 @@
             .map-popup__detail-btn:hover{background:var(--td-amber-dark)}
             .map-popup__video{height:160px;overflow:hidden;background:#000}
             .map-popup__video iframe{width:100%;height:100%;border:0}
+            .map-region-filter{text-align:center;margin-bottom:16px}
+            .map-region-select{padding:10px 20px;border:1px solid var(--td-border);border-radius:50px;font-size:0.85rem;font-weight:600;color:var(--td-sand);background:var(--td-glass-bg);cursor:pointer;min-width:220px;max-width:100%;outline:none;transition:border-color var(--td-transition);appearance:auto}
+            .map-region-select:hover,.map-region-select:focus{border-color:var(--td-amber)}
             .map-filters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px}
             .map-filter-btn{padding:8px 20px;border:1px solid var(--td-border);border-radius:50px;font-size:0.82rem;font-weight:600;color:var(--td-text-muted);transition:all var(--td-transition);cursor:pointer;background:transparent;display:inline-flex;align-items:center;gap:6px}
             .map-filter-btn:hover{border-color:var(--td-amber);color:var(--td-amber)}
@@ -315,7 +317,15 @@
                 <h2 class="section-title" id="map-heading">{{ $landingMapSectionTitle }}</h2>
                 <p class="section-subtitle">Cliquez sur les marqueurs pour en savoir plus</p>
             </div>
-            <div class="map-filters reveal-up" id="mapFilters">
+            <div class="map-region-filter">
+                <select id="mapRegionSelect" class="map-region-select">
+                    <option value="all">Toutes les régions</option>
+                    @foreach($landingMapRegions as $region)
+                        <option value="{{ $region }}">{{ $region }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="map-filters" id="mapFilters">
                 <button class="map-filter-btn active" data-filter="all">Tous</button>
             </div>
             <div class="map-wrapper">
@@ -413,9 +423,20 @@
         map.whenReady(function () { map.invalidateSize(); });
 
         var markersLayer = L.layerGroup().addTo(map);
+        var allPoints = points;
         var pointsData = [];
+        var activeCategory = 'all';
+        var activeRegion = document.getElementById('mapRegionSelect')?.value || 'all';
 
         function escapeHtml(str) { if (!str) return ''; var d = document.createElement('div'); d.appendChild(document.createTextNode(str)); return d.innerHTML; }
+
+        function getFilteredPoints() {
+            return allPoints.filter(function (p) {
+                var catMatch = activeCategory === 'all' || (p.category || 'Autre') === activeCategory;
+                var regionMatch = activeRegion === 'all' || (p.region || 'Autre region') === activeRegion;
+                return catMatch && regionMatch;
+            });
+        }
 
         function buildPopupHtml(p, idx) {
             var eu = p.youtube_id ? 'https://www.youtube.com/embed/' + p.youtube_id + '?autoplay=1' : '';
@@ -436,7 +457,8 @@
             });
         }
 
-        function renderPointsOnMap(data) {
+        function renderFilteredPoints() {
+            var data = getFilteredPoints();
             markersLayer.clearLayers();
             pointsData = [];
             var bounds = [];
@@ -447,33 +469,41 @@
                 bounds.push([p.latitude, p.longitude]);
             });
             if (bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
-            rebuildCategoryFilters(data);
+            rebuildCategoryFilters();
         }
 
-        function rebuildCategoryFilters(data) {
+        function rebuildCategoryFilters() {
             var el = document.getElementById('mapFilters');
             if (!el) return;
-            var h = '<button class="map-filter-btn active" data-filter="all">Tous</button>';
+            var visibleData = activeRegion === 'all' ? allPoints : allPoints.filter(function (p) { return (p.region || 'Autre region') === activeRegion; });
+            var h = '<button class="map-filter-btn' + (activeCategory === 'all' ? ' active' : '') + '" data-filter="all">Tous</button>';
             var seen = {};
-            data.forEach(function (p) {
+            visibleData.forEach(function (p) {
                 var c = p.category || 'Autre';
                 if (seen[c]) return;
                 seen[c] = true;
                 var s = getCategoryStyle(c);
-                h += '<button class="map-filter-btn" data-filter="' + escapeHtml(c) + '"><span class="map-filter-btn__icon"><i class="' + s.icon + '" style="color:' + s.color + '"></i></span><span class="map-filter-btn__label">' + escapeHtml(c) + '</span></button>';
+                h += '<button class="map-filter-btn' + (activeCategory === c ? ' active' : '') + '" data-filter="' + escapeHtml(c) + '"><span class="map-filter-btn__icon"><i class="' + s.icon + '" style="color:' + s.color + '"></i></span><span class="map-filter-btn__label">' + escapeHtml(c) + '</span></button>';
             });
             el.innerHTML = h;
             el.querySelectorAll('.map-filter-btn').forEach(function (btn) {
                 btn.addEventListener('click', function () {
-                    el.querySelectorAll('.map-filter-btn').forEach(function (b) { b.classList.remove('active'); });
-                    btn.classList.add('active');
-                    var f = btn.getAttribute('data-filter');
-                    renderPointsOnMap(f === 'all' ? data : data.filter(function (p) { return (p.category || 'Autre') === f; }));
+                    activeCategory = btn.getAttribute('data-filter');
+                    renderFilteredPoints();
                 });
             });
         }
 
-        renderPointsOnMap(points);
+        var regionSelect = document.getElementById('mapRegionSelect');
+        if (regionSelect) {
+            regionSelect.addEventListener('change', function () {
+                activeRegion = this.value;
+                activeCategory = 'all';
+                renderFilteredPoints();
+            });
+        }
+
+        renderFilteredPoints();
 
         map.on('popupopen', function (e) {
             var c = e.popup.getElement();
