@@ -91,15 +91,24 @@
         slideChange: function () {
           var prev = this.slides[this.previousIndex];
           var curr = this.slides[this.activeIndex];
-          var vids = prev ? prev.querySelectorAll('video, iframe') : [];
-          vids.forEach(function (v) { if (v.tagName === 'VIDEO') { v.pause(); } else if (v.tagName === 'IFRAME') { v.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } });
-          var curVids = curr ? curr.querySelectorAll('video, iframe') : [];
-          curVids.forEach(function (v) { if (v.tagName === 'VIDEO') { v.play().catch(function () {}); } else if (v.tagName === 'IFRAME') { v.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*'); } });
-          (curr ? curr.querySelectorAll('.hero__video-toggle') : []).forEach(function (btn) { btn.innerHTML = '&#10074;&#10074;'; btn.setAttribute('data-paused', '0'); });
-          (curr ? curr.querySelectorAll('.hero__video-mute') : []).forEach(function (btn) { btn.innerHTML = '<i class=\"fas fa-volume-xmark\"></i>'; btn.setAttribute('data-muted', '1'); });
+          if (prev) {
+            var vids = prev.querySelectorAll('video, iframe');
+            vids.forEach(function (v) { if (v.tagName === 'VIDEO') { v.pause(); } else if (v.tagName === 'IFRAME') { v.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } });
+          }
+          if (curr) {
+            if (!window.__heroPaused) {
+              var curVids = curr.querySelectorAll('video, iframe');
+              curVids.forEach(function (v) { if (v.tagName === 'VIDEO') { v.play().catch(function () {}); } else if (v.tagName === 'IFRAME') { v.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*'); } });
+            }
+            if (window.__heroMuted) {
+              var curVids = curr.querySelectorAll('video, iframe');
+              curVids.forEach(function (v) { if (v.tagName === 'VIDEO') { v.muted = true; } else if (v.tagName === 'IFRAME') { v.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*'); } });
+            }
+          }
         },
       },
     });
+    window.heroSwiper = heroSwiper;
   })();
 
   /* Testimonials Swiper */

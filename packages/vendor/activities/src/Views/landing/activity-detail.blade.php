@@ -1690,16 +1690,22 @@
                         iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
                     });
                 }
-                document.querySelectorAll('.hero__video-toggle').forEach(function(btn) {
-                    btn.innerHTML = '&#10074;&#10074;';
-                    btn.setAttribute('data-paused', '0');
-                });
-                document.querySelectorAll('.hero__video-mute').forEach(function(btn) {
-                    btn.innerHTML = '<i class="fas fa-volume-xmark"></i>';
-                    btn.setAttribute('data-muted', '1');
-                });
                 if (curr) {
-                    startHeroAutoPause(curr);
+                    if (!window.__heroPaused) {
+                        var currIframe = curr.querySelector('iframe');
+                        if (currIframe) {
+                            currIframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                        }
+                    }
+                    if (window.__heroMuted) {
+                        var currIframe = curr.querySelector('iframe');
+                        if (currIframe) {
+                            currIframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
+                        }
+                    }
+                    if (!window.__heroPaused) {
+                        startHeroAutoPause(curr);
+                    }
                 }
             }
         }
@@ -1717,38 +1723,38 @@
                 iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
                 btn.innerHTML = '&#10074;&#10074;';
                 btn.setAttribute('data-paused', '0');
+                window.__heroPaused = false;
+                heroSwiper.autoplay.start();
+                clearHeroAutoPause();
+                startHeroAutoPause(slide);
             } else {
                 iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
                 btn.innerHTML = '&#9654;';
                 btn.setAttribute('data-paused', '1');
-            }
-            // Reset auto-pause timer on manual toggle
-            if (!paused) {
+                window.__heroPaused = true;
+                heroSwiper.autoplay.stop();
                 clearHeroAutoPause();
-            } else {
-                clearHeroAutoPause();
-                startHeroAutoPause(slide);
             }
         });
     });
 
-    // ===== MUTE/UNMUTE VIDEO TOGGLE =====
+    // ===== MUTE/UNMUTE VIDEO TOGGLE (global) =====
     document.querySelectorAll('.hero__video-mute').forEach(function(btn) {
         btn.addEventListener('click', function() {
-            var slide = btn.closest('.hero-slide');
-            if (!slide) return;
-            var iframe = slide.querySelector('iframe');
-            if (!iframe) return;
             var muted = btn.getAttribute('data-muted') === '1';
-            if (muted) {
-                iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
-                btn.innerHTML = '<i class=\"fas fa-volume-high\"></i>';
-                btn.setAttribute('data-muted', '0');
-            } else {
-                iframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
-                btn.innerHTML = '<i class=\"fas fa-volume-xmark\"></i>';
-                btn.setAttribute('data-muted', '1');
-            }
+            var newMuted = !muted;
+            window.__heroMuted = newMuted;
+            document.querySelectorAll('.hero-slide').forEach(function(slide) {
+                var iframe = slide.querySelector('iframe');
+                if (iframe) {
+                    iframe.contentWindow.postMessage(newMuted ? '{"event":"command","func":"mute","args":""}' : '{"event":"command","func":"unMute","args":""}', '*');
+                }
+            });
+            var icon = newMuted ? '<i class="fas fa-volume-xmark"></i>' : '<i class="fas fa-volume-high"></i>';
+            document.querySelectorAll('.hero__video-mute').forEach(function(b) {
+                b.innerHTML = icon;
+                b.setAttribute('data-muted', newMuted ? '1' : '0');
+            });
         });
     });
 
