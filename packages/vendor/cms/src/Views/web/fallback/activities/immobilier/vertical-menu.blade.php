@@ -31,7 +31,7 @@
                     </svg>
                 </a>
             </li>
-            <li class="vertical-menu-v2-item vertical-menu-v2-section-item" data-section="next-level">
+            <li class="vertical-menu-v2-item vertical-menu-v2-section-item" data-section="espaces-next-level">
                 <a href="#" class="vertical-menu-v2-link">
                     <span>Espaces Next Level</span>
                     <svg class="vertical-menu-v2-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -55,7 +55,7 @@
                     </svg>
                 </a>
             </li>
-            <li class="vertical-menu-v2-item vertical-menu-v2-section-item" data-section="voyages-forfaits">
+            <li class="vertical-menu-v2-item vertical-menu-v2-section-item" data-section="espaces-voyages-forfaits">
                 <a href="#" class="vertical-menu-v2-link">
                     <span>Espaces Voyages &amp; Forfaits Touristique</span>
                     <svg class="vertical-menu-v2-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

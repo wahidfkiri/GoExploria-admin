@@ -40,7 +40,7 @@ window.sectionsMenuData = {
             { icon: 'fas fa-rss',             name: 'Espaces Blog',                        desc: 'Publication & Articles',                      link: '#espace-blog' },
         ]
     },
-    'next-level': {
+    'espaces-next-level': {
         title: 'Espaces Next Level',
         categories: [
             { icon: 'fas fa-building',        name: 'Conseils Entreprises',                desc: 'Activez votre espace entreprises',            link: '#activez-entreprises' },
@@ -76,7 +76,7 @@ window.sectionsMenuData = {
             { icon: 'fas fa-images',          name: 'Espaces Galeries Vedettes',           desc: 'Photos exceptionnelles',                      link: '#gallerie-vedette' },
         ]
     },
-    'voyages-forfaits': {
+    'espaces-voyages-forfaits': {
         title: 'Espaces Voyages & Forfaits Touristique International',
         categories: [
             { icon: 'fas fa-flag',            name: 'Espaces Forfait Québec',              desc: 'Découvrez la Belle Province',                 link: '#forfaits-quebec' },
