@@ -93,51 +93,47 @@ class VerticalDestinationsMegaMenu {
 class VerticalSectionsMegaMenu {
     constructor() {
         this.megaMenu = document.getElementById('verticalSectionsMega');
-        this.triggerItems = document.querySelectorAll('.vertical-menu-v2-section-item');
+        this.menuList = document.getElementById('verticalMenuList');
         this.closeBtn = this.megaMenu ? this.megaMenu.querySelector('.vmenu-destinations-mega-close') : null;
         this.isOpen = false;
         this.currentSection = null;
         this.parentMenu = window.verticalMenuDynamic;
 
-        if (!this.megaMenu) return;
+        if (!this.megaMenu || !this.menuList) return;
         this.init();
     }
 
     init() {
-        // Clic/touch sur chaque item de section
-        this.triggerItems.forEach(item => {
-            const link = item.querySelector('a');
-            if (!link) return;
-            let touched = false;
-            const handleTouchStart = (e) => {
-                touched = true;
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                const section = item.dataset.section;
-                if (this.isOpen && this.currentSection === section) {
-                    this.hide();
-                } else {
-                    this.show(section);
-                }
-            };
-            const handleClick = (e) => {
-                if (touched) return;
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                const section = item.dataset.section;
-                if (this.isOpen && this.currentSection === section) {
-                    this.hide();
-                } else {
-                    this.show(section);
-                }
-            };
-            link.addEventListener('touchstart', handleTouchStart, { passive: false });
-            link.addEventListener('click', handleClick);
+        // Délégation d'événement sur la liste du menu
+        this.menuList.addEventListener('click', (e) => {
+            const item = e.target.closest('.vertical-menu-v2-section-item');
+            if (!item) return;
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            const section = item.dataset.section;
+            if (this.isOpen && this.currentSection === section) {
+                this.hide();
+            } else {
+                this.show(section);
+            }
         });
+
+        this.menuList.addEventListener('touchstart', (e) => {
+            const item = e.target.closest('.vertical-menu-v2-section-item');
+            if (!item) return;
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            const section = item.dataset.section;
+            if (this.isOpen && this.currentSection === section) {
+                this.hide();
+            } else {
+                this.show(section);
+            }
+        }, { passive: false });
 
         // Fermeture au clic ailleurs
         document.addEventListener('click', (e) => {
-            if (!this.megaMenu.contains(e.target) && !Array.from(this.triggerItems).some(t => t.contains(e.target))) {
+            if (!this.megaMenu.contains(e.target) && !e.target.closest('.vertical-menu-v2-section-item')) {
                 this.hide();
             }
         });
@@ -155,11 +151,8 @@ class VerticalSectionsMegaMenu {
             });
         }
 
-        // Empêcher propagation
+        // Empêcher propagation dans le mega menu
         this.megaMenu.addEventListener('click', (e) => e.stopPropagation());
-
-        // Initialiser les toggles d'expansion dans le contenu
-        this.initToggleListeners();
     }
 
     show(section) {
@@ -210,7 +203,7 @@ class VerticalSectionsMegaMenu {
         }
 
         // Marquer l'item actif
-        this.triggerItems.forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.vertical-menu-v2-section-item').forEach(i => i.classList.remove('active'));
         const activeItem = document.querySelector('.vertical-menu-v2-section-item[data-section="' + section + '"]');
         if (activeItem) activeItem.classList.add('active');
 
@@ -223,11 +216,10 @@ class VerticalSectionsMegaMenu {
         this.isOpen = false;
         this.currentSection = null;
         this.megaMenu.classList.remove('active');
-        this.triggerItems.forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.vertical-menu-v2-section-item').forEach(i => i.classList.remove('active'));
     }
 
     initToggleListeners() {
-        // Les futures cartes n'ont pas besoin de toggle, mais on prépare pour d'éventuels expand
     }
 }
 
