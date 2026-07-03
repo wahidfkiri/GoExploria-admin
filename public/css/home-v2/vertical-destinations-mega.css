@@ -5,6 +5,7 @@
 
 /* Container principal */
 .vmenu-destinations-mega {
+    pointer-events: none;
     position: fixed;
     top: 0;
     left: -600px;
@@ -25,6 +26,7 @@
 
 /* Header */
 .vmenu-destinations-mega-header {
+    pointer-events: auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -52,6 +54,7 @@
 }
 
 .vmenu-destinations-mega-close {
+    pointer-events: auto;
     background: rgba(0, 0, 0, 0.04);
     border: none;
     border-radius: 8px;
@@ -76,6 +79,7 @@
 
 /* Contenu scrollable */
 .vmenu-destinations-mega-content {
+    pointer-events: auto;
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
@@ -342,6 +346,7 @@
 
 /* Cartes des sections (Médias, Next Level, etc.) */
 .vmenu-section-card {
+    pointer-events: auto;
     display: flex;
     align-items: center;
     gap: 12px;
