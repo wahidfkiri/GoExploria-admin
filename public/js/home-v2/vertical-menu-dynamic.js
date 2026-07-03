@@ -288,7 +288,7 @@ class VerticalMenuDynamic {
         });
         
         // Fermer le menu au clic sur un lien simple (exclure Destinations)
-        const simpleLinks = this.menuList.querySelectorAll('.vertical-menu-v2-link:not(.vertical-menu-v2-accordion-trigger):not(.vertical-menu-v2-destinations-trigger):not(.vertical-menu-v2-destinations-link)');
+        const simpleLinks = this.menuList.querySelectorAll('.vertical-menu-v2-link:not(.vertical-menu-v2-accordion-trigger):not(.vertical-menu-v2-destinations-trigger):not(.vertical-menu-v2-destinations-link):not(.vertical-menu-v2-section-item a)');
         simpleLinks.forEach(link => {
             link.addEventListener('click', () => {
                 this.closeMenu();

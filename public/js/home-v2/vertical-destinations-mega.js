@@ -110,7 +110,7 @@ class VerticalSectionsMegaMenu {
             if (!link) return;
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                e.stopPropagation();
+                e.stopImmediatePropagation();
                 const section = item.dataset.section;
                 if (this.isOpen && this.currentSection === section) {
                     this.hide();
