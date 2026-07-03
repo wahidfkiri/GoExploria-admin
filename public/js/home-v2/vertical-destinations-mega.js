@@ -148,6 +148,10 @@ class VerticalSectionsMegaMenu {
     }
 
     show(section) {
+        console.log('🔍 VerticalSectionsMegaMenu.show(', section, ')');
+        console.log('📦 window.sectionsMenuData keys:', Object.keys(window.sectionsMenuData || {}));
+        console.log('📦 window.sectionsMenuData[section]:', window.sectionsMenuData?.[section]);
+
         this.isOpen = true;
         this.currentSection = section;
         this.megaMenu.classList.add('active');
