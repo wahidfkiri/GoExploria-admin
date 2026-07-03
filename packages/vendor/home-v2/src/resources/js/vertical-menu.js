@@ -15,6 +15,10 @@ class VerticalMenuV2 {
         this.init();
     }
     
+    isSectionItemLink(link) {
+        return link.closest('.vertical-menu-v2-section-item') !== null;
+    }
+    
     init() {
         if (!this.menu || !this.overlay || !this.openBtn) return;
         
@@ -36,9 +40,9 @@ class VerticalMenuV2 {
             this.closeMenu();
         });
         
-        // Fermer au clic sur un lien (sauf accordéon)
+        // Fermer au clic sur un lien (sauf accordéon et section items)
         this.menuLinks.forEach(link => {
-            if (!link.classList.contains('vertical-menu-v2-accordion-trigger')) {
+            if (!link.classList.contains('vertical-menu-v2-accordion-trigger') && !this.isSectionItemLink(link)) {
                 link.addEventListener('click', () => {
                     this.closeMenu();
                 });

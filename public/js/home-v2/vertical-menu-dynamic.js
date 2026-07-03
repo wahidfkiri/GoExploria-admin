@@ -287,9 +287,12 @@ class VerticalMenuDynamic {
             });
         });
         
-        // Fermer le menu au clic sur un lien simple (exclure Destinations)
-        const simpleLinks = this.menuList.querySelectorAll('.vertical-menu-v2-link:not(.vertical-menu-v2-accordion-trigger):not(.vertical-menu-v2-destinations-trigger):not(.vertical-menu-v2-destinations-link):not(.vertical-menu-v2-section-item a)');
-        simpleLinks.forEach(link => {
+        // Fermer le menu au clic sur un lien simple (exclure Destinations et section items)
+        this.menuList.querySelectorAll('.vertical-menu-v2-link').forEach(link => {
+            if (link.classList.contains('vertical-menu-v2-accordion-trigger')) return;
+            if (link.classList.contains('vertical-menu-v2-destinations-trigger')) return;
+            if (link.classList.contains('vertical-menu-v2-destinations-link')) return;
+            if (link.closest('.vertical-menu-v2-section-item')) return;
             link.addEventListener('click', () => {
                 this.closeMenu();
             });
