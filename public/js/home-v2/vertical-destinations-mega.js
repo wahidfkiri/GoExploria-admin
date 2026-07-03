@@ -104,11 +104,13 @@ class VerticalSectionsMegaMenu {
     }
 
     init() {
-        // Clic sur chaque item de section
+        // Clic/touch sur chaque item de section
         this.triggerItems.forEach(item => {
             const link = item.querySelector('a');
             if (!link) return;
-            link.addEventListener('click', (e) => {
+            let touched = false;
+            const handleTouchStart = (e) => {
+                touched = true;
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 const section = item.dataset.section;
@@ -117,7 +119,20 @@ class VerticalSectionsMegaMenu {
                 } else {
                     this.show(section);
                 }
-            });
+            };
+            const handleClick = (e) => {
+                if (touched) return;
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                const section = item.dataset.section;
+                if (this.isOpen && this.currentSection === section) {
+                    this.hide();
+                } else {
+                    this.show(section);
+                }
+            };
+            link.addEventListener('touchstart', handleTouchStart, { passive: false });
+            link.addEventListener('click', handleClick);
         });
 
         // Fermeture au clic ailleurs
