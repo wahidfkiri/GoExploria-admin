@@ -23,39 +23,60 @@
             </li>
             
             {{-- Menus principaux Espaces Go Exploria --}}
-            <li class="vertical-menu-v2-item">
-                <a href="#section-medias" class="vertical-menu-v2-link">
+            <li class="vertical-menu-v2-item vertical-menu-v2-section-item" data-section="espaces-medias">
+                <a href="#" class="vertical-menu-v2-link">
                     <span>Espaces M&eacute;dias</span>
+                    <svg class="vertical-menu-v2-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
                 </a>
             </li>
-            <li class="vertical-menu-v2-item">
-                <a href="#section-next-level" class="vertical-menu-v2-link">
+            <li class="vertical-menu-v2-item vertical-menu-v2-section-item" data-section="next-level">
+                <a href="#" class="vertical-menu-v2-link">
                     <span>Espaces Next Level</span>
+                    <svg class="vertical-menu-v2-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
                 </a>
             </li>
-            <li class="vertical-menu-v2-item">
-                <a href="#section-restaurants" class="vertical-menu-v2-link">
+            <li class="vertical-menu-v2-item vertical-menu-v2-section-item" data-section="restaurants-alimentations">
+                <a href="#" class="vertical-menu-v2-link">
                     <span>Espaces Restaurants &amp; Alimentations</span>
+                    <svg class="vertical-menu-v2-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
                 </a>
             </li>
-            <li class="vertical-menu-v2-item">
-                <a href="#section-vedettes" class="vertical-menu-v2-link">
+            <li class="vertical-menu-v2-item vertical-menu-v2-section-item" data-section="vedettes">
+                <a href="#" class="vertical-menu-v2-link">
                     <span>Espaces Vedettes</span>
+                    <svg class="vertical-menu-v2-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
                 </a>
             </li>
-            <li class="vertical-menu-v2-item">
-                <a href="#section-voyages" class="vertical-menu-v2-link">
+            <li class="vertical-menu-v2-item vertical-menu-v2-section-item" data-section="voyages-forfaits">
+                <a href="#" class="vertical-menu-v2-link">
                     <span>Espaces Voyages &amp; Forfaits Touristique</span>
+                    <svg class="vertical-menu-v2-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
                 </a>
             </li>
-            <li class="vertical-menu-v2-item">
-                <a href="#section-marketplace" class="vertical-menu-v2-link">
+            <li class="vertical-menu-v2-item vertical-menu-v2-section-item" data-section="marketplace">
+                <a href="#" class="vertical-menu-v2-link">
                     <span>Espaces Market Place</span>
+                    <svg class="vertical-menu-v2-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
                 </a>
             </li>
-            <li class="vertical-menu-v2-item">
-                <a href="#section-a-la-une" class="vertical-menu-v2-link">
+            <li class="vertical-menu-v2-item vertical-menu-v2-section-item" data-section="a-la-une">
+                <a href="#" class="vertical-menu-v2-link">
                     <span>Espaces &Agrave; la Une</span>
+                    <svg class="vertical-menu-v2-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
                 </a>
             </li>
             
@@ -217,6 +238,9 @@
     
     {{-- Mega Menu Destinations --}}
     @include('cms::web.fallback.activities.voyage.vertical-destinations-mega-menu')
+
+    {{-- Mega Menu Sections (Médias, Next Level, etc.) --}}
+    @include('home-v2.components.VerticalSectionsMegaMenu')
 </aside>
 @php
     $__componentHtml = ob_get_clean();
