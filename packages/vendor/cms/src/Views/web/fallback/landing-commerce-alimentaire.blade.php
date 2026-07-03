@@ -1879,5 +1879,9 @@
     </script>
     @include('cms::web.fallback.partials.landing-cart-drawer')
     @include('cms::web.fallback.partials.landing-back-to-top')
+
+    <script src="{{ asset('js/home-v2/vertical-menu-dynamic.js') }}"></script>
+    <script src="{{ asset('js/home-v2/vertical-menu.js') }}"></script>
+    <script src="{{ asset('js/home-v2/vertical-destinations-mega.js') }}"></script>
 </body>
 </html>
