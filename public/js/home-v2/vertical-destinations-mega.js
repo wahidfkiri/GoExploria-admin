@@ -118,19 +118,6 @@ class VerticalSectionsMegaMenu {
             }
         });
 
-        this.menuList.addEventListener('touchstart', (e) => {
-            const item = e.target.closest('.vertical-menu-v2-section-item');
-            if (!item) return;
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            const section = item.dataset.section;
-            if (this.isOpen && this.currentSection === section) {
-                this.hide();
-            } else {
-                this.show(section);
-            }
-        }, { passive: false });
-
         // Fermeture au clic ailleurs
         document.addEventListener('click', (e) => {
             if (!this.megaMenu.contains(e.target) && !e.target.closest('.vertical-menu-v2-section-item')) {

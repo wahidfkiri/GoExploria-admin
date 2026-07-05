@@ -100,7 +100,9 @@
                    data-cat-href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
                    onclick="hqmSelect(event, this, '{{ $panel['panel'] }}')">
                     <span>{{ $cat->name }}</span>
-                    <span class="cat-mega-cat-count">{{ $cat->activities->count() }}</span>
+                    @if($cat->activities->isNotEmpty())
+                        <span class="cat-mega-cat-arrow"><i class="fas fa-chevron-right"></i></span>
+                    @endif
                 </a>
             @empty
                 <div class="cat-mega-empty">Aucune catégorie active</div>
@@ -109,16 +111,18 @@
         <div class="cat-mega-right">
             <div class="cat-mega-right-inner" id="{{ $panel['panel'] }}-inner">
                 @foreach($panel['cats'] as $index => $cat)
-                    <div class="cat-mega-activities {{ $index === 0 ? 'visible' : '' }}"
-                         id="cat-acts-{{ $panel['panel'] }}-{{ $cat->id }}">
+                    <ul class="cat-mega-activities {{ $index === 0 ? 'visible' : '' }}"
+                        id="cat-acts-{{ $panel['panel'] }}-{{ $cat->id }}">
                         @forelse($cat->activities as $act)
-                            <a href="{{ route('activity.show', $act->slug ?? $act->id) }}" class="cat-mega-act-link">
-                                <span class="cat-mega-act-dot"></span>{{ $act->name }}
-                            </a>
+                            <li>
+                                <a href="{{ route('activity.show', $act->slug ?? $act->id) }}" class="cat-mega-act-link">
+                                    <span class="cat-mega-act-dot"></span>{{ $act->name }}
+                                </a>
+                            </li>
                         @empty
-                            <div class="cat-mega-empty">Aucune activité</div>
+                            <li class="cat-mega-empty">Aucune activité</li>
                         @endforelse
-                    </div>
+                    </ul>
                 @endforeach
             </div>
             @if($panel['cats']->isNotEmpty())
@@ -157,14 +161,14 @@
 
 function hqmSelect(e, el, panelId) {
     e.preventDefault();
-    var panel = document.getElementById(panelId);
+    var panel = el.closest('.cat-mega-panel') || document.getElementById(panelId);
     if (!panel) return;
     panel.querySelectorAll('.cat-mega-cat-item').forEach(function (i) { i.classList.remove('active'); });
     el.classList.add('active');
     panel.querySelectorAll('.cat-mega-activities').forEach(function (a) { a.classList.remove('visible'); });
-    var acts = document.getElementById('cat-acts-' + el.dataset.catId);
+    var acts = panel.querySelector('#cat-acts-' + el.dataset.catId);
     if (acts) acts.classList.add('visible');
-    var viewAll = document.getElementById(panelId + '-viewAll');
+    var viewAll = panel.querySelector('#' + panelId + '-viewAll');
     if (viewAll && el.dataset.catHref) viewAll.href = el.dataset.catHref;
 }
 </script>

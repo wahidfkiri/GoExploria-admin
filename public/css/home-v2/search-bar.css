@@ -5,9 +5,8 @@
 
 /* Container principal de la barre horizontale */
 .search-bar-v2 {
-    background: rgba(5, 15, 35, 0.55);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background: #0e1a2b;
+    background: rgba(5, 15, 35, 0.78);
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     padding: 10px 0;

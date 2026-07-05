@@ -623,8 +623,8 @@
         display: block;
         width: min(1180px, 100%);
         margin: 0 auto;
-        background: rgba(5,15,35,.62);
-        backdrop-filter: blur(10px);
+        background: #0e1a2b;
+        background: rgba(5,15,35,.85);
     }
 
     @media (max-width: 1024px) {
@@ -644,7 +644,7 @@
             padding: 10px 0 !important;
             margin: 0 auto !important;
             transform: none !important;
-            background: rgba(5,15,35,.72) !important;
+            background: #0e1a2b !important;
             border: 1px solid rgba(255,255,255,.12);
             border-radius: 18px;
             box-shadow: 0 14px 34px rgba(0,0,0,.28);

@@ -103,11 +103,13 @@ $buildDestBreadcrumb = function ($activity) {
         @forelse($tourismeCats as $index => $cat)
             <a href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
                class="cat-mega-cat-item {{ $index === 0 ? 'active' : '' }}"
-               data-cat-id="t{{ $cat->id }}"
+               data-cat-id="b{{ $cat->id }}"
                data-cat-href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
-               onclick="catMegaSelect(event, this, 'tourisme')">
+               onclick="catMegaSelect(event, this, 'business')">
                 <span>{{ $cat->name }}</span>
-               
+                @if($cat->activities->isNotEmpty())
+                    <span class="cat-mega-cat-arrow"><i class="fas fa-chevron-right"></i></span>
+                @endif
             </a>
         @empty
             <div class="cat-mega-empty">{{ $tr('Aucune catégorie active') }}</div>
@@ -116,24 +118,26 @@ $buildDestBreadcrumb = function ($activity) {
     <div class="cat-mega-right">
         <div class="cat-mega-right-inner" id="catMegaRightInnerTourisme">
             @forelse($tourismeCats as $index => $cat)
-                <div class="cat-mega-activities {{ $index === 0 ? 'visible' : '' }}"
-                     id="cat-acts-t{{ $cat->id }}">
+                <ul class="cat-mega-activities {{ $index === 0 ? 'visible' : '' }}"
+                    id="cat-acts-t{{ $cat->id }}">
                     @forelse($cat->activities as $act)
                         @php $destPaths = $buildDestBreadcrumb($act); @endphp
-                        <a href="{{ route('activity.show', $act->slug ?? $act->id) }}" class="cat-mega-act-link">
-                            @if(!empty($destPaths))
-                                <span class="cat-mega-dest-breadcrumb">
-                                    @foreach($destPaths as $i => $path)
-                                        <span class="dest-crumb">{!! $path !!}</span>@if($i < count($destPaths) - 1)<span class="dest-sep"> • </span>@endif
-                                    @endforeach
-                                </span>
-                            @endif
-                            <span class="cat-mega-act-name">{{ $act->name }}</span>
-                        </a>
+                        <li>
+                            <a href="{{ route('activity.show', $act->slug ?? $act->id) }}" class="cat-mega-act-link">
+                                @if(!empty($destPaths))
+                                    <span class="cat-mega-dest-breadcrumb">
+                                        @foreach($destPaths as $i => $path)
+                                            <span class="dest-crumb">{!! $path !!}</span>@if($i < count($destPaths) - 1)<span class="dest-sep"> • </span>@endif
+                                        @endforeach
+                                    </span>
+                                @endif
+                                <span class="cat-mega-act-name">{{ $act->name }}</span>
+                            </a>
+                        </li>
                     @empty
-                        <div class="cat-mega-empty">{{ $tr('Aucune activité') }}</div>
+                        <li class="cat-mega-empty">{{ $tr('Aucune activité') }}</li>
                     @endforelse
-                </div>
+                </ul>
             @empty
             @endforelse
         </div>
@@ -159,10 +163,13 @@ $buildDestBreadcrumb = function ($activity) {
         @forelse($businessCats as $index => $cat)
             <a href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
                class="cat-mega-cat-item {{ $index === 0 ? 'active' : '' }}"
-               data-cat-id="b{{ $cat->id }}"
+               data-cat-id="t{{ $cat->id }}"
                data-cat-href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
-               onclick="catMegaSelect(event, this, 'business')">
+               onclick="catMegaSelect(event, this, 'tourisme')">
                 <span>{{ $cat->name }}</span>
+                @if($cat->activities->isNotEmpty())
+                    <span class="cat-mega-cat-arrow"><i class="fas fa-chevron-right"></i></span>
+                @endif
             </a>
         @empty
             <div class="cat-mega-empty">{{ $tr('Aucune catégorie active') }}</div>
@@ -171,24 +178,26 @@ $buildDestBreadcrumb = function ($activity) {
     <div class="cat-mega-right">
         <div class="cat-mega-right-inner" id="catMegaRightInnerBusiness">
             @forelse($businessCats as $index => $cat)
-                <div class="cat-mega-activities {{ $index === 0 ? 'visible' : '' }}"
-                     id="cat-acts-b{{ $cat->id }}">
+                <ul class="cat-mega-activities {{ $index === 0 ? 'visible' : '' }}"
+                    id="cat-acts-b{{ $cat->id }}">
                     @forelse($cat->activities as $act)
                         @php $destPaths = $buildDestBreadcrumb($act); @endphp
-                        <a href="{{ route('activity.show', $act->slug ?? $act->id) }}" class="cat-mega-act-link">
-                            @if(!empty($destPaths))
-                                <span class="cat-mega-dest-breadcrumb">
-                                    @foreach($destPaths as $i => $path)
-                                        <span class="dest-crumb">{!! $path !!}</span>@if($i < count($destPaths) - 1)<span class="dest-sep"> • </span>@endif
-                                    @endforeach
-                                </span>
-                            @endif
-                            <span class="cat-mega-act-name">{{ $act->name }}</span>
-                        </a>
+                        <li>
+                            <a href="{{ route('activity.show', $act->slug ?? $act->id) }}" class="cat-mega-act-link">
+                                @if(!empty($destPaths))
+                                    <span class="cat-mega-dest-breadcrumb">
+                                        @foreach($destPaths as $i => $path)
+                                            <span class="dest-crumb">{!! $path !!}</span>@if($i < count($destPaths) - 1)<span class="dest-sep"> • </span>@endif
+                                        @endforeach
+                                    </span>
+                                @endif
+                                <span class="cat-mega-act-name">{{ $act->name }}</span>
+                            </a>
+                        </li>
                     @empty
-                        <div class="cat-mega-empty">{{ $tr('Aucune activité') }}</div>
+                        <li class="cat-mega-empty">{{ $tr('Aucune activité') }}</li>
                     @endforelse
-                </div>
+                </ul>
             @empty
             @endforelse
         </div>
@@ -205,10 +214,11 @@ $buildDestBreadcrumb = function ($activity) {
 </div>
 
 <style>
-.cat-mega-activities { display: none; }
+.cat-mega-activities { display: none; margin: 0; padding: 0; list-style: none; }
 .cat-mega-activities.visible { display: block; }
+.cat-mega-activities li { list-style: none; }
 .cat-mega-dest-breadcrumb { display: block; margin-bottom: 2px; }
-.cat-mega-act-link { display: flex; flex-direction: column; gap: 1px; padding: 4px 0; }
+.cat-mega-act-link { display: flex; flex-direction: column; gap: 1px; padding: 4px 0; text-decoration: none; }
 .cat-mega-act-name { font-weight: 600; font-size: 13px; }
 .cat-mega-dest-breadcrumb { font-size: 11px; font-weight: 700; line-height: 1.4; color: #374151; }
 .dest-link { color: #4f46e5; text-decoration: none; }
@@ -293,17 +303,17 @@ initCatMegaPanel('catMegaTriggerBusiness', 'catMegaPanelBusiness', 'catMegaViewA
 /* Sélection d'une catégorie dans un panel donné */
 function catMegaSelect(e, el, type) {
     e.preventDefault();
-    var panel = document.getElementById('catMegaPanel' + (type === 'tourisme' ? 'Tourisme' : 'Business'));
+    var panel = el.closest('.cat-mega-panel') || document.getElementById('catMegaPanel' + (type === 'tourisme' ? 'Tourisme' : 'Business'));
     if (!panel) return;
 
     panel.querySelectorAll('.cat-mega-cat-item').forEach(function(i) { i.classList.remove('active'); });
     el.classList.add('active');
     panel.querySelectorAll('.cat-mega-activities').forEach(function(a) { a.classList.remove('visible'); });
 
-    var acts = document.getElementById('cat-acts-' + el.dataset.catId);
+    var acts = panel.querySelector('#cat-acts-' + el.dataset.catId);
     if (acts) acts.classList.add('visible');
 
-    var viewAll = document.getElementById('catMegaViewAll' + (type === 'tourisme' ? 'Tourisme' : 'Business'));
+    var viewAll = panel.querySelector('#catMegaViewAll' + (type === 'tourisme' ? 'Tourisme' : 'Business'));
     if (viewAll && el.dataset.catHref) viewAll.href = el.dataset.catHref;
 }
 </script>

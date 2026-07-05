@@ -109,6 +109,20 @@
     color: #0a3d82;
 }
 
+.cat-mega-cat-arrow {
+    font-size: 11px;
+    color: #9ca3af;
+    flex-shrink: 0;
+    transition: transform 0.2s, color 0.2s;
+    opacity: 0.7;
+}
+.cat-mega-cat-item.active .cat-mega-cat-arrow,
+.cat-mega-cat-item:hover .cat-mega-cat-arrow {
+    color: #1a72cc;
+    opacity: 1;
+    transform: translateX(2px);
+}
+
 /* ── Right: activities panel ─────────────────── */
 .cat-mega-right {
     flex: 1;
@@ -231,59 +245,5 @@
 
 /* ── Responsive mobile ───────────────────────── */
 @media (max-width: 768px) {
-    /* Positionnement CSS-only sur mobile (comme InfoMegaMenu) : ignorer le JS */
-    .cat-mega-panel {
-        position: fixed !important;
-        top: 12vh !important;
-        left: 12px !important;
-        right: 12px !important;
-        width: auto !important;
-        max-width: none !important;
-        max-height: 72vh !important;
-        overflow-y: auto !important;
-        flex-direction: column !important;
-        z-index: 9999999 !important;
-        /* Réinitialiser le inline style top/left mis par JS sur desktop */
-        transform: none !important;
-    }
-
-    .cat-mega-panel.open {
-        transform: none !important;
-    }
-
-    .cat-mega-left {
-        width: 100%;
-        max-height: none;
-        border-right: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        overflow-y: visible;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-        padding: 10px;
-    }
-
-    .cat-mega-cat-item {
-        border-left: none;
-        border-radius: 20px;
-        padding: 6px 12px;
-        background: rgba(255, 255, 255, 0.05);
-        font-size: 11px;
-    }
-
-    .cat-mega-cat-item.active,
-    .cat-mega-cat-item:hover {
-        background: rgba(212, 175, 55, 0.15);
-        border-left: none;
-    }
-
-    .cat-mega-header { display: none; }
-
-    .cat-mega-activities.visible {
-        grid-template-columns: 1fr;
-    }
-
-    .cat-mega-right-inner {
-        max-height: none;
-    }
+    .cat-mega-panel { display: none !important; }
 }
