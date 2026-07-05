@@ -160,6 +160,7 @@
 })();
 
 function hqmSelect(e, el, panelId) {
+    if (el.closest('.vmenu-inline-panel')) return;
     e.preventDefault();
     var panel = el.closest('.cat-mega-panel') || document.getElementById(panelId);
     if (!panel) return;

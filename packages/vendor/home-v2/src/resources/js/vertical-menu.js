@@ -132,9 +132,12 @@ class VerticalMenuController {
         if (next !== acts) {
           catItem.parentNode.insertBefore(acts, next);
         }
-        acts.style.display = 'block';
+        acts.style.display = '';
         acts.classList.add('vmenu-open');
       }
+
+      const viewAll = panel.querySelector('.cat-mega-view-all');
+      if (viewAll && catItem.dataset.catHref) viewAll.href = catItem.dataset.catHref;
     });
   }
 
