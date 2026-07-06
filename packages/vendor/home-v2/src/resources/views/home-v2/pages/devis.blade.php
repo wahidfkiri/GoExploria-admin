@@ -1848,16 +1848,26 @@
         clearFieldErrors();
 
         try {
+            var csrfMeta = document.querySelector('meta[name="csrf-token"]');
             var response = await fetch(form.action, {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrfMeta ? csrfMeta.getAttribute('content') : '',
                 },
                 body: formData,
             });
 
-            var data = await response.json();
+            // Session/CSRF expirée (419) : on recharge pour récupérer un jeton frais.
+            if (response.status === 419) {
+                showAlert('error', 'Votre session a expiré. La page va se recharger, merci de renvoyer votre facture.');
+                setTimeout(function () { window.location.reload(); }, 2500);
+                return;
+            }
+
+            var data = await response.json().catch(function () { return {}; });
 
             if (!response.ok) {
                 if (response.status === 422 && data.errors) {
