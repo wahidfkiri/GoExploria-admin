@@ -5,6 +5,9 @@
     <title>Nouvelle demande de facture</title>
 </head>
 <body style="font-family: Arial, Helvetica, sans-serif; color: #0a1628; line-height: 1.5;">
+    @if(file_exists(public_path('logo.png')))
+        <img src="{{ $message->embed(public_path('logo.png')) }}" alt="Go Exploria Business" style="height:44px;display:block;margin-bottom:14px;">
+    @endif
     <h2 style="margin: 0 0 16px;">Nouvelle demande de facture</h2>
     <p style="margin: 0 0 18px;">
         Reçue le {{ $submittedAt->format('d/m/Y à H:i') }}

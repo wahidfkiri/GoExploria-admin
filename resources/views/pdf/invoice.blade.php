@@ -14,6 +14,8 @@
     $vat     = $client['client_vat_number'] ?? null;
     $phone   = $client['phone'] ?? null;
     $email   = $client['email'] ?? null;
+    $__logoPath = public_path('logo.png');
+    $logoSrc = is_file($__logoPath) ? 'data:image/png;base64,' . base64_encode((string) file_get_contents($__logoPath)) : null;
 @endphp
 <!DOCTYPE html>
 <html lang="fr">
@@ -39,6 +41,11 @@
 </head>
 <body>
 <div class="wrap">
+    @if($logoSrc)
+        <div style="text-align:center;margin-bottom:14px;">
+            <img src="{{ $logoSrc }}" alt="Go Exploria Business" style="height:52px;">
+        </div>
+    @endif
     <!-- Header -->
     <table class="header">
         <tr>
