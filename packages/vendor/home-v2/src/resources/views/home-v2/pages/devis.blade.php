@@ -1209,22 +1209,14 @@
                 </div>
 
                 <div id="payOptions" style="display:none;margin-top:12px;">
-                    <p style="text-align:center;color:#50617d;font-size:13px;font-weight:700;margin:0 0 10px;">Choisissez votre moyen de paiement :</p>
-                    <div class="form-actions">
-                        <button type="submit" name="checkout_action" value="pay_now"
-                                onclick="document.getElementById('paymentMethodField').value='paypal';"
-                                class="submit-btn submit-btn--paypal">
-                            <i class="fab fa-paypal"></i>
-                            PayPal
-                        </button>
-                        <button type="submit" name="checkout_action" value="pay_now"
-                                onclick="document.getElementById('paymentMethodField').value='card';"
-                                class="submit-btn" style="background:linear-gradient(135deg,#1a1f71,#3b4bb5);color:#fff;">
-                            <i class="fas fa-credit-card"></i>
-                            Carte bancaire
-                        </button>
-                    </div>
-                    <p style="text-align:center;color:#8a97ab;font-size:11.5px;margin:8px 0 0;">Paiement sécurisé via PayPal (aucun compte requis pour la carte bancaire).</p>
+                    <p style="text-align:center;color:#50617d;font-size:13px;font-weight:700;margin:0 0 10px;">Payer par PayPal ou carte bancaire :</p>
+                    @if(!empty($paypalClientId))
+                        <div id="paypal-button-container" style="max-width:420px;margin:0 auto;"></div>
+                        <div id="paypalPayFeedback" style="text-align:center;font-size:12.5px;margin-top:8px;"></div>
+                        <p style="text-align:center;color:#8a97ab;font-size:11.5px;margin:8px 0 0;">Paiement sécurisé — le bouton « Débit ou carte de crédit » ne nécessite pas de compte PayPal.</p>
+                    @else
+                        <p style="text-align:center;color:#b45309;font-size:12.5px;">Le paiement en ligne n'est pas configuré pour le moment.</p>
+                    @endif
                 </div>
 
                 <p style="text-align:center;color:#6a7a95;font-size:12.5px;margin-top:10px;">
@@ -1817,6 +1809,7 @@
         clearTimeout(toastTimer);
         toastTimer = setTimeout(function() { toast.classList.remove('is-visible'); }, 5000);
     }
+    window.showToast = showToast;
 
     var form = document.querySelector('form[action*="devis"]');
     if (!form) return;
@@ -1930,5 +1923,89 @@
     });
 })();
 </script>
+
+@if(!empty($paypalClientId))
+<script src="https://www.paypal.com/sdk/js?client-id={{ $paypalClientId }}&currency={{ $paypalCurrency }}&enable-funding=card&intent=capture&locale=fr_FR"></script>
+<script>
+(function () {
+    var form = document.querySelector('.quote-form-card form');
+    var container = document.getElementById('paypal-button-container');
+    if (typeof paypal === 'undefined' || !form || !container) return;
+
+    var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    var csrf = csrfMeta ? csrfMeta.getAttribute('content') : '';
+    var submitUrl = @json(route('devis.submit'));
+    var captureUrl = @json(route('devis.paypal.capture'));
+    var rendered = false;
+
+    function feedback(type, msg) {
+        var f = document.getElementById('paypalPayFeedback');
+        if (!f) return;
+        f.style.color = type === 'error' ? '#b42318' : (type === 'ok' ? '#146c43' : '#50617d');
+        f.textContent = msg || '';
+    }
+
+    function renderButtons() {
+        if (rendered) return;
+        rendered = true;
+        paypal.Buttons({
+            style: { layout: 'vertical', shape: 'rect', label: 'pay' },
+            createOrder: function () {
+                feedback('info', '');
+                var fd = new FormData(form);
+                fd.set('checkout_action', 'pay_now');
+                if (!fd.get('payment_method')) { fd.set('payment_method', 'paypal'); }
+                return fetch(submitUrl, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': csrf },
+                    body: fd
+                }).then(function (r) {
+                    return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, status: r.status, data: d }; });
+                }).then(function (res) {
+                    if (res.ok && res.data && res.data.paypal_url) {
+                        var token = null;
+                        try { token = new URL(res.data.paypal_url).searchParams.get('token'); } catch (e) {}
+                        if (token) { return token; }
+                    }
+                    var msg = (res.data && (res.data.error || res.data.message)) || 'Veuillez vérifier le formulaire avant de payer.';
+                    feedback('error', msg);
+                    throw new Error(msg);
+                });
+            },
+            onApprove: function (data) {
+                feedback('info', 'Confirmation du paiement…');
+                return fetch(captureUrl, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': csrf, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderID: data.orderID })
+                }).then(function (r) { return r.json(); }).then(function (d) {
+                    if (d && d.success) {
+                        feedback('ok', d.success);
+                        if (window.showToast) { window.showToast(d.success); }
+                        try { form.reset(); } catch (e) {}
+                        if (window.recalculate) { window.recalculate(); }
+                        var op = document.getElementById('payOptions');
+                        if (op) { op.style.display = 'none'; }
+                    } else {
+                        feedback('error', (d && d.error) || 'Paiement non confirmé.');
+                    }
+                }).catch(function () { feedback('error', 'Erreur lors de la confirmation du paiement.'); });
+            },
+            onError: function () { feedback('error', 'Une erreur PayPal est survenue. Veuillez réessayer.'); },
+            onCancel: function () { feedback('error', 'Paiement annulé.'); }
+        }).render('#paypal-button-container').catch(function () {});
+    }
+
+    var payToggle = document.querySelector('button.submit-btn--paypal[aria-expanded]');
+    if (payToggle) {
+        payToggle.addEventListener('click', function () { setTimeout(renderButtons, 60); });
+    } else {
+        renderButtons();
+    }
+})();
+</script>
+@endif
 </body>
 </html>

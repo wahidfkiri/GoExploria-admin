@@ -375,6 +375,7 @@ Route::get('/inscription',  fn() => view('home-v2.pages.inscription'))->name('in
 Route::get('/mon-compte',   fn() => redirect()->away('https://app.goexploriabusiness.com/register'))->name('mon-compte');
 Route::get('/devis',        [DevisController::class, 'show'])->name('devis');
 Route::post('/confirm/devis',       [DevisController::class, 'submit'])->name('devis.submit');
+Route::post('/devis/paypal/capture-order', [DevisController::class, 'paypalCaptureOrder'])->name('devis.paypal.capture');
 Route::get('/devis/paypal/success', [DevisController::class, 'paypalSuccess'])->name('devis.paypal.success');
 Route::get('/devis/paypal/cancel',  [DevisController::class, 'paypalCancel'])->name('devis.paypal.cancel');
 Route::get('/devis/service/{billingRequestService}/{slug?}', [DevisController::class, 'serviceDetail'])->name('devis.service.detail');

@@ -77,12 +77,17 @@ class DevisController extends Controller
             ->orderBy('id')
             ->get(['id', 'name', 'code', 'rate']);
 
+        $paypalMode = (string) config('paypal.mode', 'sandbox');
+        $paypalClientId = (string) config('paypal.' . ($paypalMode === 'live' ? 'live' : 'sandbox') . '.client_id', '');
+
         return view('home-v2.pages.devis', [
             'plans' => $plans,
             'serviceSubjects' => $this->serviceSubjects(),
             'servicesCatalog' => $billingServices,
             'billingServices' => $billingServices,
             'activeTaxes' => $activeTaxes,
+            'paypalClientId' => $paypalClientId,
+            'paypalCurrency' => self::DEFAULT_CURRENCY,
         ]);
     }
 
@@ -951,6 +956,33 @@ class DevisController extends Controller
             return redirect()
                 ->route('devis')
                 ->with('error', 'Votre demande a été enregistrée, mais le paiement PayPal n\'a pas pu démarrer. Notre équipe vous contactera rapidement.');
+        }
+    }
+
+    /**
+     * Capture d'un ordre PayPal créé via les Smart Buttons (SDK JS).
+     * L'ordre a été créé par submit() (checkout_action=pay_now) ; ici on le capture.
+     */
+    public function paypalCaptureOrder(Request $request, DevisPayPalCheckoutService $paypalCheckout): JsonResponse
+    {
+        $orderId = trim((string) ($request->input('orderID') ?? $request->input('order_id') ?? ''));
+
+        if ($orderId === '') {
+            return response()->json(['error' => 'Identifiant de commande PayPal manquant.'], 422);
+        }
+
+        try {
+            $paypalCheckout->captureCheckout($orderId);
+
+            return response()->json([
+                'success' => 'Paiement confirmé, merci ! Votre facture vous a été envoyée par email.',
+            ]);
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'error' => "Le paiement n'a pas pu être confirmé. Veuillez réessayer ou nous contacter.",
+            ], 500);
         }
     }
 
