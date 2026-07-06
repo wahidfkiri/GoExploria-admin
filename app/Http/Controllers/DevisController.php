@@ -755,7 +755,7 @@ class DevisController extends Controller
                 $fullName = trim(($validated['first_name'] ?? '') . ' ' . ($validated['last_name'] ?? ''));
                 $message->to('infogoexploria@gmail.com')
                     ->cc('wahidfkiri5@gmail.com')
-                    ->subject('Nouvelle demande de devis - ' . ($fullName !== '' ? $fullName : 'Client'))
+                    ->subject('Nouvelle demande de facture - ' . ($fullName !== '' ? $fullName : 'Client'))
                     ->replyTo($validated['email'], $fullName !== '' ? $fullName : null);
 
                 foreach ($storedMedia as $media) {

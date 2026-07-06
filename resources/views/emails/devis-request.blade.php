@@ -2,10 +2,10 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Nouvelle demande de devis</title>
+    <title>Nouvelle demande de facture</title>
 </head>
 <body style="font-family: Arial, Helvetica, sans-serif; color: #0a1628; line-height: 1.5;">
-    <h2 style="margin: 0 0 16px;">Nouvelle demande de devis</h2>
+    <h2 style="margin: 0 0 16px;">Nouvelle demande de facture</h2>
     <p style="margin: 0 0 18px;">
         Reçue le {{ $submittedAt->format('d/m/Y à H:i') }}
     </p>
