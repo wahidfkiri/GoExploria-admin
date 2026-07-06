@@ -1195,12 +1195,20 @@
                 </label>
                 @error('consent')<span class="field-error">{{ $message }}</span>@enderror
 
-                <div class="form-actions" style="grid-template-columns: 1fr;">
+                <div class="form-actions">
                     <button type="submit" name="checkout_action" value="request" class="submit-btn submit-btn--request">
                         <i class="fas fa-file-invoice"></i>
                         Envoyer ma facture
                     </button>
+                    <button type="submit" name="checkout_action" value="pay_now" class="submit-btn submit-btn--paypal">
+                        <i class="fab fa-paypal"></i>
+                        Payer maintenant avec PayPal
+                    </button>
                 </div>
+                <p style="text-align:center;color:#6a7a95;font-size:12.5px;margin-top:10px;">
+                    <i class="fas fa-circle-info" style="margin-right:4px;"></i>
+                    Le paiement en ligne via PayPal est <strong>optionnel</strong> : vous pouvez simplement recevoir votre facture par email.
+                </p>
             </form>
         </div>
 

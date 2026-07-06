@@ -802,7 +802,7 @@ class DevisController extends Controller
             $fullName = $fullName !== '' ? $fullName : 'Client';
             $currency = (string) data_get($billingRequest->metadata, 'currency', self::DEFAULT_CURRENCY);
             $issuedAt = now();
-            $dueAt = now()->addDays(30);
+            $dueAt = now()->addDays(3);
             $invoiceNumber = 'FAC-' . $issuedAt->format('Ymd') . '-' . str_pad((string) $billingRequest->id, 5, '0', STR_PAD_LEFT);
 
             // Enregistre la facture en base (non bloquant). Si l'insertion réussit,
