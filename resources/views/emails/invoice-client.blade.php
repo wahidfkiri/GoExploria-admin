@@ -124,6 +124,7 @@
             <!-- Pied -->
             <div style="padding:18px 28px;background:#f8fafc;border-top:1px solid #edf2f7;font-size:12px;color:#64748b;line-height:1.6;">
                 <p style="margin:0 0 6px;">Merci pour votre confiance. Cette facture vous est adressée suite à votre demande sur Go Exploria Business.</p>
+                <p style="margin:0 0 6px;font-weight:700;color:#475569;">Note : Les délais de livraison varient entre 7 jours ouvrables et 45 jours.</p>
                 <p style="margin:0;">Pour toute question, répondez simplement à cet email ou contactez-nous à infogoexploria@gmail.com.</p>
             </div>
         </div>

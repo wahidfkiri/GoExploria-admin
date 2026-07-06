@@ -131,6 +131,7 @@
 
     <div style="margin-top:28px;font-size:11px;color:#64748b;">
         Merci pour votre confiance. Pour toute question : info@goexploriabusiness.com.<br>
+        <strong>Note :</strong> Les délais de livraison varient entre 7 jours ouvrables et 45 jours.<br>
         © {{ $issuedAt->format('Y') }} Go Exploria Business — Tous droits réservés.
     </div>
 </div>

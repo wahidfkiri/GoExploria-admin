@@ -1195,19 +1195,41 @@
                 </label>
                 @error('consent')<span class="field-error">{{ $message }}</span>@enderror
 
+                <input type="hidden" name="payment_method" id="paymentMethodField" value="">
                 <div class="form-actions">
                     <button type="submit" name="checkout_action" value="request" class="submit-btn submit-btn--request">
                         <i class="fas fa-file-invoice"></i>
                         Envoyer ma facture
                     </button>
-                    <button type="submit" name="checkout_action" value="pay_now" class="submit-btn submit-btn--paypal">
-                        <i class="fab fa-paypal"></i>
-                        Payer maintenant avec PayPal
+                    <button type="button" class="submit-btn submit-btn--paypal" aria-expanded="false"
+                            onclick="var o=document.getElementById('payOptions');var s=o.style.display==='block';o.style.display=s?'none':'block';this.setAttribute('aria-expanded', s?'false':'true');">
+                        <i class="fas fa-credit-card"></i>
+                        Payer Maintenant
                     </button>
                 </div>
+
+                <div id="payOptions" style="display:none;margin-top:12px;">
+                    <p style="text-align:center;color:#50617d;font-size:13px;font-weight:700;margin:0 0 10px;">Choisissez votre moyen de paiement :</p>
+                    <div class="form-actions">
+                        <button type="submit" name="checkout_action" value="pay_now"
+                                onclick="document.getElementById('paymentMethodField').value='paypal';"
+                                class="submit-btn submit-btn--paypal">
+                            <i class="fab fa-paypal"></i>
+                            PayPal
+                        </button>
+                        <button type="submit" name="checkout_action" value="pay_now"
+                                onclick="document.getElementById('paymentMethodField').value='card';"
+                                class="submit-btn" style="background:linear-gradient(135deg,#1a1f71,#3b4bb5);color:#fff;">
+                            <i class="fas fa-credit-card"></i>
+                            Carte bancaire
+                        </button>
+                    </div>
+                    <p style="text-align:center;color:#8a97ab;font-size:11.5px;margin:8px 0 0;">Paiement sécurisé via PayPal (aucun compte requis pour la carte bancaire).</p>
+                </div>
+
                 <p style="text-align:center;color:#6a7a95;font-size:12.5px;margin-top:10px;">
                     <i class="fas fa-circle-info" style="margin-right:4px;"></i>
-                    Le paiement en ligne via PayPal est <strong>optionnel</strong> : vous pouvez simplement recevoir votre facture par email.
+                    Le paiement en ligne est <strong>optionnel</strong> : vous pouvez simplement recevoir votre facture par email.
                 </p>
             </form>
         </div>

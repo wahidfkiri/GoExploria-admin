@@ -93,6 +93,7 @@ class DevisController extends Controller
     {
         $validated = $request->validate([
             'checkout_action' => ['nullable', 'in:request,pay_now'],
+            'payment_method' => ['nullable', 'in:paypal,card'],
             'first_name' => ['required', 'string', 'max:120'],
             'last_name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email', 'max:180'],
@@ -176,10 +177,11 @@ class DevisController extends Controller
         $this->sendClientInvoiceEmail($validated, $billingRequests);
 
         if ($checkoutAction === 'pay_now') {
+            $paymentMethod = ($validated['payment_method'] ?? 'paypal') === 'card' ? 'card' : 'paypal';
             if ($request->wantsJson()) {
-                return $this->handlePayPalPaymentJson($billingRequests, $devisRequest);
+                return $this->handlePayPalPaymentJson($billingRequests, $devisRequest, $paymentMethod);
             }
-            return $this->handlePayPalPayment($billingRequests, $devisRequest);
+            return $this->handlePayPalPayment($billingRequests, $devisRequest, $paymentMethod);
         }
 
         if ($request->wantsJson()) {
@@ -936,11 +938,11 @@ class DevisController extends Controller
     /**
      * Gère le paiement PayPal
      */
-    private function handlePayPalPayment(Collection $billingRequests, DevisRequest $devisRequest): RedirectResponse
+    private function handlePayPalPayment(Collection $billingRequests, DevisRequest $devisRequest, string $paymentMethod = 'paypal'): RedirectResponse
     {
         try {
             $paypalCheckout = app(DevisPayPalCheckoutService::class);
-            $approvalUrl = $paypalCheckout->createCheckout($billingRequests, $devisRequest);
+            $approvalUrl = $paypalCheckout->createCheckout($billingRequests, $devisRequest, $paymentMethod);
 
             return redirect()->away($approvalUrl);
         } catch (Throwable $e) {
@@ -952,11 +954,11 @@ class DevisController extends Controller
         }
     }
 
-    private function handlePayPalPaymentJson(Collection $billingRequests, DevisRequest $devisRequest): JsonResponse
+    private function handlePayPalPaymentJson(Collection $billingRequests, DevisRequest $devisRequest, string $paymentMethod = 'paypal'): JsonResponse
     {
         try {
             $paypalCheckout = app(DevisPayPalCheckoutService::class);
-            $approvalUrl = $paypalCheckout->createCheckout($billingRequests, $devisRequest);
+            $approvalUrl = $paypalCheckout->createCheckout($billingRequests, $devisRequest, $paymentMethod);
 
             return response()->json(['paypal_url' => $approvalUrl]);
         } catch (Throwable $e) {

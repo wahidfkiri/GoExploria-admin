@@ -25,7 +25,7 @@ class DevisPayPalCheckoutService
     /**
      * Crée une session de paiement PayPal
      */
-    public function createCheckout(Collection $billingRequests, DevisRequest $devisRequest): string
+    public function createCheckout(Collection $billingRequests, DevisRequest $devisRequest, string $paymentMethod = 'paypal'): string
     {
         $billingRequests = $billingRequests->filter(fn ($request) => $request instanceof BillingRequest)->values();
 
@@ -60,6 +60,9 @@ class DevisPayPalCheckoutService
                 'locale' => str_replace('_', '-', config('paypal.locale', 'fr-FR')),
                 'shipping_preference' => 'NO_SHIPPING',
                 'user_action' => 'PAY_NOW',
+                // 'BILLING' affiche d'abord le formulaire carte bancaire (paiement invité),
+                // 'LOGIN' affiche d'abord la connexion PayPal.
+                'landing_page' => $paymentMethod === 'card' ? 'BILLING' : 'LOGIN',
                 'return_url' => route('devis.paypal.success'),
                 'cancel_url' => route('devis.paypal.cancel'),
             ],
