@@ -81,11 +81,9 @@ $buildDestBreadcrumb = function ($activity) {
 // exécutés une seule fois puis mis en cache. La sortie HTML reste identique.
 // Purge manuelle : php artisan cache:clear
 $locale = app()->getLocale();
+$catMegaCacheKey = 'home_v2_categories_mega_menu_' . $locale;
 
-$catMegaData = \Illuminate\Support\Facades\Cache::remember(
-    'home_v2_categories_mega_menu_' . $locale,
-    600,
-    function () use ($buildDestBreadcrumb) {
+$catMegaLoader = function () use ($buildDestBreadcrumb) {
         $activitiesQuery = function ($q) {
             $q->where('is_active', true)->orderBy('name')
               ->with([
@@ -138,8 +136,25 @@ $catMegaData = \Illuminate\Support\Facades\Cache::remember(
         }
 
         return compact('tourismeCats', 'businessCats', 'breadcrumbs');
+};
+
+// Lecture/écriture du cache tolérante aux pannes : si le cache store du serveur
+// est indisponible (table `cache` absente, permissions fichier, Redis down…),
+// on calcule directement au lieu de casser toute la page (page blanche en prod).
+$catMegaData = null;
+try {
+    $catMegaData = \Illuminate\Support\Facades\Cache::get($catMegaCacheKey);
+} catch (\Throwable $e) {
+    $catMegaData = null;
+}
+if (! is_array($catMegaData)) {
+    $catMegaData = $catMegaLoader();
+    try {
+        \Illuminate\Support\Facades\Cache::put($catMegaCacheKey, $catMegaData, 600);
+    } catch (\Throwable $e) {
+        // Cache indisponible : on ignore, la page reste fonctionnelle.
     }
-);
+}
 
 $tourismeCats       = $catMegaData['tourismeCats'];
 $businessCats       = $catMegaData['businessCats'];
