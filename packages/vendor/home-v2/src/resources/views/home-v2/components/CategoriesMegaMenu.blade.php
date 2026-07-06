@@ -17,27 +17,10 @@ $tr = static function (string $text): string {
     return $maps[$locale][$text] ?? $text;
 };
 
-$tourismeType  = CategorieType::where('name', 'like', '%tourisme%')->orWhere('name', 'like', '%Tourisme%')->first();
-$businessType  = CategorieType::where('name', 'like', '%business%')->orWhere('name', 'like', '%Business%')->first();
-
-$activitiesQuery = function($q) {
-    $q->where('is_active', true)->orderBy('name')
-      ->with([
-          'continents',
-          'countries.continent',
-          'provinces.country.continent',
-          'regions.province.country.continent',
-          'cities.region.province.country.continent',
-      ]);
-};
-
-$tourismeCats = $tourismeType
-    ? $tourismeType->categories()->with(['activities' => $activitiesQuery])->where('is_active', true)->orderBy('name')->get()
-    : collect();
-
-$businessCats = $businessType
-    ? $businessType->categories()->with(['activities' => $activitiesQuery])->where('is_active', true)->orderBy('name')->get()
-    : collect();
+// Chargement des catégories + génération des fils d'ariane : déplacés dans le
+// bloc Cache::remember plus bas (voir $catMegaData) afin d'éviter les requêtes
+// profondes et la reconstruction des liens à chaque affichage. La sortie rendue
+// reste strictement identique.
 
 $buildDestBreadcrumb = function ($activity) {
     $slugify = fn($e) => \Illuminate\Support\Str::slug($e->name);
@@ -91,6 +74,82 @@ $buildDestBreadcrumb = function ($activity) {
     }
     return $paths;
 };
+
+// ── Cache des données du méga-menu ────────────────────────────────────────────
+// Le chargement profond (activités → villes/régions/provinces/pays/continents)
+// et la génération des fils d'ariane (nombreux appels route() imbriqués) sont
+// exécutés une seule fois puis mis en cache. La sortie HTML reste identique.
+// Purge manuelle : php artisan cache:clear
+$locale = app()->getLocale();
+
+$catMegaData = \Illuminate\Support\Facades\Cache::remember(
+    'home_v2_categories_mega_menu_' . $locale,
+    600,
+    function () use ($buildDestBreadcrumb) {
+        $activitiesQuery = function ($q) {
+            $q->where('is_active', true)->orderBy('name')
+              ->with([
+                  'continents',
+                  'countries.continent',
+                  'provinces.country.continent',
+                  'regions.province.country.continent',
+                  'cities.region.province.country.continent',
+              ]);
+        };
+
+        $tourismeType = CategorieType::where('name', 'like', '%tourisme%')->orWhere('name', 'like', '%Tourisme%')->first();
+        $businessType = CategorieType::where('name', 'like', '%business%')->orWhere('name', 'like', '%Business%')->first();
+
+        // On ne conserve que les catégories qui possèdent au moins une activité.
+        $onlyWithActivities = function ($cat) { return $cat->activities->isNotEmpty(); };
+
+        $tourismeCats = ($tourismeType
+            ? $tourismeType->categories()->with(['activities' => $activitiesQuery])->where('is_active', true)->orderBy('name')->get()
+            : collect())->filter($onlyWithActivities)->values();
+
+        $businessCats = ($businessType
+            ? $businessType->categories()->with(['activities' => $activitiesQuery])->where('is_active', true)->orderBy('name')->get()
+            : collect())->filter($onlyWithActivities)->values();
+
+        // Pré-calcul des fils d'ariane (partie la plus coûteuse).
+        $breadcrumbs = [];
+        foreach ([$tourismeCats, $businessCats] as $cats) {
+            foreach ($cats as $cat) {
+                foreach ($cat->activities as $act) {
+                    if (! array_key_exists($act->id, $breadcrumbs)) {
+                        $breadcrumbs[$act->id] = $buildDestBreadcrumb($act);
+                    }
+                }
+            }
+        }
+
+        // Allègement du cache : les relations « destinations » ne servent plus
+        // une fois les fils d'ariane générés.
+        foreach ([$tourismeCats, $businessCats] as $cats) {
+            foreach ($cats as $cat) {
+                foreach ($cat->activities as $act) {
+                    $act->unsetRelation('continents');
+                    $act->unsetRelation('countries');
+                    $act->unsetRelation('provinces');
+                    $act->unsetRelation('regions');
+                    $act->unsetRelation('cities');
+                }
+            }
+        }
+
+        return compact('tourismeCats', 'businessCats', 'breadcrumbs');
+    }
+);
+
+$tourismeCats       = $catMegaData['tourismeCats'];
+$businessCats       = $catMegaData['businessCats'];
+$catMegaBreadcrumbs = $catMegaData['breadcrumbs'];
+
+// Le template appelle toujours $buildDestBreadcrumb($act) : on renvoie désormais
+// le fil d'ariane pré-calculé → sortie strictement identique, sans requête.
+$buildDestBreadcrumb = function ($activity) use ($catMegaBreadcrumbs) {
+    return $catMegaBreadcrumbs[$activity->id] ?? [];
+};
 @endphp
 
 {{-- ── PANEL TOURISME ── --}}
@@ -103,9 +162,9 @@ $buildDestBreadcrumb = function ($activity) {
         @forelse($tourismeCats as $index => $cat)
             <a href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
                class="cat-mega-cat-item {{ $index === 0 ? 'active' : '' }}"
-               data-cat-id="b{{ $cat->id }}"
+               data-cat-id="t{{ $cat->id }}"
                data-cat-href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
-               onclick="catMegaSelect(event, this, 'business')">
+               onclick="catMegaSelect(event, this, 'tourisme')">
                 <span>{{ $cat->name }}</span>
                 @if($cat->activities->isNotEmpty())
                     <span class="cat-mega-cat-arrow"><i class="fas fa-chevron-right"></i></span>
@@ -163,9 +222,9 @@ $buildDestBreadcrumb = function ($activity) {
         @forelse($businessCats as $index => $cat)
             <a href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
                class="cat-mega-cat-item {{ $index === 0 ? 'active' : '' }}"
-               data-cat-id="t{{ $cat->id }}"
+               data-cat-id="b{{ $cat->id }}"
                data-cat-href="{{ route('category.show', $cat->slug ?? $cat->id) }}"
-               onclick="catMegaSelect(event, this, 'tourisme')">
+               onclick="catMegaSelect(event, this, 'business')">
                 <span>{{ $cat->name }}</span>
                 @if($cat->activities->isNotEmpty())
                     <span class="cat-mega-cat-arrow"><i class="fas fa-chevron-right"></i></span>
@@ -226,16 +285,40 @@ $buildDestBreadcrumb = function ($activity) {
 .dest-arrow { color: #9ca3af; margin: 0 1px; font-weight: 400; }
 .dest-crumb { white-space: nowrap; }
 .dest-sep { color: #9ca3af; margin: 0 3px; font-weight: 400; font-size: 10px; }
+
+/* Icône chevron : pointe vers le bas quand la catégorie est ouverte (toggle) */
+.cat-mega-cat-arrow { transition: transform 0.2s ease, color 0.2s ease; }
+.cat-mega-cat-item.active .cat-mega-cat-arrow { transform: rotate(90deg); color: #1a72cc; opacity: 1; }
 </style>
 
 <script>
+/* ── Coordination globale : un seul mega menu ouvert à la fois ── */
+window.goMegaClosers = window.goMegaClosers || [];
+window.goCloseOtherMega = window.goCloseOtherMega || function (exceptEl) {
+    document.querySelectorAll('.cat-mega-panel.open').forEach(function (p) {
+        if (p !== exceptEl) p.classList.remove('open');
+    });
+    var info = document.getElementById('infoMegaMenuV2');
+    if (info && info !== exceptEl) {
+        info.classList.remove('active');
+        var it = document.getElementById('infoTrigger');
+        if (it) it.classList.remove('active');
+    }
+    var dest = document.getElementById('destinationsMegaMenu');
+    if (dest && dest !== exceptEl && window.destinationsMegaMenu && typeof window.destinationsMegaMenu.hide === 'function') {
+        window.destinationsMegaMenu.hide();
+    }
+    window.goMegaClosers.forEach(function (fn) { try { fn(exceptEl); } catch (e) {} });
+};
+
 /* Fonction partagée de positionnement et gestion des panels */
-function initCatMegaPanel(triggerId, panelId, viewAllId) {
+window.initCatMegaPanel = function initCatMegaPanel(triggerId, panelId, viewAllId) {
     var panel   = document.getElementById(panelId);
     var trigger = document.getElementById(triggerId);
     if (!panel || !trigger) return;
-
-    var closeTimer;
+    /* Évite un double-binding si le composant est inclus plusieurs fois (Hero + VerticalMenu) */
+    if (trigger.dataset.catMegaBound === panelId) return;
+    trigger.dataset.catMegaBound = panelId;
 
     function positionPanel() {
         if (window.innerWidth <= 768) return;
@@ -263,25 +346,20 @@ function initCatMegaPanel(triggerId, panelId, viewAllId) {
     }
 
     function openPanel() {
-        /* Fermer tous les autres panels */
-        document.querySelectorAll('.cat-mega-panel.open').forEach(function(p) {
-            if (p !== panel) p.classList.remove('open');
-        });
-        clearTimeout(closeTimer);
+        /* Ferme tous les autres mega menus (un seul ouvert à la fois) */
+        window.goCloseOtherMega(panel);
         positionPanel();
         panel.classList.add('open');
     }
 
-    function closePanel() {
-        closeTimer = setTimeout(function() { panel.classList.remove('open'); }, 120);
-    }
-
     trigger.addEventListener('click', function(e) {
+        e.preventDefault();
         e.stopPropagation();
         panel.classList.contains('open') ? panel.classList.remove('open') : openPanel();
     });
 
     document.addEventListener('click', function(e) {
+        if (!panel.classList.contains('open')) return;
         if (!panel.contains(e.target) && !trigger.contains(e.target)) {
             panel.classList.remove('open');
         }
@@ -294,7 +372,7 @@ function initCatMegaPanel(triggerId, panelId, viewAllId) {
     window.addEventListener('resize', function() {
         if (panel.classList.contains('open')) positionPanel();
     });
-}
+};
 
 /* Initialisation des deux panels */
 initCatMegaPanel('catMegaTriggerTourisme', 'catMegaPanelTourisme', 'catMegaViewAllTourisme');
@@ -304,14 +382,22 @@ initCatMegaPanel('catMegaTriggerBusiness', 'catMegaPanelBusiness', 'catMegaViewA
 function catMegaSelect(e, el, type) {
     if (el.closest('.vmenu-inline-panel')) return;
     e.preventDefault();
+    e.stopPropagation();
     var panel = el.closest('.cat-mega-panel') || document.getElementById('catMegaPanel' + (type === 'tourisme' ? 'Tourisme' : 'Business'));
     if (!panel) return;
 
+    var acts = panel.querySelector('#cat-acts-' + el.dataset.catId);
+    /* État courant : la catégorie est-elle déjà ouverte ? */
+    var isOpen = el.classList.contains('active') && acts && acts.classList.contains('visible');
+
+    /* Réinitialise toutes les catégories du panel */
     panel.querySelectorAll('.cat-mega-cat-item').forEach(function(i) { i.classList.remove('active'); });
-    el.classList.add('active');
     panel.querySelectorAll('.cat-mega-activities').forEach(function(a) { a.classList.remove('visible'); });
 
-    var acts = panel.querySelector('#cat-acts-' + el.dataset.catId);
+    /* Toggle : un second clic sur la même catégorie referme sa liste */
+    if (isOpen) return;
+
+    el.classList.add('active');
     if (acts) acts.classList.add('visible');
 
     var viewAll = panel.querySelector('#catMegaViewAll' + (type === 'tourisme' ? 'Tourisme' : 'Business'));

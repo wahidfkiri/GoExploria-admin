@@ -456,8 +456,122 @@
             }
         }
     </style>
+
+    {{-- ── Skeleton de chargement (overlay non-intrusif, retiré au window.load) ── --}}
+    <style id="home-skeleton-style">
+        #home-skeleton {
+            position: fixed;
+            inset: 0;
+            z-index: 2147483000;
+            background: #ffffff;
+            overflow: hidden;
+            opacity: 1;
+            transition: opacity .45s ease;
+        }
+        #home-skeleton.home-skeleton--hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        html.home-skeleton-active,
+        html.home-skeleton-active body {
+            overflow: hidden;
+        }
+        .hs-wrap {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 clamp(12px, 2.4vw, 32px);
+        }
+        .hs-block { position: relative; overflow: hidden; background: #eceff3; border-radius: 12px; }
+        .hs-block::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            transform: translateX(-100%);
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.65) 50%, rgba(255,255,255,0) 100%);
+            animation: hs-shimmer 1.35s infinite;
+        }
+        @keyframes hs-shimmer { 100% { transform: translateX(100%); } }
+        .hs-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            height: 68px;
+            padding: 0 clamp(12px, 2.4vw, 32px);
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .hs-logo { width: 140px; height: 34px; border-radius: 8px; }
+        .hs-nav { display: flex; gap: 14px; }
+        .hs-nav .hs-block { width: 74px; height: 20px; border-radius: 6px; }
+        .hs-hero { height: min(46vh, 380px); margin: 18px 0; border-radius: 18px; }
+        .hs-pills { display: flex; gap: 12px; flex-wrap: wrap; margin: 22px 0; }
+        .hs-pills .hs-block { width: 120px; height: 38px; border-radius: 20px; }
+        .hs-title { width: 320px; max-width: 70%; height: 30px; margin: 30px auto 22px; border-radius: 8px; }
+        .hs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+        .hs-card { height: 220px; border-radius: 14px; }
+        @media (max-width: 992px) { .hs-grid { grid-template-columns: repeat(2, 1fr); } .hs-nav { display: none; } }
+        @media (max-width: 560px) { .hs-grid { grid-template-columns: 1fr; } }
+    </style>
 </head>
 <body>
+    <div id="home-skeleton" aria-hidden="true" role="presentation">
+        <div class="hs-header">
+            <div class="hs-block hs-logo"></div>
+            <div class="hs-nav">
+                <div class="hs-block"></div>
+                <div class="hs-block"></div>
+                <div class="hs-block"></div>
+                <div class="hs-block"></div>
+            </div>
+        </div>
+        <div class="hs-wrap">
+            <div class="hs-block hs-hero"></div>
+            <div class="hs-pills">
+                <div class="hs-block"></div>
+                <div class="hs-block"></div>
+                <div class="hs-block"></div>
+                <div class="hs-block"></div>
+                <div class="hs-block"></div>
+            </div>
+            <div class="hs-block hs-title"></div>
+            <div class="hs-grid">
+                <div class="hs-block hs-card"></div>
+                <div class="hs-block hs-card"></div>
+                <div class="hs-block hs-card"></div>
+                <div class="hs-block hs-card"></div>
+            </div>
+            <div class="hs-block hs-title"></div>
+            <div class="hs-grid">
+                <div class="hs-block hs-card"></div>
+                <div class="hs-block hs-card"></div>
+                <div class="hs-block hs-card"></div>
+                <div class="hs-block hs-card"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var root = document.documentElement;
+            root.classList.add('home-skeleton-active');
+            function hideSkeleton() {
+                var sk = document.getElementById('home-skeleton');
+                root.classList.remove('home-skeleton-active');
+                if (!sk) return;
+                sk.classList.add('home-skeleton--hidden');
+                window.setTimeout(function () {
+                    if (sk && sk.parentNode) sk.parentNode.removeChild(sk);
+                }, 500);
+            }
+            if (document.readyState === 'complete') {
+                hideSkeleton();
+            } else {
+                window.addEventListener('load', hideSkeleton);
+                /* Filet de sécurité : ne jamais rester bloqué sur le skeleton */
+                window.setTimeout(hideSkeleton, 8000);
+            }
+        })();
+    </script>
+
     @include('home-v2.components.VerticalMenu')
     @include('home-v2.components.Header')
     

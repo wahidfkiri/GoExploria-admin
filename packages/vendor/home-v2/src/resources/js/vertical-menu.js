@@ -114,19 +114,24 @@ class VerticalMenuController {
       e.preventDefault();
       e.stopPropagation();
 
-      const left = panel.querySelector('.cat-mega-left');
       const right = panel.querySelector('.cat-mega-right');
       if (right) right.style.display = 'none';
 
-      panel.querySelectorAll('.cat-mega-cat-item').forEach(i => i.classList.remove('active'));
-      catItem.classList.add('active');
+      const acts = panel.querySelector('#cat-acts-' + catItem.dataset.catId);
+      // État courant : la catégorie est-elle déjà ouverte ?
+      const isOpen = catItem.classList.contains('active') && acts && acts.classList.contains('vmenu-open');
 
+      // Réinitialise toutes les catégories
+      panel.querySelectorAll('.cat-mega-cat-item').forEach(i => i.classList.remove('active'));
       panel.querySelectorAll('.cat-mega-activities').forEach(a => {
         a.classList.remove('visible', 'vmenu-open');
         a.style.display = 'none';
       });
 
-      const acts = panel.querySelector('#cat-acts-' + catItem.dataset.catId);
+      // Toggle : un second clic sur la même catégorie referme sa liste
+      if (isOpen) return;
+
+      catItem.classList.add('active');
       if (acts) {
         const next = catItem.nextElementSibling;
         if (next !== acts) {

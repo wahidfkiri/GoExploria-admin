@@ -996,6 +996,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         e.stopPropagation();
         const isOpen = megaMenu.classList.contains('active');
+        if (!isOpen && typeof window.goCloseOtherMega === 'function') window.goCloseOtherMega(megaMenu);
         megaMenu.classList.toggle('active', !isOpen);
         infoBtn.classList.toggle('active', !isOpen);
         if (!isOpen) positionMegaMenu();

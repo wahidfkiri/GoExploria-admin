@@ -162,12 +162,17 @@
 function hqmSelect(e, el, panelId) {
     if (el.closest('.vmenu-inline-panel')) return;
     e.preventDefault();
+    e.stopPropagation();
     var panel = el.closest('.cat-mega-panel') || document.getElementById(panelId);
     if (!panel) return;
-    panel.querySelectorAll('.cat-mega-cat-item').forEach(function (i) { i.classList.remove('active'); });
-    el.classList.add('active');
-    panel.querySelectorAll('.cat-mega-activities').forEach(function (a) { a.classList.remove('visible'); });
     var acts = panel.querySelector('#cat-acts-' + el.dataset.catId);
+    /* État courant : la catégorie est-elle déjà ouverte ? */
+    var isOpen = el.classList.contains('active') && acts && acts.classList.contains('visible');
+    panel.querySelectorAll('.cat-mega-cat-item').forEach(function (i) { i.classList.remove('active'); });
+    panel.querySelectorAll('.cat-mega-activities').forEach(function (a) { a.classList.remove('visible'); });
+    /* Toggle : un second clic sur la même catégorie referme sa liste */
+    if (isOpen) return;
+    el.classList.add('active');
     if (acts) acts.classList.add('visible');
     var viewAll = panel.querySelector('#' + panelId + '-viewAll');
     if (viewAll && el.dataset.catHref) viewAll.href = el.dataset.catHref;

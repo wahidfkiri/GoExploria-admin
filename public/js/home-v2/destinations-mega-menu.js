@@ -71,7 +71,12 @@ class DestinationsMegaMenu {
             return;
         }
         this.isOpen = true;
-        
+
+        // Un seul mega menu ouvert à la fois : ferme les autres (pictos, info…)
+        if (typeof window.goCloseOtherMega === 'function') {
+            window.goCloseOtherMega(this.megaMenu);
+        }
+
         // Afficher le mega menu instantanément
         console.log('👁️ Affichage du mega menu DOM');
         this.megaMenu.style.display = 'block';

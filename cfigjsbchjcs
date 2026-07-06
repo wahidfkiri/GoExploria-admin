@@ -1,0 +1,249 @@
+[1mdiff --git a/packages/vendor/home-v2/src/resources/views/home-v2/components/VerticalMenu.blade.php b/packages/vendor/home-v2/src/resources/views/home-v2/components/VerticalMenu.blade.php[m
+[1mindex bc236d6..30d3821 100644[m
+[1m--- a/packages/vendor/home-v2/src/resources/views/home-v2/components/VerticalMenu.blade.php[m
+[1m+++ b/packages/vendor/home-v2/src/resources/views/home-v2/components/VerticalMenu.blade.php[m
+[36m@@ -1,363 +1,273 @@[m
+ @php(ob_start());@endphp[m
+[31m-{{-- Menu Vertical Principal Component --}}[m
+ @php[m
+[31m-$tr = static function (string $text): string {[m
+[31m-    $locale = app()->getLocale();[m
+[31m-    if ($locale === 'fr') { return $text; }[m
+[31m-    static $maps = [];[m
+[31m-    if (! array_key_exists($locale, $maps)) {[m
+[31m-        $path = lang_path($locale . DIRECTORY_SEPARATOR . 'home-v2-components-map.php');[m
+[31m-        $maps[$locale] = is_file($path) ? (require $path) : [];[m
+[32m+[m[32m    $tr = static fn (string $t) => $t;[m
+[32m+[m
+[32m+[m[32m    $pictos = [[m
+[32m+[m[32m        ['id' => 'vmenuTriggerInfo',    'label' => 'Informations',      'type' => 'label', 'value' => 'i',    'panel' => 'vmenuPanelInfo',    'svg' => 'info'],[m
+[32m+[m[32m        ['id' => 'vmenuTriggerTourisme', 'label' => 'Activités Tourisme', 'type' => 'label', 'value' => 'iT',   'panel' => 'vmenuPanelTourisme', 'svg' => 'pin'],[m
+[32m+[m[32m        ['id' => 'vmenuTriggerBusiness', 'label' => 'Activités Business', 'type' => 'label', 'value' => 'iB',   'panel' => 'vmenuPanelBusiness', 'svg' => 'briefcase'],[m
+[32m+[m[32m        ['id' => 'vmenuTriggerEE',       'label' => 'Espace Entreprise',  'type' => 'label', 'value' => 'EE',   'panel' => 'vmenuPanelEE',       'svg' => 'building'],[m
+[32m+[m[32m        ['id' => 'vmenuTriggerED',       'label' => 'Espace Destination', 'type' => 'label', 'value' => 'ED',   'panel' => 'vmenuPanelED',       'svg' => 'pin'],[m
+[32m+[m[32m        ['id' => 'vmenuTriggerMP',       'label' => 'Marketplace',        'type' => 'label', 'value' => 'MP',   'panel' => 'vmenuPanelMP',       'svg' => 'cart'],[m
+[32m+[m[32m        ['id' => 'vmenuTriggerCar',      'label' => 'Location Véhicule',  'type' => 'icon',  'value' => 'fa-car',  'panel' => 'vmenuPanelCar',   'svg' => 'car'],[m
+[32m+[m[32m        ['id' => 'vmenuTriggerPlane',    'label' => 'Billets Avion',      'type' => 'icon',  'value' => 'fa-plane','panel' => 'vmenuPanelPlane', 'svg' => 'plane'],[m
+[32m+[m[32m        ['id' => 'vmenuTriggerPlanGo',   'label' => 'Plan & GO',          'type' => 'label', 'value' => 'P&GO', 'panel' => 'vmenuPanelPlanGo',   'svg' => 'route', 'style' => 'font-size:9px;font-weight:800;'],[m
+[32m+[m[32m    ];[m
+[32m+[m
+[32m+[m[32m    $panels = [[m
+[32m+[m[32m        ['id' => 'vmenuPanelInfo',    'title' => 'Informations',      'svg' => 'info'],[m
+[32m+[m[32m        ['id' => 'vmenuPanelTourisme', 'title' => 'Activités Tourisme', 'svg' => 'pin'],[m
+[32m+[m[32m        ['id' => 'vmenuPanelBusiness', 'title' => 'Activités Business', 'svg' => 'briefcase'],[m
+[32m+[m[32m        ['id' => 'vmenuPanelEE',       'title' => 'Espace Entreprise',  'svg' => 'building'],[m
+[32m+[m[32m        ['id' => 'vmenuPanelED',       'title' => 'Espace Destination', 'svg' => 'pin'],[m
+[32m+[m[32m        ['id' => 'vmenuPanelMP',       'title' => 'Marketplace',        'svg' => 'cart'],[m
+[32m+[m[32m        ['id' => 'vmenuPanelCar',      'title' => 'Location Véhicule',  'svg' => 'car'],[m
+[32m+[m[32m        ['id' => 'vmenuPanelPlane',    'title' => 'Billets Avion',      'svg' => 'plane'],[m
+[32m+[m[32m        ['id' => 'vmenuPanelPlanGo',   'title' => 'Plan & GO',          'svg' => 'route'],[m
+[32m+[m[32m    ];[m
+[32m+[m
+[32m+[m[32m    $sections = [[m
+[32m+[m[32m        ['key' => 'espaces-medias',              'label' => 'Espaces M&eacute;dias'],[m
+[32m+[m[32m        ['key' => 'espaces-next-level',          'label' => 'Espaces Next Level'],[m
+[32m+[m[32m        ['key' => 'restaurants-alimentations',   'label' => 'Espaces Restaurants & Alimentations'],[m
+[32m+[m[32m        ['key' => 'vedettes',                    'label' => 'Espaces Vedettes'],[m
+[32m+[m[32m        ['key' => 'espaces-voyages-forfaits',    'label' => 'Espaces Voyages & Forfaits Touristique'],[m
+[32m+[m[32m        ['key' => 'marketplace',                 'label' => 'Espaces Market Place'],[m
+[32m+[m[32m        ['key' => 'a-la-une',                    'label' => 'Espaces &Agrave; la Une'],[m
+[32m+[m[32m    ];[m
+[32m+[m
+[32m+[m[32m    $services = [[m
+[32m+[m[32m        'Espaces M&eacute;dias' => [[m
+[32m+[m[32m            ['#tourisme-business',      'Espaces Tourisme et Business'],[m
+[32m+[m[32m            ['#activez-destinations',   'Activez votre Espaces Destinations'],[m
+[32m+[m[32m            ['#geo-carte-videos',       'Espace G&eacute;o-Carte-Vid&eacute;os'],[m
+[32m+[m[32m            ['#multilingue',            'Espaces Multilingues'],[m
+[32m+[m[32m            ['#slideshow',              'Espaces Slide-Show Multiples'],[m
+[32m+[m[32m            ['#go-tik-tok',             'Espaces Go-Tik-Tok'],[m
+[32m+[m[32m            ['#my-tube',                'Espaces My-Tube'],[m
+[32m+[m[32m            ['#chaine-videos',          'Espaces Chaine Vid&eacute;os'],[m
+[32m+[m[32m            ['#photos',                 'Espaces Photos'],[m
+[32m+[m[32m            ['#reseaux-sociaux',        'Espaces R&eacute;seaux Sociaux'],[m
+[32m+[m[32m            ['#pinterest',              'Espaces Inspiration Pinterest'],[m
+[32m+[m[32m            ['#avis-clients',           'Espaces Avis Clients'],[m
+[32m+[m[32m        ],[m
+[32m+[m[32m        'Espaces Next Level' => [[m
+[32m+[m[32m            ['#optimisez',              'Optimisez votre Pr&eacute;sence en Ligne'],[m
+[32m+[m[32m            ['#partenaires-master',     'Partenaires Master User Go Exploria'],[m
+[32m+[m[32m            ['#activez-destinations',   'Activez votre Espaces Destinations'],[m
+[32m+[m[32m            ['#activez-entreprises',    'Activez votre Espaces Entreprises'],[m
+[32m+[m[32m            ['#activez-perso',          'Activez votre Espaces Perso'],[m
+[32m+[m[32m            ['#plans-next-level',       'Espaces Plans Next Level'],[m
+[32m+[m[32m            ['#partenaires-affilies',   'Espaces Partenaires Affili&eacute;s'],[m
+[32m+[m[32m            ['#editeur-site',           'Espaces &eacute;diteur de Site Web'],[m
+[32m+[m[32m            ['#editeur-entreprises',    'Editeur d\'Espaces Entreprises'],[m
+[32m+[m[32m            ['#editeur-perso',          'Editeur d\'Espaces Perso'],[m
+[32m+[m[32m            ['#geo-carte-videos',       'Espaces G&eacute;o-Carte-Vid&eacute;os'],[m
+[32m+[m[32m            ['#blog',                   'Espaces Blog'],[m
+[32m+[m[32m            ['#api',                    'Espaces API'],[m
+[32m+[m[32m            ['#mail',                   'Espaces Mail'],[m
+[32m+[m[32m            ['#chat',                   'Espaces Module Chat'],[m
+[32m+[m[32m            ['#formulaires',            'Espaces Formulaires'],[m
+[32m+[m[32m            ['#cta',                    'Espaces Call-to-Actions'],[m
+[32m+[m[32m            ['#seo',                    'Performances SEO International'],[m
+[32m+[m[32m            ['#tele-positionnement',    'Espaces T&eacute;l&eacute;-Positionnement'],[m
+[32m+[m[32m            ['https://goexploriabusiness.com/welcome-2', 'Fonctionnalit&eacute;s Compl&egrave;tes &nearr;', true],[m
+[32m+[m[32m        ],[m
+[32m+[m[32m        'Restaurants & Alimentations' => [[m
+[32m+[m[32m            ['#ambiances-restaurants',  'Espaces Ambiances Restaurants'],[m
+[32m+[m[32m            ['#mets-vins',              'Espaces Menu Accord Mets & Vins'],[m
+[32m+[m[32m            ['#cartes-vins',            'Espace Cartes des Vins'],[m
+[32m+[m[32m            ['#reseautage',             'R&eacute;seautages Resto, H&eacute;bergement, Activit&eacute;s'],[m
+[32m+[m[32m            ['#boulangeries',           'Boulangeries, &Eacute;picerie Fine, Terroir'],[m
+[32m+[m[32m            ['#bannieres',              'Banni&egrave;res Alimentations (IGA, M&eacute;tro, Super C)'],[m
+[32m+[m[32m        ],[m
+[32m+[m[32m        'Espaces Vedettes' => [[m
+[32m+[m[32m            ['#videos-vedettes',        'Espaces Vid&eacute;os Vedettes'],[m
+[32m+[m[32m            ['#restaurants-vedettes',   'Espaces Restaurants Vedettes'],[m
+[32m+[m[32m            ['#hebergements-vedettes',  'Espaces H&eacute;bergements Vedettes'],[m
+[32m+[m[32m            ['#destinations-vedettes',  'Espaces Destinations Vedettes'],[m
+[32m+[m[32m            ['#evenements-vedettes',    'Espaces &Eacute;v&eacute;nements Vedettes'],[m
+[32m+[m[32m            ['#produits-vedettes',      'Espaces Produits Vedettes'],[m
+[32m+[m[32m            ['#entreprises-vedettes',   'Espaces Entreprises Vedettes'],[m
+[32m+[m[32m            ['#galeries-vedettes',      'Espaces Galeries Vedettes'],[m
+[32m+[m[32m            ['#grandes-chaines',        'Espaces Grandes Cha&icirc;nes'],[m
+[32m+[m[32m        ],[m
+[32m+[m[32m        'Voyages & Forfaits Touristique International' => [[m
+[32m+[m[32m            ['#forfaits-quebec',        'Espaces Forfait Qu&eacute;bec'],[m
+[32m+[m[32m            ['#nouveaux-forfaits',      'Espaces Nouveaux Forfaits'],[m
+[32m+[m[32m            ['#forfaits-europe',        'Espaces Forfaits Europe'],[m
+[32m+[m[32m            ['#affichez-forfaits',      'Affichez votre Forfaits'],[m
+[32m+[m[32m            ['#creez-forfaits',         'Cr&eacute;ez vos Forfaits'],[m
+[32m+[m[32m            ['#alertes-voyages',        'Espaces Alertes Voyages'],[m
+[32m+[m[32m            ['#aeroports',              'Espaces A&eacute;roport du Monde'],[m
+[32m+[m[32m            ['#explorez-inattendu',     'Explorez l\'Inattendu / Activit&eacute;s Plein Air'],[m
+[32m+[m[32m            ['#idees-aventures',        'Espaces Id&eacute;es d\'Aventures'],[m
+[32m+[m[32m            ['#activites-4-saisons',    'Espaces Activit&eacute;s Quatre Saisons'],[m
+[32m+[m[32m            ['#activites-hiver',        'Espaces Activit&eacute;s Hivernales'],[m
+[32m+[m[32m            ['#activites-ete',          'Espaces Activit&eacute;s Printemps &Eacute;t&eacute;'],[m
+[32m+[m[32m            ['#activites-automne',      'Espaces Activit&eacute;s Automnales'],[m
+[32m+[m[32m        ],[m
+[32m+[m[32m        'Marketplace' => [[m
+[32m+[m[32m            ['#petites-annonces',       'Espaces Mes Petites Annonces'],[m
+[32m+[m[32m            ['#produits-marketplace',   'Affichez vos Produits d\'Ici et d\'Ailleurs'],[m
+[32m+[m[32m            ['#certificats',            'Certificats-Cartes-Produits Cadeaux'],[m
+[32m+[m[32m            ['#packages-cadeaux',       'Espaces Packages Cadeaux'],[m
+[32m+[m[32m        ],[m
+[32m+[m[32m        'Espaces Sp&eacute;cialis&eacute;s' => [[m
+[32m+[m[32m            ['#immo-quebec',            'Immo Qu&eacute;bec'],[m
+[32m+[m[32m            ['#chalets-a-louer',        'Chalets &agrave; Louer'],[m
+[32m+[m[32m            ['#marches-alimentations',  'March&eacute;s d\'Alimentations'],[m
+[32m+[m[32m            ['#location-vehicules',     'Location Auto, VUS, V&eacute;hicules R&eacute;cr&eacute;atifs 4 Saisons'],[m
+[32m+[m[32m            ['#chalets-vendre',         'Espaces Chalets &agrave; Vendre'],[m
+[32m+[m[32m            ['#maisons-chalets',        'Espaces Maisons Chalets &agrave; Vendre'],[m
+[32m+[m[32m            ['#projet-immo',            'Espaces Projet Immobilier Touristique'],[m
+[32m+[m[32m        ],[m
+[32m+[m[32m        '&Agrave; la Une' => [[m
+[32m+[m[32m            ['#nouvelles-heure',        'Espaces Nouvelles de l\'Heure'],[m
+[32m+[m[32m            ['#dernieres-nouvelles',    'Derni&egrave;re Nouvelle'],[m
+[32m+[m[32m            ['#nouvelles-regions',      'Nouvelle par R&eacute;gions'],[m
+[32m+[m[32m        ],[m
+[32m+[m[32m    ];[m
+[32m+[m
+[32m+[m[32m    $mobileLinks = [[m
+[32m+[m[32m        ['route' => 'contact',     'label' => 'Contact'],[m
+[32m+[m[32m        ['route' => 'inscription', 'label' => 'Inscription'],[m
+[32m+[m[32m        ['route' => 'mon-compte',  'label' => 'Mon Compte'],[m
+[32m+[m[32m        ['route' => 'devis',       'label' => 'Devis Gratuit'],[m
+[32m+[m[32m        ['route' => 'favoris',     'label' => 'Mes Favoris'],[m
+[32m+[m[32m        ['route' => 'panier',      'label' => 'Mon Panier'],[m
+[32m+[m[32m    ];[m
+[32m+[m
+[32m+[m[32m    function vmenuSvgIcon(string $name): string {[m
+[32m+[m[32m        return match ($name) {[m
+[32m+[m[32m            'info' => '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',[m
+[32m+[m[32m            'pin' => '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',[m
+[32m+[m[32m            'briefcase' => '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>',[m
+[32m+[m[32m            'building' => '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',[m
+[32m+[m[32m            'cart' => '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>',[m
+[32m+[m[32m            'car' => '<path d="M14 16H9m10 0h3V9l-3-5H5L2 9v7h3m10 0a2 2 0 1 1-4 0m4 0a2 2 0 1 0-4 0"/>',[m
+[32m+[m[32m            'plane' => '<path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',[m
+[32m+[m[32m            'route' => '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',[m
+[32m+[m[32m            default => '',[m
+[32m+[m[32m        };[m
+     }[m
+[31m-    return $maps[$locale][$text] ?? $text;[m
+[31m-};[m
+[31m-@endphp[m
+ [m
+[31m-<div class="vertical-menu-v2-overlay" id="verticalMenuOverlay"></div>[m
+[32m+[m[32m    $closeIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';[m
+[32m+[m[32m@endphp[m
+ [m
+[31m-<aside class="vertical-menu-v2" id="verticalMenuV2">[m
+[32m+[m[32m<aside class="vertical-menu-v2" id="verticalMenuV2" aria-label="Menu de navigation">[m
+     <div class="vertical-menu-v2-header">[m
+[31m-        <h2 class="vertical-menu-v2-title"><img src="{{asset('logo.png')}}" alt="Go Exploria" class="vertical-menu-v2-logo"></h2>[m
+[31m-        <button class="vertical-menu-v2-close" id="closeVerticalMenu" aria-label="Fermer le menu">[m
+[31m-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">[m
+[31m-                <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>[m
+[32m+[m[32m        <a href="{{ url('/') }}" class="vertical-menu-v2-logo">[m
+[32m+[m[32m            <img src="{{ asset('images/logo-go-exploria.png') }}" alt="Go Exploria">[m
+[32m+[m[32m        </a>[m
+[32m+[m[32m        <button type="button" class="vertical-menu-v2-close" id="closeVerticalMenu" aria-label="Fermer le menu">[m
+[32m+[m[32m            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">[m
+[32m+[m[32m                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>[m
+             </svg>[m
+         </button>[m
+     </div>[m
+ [m
+[31m-    <nav class="vertical-menu-v2-content">[m
+[31m-        <div class="vertical-menu-v2-list" id="verticalMenuList">[m
+[31m-            {{-- Destinations (toujours en premier) --}}[m
+[31m-            <div class="vertical-menu-v2-item vertical-menu-v2-destinations-item">[m
+[31m-                <a href="#" class="vertical-menu-v2-link vertical-menu-v2-destinations-trigger">[m
+[31m-                    <span>&#127758; {{ $tr('Destinations') }}</span>[m
+[31m-                    <svg class="vertical-menu-v2-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">[m
+[31m-                        <polyline points="9 18 15 12 9 6"></polyline>[m
+[31m-                    </svg>[m
+[31m-                </a>[m
+[31m-            </div>[m
+[31m-[m
+[31m-            {{-- Pictos (i / iT / iB / EE / ED / MP / Car / Plane / P&GO) --}}[m
+[31m-            <div class="vmenu">[m
+[31m-                <div class="vmenu-quick-link-item" id="vmenuTriggerInfo" title="{{ $tr('Informations') }}">[m
+[31m-                    <div class="icon-circle icon-blue"><span class="picto-label">i</span></div>[m
+[31m-                </div>[m
+[31m-                <div class="vmenu-quick-link-item" id="vmenuTriggerTourisme" title="{{ $tr('Activités Tourisme') }}">[m
+[31m-                    <div class="icon-circle icon-blue"><span class="picto-label">iT</span></div>[m
+[31m-                </div>[m
+[31m-                <div class="vmenu-quick-link-item" id="vmenuTriggerBusiness" title="{{ $tr('Activités Business') }}">[m
+[31m-                    <div class="icon-circle icon-blue"><span class="picto-label">iB</span></div>[m
+[31m-                </div>[m
+[31m-                <div class="vmenu-quick-link-item" id="vmenuTriggerEE" title="{{ $tr('Espace Entreprise') }}">[m
+[31m-                    <div class="icon-circle icon-blue"><span class="picto-label">EE</span></div>[m
+[31m-                </div>[m
+[31m-                <div class="vmenu-quick-link-item" id="vmenuTriggerED" title="{{ $tr('Espace Destination') }}">[m
+[31m-                    <div class="icon-circle icon-blue"><span class="picto-label">ED</span></div>[m
+[32m+[m[32m    <div class="vertical-menu-v2-body">[m
+[32m+[m[32m        <div class="vmenu-quick-links">[m
+[32m+[m[32m            @foreach ($pictos as $p)[m
+[32m+[m[32m                <div class="vmenu-quick-link-item" id="{{ $p['id'] }}" title="{{ $tr($p['label']) }}">[m
+[32m+[m[32m                    <div class="icon-circle icon-blue"{!! isset($p['style']) ? ' style="' . $p['style'] . '"' : '' !!}>[m
+[32m+[m[32m                        @if ($p['type'] === 'label')[m
+[32m+[m[32m                            <span class="picto-label">{!! $p['value'] !!}</span>[m
+[32m+[m[32m                        @else[m
+[32m+[m[32m                            <i class="fas {{ $p['value'] }} picto-icon"></i>[m
+[32m+[m[32m                        @endif[m
+[32m+[m[32m                    </div>[m
+                 </div>[m
+[31m-                <div class="vmenu-quick-link-item" id="vmenuTriggerMP" title="{{ $tr('Marketplace') }}">[m
+[31m-                    <div class="icon-circle icon-blue"><span class="picto-label">MP</span></div>[m
+[31m-                </div>[m
+[31m-                <div class="vmenu-quick-link-item" id="vmenuTriggerCar" title="{{ $tr('Location Véhicule') }}">[m
+[31m-                    <div class="icon-circle icon-blue"><i class="fas fa-car picto-icon"></i></div>[m
+[31m-                </div>[m
+[31m-                <div class="vmenu-quick-link-item" id="vmenuTriggerPlane" title="{{ $tr('Billets Avion') }}">[m
+[31m-                    <div class="icon-circle icon-blue"><i class="fas fa-plane picto-icon"></i></div>[m
+[31m-                </div>[m
+[31m-                <div class="vmenu-quick-link-item" id="vmenuTriggerPlanGo" title="{{ $tr('Plan & GO') }}">[m
+[31m-                    <div class="icon-circle icon-blue" style="font-size:9px;font-weight:800;"><span class="picto-label">P&GO</span></div>[m
+[31m-                </div>[m
+[31m-            </div>[m
+[31m-[m
+[31m-            {{-- Section items --}}[m
+[31m-            <div class="vertical-menu-v2-item vertical-menu-v2-section-item" data-section="espaces-medias">[m
+[31m-                <a href="#" class="vertical-menu-v2-link"><span>Espaces M&eacute;dias</span>[m
+[31m-                    <svg class="vertical-menu-v2-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline poin

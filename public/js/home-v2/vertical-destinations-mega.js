@@ -205,6 +205,9 @@ class VerticalSectionsMegaMenu {
         this.megaMenu.classList.remove('active');
         document.querySelectorAll('.vertical-menu-v2-section-item').forEach(i => i.classList.remove('active'));
     }
+
+    initToggleListeners() {
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
