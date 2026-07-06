@@ -1176,7 +1176,7 @@
                 </div>
 
                 <div class="form-block">
-                    <h2 class="block-title"><span class="step">4</span> Médias et documents</h2>
+                    <h2 class="block-title"><span class="step">3</span> Médias et documents</h2>
                     <div class="form-group">
                         <label for="media_files">Fichiers joints (images, PDF, XLSX, CSV, DOC...)</label>
                         <input id="media_files" name="media_files[]" type="file" multiple accept=".jpg,.jpeg,.png,.gif,.webp,.bmp,.svg,.pdf,.csv,.txt,.xls,.xlsx,.ods,.doc,.docx,.ppt,.pptx,.zip,.rar">
@@ -1188,6 +1188,12 @@
 
                 <!-- Champ caché pour le discount sélectionné -->
                 <input type="hidden" name="selected_discount_id" id="selected_discount_id" value="">
+
+                <label class="consent" style="margin-bottom:14px;">
+                    <input type="checkbox" name="consent" value="1" checked>
+                    <span style="color:#ffc439;font-size:15px;font-weight:700;">J'accepte que mes informations soient utilisées pour le traitement de ma demande.</span>
+                </label>
+                @error('consent')<span class="field-error">{{ $message }}</span>@enderror
 
                 <div class="form-actions" style="grid-template-columns: 1fr;">
                     <button type="submit" name="checkout_action" value="request" class="submit-btn submit-btn--request">
