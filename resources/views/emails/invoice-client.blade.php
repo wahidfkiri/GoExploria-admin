@@ -31,7 +31,7 @@
                 <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
                     <tr>
                         <td style="vertical-align:top;">
-                            <div style="font-size:22px;font-weight:800;letter-spacing:.5px;">GO EXPLORIA</div>
+                            <div style="font-size:22px;font-weight:800;letter-spacing:.5px;">GO EXPLORIA BUSINESS</div>
                             <div style="font-size:13px;opacity:.85;margin-top:4px;">Facture / Invoice</div>
                         </td>
                         <td style="vertical-align:top;text-align:right;">
@@ -118,11 +118,11 @@
 
             <!-- Pied -->
             <div style="padding:18px 28px;background:#f8fafc;border-top:1px solid #edf2f7;font-size:12px;color:#64748b;line-height:1.6;">
-                <p style="margin:0 0 6px;">Merci pour votre confiance. Cette facture vous est adressée suite à votre demande sur Go Exploria.</p>
+                <p style="margin:0 0 6px;">Merci pour votre confiance. Cette facture vous est adressée suite à votre demande sur Go Exploria Business.</p>
                 <p style="margin:0;">Pour toute question, répondez simplement à cet email ou contactez-nous à infogoexploria@gmail.com.</p>
             </div>
         </div>
-        <div style="text-align:center;color:#94a3b8;font-size:11px;margin-top:16px;">© {{ $issuedAt->format('Y') }} Go Exploria — Tous droits réservés.</div>
+        <div style="text-align:center;color:#94a3b8;font-size:11px;margin-top:16px;">© {{ $issuedAt->format('Y') }} Go Exploria Business — Tous droits réservés.</div>
     </div>
 </body>
 </html>

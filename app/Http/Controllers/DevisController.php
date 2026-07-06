@@ -7,6 +7,11 @@ use App\Models\BillingDiscount;
 use App\Models\BillingRequest;
 use App\Models\BillingRequestService;
 use App\Models\BillingSetting;
+use App\Models\Customer;
+use App\Models\Etablissement;
+use App\Models\Invoice;
+use App\Models\InvoiceLine;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\MapCategory;
 use App\Models\MapPoint;
 use App\Models\Plan;
@@ -794,25 +799,137 @@ class DevisController extends Controller
             }
 
             $fullName = trim(($validated['first_name'] ?? '') . ' ' . ($validated['last_name'] ?? ''));
+            $fullName = $fullName !== '' ? $fullName : 'Client';
             $currency = (string) data_get($billingRequest->metadata, 'currency', self::DEFAULT_CURRENCY);
-            $invoiceNumber = 'FAC-' . now()->format('Ymd') . '-' . str_pad((string) $billingRequest->id, 5, '0', STR_PAD_LEFT);
+            $issuedAt = now();
+            $dueAt = now()->addDays(30);
+            $invoiceNumber = 'FAC-' . $issuedAt->format('Ymd') . '-' . str_pad((string) $billingRequest->id, 5, '0', STR_PAD_LEFT);
 
-            Mail::send('emails.invoice-client', [
+            // Enregistre la facture en base (non bloquant). Si l'insertion réussit,
+            // on réutilise son numéro officiel.
+            $invoice = $this->persistInvoice($invoiceNumber, $validated, $billingRequest, $issuedAt, $dueAt);
+            if ($invoice && $invoice->invoice_number) {
+                $invoiceNumber = $invoice->invoice_number;
+            }
+
+            $viewData = [
                 'invoiceNumber' => $invoiceNumber,
                 'client' => $validated,
-                'fullName' => $fullName !== '' ? $fullName : 'Client',
+                'fullName' => $fullName,
                 'billingRequest' => $billingRequest,
                 'items' => $billingRequest->items,
                 'currency' => $currency,
-                'issuedAt' => now(),
-                'dueAt' => now()->addDays(30),
-            ], function ($message) use ($clientEmail, $fullName, $invoiceNumber): void {
-                $message->to($clientEmail, $fullName !== '' ? $fullName : null)
+                'issuedAt' => $issuedAt,
+                'dueAt' => $dueAt,
+            ];
+
+            // Génère le PDF de la facture (non bloquant).
+            $pdfData = null;
+            try {
+                $pdfData = Pdf::loadView('pdf.invoice', $viewData)->output();
+            } catch (Throwable $e) {
+                report($e);
+            }
+
+            Mail::send('emails.invoice-client', $viewData, function ($message) use ($clientEmail, $fullName, $invoiceNumber, $pdfData): void {
+                $message->to($clientEmail, $fullName)
                     ->cc('infogoexploria@gmail.com')
-                    ->subject('Votre facture ' . $invoiceNumber . ' - Go Exploria');
+                    ->subject('Votre facture ' . $invoiceNumber . ' - Go Exploria Business');
+
+                if ($pdfData !== null) {
+                    $message->attachData($pdfData, 'facture-' . $invoiceNumber . '.pdf', ['mime' => 'application/pdf']);
+                }
             });
         } catch (Throwable $e) {
             report($e);
+        }
+    }
+
+    /**
+     * Enregistre la facture (Invoice + InvoiceLine) en base. Non bloquant :
+     * en cas d'échec (contraintes, établissement manquant…) on renvoie null
+     * et l'email/PDF partent quand même.
+     */
+    private function persistInvoice(string $invoiceNumber, array $validated, BillingRequest $billingRequest, $issuedAt, $dueAt): ?Invoice
+    {
+        try {
+            $etablissementId = (int) (env('DEVIS_INVOICE_ETABLISSEMENT_ID') ?: 0);
+            if ($etablissementId <= 0) {
+                $etablissementId = (int) (optional(Etablissement::query()->orderBy('id')->first())->id ?? 0);
+            }
+            if ($etablissementId <= 0) {
+                return null;
+            }
+
+            // Client (customer) : recherche par email, création sinon.
+            $customer = Customer::firstOrCreate(
+                ['email' => $validated['email']],
+                [
+                    'etablissement_id' => $etablissementId,
+                    'type' => 'particulier',
+                    'prenom' => $validated['first_name'] ?? null,
+                    'nom' => $validated['last_name'] ?? null,
+                    'telephone' => $validated['phone'] ?? null,
+                    'entreprise_nom' => $validated['company'] ?? null,
+                    'no_tva' => $validated['client_vat_number'] ?? null,
+                    'adresse' => $validated['client_address'] ?? null,
+                    'code_postal' => $validated['client_zipcode'] ?? null,
+                    'ville' => $validated['city'] ?? null,
+                    'pays' => $validated['country'] ?? null,
+                ]
+            );
+
+            $fullName = trim(($validated['first_name'] ?? '') . ' ' . ($validated['last_name'] ?? ''));
+
+            $invoice = Invoice::create([
+                'invoice_number' => $invoiceNumber,
+                'etablissement_id' => $etablissementId,
+                'client_id' => $customer->id,
+                'invoice_date' => $issuedAt->toDateString(),
+                'due_date' => $dueAt->toDateString(),
+                'subtotal' => $billingRequest->subtotal,
+                'tax_total' => $billingRequest->tax_total,
+                'total' => $billingRequest->total,
+                'paid_amount' => 0,
+                'remaining_amount' => $billingRequest->total,
+                'taxes_breakdown' => $billingRequest->taxes_breakdown,
+                'status' => 'envoyee',
+                'client_name' => $fullName !== '' ? $fullName : ($validated['company'] ?? 'Client'),
+                'client_address' => $validated['client_address'] ?? null,
+                'client_zipcode' => $validated['client_zipcode'] ?? null,
+                'client_city' => $validated['city'] ?? null,
+                'client_country' => $validated['country'] ?? null,
+                'client_vat_number' => $validated['client_vat_number'] ?? null,
+                'footer' => 'Merci pour votre confiance — Go Exploria Business',
+                'metadata' => [
+                    'source' => 'devis_page',
+                    'client_email' => $validated['email'] ?? null,
+                    'client_phone' => $validated['phone'] ?? null,
+                    'company' => $validated['company'] ?? null,
+                    'billing_request_id' => $billingRequest->id,
+                ],
+            ]);
+
+            foreach ($billingRequest->items as $index => $item) {
+                InvoiceLine::create([
+                    'invoice_id' => $invoice->id,
+                    'line_number' => $index + 1,
+                    'description' => $item->title,
+                    'detailed_description' => $item->description,
+                    'type' => 'service',
+                    'quantity' => (int) $item->quantity,
+                    'unit_price' => $item->unit_price,
+                    'subtotal' => $item->subtotal,
+                    'tax_rate' => $item->tax_rate,
+                    'tax_amount' => $item->tax_amount,
+                    'total' => $item->total,
+                ]);
+            }
+
+            return $invoice;
+        } catch (Throwable $e) {
+            report($e);
+            return null;
         }
     }
 
