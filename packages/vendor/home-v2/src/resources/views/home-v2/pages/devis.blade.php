@@ -977,7 +977,81 @@
             <form method="POST" action="{{ route('devis.submit') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="form-block">
-                    <h2 class="block-title"><span class="step">1</span> Services sélectionnés</h2>
+                    <h2 class="block-title"><span class="step">1</span> Informations client</h2>
+                    <div class="grid-1">
+                        <div class="form-group">
+                            <label for="company">Entreprise</label>
+                            <input id="company" name="company" type="text" value="{{ old('company') }}">
+                            @error('company')<span class="field-error">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="first_name">Prénom *</label>
+                            <input id="first_name" name="first_name" type="text" value="{{ old('first_name') }}" required>
+                            @error('first_name')<span class="field-error">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Nom *</label>
+                            <input id="last_name" name="last_name" type="text" value="{{ old('last_name') }}" required>
+                            @error('last_name')<span class="field-error">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input id="email" name="email" type="email" value="{{ old('email') }}" required>
+                            @error('email')<span class="field-error">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Téléphone *</label>
+                            <input id="phone" name="phone" type="text" value="{{ old('phone') }}" required>
+                            @error('phone')<span class="field-error">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="client_address">Adresse de facturation</label>
+                            <input id="client_address" name="client_address" type="text" value="{{ old('client_address') }}">
+                            @error('client_address')<span class="field-error">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="client_vat_number">N&deg; TVA / TPS (optionnel)</label>
+                            <input id="client_vat_number" name="client_vat_number" type="text" value="{{ old('client_vat_number') }}">
+                            @error('client_vat_number')<span class="field-error">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label for="client_zipcode">Code postal</label>
+                            <input id="client_zipcode" name="client_zipcode" type="text" value="{{ old('client_zipcode') }}">
+                            @error('client_zipcode')<span class="field-error">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="city">Ville</label>
+                            <input id="city" name="city" type="text" value="{{ old('city') }}">
+                            @error('city')<span class="field-error">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Pays</label>
+                            <input id="country" name="country" type="text" value="{{ old('country') }}">
+                            @error('country')<span class="field-error">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="preferred_contact">Mode de contact préféré *</label>
+                        <select id="preferred_contact" name="preferred_contact" required>
+                            <option value="email" @selected(old('preferred_contact') === 'email')>Email</option>
+                            <option value="phone" @selected(old('preferred_contact') === 'phone')>Téléphone</option>
+                            <option value="whatsapp" @selected(old('preferred_contact') === 'whatsapp')>WhatsApp</option>
+                            <option value="zoom" @selected(old('preferred_contact') === 'zoom')>Zoom / visio</option>
+                        </select>
+                        @error('preferred_contact')<span class="field-error">{{ $message }}</span>@enderror
+                    </div>
+                </div>
+
+                <div class="form-block">
+                    <h2 class="block-title"><span class="step">2</span> Services sélectionnés</h2>
 
                     @if($servicesCatalog->isNotEmpty())
                         <div class="services-grid" id="servicesGrid">
@@ -1102,53 +1176,7 @@
                 </div>
 
                 <div class="form-block">
-                    <h2 class="block-title"><span class="step">2</span> Détails du projet</h2>
-
-                    <div class="grid-3">
-                        <div class="form-group">
-                            <label for="plan_interest">Plan envisagé</label>
-                            <select id="plan_interest" name="plan_interest">
-                                <option value="">Aucun plan sélectionné</option>
-                                @foreach($plans as $plan)
-                                    <option value="{{ $plan->name }}" @selected(old('plan_interest') === $plan->name)>
-                                        {{ $plan->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('plan_interest')<span class="field-error">{{ $message }}</span>@enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="budget">Budget estimatif</label>
-                            <select id="budget" name="budget">
-                                <option value="">À définir</option>
-                                @foreach (['Moins de 2 000 CAD', '2 000 - 5 000 CAD', '5 000 - 10 000 CAD', '10 000 - 20 000 CAD', 'Plus de 20 000 CAD'] as $budget)
-                                    <option value="{{ $budget }}" @selected(old('budget') === $budget)>{{ $budget }}</option>
-                                @endforeach
-                            </select>
-                            @error('budget')<span class="field-error">{{ $message }}</span>@enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="project_deadline">Échéance souhaitée</label>
-                            <input id="project_deadline" name="project_deadline" type="date" value="{{ old('project_deadline') }}">
-                            @error('project_deadline')<span class="field-error">{{ $message }}</span>@enderror
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="project_details">Description de votre besoin</label>
-                        <textarea id="project_details" name="project_details" rows="6" placeholder="Décrivez précisément vos attentes, objectifs, délais et contraintes.">{{ old('project_details') }}</textarea>
-                        @error('project_details')<span class="field-error">{{ $message }}</span>@enderror
-                    </div>
-
-                    <label class="consent">
-                        <input type="checkbox" name="consent" value="1" checked>
-                        <span style="color:#ffc439;font-size:15px;font-weight:700;">J'accepte que mes informations soient utilisées pour le traitement de ma demande de devis.</span>
-                    </label>
-                    @error('consent')<span class="field-error">{{ $message }}</span>@enderror
-                </div>
-
-                <div class="form-block">
-                    <h2 class="block-title"><span class="step">3</span> Médias et documents</h2>
+                    <h2 class="block-title"><span class="step">4</span> Médias et documents</h2>
                     <div class="form-group">
                         <label for="media_files">Fichiers joints (images, PDF, XLSX, CSV, DOC...)</label>
                         <input id="media_files" name="media_files[]" type="file" multiple accept=".jpg,.jpeg,.png,.gif,.webp,.bmp,.svg,.pdf,.csv,.txt,.xls,.xlsx,.ods,.doc,.docx,.ppt,.pptx,.zip,.rar">
@@ -1162,10 +1190,10 @@
                 <input type="hidden" name="selected_discount_id" id="selected_discount_id" value="">
 
                 <div class="form-actions" style="grid-template-columns: 1fr;">
-                    <a href="https://app.goexploriabusiness.com/login" class="submit-btn submit-btn--request" style="text-decoration: none;">
-                        <i class="fas fa-rocket"></i>
-                        Activer mon plan
-                    </a>
+                    <button type="submit" name="checkout_action" value="request" class="submit-btn submit-btn--request">
+                        <i class="fas fa-file-invoice"></i>
+                        Envoyer ma facture
+                    </button>
                 </div>
             </form>
         </div>

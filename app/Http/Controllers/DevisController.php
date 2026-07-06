@@ -95,6 +95,9 @@ class DevisController extends Controller
             'company' => ['nullable', 'string', 'max:180'],
             'city' => ['nullable', 'string', 'max:120'],
             'country' => ['nullable', 'string', 'max:120'],
+            'client_address' => ['nullable', 'string', 'max:255'],
+            'client_zipcode' => ['nullable', 'string', 'max:30'],
+            'client_vat_number' => ['nullable', 'string', 'max:60'],
             'preferred_contact' => ['required', 'in:email,phone,whatsapp,zoom'],
             'service_quantities' => ['required', 'array', 'min:1'],
             'service_quantities.*' => ['nullable', 'integer', 'min:0', 'max:999'],
@@ -164,6 +167,9 @@ class DevisController extends Controller
 
         $this->sendDevisEmail($devisRequest, $validated, $storedMedia, $billingRequests);
 
+        // Génère la facture et l'envoie au client par email.
+        $this->sendClientInvoiceEmail($validated, $billingRequests);
+
         if ($checkoutAction === 'pay_now') {
             if ($request->wantsJson()) {
                 return $this->handlePayPalPaymentJson($billingRequests, $devisRequest);
@@ -172,12 +178,12 @@ class DevisController extends Controller
         }
 
         if ($request->wantsJson()) {
-            return response()->json(['success' => 'Votre demande de devis a bien été enregistrée et envoyée. Notre équipe vous répondra rapidement.']);
+            return response()->json(['success' => 'Votre facture a bien été générée et envoyée à votre adresse email. Notre équipe vous répondra rapidement.']);
         }
 
         return redirect()
             ->route('devis')
-            ->with('success', 'Votre demande de devis a bien été enregistrée et envoyée. Notre équipe vous répondra rapidement.');
+            ->with('success', 'Votre facture a bien été générée et envoyée à votre adresse email. Notre équipe vous répondra rapidement.');
     }
 
     /**
@@ -770,6 +776,43 @@ class DevisController extends Controller
                 'email_sent' => false,
                 'email_error' => Str::limit((string) $e->getMessage(), 2000, ''),
             ]);
+        }
+    }
+
+    /**
+     * Génère la facture à partir de la demande de facturation et l'envoie
+     * au client par email (avec copie à l'équipe). Non bloquant.
+     */
+    private function sendClientInvoiceEmail(array $validated, Collection $billingRequests): void
+    {
+        try {
+            $billingRequest = $billingRequests->first();
+            $clientEmail = $validated['email'] ?? null;
+
+            if (! $billingRequest || ! $clientEmail) {
+                return;
+            }
+
+            $fullName = trim(($validated['first_name'] ?? '') . ' ' . ($validated['last_name'] ?? ''));
+            $currency = (string) data_get($billingRequest->metadata, 'currency', self::DEFAULT_CURRENCY);
+            $invoiceNumber = 'FAC-' . now()->format('Ymd') . '-' . str_pad((string) $billingRequest->id, 5, '0', STR_PAD_LEFT);
+
+            Mail::send('emails.invoice-client', [
+                'invoiceNumber' => $invoiceNumber,
+                'client' => $validated,
+                'fullName' => $fullName !== '' ? $fullName : 'Client',
+                'billingRequest' => $billingRequest,
+                'items' => $billingRequest->items,
+                'currency' => $currency,
+                'issuedAt' => now(),
+                'dueAt' => now()->addDays(30),
+            ], function ($message) use ($clientEmail, $fullName, $invoiceNumber): void {
+                $message->to($clientEmail, $fullName !== '' ? $fullName : null)
+                    ->cc('infogoexploria@gmail.com')
+                    ->subject('Votre facture ' . $invoiceNumber . ' - Go Exploria');
+            });
+        } catch (Throwable $e) {
+            report($e);
         }
     }
 
