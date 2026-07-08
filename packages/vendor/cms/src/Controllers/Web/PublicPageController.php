@@ -1260,11 +1260,15 @@ class PublicPageController extends Controller
             $attachmentName = $file->getClientOriginalName();
             $safeName = Str::slug(pathinfo($attachmentName, PATHINFO_FILENAME)) ?: 'piece-jointe';
             $storedName = $safeName . '-' . Str::random(8) . '.' . $file->getClientOriginalExtension();
-            $attachmentPath = $file->storeAs(
+            $relativePath = $file->storeAs(
                 'cms/contact-attachments/' . $etablissement->id,
                 $storedName,
                 'public'
             );
+            // On sauvegarde l'URL complète (https://.../storage/...) en base.
+            $attachmentPath = $relativePath
+                ? url(Storage::disk('public')->url($relativePath))
+                : null;
         }
 
         $message = ContactMessage::create([
