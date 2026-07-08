@@ -102,11 +102,46 @@
 
         .cms-cw-consent { font-size: 11.5px; line-height: 1.5; color: #94a3b8; margin: 2px 0 0; }
 
+        /* Toast de succès (bas droite, au-dessus du bouton flottant) */
+        .cms-cw-toast {
+            position: fixed;
+            right: 24px;
+            bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+            z-index: 10003;
+            max-width: min(360px, calc(100vw - 32px));
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 14px 16px;
+            color: #064e3b;
+            background: #ffffff;
+            border: 1px solid rgba(16, 185, 129, .35);
+            border-left: 4px solid #10b981;
+            border-radius: 12px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .22);
+            font-family: inherit; font-size: 14px; line-height: 1.45;
+            opacity: 0; transform: translateY(14px);
+            transition: opacity .28s ease, transform .28s ease;
+        }
+        .cms-cw-toast.is-visible { opacity: 1; transform: translateY(0); }
+        .cms-cw-toast__icon {
+            flex-shrink: 0; width: 26px; height: 26px; display: inline-flex; align-items: center;
+            justify-content: center; border-radius: 50%; background: #10b981; color: #fff;
+        }
+        .cms-cw-toast__icon svg { width: 15px; height: 15px; display: block; }
+        .cms-cw-toast__body { flex: 1; }
+        .cms-cw-toast__title { font-weight: 800; color: #065f46; margin-bottom: 2px; }
+        .cms-cw-toast__msg { color: #334155; }
+        .cms-cw-toast__close {
+            flex-shrink: 0; border: none; background: none; color: #94a3b8; font-size: 18px;
+            line-height: 1; cursor: pointer; padding: 0 2px;
+        }
+        .cms-cw-toast__close:hover { color: #475569; }
+
         @media (max-width: 640px) {
             .cms-cw-fab { right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); padding: 12px 16px; font-size: 14px; }
             .cms-cw-fab__label { display: none; }
             .cms-cw-fab { padding: 14px; }
             .cms-cw-drawer { width: 100vw; }
+            .cms-cw-toast { right: 16px; left: 16px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); max-width: none; }
         }
     </style>
 
@@ -144,12 +179,48 @@
             // Affiche le nom du fichier choisi
             var fileInput = drawer.querySelector('input[type="file"][name="attachment"]');
             var fileLabel = drawer.querySelector('[data-cms-cw-filename]');
+            var defaultFileText = fileLabel ? fileLabel.textContent : '';
             if (fileInput && fileLabel) {
-                var defaultText = fileLabel.textContent;
                 fileInput.addEventListener('change', function () {
-                    fileLabel.textContent = this.files && this.files.length ? this.files[0].name : defaultText;
+                    fileLabel.textContent = this.files && this.files.length ? this.files[0].name : defaultFileText;
                 });
             }
+
+            // Toast de succès (bas droite)
+            var toastTimer = null;
+            function showToast(message) {
+                var existing = document.getElementById('cmsContactToast');
+                if (existing) existing.remove();
+                if (toastTimer) clearTimeout(toastTimer);
+
+                var toast = document.createElement('div');
+                toast.id = 'cmsContactToast';
+                toast.className = 'cms-cw-toast';
+                toast.setAttribute('role', 'status');
+                toast.innerHTML =
+                    '<span class="cms-cw-toast__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg></span>' +
+                    '<div class="cms-cw-toast__body"><div class="cms-cw-toast__title">Message envoyé</div><div class="cms-cw-toast__msg"></div></div>' +
+                    '<button type="button" class="cms-cw-toast__close" aria-label="Fermer">&times;</button>';
+                toast.querySelector('.cms-cw-toast__msg').textContent = message || 'Merci ! Nous vous répondrons rapidement.';
+                document.body.appendChild(toast);
+
+                requestAnimationFrame(function () { toast.classList.add('is-visible'); });
+
+                function dismiss() {
+                    toast.classList.remove('is-visible');
+                    setTimeout(function () { if (toast.parentNode) toast.remove(); }, 300);
+                }
+                toast.querySelector('.cms-cw-toast__close').addEventListener('click', dismiss);
+                toastTimer = setTimeout(dismiss, 5000);
+            }
+
+            // Au succès de l'envoi : fermer le drawer puis afficher le toast
+            drawer.addEventListener('cms-contact:success', function (e) {
+                closeDrawer();
+                if (fileLabel) fileLabel.textContent = defaultFileText;
+                var msg = (e.detail && e.detail.message) ? e.detail.message : '';
+                setTimeout(function () { showToast(msg); }, 260);
+            });
         });
     </script>
 @endonce

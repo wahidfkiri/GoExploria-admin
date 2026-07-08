@@ -116,6 +116,10 @@
                     .then(function (payload) {
                         form.reset();
                         showStatus(form, 'success', payload.message || 'Votre message a bien été envoyé.');
+                        form.dispatchEvent(new CustomEvent('cms-contact:success', {
+                            bubbles: true,
+                            detail: payload || {}
+                        }));
                     })
                     .catch(function (error) {
                         var payload = error.payload || {};
