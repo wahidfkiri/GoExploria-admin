@@ -10,13 +10,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ $destinationName ? __('home-v2.home.meta_description') . ' - ' . $destinationName : __('home-v2.home.meta_description') }}">
     <title>{{ $destinationName ? __('home-v2.home.meta_title') . ' - ' . $destinationName : __('home-v2.home.meta_title') }}</title>
-    
+
+    {{-- Détecte au plus tôt si le skeleton a déjà été montré (1re visite uniquement) --}}
+    <script>
+        (function () {
+            try {
+                if (localStorage.getItem('goexp_home_seen') === '1') {
+                    document.documentElement.classList.add('home-skeleton-seen');
+                }
+            } catch (e) {}
+        })();
+    </script>
+
+    {{-- Préconnexion aux CDN tiers pour accélérer le premier rendu --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome pour les icônes -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    {{-- Font Awesome chargé sans bloquer le rendu (bascule en feuille de style au chargement) --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     
     <link rel="stylesheet" href="{{ asset('css/home-v2/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-menu.css') }}">
@@ -459,6 +474,9 @@
 
     {{-- ── Skeleton de chargement (overlay non-intrusif, retiré au window.load) ── --}}
     <style id="home-skeleton-style">
+        /* Visites suivantes : jamais de skeleton, pas de flash */
+        html.home-skeleton-seen #home-skeleton { display: none !important; }
+
         #home-skeleton {
             position: fixed;
             inset: 0;
@@ -509,8 +527,15 @@
         .hs-title { width: 320px; max-width: 70%; height: 30px; margin: 30px auto 22px; border-radius: 8px; }
         .hs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
         .hs-card { height: 220px; border-radius: 14px; }
-        @media (max-width: 992px) { .hs-grid { grid-template-columns: repeat(2, 1fr); } .hs-nav { display: none; } }
-        @media (max-width: 560px) { .hs-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 1200px) { .hs-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 992px) { .hs-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } .hs-nav { display: none; } .hs-hero { height: min(38vh, 300px); } }
+        @media (max-width: 560px) {
+            .hs-grid { grid-template-columns: 1fr; }
+            .hs-header { height: 60px; }
+            .hs-card { height: 180px; }
+            .hs-pills { gap: 8px; }
+            .hs-pills .hs-block { width: 96px; height: 34px; }
+        }
     </style>
 </head>
 <body>
@@ -552,8 +577,21 @@
     <script>
         (function () {
             var root = document.documentElement;
+
+            /* Visites suivantes : on retire immédiatement le skeleton, sans verrou ni animation */
+            if (root.classList.contains('home-skeleton-seen')) {
+                var seenSk = document.getElementById('home-skeleton');
+                if (seenSk && seenSk.parentNode) seenSk.parentNode.removeChild(seenSk);
+                return;
+            }
+
             root.classList.add('home-skeleton-active');
+
+            var done = false;
             function hideSkeleton() {
+                if (done) return;
+                done = true;
+                try { localStorage.setItem('goexp_home_seen', '1'); } catch (e) {}
                 var sk = document.getElementById('home-skeleton');
                 root.classList.remove('home-skeleton-active');
                 if (!sk) return;
@@ -562,13 +600,18 @@
                     if (sk && sk.parentNode) sk.parentNode.removeChild(sk);
                 }, 500);
             }
-            if (document.readyState === 'complete') {
-                hideSkeleton();
+
+            /* Retrait dès que le DOM est prêt (perçu quasi instantané) au lieu d'attendre
+               le chargement complet de toutes les images/vidéos. */
+            if (document.readyState === 'interactive' || document.readyState === 'complete') {
+                window.requestAnimationFrame(hideSkeleton);
             } else {
-                window.addEventListener('load', hideSkeleton);
-                /* Filet de sécurité : ne jamais rester bloqué sur le skeleton */
-                window.setTimeout(hideSkeleton, 8000);
+                document.addEventListener('DOMContentLoaded', function () {
+                    window.requestAnimationFrame(hideSkeleton);
+                });
             }
+            /* Filet de sécurité réduit : ne jamais rester bloqué sur le skeleton */
+            window.setTimeout(hideSkeleton, 3500);
         })();
     </script>
 
@@ -594,7 +637,11 @@
         
         @include('home-v2.components.espace_media.BusinessTourism')
         @unless($destinationContext)
-            @include('geo-map::index')
+            @isset($naMap)
+                @include('home-v2.components.espace_media.TravelMapAmeriqueNord')
+            @else
+                @include('geo-map::index')
+            @endisset
         @endunless
         @include('home-v2.components.espace_media.VideoPlayer')
         @include('home-v2.components.espace_media.ViewingCarousel')

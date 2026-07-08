@@ -29,7 +29,40 @@ class HomeV2Controller extends Controller
             ])
             ->get();
 
-        return view('home-v2.index', compact('sliders', 'plans'));
+        // Carte "Amérique du Nord" (même principe/design que travel-destination/continent/amerique-du-nord).
+        // Les points sont chargés en AJAX côté client → aucun impact sur le temps de chargement initial.
+        $naMap = $this->northAmericaMapData();
+
+        return view('home-v2.index', compact('sliders', 'plans', 'naMap'));
+    }
+
+    /**
+     * Données légères pour la carte Amérique du Nord de la page d'accueil.
+     * Ne précharge pas les points (récupérés en AJAX via travel-destination.map-points).
+     * Retourne null si le continent est introuvable → repli sur l'ancienne carte.
+     */
+    protected function northAmericaMapData(): ?array
+    {
+        try {
+            $continent = \App\Helpers\DestinationHelper::continent('amerique-du-nord')
+                ?? app(\App\Services\DestinationService::class)->getContinentBySlug('amerique-du-nord');
+
+            if (!$continent) {
+                return null;
+            }
+
+            return [
+                'entity'         => $continent,
+                'slug'           => $continent->slug ?? 'amerique-du-nord',
+                'normalizedType' => 'continent',
+                'childEntities'  => $continent->countries()->active()->get(),
+                'mapCategories'  => \App\Models\MapCategory::where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->get(['slug', 'name', 'icon_class', 'color', 'image']),
+            ];
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 
     /**
