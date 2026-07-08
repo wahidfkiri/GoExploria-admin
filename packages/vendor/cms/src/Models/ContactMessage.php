@@ -32,6 +32,8 @@ class ContactMessage extends Model
         'preferred_contact_method',
         'subject',
         'message',
+        'attachment_path',
+        'attachment_name',
         'status',
         'priority',
         'consent',

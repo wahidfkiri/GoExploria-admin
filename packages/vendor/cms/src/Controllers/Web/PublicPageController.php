@@ -1210,6 +1210,7 @@ class PublicPageController extends Controller
             'subject' => ['nullable', 'string', 'max:190'],
             'service' => ['nullable', 'string', 'max:190'],
             'message' => ['required', 'string', 'min:5', 'max:5000'],
+            'attachment' => ['nullable', 'file', 'max:10240', 'mimes:pdf,doc,docx,jpg,jpeg,png,gif,webp,txt,zip'],
             'consent' => ['nullable', 'boolean'],
             'newsletter_opt_in' => ['nullable', 'boolean'],
         ], [
@@ -1218,6 +1219,8 @@ class PublicPageController extends Controller
             'email.email' => 'Le courriel doit être valide.',
             'message.required' => 'Le message est requis.',
             'message.min' => 'Le message doit contenir au moins 5 caractères.',
+            'attachment.max' => 'La pièce jointe ne doit pas dépasser 10 Mo.',
+            'attachment.mimes' => 'Format de pièce jointe non supporté.',
         ]);
 
         if ($validator->fails()) {
@@ -1249,6 +1252,21 @@ class PublicPageController extends Controller
             $metadata['service'] = $service;
         }
 
+        // Pièce jointe optionnelle → stockée sur le disque public.
+        $attachmentPath = null;
+        $attachmentName = null;
+        if ($request->hasFile('attachment') && $request->file('attachment')->isValid()) {
+            $file = $request->file('attachment');
+            $attachmentName = $file->getClientOriginalName();
+            $safeName = Str::slug(pathinfo($attachmentName, PATHINFO_FILENAME)) ?: 'piece-jointe';
+            $storedName = $safeName . '-' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+            $attachmentPath = $file->storeAs(
+                'cms/contact-attachments/' . $etablissement->id,
+                $storedName,
+                'public'
+            );
+        }
+
         $message = ContactMessage::create([
             'etablissement_id' => $etablissement->id,
             'form_name' => trim((string) $request->input('form_name', 'landing_contact')) ?: 'landing_contact',
@@ -1264,6 +1282,8 @@ class PublicPageController extends Controller
             'preferred_contact_method' => $validated['preferred_contact_method'] ?? null,
             'subject' => $subject,
             'message' => $validated['message'],
+            'attachment_path' => $attachmentPath,
+            'attachment_name' => $attachmentName,
             'status' => 'new',
             'priority' => 'normal',
             'consent' => (bool) $request->boolean('consent', true),
