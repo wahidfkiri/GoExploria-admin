@@ -12,7 +12,7 @@
             position: fixed;
             right: 24px;
             bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-            z-index: 10000;
+            z-index: 999998;
             display: inline-flex;
             align-items: center;
             gap: 10px;
@@ -35,7 +35,7 @@
         .cms-cw-fab__label { white-space: nowrap; }
 
         .cms-cw-backdrop {
-            position: fixed; inset: 0; z-index: 10001;
+            position: fixed; inset: 0; z-index: 999999;
             background: rgba(15, 23, 42, .55);
             opacity: 0; visibility: hidden;
             transition: opacity .3s ease, visibility .3s ease;
@@ -43,7 +43,7 @@
         .cms-cw-backdrop.is-open { opacity: 1; visibility: visible; }
 
         .cms-cw-drawer {
-            position: fixed; top: 0; right: 0; z-index: 10002;
+            position: fixed; top: 0; right: 0; z-index: 1000000;
             width: min(440px, 100vw); height: 100%;
             background: #ffffff; color: #111827;
             box-shadow: -18px 0 48px rgba(0, 0, 0, .28);
@@ -107,7 +107,7 @@
             position: fixed;
             right: 24px;
             bottom: calc(88px + env(safe-area-inset-bottom, 0px));
-            z-index: 10003;
+            z-index: 1000001;
             max-width: min(360px, calc(100vw - 32px));
             display: flex; align-items: flex-start; gap: 12px;
             padding: 14px 16px;
