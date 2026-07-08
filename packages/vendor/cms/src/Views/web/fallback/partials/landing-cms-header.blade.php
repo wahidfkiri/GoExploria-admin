@@ -81,6 +81,112 @@
                 window.addEventListener('scroll', requestHeaderUpdate, { passive: true });
             })();
         </script>
+
+        {{-- ================================================================
+             Correctif défensif menu mobile (2 headers : global + CMS DB).
+             Centralisé ici → s'applique à toutes les landing pages.
+             ================================================================ --}}
+        <style>
+            /* (b) Le header CMS reste SOUS le header global (10060) et ne
+               couvre jamais le burger global. */
+            .cms-establishment-header-fixed { z-index: 9990; }
+
+            /* (c) Repli mobile pour le menu du header CMS : sa navigation est
+               masquée par défaut et révélée quand notre burger est activé.
+               Ne s'applique QUE si un burger + une nav ont été détectés
+               (l'élément reçoit l'attribut data-cms-hf-nav). */
+            @media (max-width: 992px) {
+                .cms-establishment-header-fixed [data-cms-hf-nav] { display: none; }
+                .cms-establishment-header-fixed[data-cms-hf-open="true"] [data-cms-hf-nav] {
+                    display: block;
+                }
+            }
+        </style>
+
+        <script>
+            (function () {
+                /* (a) Filet de sécurité : ouverture/fermeture du MENU VERTICAL GLOBAL.
+                   Les contrôleurs officiels (vertical-menu.js / -dynamic.js) font
+                   stopPropagation() sur le burger : s'ils sont bien liés, ce handler
+                   délégué ne reçoit jamais l'événement. Il n'agit donc QUE si, à cause
+                   du double-chargement de scripts, aucun contrôleur n'a pu se lier. */
+                function setGlobalMenu(open) {
+                    var menu = document.getElementById('verticalMenuV2');
+                    var overlay = document.getElementById('verticalMenuOverlay');
+                    if (!menu) return;
+                    menu.classList.toggle('active', open);
+                    if (overlay) overlay.classList.toggle('active', open);
+                    document.body.style.overflow = open ? 'hidden' : '';
+                }
+
+                document.addEventListener('click', function (e) {
+                    if (e.target.closest('#openVerticalMenu, .vertical-menu-v2-trigger')) {
+                        setGlobalMenu(true);
+                        return;
+                    }
+                    if (e.target.closest('#closeVerticalMenu, #verticalMenuOverlay')) {
+                        setGlobalMenu(false);
+                    }
+                }, false);
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') setGlobalMenu(false);
+                });
+
+                /* (c) Menu burger du HEADER CMS (contenu construit dans l'éditeur).
+                   Détection générique d'un déclencheur + d'une nav, puis toggle
+                   d'un état sur le header. N'agit que si les deux sont trouvés. */
+                function pick(root, selectors) {
+                    for (var i = 0; i < selectors.length; i++) {
+                        var el = root.querySelector(selectors[i]);
+                        if (el) return el;
+                    }
+                    return null;
+                }
+
+                function initCmsHeaderMenus() {
+                    document.querySelectorAll('.cms-establishment-header-fixed').forEach(function (header) {
+                        if (header.dataset.cmsHfWired === '1') return;
+
+                        var toggle = pick(header, [
+                            '.navbar-toggler', '.menu-toggle', '.hamburger', '.burger',
+                            '.nav-toggle', '.menu-btn', '[data-toggle="menu"]',
+                            'button[aria-label*="menu" i]', 'button[aria-label*="Menu"]',
+                            'button .fa-bars', '.fa-bars'
+                        ]);
+                        // Si le "burger" est une icône, remonter au bouton/lien parent.
+                        if (toggle && (toggle.classList.contains('fa-bars'))) {
+                            toggle = toggle.closest('button, a') || toggle;
+                        }
+
+                        var nav = pick(header, [
+                            '.navbar-collapse', '.nav-menu', '.mobile-menu', '.menu-list',
+                            'nav ul', 'ul[role="menu"]', 'nav'
+                        ]);
+
+                        if (!toggle || !nav) return; // header simple sans menu : on ne touche à rien
+
+                        header.dataset.cmsHfWired = '1';
+                        if (!nav.hasAttribute('data-cms-hf-nav')) nav.setAttribute('data-cms-hf-nav', '');
+                        header.setAttribute('data-cms-hf-open', 'false');
+
+                        toggle.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            var open = header.getAttribute('data-cms-hf-open') !== 'true';
+                            header.setAttribute('data-cms-hf-open', open ? 'true' : 'false');
+                            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                        });
+                    });
+                }
+
+                if (document.readyState !== 'loading') {
+                    initCmsHeaderMenus();
+                } else {
+                    document.addEventListener('DOMContentLoaded', initCmsHeaderMenus);
+                }
+                window.addEventListener('load', initCmsHeaderMenus);
+            })();
+        </script>
     @endonce
 
     <div class="cms-establishment-header-shell">
