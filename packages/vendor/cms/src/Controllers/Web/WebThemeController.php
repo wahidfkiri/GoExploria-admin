@@ -2654,10 +2654,43 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     {
         $html = $this->injectSeoMeta($html, $seoContext);
         $html = $this->injectCartDrawer($html);
+        $html = $this->injectSwiperAssets($html);
 
         return response($html, 200, [
             'Content-Type' => 'text/html; charset=utf-8',
         ]);
+    }
+
+    /**
+     * Charge et initialise Swiper côté front lorsque la page contient du markup
+     * Swiper (hero vidéos, galerie). Les templates ne portent aucun <script>.
+     */
+    protected function injectSwiperAssets($html)
+    {
+        if (!is_string($html) || $html === '') {
+            return $html;
+        }
+        if (stripos($html, '</body>') === false) {
+            return $html;
+        }
+        // Rien à faire si pas de markup Swiper, ou si déjà initialisé
+        if (stripos($html, 'swiper-slide') === false && stripos($html, 'data-swiper') === false) {
+            return $html;
+        }
+        if (stripos($html, 'swiper-bundle') !== false) {
+            return $html;
+        }
+
+        try {
+            $assets = view('cms::web.fallback.partials.swiper-autoinit')->render();
+        } catch (\Throwable $e) {
+            \Log::warning('Swiper assets injection failed: ' . $e->getMessage());
+            return $html;
+        }
+
+        return preg_replace_callback('/<\/body>/i', function () use ($assets) {
+            return $assets . '</body>';
+        }, $html, 1);
     }
 
     /**
