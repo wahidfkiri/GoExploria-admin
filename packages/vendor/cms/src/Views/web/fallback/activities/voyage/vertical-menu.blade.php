@@ -229,7 +229,7 @@
             </li>
             
             <li class="vertical-menu-v2-item vertical-menu-v2-mobile-only">
-                <a href="{{ route('panier') }}" class="vertical-menu-v2-link">
+                <a href="{{ route('cms.checkout') }}" class="vertical-menu-v2-link">
                     <span>Mon Panier</span>
                 </a>
             </li>

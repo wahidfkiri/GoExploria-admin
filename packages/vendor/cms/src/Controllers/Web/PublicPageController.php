@@ -396,8 +396,35 @@ class PublicPageController extends Controller
      */
     public function checkout(Request $request)
     {
+        // PayPal disponible uniquement s'il est activé et configuré côté admin
+        $paypal = ['enabled' => false, 'client_id' => null, 'mode' => 'sandbox', 'currency' => 'CAD'];
+        try {
+            if (class_exists(\App\Models\PaymentGateway::class)) {
+                $gateway = \App\Models\PaymentGateway::where('code', 'paypal')
+                    ->where('is_active', true)
+                    ->whereNotNull('paypal_client_id')
+                    ->where('paypal_client_id', '!=', '')
+                    ->orderByDesc('is_default')
+                    ->first();
+
+                if ($gateway) {
+                    $paypal = [
+                        'enabled' => true,
+                        'client_id' => $gateway->paypal_client_id,
+                        'mode' => $gateway->mode ?: 'sandbox',
+                        'currency' => (is_array($gateway->supported_currencies) && !empty($gateway->supported_currencies))
+                            ? (string) $gateway->supported_currencies[0]
+                            : 'CAD',
+                    ];
+                }
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Checkout PayPal config lookup failed: ' . $e->getMessage());
+        }
+
         $html = view('cms::web.fallback.checkout', [
             'checkoutSubmitUrl' => route('cms.checkout.submit'),
+            'paypal' => $paypal,
         ])->render();
 
         return $this->buildResponse($html, [
@@ -417,6 +444,8 @@ class PublicPageController extends Controller
             'message' => ['nullable', 'string', 'max:5000'],
             'cart_payload' => ['required', 'string'],
             'consent' => ['accepted'],
+            'payment_method' => ['nullable', 'in:cod,paypal'],
+            'payment_reference' => ['nullable', 'string', 'max:120'],
         ]);
 
         if ($validator->fails()) {
@@ -491,6 +520,11 @@ class PublicPageController extends Controller
         }
 
         $reference = 'CMD-' . now()->format('YmdHis') . '-' . strtoupper(\Illuminate\Support\Str::random(5));
+        $paymentMethod = $request->input('payment_method') === 'paypal' ? 'paypal' : 'cod';
+        $paymentReference = trim((string) $request->input('payment_reference'));
+        $paymentLabel = $paymentMethod === 'paypal'
+            ? 'PayPal' . ($paymentReference !== '' ? ' (réf. ' . $paymentReference . ')' : '')
+            : 'Paiement à la livraison';
         $visitorName = trim((string) $request->input('first_name') . ' ' . (string) $request->input('last_name'));
         $grandTotal = round((float) $lines->sum('line_total'), 2);
         $createdMessages = collect();
@@ -504,7 +538,8 @@ class PublicPageController extends Controller
                 $message = "Commande {$reference}\n\n"
                     . "Client: {$visitorName}\n"
                     . "Email: " . $request->input('email') . "\n"
-                    . "Telephone: " . ($request->input('phone') ?: '-') . "\n\n"
+                    . "Telephone: " . ($request->input('phone') ?: '-') . "\n"
+                    . "Paiement: {$paymentLabel}\n\n"
                     . "Produits:\n{$summary}\n\n"
                     . "Message client:\n" . ($request->input('message') ?: '-');
 

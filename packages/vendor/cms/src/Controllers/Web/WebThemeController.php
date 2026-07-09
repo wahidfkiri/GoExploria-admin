@@ -2653,10 +2653,43 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     protected function buildResponse($html, array $seoContext = [])
     {
         $html = $this->injectSeoMeta($html, $seoContext);
+        $html = $this->injectCartDrawer($html);
 
         return response($html, 200, [
             'Content-Type' => 'text/html; charset=utf-8',
         ]);
+    }
+
+    /**
+     * Injecte le panier (drawer + icône flottante + logique) sur les sites des
+     * établissements. Ne fait rien si le panier est déjà présent (pages landing
+     * qui l'incluent déjà) ou si la page n'a pas de balise </body>.
+     */
+    protected function injectCartDrawer($html)
+    {
+        if (!is_string($html) || $html === '') {
+            return $html;
+        }
+        if (stripos($html, '</body>') === false) {
+            return $html;
+        }
+        if (stripos($html, 'data-cms-cart-drawer') !== false) {
+            return $html; // déjà présent
+        }
+
+        try {
+            $drawer = view('cms::web.fallback.partials.landing-cart-drawer')->render();
+        } catch (\Throwable $e) {
+            \Log::warning('Cart drawer injection failed: ' . $e->getMessage());
+            return $html;
+        }
+
+        // Callback pour éviter l'interprétation des `$` (le drawer contient des
+        // template-literals ${...} et des symboles $ qui seraient traités comme
+        // des backreferences par preg_replace.
+        return preg_replace_callback('/<\/body>/i', function () use ($drawer) {
+            return $drawer . '</body>';
+        }, $html, 1);
     }
 
     protected function buildSeoContext($page = null, bool $isPreview = false): array
