@@ -43,7 +43,7 @@
                 <a href="/" class="logo">
                     <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}">
                 </a>
-                <a href="#carte-interactive" class="logo-map-link" title="Voir la carte interactive">
+                <a href="#section-carte-amerique-nord" class="logo-map-link" title="Voir la carte interactive">
                     <img src="{{ asset('header_info/map2.png') }}" alt="Carte Interactive" class="logo-map-icon">
                 </a>
             </div>
