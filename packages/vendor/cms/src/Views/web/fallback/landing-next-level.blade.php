@@ -1454,10 +1454,10 @@ html.light .float-cta {
 </footer>
 
 <!-- FLOATING CTA -->
-<a href="https://wa.me/14185257748" class="float-cta" title="WhatsApp" target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
+<!-- <a href="https://wa.me/14185257748" class="float-cta" title="WhatsApp" target="_blank" rel="noopener"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
 <button type="button" class="back-to-top" id="backToTop" aria-label="Retour en haut">
   <i class="fas fa-arrow-up" aria-hidden="true"></i>
-</button>
+</button> -->
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
