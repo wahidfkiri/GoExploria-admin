@@ -5,20 +5,34 @@
    ============================================================================ */
 
 /* ---------- HEADER : verre translucide premium ---------- */
-.header-v2 {
+.header-v2,
+.header-v2 .header-nav,
+.header-v2 .header-top {
     transition: background-color .35s ease, box-shadow .35s ease, border-color .35s ease, backdrop-filter .35s ease;
 }
-/* En haut de page : totalement transparent (le hero transparait) */
-body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2 {
+/* En haut de page : header ET barre de nav totalement transparents (le hero transparait).
+   IMPORTANT : le fond est aussi porté par .header-nav (var(--navy-dark)), pas seulement .header-v2. */
+body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2,
+body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2 .header-nav,
+body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2 .header-top,
+body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2.scrolled,
+body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2.scrolled .header-nav {
     background: transparent !important;
     background-color: transparent !important;
     box-shadow: none !important;
     border-bottom-color: transparent !important;
 }
-/* Au scroll / recherche ouverte : glassmorphism sombre premium */
+/* Au scroll / recherche ouverte : glassmorphism sombre premium sur la barre visible (.header-nav) */
 body.hdr-scrolled .header-v2,
 body.hdr-search-open .header-v2 {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+body.hdr-scrolled .header-v2 .header-nav,
+body.hdr-search-open .header-v2 .header-nav,
+body.hdr-scrolled .header-v2.scrolled .header-nav {
     background: rgba(9, 16, 31, .68) !important;
+    background-color: rgba(9, 16, 31, .68) !important;
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     backdrop-filter: blur(20px) saturate(160%);
     border-bottom: 1px solid rgba(255, 255, 255, .09) !important;

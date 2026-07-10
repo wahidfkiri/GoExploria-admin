@@ -35,8 +35,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     
-    {{-- ⚡ OPTIMISATION : 42 feuilles CSS combinées en 1 seule requête --}}
-    <link rel="stylesheet" href="{{ asset('css/welcome/welcome.bundle.css') }}">
+    {{-- ⚡ OPTIMISATION : 42 feuilles CSS combinées en 1 seule requête (cache-busting auto via filemtime) --}}
+    <link rel="stylesheet" href="{{ asset('css/welcome/welcome.bundle.css') }}?v={{ @filemtime(public_path('css/welcome/welcome.bundle.css')) ?: '1' }}">
     {{-- Assets non critiques (modal vidéo + carte) chargés sans bloquer le rendu --}}
     <link rel="stylesheet" href="{{ asset('css/video-modal.css') }}" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'">
