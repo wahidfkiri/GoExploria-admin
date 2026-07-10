@@ -129,114 +129,41 @@
     </nav>
 </header>
 
-{{-- Panneau de recherche déroulant (ouvert par l'icône du header) — barre de recherche redesignée --}}
-<div class="hdr-search-panel" id="hdrSearchPanel" role="dialog" aria-label="Recherche" aria-hidden="true">
-    <div class="hdr-search-panel__inner">
-        <div class="hdr-search">
-            <button type="button" class="hdr-search__dest" id="hdrSearchDest" aria-label="Choisir une destination">
-                <img src="{{ asset('REDI.png') }}" alt="" class="hdr-search__globe">
-                <span class="hdr-search__dest-label">Destinations</span>
-                <svg class="hdr-search__chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
-            <div class="hdr-search__field">
-                <svg class="hdr-search__ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
-                <input type="search" id="hdrSearchInput" class="hdr-search__input" placeholder="Rechercher une destination, une activité, un hébergement…" autocomplete="off" aria-label="Rechercher">
-                <button type="button" class="hdr-search__clear" id="hdrSearchClear" aria-label="Effacer" style="display:none">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <button type="button" class="hdr-search__submit" id="hdrSearchSubmit">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
-                <span>Rechercher</span>
-            </button>
-        </div>
-        <div class="hdr-search__results" id="hdrSearchResults" role="listbox" hidden></div>
-    </div>
-</div>
-
 <script>
-    // ── Header transparent en haut de page, solide au scroll ─────────────────
+    // ── Header transparent en haut de page, verre au scroll ──────────────────
     (function () {
         var setScrolled = function () { document.body.classList.toggle('hdr-scrolled', window.scrollY > 20); };
         setScrolled();
         window.addEventListener('scroll', setScrolled, { passive: true });
     })();
 
-    // ── Recherche déroulante ouverte depuis le header ────────────────────────
+    // ── L'icône de recherche du header AFFICHE / MASQUE la barre du hero (.go-hero-search-layer) ──
     document.addEventListener('DOMContentLoaded', function () {
         var toggle = document.getElementById('hdrSearchToggle');
-        var panel = document.getElementById('hdrSearchPanel');
-        var input = document.getElementById('hdrSearchInput');
-        var clear = document.getElementById('hdrSearchClear');
-        var results = document.getElementById('hdrSearchResults');
-        var submit = document.getElementById('hdrSearchSubmit');
-        var destBtn = document.getElementById('hdrSearchDest');
-        if (!toggle || !panel) return;
+        if (!toggle) return;
 
-        function openPanel() {
-            var hdr = document.querySelector('.header-v2');
-            if (hdr) panel.style.top = Math.round(hdr.getBoundingClientRect().height) + 'px';
-            panel.classList.add('is-open'); panel.setAttribute('aria-hidden', 'false');
-            toggle.setAttribute('aria-expanded', 'true'); document.body.classList.add('hdr-search-open');
-            setTimeout(function () { if (input) input.focus(); }, 60);
+        function isOpen() { return document.body.classList.contains('hero-search-visible'); }
+        function open() {
+            document.body.classList.add('hero-search-visible');
+            toggle.setAttribute('aria-expanded', 'true');
+            toggle.classList.add('is-active');
+            // Remonter en haut : la barre est ancrée dans le hero, on la rend visible à l'écran
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(function () {
+                var input = document.getElementById('searchBarInput');
+                if (input) input.focus();
+            }, 260);
         }
-        function closePanel() {
-            panel.classList.remove('is-open'); panel.setAttribute('aria-hidden', 'true');
-            toggle.setAttribute('aria-expanded', 'false'); document.body.classList.remove('hdr-search-open');
+        function close() {
+            document.body.classList.remove('hero-search-visible');
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.classList.remove('is-active');
         }
         toggle.addEventListener('click', function (e) {
             e.preventDefault(); e.stopPropagation();
-            panel.classList.contains('is-open') ? closePanel() : openPanel();
+            isOpen() ? close() : open();
         });
-        document.addEventListener('click', function (e) {
-            if (panel.classList.contains('is-open') && !panel.contains(e.target) && !toggle.contains(e.target)) closePanel();
-        });
-        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePanel(); });
-
-        // Destination → ouvre le méga-menu destinations existant du hero
-        if (destBtn) destBtn.addEventListener('click', function () {
-            var trigger = document.getElementById('destinationsMainTrigger');
-            if (trigger) { trigger.click(); } else { window.location.href = '/destinations'; }
-        });
-
-        function toggleClear() { if (clear) clear.style.display = input.value ? 'inline-flex' : 'none'; }
-        if (clear) clear.addEventListener('click', function () {
-            input.value = ''; toggleClear(); results.hidden = true; results.innerHTML = ''; input.focus();
-        });
-
-        var t;
-        function runSearch() {
-            var q = input.value.trim(); toggleClear();
-            if (q.length < 2) { results.hidden = true; results.innerHTML = ''; return; }
-            clearTimeout(t);
-            t = setTimeout(function () {
-                fetch('/api/v1/destinations/search?q=' + encodeURIComponent(q), { headers: { 'Accept': 'application/json' } })
-                    .then(function (r) { return r.ok ? r.json() : null; })
-                    .then(function (res) {
-                        var list = res ? (res.data || res.results || res) : [];
-                        if (!Array.isArray(list) || !list.length) {
-                            results.innerHTML = '<div class="hdr-search__empty">Aucun résultat</div>'; results.hidden = false; return;
-                        }
-                        results.innerHTML = list.slice(0, 8).map(function (d) {
-                            var name = String(d.name || d.title || '').replace(/[<>]/g, '');
-                            var url = d.url || ('/' + (d.slug || ''));
-                            return '<a class="hdr-search__result" href="' + url + '"><i class="fas fa-map-marker-alt" aria-hidden="true"></i><span>' + name + '</span></a>';
-                        }).join('');
-                        results.hidden = false;
-                    })
-                    .catch(function () { results.hidden = true; });
-            }, 220);
-        }
-        if (input) {
-            input.addEventListener('input', runSearch);
-            input.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') { e.preventDefault(); var first = results.querySelector('.hdr-search__result'); if (first) first.click(); }
-            });
-        }
-        if (submit) submit.addEventListener('click', function () {
-            var first = results.querySelector('.hdr-search__result'); if (first) first.click(); else if (input) input.focus();
-        });
-        toggleClear();
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
     });
 </script>
 
