@@ -12,7 +12,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Telescope en local uniquement (paquet require-dev, absent en prod --no-dev).
+        // On teste la présence du paquet AVANT de référencer notre provider (qui
+        // hérite d'une classe Telescope) : sinon fatal « class not found » en prod.
+        if ($this->app->environment('local')
+            && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(\App\Providers\TelescopeServiceProvider::class);
+        }
     }
 
     /**
