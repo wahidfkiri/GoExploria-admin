@@ -75,12 +75,7 @@
             @include('welcome-home.components.PlansMegaMenu')
             
             <div class="nav-right">
-                <a href="javascript:void(0)" class="nav-icon mobile-search-trigger" id="mobileSearchTrigger" aria-label="{{ __('home-v2.common.search') }}">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
-                    </svg>
-                </a>
+                {{-- Ancienne icône de recherche (#mobileSearchTrigger) retirée : on garde uniquement celle après « AFFICHEZ VOUS » --}}
                 <a href="{{ route('devis') }}" class="nav-devis-btn" target="_blank" rel="noopener noreferrer" aria-label="Demander un devis">
                     <i class="fas fa-file-signature" aria-hidden="true"></i>
                     <span>AFFICHEZ VOUS</span>
