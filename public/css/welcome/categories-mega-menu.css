@@ -1,0 +1,249 @@
+/* ============================================
+   CATEGORIES MEGA MENU — Quick-link trigger
+   ============================================ */
+
+/* Panel positionné en fixed via JS */
+.cat-mega-panel {
+    position: fixed;
+    width: 820px;
+    max-width: calc(100vw - 24px);
+    background: #ffffff;
+    border: 1px solid rgba(10, 22, 40, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.30);
+    display: flex;
+    flex-direction: row;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+    z-index: 10500;
+    overflow: hidden;
+}
+
+.cat-mega-panel.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* ── Left: categories list ───────────────────── */
+.cat-mega-left {
+    width: 260px;
+    flex-shrink: 0;
+    background: #f7f9fc;
+    border-right: 1px solid rgba(10, 22, 40, 0.08);
+    padding: 14px 0;
+    overflow-y: auto;
+    max-height: 480px;
+}
+
+.cat-mega-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px 14px;
+    border-bottom: 1px solid rgba(10, 22, 40, 0.08);
+    margin-bottom: 6px;
+}
+
+.cat-mega-header-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(26, 114, 204, 0.12);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1a72cc;
+    font-size: 16px;
+}
+
+.cat-mega-header-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: #0a1628;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.cat-mega-cat-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 20px;
+    cursor: pointer;
+    color: #0a1628;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+    gap: 10px;
+}
+
+.cat-mega-cat-item:hover,
+.cat-mega-cat-item.active {
+    background: rgba(26, 114, 204, 0.08);
+    color: #0a3d82;
+    border-left-color: #1a72cc;
+    font-weight: 700;
+}
+
+.cat-mega-cat-count {
+    font-size: 12px;
+    font-weight: 700;
+    color: #6b7280;
+    background: rgba(10, 22, 40, 0.06);
+    border-radius: 12px;
+    padding: 2px 9px;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+}
+
+.cat-mega-cat-item.active .cat-mega-cat-count,
+.cat-mega-cat-item:hover .cat-mega-cat-count {
+    background: rgba(26, 114, 204, 0.15);
+    color: #0a3d82;
+}
+
+.cat-mega-cat-arrow {
+    font-size: 11px;
+    color: #9ca3af;
+    flex-shrink: 0;
+    transition: transform 0.2s, color 0.2s;
+    opacity: 0.7;
+}
+.cat-mega-cat-item.active .cat-mega-cat-arrow,
+.cat-mega-cat-item:hover .cat-mega-cat-arrow {
+    color: #1a72cc;
+    opacity: 1;
+    transform: translateX(2px);
+}
+
+/* ── Right: activities panel ─────────────────── */
+.cat-mega-right {
+    flex: 1;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.cat-mega-right-inner {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 20px;
+    max-height: 440px;
+}
+
+.cat-mega-activities {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.cat-mega-activities.visible {
+    display: grid;
+}
+
+.cat-mega-act-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    color: #334155;
+    font-size: 14.5px;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.cat-mega-act-link:hover {
+    background: rgba(26, 114, 204, 0.08);
+    color: #0a3d82;
+    transform: translateX(3px);
+    font-weight: 600;
+}
+
+.cat-mega-act-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #1a72cc;
+    flex-shrink: 0;
+    transition: background 0.15s, transform 0.15s;
+}
+
+.cat-mega-act-link:hover .cat-mega-act-dot {
+    background: #0a3d82;
+    transform: scale(1.3);
+}
+
+.cat-mega-empty {
+    color: #94a3b8;
+    font-size: 14px;
+    padding: 32px 20px;
+    text-align: center;
+    font-style: italic;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* ── Footer bar ─────────────────────────────── */
+.cat-mega-footer {
+    padding: 14px 20px;
+    background: #f7f9fc;
+    border-top: 1px solid rgba(10, 22, 40, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.cat-mega-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #1a72cc;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.cat-mega-view-all:hover { color: #0a3d82; transform: translateX(2px); }
+
+.cat-mega-view-all-cats {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.cat-mega-view-all-cats:hover { color: #0a1628; }
+
+/* ── Scrollbars ───────────────────────────── */
+.cat-mega-left::-webkit-scrollbar,
+.cat-mega-right-inner::-webkit-scrollbar { width: 6px; }
+.cat-mega-left::-webkit-scrollbar-track,
+.cat-mega-right-inner::-webkit-scrollbar-track { background: transparent; }
+.cat-mega-left::-webkit-scrollbar-thumb,
+.cat-mega-right-inner::-webkit-scrollbar-thumb { background: rgba(10, 22, 40, 0.15); border-radius: 3px; }
+.cat-mega-left::-webkit-scrollbar-thumb:hover,
+.cat-mega-right-inner::-webkit-scrollbar-thumb:hover { background: rgba(10, 22, 40, 0.3); }
+
+/* ── Responsive mobile ───────────────────────── */
+@media (max-width: 768px) {
+    .cat-mega-panel { display: none !important; }
+}

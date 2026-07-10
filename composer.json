@@ -42,6 +42,7 @@
             "Vendor\\GeoMap\\": "packages/vendor/geo-map/src/",
             "Vendor\\Theme\\": "packages/vendor/theme/src/",
             "Vendor\\HomeV2\\": "packages/vendor/home-v2/src/",
+            "Vendor\\Welcome\\": "packages/vendor/welcome/src/",
             "Vendor\\Destination\\": "packages/vendor/destination/src/",
             "Vendor\\Cms\\": "packages/vendor/cms/src",
             "Vendor\\MailMarketing\\": "packages/vendor/mail-marketing/src/",

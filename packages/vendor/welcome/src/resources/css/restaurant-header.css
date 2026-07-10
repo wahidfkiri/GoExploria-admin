@@ -1,0 +1,2218 @@
+﻿/* ============================================================
+   RESTAURANT SERVICE BLOCK â€” Standard Template
+   GoExploria Â· Accord Mets & Vins
+   ============================================================ */
+
+/* ---- Forcer Montserrat sur tout le bloc (Ã©crase Bootstrap / hÃ©ritage navigateur) ---- */
+.resto-service-block,
+.resto-service-block *,
+.resto-service-block *::before,
+.resto-service-block *::after {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* ---- Restaurer Font Awesome (Ã©crasÃ© par la rÃ¨gle *::before/*::after ci-dessus) ---- */
+.resto-service-block .fas,
+.resto-service-block .fa-solid {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+}
+.resto-service-block .fas::before,
+.resto-service-block .fa-solid::before {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+}
+.resto-service-block .far,
+.resto-service-block .fa-regular {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 400 !important;
+}
+.resto-service-block .far::before,
+.resto-service-block .fa-regular::before {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 400 !important;
+}
+.resto-service-block .fab,
+.resto-service-block .fa-brands {
+    font-family: "Font Awesome 6 Brands" !important;
+    font-weight: 400 !important;
+}
+.resto-service-block .fab::before,
+.resto-service-block .fa-brands::before {
+    font-family: "Font Awesome 6 Brands" !important;
+    font-weight: 400 !important;
+}
+
+/* ---- Wrapper global de la section ---- */
+.resto-service-block {
+    width: calc(100% - 64px);
+    max-width: 1600px;
+    margin: 32px auto;
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+}
+
+.resto-header-block {
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+    background: #f8f8f8;
+    position: relative;
+    overflow: hidden;
+}
+
+.resto-header-block::before {
+    content: none;
+}
+
+/* ============================================================
+   ZONE PRINCIPALE : logo gauche | centre | logo droit
+   ============================================================ */
+.resto-header-main {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
+    gap: 12px;
+    padding: 18px 24px 16px;
+    min-height: 100px;
+}
+
+/* ---- Logo gauche : restaurant ---- */
+.resto-header-logo-left,
+.resto-header-logo-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.resto-header-logo-left .logo-wrapper,
+.resto-header-logo-right .logo-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(30,136,229,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.resto-header-logo-left .logo-wrapper:hover,
+.resto-header-logo-right .logo-wrapper:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 28px rgba(0,0,0,0.4);
+}
+
+.resto-header-logo-left .logo-wrapper img,
+.resto-header-logo-right .logo-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    padding: 0;
+}
+
+.resto-logo-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(10,22,40,0.65);
+    text-align: center;
+    line-height: 1.3;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+/* ---- Bouton Accord Mets & Vins (logo + label + CTA) ---- */
+.resto-accord-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    padding: 7px 10px;
+    border: 1.5px solid #1e88e5;
+    border-radius: 10px;
+    background: rgba(30,136,229,0.06);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    max-width: 100%;
+}
+
+.resto-accord-btn:hover {
+    background: rgba(30,136,229,0.14);
+    border-color: #1565c0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30,136,229,0.25);
+}
+
+.resto-accord-btn-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: rgba(10,22,40,0.65);
+    text-align: center;
+    line-height: 1.25;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+.resto-accord-btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #1e88e5;
+    background: rgba(30,136,229,0.1);
+    border: 1px solid rgba(30,136,229,0.3);
+    border-radius: 20px;
+    padding: 2px 8px;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+}
+
+.resto-accord-btn:hover .resto-accord-btn-cta {
+    background: #1e88e5;
+    color: #ffffff;
+    border-color: #1e88e5;
+}
+
+.resto-accord-btn--sm {
+    padding: 5px 8px;
+    gap: 3px;
+}
+
+.resto-accord-btn--sm .resto-accord-btn-label {
+    font-size: 8px;
+}
+
+.resto-accord-btn--sm .resto-accord-btn-cta {
+    font-size: 8px;
+    padding: 2px 6px;
+}
+
+/* ---- Colonne centre ---- */
+.resto-header-center {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+}
+
+/* Harmonisation globale: 3 colonnes égales + colonne gauche masquée */
+.resto-header-logo-left {
+    display: none !important;
+}
+
+.resto-header-logo-right {
+    grid-column: 3;
+    justify-self: end;
+    width: auto;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+}
+
+.resto-header-title {
+    font-size: clamp(18px, 2.4vw, 28px);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #0a1628;
+    line-height: 1.2;
+    text-shadow: none;
+    margin: 0;
+}
+
+.resto-header-subtitle {
+    font-size: clamp(11px, 1.1vw, 14px);
+    font-weight: 500;
+    color: rgba(10,22,40,0.68);
+    line-height: 1.55;
+    max-width: 520px;
+    margin: 0;
+    text-shadow: none;
+}
+
+/* ---- Onglets catÃ©gories ---- */
+.resto-header-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.resto-tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 10px;
+    background: rgba(10,22,40,0.12);
+    color: #0a1628;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    transition: background 0.25s ease, color 0.25s ease;
+    margin-right: 2px;
+}
+
+.resto-tab-btn.active .resto-tab-count {
+    background: rgba(255,255,255,0.3);
+    color: #ffffff;
+}
+
+.resto-tab-btn {
+    padding: 6px 18px;
+    border-radius: 20px;
+    border: 2px solid rgba(10,22,40,0.28);
+    background: rgba(255,255,255,0.55);
+    color: #0a1628;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    text-decoration: none !important;
+}
+
+.resto-tab-btn:hover {
+    background: rgba(255,255,255,0.9);
+    border-color: rgba(10,22,40,0.55);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    text-decoration: none !important;
+}
+
+.resto-tab-btn.active {
+    background: #1e88e5;
+    border-color: #1e88e5;
+    color: #ffffff;
+    box-shadow: 0 3px 14px rgba(30,136,229,0.45);
+    text-decoration: none !important;
+}
+
+.resto-tab-btn:focus,
+.resto-tab-btn:focus-visible,
+.resto-tab-btn:active {
+    text-decoration: none !important;
+}
+
+/* ============================================================
+   DROPDOWN Ã‰VÃ‰NEMENTS
+   ============================================================ */
+.resto-events-dropdown {
+    position: relative;
+    display: inline-flex;
+}
+
+.resto-events-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: linear-gradient(135deg, rgba(30,136,229,0.12), rgba(30,136,229,0.06));
+    border-color: rgba(30,136,229,0.5);
+    color: #1e88e5;
+}
+
+.resto-events-btn:hover {
+    background: linear-gradient(135deg, rgba(30,136,229,0.22), rgba(30,136,229,0.1));
+    border-color: #1e88e5;
+    color: #1565c0;
+}
+
+.resto-events-dropdown.open .resto-events-btn {
+    background: linear-gradient(135deg, rgba(30,136,229,0.22), rgba(30,136,229,0.1));
+    border-color: #1e88e5;
+}
+
+.resto-events-chevron {
+    font-size: 10px !important;
+    transition: transform 0.25s ease;
+}
+
+.resto-events-dropdown.open .resto-events-chevron {
+    transform: rotate(180deg);
+}
+
+/* Menu dÃ©roulant */
+.resto-events-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 220px;
+    background: #ffffff;
+    border: 1px solid rgba(10,22,40,0.12);
+    border-radius: 10px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+    z-index: 200;
+    animation: eventsMenuIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.resto-events-dropdown.open .resto-events-menu {
+    display: block;
+}
+
+@keyframes eventsMenuIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(-6px) scale(0.96); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+.resto-events-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    color: #0a1628;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.18s ease, color 0.18s ease;
+    border-bottom: 1px solid rgba(10,22,40,0.06);
+}
+
+.resto-events-item:last-child {
+    border-bottom: none;
+}
+
+.resto-events-item i {
+    width: 16px;
+    text-align: center;
+    color: #f26522;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.resto-events-item:hover {
+    background: rgba(242,101,34,0.07);
+    color: #f26522;
+}
+
+.resto-events-item:hover i {
+    color: #f26522;
+}
+
+/* ---- Bouton autonome Plans Go Next Level ---- */
+.resto-plans-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    background: linear-gradient(135deg, rgba(212,175,55,0.18), rgba(212,175,55,0.08));
+    border: 1.5px solid rgba(212,175,55,0.6);
+    border-radius: 6px;
+    color: #d4af37;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+}
+
+.resto-plans-btn:hover {
+    background: linear-gradient(135deg, rgba(212,175,55,0.35), rgba(212,175,55,0.15));
+    border-color: #d4af37;
+    color: #f0c93a;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(212,175,55,0.3);
+}
+
+.resto-plans-btn i {
+    font-size: 12px;
+}
+
+/* ============================================================
+   BARRE DE DESTINATIONS (bas du banner)
+   ============================================================ */
+.resto-header-destinations-bar {
+    position: relative;
+    z-index: 1;
+    background: rgba(10, 22, 40, 0.07);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 32px;
+    border-top: 1px solid rgba(10,22,40,0.12);
+}
+
+/* Ligne 1 : icône destinations + breadcrumb */
+.resto-dest-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* Ligne 2 : CTAs + Plans + Langue */
+.resto-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    width: 100%;
+    flex-wrap: wrap;
+    padding-top: 8px;
+    border-top: 1px solid rgba(10,22,40,0.1);
+}
+
+.resto-dest-icon-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(242, 101, 34, 0.2);
+    border: 1px solid rgba(242, 101, 34, 0.45);
+    border-radius: 6px;
+    padding: 6px 12px;
+    flex-shrink: 0;
+}
+
+.resto-dest-icon-box img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+.resto-dest-icon-box span {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #f26522;
+}
+
+.resto-dest-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.vp-dest-breadcrumb {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+}
+
+.vp-dest-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    min-width: 150px;
+    max-width: 210px;
+    padding: 6px 28px 6px 10px;
+    border: 1px solid rgba(10, 22, 40, 0.18);
+    border-radius: 8px;
+    background: #fff;
+    color: #0a1628;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vp-dest-select:focus {
+    outline: none;
+    border-color: #f26522;
+    box-shadow: 0 0 0 2px rgba(242, 101, 34, 0.18);
+}
+
+.resto-dest-link {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #0a1628;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+}
+
+.resto-dest-link:hover,
+.resto-dest-link.active {
+    color: #f26522;
+}
+
+.resto-dest-link.active {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.resto-dest-sep {
+    color: rgba(10,22,40,0.35);
+    font-size: 14px;
+    font-weight: 300;
+}
+
+/* ---- CTAs droite ---- */
+.resto-header-ctas {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.resto-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 20px;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.resto-cta-btn.primary {
+    background: #1e88e5;
+    color: #ffffff;
+    box-shadow: 0 3px 12px rgba(30,136,229,0.4);
+}
+
+.resto-cta-btn.primary:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(30,136,229,0.5);
+}
+
+.resto-cta-btn.secondary {
+    background: rgba(30,136,229,0.08);
+    color: #1565c0;
+    border: 2px solid rgba(30,136,229,0.4);
+}
+
+.resto-cta-btn.secondary:hover {
+    background: rgba(30,136,229,0.16);
+    border-color: #1e88e5;
+    color: #1e88e5;
+    transform: translateY(-1px);
+}
+
+.resto-cta-btn .cta-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+/* ---- Ligne dÃ©co animÃ©e ---- */
+.resto-header-shimmer {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #f26522, #f26522, #d4af37, #f26522, #f26522);
+    background-size: 300% 100%;
+    animation: resto-shimmer 3s linear infinite;
+}
+
+@keyframes resto-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ============================================================
+   SECTION MÃ‰DIA â€” Slideshow Multi-carte
+   ============================================================ */
+.resto-media-strip {
+    display: block;
+    background: #0e1a2e;
+    position: relative;
+    z-index: 1;
+}
+
+/* Anciennes rÃ¨gles carousel supprimÃ©es â€” remplacÃ©es par MediaSlideshow */
+
+/* RÃ¨gles vidÃ©o featured + lightbox supprimÃ©es â€” remplacÃ©es par MediaSlideshow */
+
+/* Responsive media strip â€” le MediaSlideshow gÃ¨re son propre responsive */
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+    .resto-header-main {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        padding: 20px 20px 16px;
+    }
+
+    .resto-header-logo-left .logo-wrapper,
+    .resto-header-logo-right .logo-wrapper {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* ---- Bloc sans marge sur mobile ---- */
+    .resto-service-block {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .resto-header-main {
+        display: grid;
+        grid-template-columns: 1fr;
+        padding: 16px 14px 14px;
+        gap: 10px;
+        min-height: auto;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .resto-header-center {
+        grid-column: auto;
+    }
+    .resto-header-logo-left {
+        display: none;
+    }
+    .resto-header-logo-right {
+        grid-column: auto;
+        justify-self: center;
+        width: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .resto-header-logo-left .logo-wrapper,
+    .resto-header-logo-right .logo-wrapper {
+        width: 44px;
+        height: 44px;
+    }
+
+    .resto-header-destinations-bar {
+        padding: 10px 14px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .resto-dest-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .resto-dest-breadcrumb {
+        display: none;
+    }
+
+    .resto-dest-breadcrumb.vp-dest-breadcrumb {
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .vp-dest-select {
+        min-width: 145px;
+    }
+
+    /* ---- Ligne actions : colonne sur mobile ---- */
+    .resto-actions-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding-top: 8px;
+        justify-content: flex-start;
+    }
+
+    .resto-header-ctas {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .resto-cta-btn {
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    .resto-plans-btn,
+    .resto-events-nav-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* ---- SÃ©lecteur de langue pleine largeur ---- */
+    .resto-lang-switcher {
+        width: 100%;
+    }
+
+    .resto-lang-select {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .resto-header-tabs {
+        gap: 5px;
+    }
+
+    .resto-tab-btn {
+        font-size: 10px;
+        padding: 5px 10px;
+    }
+
+    .resto-cta-btn {
+        font-size: 11px;
+        padding: 8px 12px;
+    }
+
+    .resto-header-title {
+        font-size: 15px;
+        letter-spacing: 1px;
+    }
+
+    .resto-header-subtitle {
+        font-size: 11px;
+    }
+
+    /* ---- Ã‰vÃ©nements : 1 colonne ---- */
+    .resto-events-grid {
+        grid-template-columns: 1fr;
+        padding: 16px 12px;
+    }
+
+    .resto-events-header {
+        padding: 24px 14px 18px;
+    }
+
+    .resto-events-types-bar {
+        padding: 12px 12px;
+        gap: 6px;
+    }
+
+    .resto-event-type-btn {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+
+    /* ---- Plans : 1 colonne compact ---- */
+    .resto-plans-inner {
+        padding: 40px 14px 32px;
+    }
+
+    .resto-plans-grid {
+        gap: 14px;
+    }
+
+    .resto-plan-header {
+        padding: 30px 18px 16px;
+    }
+
+    .resto-plan-features {
+        padding: 16px 18px;
+    }
+
+    .resto-plan-cta {
+        margin: 0 18px 18px;
+    }
+
+    .resto-plans-footer {
+        flex-direction: column;
+        gap: 14px;
+        align-items: center;
+    }
+}
+
+/* ============================================================
+   ZONE CONTENU : filtre actif + grille de cartes
+   ============================================================ */
+.resto-content-area {
+    position: relative;
+    z-index: 2;
+    background: #f9fafb;
+    padding: 32px;
+}
+
+.resto-content-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ---- Barre de filtre actif ---- */
+.resto-filter-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.resto-filter-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+}
+
+.resto-filter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f26522;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 14px;
+    border-radius: 20px;
+}
+
+.resto-filter-badge.dest {
+    background: #0a1628;
+}
+
+.resto-filter-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    margin-left: auto;
+}
+
+/* ---- Grille de cartes ---- */
+.resto-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    min-height: 200px;
+    width: 100%;
+}
+
+/* ---- SÃ©parateur slideshow (span toutes colonnes) ---- */
+.resto-cards-grid-break {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 8px 0;
+}
+
+/* ---- Carte restaurant ---- */
+.resto-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.resto-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 32px rgba(0,0,0,0.14);
+}
+
+.resto-card.hidden {
+    display: none;
+}
+
+.resto-card-img {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.resto-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.resto-card:hover .resto-card-img img {
+    transform: scale(1.05);
+}
+
+.resto-card-badges {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.resto-badge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    color: #fff;
+    background: #f26522;
+}
+
+.resto-badge.cat-entrees      { background: #27ae60; }
+.resto-badge.cat-mets         { background: #2980b9; }
+.resto-badge.cat-desserts     { background: #8e44ad; }
+.resto-badge.cat-vins         { background: #f26522; }
+.resto-badge.cat-toutes       { background: #f26522; }
+
+.resto-card-rating {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+    background: rgba(0,0,0,0.65);
+    color: #ffd700;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+}
+
+.resto-price-overlay {
+    position: absolute;
+    bottom: 10px;
+    left: 12px;
+    background: #f26522;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 900;
+    padding: 4px 14px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.resto-card-subcategory {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #999;
+}
+
+/* ---- Corps de la carte ---- */
+.resto-card-body {
+    padding: 18px 18px 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.resto-card-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0a1628;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.resto-card-dest {
+    font-size: 11px;
+    font-weight: 600;
+    color: #f26522;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.resto-card-desc {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+}
+
+.resto-card-accord {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #7d3c98;
+    background: #f5eef8;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+/* ---- Footer carte ---- */
+.resto-card-footer {
+    padding: 12px 18px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #f0f0f0;
+    gap: 10px;
+}
+
+.resto-card-price {
+    font-size: 13px;
+    font-weight: 800;
+    color: #0a1628;
+}
+
+.resto-card-reserve-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #1e88e5;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(30,136,229,0.3);
+}
+
+.resto-card-reserve-btn:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(30,136,229,0.45);
+}
+
+/* ---- Message aucun rÃ©sultat ---- */
+.resto-no-results {
+    display: none;
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.resto-no-results i {
+    display: block;
+    font-size: 40px;
+    margin-bottom: 12px;
+    color: #ddd;
+}
+
+/* ============================================================
+   LANGUAGE SWITCHER
+   ============================================================ */
+.resto-lang-switcher {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.resto-lang-switcher > i {
+    color: rgba(10,22,40,0.5);
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.resto-lang-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: rgba(255,255,255,0.65);
+    border: 1.5px solid rgba(10,22,40,0.22);
+    border-radius: 6px;
+    color: #0a1628;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 28px 6px 10px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(10,22,40,0.45)'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 9px center;
+}
+
+.resto-lang-select:hover {
+    border-color: rgba(242,101,34,0.7);
+    background-color: rgba(255,255,255,0.85);
+}
+
+.resto-lang-select:focus {
+    border-color: #f26522;
+    box-shadow: 0 0 0 2px rgba(242,101,34,0.2);
+}
+
+.resto-lang-select option {
+    background: #ffffff;
+    color: #0a1628;
+    font-size: 13px;
+}
+
+.resto-lang-btn-REMOVED {
+    background: transparent;
+    border: none;
+    padding: 4px 7px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.resto-lang-btn-REMOVED:hover {
+    color: #ffffff;
+    background: rgba(255,255,255,0.1);
+}
+
+.resto-lang-sep-REMOVED {
+    color: rgba(255,255,255,0.2);
+    font-size: 12px;
+    font-weight: 300;
+    pointer-events: none;
+}
+
+/* ============================================================
+   BOUTON Ã‰VÃ‰NEMENTS (barre actions)
+   ============================================================ */
+.resto-events-nav-btn {
+    background: #1e88e5;
+    color: #ffffff;
+    border: 1.5px solid #1e88e5 !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    box-shadow: 0 3px 10px rgba(30,136,229,0.3);
+}
+
+.resto-events-nav-btn:hover {
+    background: #1565c0;
+    border-color: #1565c0 !important;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(30,136,229,0.4);
+}
+
+/* ============================================================
+   EN-TÃŠTE STANDARD DE SECTION (rÃ©utilisable : Events, Plansâ€¦)
+   ============================================================ */
+.resto-section-std-header {
+    position: relative;
+    background: #ffffff;
+    display: grid;
+    grid-template-columns: 90px 1fr 90px;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 24px 14px;
+    border-bottom: 1px solid rgba(10,22,40,0.1);
+}
+
+.resto-section-logo-left,
+.resto-section-logo-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-wrapper-xs {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.85);
+    border: 2px solid rgba(10,22,40,0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.1);
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo-wrapper-xs:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.18);
+}
+
+.logo-wrapper-xs img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.resto-section-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+
+.resto-section-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #f26522;
+}
+
+.resto-section-title {
+    font-size: clamp(15px, 2vw, 22px);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #0a1628;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.resto-section-desc {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(10,22,40,0.65);
+    line-height: 1.55;
+    max-width: 520px;
+    margin: 0;
+}
+
+.resto-section-std-shimmer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #f26522, #f9a52c, #d4af37, #f9a52c, #f26522);
+    background-size: 300% 100%;
+    animation: resto-shimmer 3s linear infinite;
+}
+
+/* Responsive section std header */
+@media (max-width: 768px) {
+    .resto-section-std-header {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 18px 16px 16px;
+        gap: 12px;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+    }
+    .resto-section-center     { order: 1; flex: 0 0 100%; }
+    .resto-section-logo-left  { order: 2; flex: 1; flex-direction: row; justify-content: center; gap: 8px; }
+    .resto-section-logo-right { order: 2; flex: 1; flex-direction: row; justify-content: center; gap: 8px; }
+    .logo-wrapper-xs { width: 44px; height: 44px; }
+}
+
+/* ============================================================
+   SECTION Ã‰VÃ‰NEMENTS
+   ============================================================ */
+.resto-events-section {
+    background: #f9fafb;
+    font-family: 'Montserrat', sans-serif;
+    padding: 0 0 48px;
+}
+
+/* ---- En-tÃªte de section ---- */
+.resto-events-header {
+    text-align: center;
+    padding: 48px 32px 32px;
+    background: #ffffff;
+    border-bottom: 1px solid rgba(10,22,40,0.08);
+}
+
+.resto-events-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #f26522;
+    margin-bottom: 12px;
+}
+
+.resto-events-eyebrow i {
+    font-size: 13px;
+}
+
+.resto-events-title {
+    font-size: clamp(20px, 2.5vw, 30px);
+    font-weight: 900;
+    color: #0a1628;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.resto-events-lead {
+    font-size: 14px;
+    color: rgba(10,22,40,0.6);
+    margin: 0;
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.55;
+}
+
+/* ---- Barre de types ---- */
+.resto-events-types-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    background: #ffffff;
+    border-bottom: 2px solid rgba(10,22,40,0.07);
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.resto-events-types-bar::-webkit-scrollbar { display: none; }
+
+.resto-event-type-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 18px;
+    border-radius: 22px;
+    border: 1.5px solid rgba(10,22,40,0.2);
+    background: transparent;
+    color: #0a1628;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    flex-shrink: 0;
+}
+
+.resto-type-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 10px;
+    background: rgba(10,22,40,0.1);
+    color: #0a1628;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    transition: background 0.22s ease, color 0.22s ease;
+    flex-shrink: 0;
+}
+
+.resto-event-type-btn.active .resto-type-count {
+    background: rgba(255,255,255,0.28);
+    color: #ffffff;
+}
+
+.resto-event-type-btn i {
+    font-size: 12px;
+    color: #f26522;
+    transition: color 0.22s ease;
+}
+
+.resto-event-type-btn:hover {
+    border-color: #1e88e5;
+    color: #1e88e5;
+    background: rgba(30,136,229,0.06);
+    transform: translateY(-1px);
+}
+
+.resto-event-type-btn:hover i {
+    color: #1e88e5;
+}
+
+.resto-event-type-btn.active {
+    background: #1e88e5;
+    border-color: #1e88e5;
+    color: #ffffff;
+    box-shadow: 0 3px 12px rgba(30,136,229,0.38);
+}
+
+.resto-event-type-btn.active i {
+    color: #ffffff;
+}
+
+/* ---- Grille cartes ---- */
+.resto-events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ---- Carte Ã©vÃ©nement ---- */
+.resto-event-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.resto-event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.13);
+}
+
+.resto-event-card.hidden {
+    display: none;
+}
+
+.resto-event-card-img {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.resto-event-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.resto-event-card:hover .resto-event-card-img img {
+    transform: scale(1.05);
+}
+
+.resto-event-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #f26522;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.resto-event-card-body {
+    padding: 18px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.resto-event-card-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #0a1628;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.resto-event-card-desc {
+    font-size: 12px;
+    color: rgba(10,22,40,0.6);
+    margin: 0;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.resto-event-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    gap: 10px;
+}
+
+.resto-event-card-price {
+    font-size: 15px;
+    font-weight: 900;
+    color: #f26522;
+}
+
+.resto-event-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #1e88e5;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(30,136,229,0.3);
+}
+
+.resto-event-card-cta:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(30,136,229,0.4);
+}
+
+/* ---- Aucun rÃ©sultat ---- */
+.resto-events-no-results {
+    display: none;
+    grid-column: 1 / -1;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 60px 20px;
+    color: rgba(10,22,40,0.4);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.resto-events-no-results i {
+    font-size: 40px;
+    color: rgba(10,22,40,0.2);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .resto-events-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        padding: 24px 16px;
+    }
+    .resto-events-header {
+        padding: 32px 20px 24px;
+    }
+    .resto-events-types-bar {
+        padding: 16px 16px;
+    }
+}
+
+/* ============================================================
+   SECTION PLANS GO NEXT LEVEL
+   ============================================================ */
+.resto-plans-section {
+    background: #f9fafb;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Topbar orange GoExploria */
+.resto-plans-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 10px 32px;
+    background: linear-gradient(90deg, #e84c10, #f26522 50%, #f9a52c);
+    flex-wrap: wrap;
+}
+
+.resto-plans-topbar-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.resto-plans-topbar-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.92);
+}
+
+/* Inner content */
+.resto-plans-inner {
+    max-width: 1340px;
+    margin: 0 auto;
+    padding: 72px 40px 64px;
+}
+
+/* Heading */
+.resto-plans-heading {
+    text-align: center;
+    margin-bottom: 52px;
+}
+
+.resto-plans-eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #f26522;
+    margin-bottom: 12px;
+}
+
+.resto-plans-title {
+    font-size: clamp(26px, 3vw, 42px);
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0 0 16px;
+    line-height: 1.15;
+}
+
+.resto-plans-highlight {
+    color: #f26522;
+}
+
+.resto-plans-lead {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.7;
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* Grid des plans */
+.resto-plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-bottom: 48px;
+}
+
+/* Carte plan */
+.resto-plan-card {
+    background: #ffffff;
+    border: 1px solid rgba(10,22,40,0.1);
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.resto-plan-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 36px rgba(30,136,229,0.15);
+}
+
+.resto-plan-card.featured {
+    background: linear-gradient(160deg, #e8f4fd, #f0f8ff);
+    border-color: #1e88e5;
+    box-shadow: 0 0 30px rgba(30,136,229,0.18);
+    transform: translateY(-8px);
+}
+
+.resto-plan-card.featured:hover {
+    transform: translateY(-14px);
+}
+
+/* Badge recommandÃ© */
+.resto-plan-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #e84c10, #f26522);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 4px 20px;
+    border-radius: 0 0 10px 10px;
+    white-space: nowrap;
+}
+
+/* Header de la carte */
+.resto-plan-header {
+    padding: 40px 28px 24px;
+    text-align: center;
+    border-bottom: 1px solid rgba(10,22,40,0.08);
+}
+
+.resto-plan-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 14px;
+    background: rgba(30,136,229,0.1);
+    border: 1px solid rgba(30,136,229,0.25);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #1e88e5;
+}
+
+.resto-plan-card.featured .resto-plan-icon {
+    background: rgba(30,136,229,0.18);
+    border-color: #1e88e5;
+}
+
+.resto-plan-name {
+    font-size: 18px;
+    font-weight: 900;
+    color: #0a1628;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.resto-plan-price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 3px;
+    margin-bottom: 10px;
+}
+
+.resto-plan-amount {
+    font-size: 44px;
+    font-weight: 900;
+    color: #f26522;
+    line-height: 1;
+}
+
+.resto-plan-currency {
+    font-size: 22px;
+    font-weight: 700;
+    color: #f26522;
+}
+
+.resto-plan-period {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(10,22,40,0.45);
+}
+
+.resto-plan-tagline {
+    font-size: 12px;
+    color: rgba(10,22,40,0.5);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Liste features */
+.resto-plan-features {
+    list-style: none;
+    margin: 0;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.resto-plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(10,22,40,0.75);
+}
+
+.resto-plan-features li i.fa-check {
+    color: #27ae60;
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+.resto-plan-feat-no {
+    opacity: 0.38;
+}
+
+.resto-plan-feat-no i.fa-times {
+    color: #f9a52c;
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+/* CTA bouton plan */
+.resto-plan-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 28px 28px;
+    padding: 13px 20px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.resto-plan-cta.starter {
+    background: rgba(30,136,229,0.07);
+    border: 1.5px solid rgba(30,136,229,0.35);
+    color: #1e88e5;
+}
+
+.resto-plan-cta.starter:hover {
+    background: rgba(30,136,229,0.14);
+    border-color: #1e88e5;
+    transform: translateY(-1px);
+}
+
+.resto-plan-cta.pro {
+    background: #1e88e5;
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(30,136,229,0.35);
+}
+
+.resto-plan-cta.pro:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px rgba(30,136,229,0.45);
+}
+
+.resto-plan-cta.premium {
+    background: rgba(30,136,229,0.12);
+    border: 1.5px solid rgba(30,136,229,0.45);
+    color: #1565c0;
+}
+
+.resto-plan-cta.premium:hover {
+    background: rgba(30,136,229,0.22);
+    border-color: #1e88e5;
+    color: #1e88e5;
+    transform: translateY(-1px);
+}
+
+/* Footer de la section plans */
+.resto-plans-footer {
+    text-align: center;
+    padding-top: 16px;
+    border-top: 1px solid rgba(10,22,40,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.resto-plans-footer p {
+    font-size: 12px;
+    color: rgba(10,22,40,0.45);
+    margin: 0;
+}
+
+.resto-plans-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: rgba(30,136,229,0.07);
+    border: 1.5px solid rgba(30,136,229,0.4);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #1e88e5;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.resto-plans-contact:hover {
+    background: rgba(30,136,229,0.15);
+    border-color: #1e88e5;
+    transform: scale(1.02);
+}
+
+/* ---- Responsive Plans ---- */
+@media (max-width: 1024px) {
+    .resto-plans-grid { grid-template-columns: repeat(2, 1fr); }
+    .resto-plan-card.featured { transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+    .resto-plans-grid { grid-template-columns: 1fr; }
+    .resto-plans-inner { padding: 48px 20px 40px; }
+    .resto-lang-switcher { margin-left: 8px; }
+}
+
+/* ============================================================
+   SECTION RÃ‰SERVATION (ancre cible)
+   ============================================================ */
+.resto-reservation-section {
+    background: #ffffff;
+    padding: 48px 32px;
+    text-align: center;
+    border-top: 1px solid rgba(10,22,40,0.08);
+}
+
+.resto-reservation-section h3 {
+    font-size: 22px;
+    font-weight: 900;
+    color: #0a1628;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0 0 10px;
+}
+
+.resto-reservation-section p {
+    font-size: 13px;
+    color: rgba(10,22,40,0.6);
+    margin: 0 0 28px;
+}
+
+.resto-reservation-form {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.resto-reservation-form select,
+.resto-reservation-form input[type="date"],
+.resto-reservation-form input[type="number"] {
+    padding: 12px 16px;
+    border: 2px solid rgba(10,22,40,0.18);
+    background: #ffffff;
+    color: #0a1628;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    flex: 1;
+    min-width: 140px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.resto-reservation-form select option {
+    background: #ffffff;
+    color: #0a1628;
+}
+
+.resto-reservation-form select:focus,
+.resto-reservation-form input:focus {
+    border-color: #1e88e5;
+}
+
+.resto-reservation-submit {
+    padding: 12px 28px;
+    background: #1e88e5;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.resto-reservation-submit:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px rgba(30,136,229,0.5);
+}
+
+/* ============================================================
+   RESPONSIVE â€” contenu
+   ============================================================ */
+@media (max-width: 1280px) {
+    .resto-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .resto-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .resto-content-area {
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .resto-cards-grid {
+        grid-template-columns: 1fr;
+    }
+    .resto-content-area {
+        padding: 20px 16px;
+    }
+    .resto-reservation-section {
+        padding: 36px 16px;
+    }
+    .resto-reservation-form {
+        flex-direction: column;
+    }
+}
+
+/* ============================================================
+   RESPONSIVE GLOBAL — filtres destination partagés
+   ============================================================ */
+@media (max-width: 768px) {
+    .resto-header-destinations-bar {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .resto-dest-row {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    .resto-dest-icon-box {
+        width: 100% !important;
+        max-width: 240px !important;
+        justify-self: center !important;
+        justify-content: center !important;
+        min-width: 0 !important;
+    }
+
+    .resto-dest-breadcrumb,
+    .resto-dest-breadcrumb.vp-dest-breadcrumb,
+    .vp-dest-breadcrumb {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+    }
+
+    .resto-dest-sep {
+        display: none !important;
+    }
+
+    .vp-dest-select,
+    .resto-dest-select {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: 40px !important;
+        font-size: 12px !important;
+        white-space: normal !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1100px) {
+    .resto-dest-row {
+        align-items: stretch !important;
+    }
+
+    .resto-dest-breadcrumb.vp-dest-breadcrumb,
+    .vp-dest-breadcrumb {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(160px, 1fr)) !important;
+        gap: 8px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .resto-dest-sep {
+        display: none !important;
+    }
+
+    .vp-dest-select,
+    .resto-dest-select {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+}
+

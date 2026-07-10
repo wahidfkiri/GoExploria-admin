@@ -1,0 +1,170 @@
+
+/* ============================================================
+   WELCOME — Améliorations responsive (additives, non destructives)
+   Ajoutées APRÈS le bundle : ne modifient pas le design desktop.
+   ============================================================ */
+img, video { max-width: 100%; }
+
+@media (max-width: 768px) {
+    body { -webkit-text-size-adjust: 100%; }
+    .main-content { overflow-x: hidden; }
+    /* Titres de section fluides et sans débordement */
+    .resto-header-title {
+        font-size: clamp(18px, 5vw, 28px) !important;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+        padding-inline: 12px;
+    }
+    /* Carrousels horizontaux : défilement tactile fluide, scrollbars masquées */
+    [class*="scroll-container"], [class*="scroll-wrapper"] {
+        -webkit-overflow-scrolling: touch;
+    }
+    /* Cibles tactiles plus confortables */
+    .nav-icon, .menu-toggle, .lang-btn, .quick-link-item { min-height: 40px; }
+}
+
+@media (max-width: 480px) {
+    .resto-header-title { font-size: clamp(16px, 5.5vw, 22px) !important; }
+    /* Évite tout débordement latéral résiduel sur très petits écrans */
+    html, body { overflow-x: hidden; }
+    .container, .row { max-width: 100%; }
+}
+
+/* ============================================================
+   HERO — Barre de recherche simplifiée (destination + recherche)
+   Après suppression des pictos, on repasse le conteneur en flex propre
+   et responsive. La barre reste un composant fixe du hero (non flottant).
+   ============================================================ */
+.go-home-hero .search-bar-v2-container {
+    display: flex !important;
+    grid-template-columns: none !important;
+    align-items: center;
+    gap: 12px !important;
+    width: 100%;
+}
+.go-home-hero .search-bar-v2-destinations {
+    flex: 0 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: auto !important;
+    max-width: none !important;
+    padding: 0 !important;
+}
+.go-home-hero .search-bar-v2-search {
+    flex: 1 1 auto !important;
+    order: 0 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    padding: 0 !important;
+}
+/* La barre ne flotte plus : elle reste dans le hero */
+.go-home-hero .search-bar-v2.search-bar-v2-floating {
+    position: absolute !important;
+    top: 24px !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+}
+
+/* Tablette / mobile : on garde destination (globe) + recherche, bien alignés */
+@media (max-width: 1024px) {
+    .go-home-hero .search-bar-v2-container {
+        display: flex !important;
+        grid-template-columns: none !important;
+    }
+}
+@media (max-width: 560px) {
+    .go-home-hero .search-bar-v2-destinations {
+        display: flex !important;              /* on garde la destination sur mobile */
+    }
+    .go-home-hero .search-bar-v2-destinations-title {
+        display: none !important;              /* juste le globe, sans le libellé */
+    }
+    .go-home-hero .search-bar-v2-globe-icon {
+        width: 30px !important;
+        height: 30px !important;
+        flex: 0 0 30px !important;
+    }
+}
+
+/* ============================================================
+   HEADER — transparent en haut de page, solide au scroll
+   ============================================================ */
+.header-v2 { transition: background-color .3s ease, box-shadow .3s ease, border-color .3s ease; }
+body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2 {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-bottom-color: transparent !important;
+}
+
+/* ============================================================
+   HEADER SEARCH — icône + panneau déroulant (barre redesignée)
+   ============================================================ */
+.hdr-search-toggle { background: transparent; border: 0; cursor: pointer; color: inherit; }
+
+.hdr-search-panel {
+    position: fixed; left: 0; right: 0; top: 0; z-index: 10055;
+    display: flex; justify-content: center;
+    padding: 14px clamp(12px, 4vw, 40px);
+    background: rgba(10, 18, 34, .97);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, .28);
+    transform: translateY(-120%); opacity: 0; visibility: hidden;
+    transition: transform .32s cubic-bezier(.4, 0, .2, 1), opacity .3s ease, visibility .3s;
+}
+.hdr-search-panel.is-open { transform: translateY(0); opacity: 1; visibility: visible; }
+.hdr-search-panel__inner { width: min(900px, 100%); }
+
+.hdr-search {
+    display: flex; align-items: center; gap: 10px;
+    background: #fff; border-radius: 999px; padding: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+}
+.hdr-search__dest {
+    display: inline-flex; align-items: center; gap: 8px; flex: 0 0 auto;
+    padding: 11px 16px; border: 0; border-radius: 999px; cursor: pointer;
+    background: #f2f5fa; color: #0f172a; font-weight: 700; font-size: 14px; white-space: nowrap;
+    transition: background .2s ease;
+}
+.hdr-search__dest:hover { background: #e6ecf5; }
+.hdr-search__globe { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+.hdr-search__chev { color: #64748b; }
+.hdr-search__field { position: relative; display: flex; align-items: center; flex: 1 1 auto; min-width: 0; }
+.hdr-search__ico { position: absolute; left: 14px; color: #94a3b8; pointer-events: none; }
+.hdr-search__input {
+    width: 100%; border: 0; outline: 0; background: transparent;
+    padding: 12px 40px 12px 44px; font-size: 15px; color: #0f172a;
+}
+.hdr-search__input::placeholder { color: #94a3b8; }
+.hdr-search__clear {
+    position: absolute; right: 8px; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border: 0; border-radius: 50%; background: #eef2f7; color: #64748b; cursor: pointer;
+}
+.hdr-search__submit {
+    display: inline-flex; align-items: center; gap: 8px; flex: 0 0 auto;
+    padding: 12px 22px; border: 0; border-radius: 999px; cursor: pointer;
+    background: linear-gradient(135deg, #1677ff, #7c3aed); color: #fff; font-weight: 700; font-size: 14px;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.hdr-search__submit:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(22, 118, 255, .4); }
+.hdr-search__results {
+    margin-top: 10px; background: #fff; border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .2); max-height: min(60vh, 420px); overflow-y: auto;
+}
+.hdr-search__result {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #0f172a; text-decoration: none;
+    border-bottom: 1px solid #f1f5f9;
+}
+.hdr-search__result:hover { background: #f6f8fb; }
+.hdr-search__result i { color: #1677ff; }
+.hdr-search__empty { padding: 16px; text-align: center; color: #94a3b8; }
+
+@media (max-width: 640px) {
+    .hdr-search { flex-wrap: wrap; border-radius: 16px; }
+    .hdr-search__field { order: 0; flex: 1 1 100%; }
+    .hdr-search__dest { order: 1; flex: 1 1 auto; justify-content: center; }
+    .hdr-search__submit { order: 2; flex: 1 1 auto; justify-content: center; }
+}

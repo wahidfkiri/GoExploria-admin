@@ -1,0 +1,357 @@
+/* page-5-tourism.css - LIGHT THEME */
+.tourism-section {
+    font-family: 'Montserrat', sans-serif;
+    margin: 60px 40px;
+    padding: 0;
+    background: transparent;
+    position: relative;
+}
+
+.tourism-container {
+    display: flex;
+    flex-direction: column;
+    gap: 70px;
+    max-width: 1400px;
+    margin: 40px auto 0;
+    padding: 0 40px;
+}
+
+/* Block Headers */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 32px;
+    border-bottom: 2px solid #e8edf5;
+    padding-bottom: 20px;
+}
+
+.section-header-left h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a2942;
+    margin-bottom: 4px;
+}
+
+.section-header-left p {
+    color: #888888;
+    font-size: 0.95rem;
+}
+
+.experience-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e3f2fd;
+    color: #1e88e5;
+    padding: 7px 18px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.82rem;
+    border: 1px solid #bbdefb;
+}
+
+/* Adventures Grid */
+.aventures-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.aventure-card {
+    background: #ffffff;
+    border: 1px solid #e8edf5;
+    border-top: 4px solid #1e88e5;
+    border-radius: 14px;
+    padding: 30px 24px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.aventure-card:hover {
+    border-top-color: #f26522;
+    transform: translateY(-6px);
+    box-shadow: 0 16px 36px rgba(30,136,229,0.12);
+}
+
+.aventure-icon {
+    width: 54px;
+    height: 54px;
+    background: #e3f2fd;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    color: #1e88e5;
+}
+
+.aventure-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1a2942;
+    margin-bottom: 10px;
+}
+
+.aventure-desc {
+    color: #666666;
+    line-height: 1.6;
+    font-size: 0.88rem;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.aventure-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid #e8edf5;
+}
+
+.meta-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    color: #1e88e5;
+    font-weight: 600;
+    background: #e3f2fd;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+/* Saisons Grid */
+.saisons-carousel {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.saison-card {
+    background: #ffffff;
+    border: 1px solid #e8edf5;
+    border-radius: 14px;
+    padding: 28px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.saison-card:hover {
+    border-color: #1e88e5;
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(30,136,229,0.12);
+}
+
+.saison-emoji {
+    width: 52px;
+    height: 52px;
+    background: #e3f2fd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #1e88e5;
+    margin: 0 auto 16px;
+}
+
+.saison-name { font-size: 1rem; font-weight: 700; color: #1a2942; margin-bottom: 14px; }
+
+.saison-activite {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: #555555;
+    margin-bottom: 7px;
+    font-weight: 500;
+}
+
+.saison-activite i { color: #1e88e5; }
+
+.saison-temp {
+    display: inline-block;
+    padding: 5px 14px;
+    background: #e3f2fd;
+    color: #1565c0;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-top: 14px;
+}
+
+/* Hiver Section */
+.hiver-section {
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    position: relative;
+}
+
+.hiver-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 32px;
+    border-bottom: 2px solid #e8edf5;
+    padding-bottom: 20px;
+}
+
+.hiver-icon {
+    width: 56px;
+    height: 56px;
+    background: #e3f2fd;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #1e88e5;
+}
+
+.hiver-title { font-size: 1.5rem; font-weight: 700; color: #1a2942; margin: 0; }
+.hiver-sub { font-size: 0.9rem; color: #888888; margin-top: 3px; }
+
+.hiver-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.hiver-activity-card {
+    background: #ffffff;
+    border: 1px solid #e8edf5;
+    border-top: 4px solid #1e88e5;
+    border-radius: 14px;
+    padding: 28px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.hiver-activity-card:hover {
+    border-top-color: #f26522;
+    transform: translateY(-6px);
+    box-shadow: 0 16px 36px rgba(30,136,229,0.12);
+}
+
+.activity-icon-big {
+    width: 54px;
+    height: 54px;
+    background: #e3f2fd;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #1e88e5;
+    margin-bottom: 18px;
+}
+
+.activity-name { font-size: 1rem; font-weight: 700; color: #1a2942; margin-bottom: 10px; }
+.activity-desc { color: #666666; line-height: 1.6; font-size: 0.85rem; margin-bottom: 18px; }
+
+.activity-difficulte {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #1e88e5;
+    border-top: 1px solid #e8edf5;
+    padding-top: 16px;
+}
+
+.difficulty-stars { color: #f9a52c; letter-spacing: 2px; }
+
+.snow-decoration {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #e3f2fd;
+    color: #1565c0;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 12px;
+}
+
+.btn-hiver-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    color: #ffffff;
+    padding: 14px 36px;
+    border-radius: 50px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    margin-top: 40px;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(30,136,229,0.3);
+}
+
+.btn-hiver-cta:hover {
+    background: linear-gradient(135deg, #f26522, #e84c10);
+    box-shadow: 0 8px 24px rgba(242,101,34,0.35);
+    transform: translateY(-2px);
+    color: #ffffff;
+}
+
+/* Footer Info */
+.stats-footer {
+    padding: 30px 0;
+    border-top: 2px solid #e8edf5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.stat-tag { font-weight: 700; color: #555555; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+.stat-tag span { color: #1e88e5; }
+
+/* Icône écotourisme — logo droit de l'entête */
+.tourism-eco-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #43a047, #66bb6a);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(67,160,71,0.3);
+}
+
+.tourism-eco-icon i {
+    font-size: 1.4rem;
+    color: #ffffff;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+    .aventures-grid, .hiver-grid { grid-template-columns: repeat(2, 1fr); }
+    .saisons-carousel { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 1024px) {
+    .tourism-section { margin: 40px 20px; }
+}
+
+@media (max-width: 768px) {
+    .tourism-section { margin: 30px 0; }
+    .tourism-container { gap: 50px; padding: 0 16px; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .aventures-grid, .hiver-grid, .saisons-carousel { grid-template-columns: 1fr !important; gap: 16px; }
+    .hiver-header { flex-direction: column; align-items: flex-start; }
+    .btn-hiver-cta { width: 100%; justify-content: center; padding: 14px 20px; }
+    .stats-footer { flex-direction: column; gap: 20px; }
+}

@@ -1,0 +1,22 @@
+{
+    "name": "vendor/welcome",
+    "description": "GoExploria Welcome — Landing page moderne, performante et indépendante (composants Blade, CSS/JS consolidés, chargement progressif)",
+    "type": "library",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Vendor\\Welcome\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Vendor\\Welcome\\WelcomeServiceProvider"
+            ]
+        }
+    }
+}

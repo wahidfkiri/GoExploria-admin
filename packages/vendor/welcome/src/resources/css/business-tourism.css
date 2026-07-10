@@ -1,0 +1,423 @@
+﻿/**
+ * Business & Tourism Section
+ */
+
+/* Section wrapper */
+.bt-section {
+    background: #f8f9fc;
+}
+
+.bt-body {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 40px;
+}
+
+.resto-header-main.bt-header-main {
+    display: grid;
+    grid-template-columns: 460px minmax(0, 1fr) 460px;
+    align-items: center;
+    gap: 12px;
+}
+
+.resto-header-main.bt-header-main .resto-header-center {
+    grid-column: 2;
+    width: 100%;
+    text-align: center;
+}
+
+.resto-header-main.bt-header-main .resto-header-logo-right {
+    grid-column: 3;
+    justify-self: end;
+    width: 460px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+}
+
+.bt-next-level-image {
+    display: block;
+    width: clamp(180px, 18vw, 280px);
+    height: auto;
+}
+
+/* Centre la ligne d'espaces dans l'en-tête */
+.bt-header-dest-row {
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.bt-header-dest-row .resto-dest-icon-box {
+    margin-right: 14px;
+}
+
+.bt-header-dest-row .resto-dest-breadcrumb {
+    justify-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+}
+
+.bt-more-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 230px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+    background: #1a3a8f;
+    padding: 14px 26px;
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.bt-more-btn:hover {
+    background: #0f235f;
+    transform: translateY(-1px);
+}
+
+/* Grille duo */
+.bt-dual-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 48px;
+}
+
+/* Carte */
+.bt-card {
+    background: #fff;
+    border: 1px solid #e8ecf0;
+    border-radius: 20px;
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.bt-card:hover {
+    box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+    transform: translateY(-4px);
+}
+
+.bt-card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+}
+.bt-icon-box {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    background: rgba(26, 58, 143, 0.07);
+    color: #1a3a8f;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+
+
+.bt-icon-image-box {
+    width: clamp(72px, 8vw, 108px);
+    height: clamp(72px, 8vw, 108px);
+    padding: 6px;
+    background: #fff;
+    border: 1px solid #eef1f5;
+}
+
+.bt-icon-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+
+.bt-icon-tourisme {
+    background: rgba(0, 174, 154, 0.08);
+    color: #00ae9a;
+}
+
+.bt-card-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0a1628;
+    margin: 0 0 6px;
+}
+
+.bt-card-desc {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* Features list */
+.bt-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid #f0f2f5;
+}
+
+.bt-features li {
+    padding: 10px 0;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.bt-features li i {
+    color: #00c9b7;
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+/* Carousel videos */
+.bt-carousel {
+    flex: 1;
+}
+
+.bt-carousel-stage {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0a1628;
+    transition: opacity 0.2s ease;
+}
+
+.bt-carousel-stage.bt-carousel-fade { opacity: 0; }
+
+.bt-carousel-preview {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.bt-carousel-stage:hover .bt-carousel-preview { transform: scale(1.03); }
+
+.bt-carousel-stage iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: 5;
+}
+
+/* Bouton Play central */
+.bt-carousel-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.92);
+    border: none;
+    color: #1a3a8f;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.2s ease;
+    z-index: 3;
+}
+
+.bt-carousel-play:hover {
+    background: #fff;
+    transform: translate(-50%, -50%) scale(1.12);
+}
+
+/* Fleches Prev / Next */
+.bt-carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(10,22,40,0.55);
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 4;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.bt-carousel-prev { left: 12px; }
+.bt-carousel-next { right: 12px; }
+
+.bt-carousel-arrow:hover {
+    background: #1a3a8f;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Compteur */
+.bt-carousel-counter {
+    position: absolute;
+    bottom: 40px;
+    right: 12px;
+    background: rgba(10,22,40,0.6);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 50px;
+    z-index: 4;
+    letter-spacing: 0.5px;
+}
+
+/* Barre titre en bas */
+.bt-carousel-title-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(10,22,40,0.85));
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 20px 14px 10px;
+    z-index: 4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* CTA buttons */
+.bt-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    align-self: flex-start;
+}
+
+.bt-cta-primary {
+    background: #1a3a8f;
+    color: #fff;
+}
+.bt-cta-primary:hover { background: #0a1628; color: #d4af37; }
+
+.bt-cta-secondary {
+    background: transparent;
+    color: #1a3a8f;
+    border: 2px solid #1a3a8f;
+}
+.bt-cta-secondary:hover { background: #1a3a8f; color: #fff; }
+
+/* Stats */
+.bt-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.bt-stat-unit {
+    background: #fff;
+    border: 1px solid #e8ecf0;
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.bt-stat-unit:hover {
+    border-color: #1a3a8f;
+    box-shadow: 0 8px 24px rgba(26,58,143,0.08);
+}
+
+.bt-stat-number {
+    display: block;
+    font-size: 34px;
+    font-weight: 900;
+    color: #1a3a8f;
+    margin-bottom: 4px;
+}
+
+.bt-stat-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .bt-dual-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+    .resto-header-main.bt-header-main {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .resto-header-main.bt-header-main .resto-header-center,
+    .resto-header-main.bt-header-main .resto-header-logo-right {
+        grid-column: auto;
+        justify-self: center;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .bt-body { padding: 40px 20px; }
+    .bt-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .bt-card { padding: 24px; }
+    .bt-vthumb { width: 100px; }
+    .bt-vthumb img { height: 56px; }
+}
+
+@media (max-width: 480px) {
+    .bt-stats-grid { grid-template-columns: 1fr 1fr; }
+    .bt-card-top { flex-direction: column; }
+.bt-icon-box {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    background: rgba(26, 58, 143, 0.07);
+    color: #1a3a8f;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+}
+
+
+

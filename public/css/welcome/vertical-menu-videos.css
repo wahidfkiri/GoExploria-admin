@@ -1,0 +1,176 @@
+/* ============================================
+   VERTICAL MENU VIDEOS - Styles pour le sous-menu vidéos
+   ============================================ */
+
+/* Item vidéo dans le menu vertical */
+.vertical-menu-v2-video-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 16px;
+    margin: 6px 12px;
+    background: #ffffff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.vertical-menu-v2-video-item:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: rgba(212, 175, 55, 0.3);
+    transform: translateX(4px);
+}
+
+/* Thumbnail vidéo dans le menu vertical */
+.vertical-menu-v2-video-thumbnail {
+    position: relative;
+    width: 100px;
+    height: 56px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #000;
+}
+
+.vertical-menu-v2-video-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Icône play sur thumbnail */
+.vertical-menu-v2-video-play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 0, 0, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.vertical-menu-v2-video-item:hover .vertical-menu-v2-video-play-icon {
+    background: rgba(255, 0, 0, 1);
+    transform: translate(-50%, -50%) scale(1.15);
+}
+
+.vertical-menu-v2-video-play-icon svg {
+    width: 12px;
+    height: 12px;
+    fill: #ffffff;
+    margin-left: 2px;
+}
+
+/* Badge durée */
+.vertical-menu-v2-video-duration {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: rgba(0, 0, 0, 0.85);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+/* Info vidéo */
+.vertical-menu-v2-video-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.vertical-menu-v2-video-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a2942;
+    margin: 0 0 6px 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.vertical-menu-v2-video-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.vertical-menu-v2-video-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #d4af37;
+    background: rgba(212, 175, 55, 0.15);
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.vertical-menu-v2-video-category svg {
+    width: 10px;
+    height: 10px;
+    fill: currentColor;
+}
+
+.vertical-menu-v2-video-date {
+    font-size: 10px;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+/* Animation d'entrée */
+@keyframes slideInVerticalVideo {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.vertical-menu-v2-video-item {
+    animation: slideInVerticalVideo 0.3s ease forwards;
+}
+
+.vertical-menu-v2-video-item:nth-child(1) { animation-delay: 0.05s; }
+.vertical-menu-v2-video-item:nth-child(2) { animation-delay: 0.1s; }
+.vertical-menu-v2-video-item:nth-child(3) { animation-delay: 0.15s; }
+.vertical-menu-v2-video-item:nth-child(4) { animation-delay: 0.2s; }
+.vertical-menu-v2-video-item:nth-child(5) { animation-delay: 0.25s; }
+
+/* État vide */
+.vertical-menu-v2-videos-empty {
+    padding: 30px 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.vertical-menu-v2-videos-empty svg {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 10px;
+    opacity: 0.3;
+}
+
+.vertical-menu-v2-videos-empty p {
+    font-size: 13px;
+    margin: 0;
+}

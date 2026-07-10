@@ -1,0 +1,144 @@
+.mail-space-section {
+    background: #ffffff;
+    margin-top: 22px;
+}
+
+.mail-space-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 30px 24px 46px;
+}
+
+.mail-performance {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.mail-metric {
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #f6fbff, #eef5ff);
+    border: 1px solid #deebff;
+}
+
+.mail-metric span {
+    display: block;
+    color: #527095;
+    font-size: 12px;
+}
+
+.mail-metric strong {
+    font-size: 28px;
+    color: #0e2a4a;
+    font-weight: 800;
+}
+
+.mail-campaign-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.mail-campaign-card {
+    background: #fff;
+    border: 1px solid #e7eef8;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(26, 58, 143, 0.06);
+}
+
+.mail-campaign-card img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+}
+
+.mail-campaign-body {
+    padding: 16px;
+}
+
+.mail-campaign-head {
+    margin-bottom: 10px;
+}
+
+.mail-campaign-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 4px 10px;
+    background: #edf4ff;
+    border: 1px solid #d7e7ff;
+    color: #275b9c;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.mail-campaign-body h3 {
+    margin: 0 0 7px;
+    color: #0a1628;
+    font-size: 17px;
+}
+
+.mail-campaign-body p {
+    margin: 0;
+    color: #5a6878;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.mail-svg-widget {
+    border-radius: 10px;
+    border: 1px solid #dce8f8;
+    background: linear-gradient(135deg, #f7fbff, #f0f6ff);
+    padding: 8px 10px;
+    margin-top: 12px;
+}
+
+.mail-svg-widget svg {
+    width: 100%;
+    height: 66px;
+    display: block;
+}
+
+.mail-feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0;
+    display: grid;
+    gap: 8px;
+}
+
+.mail-feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #44566f;
+    font-weight: 600;
+}
+
+.mail-feature-list li i {
+    color: #2d7ff9;
+}
+
+.mail-campaign-card.hidden {
+    display: none;
+}
+
+@media (max-width: 991px) {
+    .mail-performance,
+    .mail-campaign-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .mail-performance,
+    .mail-campaign-grid {
+        grid-template-columns: 1fr;
+    }
+}

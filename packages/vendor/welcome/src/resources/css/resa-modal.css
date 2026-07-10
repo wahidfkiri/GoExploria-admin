@@ -1,0 +1,291 @@
+/* ================================================================
+   MODAL RÉSERVATION GLOBAL — Table & Vin
+   GoExploria · home-v2
+   ================================================================ */
+
+/* ---- Overlay (masqué par défaut) ---- */
+.goexp-resa-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 12, 28, 0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 99990;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.goexp-resa-overlay.open {
+    display: flex;
+}
+
+/* ---- Boîte modale ---- */
+.goexp-resa-box {
+    background: #ffffff;
+    border: 1px solid rgba(10,22,40,0.1);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 540px;
+    padding: 32px 36px 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18), 0 0 0 1px rgba(30,136,229,0.1);
+    animation: resaModalIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@keyframes resaModalIn {
+    from { opacity: 0; transform: scale(0.88) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ---- En-tête modal ---- */
+.goexp-resa-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+}
+
+.goexp-resa-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.goexp-resa-icon.table-type {
+    background: rgba(30,136,229,0.1);
+    border: 1.5px solid rgba(30,136,229,0.35);
+    color: #1e88e5;
+}
+
+.goexp-resa-icon.wine-type {
+    background: rgba(30,136,229,0.1);
+    border: 1.5px solid rgba(30,136,229,0.35);
+    color: #1e88e5;
+}
+
+.goexp-resa-titles {
+    flex: 1;
+    min-width: 0;
+}
+
+.goexp-resa-titles h3 {
+    margin: 0 0 3px;
+    font-size: 17px;
+    font-weight: 800;
+    color: #0a1628;
+    line-height: 1.2;
+}
+
+.goexp-resa-titles p {
+    margin: 0;
+    font-size: 12px;
+    color: rgba(10,22,40,0.5);
+}
+
+.goexp-resa-close-btn {
+    background: rgba(10,22,40,0.06);
+    border: 1px solid rgba(10,22,40,0.14);
+    color: rgba(10,22,40,0.5);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.goexp-resa-close-btn:hover {
+    background: rgba(30,136,229,0.12);
+    border-color: rgba(30,136,229,0.4);
+    color: #1e88e5;
+}
+
+/* ---- Séparateur ---- */
+.goexp-resa-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(30,136,229,0.35), rgba(30,136,229,0.2), transparent);
+    margin: 18px 0;
+}
+
+/* ---- Formulaire ---- */
+.goexp-resa-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.goexp-resa-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.goexp-resa-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.goexp-resa-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: rgba(10,22,40,0.55);
+}
+
+.goexp-resa-input,
+.goexp-resa-select,
+.goexp-resa-textarea {
+    background: #f8f9fb;
+    border: 1.5px solid rgba(10,22,40,0.15);
+    border-radius: 8px;
+    color: #0a1628;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.goexp-resa-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(10,22,40,0.4)'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 34px;
+    cursor: pointer;
+    background-color: #f8f9fb;
+}
+
+.goexp-resa-select option {
+    background: #ffffff;
+    color: #0a1628;
+}
+
+.goexp-resa-textarea {
+    resize: vertical;
+    min-height: 72px;
+}
+
+.goexp-resa-input:focus,
+.goexp-resa-select:focus,
+.goexp-resa-textarea:focus {
+    border-color: #1e88e5;
+    box-shadow: 0 0 0 3px rgba(30,136,229,0.12);
+    background: #ffffff;
+}
+
+.goexp-resa-input.selection-field {
+    color: rgba(10,22,40,0.6);
+    font-style: italic;
+    cursor: default;
+}
+
+/* ---- Bouton soumettre ---- */
+.goexp-resa-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 13px 28px;
+    background: #1e88e5;
+    border: none;
+    border-radius: 8px;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 4px;
+    box-shadow: 0 4px 14px rgba(30,136,229,0.35);
+}
+
+.goexp-resa-submit:hover {
+    background: #1565c0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(30,136,229,0.45);
+}
+
+/* ---- Succès ---- */
+.goexp-resa-success {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 0 12px;
+    text-align: center;
+}
+
+.goexp-resa-success.show {
+    display: flex;
+}
+
+.goexp-resa-success-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.1));
+    border: 2px solid rgba(34,197,94,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    color: #22c55e;
+    animation: resaSuccessPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes resaSuccessPop {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+.goexp-resa-success h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: #0a1628;
+}
+
+.goexp-resa-success p {
+    margin: 0;
+    font-size: 13px;
+    color: rgba(10,22,40,0.55);
+    line-height: 1.5;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 560px) {
+    .goexp-resa-box {
+        padding: 24px 20px 20px;
+        border-radius: 10px;
+    }
+
+    .goexp-resa-row {
+        grid-template-columns: 1fr;
+    }
+
+    .goexp-resa-titles h3 {
+        font-size: 15px;
+    }
+}

@@ -1,0 +1,543 @@
+   /* Overlay */
+        .smm-v4-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 99998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .smm-v4-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Container principal */
+        .smm-v4-container {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            width: 95%;
+            max-width: 1400px;
+            height: calc(100vh - 100px);
+            max-height: 700px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            z-index: 99999;
+            display: flex;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .smm-v4-container.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ========== SIDEBAR GAUCHE - GRANDS TITRES ========== */
+        .smm-v4-sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #1a2942 0%, #0a1628 100%);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .smm-v4-sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #ffffff;
+        }
+
+        .smm-v4-sidebar-header i {
+            font-size: 24px;
+            color: #d4af37;
+        }
+
+        .smm-v4-sidebar-header span {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .smm-v4-categories {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 0;
+        }
+
+        .smm-v4-categories::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .smm-v4-categories::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .smm-v4-categories::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 3px;
+        }
+
+        /* Style des GRANDS TITRES dans le menu vertical */
+        .smm-v4-cat {
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .smm-v4-cat i:first-child {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .smm-v4-cat span {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .smm-v4-cat .fa-chevron-right {
+            font-size: 12px;
+            opacity: 0;
+            transform: translateX(-5px);
+            transition: all 0.25s ease;
+        }
+
+        .smm-v4-cat:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border-left-color: #d4af37;
+        }
+
+        .smm-v4-cat:hover .fa-chevron-right {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .smm-v4-cat.active {
+            background: rgba(212, 175, 55, 0.15);
+            color: #d4af37;
+            border-left-color: #d4af37;
+        }
+
+        .smm-v4-cat.active .fa-chevron-right {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* ========== PANNEAU PRINCIPAL DROIT ========== */
+        .smm-v4-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f8f9fa;
+            overflow: hidden;
+        }
+
+        .smm-v4-main-header {
+            padding: 20px 28px;
+            background: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .smm-v4-main-header h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a2942;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .smm-v4-main-header h3 .tag {
+            font-size: 11px;
+            background: #e9ecef;
+            color: #6c757d;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: normal;
+        }
+
+        .smm-v4-close {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #f1f3f5;
+            color: #495057;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .smm-v4-close:hover {
+            background: #e9ecef;
+            color: #212529;
+            transform: rotate(90deg);
+        }
+
+        /* Zone de contenu scrollable */
+        .smm-v4-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 28px;
+        }
+
+        .smm-v4-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .smm-v4-content::-webkit-scrollbar-track {
+            background: #e9ecef;
+        }
+
+        .smm-v4-content::-webkit-scrollbar-thumb {
+            background: #adb5bd;
+            border-radius: 4px;
+        }
+
+        /* Style des catégories dans le panneau droit */
+        .smm-v4-category-block {
+            margin-bottom: 32px;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 20px;
+        }
+
+        .smm-v4-category-block:last-child {
+            border-bottom: none;
+        }
+
+        .smm-v4-category-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a2942;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .smm-v4-category-title a {
+            color: #1a2942;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .smm-v4-category-title a:hover {
+            color: #d4af37;
+        }
+
+        .smm-v4-category-tag {
+            font-size: 11px;
+            background: #e9ecef;
+            color: #6c757d;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: normal;
+        }
+
+        .smm-v4-category-desc {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 12px;
+        }
+
+        /* Grille des sous-catégories */
+        .smm-v4-subcats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .smm-v4-subcat {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #495057;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .smm-v4-subcat:hover {
+            background: #d4af37;
+            border-color: #d4af37;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        /* Sous-sous-catégories (niveau 3) */
+        .smm-v4-grandchildren {
+            margin-top: 12px;
+            margin-left: 16px;
+            padding-left: 16px;
+            border-left: 2px solid #d4af37;
+        }
+
+        .smm-v4-grandchild-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #d4af37;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .smm-v4-grandchild-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .smm-v4-grandchild-list a {
+            font-size: 12px;
+            color: #6c757d;
+            text-decoration: none;
+            padding: 4px 12px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .smm-v4-grandchild-list a:hover {
+            background: #d4af37;
+            color: #ffffff;
+        }
+
+        /* Lien externe */
+        .external-link {
+            background: #1a2942;
+            color: white !important;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .external-link:hover {
+            background: #d4af37 !important;
+            color: #1a2942 !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .smm-v4-container {
+                width: 98%;
+                max-height: 650px;
+            }
+            .smm-v4-sidebar {
+                width: 240px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .smm-v4-container {
+                top: 60px;
+                width: 100%;
+                height: calc(100vh - 60px);
+                max-height: none;
+                border-radius: 0;
+                flex-direction: column;
+            }
+            .smm-v4-sidebar {
+                width: 100%;
+                max-height: 180px;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .smm-v4-categories {
+                display: flex;
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding: 8px 12px;
+                gap: 8px;
+            }
+            .smm-v4-cat {
+                flex-direction: column;
+                min-width: 100px;
+                padding: 10px;
+                text-align: center;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                gap: 6px;
+            }
+            .smm-v4-cat.active {
+                border-left: none;
+                border-bottom-color: #d4af37;
+            }
+            .smm-v4-cat .fa-chevron-right {
+                display: none;
+            }
+            .smm-v4-main-header {
+                padding: 14px 20px;
+            }
+            .smm-v4-main-header h3 {
+                font-size: 18px;
+            }
+            .smm-v4-content {
+                padding: 16px;
+            }
+        }
+
+        /* ========== GRILLE DE CARTES — 3 colonnes minimum ========== */
+        .smm-v4-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .smm-v4-card {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.25s ease;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .smm-v4-card:hover {
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            transform: translateY(-3px);
+            border-color: #d4af37;
+        }
+
+        .smm-v4-card-link {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .smm-v4-card-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1a2942 0%, #0a1628 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #d4af37;
+            font-size: 20px;
+        }
+
+        .smm-v4-card-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .smm-v4-card-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a2942;
+            line-height: 1.3;
+            margin-bottom: 3px;
+        }
+
+        .smm-v4-card:hover .smm-v4-card-name {
+            color: #d4af37;
+        }
+
+        .smm-v4-card-desc {
+            font-size: 11px;
+            color: #6c757d;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .smm-v4-card-subs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #e9ecef;
+        }
+
+        .smm-v4-card-sub {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            background: #f0f4f8;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            padding: 3px 10px;
+            color: #1a2942;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .smm-v4-card-sub:hover {
+            background: #d4af37;
+            border-color: #d4af37;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        /* Responsive grille */
+        @media (max-width: 1200px) {
+            .smm-v4-cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .smm-v4-cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Bouton déclencheur */
+        .services-trigger-v4 {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #1a2942;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .services-trigger-v4:hover {
+            background: #d4af37;
+            transform: translateY(-2px);
+        }
