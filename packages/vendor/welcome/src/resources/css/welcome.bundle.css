@@ -20255,3 +20255,176 @@ body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2 {
     .hdr-search__dest { order: 1; flex: 1 1 auto; justify-content: center; }
     .hdr-search__submit { order: 2; flex: 1 1 auto; justify-content: center; }
 }
+
+/* ==== welcome-premium.css ==== */
+/* ============================================================================
+   REDESIGN PREMIUM — HEADER + HERO (/welcome uniquement, bundle isole)
+   Direction : Premium moderne (glassmorphism, degrades, grande typo,
+   recherche proeminente, animations discretes). Hero video plein ecran conserve.
+   ============================================================================ */
+
+/* ---------- HEADER : verre translucide premium ---------- */
+.header-v2 {
+    transition: background-color .35s ease, box-shadow .35s ease, border-color .35s ease, backdrop-filter .35s ease;
+}
+/* En haut de page : totalement transparent (le hero transparait) */
+body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2 {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-bottom-color: transparent !important;
+}
+/* Au scroll / recherche ouverte : glassmorphism sombre premium */
+body.hdr-scrolled .header-v2,
+body.hdr-search-open .header-v2 {
+    background: rgba(9, 16, 31, .68) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    border-bottom: 1px solid rgba(255, 255, 255, .09) !important;
+    box-shadow: 0 12px 34px rgba(3, 8, 18, .34) !important;
+}
+
+/* Liens de navigation : clairs + soulignement degrade anime */
+.header-v2 .nav-menu > li > a {
+    position: relative;
+    color: #eaf0fb !important;
+    font-weight: 600;
+    letter-spacing: .2px;
+    transition: color .2s ease;
+}
+.header-v2 .nav-menu > li > a::after {
+    content: ""; position: absolute; left: 8px; right: 8px; bottom: -2px; height: 2px;
+    background: linear-gradient(90deg, #1677ff, #7c3aed);
+    border-radius: 2px; transform: scaleX(0); transform-origin: left;
+    transition: transform .28s cubic-bezier(.4, 0, .2, 1);
+}
+.header-v2 .nav-menu > li > a:hover { color: #fff !important; }
+.header-v2 .nav-menu > li > a:hover::after { transform: scaleX(1); }
+.header-v2 .nav-account-icon { gap: 8px; }
+
+/* Icones header : pastilles douces au survol */
+.header-v2 .nav-icon,
+.header-v2 .hdr-search-toggle,
+.header-v2 .mobile-search-trigger {
+    color: #eaf0fb !important;
+    width: 42px; height: 42px; border-radius: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.header-v2 .nav-icon:hover,
+.header-v2 .hdr-search-toggle:hover,
+.header-v2 .mobile-search-trigger:hover {
+    background: rgba(255, 255, 255, .12);
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+/* Bouton AFFICHEZ VOUS : pilule degradee premium */
+.header-v2 .nav-devis-btn {
+    background: linear-gradient(135deg, #1677ff, #7c3aed) !important;
+    color: #fff !important;
+    border-radius: 999px !important;
+    padding: 10px 20px !important;
+    font-weight: 700; letter-spacing: .3px;
+    box-shadow: 0 10px 24px rgba(22, 118, 255, .34);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.header-v2 .nav-devis-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(124, 58, 237, .45);
+}
+
+/* Selecteur de langue en verre */
+.header-v2 .lang-btn {
+    background: rgba(255, 255, 255, .1) !important;
+    border: 1px solid rgba(255, 255, 255, .16) !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+}
+.header-v2 .lang-btn:hover { background: rgba(255, 255, 255, .18) !important; }
+
+/* Burger premium */
+.header-v2 .menu-toggle span { background: #eaf0fb !important; }
+
+/* ---------- HERO : overlay cinematographique + typo premium ---------- */
+.go-home-hero .hero-swiper > .swiper-wrapper > .swiper-slide::before {
+    background: linear-gradient(180deg, rgba(4, 10, 22, .30) 0%, rgba(4, 10, 22, .52) 52%, rgba(4, 10, 22, .86) 100%) !important;
+}
+.go-hero-content { top: 46% !important; }
+.go-hero-title {
+    font-size: clamp(34px, 6vw, 68px) !important;
+    font-weight: 800 !important;
+    letter-spacing: -1px !important;
+    line-height: 1.03 !important;
+    text-shadow: 0 6px 34px rgba(0, 0, 0, .45);
+    animation: wcHeroUp .85s cubic-bezier(.2, .7, .2, 1) both;
+}
+.go-hero-description {
+    color: rgba(255, 255, 255, .92) !important;
+    animation: wcHeroUp .85s .08s cubic-bezier(.2, .7, .2, 1) both;
+}
+@keyframes wcHeroUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+
+/* Fleches de navigation en verre */
+.go-home-hero .swiper-button-prev,
+.go-home-hero .swiper-button-next {
+    background: rgba(255, 255, 255, .12) !important;
+    border: 1px solid rgba(255, 255, 255, .22) !important;
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .3);
+}
+.go-home-hero .swiper-button-prev:hover,
+.go-home-hero .swiper-button-next:hover {
+    background: linear-gradient(135deg, #1677ff, #7c3aed) !important;
+    border-color: transparent !important;
+}
+
+/* ---------- HERO : barre de recherche proeminente (glass, centree) ---------- */
+.go-home-hero .search-bar-v2 {
+    width: min(820px, 94%) !important;
+    margin: 0 auto !important;
+    background: rgba(255, 255, 255, .12) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, .24) !important;
+    border-radius: 999px !important;
+    box-shadow: 0 24px 60px rgba(4, 10, 22, .42) !important;
+    padding: 8px !important;
+    animation: wcHeroUp .85s .16s cubic-bezier(.2, .7, .2, 1) both;
+}
+/* Bouton destination : pilule translucide claire */
+.go-home-hero .search-bar-v2-destinations {
+    background: rgba(255, 255, 255, .16);
+    border-radius: 999px;
+    padding: 8px 14px !important;
+    gap: 8px !important;
+}
+.go-home-hero .search-bar-v2-destinations-title { color: #fff !important; font-weight: 700; }
+.go-home-hero .search-bar-v2-globe-icon { border-radius: 50%; }
+/* Champ de recherche : pastille blanche lisible */
+.go-home-hero .search-bar-v2-search { margin-left: 4px; }
+.go-home-hero .search-bar-v2-input-wrapper {
+    background: #fff !important;
+    border-radius: 999px !important;
+    padding: 10px 16px !important;
+    box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .04);
+}
+.go-home-hero .search-bar-v2-input { color: #0f172a !important; font-size: 15px !important; }
+.go-home-hero .search-bar-v2-input::placeholder { color: #94a3b8 !important; }
+.go-home-hero .search-bar-v2-search-icon { color: #94a3b8 !important; }
+
+/* ---------- HERO : vignettes videos premium ---------- */
+.go-hero-thumbnail {
+    background: rgba(10, 18, 34, .55) !important;
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, .14) !important;
+    border-radius: 14px !important;
+}
+.go-hero-thumbnail.active {
+    border-color: transparent !important;
+    box-shadow: 0 0 0 2px #7c3aed, 0 12px 30px rgba(124, 58, 237, .4) !important;
+}
+
+@media (max-width: 640px) {
+    .go-home-hero .search-bar-v2 { border-radius: 18px !important; }
+    .header-v2 .nav-devis-btn { padding: 9px 14px !important; }
+}
