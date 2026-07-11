@@ -19,102 +19,176 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/search-bar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/footer.css') }}">
     <style>
+        :root{
+            --navy:#0a1628; --navy2:#1a2942; --navy3:#2a3a52;
+            --gold:#d4af37; --gold-deep:#c9980a;
+            --ink:#0a1628; --muted:#6b7280; --line:#e5e7eb;
+            --bg:#f4f6f9; --card:#fff;
+            --shadow-sm:0 2px 16px rgba(10,22,40,.06);
+            --shadow-lg:0 18px 50px rgba(10,22,40,.14);
+        }
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Montserrat',sans-serif;background:#f4f6f9;color:#0a1628;overflow-x:hidden}
+        body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden}
+        a{text-decoration:none}
+        .cx-wrap{max-width:1200px;margin:0 auto;padding:0 32px}
 
-        /* ── Page Banner ──────────────────────────────── */
-        .page-banner{background:linear-gradient(135deg,#0a1628 0%,#1a2942 100%);padding:48px 40px;position:relative;overflow:hidden}
-        .page-banner::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1400&q=80') center/cover;opacity:.1}
-        .page-banner-inner{position:relative;z-index:1;max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px}
-        .page-banner-text{flex:1}
-        .page-banner-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.3);border-radius:20px;font-size:11px;font-weight:700;color:#d4af37;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px}
-        .page-banner-title{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:900;color:#fff;line-height:1.15;margin-bottom:8px}
-        .page-banner-title span{color:#d4af37}
-        .page-banner-sub{font-size:14px;color:rgba(255,255,255,.6);line-height:1.6;max-width:580px}
-        .page-banner-logos{display:flex;gap:28px;align-items:center;flex-shrink:0}
-        .page-banner-logos img{height:70px;width:auto;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}
-        .page-banner-logos .logo-sep{width:1px;height:50px;background:rgba(255,255,255,.2)}
-        @media(max-width:768px){.page-banner-logos{display:none}}
+        /* ── HERO ─────────────────────────────────────── */
+        .cx-hero{position:relative;padding:190px 0 140px;overflow:hidden;background:var(--navy);isolation:isolate}
+        .cx-hero::before{content:'';position:absolute;inset:0;z-index:-2;
+            background:url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1600&q=80') center/cover no-repeat;
+            transform:scale(1.05);filter:saturate(1.05)}
+        .cx-hero::after{content:'';position:absolute;inset:0;z-index:-1;
+            background:linear-gradient(115deg,rgba(10,22,40,.94) 0%,rgba(10,22,40,.80) 45%,rgba(26,41,66,.55) 100%)}
+        .cx-hero-orb{position:absolute;border-radius:50%;filter:blur(70px);z-index:-1;opacity:.55}
+        .cx-hero-orb.o1{width:420px;height:420px;background:rgba(212,175,55,.28);top:-120px;right:-80px}
+        .cx-hero-orb.o2{width:360px;height:360px;background:rgba(67,97,238,.22);bottom:-160px;left:-100px}
+        .cx-hero-inner{position:relative;max-width:760px}
+        .cx-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;
+            background:rgba(212,175,55,.14);border:1px solid rgba(212,175,55,.35);border-radius:30px;
+            font-size:11px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:22px}
+        .cx-badge i{font-size:9px}
+        .cx-hero h1{font-size:clamp(2.1rem,5vw,3.5rem);font-weight:900;color:#fff;line-height:1.08;letter-spacing:-.5px}
+        .cx-hero h1 span{color:var(--gold);position:relative;white-space:nowrap}
+        .cx-hero p{margin-top:20px;font-size:clamp(14px,1.6vw,17px);line-height:1.7;color:rgba(255,255,255,.72);max-width:560px}
+        .cx-hero-chips{display:flex;flex-wrap:wrap;gap:14px;margin-top:38px}
+        .cx-chip{display:inline-flex;align-items:center;gap:11px;padding:13px 20px;
+            background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;
+            backdrop-filter:blur(6px);transition:all .25s}
+        .cx-chip:hover{background:rgba(255,255,255,.12);transform:translateY(-2px)}
+        .cx-chip i{width:38px;height:38px;flex-shrink:0;border-radius:10px;display:flex;align-items:center;justify-content:center;
+            background:rgba(212,175,55,.16);color:var(--gold);font-size:15px}
+        .cx-chip .cx-chip-txt{display:flex;flex-direction:column;line-height:1.3}
+        .cx-chip .cx-chip-k{display:block;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.5)}
+        .cx-chip .cx-chip-v{display:block;font-size:14px;font-weight:700;color:#fff;margin-top:2px}
+        .cx-wave{position:absolute;left:0;right:0;bottom:-1px;z-index:0;line-height:0}
+        .cx-wave svg{width:100%;height:70px;display:block}
 
-        /* ── Layout ──────────────────────────────────── */
-        .page-wrap{max-width:1200px;margin-top:150px;margin-left:auto;margin-right:auto;padding:40px 32px 60px}
-        .section-label{font-size:11px;font-weight:800;color:#d4af37;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px}
-        .section-title{font-size:1.8rem;font-weight:900;color:#0a1628;margin-bottom:8px}
-        .section-sub{font-size:14px;color:#6b7280;line-height:1.6}
+        /* ── SECTION HEAD ─────────────────────────────── */
+        .cx-section{padding:0 0}
+        .cx-head{max-width:640px;margin-bottom:38px}
+        .cx-head.center{margin-left:auto;margin-right:auto;text-align:center}
+        .cx-label{font-size:11px;font-weight:800;color:var(--gold-deep);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px}
+        .cx-title{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:900;color:var(--ink);line-height:1.2}
+        .cx-sub{margin-top:10px;font-size:14.5px;color:var(--muted);line-height:1.7}
 
-        /* ── Info Cards ──────────────────────────────── */
-        .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:64px}
-        .info-card{background:#fff;border-radius:16px;padding:32px;box-shadow:0 2px 16px rgba(0,0,0,.06);border-top:4px solid transparent;transition:all .25s;display:flex;flex-direction:column;align-items:flex-start;gap:14px}
-        .info-card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,.1)}
-        .info-card.card-addr{border-color:#4361ee}
-        .info-card.card-phone{border-color:#2dc653}
-        .info-card.card-email{border-color:#d4af37}
-        .info-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
-        .card-addr .info-icon{background:rgba(67,97,238,.1);color:#4361ee}
-        .card-phone .info-icon{background:rgba(45,198,83,.1);color:#2dc653}
-        .card-email .info-icon{background:rgba(212,175,55,.12);color:#c9980a}
-        .info-card h3{font-size:14px;font-weight:800;color:#0a1628;letter-spacing:.5px}
-        .info-card p{font-size:13px;color:#6b7280;line-height:1.7}
-        .info-card a{color:#4361ee;text-decoration:none;font-weight:600;font-size:13px}
-        .info-card a:hover{text-decoration:underline}
-        .info-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
-        .badge-open{background:rgba(45,198,83,.1);color:#2dc653}
+        /* ── INFO CARDS ───────────────────────────────── */
+        .info-strip{margin-top:-64px;position:relative;z-index:5}
+        .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+        .info-card{background:var(--card);border-radius:18px;padding:30px;box-shadow:var(--shadow-lg);
+            display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;transition:transform .28s,box-shadow .28s}
+        .info-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--accent,var(--gold))}
+        .info-card:hover{transform:translateY(-6px);box-shadow:0 26px 60px rgba(10,22,40,.18)}
+        .info-card.card-addr{--accent:#4361ee}
+        .info-card.card-phone{--accent:#2dc653}
+        .info-card.card-email{--accent:var(--gold)}
+        .info-icon{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;
+            background:color-mix(in srgb,var(--accent) 12%,#fff);color:var(--accent)}
+        .info-card h3{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:.4px}
+        .info-card p{font-size:13px;color:var(--muted);line-height:1.75}
+        .info-card a.inline{color:#4361ee;font-weight:600}
+        .info-card a.inline:hover{text-decoration:underline}
+        .info-link{margin-top:auto;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--ink)}
+        .info-link i{color:var(--accent);transition:transform .2s}
+        .info-card:hover .info-link i{transform:translateX(3px)}
+        .info-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;
+            background:rgba(45,198,83,.1);color:#2dc653;width:fit-content}
+        .info-badge i{font-size:8px;animation:pulse 1.8s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-        /* ── Contact Form + Map ──────────────────────── */
-        .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:64px}
-        .form-card{background:#fff;border-radius:16px;padding:40px;box-shadow:0 2px 16px rgba(0,0,0,.06)}
-        .form-card h2{font-size:1.4rem;font-weight:900;color:#0a1628;margin-bottom:6px}
-        .form-card .sub{font-size:13px;color:#9ba3af;margin-bottom:28px}
+        /* ── FORM + MAP ───────────────────────────────── */
+        .contact-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:32px;align-items:stretch}
+        .form-card{background:var(--card);border-radius:20px;padding:44px;box-shadow:var(--shadow-sm);border:1px solid rgba(10,22,40,.05)}
+        .form-card h2{font-size:1.35rem;font-weight:900;color:var(--ink)}
+        .form-card .sub{font-size:13px;color:#9ba3af;margin:6px 0 30px}
         .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-        .form-group{margin-bottom:18px;display:flex;flex-direction:column;gap:6px}
-        .form-group label{font-size:11.5px;font-weight:700;color:#374151;letter-spacing:.5px;text-transform:uppercase}
-        .form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:13px;color:#0a1628;outline:none;transition:border-color .2s,box-shadow .2s;background:#fff}
-        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#d4af37;box-shadow:0 0 0 3px rgba(212,175,55,.12)}
-        .form-group textarea{resize:vertical;min-height:120px}
-        .btn-submit{width:100%;padding:14px;background:linear-gradient(135deg,#0a1628,#1a2942);color:#fff;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px}
-        .btn-submit:hover{background:linear-gradient(135deg,#1a2942,#2a3a52);transform:translateY(-1px);box-shadow:0 8px 24px rgba(10,22,40,.3)}
-        .btn-submit i{font-size:14px;color:#d4af37}
+        .form-group{margin-bottom:18px;display:flex;flex-direction:column;gap:7px}
+        .form-group label{font-size:11px;font-weight:700;color:#374151;letter-spacing:.6px;text-transform:uppercase}
+        .form-group input,.form-group select,.form-group textarea{width:100%;padding:13px 15px;border:1.5px solid var(--line);
+            border-radius:11px;font-family:'Montserrat',sans-serif;font-size:13.5px;color:var(--ink);outline:none;background:#fbfbfd;
+            transition:border-color .2s,box-shadow .2s,background .2s}
+        .form-group input::placeholder,.form-group textarea::placeholder{color:#b3b9c4}
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+            border-color:var(--gold);background:#fff;box-shadow:0 0 0 4px rgba(212,175,55,.13)}
+        .form-group textarea{resize:vertical;min-height:130px}
+        .btn-submit{width:100%;padding:16px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border:none;
+            border-radius:12px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+            cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px}
+        .btn-submit:hover{background:linear-gradient(135deg,var(--navy2),var(--navy3));transform:translateY(-2px);box-shadow:0 14px 32px rgba(10,22,40,.32)}
+        .btn-submit i{font-size:14px;color:var(--gold)}
+        .form-consent{margin-top:16px;font-size:11.5px;color:#9ba3af;line-height:1.6;text-align:center}
+        .form-consent i{color:#2dc653}
 
-        /* ── Map Placeholder ─────────────────────────── */
-        .map-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.06);display:flex;flex-direction:column}
-        .map-img{flex:1;min-height:300px;background:linear-gradient(135deg,#e8ecf4,#d1d9ea);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
-        .map-img img{width:100%;height:100%;object-fit:cover;opacity:.8}
-        .map-pin{position:absolute;width:56px;height:56px;background:#0a1628;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 4px 20px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center}
-        .map-pin i{transform:rotate(45deg);color:#d4af37;font-size:22px}
-        .map-info{padding:24px 28px}
-        .map-address{font-size:14px;font-weight:700;color:#0a1628;margin-bottom:4px}
-        .map-city{font-size:13px;color:#6b7280}
-        .map-actions{display:flex;gap:10px;margin-top:16px}
-        .map-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;transition:all .2s}
-        .map-btn-primary{background:#0a1628;color:#fff}
-        .map-btn-primary:hover{background:#1a2942}
-        .map-btn-secondary{border:1.5px solid #e5e7eb;color:#374151}
-        .map-btn-secondary:hover{border-color:#0a1628;color:#0a1628}
+        /* ── MAP CARD ─────────────────────────────────── */
+        .map-card{background:var(--card);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-sm);
+            border:1px solid rgba(10,22,40,.05);display:flex;flex-direction:column}
+        .map-embed{flex:1;min-height:280px;position:relative;background:#e8ecf4}
+        .map-embed iframe{width:100%;height:100%;min-height:280px;border:0;display:block;filter:grayscale(.15) contrast(1.02)}
+        .map-info{padding:26px 30px}
+        .map-info-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+        .map-info-head .pin{width:44px;height:44px;flex-shrink:0;border-radius:12px;background:rgba(212,175,55,.13);color:var(--gold-deep);
+            display:flex;align-items:center;justify-content:center;font-size:18px}
+        .map-address{font-size:14px;font-weight:800;color:var(--ink)}
+        .map-city{font-size:12.5px;color:var(--muted);margin-top:2px}
+        .map-actions{display:flex;gap:10px;margin-top:8px}
+        .map-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:11px;
+            font-size:12.5px;font-weight:700;transition:all .2s}
+        .map-btn-primary{background:var(--navy);color:#fff}
+        .map-btn-primary:hover{background:var(--navy2);transform:translateY(-2px)}
+        .map-btn-secondary{border:1.5px solid var(--line);color:#374151}
+        .map-btn-secondary:hover{border-color:var(--navy);color:var(--navy)}
 
-        /* ── Hours Table ─────────────────────────────── */
-        .hours-section{margin-bottom:64px}
-        .hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px}
-        .hours-card{background:#fff;border-radius:16px;padding:32px;box-shadow:0 2px 16px rgba(0,0,0,.06)}
-        .hours-card h3{font-size:14px;font-weight:800;color:#0a1628;margin-bottom:20px;display:flex;align-items:center;gap:8px}
-        .hours-card h3 i{color:#d4af37}
-        .hours-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f3f4f6;font-size:13px}
+        /* ── HOURS ────────────────────────────────────── */
+        .hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px}
+        .hours-card{background:var(--card);border-radius:20px;padding:34px;box-shadow:var(--shadow-sm);border:1px solid rgba(10,22,40,.05)}
+        .hours-card h3{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:22px;display:flex;align-items:center;gap:10px}
+        .hours-card h3 i{width:38px;height:38px;border-radius:10px;background:rgba(212,175,55,.12);color:var(--gold-deep);
+            display:flex;align-items:center;justify-content:center;font-size:15px}
+        .hours-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f1f3f6;font-size:13px}
         .hours-row:last-child{border-bottom:none}
         .hours-day{font-weight:600;color:#374151}
-        .hours-time{font-weight:700;color:#0a1628}
+        .hours-time{font-weight:700;color:var(--ink)}
         .hours-closed{color:#e63946;font-weight:700}
-        .hours-today{background:rgba(212,175,55,.07);border-radius:8px;padding:10px 14px;margin:-2px -14px}
+        .hours-open{color:#2dc653}
+        .hours-today{background:rgba(212,175,55,.08);border-radius:10px;padding:12px 16px;margin:0 -16px;border-bottom:none !important}
 
-        /* ── Social ──────────────────────────────────── */
-        .social-section{text-align:center;padding:48px 0;border-top:1px solid #e9ecef}
-        .social-title{font-size:1rem;font-weight:700;color:#0a1628;margin-bottom:20px}
-        .social-links{display:flex;justify-content:center;gap:14px}
-        .social-btn{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;transition:all .2s}
-        .social-btn:hover{transform:translateY(-3px)}
-        .sb-fb{background:#1877f2;color:#fff}.sb-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff}
-        .sb-yt{background:#ff0000;color:#fff}.sb-li{background:#0077b5;color:#fff}.sb-tt{background:#000;color:#fff}
+        /* ── SOCIAL BAND ──────────────────────────────── */
+        .social-band{position:relative;overflow:hidden;border-radius:24px;padding:56px 40px;text-align:center;
+            background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);isolation:isolate}
+        .social-band::before{content:'';position:absolute;width:340px;height:340px;border-radius:50%;
+            background:rgba(212,175,55,.16);filter:blur(80px);top:-120px;right:-60px;z-index:-1}
+        .social-band .cx-label{color:var(--gold)}
+        .social-band h2{font-size:clamp(1.3rem,2.6vw,1.8rem);font-weight:900;color:#fff;margin-bottom:10px}
+        .social-band p{font-size:14px;color:rgba(255,255,255,.62);max-width:440px;margin:0 auto 28px}
+        .social-links{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+        .social-btn{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:19px;
+            color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);transition:all .25s}
+        .social-btn:hover{transform:translateY(-5px)}
+        .social-btn.sb-fb:hover{background:#1877f2;border-color:#1877f2}
+        .social-btn.sb-ig:hover{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border-color:transparent}
+        .social-btn.sb-yt:hover{background:#ff0000;border-color:#ff0000}
+        .social-btn.sb-li:hover{background:#0077b5;border-color:#0077b5}
+        .social-btn.sb-tt:hover{background:#000;border-color:#000}
 
-        @media(max-width:900px){.info-grid{grid-template-columns:1fr;}.contact-grid{grid-template-columns:1fr}.hours-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
-        @media(max-width:600px){.page-wrap{padding:40px 20px}.page-banner{padding:32px 20px}}
+        /* ── REVEAL ANIM ──────────────────────────────── */
+        .reveal{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease}
+        .reveal.in{opacity:1;transform:none}
+
+        /* ── RESPONSIVE ───────────────────────────────── */
+        @media(max-width:960px){
+            .info-grid{grid-template-columns:1fr}
+            .contact-grid{grid-template-columns:1fr}
+            .hours-grid{grid-template-columns:1fr}
+            .info-strip{margin-top:-40px}
+        }
+        @media(max-width:600px){
+            .cx-wrap{padding:0 20px}
+            .cx-hero{padding:150px 0 110px}
+            .form-card{padding:30px 22px}
+            .form-row{grid-template-columns:1fr}
+            .hours-card{padding:26px 22px}
+            .social-band{padding:44px 24px}
+        }
+        @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
     </style>
 </head>
 <body>
@@ -122,47 +196,111 @@
 @include('home-v2.components.VerticalMenu')
 @include('home-v2.components.Header')
 
+@php
+    // Contact info managed from the admin back-office (Paramètres → Informations de contact).
+    // Read live so admin edits reflect immediately; fall back to defaults if empty/missing.
+    $s   = \App\Models\SiteSetting::map();
+    $g   = fn($k, $d = '') => (isset($s[$k]) && $s[$k] !== '' && $s[$k] !== null) ? $s[$k] : $d;
+    $tel = fn($v) => preg_replace('/[^0-9+]/', '', $v);
 
-{{-- ── Info Cards ────────────────────────────────────────────── --}}
-<div class="page-wrap">
+    $phoneLocal   = $g('phone_local', '+1 (514) 800-1234');
+    $phoneToll    = $g('phone_tollfree', '1-800-EXPLORIA');
+    $faxNumber    = $g('fax', '+1 (514) 800-1235');
+    $emailGeneral = $g('email_general', 'info@goexploriabusiness.com');
+    $emailSupport = $g('email_support', 'support@goexploriabusiness.com');
+    $emailPartner = $g('email_partners', 'partners@goexploriabusiness.com');
+    $addrLine     = $g('address_line', '1500, rue University, Suite 1200');
+    $addrCity     = $g('address_city', 'Montréal, Québec');
+    $addrPostal   = $g('address_postal', 'H3A 3S7');
+    $addrCountry  = $g('address_country', 'Canada');
+    $mapQuery     = $g('map_query', '1500 Rue University, Montreal, QC H3A 3S7');
+    $mapsUrl      = 'https://maps.google.com/?q=' . urlencode($mapQuery);
+    $mapEmbed     = 'https://www.google.com/maps?q=' . urlencode($mapQuery) . '&output=embed';
+    $socials      = [
+        ['key' => 'social_facebook',  'cls' => 'sb-fb', 'icon' => 'fa-facebook-f',  'label' => 'Facebook'],
+        ['key' => 'social_instagram', 'cls' => 'sb-ig', 'icon' => 'fa-instagram',   'label' => 'Instagram'],
+        ['key' => 'social_youtube',   'cls' => 'sb-yt', 'icon' => 'fa-youtube',     'label' => 'YouTube'],
+        ['key' => 'social_linkedin',  'cls' => 'sb-li', 'icon' => 'fa-linkedin-in', 'label' => 'LinkedIn'],
+        ['key' => 'social_tiktok',    'cls' => 'sb-tt', 'icon' => 'fa-tiktok',      'label' => 'TikTok'],
+    ];
+@endphp
+
+{{-- ── HERO ─────────────────────────────────────────────────────── --}}
+<section class="cx-hero">
+    <span class="cx-hero-orb o1"></span>
+    <span class="cx-hero-orb o2"></span>
+    <div class="cx-wrap">
+        <div class="cx-hero-inner">
+            <span class="cx-badge"><i class="fas fa-circle"></i> Contactez-nous</span>
+            <h1>Parlons de votre<br><span>prochaine aventure</span></h1>
+            <p>Une question, un projet de voyage sur mesure ou une demande de partenariat&nbsp;? Notre &eacute;quipe vous r&eacute;pond en moins de 24&nbsp;heures ouvrables.</p>
+            <div class="cx-hero-chips">
+                <a href="tel:{{ $tel($phoneLocal) }}" class="cx-chip">
+                    <i class="fas fa-phone-alt"></i>
+                    <span class="cx-chip-txt"><span class="cx-chip-k">Appelez-nous</span><span class="cx-chip-v">{{ $phoneLocal }}</span></span>
+                </a>
+                <a href="mailto:{{ $emailGeneral }}" class="cx-chip">
+                    <i class="fas fa-envelope"></i>
+                    <span class="cx-chip-txt"><span class="cx-chip-k">&Eacute;crivez-nous</span><span class="cx-chip-v">{{ $emailGeneral }}</span></span>
+                </a>
+                <div class="cx-chip">
+                    <i class="fas fa-clock"></i>
+                    <span class="cx-chip-txt"><span class="cx-chip-k">Lun &ndash; Ven</span><span class="cx-chip-v">{{ $g('hours_office_weekdays', '8 h 30 — 18 h 00') }}</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="cx-wave">
+        <svg viewBox="0 0 1440 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,40 C360,80 1080,0 1440,40 L1440,70 L0,70 Z" fill="#f4f6f9"></path>
+        </svg>
+    </div>
+</section>
+
+{{-- ── INFO CARDS ───────────────────────────────────────────────── --}}
+<div class="cx-wrap info-strip">
     <div class="info-grid">
-        <div class="info-card card-addr">
+        <div class="info-card card-addr reveal">
             <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
             <h3>Notre Bureau</h3>
-            <p>1500, rue University, Suite 1200<br>Montr&eacute;al, Qu&eacute;bec, H3A 3S7<br>Canada</p>
-            <a href="https://maps.google.com" target="_blank"><i class="fas fa-external-link-alt"></i> Voir sur Google Maps</a>
+            <p>{{ $addrLine }}<br>{{ $addrCity }}, {{ $addrPostal }}<br>{{ $addrCountry }}</p>
+            <a href="{{ $mapsUrl }}" target="_blank" rel="noopener" class="info-link">
+                Voir sur Google Maps <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
-        <div class="info-card card-phone">
+        <div class="info-card card-phone reveal">
             <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
             <h3>T&eacute;l&eacute;phone &amp; Fax</h3>
             <p>
-                <strong>Sans frais :</strong> 1-800-EXPLORIA<br>
-                <strong>Local :</strong> <a href="tel:+15148001234">+1 (514) 800-1234</a><br>
-                <strong>Fax :</strong> +1 (514) 800-1235
+                @if($phoneToll)<strong>Sans frais :</strong> {{ $phoneToll }}<br>@endif
+                <strong>Local :</strong> <a href="tel:{{ $tel($phoneLocal) }}" class="inline">{{ $phoneLocal }}</a><br>
+                @if($faxNumber)<strong>Fax :</strong> {{ $faxNumber }}@endif
             </p>
-            <span class="info-badge badge-open"><i class="fas fa-circle" style="font-size:8px"></i> Disponible maintenant</span>
+            <span class="info-badge"><i class="fas fa-circle"></i> Disponible maintenant</span>
         </div>
-        <div class="info-card card-email">
+        <div class="info-card card-email reveal">
             <div class="info-icon"><i class="fas fa-envelope"></i></div>
             <h3>Courriel &amp; R&eacute;seaux</h3>
             <p>
-                <strong>G&eacute;n&eacute;ral :</strong> <a href="mailto:info@goexploriabusiness.com">info@goexploriabusiness.com</a><br>
-                <strong>Support :</strong> <a href="mailto:support@goexploriabusiness.com">support@goexploriabusiness.com</a><br>
-                <strong>Partenariats :</strong> <a href="mailto:partners@goexploriabusiness.com">partners@goexploriabusiness.com</a>
+                @if($emailGeneral)<strong>G&eacute;n&eacute;ral :</strong> <a href="mailto:{{ $emailGeneral }}" class="inline">{{ $emailGeneral }}</a><br>@endif
+                @if($emailSupport)<strong>Support :</strong> <a href="mailto:{{ $emailSupport }}" class="inline">{{ $emailSupport }}</a><br>@endif
+                @if($emailPartner)<strong>Partenariats :</strong> <a href="mailto:{{ $emailPartner }}" class="inline">{{ $emailPartner }}</a>@endif
             </p>
         </div>
     </div>
+</div>
 
-    {{-- ── Contact Form + Map ──────────────────────────────────── --}}
-    <div style="margin-bottom:20px">
-        <div class="section-label">Formulaire de contact</div>
-        <h2 class="section-title">Envoyez-nous un message</h2>
-        <p class="section-sub">R&eacute;ponse garantie sous 24&nbsp;heures ouvrables.</p>
+{{-- ── FORM + MAP ───────────────────────────────────────────────── --}}
+<div class="cx-wrap" style="padding-top:80px">
+    <div class="cx-head">
+        <div class="cx-label">Formulaire de contact</div>
+        <h2 class="cx-title">Envoyez-nous un message</h2>
+        <p class="cx-sub">R&eacute;ponse garantie sous 24&nbsp;heures ouvrables. Tous les champs marqu&eacute;s * sont obligatoires.</p>
     </div>
     <div class="contact-grid">
-        <div class="form-card">
+        <div class="form-card reveal">
             <h2>Votre demande</h2>
-            <p class="sub">Tous les champs marqu&eacute;s * sont obligatoires.</p>
+            <p class="sub">Remplissez le formulaire, nous revenons vers vous rapidement.</p>
             <form>
                 <div class="form-row">
                     <div class="form-group">
@@ -201,87 +339,113 @@
                 <button type="submit" class="btn-submit">
                     <i class="fas fa-paper-plane"></i> Envoyer le message
                 </button>
+                <p class="form-consent"><i class="fas fa-lock"></i> Vos donn&eacute;es sont confidentielles et ne seront jamais partag&eacute;es.</p>
             </form>
         </div>
 
-        <div class="map-card">
-            <div class="map-img">
-                <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=800&q=80" alt="Montr&eacute;al">
-                <div class="map-pin"><i class="fas fa-map-marker-alt"></i></div>
+        <div class="map-card reveal">
+            <div class="map-embed">
+                <iframe
+                    src="{{ $mapEmbed }}"
+                    loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                    title="Bureau {{ $g('company_name', 'GoExploria') }} &mdash; {{ $addrCity }}"></iframe>
             </div>
             <div class="map-info">
-                <p class="map-address">1500, rue University, Suite 1200</p>
-                <p class="map-city">Montr&eacute;al, Qu&eacute;bec &mdash; H3A 3S7, Canada</p>
+                <div class="map-info-head">
+                    <span class="pin"><i class="fas fa-map-marker-alt"></i></span>
+                    <div>
+                        <p class="map-address">{{ $addrLine }}</p>
+                        <p class="map-city">{{ $addrCity }} &mdash; {{ $addrPostal }}, {{ $addrCountry }}</p>
+                    </div>
+                </div>
                 <div class="map-actions">
-                    <a href="https://maps.google.com" target="_blank" class="map-btn map-btn-primary">
+                    <a href="{{ $mapsUrl }}" target="_blank" rel="noopener" class="map-btn map-btn-primary">
                         <i class="fas fa-directions"></i> Itin&eacute;raire
                     </a>
-                    <a href="tel:+15148001234" class="map-btn map-btn-secondary">
+                    <a href="tel:{{ $tel($phoneLocal) }}" class="map-btn map-btn-secondary">
                         <i class="fas fa-phone"></i> Appeler
                     </a>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    {{-- ── Horaires ─────────────────────────────────────────────── --}}
-    <div class="hours-section">
-        <div class="section-label">Disponibilit&eacute;</div>
-        <h2 class="section-title">Horaires d&apos;ouverture</h2>
-        <div class="hours-grid">
-            <div class="hours-card">
-                <h3><i class="fas fa-building"></i> Bureau principal &mdash; Montr&eacute;al</h3>
-                <div class="hours-row hours-today">
-                    <span class="hours-day">Lundi &mdash; Vendredi</span>
-                    <span class="hours-time">8 h 30 &mdash; 18 h 00</span>
-                </div>
-                <div class="hours-row">
-                    <span class="hours-day">Samedi</span>
-                    <span class="hours-time">10 h 00 &mdash; 15 h 00</span>
-                </div>
-                <div class="hours-row">
-                    <span class="hours-day">Dimanche</span>
-                    <span class="hours-closed">Ferm&eacute;</span>
-                </div>
-                <div class="hours-row">
-                    <span class="hours-day">Jours f&eacute;ri&eacute;s</span>
-                    <span class="hours-closed">Ferm&eacute;</span>
-                </div>
+{{-- ── HORAIRES ─────────────────────────────────────────────────── --}}
+<div class="cx-wrap" style="padding-top:80px">
+    <div class="cx-head">
+        <div class="cx-label">Disponibilit&eacute;</div>
+        <h2 class="cx-title">Horaires d&apos;ouverture</h2>
+        <p class="cx-sub">Nos &eacute;quipes sont &agrave; votre service en agence et en ligne, 7&nbsp;jours sur&nbsp;7.</p>
+    </div>
+    <div class="hours-grid">
+        @php
+            $closedRe = '/^\s*(ferm|closed)/iu';
+            $hourCell = function ($v) use ($closedRe) {
+                $v = trim((string) $v);
+                $cls = preg_match($closedRe, $v) ? 'hours-closed' : 'hours-time';
+                return '<span class="' . $cls . '">' . e($v) . '</span>';
+            };
+        @endphp
+        <div class="hours-card reveal">
+            <h3><i class="fas fa-building"></i> Bureau principal &mdash; {{ $addrCity }}</h3>
+            <div class="hours-row hours-today">
+                <span class="hours-day">Lundi &mdash; Vendredi</span>
+                {!! $hourCell($g('hours_office_weekdays', '8 h 30 — 18 h 00')) !!}
             </div>
-            <div class="hours-card">
-                <h3><i class="fas fa-headset"></i> Support en ligne</h3>
-                <div class="hours-row hours-today">
-                    <span class="hours-day">Lundi &mdash; Vendredi</span>
-                    <span class="hours-time">7 h 00 &mdash; 21 h 00</span>
-                </div>
-                <div class="hours-row">
-                    <span class="hours-day">Samedi &mdash; Dimanche</span>
-                    <span class="hours-time">9 h 00 &mdash; 17 h 00</span>
-                </div>
-                <div class="hours-row">
-                    <span class="hours-day">Chat en direct</span>
-                    <span class="hours-time">24 h / 7 j</span>
-                </div>
-                <div class="hours-row">
-                    <span class="hours-day">Urgences voyage</span>
-                    <span class="hours-time" style="color:#2dc653">24 h / 7 j</span>
-                </div>
+            <div class="hours-row">
+                <span class="hours-day">Samedi</span>
+                {!! $hourCell($g('hours_office_saturday', '10 h 00 — 15 h 00')) !!}
+            </div>
+            <div class="hours-row">
+                <span class="hours-day">Dimanche</span>
+                {!! $hourCell($g('hours_office_sunday', 'Fermé')) !!}
+            </div>
+            <div class="hours-row">
+                <span class="hours-day">Jours f&eacute;ri&eacute;s</span>
+                {!! $hourCell($g('hours_office_holidays', 'Fermé')) !!}
             </div>
         </div>
-    </div>
-
-    {{-- ── R&eacute;seaux sociaux ─────────────────────────────────────────── --}}
-    <div class="social-section">
-        <p class="social-title">Suivez-nous sur les r&eacute;seaux sociaux</p>
-        <div class="social-links">
-            <a href="#" class="social-btn sb-fb"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="social-btn sb-ig"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="social-btn sb-yt"><i class="fab fa-youtube"></i></a>
-            <a href="#" class="social-btn sb-li"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#" class="social-btn sb-tt"><i class="fab fa-tiktok"></i></a>
+        <div class="hours-card reveal">
+            <h3><i class="fas fa-headset"></i> Support en ligne</h3>
+            <div class="hours-row hours-today">
+                <span class="hours-day">Lundi &mdash; Vendredi</span>
+                {!! $hourCell($g('hours_support_weekdays', '7 h 00 — 21 h 00')) !!}
+            </div>
+            <div class="hours-row">
+                <span class="hours-day">Samedi &mdash; Dimanche</span>
+                {!! $hourCell($g('hours_support_weekend', '9 h 00 — 17 h 00')) !!}
+            </div>
+            <div class="hours-row">
+                <span class="hours-day">Chat en direct</span>
+                <span class="hours-time hours-open">{{ $g('hours_support_chat', '24 h / 7 j') }}</span>
+            </div>
+            <div class="hours-row">
+                <span class="hours-day">Urgences voyage</span>
+                <span class="hours-time hours-open">{{ $g('hours_support_emergency', '24 h / 7 j') }}</span>
+            </div>
         </div>
     </div>
 </div>
+
+{{-- ── R&eacute;SEAUX SOCIAUX ──────────────────────────────────────────── --}}
+@php
+    $activeSocials = array_filter($socials, fn($soc) => $g($soc['key']) && $g($soc['key']) !== '#');
+@endphp
+@if(count($activeSocials))
+<div class="cx-wrap" style="padding-top:80px;padding-bottom:80px">
+    <div class="social-band reveal">
+        <div class="cx-label">Restons connect&eacute;s</div>
+        <h2>Suivez-nous sur les r&eacute;seaux</h2>
+        <p>Inspiration voyage, offres exclusives et coulisses de nos destinations &mdash; chaque semaine.</p>
+        <div class="social-links">
+            @foreach($activeSocials as $soc)
+                <a href="{{ $g($soc['key']) }}" target="_blank" rel="noopener" class="social-btn {{ $soc['cls'] }}" aria-label="{{ $soc['label'] }}"><i class="fab {{ $soc['icon'] }}"></i></a>
+            @endforeach
+        </div>
+    </div>
+</div>
+@endif
 
 @include('home-v2.components.Footer')
 
@@ -294,7 +458,16 @@
 <script src="{{ asset('js/home-v2/mega-menu.js') }}"></script>
 <script src="{{ asset('js/home-v2/destinations-mega-menu.js') }}"></script>
 <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
+<script>
+    // Reveal-on-scroll
+    (function(){
+        var els = document.querySelectorAll('.reveal');
+        if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return;}
+        var io = new IntersectionObserver(function(entries){
+            entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+        }, {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+        els.forEach(function(e){ io.observe(e); });
+    })();
+</script>
 </body>
 </html>
-
-
