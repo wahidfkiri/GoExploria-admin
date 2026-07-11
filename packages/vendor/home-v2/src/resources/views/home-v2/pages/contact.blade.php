@@ -198,25 +198,72 @@
 
 @php
     // Contact info managed from the admin back-office (Paramètres → Informations de contact).
-    // Read live so admin edits reflect immediately; fall back to defaults if empty/missing.
+    // Read live so admin edits reflect immediately. NO fallback: a field that is empty/null
+    // in the database is simply NOT displayed.
     $s   = \App\Models\SiteSetting::map();
-    $g   = fn($k, $d = '') => (isset($s[$k]) && $s[$k] !== '' && $s[$k] !== null) ? $s[$k] : $d;
-    $tel = fn($v) => preg_replace('/[^0-9+]/', '', $v);
+    $g   = fn($k) => (isset($s[$k]) && trim((string) $s[$k]) !== '') ? trim((string) $s[$k]) : null;
+    $tel = fn($v) => preg_replace('/[^0-9+]/', '', (string) $v);
 
-    $phoneLocal   = $g('phone_local', '+1 (514) 800-1234');
-    $phoneToll    = $g('phone_tollfree', '1-800-EXPLORIA');
-    $faxNumber    = $g('fax', '+1 (514) 800-1235');
-    $emailGeneral = $g('email_general', 'info@goexploriabusiness.com');
-    $emailSupport = $g('email_support', 'support@goexploriabusiness.com');
-    $emailPartner = $g('email_partners', 'partners@goexploriabusiness.com');
-    $addrLine     = $g('address_line', '1500, rue University, Suite 1200');
-    $addrCity     = $g('address_city', 'Montréal, Québec');
-    $addrPostal   = $g('address_postal', 'H3A 3S7');
-    $addrCountry  = $g('address_country', 'Canada');
-    $mapQuery     = $g('map_query', '1500 Rue University, Montreal, QC H3A 3S7');
-    $mapsUrl      = 'https://maps.google.com/?q=' . urlencode($mapQuery);
-    $mapEmbed     = 'https://www.google.com/maps?q=' . urlencode($mapQuery) . '&output=embed';
-    $socials      = [
+    $companyName  = $g('company_name');
+    $phoneLocal   = $g('phone_local');
+    $phoneToll    = $g('phone_tollfree');
+    $faxNumber    = $g('fax');
+    $emailGeneral = $g('email_general');
+    $emailSupport = $g('email_support');
+    $emailPartner = $g('email_partners');
+    $addrLine     = $g('address_line');
+    $addrCity     = $g('address_city');
+    $addrPostal   = $g('address_postal');
+    $addrCountry  = $g('address_country');
+    $mapQuery     = $g('map_query');
+    $mapsUrl      = $mapQuery ? 'https://maps.google.com/?q=' . urlencode($mapQuery) : null;
+    $mapEmbed     = $mapQuery ? 'https://www.google.com/maps?q=' . urlencode($mapQuery) . '&output=embed' : null;
+
+    // City / postal line + full address lines (only present parts)
+    if ($addrCity && $addrPostal)      $cityLine = $addrCity . ', ' . $addrPostal;
+    elseif ($addrCity)                 $cityLine = $addrCity;
+    elseif ($addrPostal)               $cityLine = $addrPostal;
+    else                               $cityLine = null;
+    $addrLines = array_values(array_filter([$addrLine, $cityLine, $addrCountry]));
+
+    // Contact-line HTML (only for non-empty fields)
+    $phoneLines = [];
+    if ($phoneToll)  $phoneLines[] = '<strong>Sans frais :</strong> ' . e($phoneToll);
+    if ($phoneLocal) $phoneLines[] = '<strong>Local :</strong> <a href="tel:' . e($tel($phoneLocal)) . '" class="inline">' . e($phoneLocal) . '</a>';
+    if ($faxNumber)  $phoneLines[] = '<strong>Fax :</strong> ' . e($faxNumber);
+
+    $emailLines = [];
+    if ($emailGeneral) $emailLines[] = '<strong>G&eacute;n&eacute;ral :</strong> <a href="mailto:' . e($emailGeneral) . '" class="inline">' . e($emailGeneral) . '</a>';
+    if ($emailSupport) $emailLines[] = '<strong>Support :</strong> <a href="mailto:' . e($emailSupport) . '" class="inline">' . e($emailSupport) . '</a>';
+    if ($emailPartner) $emailLines[] = '<strong>Partenariats :</strong> <a href="mailto:' . e($emailPartner) . '" class="inline">' . e($emailPartner) . '</a>';
+
+    $hasAddress   = (bool) count($addrLines);
+    $hasPhoneCard = (bool) count($phoneLines);
+    $hasEmailCard = (bool) count($emailLines);
+    $hasMapCard   = $mapEmbed || $hasAddress || $mapsUrl || $phoneLocal;
+
+    // Opening hours — [label, value, isOpen]; drop rows with no value
+    $officeHours = array_values(array_filter([
+        ['Lundi &mdash; Vendredi', $g('hours_office_weekdays'), false],
+        ['Samedi',                 $g('hours_office_saturday'), false],
+        ['Dimanche',               $g('hours_office_sunday'),   false],
+        ['Jours f&eacute;ri&eacute;s', $g('hours_office_holidays'), false],
+    ], fn($r) => $r[1] !== null));
+    $supportHours = array_values(array_filter([
+        ['Lundi &mdash; Vendredi',   $g('hours_support_weekdays'),  false],
+        ['Samedi &mdash; Dimanche',  $g('hours_support_weekend'),   false],
+        ['Chat en direct',           $g('hours_support_chat'),      true],
+        ['Urgences voyage',          $g('hours_support_emergency'), true],
+    ], fn($r) => $r[1] !== null));
+    $hasHours = count($officeHours) || count($supportHours);
+
+    $closedRe   = '/^\s*(ferm|closed)/iu';
+    $hourClass  = function ($v, $open = false) use ($closedRe) {
+        if (preg_match($closedRe, (string) $v)) return 'hours-closed';
+        return $open ? 'hours-time hours-open' : 'hours-time';
+    };
+
+    $socials = [
         ['key' => 'social_facebook',  'cls' => 'sb-fb', 'icon' => 'fa-facebook-f',  'label' => 'Facebook'],
         ['key' => 'social_instagram', 'cls' => 'sb-ig', 'icon' => 'fa-instagram',   'label' => 'Instagram'],
         ['key' => 'social_youtube',   'cls' => 'sb-yt', 'icon' => 'fa-youtube',     'label' => 'YouTube'],
@@ -234,20 +281,29 @@
             <span class="cx-badge"><i class="fas fa-circle"></i> Contactez-nous</span>
             <h1>Parlons de votre<br><span>prochaine aventure</span></h1>
             <p>Une question, un projet de voyage sur mesure ou une demande de partenariat&nbsp;? Notre &eacute;quipe vous r&eacute;pond en moins de 24&nbsp;heures ouvrables.</p>
+            @php $heroHours = $g('hours_office_weekdays'); @endphp
+            @if($phoneLocal || $emailGeneral || $heroHours)
             <div class="cx-hero-chips">
+                @if($phoneLocal)
                 <a href="tel:{{ $tel($phoneLocal) }}" class="cx-chip">
                     <i class="fas fa-phone-alt"></i>
                     <span class="cx-chip-txt"><span class="cx-chip-k">Appelez-nous</span><span class="cx-chip-v">{{ $phoneLocal }}</span></span>
                 </a>
+                @endif
+                @if($emailGeneral)
                 <a href="mailto:{{ $emailGeneral }}" class="cx-chip">
                     <i class="fas fa-envelope"></i>
                     <span class="cx-chip-txt"><span class="cx-chip-k">&Eacute;crivez-nous</span><span class="cx-chip-v">{{ $emailGeneral }}</span></span>
                 </a>
+                @endif
+                @if($heroHours)
                 <div class="cx-chip">
                     <i class="fas fa-clock"></i>
-                    <span class="cx-chip-txt"><span class="cx-chip-k">Lun &ndash; Ven</span><span class="cx-chip-v">{{ $g('hours_office_weekdays', '8 h 30 — 18 h 00') }}</span></span>
+                    <span class="cx-chip-txt"><span class="cx-chip-k">Lun &ndash; Ven</span><span class="cx-chip-v">{{ $heroHours }}</span></span>
                 </div>
+                @endif
             </div>
+            @endif
         </div>
     </div>
     <div class="cx-wave">
@@ -260,33 +316,33 @@
 {{-- ── INFO CARDS ───────────────────────────────────────────────── --}}
 <div class="cx-wrap info-strip">
     <div class="info-grid">
+        @if($hasAddress || $mapsUrl)
         <div class="info-card card-addr reveal">
             <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
             <h3>Notre Bureau</h3>
-            <p>{{ $addrLine }}<br>{{ $addrCity }}, {{ $addrPostal }}<br>{{ $addrCountry }}</p>
+            @if($hasAddress)<p>{!! implode('<br>', array_map(fn($l) => e($l), $addrLines)) !!}</p>@endif
+            @if($mapsUrl)
             <a href="{{ $mapsUrl }}" target="_blank" rel="noopener" class="info-link">
                 Voir sur Google Maps <i class="fas fa-arrow-right"></i>
             </a>
+            @endif
         </div>
+        @endif
+        @if($hasPhoneCard)
         <div class="info-card card-phone reveal">
             <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
             <h3>T&eacute;l&eacute;phone &amp; Fax</h3>
-            <p>
-                @if($phoneToll)<strong>Sans frais :</strong> {{ $phoneToll }}<br>@endif
-                <strong>Local :</strong> <a href="tel:{{ $tel($phoneLocal) }}" class="inline">{{ $phoneLocal }}</a><br>
-                @if($faxNumber)<strong>Fax :</strong> {{ $faxNumber }}@endif
-            </p>
+            <p>{!! implode('<br>', $phoneLines) !!}</p>
             <span class="info-badge"><i class="fas fa-circle"></i> Disponible maintenant</span>
         </div>
+        @endif
+        @if($hasEmailCard)
         <div class="info-card card-email reveal">
             <div class="info-icon"><i class="fas fa-envelope"></i></div>
             <h3>Courriel &amp; R&eacute;seaux</h3>
-            <p>
-                @if($emailGeneral)<strong>G&eacute;n&eacute;ral :</strong> <a href="mailto:{{ $emailGeneral }}" class="inline">{{ $emailGeneral }}</a><br>@endif
-                @if($emailSupport)<strong>Support :</strong> <a href="mailto:{{ $emailSupport }}" class="inline">{{ $emailSupport }}</a><br>@endif
-                @if($emailPartner)<strong>Partenariats :</strong> <a href="mailto:{{ $emailPartner }}" class="inline">{{ $emailPartner }}</a>@endif
-            </p>
+            <p>{!! implode('<br>', $emailLines) !!}</p>
         </div>
+        @endif
     </div>
 </div>
 
@@ -297,7 +353,7 @@
         <h2 class="cx-title">Envoyez-nous un message</h2>
         <p class="cx-sub">R&eacute;ponse garantie sous 24&nbsp;heures ouvrables. Tous les champs marqu&eacute;s * sont obligatoires.</p>
     </div>
-    <div class="contact-grid">
+    <div class="contact-grid"@if(!$hasMapCard) style="grid-template-columns:1fr"@endif>
         <div class="form-card reveal">
             <h2>Votre demande</h2>
             <p class="sub">Remplissez le formulaire, nous revenons vers vous rapidement.</p>
@@ -343,90 +399,82 @@
             </form>
         </div>
 
+        @if($hasMapCard)
         <div class="map-card reveal">
+            @if($mapEmbed)
             <div class="map-embed">
                 <iframe
                     src="{{ $mapEmbed }}"
                     loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                    title="Bureau {{ $g('company_name', 'GoExploria') }} &mdash; {{ $addrCity }}"></iframe>
+                    title="{{ $companyName ? 'Bureau ' . $companyName : 'Localisation' }}"></iframe>
             </div>
+            @endif
+            @if($hasAddress || $mapsUrl || $phoneLocal)
             <div class="map-info">
+                @if($hasAddress)
                 <div class="map-info-head">
                     <span class="pin"><i class="fas fa-map-marker-alt"></i></span>
                     <div>
-                        <p class="map-address">{{ $addrLine }}</p>
-                        <p class="map-city">{{ $addrCity }} &mdash; {{ $addrPostal }}, {{ $addrCountry }}</p>
+                        @if($addrLine)<p class="map-address">{{ $addrLine }}</p>@endif
+                        @if($cityLine || $addrCountry)<p class="map-city">{{ $cityLine }}@if($cityLine && $addrCountry) &mdash; @endif{{ $addrCountry }}</p>@endif
                     </div>
                 </div>
+                @endif
+                @if($mapsUrl || $phoneLocal)
                 <div class="map-actions">
+                    @if($mapsUrl)
                     <a href="{{ $mapsUrl }}" target="_blank" rel="noopener" class="map-btn map-btn-primary">
                         <i class="fas fa-directions"></i> Itin&eacute;raire
                     </a>
+                    @endif
+                    @if($phoneLocal)
                     <a href="tel:{{ $tel($phoneLocal) }}" class="map-btn map-btn-secondary">
                         <i class="fas fa-phone"></i> Appeler
                     </a>
+                    @endif
                 </div>
+                @endif
             </div>
+            @endif
         </div>
+        @endif
     </div>
 </div>
 
 {{-- ── HORAIRES ─────────────────────────────────────────────────── --}}
+@if($hasHours)
 <div class="cx-wrap" style="padding-top:80px">
     <div class="cx-head">
         <div class="cx-label">Disponibilit&eacute;</div>
         <h2 class="cx-title">Horaires d&apos;ouverture</h2>
-        <p class="cx-sub">Nos &eacute;quipes sont &agrave; votre service en agence et en ligne, 7&nbsp;jours sur&nbsp;7.</p>
+        <p class="cx-sub">Nos &eacute;quipes sont &agrave; votre service en agence et en ligne.</p>
     </div>
     <div class="hours-grid">
-        @php
-            $closedRe = '/^\s*(ferm|closed)/iu';
-            $hourCell = function ($v) use ($closedRe) {
-                $v = trim((string) $v);
-                $cls = preg_match($closedRe, $v) ? 'hours-closed' : 'hours-time';
-                return '<span class="' . $cls . '">' . e($v) . '</span>';
-            };
-        @endphp
+        @if(count($officeHours))
         <div class="hours-card reveal">
-            <h3><i class="fas fa-building"></i> Bureau principal &mdash; {{ $addrCity }}</h3>
-            <div class="hours-row hours-today">
-                <span class="hours-day">Lundi &mdash; Vendredi</span>
-                {!! $hourCell($g('hours_office_weekdays', '8 h 30 — 18 h 00')) !!}
+            <h3><i class="fas fa-building"></i> Bureau principal @if($addrCity)&mdash; {{ $addrCity }}@endif</h3>
+            @foreach($officeHours as $i => $row)
+            <div class="hours-row @if($i === 0) hours-today @endif">
+                <span class="hours-day">{!! $row[0] !!}</span>
+                <span class="{{ $hourClass($row[1], $row[2]) }}">{{ $row[1] }}</span>
             </div>
-            <div class="hours-row">
-                <span class="hours-day">Samedi</span>
-                {!! $hourCell($g('hours_office_saturday', '10 h 00 — 15 h 00')) !!}
-            </div>
-            <div class="hours-row">
-                <span class="hours-day">Dimanche</span>
-                {!! $hourCell($g('hours_office_sunday', 'Fermé')) !!}
-            </div>
-            <div class="hours-row">
-                <span class="hours-day">Jours f&eacute;ri&eacute;s</span>
-                {!! $hourCell($g('hours_office_holidays', 'Fermé')) !!}
-            </div>
+            @endforeach
         </div>
+        @endif
+        @if(count($supportHours))
         <div class="hours-card reveal">
             <h3><i class="fas fa-headset"></i> Support en ligne</h3>
-            <div class="hours-row hours-today">
-                <span class="hours-day">Lundi &mdash; Vendredi</span>
-                {!! $hourCell($g('hours_support_weekdays', '7 h 00 — 21 h 00')) !!}
+            @foreach($supportHours as $i => $row)
+            <div class="hours-row @if($i === 0) hours-today @endif">
+                <span class="hours-day">{!! $row[0] !!}</span>
+                <span class="{{ $hourClass($row[1], $row[2]) }}">{{ $row[1] }}</span>
             </div>
-            <div class="hours-row">
-                <span class="hours-day">Samedi &mdash; Dimanche</span>
-                {!! $hourCell($g('hours_support_weekend', '9 h 00 — 17 h 00')) !!}
-            </div>
-            <div class="hours-row">
-                <span class="hours-day">Chat en direct</span>
-                <span class="hours-time hours-open">{{ $g('hours_support_chat', '24 h / 7 j') }}</span>
-            </div>
-            <div class="hours-row">
-                <span class="hours-day">Urgences voyage</span>
-                <span class="hours-time hours-open">{{ $g('hours_support_emergency', '24 h / 7 j') }}</span>
-            </div>
+            @endforeach
         </div>
+        @endif
     </div>
 </div>
+@endif
 
 {{-- ── R&eacute;SEAUX SOCIAUX ──────────────────────────────────────────── --}}
 @php
