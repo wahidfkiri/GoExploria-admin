@@ -543,88 +543,119 @@
                 @include('geo-map::index')
             @endisset
         @endunless
-        @include('welcome-home.components.espace_media.VideoPlayer')
-        @include('welcome-home.components.espace_media.ViewingCarousel')
-        @include('welcome-home.components.espace_media.TikTokCarousel')
-        @include('welcome-home.components.espace_media.GallerieCaroussel')
-        @include('welcome-home.components.espace_media.slideshows')
-        @include('welcome-home.components.espace_media.MultilingualGrid')
-        @include('welcome-home.components.espace_media.EspaceSocialMediaSection')
-        @include('welcome-home.components.espace_media.AvisClientsSection')
-        @include('welcome-home.components.espace_media.EspacesTemplatesSection')
-        @include('welcome-home.components.espace_media.EspaceMailMarketingSection')
-        @include('welcome-home.components.espace_media.EspaceChatSection')
-        @include('welcome-home.components.espace_media.EspaceBlogSection')
+        {{-- ══════════════════════════════════════════════════════════════════
+             SECTIONS APRÈS LA CARTE — rendues DYNAMIQUEMENT depuis l'admin
+             (Constructeur /welcome : tables welcome_zones / welcome_sections).
+             Chaque section : contenu édité en GrapeJS (content_source='builder')
+             ou composant Blade d'origine ('view'). L'ordre et la visibilité
+             (is_active) sont pilotés depuis l'admin. Repli automatique sur le
+             rendu d'origine si la table est vide ou indisponible.
+             ══════════════════════════════════════════════════════════════════ --}}
+        @php
+            try {
+                $welcomeZones = \App\Models\WelcomeZone::query()
+                    ->where('is_active', true)
+                    ->orderBy('order')->orderBy('id')
+                    ->with(['sections' => function ($q) {
+                        $q->where('is_active', true)->orderBy('order')->orderBy('id');
+                    }])
+                    ->get();
+            } catch (\Throwable $e) {
+                $welcomeZones = collect();
+            }
+        @endphp
 
+        @forelse($welcomeZones as $wZone)
+            {{-- L'entête de la zone "medias" est déjà affichée avant la carte --}}
+            @unless($wZone->key === 'medias')
+                <div id="{{ $wZone->anchor ?: 'section-'.$wZone->key }}" class="snb-anchor"></div>
+                <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> {{ $wZone->title }} </h1>
+                <hr>
+            @endunless
 
-        <div id="section-next-level" class="snb-anchor"></div>
-       <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> GO EXPLORIA NEXT LEVEL </h1>
-        <hr></hr>
+            @foreach($wZone->sections as $wSection)
+                @if($wSection->content_source === 'builder' && filled($wSection->html_content))
+                    @if(filled($wSection->css_content))<style>{!! $wSection->css_content !!}</style>@endif
+                    {!! $wSection->html_content !!}
+                    @if(filled($wSection->js_content))<script>{!! $wSection->js_content !!}</script>@endif
+                @elseif($wSection->view && view()->exists($wSection->view))
+                    @include($wSection->view)
+                @endif
+            @endforeach
+        @empty
+            {{-- ── Repli : rendu d'origine (table welcome_sections vide/indisponible) ── --}}
+            @include('welcome-home.components.espace_media.VideoPlayer')
+            @include('welcome-home.components.espace_media.ViewingCarousel')
+            @include('welcome-home.components.espace_media.TikTokCarousel')
+            @include('welcome-home.components.espace_media.GallerieCaroussel')
+            @include('welcome-home.components.espace_media.slideshows')
+            @include('welcome-home.components.espace_media.MultilingualGrid')
+            @include('welcome-home.components.espace_media.EspaceSocialMediaSection')
+            @include('welcome-home.components.espace_media.AvisClientsSection')
+            @include('welcome-home.components.espace_media.EspacesTemplatesSection')
+            @include('welcome-home.components.espace_media.EspaceMailMarketingSection')
+            @include('welcome-home.components.espace_media.EspaceChatSection')
+            @include('welcome-home.components.espace_media.EspaceBlogSection')
 
-         @include('welcome-home.components.espace_next_level.01_AgencySection')
-         @include('welcome-home.components.espace_next_level.02_PlansNextLevel')
-         @include('welcome-home.components.espace_next_level.03_EspacesEditeur')
-         @include('welcome-home.components.espace_next_level.04_EspacesApi')
-         @include('welcome-home.components.espace_next_level.05_EspacesFormulaire')
-         @include('welcome-home.components.espace_next_level.06_Espaces_Performance_SEO')
-         @include('welcome-home.components.espace_next_level.07_Espaces_Tele_Positionnement')
-      
-      
+            <div id="section-next-level" class="snb-anchor"></div>
+            <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> GO EXPLORIA NEXT LEVEL </h1>
+            <hr>
+            @include('welcome-home.components.espace_next_level.01_AgencySection')
+            @include('welcome-home.components.espace_next_level.02_PlansNextLevel')
+            @include('welcome-home.components.espace_next_level.03_EspacesEditeur')
+            @include('welcome-home.components.espace_next_level.04_EspacesApi')
+            @include('welcome-home.components.espace_next_level.05_EspacesFormulaire')
+            @include('welcome-home.components.espace_next_level.06_Espaces_Performance_SEO')
+            @include('welcome-home.components.espace_next_level.07_Espaces_Tele_Positionnement')
 
-        <div id="section-restaurants" class="snb-anchor"></div>
-        <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES RESTAURANTS ET ALIMENTATIONS </h1>
-        <hr></hr>
-        {{-- Entete standard restaurant autonome, hors template --}}
-        @include('welcome-home.components.espace_restaurant.RestaurantAmbianceVedetteV2')
+            <div id="section-restaurants" class="snb-anchor"></div>
+            <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES RESTAURANTS ET ALIMENTATIONS </h1>
+            <hr>
+            @include('welcome-home.components.espace_restaurant.RestaurantAmbianceVedetteV2')
 
+            <div id="section-vedettes" class="snb-anchor"></div>
+            <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> GO EXPLORIA ESPACES VEDETTES </h1>
+            <hr>
+            @include('welcome-home.components.espace_evenement_vidette.EventsVedette')
+            @include('welcome-home.components.espace_evenement_vidette.VideoVedette')
+            @include('welcome-home.components.espace_evenement_vidette.RestaurantVedette')
+            @include('welcome-home.components.espace_evenement_vidette.DestinationVedette')
+            @include('welcome-home.components.espace_evenement_vidette.HebergementVedette')
+            @include('welcome-home.components.espace_evenement_vidette.ProduitVedette')
+            @include('welcome-home.components.espace_evenement_vidette.EntrepriseVedette')
+            @include('welcome-home.components.espace_evenement_vidette.GallerieVedette')
 
-        <div id="section-vedettes" class="snb-anchor"></div>
-        <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> GO EXPLORIA ESPACES VEDETTES </h1>
-        <hr></hr>
-        @include('welcome-home.components.espace_evenement_vidette.EventsVedette')
-        @include('welcome-home.components.espace_evenement_vidette.VideoVedette')
-        @include('welcome-home.components.espace_evenement_vidette.RestaurantVedette')
-        @include('welcome-home.components.espace_evenement_vidette.DestinationVedette')
-        @include('welcome-home.components.espace_evenement_vidette.HebergementVedette')
-        @include('welcome-home.components.espace_evenement_vidette.ProduitVedette')
-        @include('welcome-home.components.espace_evenement_vidette.EntrepriseVedette')
-        @include('welcome-home.components.espace_evenement_vidette.GallerieVedette')
+            <div id="section-marketplace" class="snb-anchor"></div>
+            <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES GO EXPLORIA MARKETPLACE </h1>
+            <hr>
+            @include('welcome-home.components.espace_marketplace.RealEstateSection')
+            @include('welcome-home.components.espace_marketplace.ProductsVedette')
+            @include('welcome-home.components.espace_marketplace.CertificatsCartesCadeaux')
 
-        <div id="section-marketplace" class="snb-anchor"></div>
-        <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES GO EXPLORIA MARKETPLACE </h1>
-        <hr></hr>
+            <div id="section-voyages" class="snb-anchor"></div>
+            <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES GO EXPLORIA ESPACES VOYAGES & FORFAITS TOURISTIQUE INTERNATIONAL </h1>
+            <hr>
+            @include('welcome-home.components.espace_forfait.TravelPackages')
+            @include('welcome-home.components.espace_forfait.TravelInfos')
+            @include('welcome-home.components.espace_forfait.TourismSection')
 
-        @include('welcome-home.components.espace_marketplace.RealEstateSection')
-        @include('welcome-home.components.espace_marketplace.ProductsVedette')
-        @include('welcome-home.components.espace_marketplace.CertificatsCartesCadeaux')
+            <div id="section-specialises" class="snb-anchor"></div>
+            <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES GO EXPLORIA ESPACES SPECIALISÉS </h1>
+            <hr>
+            @include('welcome-home.components.espace_specialisés.ImmobiliersQuebec')
+            @include('welcome-home.components.espace_specialisés.ChaletsAVendre')
+            @include('welcome-home.components.espace_specialisés.MaisonsChaletsAVendre')
+            @include('welcome-home.components.espace_specialisés.ImmobilierTouristique')
+            @include('welcome-home.components.espace_marketplace.MarketFoodVedette')
+            @include('welcome-home.components.espace_marketplace.LocationVehiculesVedette')
+            @include('welcome-home.components.espace_marketplace.ChassePecheVedette')
 
-           
-        <div id="section-voyages" class="snb-anchor"></div>
-         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES GO EXPLORIA ESPACES VOYAGES & FORFAITS TOURISTIQUE INTERNATIONAL </h1>
-        <hr></hr>
-
-        @include('welcome-home.components.espace_forfait.TravelPackages')
-        @include('welcome-home.components.espace_forfait.TravelInfos')
-        @include('welcome-home.components.espace_forfait.TourismSection')
-
-
-        <div id="section-specialises" class="snb-anchor"></div>
-         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ESPACES GO EXPLORIA ESPACES SPECIALISÉS </h1>
-        <hr></hr>
-
-        @include('welcome-home.components.espace_specialisés.ImmobiliersQuebec')
-        @include('welcome-home.components.espace_specialisés.ChaletsAVendre')
-        @include('welcome-home.components.espace_specialisés.MaisonsChaletsAVendre')
-        @include('welcome-home.components.espace_specialisés.ImmobilierTouristique')
-        @include('welcome-home.components.espace_marketplace.MarketFoodVedette')
-        @include('welcome-home.components.espace_marketplace.LocationVehiculesVedette')
-        @include('welcome-home.components.espace_marketplace.ChassePecheVedette')
-
-        <div id="section-a-la-une" class="snb-anchor"></div>
-         <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ZONE GO EXPLORIA INFO </h1>
-        <hr></hr>
-        @include('welcome-home.components.espace_go_exp_info.NewsSection')
-        @include('welcome-home.components.espace_go_exp_info.bloc-nouvelles-regionales')
+            <div id="section-a-la-une" class="snb-anchor"></div>
+            <h1 class="resto-header-title" style="text-align: center;margin-top: 20px;"> ZONE GO EXPLORIA INFO </h1>
+            <hr>
+            @include('welcome-home.components.espace_go_exp_info.NewsSection')
+            @include('welcome-home.components.espace_go_exp_info.bloc-nouvelles-regionales')
+        @endforelse
 
         <div id="section-nos-plans" class="snb-anchor"></div>
         </div>{{-- /#home-below-fold --}}

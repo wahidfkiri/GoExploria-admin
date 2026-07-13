@@ -2,6 +2,22 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css"></noscript>
 
+<style>
+    /* ── Alignement de tous les items du header sur une même ligne ── */
+    .header-v2 .nav-container{display:flex;align-items:center}
+    .header-v2 .nav-menu{display:flex;align-items:center}
+    .header-v2 .nav-menu > li{display:flex;align-items:center;margin:0}
+    .header-v2 .nav-menu > li > a{display:inline-flex;align-items:center;line-height:1}
+    .header-v2 .nav-right{display:flex;align-items:center}
+
+    /* Item "Next Level" (remplace « Nos Services ») — calibré sur la hauteur de la ligne */
+    .nav-menu-v2-nextlevel a{padding:0;display:inline-flex;align-items:center}
+    .nav-nextlevel-img{height:30px;width:auto;display:block;transition:transform .2s ease,filter .2s ease}
+    .nav-nextlevel-img:hover{transform:translateY(-1px) scale(1.05);filter:brightness(1.08)}
+    @media(max-width:1200px){.nav-nextlevel-img{height:28px}}
+    @media(max-width:992px){.nav-nextlevel-img{height:26px}}
+</style>
+
 @php
     $supportedLocales = [
         'fr' => ['flag' => 'fr', 'code' => 'FR', 'label' => __('home-v2.language.fr')],
@@ -51,8 +67,10 @@
             <div class="nav-center">
                 <ul class="nav-menu">
                     <li><a href="{{ route('valeurs') }}">{{ __('home-v2.header.menu.values') }}</a></li>
-                    <li class="nav-menu-v2-has-mega" id="servicesMenuItem">
-                        <a href="#services">{{ __('home-v2.header.menu.services') }}</a>
+                    <li class="nav-menu-v2-nextlevel" id="nextLevelMenuItem">
+                        <a href="/company/3/go-exploria-business-next-level" target="_blank" rel="noopener noreferrer" title="{{ __('home-v2.header.menu.services') }}" aria-label="{{ __('home-v2.header.menu.services') }}">
+                            <img src="{{ asset('Next-level.png') }}" alt="Go Exploria Business Next Level" class="nav-nextlevel-img">
+                        </a>
                     </li>
                     <!-- <li class="nav-menu-v2-has-videos" id="videosMenuItem">
                         <a href="#videos">VIDÃ‰OS</a>
