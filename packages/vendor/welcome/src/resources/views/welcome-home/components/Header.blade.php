@@ -10,12 +10,15 @@
     .header-v2 .nav-menu > li > a{display:inline-flex;align-items:center;line-height:1}
     .header-v2 .nav-right{display:flex;align-items:center}
 
-    /* Item "Next Level" (remplace « Nos Services ») — calibré sur la hauteur de la ligne */
-    .nav-menu-v2-nextlevel a{padding:0;display:inline-flex;align-items:center}
-    .nav-nextlevel-img{height:30px;width:auto;display:block;transition:transform .2s ease,filter .2s ease}
-    .nav-nextlevel-img:hover{transform:translateY(-1px) scale(1.05);filter:brightness(1.08)}
-    @media(max-width:1200px){.nav-nextlevel-img{height:28px}}
-    @media(max-width:992px){.nav-nextlevel-img{height:26px}}
+    /* Item "Next Level" (remplace « Nos Services ») — lien texte stylé */
+    .nav-menu-v2-nextlevel a.nav-nextlevel-link{
+        display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;
+        font-size:13px;font-weight:700;letter-spacing:.5px;line-height:1;text-decoration:none;
+        color:#0a1628;background:linear-gradient(135deg,#f6d365,#d4af37);
+        box-shadow:0 2px 8px rgba(212,175,55,.35);transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+    }
+    .nav-menu-v2-nextlevel a.nav-nextlevel-link:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(212,175,55,.5);filter:brightness(1.05);color:#0a1628 !important}
+    @media(max-width:992px){.nav-menu-v2-nextlevel a.nav-nextlevel-link{padding:5px 11px;font-size:12px}}
 </style>
 
 @php
@@ -68,9 +71,7 @@
                 <ul class="nav-menu">
                     <li><a href="{{ route('valeurs') }}">{{ __('home-v2.header.menu.values') }}</a></li>
                     <li class="nav-menu-v2-nextlevel" id="nextLevelMenuItem">
-                        <a href="/company/3/go-exploria-business-next-level" target="_blank" rel="noopener noreferrer" title="{{ __('home-v2.header.menu.services') }}" aria-label="{{ __('home-v2.header.menu.services') }}">
-                            <img src="{{ asset('Next-level.png') }}" alt="Go Exploria Business Next Level" class="nav-nextlevel-img">
-                        </a>
+                        <a href="/company/3/go-exploria-business-next-level" target="_blank" rel="noopener noreferrer" class="nav-nextlevel-link">Next Level</a>
                     </li>
                     <!-- <li class="nav-menu-v2-has-videos" id="videosMenuItem">
                         <a href="#videos">VIDÃ‰OS</a>
@@ -84,7 +85,7 @@
                     <li class="nav-menu-v2-has-plans" style="display:none" id="plansMenuItem">
                         <a href="#section-nos-plans" id="plansMenuTrigger">{{ __('home-v2.header.menu.plans') }}</a>
                     </li>
-                    <li><a href="{{ route('contact') }}">{{ __('home-v2.header.menu.contact') }}</a></li>
+                    <li><a href="{{ route('contact') }}">CONTACTEZ NOUS</a></li>
                     <li><a href="{{ route('mon-compte') }}" class="nav-account-icon" title="{{ __('home-v2.common.account') }}" aria-label="{{ __('home-v2.common.account') }}"><i class="fas fa-user-circle"></i>Activer Mon Compte</a></li>
                 </ul>
             </div>

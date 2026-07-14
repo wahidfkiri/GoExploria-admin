@@ -54,8 +54,8 @@ Route::get('/cdn-storage/{path}', [CDNController::class, 'getFile'])
     ->where('path', '.*')
     ->name('cdn.public-file');
 
-// Page de login
-Route::get('/', [HomeV2Controller::class, 'index'])->name('home-v2');
+// Page d'accueil = page Welcome (remplace l'ancienne home-v2)
+Route::get('/', [\Vendor\Welcome\Http\Controllers\WelcomeController::class, 'index'])->name('home-v2');
 
 Route::get('/locale/{locale}', function (string $locale) {
     $supported = ['fr', 'en', 'es', 'de', 'it'];

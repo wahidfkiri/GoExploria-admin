@@ -142,7 +142,8 @@
         'Autre',
     ];
 
-    $landingMapPayload = $landingMapPoints->map(function ($point) use ($landingMapMediaUrl, $landingMapFallbackGallery, $landingMapSocialLinks, $landingMapNormalizeSocialUrl) {
+    $landingMapEstablishmentWebsite = $etablissement->website ?? ($etablissement->site_web ?? null);
+    $landingMapPayload = $landingMapPoints->map(function ($point) use ($landingMapMediaUrl, $landingMapFallbackGallery, $landingMapSocialLinks, $landingMapNormalizeSocialUrl, $landingMapEstablishmentWebsite) {
         $region = trim((string) ($point->ville ?: $point->adresse ?: 'Autre region'));
         $details = $point->relationLoaded('details') ? $point->details : null;
         $pointImages = collect();
@@ -220,7 +221,7 @@
             'embed_url' => $point->embed_url,
             'gallery' => $pointImages->isNotEmpty() ? $pointImages : $landingMapFallbackGallery,
             'socials' => $pointSocialLinks->isNotEmpty() ? $pointSocialLinks : $landingMapSocialLinks,
-            'website' => $landingMapNormalizeSocialUrl($details?->website ?: ($point->has_details_page ? $point->details_url : null)),
+            'website' => $landingMapNormalizeSocialUrl($details?->website ?: ($point->has_details_page ? $point->details_url : null) ?: $landingMapEstablishmentWebsite),
         ];
     })->values();
 
@@ -284,9 +285,12 @@
             .map-filter-btn.active{background:var(--td-amber);color:#000;border-color:var(--td-amber)}
             .map-filter-btn__icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;font-size:1rem;flex-shrink:0}
             .map-filter-btn__label{white-space:nowrap}
-            .map-modal{display:none;position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,0.8);overflow-y:auto}
+            .map-modal{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.8);overflow-y:auto}
             .map-modal__backdrop{position:fixed;inset:0;z-index:-1}
-            .map-modal__content{position:relative;width:min(720px,94vw);max-height:90vh;background:var(--td-card-bg);border-radius:var(--td-radius-md);overflow-y:auto;margin:50px auto;animation:modalSlideIn .3s ease}
+            .map-modal__content{position:relative;width:min(1140px,96vw);max-height:92vh;background:var(--td-card-bg);border-radius:var(--td-radius-md);overflow-y:auto;margin:40px auto;animation:modalSlideIn .3s ease}
+            .map-modal__socials{display:none;flex-wrap:wrap;gap:10px;margin:14px 0 4px}
+            .map-modal__social{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--td-glass-bg,rgba(255,255,255,.08));border:1px solid var(--td-glass-border,rgba(255,255,255,.15));color:var(--td-sand,#e9dcc3);font-size:16px;text-decoration:none;transition:all .2s ease}
+            .map-modal__social:hover{transform:translateY(-2px);background:var(--td-amber,#d4af37);color:#0a1628}
             @keyframes modalSlideIn{from{transform:translateY(-50px);opacity:0}to{transform:translateY(0);opacity:1}}
             .map-modal__close{position:absolute;top:16px;right:16px;z-index:1;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:var(--td-text-muted);background:rgba(0,0,0,0.1);border-radius:50%;transition:all var(--td-transition);cursor:pointer;border:0}
             .map-modal__close:hover{color:var(--td-amber);background:var(--td-glass-bg)}
@@ -344,6 +348,7 @@
                     <h3 class="map-modal__title" id="map-modal-title"></h3>
                     <div class="map-modal__description"></div>
                     <div class="map-modal__meta" id="mapModalMeta"></div>
+                    <div class="map-modal__socials" id="mapModalSocials"></div>
                     <div class="map-modal__actions">
                         <a href="#" class="btn btn--primary" id="mapModalWebsite" target="_blank" rel="noopener">Visiter le site</a>
                     </div>
@@ -429,6 +434,10 @@
         var activeRegion = document.getElementById('mapRegionSelect')?.value || 'all';
 
         function escapeHtml(str) { if (!str) return ''; var d = document.createElement('div'); d.appendChild(document.createTextNode(str)); return d.innerHTML; }
+        // Décode les entités (descriptions parfois double-encodées : &lt;p&gt;…)
+        function decodeHtml(str) { if (!str) return ''; var t = document.createElement('textarea'); t.innerHTML = str; return t.value; }
+        // Texte brut sans balises (pour les aperçus / popups)
+        function plainText(str) { if (!str) return ''; var d = document.createElement('div'); d.innerHTML = decodeHtml(str); return (d.textContent || d.innerText || '').replace(/\s+/g, ' ').trim(); }
 
         function getFilteredPoints() {
             return allPoints.filter(function (p) {
@@ -443,7 +452,7 @@
             var h = '<div class="map-popup">';
             if (eu) h += '<div class="map-popup__video"><iframe src="' + eu + '" frameborder="0" allowfullscreen></iframe></div>';
             h += '<div class="map-popup__body"><h4 class="map-popup__title">' + escapeHtml(p.title) + '</h4>';
-            if (p.description) h += '<p class="map-popup__desc">' + escapeHtml(p.description.substring(0, 120)) + '</p>';
+            if (p.description) { var _pd = plainText(p.description); if (_pd) h += '<p class="map-popup__desc">' + escapeHtml(_pd.substring(0, 120)) + (_pd.length > 120 ? '…' : '') + '</p>'; }
             h += '<button class="map-popup__detail-btn" data-index="' + idx + '">Voir d\u00e9tails</button></div></div>';
             return h;
         }
@@ -525,7 +534,8 @@
             var eu = point.youtube_id ? 'https://www.youtube.com/embed/' + point.youtube_id + '?autoplay=0&rel=0' : '';
             if (ve) ve.innerHTML = eu ? '<iframe src="' + eu + '" frameborder="0" allowfullscreen></iframe>' : '';
             var de = modal.querySelector('.map-modal__description');
-            de.innerHTML = point.description || '';
+            // Rendu HTML décodé (jamais de balises visibles type "<p>…</p>")
+            de.innerHTML = decodeHtml(point.description || '');
             var mh = '';
             if (point.category) mh += '<span class="map-modal__tag">' + escapeHtml(point.category) + '</span>';
             if (point.adresse) mh += '<span class="map-modal__tag">' + escapeHtml(point.adresse) + '</span>';
@@ -541,6 +551,26 @@
                     el.loading = 'lazy';
                     ge.appendChild(el);
                 });
+            }
+            // Réseaux sociaux (affichés seulement s'ils existent)
+            var se = document.getElementById('mapModalSocials');
+            if (se) {
+                se.innerHTML = '';
+                if (point.socials && point.socials.length) {
+                    point.socials.forEach(function (s) {
+                        if (!s || !s.url) return;
+                        var a = document.createElement('a');
+                        a.href = s.url; a.target = '_blank'; a.rel = 'noopener';
+                        a.className = 'map-modal__social';
+                        a.title = s.label || '';
+                        a.setAttribute('aria-label', s.label || 'Lien');
+                        a.innerHTML = '<i class="' + (s.icon || 'fas fa-link') + '"></i>';
+                        se.appendChild(a);
+                    });
+                    se.style.display = se.children.length ? 'flex' : 'none';
+                } else {
+                    se.style.display = 'none';
+                }
             }
             var wl = document.getElementById('mapModalWebsite');
             if (point.website) { wl.href = point.website; wl.style.display = 'inline-flex'; } else { wl.style.display = 'none'; }

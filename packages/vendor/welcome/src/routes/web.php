@@ -11,5 +11,7 @@ use Vendor\Welcome\Http\Controllers\WelcomeController;
 | N'interfère pas avec la route « home-v2 » existante.
 */
 Route::middleware('web')->group(function () {
-    Route::get('/welcome', [WelcomeController::class, 'index'])->name('welcome');
+    // La page Welcome est désormais la page d'accueil « / » :
+    // /welcome redirige vers / pour éviter le contenu dupliqué.
+    Route::get('/welcome', fn () => redirect('/', 301))->name('welcome');
 });
