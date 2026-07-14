@@ -610,11 +610,48 @@ class PublicPageController extends Controller
     protected function buildResponse($html, array $seoContext = [])
     {
         $html = $this->injectSeoMeta($html, $seoContext);
+        $html = $this->injectGlobalHeader($html);
 
         return response($html, 200, [
             'Content-Type' => 'text/html; charset=utf-8',
             'X-Content-Type-Options' => 'nosniff',
         ]);
+    }
+
+    /**
+     * Injecte l'en-tête global du site (repris de « / », version solide) juste
+     * après <body> sur les pages établissements. Totalement protégé : en cas
+     * d'erreur, la page est retournée telle quelle.
+     */
+    protected function injectGlobalHeader($html)
+    {
+        try {
+            if (! is_string($html) || $html === '') {
+                return $html;
+            }
+            // Déjà injecté ? (évite les doublons)
+            if (strpos($html, 'id="cghHeader"') !== false) {
+                return $html;
+            }
+            // Nécessite une balise <body>
+            if (! preg_match('/<body[^>]*>/i', $html)) {
+                return $html;
+            }
+
+            if (! preg_match('/<body[^>]*>/i', $html, $m, PREG_OFFSET_CAPTURE)) {
+                return $html;
+            }
+
+            $header = view('cms::web.partials.global-site-header')->render();
+
+            // Insertion par position (évite l'interprétation de « $ » par preg_replace).
+            $pos = $m[0][1] + strlen($m[0][0]);
+
+            return substr($html, 0, $pos) . "\n" . $header . substr($html, $pos);
+        } catch (\Throwable $e) {
+            \Log::warning('Injection en-tête global échouée: ' . $e->getMessage());
+            return $html;
+        }
     }
 
     protected function buildSeoContext($page): array
