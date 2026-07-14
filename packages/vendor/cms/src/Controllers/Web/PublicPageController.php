@@ -1271,17 +1271,25 @@ class PublicPageController extends Controller
         $etablissement = Etablissement::findOrFail($etablissementId);
         $this->etablissement = $etablissement;
 
+        // Configuration du formulaire (admin) : détermine les champs requis.
+        $cfCfg = \Vendor\Cms\Support\ContactFormConfig::for($etablissement);
+        $cfFields = $cfCfg['fields'] ?? [];
+        $reqRule = function (string $key, array $base) use ($cfFields) {
+            $required = ! empty($cfFields[$key]['enabled']) && ! empty($cfFields[$key]['required']);
+            return array_merge([$required ? 'required' : 'nullable'], $base);
+        };
+
         $validator = Validator::make($request->all(), [
-            'first_name' => ['required', 'string', 'max:120'],
-            'last_name' => ['nullable', 'string', 'max:120'],
+            'first_name' => $reqRule('first_name', ['string', 'max:120']),
+            'last_name' => $reqRule('last_name', ['string', 'max:120']),
             'name' => ['nullable', 'string', 'max:190'],
-            'email' => ['required', 'email', 'max:190'],
-            'phone' => ['nullable', 'string', 'max:80'],
-            'company' => ['nullable', 'string', 'max:190'],
+            'email' => $reqRule('email', ['email', 'max:190']),
+            'phone' => $reqRule('phone', ['string', 'max:80']),
+            'company' => $reqRule('company', ['string', 'max:190']),
             'preferred_contact_method' => ['nullable', 'string', 'max:80'],
-            'subject' => ['nullable', 'string', 'max:190'],
+            'subject' => $reqRule('subject', ['string', 'max:190']),
             'service' => ['nullable', 'string', 'max:190'],
-            'message' => ['required', 'string', 'min:5', 'max:5000'],
+            'message' => $reqRule('message', array_merge(['string', 'max:5000'], ! empty($cfFields['message']['required']) ? ['min:5'] : [])),
             'attachment' => ['nullable', 'file', 'max:10240', 'mimes:pdf,doc,docx,jpg,jpeg,png,gif,webp,txt,zip'],
             'consent' => ['nullable', 'boolean'],
             'newsletter_opt_in' => ['nullable', 'boolean'],

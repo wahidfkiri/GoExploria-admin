@@ -234,11 +234,21 @@
 
 <div class="cms-cw-backdrop" id="cmsContactBackdrop" aria-hidden="true"></div>
 
+@php
+    // Configuration du formulaire (admin CMS → « control total »).
+    $cwCfg = \Vendor\Cms\Support\ContactFormConfig::for($etablissement ?? null);
+    $cwF   = $cwCfg['fields'] ?? [];
+    $cwOn  = fn ($k) => ! empty($cwF[$k]['enabled']);
+    $cwLbl = fn ($k, $d = '') => $cwF[$k]['label'] ?? $d;
+    $cwReq = fn ($k) => ! empty($cwF[$k]['required']);
+    $cwPh  = fn ($k) => (string) ($cwF[$k]['placeholder'] ?? '');
+    $cwDef = fn ($k) => (string) ($cwF[$k]['default'] ?? '');
+@endphp
 <aside class="cms-cw-drawer" id="cmsContactDrawer" role="dialog" aria-modal="true" aria-labelledby="cmsContactTitle" aria-hidden="true">
     <div class="cms-cw-header">
         <div>
-            <h3 id="cmsContactTitle">Contactez-nous</h3>
-            <p>Une question ? Écrivez-nous, nous vous répondrons rapidement.</p>
+            <h3 id="cmsContactTitle">{{ $cwCfg['title'] }}</h3>
+            <p>{{ $cwCfg['subtitle'] }}</p>
         </div>
         <button type="button" class="cms-cw-close" data-cms-cw-close aria-label="Fermer">&times;</button>
     </div>
@@ -253,30 +263,54 @@
               data-loading-text="Envoi en cours...">
             @csrf
 
+            @if($cwOn('first_name'))
             <div class="cms-cw-field">
-                <label for="cmsCwName">Nom complet <span class="req">*</span></label>
-                <input class="cms-cw-input" id="cmsCwName" type="text" name="first_name" placeholder="Votre nom complet" required>
+                <label for="cmsCwFirstName">{{ $cwLbl('first_name', 'Prénom') }} @if($cwReq('first_name'))<span class="req">*</span>@endif</label>
+                <input class="cms-cw-input" id="cmsCwFirstName" type="text" name="first_name" placeholder="{{ $cwPh('first_name') }}" value="{{ $cwDef('first_name') }}" @if($cwReq('first_name')) required @endif>
             </div>
+            @endif
 
+            @if($cwOn('last_name'))
             <div class="cms-cw-field">
-                <label for="cmsCwEmail">Courriel <span class="req">*</span></label>
-                <input class="cms-cw-input" id="cmsCwEmail" type="email" name="email" placeholder="vous@exemple.com" required>
+                <label for="cmsCwLastName">{{ $cwLbl('last_name', 'Nom') }} @if($cwReq('last_name'))<span class="req">*</span>@endif</label>
+                <input class="cms-cw-input" id="cmsCwLastName" type="text" name="last_name" placeholder="{{ $cwPh('last_name') }}" value="{{ $cwDef('last_name') }}" @if($cwReq('last_name')) required @endif>
             </div>
+            @endif
 
+            @if($cwOn('email'))
             <div class="cms-cw-field">
-                <label for="cmsCwPhone">Téléphone</label>
-                <input class="cms-cw-input" id="cmsCwPhone" type="tel" name="phone" placeholder="Votre numéro">
+                <label for="cmsCwEmail">{{ $cwLbl('email', 'Courriel') }} @if($cwReq('email'))<span class="req">*</span>@endif</label>
+                <input class="cms-cw-input" id="cmsCwEmail" type="email" name="email" placeholder="{{ $cwPh('email') }}" value="{{ $cwDef('email') }}" @if($cwReq('email')) required @endif>
             </div>
+            @endif
 
+            @if($cwOn('phone'))
             <div class="cms-cw-field">
-                <label for="cmsCwSubject">Sujet</label>
-                <input class="cms-cw-input" id="cmsCwSubject" type="text" name="subject" placeholder="Objet de votre message">
+                <label for="cmsCwPhone">{{ $cwLbl('phone', 'Téléphone') }} @if($cwReq('phone'))<span class="req">*</span>@endif</label>
+                <input class="cms-cw-input" id="cmsCwPhone" type="tel" name="phone" placeholder="{{ $cwPh('phone') }}" value="{{ $cwDef('phone') }}" @if($cwReq('phone')) required @endif>
             </div>
+            @endif
 
+            @if($cwOn('company'))
             <div class="cms-cw-field">
-                <label for="cmsCwMessage">Message <span class="req">*</span></label>
-                <textarea class="cms-cw-textarea" id="cmsCwMessage" name="message" placeholder="Comment pouvons-nous vous aider ?" required></textarea>
+                <label for="cmsCwCompany">{{ $cwLbl('company', 'Entreprise') }} @if($cwReq('company'))<span class="req">*</span>@endif</label>
+                <input class="cms-cw-input" id="cmsCwCompany" type="text" name="company" placeholder="{{ $cwPh('company') }}" value="{{ $cwDef('company') }}" @if($cwReq('company')) required @endif>
             </div>
+            @endif
+
+            @if($cwOn('subject'))
+            <div class="cms-cw-field">
+                <label for="cmsCwSubject">{{ $cwLbl('subject', 'Sujet') }} @if($cwReq('subject'))<span class="req">*</span>@endif</label>
+                <input class="cms-cw-input" id="cmsCwSubject" type="text" name="subject" placeholder="{{ $cwPh('subject') }}" value="{{ $cwDef('subject') }}" @if($cwReq('subject')) required @endif>
+            </div>
+            @endif
+
+            @if($cwOn('message'))
+            <div class="cms-cw-field">
+                <label for="cmsCwMessage">{{ $cwLbl('message', 'Message') }} @if($cwReq('message'))<span class="req">*</span>@endif</label>
+                <textarea class="cms-cw-textarea" id="cmsCwMessage" name="message" placeholder="{{ $cwPh('message') }}" @if($cwReq('message')) required @endif>{{ $cwDef('message') }}</textarea>
+            </div>
+            @endif
 
             <div class="cms-cw-field">
                 <label>Pièce jointe <span style="color:#94a3b8;font-weight:600">(optionnel)</span></label>
@@ -289,8 +323,28 @@
                 </label>
             </div>
 
-            <button type="submit" class="cms-cw-submit">Envoyer le message</button>
+            @if($cwOn('consent'))
+            <div class="cms-cw-field">
+                <label style="display:flex;align-items:flex-start;gap:8px;font-weight:500">
+                    <input type="checkbox" name="consent" value="1" @if($cwReq('consent')) required @endif style="margin-top:3px">
+                    <span>{{ $cwLbl('consent', "J'accepte d'être recontacté au sujet de ma demande.") }}</span>
+                </label>
+            </div>
+            @endif
+
+            @if($cwOn('newsletter_opt_in'))
+            <div class="cms-cw-field">
+                <label style="display:flex;align-items:flex-start;gap:8px;font-weight:500">
+                    <input type="checkbox" name="newsletter_opt_in" value="1" style="margin-top:3px">
+                    <span>{{ $cwLbl('newsletter_opt_in', 'Je souhaite recevoir les actualités et offres.') }}</span>
+                </label>
+            </div>
+            @endif
+
+            <button type="submit" class="cms-cw-submit">{{ $cwCfg['submit_label'] ?? 'Envoyer le message' }}</button>
+            @unless($cwOn('consent'))
             <p class="cms-cw-consent">En envoyant ce formulaire, vous acceptez d'être contacté au sujet de votre demande.</p>
+            @endunless
         </form>
     </div>
 </aside>
