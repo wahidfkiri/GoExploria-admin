@@ -29,7 +29,6 @@ class WelcomeServiceProvider extends ServiceProvider
         });
 
         // ── Résolution NAMESPACE (optionnelle) ─────────────────────────────────
-        // view('welcome::welcome-home.index')
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'welcome');
 
         // ── Routes du package ──────────────────────────────────────────────────
