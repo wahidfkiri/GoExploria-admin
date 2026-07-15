@@ -17,13 +17,20 @@
         ? $landingMapSectionTitle
         : (($siteName ?? $etablissement->name ?? 'Carte interactive') . ' sur la carte');
 
-    // Config de la section carte (logo client + position/taille), éditée côté admin.
+    // Config de la section carte (logo client + position/taille + couleurs), éditée côté admin.
     $landingMapCfg = function_exists('get_maps_section_config') ? get_maps_section_config($etablissement->id) : [];
     $landingMapLogoHtml = function_exists('client_section_logo_html') ? client_section_logo_html($landingMapCfg) : '';
     $landingMapLogoPos = $landingMapCfg['logo_position'] ?? 'left';
     $landingMapSubtitle = trim((string) ($landingMapCfg['subtitle'] ?? '')) !== ''
         ? $landingMapCfg['subtitle']
         : 'Cliquez sur les marqueurs pour en savoir plus';
+    $landingMapTitleColor = $landingMapCfg['title_color'] ?? '#000000';
+    $landingMapSubtitleColor = $landingMapCfg['subtitle_color'] ?? '#000000';
+    // Le titre configuré côté admin (config carte) est prioritaire — corrige le
+    // cas où seul le sous-titre s'affichait (titre issu d'une autre clé/vide).
+    if (trim((string) ($landingMapCfg['title'] ?? '')) !== '') {
+        $landingMapSectionTitle = $landingMapCfg['title'];
+    }
 
     $landingMapMediaUrl = static function ($path) {
         if (empty($path)) {
@@ -334,8 +341,8 @@
                         <div class="section-logo">{!! $landingMapLogoHtml !!}</div>
                     @endif
                     <div>
-                        <h2 class="section-title" id="map-heading">{{ $landingMapSectionTitle }}</h2>
-                        <p class="section-subtitle">{{ $landingMapSubtitle }}</p>
+                        <h2 class="section-title" id="map-heading" style="color:{{ $landingMapTitleColor }};">{{ $landingMapSectionTitle }}</h2>
+                        <p class="section-subtitle" style="color:{{ $landingMapSubtitleColor }};">{{ $landingMapSubtitle }}</p>
                     </div>
                     @if($landingMapLogoHtml !== '' && $landingMapLogoPos === 'right')
                         <div class="section-logo">{!! $landingMapLogoHtml !!}</div>

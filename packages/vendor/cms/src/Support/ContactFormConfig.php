@@ -39,10 +39,28 @@ class ContactFormConfig
         return [
             'title'           => 'Contactez-nous',
             'subtitle'        => 'Envoyez-nous un message, nous vous répondrons rapidement.',
+            'title_color'     => '#000000',
+            'subtitle_color'  => '#000000',
             'submit_label'    => 'Envoyer le message',
             'success_message' => 'Merci, votre message a bien été envoyé.',
             'fields'          => self::fields(),
         ];
+    }
+
+    /** Normalise une couleur hex (#rrggbb), sinon retombe sur $fallback. */
+    public static function colorHex($value, string $fallback = '#000000'): string
+    {
+        $value = strtolower(trim((string) $value));
+
+        if (preg_match('/^#[0-9a-f]{6}$/', $value)) {
+            return $value;
+        }
+
+        if (preg_match('/^#[0-9a-f]{3}$/', $value)) {
+            return '#' . $value[1] . $value[1] . $value[2] . $value[2] . $value[3] . $value[3];
+        }
+
+        return $fallback;
     }
 
     /**
@@ -68,7 +86,9 @@ class ContactFormConfig
         }
 
         // Fusion superficielle des textes
-        $config = array_merge($defaults, array_intersect_key($raw, array_flip(['title', 'subtitle', 'submit_label', 'success_message'])));
+        $config = array_merge($defaults, array_intersect_key($raw, array_flip(['title', 'subtitle', 'title_color', 'subtitle_color', 'submit_label', 'success_message'])));
+        $config['title_color']    = self::colorHex($config['title_color'] ?? null, $defaults['title_color']);
+        $config['subtitle_color'] = self::colorHex($config['subtitle_color'] ?? null, $defaults['subtitle_color']);
 
         // Fusion champ par champ (on ne garde que les champs connus)
         $config['fields'] = [];
@@ -105,6 +125,8 @@ class ContactFormConfig
         $out = [
             'title'           => $cut($input['title'] ?? null, 191, $defaults['title']),
             'subtitle'        => $cut($input['subtitle'] ?? null, 255, ''),
+            'title_color'     => self::colorHex($input['title_color'] ?? null, $defaults['title_color']),
+            'subtitle_color'  => self::colorHex($input['subtitle_color'] ?? null, $defaults['subtitle_color']),
             'submit_label'    => $cut($input['submit_label'] ?? null, 100, $defaults['submit_label']),
             'success_message' => $cut($input['success_message'] ?? null, 255, $defaults['success_message']),
             'fields'          => [],

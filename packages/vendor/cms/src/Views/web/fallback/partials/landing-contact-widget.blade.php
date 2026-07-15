@@ -260,8 +260,8 @@
                 <div class="cms-cw-logo">{!! $cwLogoHtml !!}</div>
             @endif
             <div>
-                <h3 id="cmsContactTitle">{{ $cwCfg['title'] }}</h3>
-                <p>{{ $cwCfg['subtitle'] }}</p>
+                <h3 id="cmsContactTitle" style="color:{{ $cwCfg['title_color'] }};">{{ $cwCfg['title'] }}</h3>
+                <p style="color:{{ $cwCfg['subtitle_color'] }};">{{ $cwCfg['subtitle'] }}</p>
             </div>
         </div>
         <button type="button" class="cms-cw-close" data-cms-cw-close aria-label="Fermer">&times;</button>

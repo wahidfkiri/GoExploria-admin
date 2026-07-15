@@ -22,13 +22,31 @@ class MapSectionConfig
     public static function defaults(): array
     {
         return [
-            'title'         => 'Carte interactive',
-            'subtitle'      => '',
-            'show_logo'     => false,
-            'logo_path'     => '',
-            'logo_position' => 'left',
-            'logo_size'     => 96,
+            'title'          => 'Carte interactive',
+            'subtitle'       => '',
+            'title_color'    => '#000000',
+            'subtitle_color' => '#000000',
+            'show_logo'      => false,
+            'logo_path'      => '',
+            'logo_position'  => 'left',
+            'logo_size'      => 96,
         ];
+    }
+
+    /** Normalise une couleur hex (#rrggbb), sinon retombe sur $fallback. */
+    public static function color($value, string $fallback = '#000000'): string
+    {
+        $value = strtolower(trim((string) $value));
+
+        if (preg_match('/^#[0-9a-f]{6}$/', $value)) {
+            return $value;
+        }
+
+        if (preg_match('/^#[0-9a-f]{3}$/', $value)) {
+            return '#' . $value[1] . $value[1] . $value[2] . $value[2] . $value[3] . $value[3];
+        }
+
+        return $fallback;
     }
 
     /**
@@ -87,12 +105,14 @@ class MapSectionConfig
         $size = max(self::SIZE_MIN, min(self::SIZE_MAX, $size));
 
         return [
-            'title'         => $cut($raw['title'] ?? null, 191, $defaults['title']),
-            'subtitle'      => $cut($raw['subtitle'] ?? null, 255, ''),
-            'show_logo'     => filter_var($raw['show_logo'] ?? $defaults['show_logo'], FILTER_VALIDATE_BOOLEAN),
-            'logo_path'     => $cut($raw['logo_path'] ?? null, 500, ''),
-            'logo_position' => $position,
-            'logo_size'     => $size,
+            'title'          => $cut($raw['title'] ?? null, 191, $defaults['title']),
+            'subtitle'       => $cut($raw['subtitle'] ?? null, 255, ''),
+            'title_color'    => self::color($raw['title_color'] ?? null, $defaults['title_color']),
+            'subtitle_color' => self::color($raw['subtitle_color'] ?? null, $defaults['subtitle_color']),
+            'show_logo'      => filter_var($raw['show_logo'] ?? $defaults['show_logo'], FILTER_VALIDATE_BOOLEAN),
+            'logo_path'      => $cut($raw['logo_path'] ?? null, 500, ''),
+            'logo_position'  => $position,
+            'logo_size'      => $size,
         ];
     }
 }
