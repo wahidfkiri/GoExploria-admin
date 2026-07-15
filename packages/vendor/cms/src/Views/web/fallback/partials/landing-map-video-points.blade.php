@@ -17,6 +17,14 @@
         ? $landingMapSectionTitle
         : (($siteName ?? $etablissement->name ?? 'Carte interactive') . ' sur la carte');
 
+    // Config de la section carte (logo client + position/taille), éditée côté admin.
+    $landingMapCfg = function_exists('get_maps_section_config') ? get_maps_section_config($etablissement->id) : [];
+    $landingMapLogoHtml = function_exists('client_section_logo_html') ? client_section_logo_html($landingMapCfg) : '';
+    $landingMapLogoPos = $landingMapCfg['logo_position'] ?? 'left';
+    $landingMapSubtitle = trim((string) ($landingMapCfg['subtitle'] ?? '')) !== ''
+        ? $landingMapCfg['subtitle']
+        : 'Cliquez sur les marqueurs pour en savoir plus';
+
     $landingMapMediaUrl = static function ($path) {
         if (empty($path)) {
             return null;
@@ -317,9 +325,23 @@
     <section class="map-section section{{ $landingMapIsInline ? ' is-inline' : '' }}" id="map" aria-labelledby="map-heading">
         <div class="container">
             <div class="section-header reveal-up">
-                <span class="eyebrow">Explorer</span>
-                <h2 class="section-title" id="map-heading">{{ $landingMapSectionTitle }}</h2>
-                <p class="section-subtitle">Cliquez sur les marqueurs pour en savoir plus</p>
+                @if($landingMapLogoHtml !== '' && $landingMapLogoPos === 'center')
+                    <div class="section-logo section-logo--center" style="margin-bottom:14px;">{!! $landingMapLogoHtml !!}</div>
+                @endif
+                <div class="section-head-row section-head-row--{{ $landingMapLogoPos }}"
+                     @if($landingMapLogoHtml !== '' && $landingMapLogoPos !== 'center') style="display:flex;align-items:center;gap:18px;justify-content:{{ $landingMapLogoPos === 'right' ? 'flex-end' : 'flex-start' }};text-align:{{ $landingMapLogoPos === 'right' ? 'right' : 'left' }};" @endif>
+                    @if($landingMapLogoHtml !== '' && $landingMapLogoPos === 'left')
+                        <div class="section-logo">{!! $landingMapLogoHtml !!}</div>
+                    @endif
+                    <div>
+                        <span class="eyebrow">Explorer</span>
+                        <h2 class="section-title" id="map-heading">{{ $landingMapSectionTitle }}</h2>
+                        <p class="section-subtitle">{{ $landingMapSubtitle }}</p>
+                    </div>
+                    @if($landingMapLogoHtml !== '' && $landingMapLogoPos === 'right')
+                        <div class="section-logo">{!! $landingMapLogoHtml !!}</div>
+                    @endif
+                </div>
             </div>
             <div class="map-region-filter">
                 <select id="mapRegionSelect" class="map-region-select">

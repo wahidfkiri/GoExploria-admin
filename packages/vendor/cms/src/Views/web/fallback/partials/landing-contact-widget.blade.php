@@ -59,6 +59,9 @@
             padding: 22px 24px 16px;
             border-bottom: 1px solid #eef0f3;
         }
+        .cms-cw-heading { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .cms-cw-logo { flex-shrink: 0; }
+        .cms-cw-logo img { display: block; }
         .cms-cw-header h3 { margin: 0 0 4px; font-size: 20px; font-weight: 800; color: #0f172a; }
         .cms-cw-header p { margin: 0; font-size: 13.5px; line-height: 1.5; color: #64748b; }
         .cms-cw-close {
@@ -243,12 +246,23 @@
     $cwReq = fn ($k) => ! empty($cwF[$k]['required']);
     $cwPh  = fn ($k) => (string) ($cwF[$k]['placeholder'] ?? '');
     $cwDef = fn ($k) => (string) ($cwF[$k]['default'] ?? '');
+
+    // Logo client (même config que la section carte), affiché dans l'en-tête contact.
+    $cwLogoCfg  = function_exists('get_maps_section_config') ? get_maps_section_config($etablissement->id ?? null) : [];
+    $cwLogoHtml = function_exists('client_section_logo_html')
+        ? client_section_logo_html($cwLogoCfg, null, min((int) ($cwLogoCfg['logo_size'] ?? 44), 44))
+        : '';
 @endphp
 <aside class="cms-cw-drawer" id="cmsContactDrawer" role="dialog" aria-modal="true" aria-labelledby="cmsContactTitle" aria-hidden="true">
     <div class="cms-cw-header">
-        <div>
-            <h3 id="cmsContactTitle">{{ $cwCfg['title'] }}</h3>
-            <p>{{ $cwCfg['subtitle'] }}</p>
+        <div class="cms-cw-heading">
+            @if($cwLogoHtml !== '')
+                <div class="cms-cw-logo">{!! $cwLogoHtml !!}</div>
+            @endif
+            <div>
+                <h3 id="cmsContactTitle">{{ $cwCfg['title'] }}</h3>
+                <p>{{ $cwCfg['subtitle'] }}</p>
+            </div>
         </div>
         <button type="button" class="cms-cw-close" data-cms-cw-close aria-label="Fermer">&times;</button>
     </div>

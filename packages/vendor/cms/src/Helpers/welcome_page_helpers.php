@@ -1734,6 +1734,91 @@ if (!function_exists('get_maps_section_title')) {
     }
 }
 
+if (!function_exists('get_maps_section_config')) {
+    /**
+     * Configuration de la section carte (titre, sous-titre, logo client…),
+     * éditée côté admin et lue ici pour le rendu front.
+     */
+    function get_maps_section_config($etablissementId = null): array
+    {
+        $etablissement = $etablissementId
+            ? \App\Models\Etablissement::find($etablissementId)
+            : (function_exists('getCurrentEtablissement') ? getCurrentEtablissement() : null);
+
+        if (!$etablissement) {
+            return \Vendor\Cms\Support\MapSectionConfig::defaults();
+        }
+
+        return \Vendor\Cms\Support\MapSectionConfig::for($etablissement);
+    }
+}
+
+if (!function_exists('client_section_logo_html')) {
+    /**
+     * Rend le <img> du logo client configuré (section carte), ou '' si aucun /
+     * désactivé. Utilisé dans l'en-tête des sections carte et contact.
+     *
+     * @param array|null $config  config déjà chargée (évite un 2e appel BD)
+     * @param int|null   $sizeOverride  force une taille (px), sinon celle de la config
+     */
+    function client_section_logo_html($config = null, $etablissementId = null, $sizeOverride = null): string
+    {
+        $config = is_array($config) ? $config : get_maps_section_config($etablissementId);
+
+        if (empty($config['show_logo']) || empty($config['logo_path'])) {
+            return '';
+        }
+
+        $url = (string) $config['logo_path'];
+        if ($url !== '' && !preg_match('#^https?://#i', $url)) {
+            $url = function_exists('asset') ? asset(ltrim($url, '/')) : $url;
+        }
+
+        $size = (int) ($sizeOverride ?? $config['logo_size'] ?? 96);
+        $alt = htmlspecialchars((string) ($config['title'] ?? ''), ENT_QUOTES, 'UTF-8');
+
+        return '<img class="client-section-logo" src="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" alt="' . $alt
+            . '" style="height:' . $size . 'px;width:auto;max-width:100%;object-fit:contain;display:inline-block;">';
+    }
+}
+
+if (!function_exists('render_maps_section_header')) {
+    /**
+     * En-tête complet de la section carte (titre + sous-titre + logo positionné).
+     * Fourni pour réutilisation ; les partials landing composent leur propre
+     * en-tête et n'utilisent que client_section_logo_html().
+     */
+    function render_maps_section_header($etablissementId = null): string
+    {
+        $config = get_maps_section_config($etablissementId);
+
+        $title    = trim((string) ($config['title'] ?? ''));
+        $subtitle = trim((string) ($config['subtitle'] ?? ''));
+        $position = in_array($config['logo_position'] ?? 'left', \Vendor\Cms\Support\MapSectionConfig::POSITIONS, true)
+            ? $config['logo_position'] : 'left';
+        $logoHtml = client_section_logo_html($config);
+
+        if ($title === '' && $subtitle === '' && $logoHtml === '') {
+            return '';
+        }
+
+        $e = fn ($v) => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
+        $titleHtml = $title !== '' ? '<h2 class="maps-section-title" style="margin:0;">' . $e($title) . '</h2>' : '';
+        $subtitleHtml = $subtitle !== '' ? '<p class="maps-section-subtitle" style="margin:6px 0 0;">' . $e($subtitle) . '</p>' : '';
+
+        if ($position === 'center') {
+            $body = ($logoHtml !== '' ? '<div style="margin-bottom:10px;">' . $logoHtml . '</div>' : '') . $titleHtml . $subtitleHtml;
+            return '<div class="maps-section-header maps-section-header--center" style="text-align:center;">' . $body . '</div>';
+        }
+
+        $align = $position === 'right' ? 'flex-end' : 'flex-start';
+        $textBlock = '<div>' . $titleHtml . $subtitleHtml . '</div>';
+        $row = $position === 'right' ? ($textBlock . $logoHtml) : ($logoHtml . $textBlock);
+
+        return '<div class="maps-section-header maps-section-header--' . $position . '" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:' . $align . ';">' . $row . '</div>';
+    }
+}
+
 if (!function_exists('get_blog_section_title')) {
     function get_blog_section_title($etablissementId = null): string
     {
