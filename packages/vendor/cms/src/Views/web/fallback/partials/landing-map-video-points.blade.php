@@ -258,8 +258,8 @@
             .section{padding:100px 0}
             .section-header{text-align:center;margin-bottom:56px}
             .eyebrow{display:inline-block;font-size:0.75rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--td-amber);margin-bottom:0.75rem}
-            .section-title{font-family:'Italiana',serif;color:var(--td-sand);font-size:clamp(28px,4vw,46px);line-height:1.05;font-weight:900}
-            .section-subtitle{margin-top:12px;font-size:1rem;color:var(--td-text-muted)}
+            .section-title{font-family:'Italiana',serif;color:black;font-size:clamp(28px,4vw,46px);line-height:1.05;font-weight:900}
+            .section-subtitle{margin-top:12px;font-size:1rem;color:black}
             .map-section{position:relative;overflow:hidden;padding:64px 24px}
             .map-section.is-inline{padding:0;background:transparent;height:100%;min-height:420px}
             .map-section.is-inline:before{display:none}
@@ -334,7 +334,6 @@
                         <div class="section-logo">{!! $landingMapLogoHtml !!}</div>
                     @endif
                     <div>
-                        <span class="eyebrow">Explorer</span>
                         <h2 class="section-title" id="map-heading">{{ $landingMapSectionTitle }}</h2>
                         <p class="section-subtitle">{{ $landingMapSubtitle }}</p>
                     </div>
