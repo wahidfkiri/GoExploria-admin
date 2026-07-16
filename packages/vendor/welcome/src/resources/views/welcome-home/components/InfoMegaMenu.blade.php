@@ -28,6 +28,22 @@
         preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $url, $m);
         return $m[1] ?? null;
     };
+
+    // Services publiés (gérés dans l'admin /services) — affichés en tête du panneau Info.
+    $infoServices = collect();
+    try {
+        if (\Illuminate\Support\Facades\Schema::hasTable('services')) {
+            $infoServices = \App\Models\Service::active()->ordered()->get();
+        }
+    } catch (\Throwable $e) {
+        $infoServices = collect();
+    }
+
+    $svcIconClass = static function ($icon) {
+        $icon = trim((string) $icon);
+        if ($icon === '') { return 'fas fa-concierge-bell'; }
+        return \Illuminate\Support\Str::contains($icon, 'fa-') ? $icon : 'fas fa-' . $icon;
+    };
 @endphp
 
 {{-- Info Mega Menu Component Compact --}}
@@ -48,6 +64,37 @@
             <span>Essence: 1.62$</span>
         </div>
     </div> -->
+
+    {{-- Nos Services (depuis l'admin /services) --}}
+    @if($infoServices->isNotEmpty())
+    <div class="vmenu-services-block">
+        <div class="vmenu-services-head">
+            <h4><i class="fas fa-concierge-bell"></i> Nos Services</h4>
+            <span class="vmenu-services-count">{{ $infoServices->count() }}</span>
+        </div>
+        <div class="vmenu-services-grid">
+            @foreach($infoServices as $svc)
+            <a href="{{ route('service.landing', $svc->slug) }}" class="vmenu-service-card" style="--svc-color: {{ $svc->color ?: '#10b981' }};">
+                <span class="vmenu-service-media">
+                    @if($svc->image_url)
+                        <img src="{{ $svc->image_url }}" alt="{{ $svc->name }}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                        <span class="vmenu-service-ic" style="display:none;"><i class="{{ $svcIconClass($svc->icon) }}"></i></span>
+                    @else
+                        <span class="vmenu-service-ic"><i class="{{ $svcIconClass($svc->icon) }}"></i></span>
+                    @endif
+                </span>
+                <span class="vmenu-service-body">
+                    <b>{{ $svc->name }}</b>
+                    @if($svc->description)
+                        <span>{{ \Illuminate\Support\Str::limit(strip_tags($svc->description), 68) }}</span>
+                    @endif
+                </span>
+                <i class="fas fa-arrow-right vmenu-service-arrow"></i>
+            </a>
+            @endforeach
+        </div>
+    </div>
+    @endif
 
     <div class="mega-menu-main-content">
         {{-- 5 Columns Grid with FontAwesome Icons ONLY --}}
@@ -237,6 +284,25 @@
     </div>
 
     <style>
+        /* ── Bloc « Nos Services » (panneau Info du menu vertical) ── */
+        .vmenu-services-block { margin: 0 0 16px; padding: 14px 16px; background: linear-gradient(135deg,#f0fbf5,#ffffff); border:1px solid #e6efe9; border-radius:16px; }
+        .vmenu-services-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+        .vmenu-services-head h4 { margin:0; font-size:0.95rem; font-weight:800; color:#0b2b25; display:flex; align-items:center; gap:8px; }
+        .vmenu-services-head h4 i { color:#10b981; }
+        .vmenu-services-count { font-size:0.72rem; font-weight:800; color:#10b981; background:rgba(16,185,129,.12); padding:3px 9px; border-radius:999px; }
+        .vmenu-services-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; max-height:320px; overflow-y:auto; padding-right:4px; }
+        .vmenu-service-card { display:flex; align-items:center; gap:12px; padding:10px; background:#fff; border:1px solid #eef2f0; border-radius:12px; text-decoration:none; transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease; position:relative; overflow:hidden; }
+        .vmenu-service-card:hover { transform:translateY(-2px); border-color:var(--svc-color,#10b981); box-shadow:0 12px 24px rgba(6,60,45,.10); }
+        .vmenu-service-media { flex:0 0 46px; width:46px; height:46px; border-radius:11px; overflow:hidden; background:color-mix(in srgb,var(--svc-color,#10b981) 14%,#fff); display:flex; align-items:center; justify-content:center; }
+        .vmenu-service-media img { width:100%; height:100%; object-fit:cover; display:block; }
+        .vmenu-service-ic { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--svc-color,#10b981); font-size:1.15rem; }
+        .vmenu-service-body { flex:1; min-width:0; }
+        .vmenu-service-body b { display:block; font-size:0.9rem; font-weight:700; color:#0f2b24; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .vmenu-service-body span { display:block; font-size:0.76rem; color:#64796f; line-height:1.35; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+        .vmenu-service-arrow { flex:0 0 auto; color:#cbd5cd; font-size:0.8rem; transition:transform .18s ease, color .18s ease; }
+        .vmenu-service-card:hover .vmenu-service-arrow { color:var(--svc-color,#10b981); transform:translateX(3px); }
+        @media (max-width:640px){ .vmenu-services-grid { grid-template-columns:1fr; max-height:260px; } }
+
         .ad-title-link { text-decoration: none; display: block; }
         .ad-title {
             display: block;

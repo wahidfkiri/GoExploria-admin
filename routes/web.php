@@ -368,6 +368,9 @@ Route::get('/activites/{slug}',            function () {
     return redirect('/activity/' . request()->route('slug'));
 })->name('activity.show');
 
+// Landing publique des Services (gérés dans l'admin /services)
+Route::get('/nos-services/{slug}', [\Vendor\Welcome\Http\Controllers\ServicesController::class, 'show'])->name('service.landing');
+
 // Pages principales du Header
 Route::get('/contact',      fn() => view('home-v2.pages.contact'))->name('contact');
 Route::get('/valeurs',      fn() => view('home-v2.pages.valeurs'))->name('valeurs');
