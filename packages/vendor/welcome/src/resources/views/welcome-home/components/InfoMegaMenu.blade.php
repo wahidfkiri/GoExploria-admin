@@ -70,7 +70,6 @@
     <div class="vmenu-services-block">
         <div class="vmenu-services-head">
             <h4><i class="fas fa-concierge-bell"></i> Nos Services</h4>
-            <span class="vmenu-services-count">{{ $infoServices->count() }}</span>
         </div>
         <div class="vmenu-services-grid">
             @foreach($infoServices as $svc)
@@ -97,109 +96,6 @@
     @endif
 
     <div class="mega-menu-main-content">
-        {{-- 5 Columns Grid with FontAwesome Icons ONLY --}}
-        <div class="mega-menu-columns-container">
-            {{-- Column 1 --}}
-            <div class="mega-menu-column">
-                <a href="{{url('/landing/accessibilite')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-wheelchair"></i></div>
-                    <span class="mega-menu-label">Accessibilité</span>
-                </a>
-                <a href="{{url('/landing/ambulance')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-ambulance"></i></div>
-                    <span class="mega-menu-label">Ambulance 911</span>
-                </a>
-                <a href="{{url('/landing/defibrillateur')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-heartbeat"></i></div>
-                    <span class="mega-menu-label">Défibrillateur</span>
-                </a>
-                <a href="{{url('/landing/indigo')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-parking"></i></div>
-                    <span class="mega-menu-label">Indigo</span>
-                </a>
-            </div>
-
-            {{-- Column 2 --}}
-            <div class="mega-menu-column">
-                <a href="{{url('/landing/fabrique-quebec')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-industry"></i></div>
-                    <span class="mega-menu-label">Fabriqué Québec</span>
-                </a>
-                <a href="{{url('/landing/info-tourisme')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-info-circle"></i></div>
-                    <span class="mega-menu-label">Info Tourisme</span>
-                </a>
-                <a href="{{url('/landing/transport')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-bus"></i></div>
-                    <span class="mega-menu-label">Transport</span>
-                </a>
-                <a href="{{url('/landing/experiences')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-star"></i></div>
-                    <span class="mega-menu-label">Expériences</span>
-                </a>
-            </div>
-
-            {{-- Column 3 --}}
-            <div class="mega-menu-column">
-                <a href="{{url('/landing/garage')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-tools"></i></div>
-                    <span class="mega-menu-label">Garage</span>
-                </a>
-                <a href="{{url('/landing/indice-uv')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-sun"></i></div>
-                    <span class="mega-menu-label">Indice UV</span>
-                </a>
-                <a href="{{url('/landing/indice')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-list-ol"></i></div>
-                    <span class="mega-menu-label">Indices</span>
-                </a>
-                <a href="{{url('/landing/parcs')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-tree"></i></div>
-                    <span class="mega-menu-label">Parcs Canada</span>
-                </a>
-            </div>
-
-            {{-- Column 4 --}}
-            <div class="mega-menu-column">
-                <a href="{{url('/landing/chasse')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-crosshairs"></i></div>
-                    <span class="mega-menu-label">Chasse</span>
-                </a>
-                <a href="{{url('/landing/croisieres')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-ship"></i></div>
-                    <span class="mega-menu-label">Croisières</span>
-                </a>
-                <a href="{{url('/landing/billets-avion')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-plane"></i></div>
-                    <span class="mega-menu-label">Billets Avion</span>
-                </a>
-                <a href="{{url('/landing/evenements')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-calendar-alt"></i></div>
-                    <span class="mega-menu-label">Événements</span>
-                </a>
-            </div>
-
-            {{-- Column 5 --}}
-            <div class="mega-menu-column">
-                <a href="{{url('/landing/culture')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-theater-masks"></i></div>
-                    <span class="mega-menu-label">Culture</span>
-                </a>
-                <a href="{{url('/landing/ferry')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-anchor"></i></div>
-                    <span class="mega-menu-label">Ferry</span>
-                </a>
-                <a href="{{url('/landing/nouvelles')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-rss"></i></div>
-                    <span class="mega-menu-label">Nouvelles</span>
-                </a>
-                <a href="{{url('/landing/canada-quebec')}}" class="mega-menu-item">
-                    <div class="mega-menu-icon-wrapper"><i class="fas fa-map"></i></div>
-                    <span class="mega-menu-label">Canada Québec</span>
-                </a>
-            </div>
-        </div>
-
         {{-- Compact Media Slider --}}
         <div class="mega-menu-carousel-clean">
             <div class="carousel-media-viewport" id="exclusiveMediaViewport">
@@ -289,7 +185,6 @@
         .vmenu-services-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
         .vmenu-services-head h4 { margin:0; font-size:0.95rem; font-weight:800; color:#0b2b25; display:flex; align-items:center; gap:8px; }
         .vmenu-services-head h4 i { color:#10b981; }
-        .vmenu-services-count { font-size:0.72rem; font-weight:800; color:#10b981; background:rgba(16,185,129,.12); padding:3px 9px; border-radius:999px; }
         .vmenu-services-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; max-height:320px; overflow-y:auto; padding-right:4px; }
         .vmenu-service-card { display:flex; align-items:center; gap:12px; padding:10px; background:#fff; border:1px solid #eef2f0; border-radius:12px; text-decoration:none; transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease; position:relative; overflow:hidden; }
         .vmenu-service-card:hover { transform:translateY(-2px); border-color:var(--svc-color,#10b981); box-shadow:0 12px 24px rgba(6,60,45,.10); }

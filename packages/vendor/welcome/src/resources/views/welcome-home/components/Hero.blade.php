@@ -288,7 +288,11 @@
                         </div>
                     </div>
 
-                    {{-- Pictos post-recherche + logo Plan&GO retirés (présents dans le menu vertical) --}}
+                    {{-- Bloc PLAN & GO (droite) --}}
+                    <div class="search-bar-v2-plango">
+                        <img src="{{ asset('plan-go.png') }}" alt="Plan & GO" class="search-bar-v2-plango-img" loading="lazy">
+                        <span class="search-bar-v2-plango-title">PLAN &amp; GO</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -603,6 +607,42 @@
         margin: 0 auto;
         background: #0e1a2b;
         background: rgba(5,15,35,.85);
+    }
+
+    /* ── Bloc PLAN & GO (droite de la barre de recherche) ── */
+    .search-bar-v2-plango {
+        flex: 0 0 auto;
+        margin-left: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        text-decoration: none;
+        padding-left: 14px;
+    }
+    .search-bar-v2-plango-img {
+        height: 64px;
+        width: auto;
+        display: block;
+        object-fit: contain;
+        filter: drop-shadow(0 6px 14px rgba(0,0,0,.45));
+    }
+    .search-bar-v2-plango-title {
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: .14em;
+        color: #ffd166;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 1024px) {
+        .search-bar-v2-plango { order: 2 !important; margin-left: 6px; padding-left: 0; }
+        .search-bar-v2-plango-img { height: 40px; }
+        .search-bar-v2-plango-title { display: none; }
+    }
+    @media (max-width: 560px) {
+        .search-bar-v2-plango { display: none !important; }
     }
 
     @media (max-width: 1024px) {
