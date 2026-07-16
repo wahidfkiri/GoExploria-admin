@@ -240,25 +240,41 @@
 
     <style>
         :root {
-            --food-ink: #1a1714;
-            --food-cream: #f7f0e6;
-            --food-sand: #e8d9c3;
-            --food-rust: #c8552c;
-            --food-ocean: #0f5566;
-            --food-seafoam: #9fc7bf;
-            --food-gold: #d69a3a;
+            /* Palette « Marché Central — Alimentation Premium »
+               (alignée sur le template CMS de la catégorie Agroalimentaire) */
+            --food-ink: #16241c;      /* vert très sombre : titres */
+            --food-text: #22322a;     /* texte courant */
+            --food-dark: #16241c;     /* alias sombre (référencé par certains composants) */
+            --food-cream: #fbf6ee;    /* fond crème */
+            --food-sand: #eef4ee;     /* crème teintée vert */
+            --food-rust: #16794c;     /* PRIMAIRE : CTA, kickers, prix, accents */
+            --food-rust-dark: #0f5637;/* primaire foncé (hover) */
+            --food-ocean: #0f5637;    /* dégradés (vert profond) */
+            --food-seafoam: #bfe0cf;  /* vert clair */
+            --food-gold: #f4b740;     /* accent miel */
+            --food-tomato: #e8572a;   /* secondaire : badges / tags (pop tomate) */
             --food-white: #ffffff;
-            --food-smoke: #f5f5f2;
-            --food-muted: #766b61;
-            --food-border: rgba(26, 23, 20, .12);
-            --food-shadow: 0 22px 60px rgba(26, 23, 20, .12);
+            --food-smoke: #f3f7f4;    /* gris-vert très clair */
+            --food-muted: #6d7f74;    /* texte atténué */
+            --food-border: rgba(22, 42, 28, .12);
+            --food-shadow: 0 20px 45px rgba(16, 42, 28, .12);
+
+            /* Thème du partial partagé « produits CMS » (establishment-products) :
+               on mappe ses variables génériques sur la palette de cette catégorie. */
+            --cms-accent: #16794c;
+            --cms-accent-strong: #0f5637;
+            --cms-accent-soft: rgba(22, 121, 76, .10);
+            --cms-accent-glow: rgba(244, 183, 64, .16);
+            --cms-accent-border: rgba(22, 121, 76, .35);
+            --cms-ink: #16241c;
+            --cms-muted: #6d7f74;
         }
 
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
             margin: 0;
-            background: radial-gradient(circle at top left, rgba(214, 154, 58, .18), transparent 34%), var(--food-cream);
+            background: radial-gradient(circle at top left, rgba(244, 183, 64, .18), transparent 34%), var(--food-cream);
             color: var(--food-ink);
             font-family: Inter, sans-serif;
             overflow-x: hidden;
@@ -327,7 +343,7 @@
         .food-pill {
             padding: 8px 12px;
             border-radius: 999px;
-            background: rgba(200, 85, 44, .1);
+            background: rgba(22, 121, 76, .1);
             color: var(--food-rust);
             font-weight: 800;
             font-size: .76rem;
@@ -370,7 +386,7 @@
             position: sticky;
             top: 92px;
             z-index: 20;
-            background: rgba(26, 23, 20, .96);
+            background: rgba(22, 36, 28, .96);
             border: 1px solid rgba(255,255,255,.08);
             border-radius: 28px;
             box-shadow: 0 18px 45px rgba(0,0,0,.25);
@@ -433,7 +449,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 15px 30px rgba(200,85,44,.3);
+            box-shadow: 0 15px 30px rgba(22,121,76,.3);
             white-space: nowrap;
         }
 
@@ -508,8 +524,8 @@
             position: absolute;
             inset: 0;
             background:
-                linear-gradient(90deg, rgba(26,23,20,.88), rgba(26,23,20,.42), rgba(26,23,20,.16)),
-                radial-gradient(circle at 80% 10%, rgba(214,154,58,.4), transparent 32%);
+                linear-gradient(90deg, rgba(22,36,28,.88), rgba(22,36,28,.42), rgba(22,36,28,.16)),
+                radial-gradient(circle at 80% 10%, rgba(244,183,64,.4), transparent 32%);
         }
         .food-hero-content {
             position: relative;
@@ -672,10 +688,10 @@
         .food-product-body { padding: 20px; }
         .food-product-tag {
             display: inline-flex;
-            padding: 7px 11px;
+            padding: 7px 12px;
             border-radius: 999px;
-            background: rgba(15,85,102,.1);
-            color: var(--food-ocean);
+            background: var(--food-tomato);
+            color: #fff;
             font-weight: 900;
             font-size: .72rem;
             text-transform: uppercase;
@@ -999,15 +1015,16 @@
         }
 
         /* Match the selected "marche-landing-v2" visual language inside the CMS 2-column shell. */
+        /* Palette « Marché Central — Alimentation Premium » (catégorie Agroalimentaire). */
         :root {
-            --market-ink: #0d0d0d;
-            --market-cream: #f5f0e8;
-            --market-sand: #e8dfc8;
-            --market-rust: #c45c2a;
-            --market-ocean: #1a3a4a;
-            --market-gold: #c9993a;
-            --market-smoke: #6b6560;
-            --market-white: #fdfaf5;
+            --market-ink: #16241c;    /* vert très sombre */
+            --market-cream: #fbf6ee;  /* crème */
+            --market-sand: #eef4ee;   /* crème teintée vert */
+            --market-rust: #16794c;   /* PRIMAIRE : CTA / accents (via !important) */
+            --market-ocean: #0f5637;  /* vert profond (fonds/dégradés) */
+            --market-gold: #f4b740;   /* accent miel (kickers, chips) */
+            --market-smoke: #6d7f74;  /* texte atténué */
+            --market-white: #fbfdfb;  /* blanc cassé (texte sur fond sombre) */
         }
         .food-page {
             font-family: 'DM Sans', sans-serif;
@@ -1036,7 +1053,7 @@
             border-radius: 2px;
             background: transparent;
             color: var(--market-gold);
-            border: 1px solid rgba(201, 153, 58, .35);
+            border: 1px solid rgba(244, 183, 64, .35);
             letter-spacing: .15em;
         }
         .food-header {
@@ -1304,9 +1321,9 @@
         }
         .food-product-tag {
             border-radius: 0;
-            background: transparent;
-            color: var(--market-gold);
-            border: 1px solid rgba(201,153,58,.3);
+            background: var(--food-tomato);
+            color: #fff;
+            border: 1px solid var(--food-tomato);
         }
         .food-price {
             color: var(--market-white);
@@ -1816,7 +1833,7 @@
 
                 const markerIcon = L.divIcon({
                     className: 'food-map-marker',
-                    html: '<div style="width:44px;height:44px;border-radius:50%;background:#c45c2a;color:white;display:grid;place-items:center;box-shadow:0 12px 25px rgba(0,0,0,.25);border:3px solid white;"><i class="fa-solid fa-basket-shopping"></i></div>',
+                    html: '<div style="width:44px;height:44px;border-radius:50%;background:#16794c;color:white;display:grid;place-items:center;box-shadow:0 12px 25px rgba(0,0,0,.25);border:3px solid white;"><i class="fa-solid fa-basket-shopping"></i></div>',
                     iconSize: [44, 44],
                     iconAnchor: [22, 40],
                     popupAnchor: [0, -34]
@@ -1824,9 +1841,9 @@
 
                 const popupHtml = `
                     <div style="width:320px;max-width:100%;">
-                        <div style="font-weight:800;margin-bottom:4px;color:#1a3a4a;">${title}</div>
+                        <div style="font-weight:800;margin-bottom:4px;color:#0f5637;">${title}</div>
                         <div style="font-size:13px;line-height:1.45;color:#6b6560;margin-bottom:10px;">
-                            <i class="fa-solid fa-location-dot" style="color:#c45c2a;margin-right:5px;"></i>${address}
+                            <i class="fa-solid fa-location-dot" style="color:#16794c;margin-right:5px;"></i>${address}
                         </div>
                         <iframe
                             width="320"
