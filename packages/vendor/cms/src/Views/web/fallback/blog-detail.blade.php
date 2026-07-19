@@ -66,7 +66,7 @@
     </style>
 </head>
 <body>
-    @include('cms::web.fallback.activities.default.vertical-menu')
+    @include('home-v2.components.VerticalMenu')
     @include('home-v2.components.Header')
     @include('cms::web.fallback.partials.landing-cms-header')
 

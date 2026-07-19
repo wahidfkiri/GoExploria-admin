@@ -1,7 +1,14 @@
 @php
-    $cmsHeaderHtml = isset($etablissement) && function_exists('get_cms_header_html')
-        ? trim((string) get_cms_header_html($etablissement->id))
-        : '';
+    // $forceCmsHeaderFooter (optionnel) : rend le header d'établissement même si le
+    // toggle header_enabled est désactivé (utilisé par les pages CMS autonomes).
+    $cmsHeaderHtml = '';
+    if (isset($etablissement)) {
+        if (($forceCmsHeaderFooter ?? false) && function_exists('get_cms_header_footer_html')) {
+            $cmsHeaderHtml = trim((string) get_cms_header_footer_html($etablissement->id, \Vendor\Cms\Models\HeaderFooter::TYPE_HEADER));
+        } elseif (function_exists('get_cms_header_html')) {
+            $cmsHeaderHtml = trim((string) get_cms_header_html($etablissement->id));
+        }
+    }
 @endphp
 
 @if($cmsHeaderHtml !== '')

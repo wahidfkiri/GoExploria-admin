@@ -127,23 +127,46 @@ class WebThemeController extends Controller
     {
         $etablissement = Etablissement::findOrFail($etablissementId);
         $this->etablissement = $etablissement;
-        
-        $theme = $this->getThemeToUse();
-        
-        if (!$theme) {
-            return $this->renderNoThemeLanding('Aucun thème actif ou installé pour cet établissement.');
-        }
-        
+
         $page = Page::where('etablissement_id', $this->etablissement->id)
             ->where('slug', $slug)
             ->where('status', 'published')
             ->first();
-        
+
         if (!$page) {
             abort(404, 'Page non trouvée');
         }
-        
-        return $this->renderTheme($theme, $page);
+
+        $theme = $this->getThemeToUse();
+
+        // Établissement sur thème classique (cms_themes) : rendu via le thème disque.
+        if ($theme) {
+            return $this->renderTheme($theme, $page);
+        }
+
+        // Établissement sur templates CMS (pas de cms_theme, ex. éditeur GrapesJS/VvvebJS) :
+        // afficher le contenu enregistré de la page, enveloppé du header/footer du template.
+        return $this->renderCmsPageFallback($page);
+    }
+
+    /**
+     * Rendu de repli d'une page CMS pour les établissements qui utilisent les
+     * templates (aucun cms_theme actif) : affiche le contenu éditeur ($page->content)
+     * entouré des régions header/footer configurées (cms_header_footers).
+     */
+    protected function renderCmsPageFallback(Page $page)
+    {
+        $content = (string) ($page->content ?? '');
+        if (method_exists($this, 'injectDynamicContent')) {
+            $content = $this->injectDynamicContent($content);
+        }
+
+        return view('cms::web.fallback.cms-page', [
+            'etablissement' => $this->etablissement,
+            'page' => $page,
+            'content' => $content,
+            'brandLogoUrl' => function_exists('get_logo_url') ? get_logo_url($this->etablissement->id) : null,
+        ]);
     }
 
     /**
@@ -1123,13 +1146,8 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
      */
     protected function selectLandingEtablissementTemplate(Collection $templates): ?EtablissementTemplate
     {
-        if ($templates->isEmpty()) {
-            return null;
-        }
-
-        return $templates->first(function (EtablissementTemplate $template) {
-            return $this->matchLandingViewForTemplateCategory((string) ($template->template?->category ?? '')) !== null;
-        }) ?: $templates->first();
+        // Landing unique : on prend simplement le premier template actif.
+        return $templates->first();
     }
 
     /**
@@ -1922,504 +1940,9 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
      */
     protected function resolveTemplateLandingView(?EtablissementTemplate $etablissementTemplate): string
     {
-        if (!$etablissementTemplate) {
-            return 'cms::web.fallback.landing-activity';
-        }
-
-        $view = $this->matchLandingViewForTemplateCategory((string) ($etablissementTemplate->template?->category ?? ''));
-
-        return $view ?: 'cms::web.fallback.landing-activity';
-    }
-
-    protected function matchLandingViewForTemplateCategory(string $category): ?string
-    {
-        $normalized = $this->normalizeTemplateCategory($category);
-
-        if ($normalized === '') {
-            return null;
-        }
-
-        $categoryViews = [
-            'association' => 'cms::web.fallback.landing-activity',
-            'agroalimentaire' => 'cms::web.fallback.landing-commerce-alimentaire',
-            'automobile' => 'cms::web.fallback.landing-location-vehicule',
-            'blog' => 'cms::web.fallback.landing-next-level',
-            'ecommerce' => 'cms::web.fallback.landing-commerce-alimentaire',
-            'e commerce' => 'cms::web.fallback.landing-commerce-alimentaire',
-            'education' => 'cms::web.fallback.landing-activity',
-            'evenement' => 'cms::web.fallback.landing-activity',
-            'general' => 'cms::web.fallback.landing-activity',
-            'hotel' => 'cms::web.fallback.landing-activity',
-            'immoblier' => 'cms::web.fallback.landing-immoblier',
-            'immobilier' => 'cms::web.fallback.landing-immoblier',
-            'industrie' => 'cms::web.fallback.landing-boids',
-            'landing page' => 'cms::web.fallback.landing-next-level',
-            'health' => 'cms::web.fallback.landing-sante',
-            'medical' => 'cms::web.fallback.landing-sante',
-            'sante' => 'cms::web.fallback.landing-sante',
-            'sante & bien etre' => 'cms::web.fallback.landing-sante',
-            'sante bien etre' => 'cms::web.fallback.landing-sante',
-            'sante et bien etre' => 'cms::web.fallback.landing-sante',
-            'next level' => 'cms::web.fallback.landing-next-level',
-            'place immoblier' => 'cms::web.fallback.landing-immobilier-construction',
-            'place immobilier' => 'cms::web.fallback.landing-immobilier-construction',
-            'portfolio' => 'cms::web.fallback.landing-next-level',
-            'restaurant' => 'cms::web.fallback.landing-commerce-alimentaire',
-            'saas' => 'cms::web.fallback.landing-next-level',
-            'services' => 'cms::web.fallback.landing-next-level',
-            'tourisme' => 'cms::web.fallback.landing-tourisme',
-            'travel tourism' => 'cms::web.fallback.landing-tourisme',
-            'travel and tourism' => 'cms::web.fallback.landing-tourisme',
-            'voyage' => 'cms::web.fallback.landing-tourisme',
-            'wellness' => 'cms::web.fallback.landing-sante',
-        ];
-
-        return $categoryViews[$normalized] ?? null;
-    }
-
-    protected function normalizeTemplateCategory(string $category): string
-    {
-        $normalized = \Illuminate\Support\Str::ascii(trim($category));
-        $normalized = mb_strtolower($normalized, 'UTF-8');
-        $normalized = str_replace(['-', '_'], ' ', $normalized);
-        $normalized = preg_replace('/\s+/', ' ', $normalized) ?: '';
-
-        return trim($normalized);
-    }
-
-    /**
-     * Resolve the fallback landing with business priority:
-     * other_activity_label first, primary_activity_id second, then attached activities.
-     */
-    protected function resolveNoThemeLandingView(Collection $activities): string
-    {
-        foreach ($this->getPrioritizedActivityLabels($activities) as $label) {
-            $view = $this->matchLandingViewForActivityLabel($label);
-            if ($view) {
-                return $view;
-            }
-        }
-
-        return 'cms::web.fallback.landing-activity';
-    }
-
-    protected function getPrioritizedActivityLabels(Collection $activities): Collection
-    {
-        $labels = collect();
-        $otherActivity = trim((string) ($this->etablissement->other_activity_label ?? ''));
-
-        if ($otherActivity !== '') {
-            $labels->push($otherActivity);
-        }
-
-        $primaryActivityId = $this->etablissement->primary_activity_id ?? null;
-        $primaryActivity = null;
-
-        if ($primaryActivityId) {
-            $primaryActivity = $activities->firstWhere('id', $primaryActivityId);
-
-            if (!$primaryActivity) {
-                try {
-                    $primaryActivity = Activity::query()
-                        ->whereKey($primaryActivityId)
-                        ->where('is_active', true)
-                        ->first(['id', 'name']);
-                } catch (\Throwable $e) {
-                    $primaryActivity = null;
-                }
-            }
-
-            if ($primaryActivity && trim((string) ($primaryActivity->name ?? '')) !== '') {
-                $labels->push((string) $primaryActivity->name);
-            }
-        }
-
-        $activities
-            ->reject(fn ($activity) => $primaryActivityId && (int) ($activity->id ?? 0) === (int) $primaryActivityId)
-            ->pluck('name')
-            ->filter(fn ($name) => trim((string) $name) !== '')
-            ->each(fn ($name) => $labels->push((string) $name));
-
-        return $labels
-            ->map(fn ($label) => trim((string) $label))
-            ->filter()
-            ->unique(fn ($label) => mb_strtolower(\Illuminate\Support\Str::ascii($label), 'UTF-8'))
-            ->values();
-    }
-
-    protected function matchLandingViewForActivityLabel(string $label): ?string
-    {
-        $landingKeywords = [
-            'cms::web.fallback.landing-boids' => [
-                'boids', 'bois', 'wood', 'scierie', 'moulin', 'sciage', 'lumber', 'timber',
-            ],
-            'cms::web.fallback.landing-next-level' => [
-                'next level', 'go exploria next', 'next-level', 'aventure next', 'voyage aventure',
-                'trekking', 'exploration', 'expedition voyage',
-            ],
-            'cms::web.fallback.landing-tourisme' => [
-                'tourisme', 'voyage', 'voyages', 'travel tourism', 'travel and tourism',
-                'travel & tourism', 'destination', 'destinations', 'agence voyage',
-                'agence de voyage',
-            ],
-            'cms::web.fallback.landing-sante' => [
-                'sante', 'santé', 'sante bien etre', 'santé bien etre',
-                'sante et bien etre', 'santé et bien etre', 'sante & bien etre',
-                'santé & bien-être', 'bien etre', 'bien-être', 'medical', 'médical',
-                'medecin', 'médecin', 'cabinet medical', 'cabinet médical', 'clinique',
-                'centre de sante', 'centre de santé', 'soins', 'therapie', 'thérapie',
-                'wellness', 'health',
-            ],
-            'cms::web.fallback.landing-immoblier' => [
-                'immoblier', 'appartement', 'appartements', 'logement', 'logements',
-                'location appartement', 'location residentielle', 'immeuble locatif',
-                'immeubles locatifs', 'residence', 'condo', 'condos', 'place des cerisiers',
-            ],
-            'cms::web.fallback.landing-immobilier-construction' => [
-                'immobilier', 'immo', 'construction', 'constructeur', 'habitation',
-                'maison', 'chalet', 'residentiel', 'résidentiel',
-            ],
-            'cms::web.fallback.landing-commerce-alimentaire' => [
-                'commerce alimentaire', 'alimentaire', 'alimentation', 'epicerie', 'épicerie',
-                'marche', 'marché', 'supermarche', 'supermarché', 'poissonnerie', 'boucherie',
-                'fromagerie', 'boulangerie', 'patisserie', 'pâtisserie', 'terroir',
-                'traiteur', 'gourmet', 'fine food', 'restaurant', 'restaurants', 'restauration',
-                'cafe', 'café', 'bar', 'brasserie', 'bistro', 'cuisine', 'table gastronomique', 'gastronomie',
-            ],
-            'cms::web.fallback.landing-location-vehicule' => [
-                'location vehicule', 'location véhicule', 'location véhicules',
-                'location de vehicule', 'location de véhicule', 'location de vehicules',
-                'location de véhicules', 'location des vehicules', 'location des véhicules',
-                'location voiture', 'location de voiture', 'location voitures',
-                'location de voitures', 'location auto', 'location automobile',
-                'rent a car', 'car rental', 'vehicule rental', 'véhicule rental',
-            ],
-            'cms::web.fallback.landing-espace-forfait' => [
-                'espace forfait', 'forfait', 'forfaits', 'package', 'packages',
-                'circuit', 'expedition', 'expédition', 'location', 'motoneige',
-                'quad', 'vtt', 'cote-a-cote', 'côte-à-côte', 'cote à cote',
-                'ssv', 'aventure',
-            ],
-        ];
-
-        foreach ($landingKeywords as $view => $keywords) {
-            if ($this->activityLabelContainsAny($label, $keywords)) {
-                return $view;
-            }
-        }
-
-        return null;
-    }
-
-    protected function activityLabelContainsAny(string $label, array $keywords): bool
-    {
-        $haystack = mb_strtolower($label, 'UTF-8');
-        $asciiHaystack = mb_strtolower(\Illuminate\Support\Str::ascii($label), 'UTF-8');
-
-        foreach ($keywords as $keyword) {
-            $needle = mb_strtolower((string) $keyword, 'UTF-8');
-            $asciiNeedle = mb_strtolower(\Illuminate\Support\Str::ascii((string) $keyword), 'UTF-8');
-
-            if (str_contains($haystack, $needle) || str_contains($asciiHaystack, $asciiNeedle)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Detect if the establishment should use the custom "Boids/Bois" fallback landing.
-     */
-    protected function shouldUseBoidsFallback(Collection $activities): bool
-    {
-        $haystack = $activities
-            ->pluck('name')
-            ->filter()
-            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
-            ->implode(' ');
-
-        if ($haystack === '') {
-            $haystack = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
-        }
-
-        $keywords = [
-            'boids',
-            'bois',
-            'wood',
-            'scierie',
-            'moulin',
-            'sciage',
-            'lumber',
-            'timber',
-        ];
-
-        foreach ($keywords as $keyword) {
-            if (str_contains($haystack, $keyword)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Detect if the establishment should use the apartment/rental immobilier fallback.
-     *
-     * The misspelled "Immoblier" label is kept intentionally because it is the
-     * requested activity name in the CMS.
-     */
-    protected function shouldUseImmoblierFallback(Collection $activities): bool
-    {
-        $haystack = $activities
-            ->pluck('name')
-            ->filter()
-            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
-            ->implode(' ');
-
-        $otherActivity = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
-        $haystack = trim($haystack . ' ' . $otherActivity);
-
-        if ($haystack === '') {
-            return false;
-        }
-
-        $keywords = [
-            'immoblier',
-            'appartement',
-            'appartements',
-            'logement',
-            'logements',
-            'location appartement',
-            'location residentielle',
-            'immeuble locatif',
-            'immeubles locatifs',
-            'residence',
-            'condo',
-            'condos',
-            'place des cerisiers',
-        ];
-
-        foreach ($keywords as $keyword) {
-            if (str_contains($haystack, $keyword)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Detect if the establishment should use the "Next Level" adventure fallback.
-     */
-    protected function shouldUseNextLevelFallback(Collection $activities): bool
-    {
-        $haystack = $activities
-            ->pluck('name')
-            ->filter()
-            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
-            ->implode(' ');
-
-        $otherActivity = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
-        $haystack = trim($haystack . ' ' . $otherActivity);
-
-        if ($haystack === '') {
-            return false;
-        }
-
-        $keywords = [
-            'next level',
-            'go exploria next',
-            'next-level',
-            'aventure next',
-            'voyage aventure',
-            'trekking',
-            'exploration',
-            'expedition voyage',
-        ];
-
-        foreach ($keywords as $keyword) {
-            if (str_contains($haystack, $keyword)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Detect if the establishment should use the "immobilier & construction" fallback landing.
-     */
-    protected function shouldUseImmobilierConstructionFallback(Collection $activities): bool
-    {
-        $haystack = $activities
-            ->pluck('name')
-            ->filter()
-            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
-            ->implode(' ');
-
-        if ($haystack === '') {
-            $haystack = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
-        }
-
-        $keywords = [
-            'immobilier',
-            'immo',
-            'construction',
-            'constructeur',
-            'habitation',
-            'maison',
-            'chalet',
-            'résidentiel',
-            'residentiel',
-        ];
-
-        foreach ($keywords as $keyword) {
-            if (str_contains($haystack, $keyword)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Detect if the establishment should use the "commerce alimentaire" fallback landing.
-     */
-    protected function shouldUseCommerceAlimentaireFallback(Collection $activities): bool
-    {
-        $haystack = $activities
-            ->pluck('name')
-            ->filter()
-            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
-            ->implode(' ');
-
-        if ($haystack === '') {
-            $haystack = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
-        }
-
-        $keywords = [
-            'commerce alimentaire',
-            'alimentaire',
-            'alimentation',
-            'epicerie',
-            'épicerie',
-            'marche',
-            'marché',
-            'supermarche',
-            'supermarché',
-            'poissonnerie',
-            'boucherie',
-            'fromagerie',
-            'boulangerie',
-            'patisserie',
-            'pâtisserie',
-            'terroir',
-            'traiteur',
-            'gourmet',
-            'fine food',
-        ];
-
-        foreach ($keywords as $keyword) {
-            if (str_contains($haystack, $keyword)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Detect if the establishment should use the vehicle rental fallback landing.
-     */
-    protected function shouldUseLocationVehiculeFallback(Collection $activities): bool
-    {
-        $haystack = $activities
-            ->pluck('name')
-            ->filter()
-            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
-            ->implode(' ');
-
-        $otherActivity = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
-        $haystack = trim($haystack . ' ' . $otherActivity);
-
-        if ($haystack === '') {
-            return false;
-        }
-
-        $keywords = [
-            'location vehicule',
-            'location véhicule',
-            'location véhicules',
-            'location de vehicule',
-            'location de véhicule',
-            'location de vehicules',
-            'location de véhicules',
-            'location des vehicules',
-            'location des véhicules',
-            'location voiture',
-            'location de voiture',
-            'location voitures',
-            'location de voitures',
-            'location auto',
-            'location automobile',
-            'rent a car',
-            'car rental',
-            'vehicule rental',
-            'véhicule rental',
-        ];
-
-        foreach ($keywords as $keyword) {
-            if (str_contains($haystack, $keyword)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Detect if the establishment should use the "Espace Forfait" fallback landing.
-     */
-    protected function shouldUseEspaceForfaitFallback(Collection $activities): bool
-    {
-        $haystack = $activities
-            ->pluck('name')
-            ->filter()
-            ->map(fn ($name) => mb_strtolower((string) $name, 'UTF-8'))
-            ->implode(' ');
-
-        if ($haystack === '') {
-            $haystack = mb_strtolower((string) ($this->etablissement->other_activity_label ?? ''), 'UTF-8');
-        }
-
-        $keywords = [
-            'espace forfait',
-            'forfait',
-            'forfaits',
-            'package',
-            'packages',
-            'circuit',
-            'expedition',
-            'expédition',
-            'location',
-            'motoneige',
-            'quad',
-            'vtt',
-            'côte-à-côte',
-            'cote-a-cote',
-            'cote à cote',
-            'ssv',
-            'aventure',
-        ];
-
-        foreach ($keywords as $keyword) {
-            if (str_contains($haystack, $keyword)) {
-                return true;
-            }
-        }
-
-        return false;
+        // Landing UNIQUE : plus de sélection par catégorie de template.
+        // Tous les établissements utilisent la même landing générique.
+        return 'cms::web.fallback.landing';
     }
 
     /**
