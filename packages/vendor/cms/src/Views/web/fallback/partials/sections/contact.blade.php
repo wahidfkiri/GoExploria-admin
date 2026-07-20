@@ -1,15 +1,34 @@
-{{-- Section Contact (formulaire statique → enregistré en base via AJAX + infos établissement) --}}
+{{-- Section Contact — pilotée par la config CMS (admin → « Configuration du
+     formulaire de contact »). Mêmes champs/labels/couleurs/required que le
+     widget modal. Envoi AJAX mutualisé (data-cms-contact-form) → contacts CMS. --}}
 @php
-    $contactTitle = function_exists('get_contact_form_title') ? get_contact_form_title($etablissement->id, 'Nous contacter') : 'Nous contacter';
+    $cfg   = \Vendor\Cms\Support\ContactFormConfig::for($etablissement ?? null);
+    $cfgF  = $cfg['fields'] ?? [];
 @endphp
+
+@once
+<style>
+    .lp-contact-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+    .lp-contact-form .lp-field { grid-column: 1 / -1; }
+    .lp-contact-form .lp-field--half { grid-column: auto; }
+    .lp-contact-form .lp-submit { grid-column: 1 / -1; }
+    .lp-contact-form .lp-req { color: #ef4444; }
+    .lp-contact-form .lp-check { display: flex; align-items: flex-start; gap: 9px; font-weight: 500; cursor: pointer; }
+    .lp-contact-form .lp-check input { margin-top: 4px; }
+    @media (max-width: 640px) { .lp-contact-form { grid-template-columns: 1fr; } }
+</style>
+@endonce
+
 <section class="lp-section alt" id="contact">
     <div class="container">
         <div class="lp-head">
             <div>
                 <div class="lp-kicker">Contact</div>
-                <h2 class="lp-title">{{ $contactTitle }}</h2>
+                <h2 class="lp-title" style="color:{{ $cfg['title_color'] }};">{{ $cfg['title'] }}</h2>
             </div>
-            <p class="lp-sub">Envoyez votre demande directement à l'établissement. Le message est enregistré dans les contacts CMS.</p>
+            @if(($cfg['subtitle'] ?? '') !== '')
+                <p class="lp-sub" style="color:{{ $cfg['subtitle_color'] }};">{{ $cfg['subtitle'] }}</p>
+            @endif
         </div>
         <div class="lp-contact-grid">
             <aside class="lp-info">
@@ -40,18 +59,50 @@
                     </div>
                 @endif
             </aside>
-            <form class="lp-form" method="POST" action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}" data-cms-contact-form data-cms-form-name="landing">
+
+            <form class="lp-form lp-contact-form"
+                  method="POST"
+                  enctype="multipart/form-data"
+                  action="{{ route('cms.company.contact.send', ['etablissementId' => $etablissement->id]) }}"
+                  data-cms-contact-form
+                  data-cms-form-name="landing"
+                  data-loading-text="Envoi en cours...">
                 @csrf
-                <div class="lp-form-row">
-                    <div class="lp-field"><label>Prénom</label><input name="first_name" type="text" required></div>
-                    <div class="lp-field"><label>Nom</label><input name="last_name" type="text"></div>
-                </div>
-                <div class="lp-form-row">
-                    <div class="lp-field"><label>Courriel</label><input name="email" type="email" required></div>
-                    <div class="lp-field"><label>Téléphone</label><input name="phone" type="tel"></div>
-                </div>
-                <div class="lp-field"><label>Message</label><textarea name="message" required placeholder="Votre message…"></textarea></div>
-                <button class="lp-submit" type="submit">Envoyer la demande <i class="fa-solid fa-paper-plane"></i></button>
+
+                @foreach($cfgF as $key => $f)
+                    @continue(empty($f['enabled']))
+                    @php
+                        $type = $f['type'] ?? 'text';
+                        $isCheckbox = $type === 'checkbox';
+                        $isTextarea = $type === 'textarea';
+                        $half = !empty($f['half']) && !$isCheckbox && !$isTextarea;
+                        $label = $f['label'] ?? '';
+                        $required = !empty($f['required']);
+                        $placeholder = (string) ($f['placeholder'] ?? '');
+                        $default = (string) ($f['default'] ?? '');
+                    @endphp
+
+                    @if($isCheckbox)
+                        <div class="lp-field">
+                            <label class="lp-check">
+                                <input type="checkbox" name="{{ $key }}" value="1" @if($required) required @endif>
+                                <span>{{ $label }}</span>
+                            </label>
+                        </div>
+                    @elseif($isTextarea)
+                        <div class="lp-field">
+                            <label>{{ $label }} @if($required)<span class="lp-req">*</span>@endif</label>
+                            <textarea name="{{ $key }}" placeholder="{{ $placeholder }}" @if($required) required @endif>{{ $default }}</textarea>
+                        </div>
+                    @else
+                        <div class="lp-field {{ $half ? 'lp-field--half' : '' }}">
+                            <label>{{ $label }} @if($required)<span class="lp-req">*</span>@endif</label>
+                            <input type="{{ $type }}" name="{{ $key }}" placeholder="{{ $placeholder }}" value="{{ $default }}" @if($required) required @endif>
+                        </div>
+                    @endif
+                @endforeach
+
+                <button class="lp-submit" type="submit">{{ $cfg['submit_label'] ?? 'Envoyer la demande' }} <i class="fa-solid fa-paper-plane"></i></button>
             </form>
         </div>
     </div>

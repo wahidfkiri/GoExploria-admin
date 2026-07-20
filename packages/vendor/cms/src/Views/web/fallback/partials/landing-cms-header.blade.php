@@ -42,6 +42,7 @@
 
         <script>
             (function () {
+                window.__cmsHFscriptRan = true;
                 let ticking = false;
 
                 function updateCmsEstablishmentHeader() {
@@ -67,11 +68,15 @@
                     window.requestAnimationFrame(updateCmsEstablishmentHeader);
                 }
 
-                document.addEventListener('DOMContentLoaded', function () {
-                    requestHeaderUpdate();
+                function bootCmsHeaderSizing() {
+                    window.__cmsHFbootRan = true;
+                    // Appel DIRECT (pas via requestAnimationFrame) : rAF est suspendu pour un
+                    // onglet non-visible, ce qui laissait l'offset bloqué à 0. Les calculs
+                    // ponctuels (boot/load/resize/observer) doivent donc être synchrones.
+                    updateCmsEstablishmentHeader();
 
                     if ('ResizeObserver' in window) {
-                        const observer = new ResizeObserver(requestHeaderUpdate);
+                        const observer = new ResizeObserver(updateCmsEstablishmentHeader);
                         const globalHeader = document.querySelector('.header-v2');
                         if (globalHeader) {
                             observer.observe(globalHeader);
@@ -81,10 +86,25 @@
                             observer.observe(header);
                         });
                     }
-                });
 
-                window.addEventListener('load', requestHeaderUpdate);
-                window.addEventListener('resize', requestHeaderUpdate);
+                    // Filet de sécurité : quelques passes après le boot (polices / layout tardifs).
+                    let passes = 0;
+                    const iv = setInterval(function () {
+                        updateCmsEstablishmentHeader();
+                        if (++passes >= 12) clearInterval(iv);
+                    }, 150);
+                }
+
+                // Exécute immédiatement si le DOM est déjà prêt (script parsé/injecté après
+                // DOMContentLoaded) — corrige le cas où l'offset restait bloqué à 0.
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', bootCmsHeaderSizing);
+                } else {
+                    bootCmsHeaderSizing();
+                }
+
+                window.addEventListener('load', updateCmsEstablishmentHeader);
+                window.addEventListener('resize', updateCmsEstablishmentHeader);
                 window.addEventListener('scroll', requestHeaderUpdate, { passive: true });
             })();
         </script>
@@ -97,6 +117,22 @@
             /* (b) Le header CMS reste SOUS le header global (10060) et ne
                couvre jamais le burger global. */
             .cms-establishment-header-fixed { z-index: 9990; }
+
+            /* (b2) Le CONTENU du header d'établissement ne doit pas se positionner
+               lui-même (position:fixed/sticky + top/z-index) : sinon il s'échappe
+               du shell et se colle en haut, DERRIÈRE le header global. Le shell
+               (.cms-establishment-header-fixed) gère déjà le placement fixe sous
+               le header global ; le contenu doit simplement s'y insérer en flux. */
+            .cms-establishment-header-fixed > * {
+                position: static !important;
+                top: auto !important;
+                bottom: auto !important;
+                left: auto !important;
+                right: auto !important;
+                z-index: auto !important;
+                width: 100% !important;
+                box-sizing: border-box;
+            }
 
             /* (c) Repli mobile pour le menu du header CMS : sa navigation est
                masquée par défaut et révélée quand notre burger est activé.
