@@ -66,8 +66,16 @@
     </style>
 </head>
 <body>
-    @include('home-v2.components.VerticalMenu')
-    @include('home-v2.components.Header')
+    @php
+        // Site CMS d'établissement : on n'affiche que SON header. Le chrome global
+        // ne sert que de repli si aucun header d'établissement n'est défini.
+        $cmsHasEtabHeader = function_exists('get_cms_header_html')
+            && trim((string) get_cms_header_html($etablissement->id)) !== '';
+    @endphp
+    @unless($cmsHasEtabHeader)
+        @include('home-v2.components.VerticalMenu')
+        @include('home-v2.components.Header')
+    @endunless
     @include('cms::web.fallback.partials.landing-cms-header')
 
     <header class="cms-blog-detail-hero">

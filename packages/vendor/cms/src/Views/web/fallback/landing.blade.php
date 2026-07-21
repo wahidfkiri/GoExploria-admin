@@ -96,6 +96,15 @@
     }
 
     $blogCards = collect($blogPosts ?? [])->filter(fn ($post) => trim((string) data_get($post, 'title')) !== '')->take(3)->values();
+
+    // Le site CMS d'un établissement affiche SON header (issu du template) et non
+    // celui de la plateforme. Le chrome global n'est rendu qu'en repli, lorsque
+    // l'établissement n'a pas encore défini son propre header — sinon la page se
+    // retrouverait sans aucune navigation.
+    $cmsEtabHeaderHtml = function_exists('get_cms_header_html')
+        ? trim((string) get_cms_header_html($etablissement->id))
+        : '';
+    $cmsHasEtabHeader = $cmsEtabHeaderHtml !== '';
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -138,8 +147,11 @@
 </head>
 <body>
     {{-- Chrome global de la plateforme --}}
-    @include('home-v2.components.VerticalMenu')
-    @include('home-v2.components.Header')
+    {{-- Chrome global : uniquement si l'établissement n'a pas son propre header. --}}
+    @unless($cmsHasEtabHeader)
+        @include('home-v2.components.VerticalMenu')
+        @include('home-v2.components.Header')
+    @endunless
 
     {{-- Header propre à l'établissement (cms_header_footers) --}}
     @include('cms::web.fallback.partials.landing-cms-header')
@@ -172,6 +184,8 @@
     @include('cms::web.fallback.partials.landing-cart-drawer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 
+    {{-- Swiper : hero-sliders des templates/sections CMS. --}}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="{{ asset('js/home-v2/menu-api-service.js') }}"></script>
     <script src="{{ asset('js/home-v2/vertical-menu-dynamic.js') }}"></script>
     <script src="{{ asset('js/home-v2/vertical-menu.js') }}"></script>
