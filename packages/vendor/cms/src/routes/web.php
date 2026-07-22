@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Vendor\Cms\Controllers\Web\PublicPageController;
+use Vendor\Cms\Controllers\Web\GalleryController;
 use Vendor\Cms\Controllers\Web\WebThemeController;
 
 /*
@@ -102,6 +103,11 @@ Route::prefix('api/cms')->middleware(['web'])->group(function () {
         Route::get('/pages', [PublicPageController::class, 'getPagesApi'])->name('pages');
         Route::get('/pages/{slug}', [PublicPageController::class, 'getPageApi'])->name('page');
         Route::get('/search', [PublicPageController::class, 'searchApi'])->name('search');
+
+        // Galeries photos/videos filtrables (Lot 2/5).
+        Route::get('/galleries/media', [GalleryController::class, 'media'])->name('galleries.media');
+        Route::get('/galleries/filters', [GalleryController::class, 'filters'])->name('galleries.filters');
+
         Route::post('/newsletter/subscribe', [PublicPageController::class, 'subscribeApi'])->name('newsletter.subscribe');
         Route::post('/contact', [PublicPageController::class, 'contactApi'])->name('contact');
     });

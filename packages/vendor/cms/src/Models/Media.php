@@ -47,6 +47,7 @@ class Media extends Model
         'region_id',
         'ville_id',
         'secteur_id',
+        'destination_id',
         'is_slider',
         'is_main_gallery',
         'is_facebook_gallery',
@@ -317,5 +318,96 @@ class Media extends Model
         }
         
         return '#6c757d';
+    }
+
+    /* ==================================================================
+     |  Galeries : taxonomie de filtrage (destination / activites / categories)
+     |  cms_media (base « cms ») vs referentiels (base applicative) : aucune
+     |  jointure inter-bases. Pivots interroges sur la connexion « cms »,
+     |  libelles resolus ailleurs. Voir le controleur GalleryController.
+     |==================================================================*/
+
+    public const PIVOT_ACTIVITE  = 'cms_media_activite';
+    public const PIVOT_CATEGORIE = 'cms_media_categorie';
+
+    public function activiteIds(): array
+    {
+        return static::pivotIdsFor([$this->id], self::PIVOT_ACTIVITE, 'activite_id')[$this->id] ?? [];
+    }
+
+    public function categorieIds(): array
+    {
+        return static::pivotIdsFor([$this->id], self::PIVOT_CATEGORIE, 'categorie_id')[$this->id] ?? [];
+    }
+
+    public static function pivotIdsFor(array $mediaIds, string $pivot, string $column): array
+    {
+        $mediaIds = array_values(array_filter(array_map('intval', $mediaIds)));
+        if (empty($mediaIds)) {
+            return [];
+        }
+        $rows = static::query()->getConnection()->table($pivot)
+            ->whereIn('media_id', $mediaIds)->get(['media_id', $column]);
+        $out = [];
+        foreach ($rows as $row) {
+            $out[(int) $row->media_id][] = (int) $row->{$column};
+        }
+        return $out;
+    }
+
+    public function syncPivot(string $pivot, string $column, array $ids): void
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids))));
+        $conn = static::query()->getConnection();
+        $conn->transaction(function () use ($conn, $pivot, $column, $ids) {
+            $conn->table($pivot)->where('media_id', $this->id)->delete();
+            if (empty($ids)) {
+                return;
+            }
+            $now = now();
+            $conn->table($pivot)->insert(array_map(fn ($id) => [
+                'media_id' => $this->id, $column => $id, 'created_at' => $now, 'updated_at' => $now,
+            ], $ids));
+        });
+    }
+
+    public function syncActivites(array $ids): void
+    {
+        $this->syncPivot(self::PIVOT_ACTIVITE, 'activite_id', $ids);
+    }
+
+    public function syncCategories(array $ids): void
+    {
+        $this->syncPivot(self::PIVOT_CATEGORIE, 'categorie_id', $ids);
+    }
+
+    public function scopeGalleryFilter($query, array $filters)
+    {
+        if (!empty($filters['type'])) {
+            $query->where('type', $filters['type']);
+        }
+        if (!empty($filters['destination_id'])) {
+            $query->where('destination_id', (int) $filters['destination_id']);
+        }
+        foreach ([
+            'activite_id'  => self::PIVOT_ACTIVITE,
+            'categorie_id' => self::PIVOT_CATEGORIE,
+        ] as $column => $pivot) {
+            if (empty($filters[$column])) {
+                continue;
+            }
+            $ids = (array) $filters[$column];
+            $query->whereIn('id', function ($sub) use ($pivot, $column, $ids) {
+                $sub->from($pivot)->select('media_id')->whereIn($column, $ids);
+            });
+        }
+        if (!empty($filters['q'])) {
+            $term = '%' . $filters['q'] . '%';
+            $query->where(function ($sub) use ($term) {
+                $sub->where('title', 'like', $term)->orWhere('name', 'like', $term)
+                    ->orWhere('description', 'like', $term)->orWhere('alt', 'like', $term);
+            });
+        }
+        return $query;
     }
 }

@@ -524,6 +524,7 @@
         </div>
 
         @if($destinationContext)
+            {{-- Même carte que la page destination (/travel-destination/continent/…) --}}
             @include('geo-map::index')
         @endif
 

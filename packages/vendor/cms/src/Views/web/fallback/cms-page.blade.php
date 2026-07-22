@@ -49,5 +49,7 @@
     @include('cms::web.fallback.partials.landing-cms-footer', ['forceCmsHeaderFooter' => true])
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @include('cms::web.fallback.partials.gx-galleries')
+    @include('cms::web.fallback.partials.gx-announcements')
 </body>
 </html>

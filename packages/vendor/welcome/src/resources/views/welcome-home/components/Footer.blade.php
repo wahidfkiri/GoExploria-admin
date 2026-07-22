@@ -35,7 +35,7 @@
                 {{-- Column 1: Logo & About --}}
                 <div class="footer-v2-column footer-v2-brand">
                     <a href="#" class="footer-v2-logo">
-                        <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}" class="footer-v2-logo-img">
+                        <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}" class="footer-v2-logo-img" loading="lazy" decoding="async">
                         <div class="footer-v2-logo-text">
                             <div class="footer-v2-logo-name">{{ __('home-v2.brand.name_upper') }}</div>
                             <div class="footer-v2-logo-location">{{ __('home-v2.brand.location') }}</div>
