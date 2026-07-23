@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
   <link rel="stylesheet" href="{{ asset('vendor/travel-destination/css/travel-destination.css') }}" />
 </head>
 <body>
@@ -739,6 +741,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="{{ asset('vendor/travel-destination/js/travel-destination.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -897,7 +900,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }).addTo(map).bindPopup('<strong>' + entityName + '</strong>');
   }
 
-  var markersLayer = L.layerGroup().addTo(map);
+  // Regroupement des markers en grappes « +N » : le clic sur une grappe
+  // zoome automatiquement sur la zone pour révéler les points individuels.
+  function makeMapClusterLayer() {
+    if (typeof L.markerClusterGroup !== 'function') return L.layerGroup();
+    return L.markerClusterGroup({
+      showCoverageOnHover: false,
+      maxClusterRadius: 60,
+      spiderfyOnMaxZoom: true,
+      zoomToBoundsOnClick: true,
+      iconCreateFunction: function (cluster) {
+        var n = cluster.getChildCount();
+        var size = n >= 50 ? 54 : (n >= 20 ? 48 : 42);
+        return L.divIcon({
+          html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:linear-gradient(135deg,#F5A623,#e08900);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:' + (n >= 100 ? 13 : 15) + 'px;border:3px solid #fff;box-shadow:0 3px 12px rgba(0,0,0,0.45);cursor:pointer">+' + n + '</div>',
+          className: 'marker-cluster-custom',
+          iconSize: [size, size],
+          iconAnchor: [size / 2, size / 2]
+        });
+      }
+    });
+  }
+  var markersLayer = makeMapClusterLayer().addTo(map);
 
   var pointsData = [];
   var currentPointsData = [];

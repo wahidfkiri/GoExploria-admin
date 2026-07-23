@@ -208,6 +208,29 @@
 document.addEventListener('DOMContentLoaded', function () {
     var mapEl = document.getElementById('taNaMapCanvas');
     if (!mapEl || typeof L === 'undefined') return;
+    taNaEnsureCluster(taNaInitMap);
+});
+
+// Charge le plugin Leaflet.markercluster (grappes « +N »), puis initialise la
+// carte. En cas d'echec du CDN, la carte s'initialise sans clustering.
+function taNaEnsureCluster(cb) {
+    if (typeof L.markerClusterGroup === 'function') return cb();
+    ['MarkerCluster.css', 'MarkerCluster.Default.css'].forEach(function (f) {
+        var l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/' + f;
+        document.head.appendChild(l);
+    });
+    var sc = document.createElement('script');
+    sc.src = 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js';
+    sc.onload = cb;
+    sc.onerror = cb;
+    document.head.appendChild(sc);
+}
+
+function taNaInitMap() {
+    var mapEl = document.getElementById('taNaMapCanvas');
+    if (!mapEl) return;
 
     @php
         $centerLat = is_numeric($naEntity->latitude) ? (float) $naEntity->latitude : null;
@@ -257,7 +280,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }).addTo(map).bindPopup('<strong>' + entityName + '</strong>');
     }
 
-    var markersLayer = L.layerGroup().addTo(map);
+    // Grappes « +N » : clic = zoom automatique sur la zone
+    function taNaMakeClusterLayer() {
+        if (typeof L.markerClusterGroup !== 'function') return L.layerGroup();
+        return L.markerClusterGroup({
+            showCoverageOnHover: false,
+            maxClusterRadius: 60,
+            spiderfyOnMaxZoom: true,
+            zoomToBoundsOnClick: true,
+            iconCreateFunction: function (cluster) {
+                var n = cluster.getChildCount();
+                var size = n >= 50 ? 54 : (n >= 20 ? 48 : 42);
+                return L.divIcon({
+                    html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:linear-gradient(135deg,#F5A623,#e08900);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:' + (n >= 100 ? 13 : 15) + 'px;border:3px solid #fff;box-shadow:0 3px 12px rgba(0,0,0,0.45);cursor:pointer">+' + n + '</div>',
+                    className: 'marker-cluster-custom',
+                    iconSize: [size, size],
+                    iconAnchor: [size / 2, size / 2]
+                });
+            }
+        });
+    }
+    var markersLayer = taNaMakeClusterLayer().addTo(map);
     var pointsData = [];
     var geoFilterActive = null;
     var geoFilterEntity = null;
@@ -529,6 +572,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (modal && modal.style.display === 'block') closePlaceModal();
         }
     });
-});
+}
 </script>
 @endisset

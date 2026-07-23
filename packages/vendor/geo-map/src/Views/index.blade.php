@@ -7,6 +7,8 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 <!-- Swiper CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
@@ -616,6 +618,7 @@
 <!-- Scripts -->
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
@@ -709,6 +712,28 @@ class InteractiveMap {
             maxZoom:19, detectRetina:true
         }).addTo(this.map);
         L.control.scale({imperial:false,metric:true}).addTo(this.map);
+
+        // Regroupement des markers en grappes « +N » : le clic sur une grappe
+        // zoome automatiquement sur la zone pour révéler les points individuels.
+        this.clusterGroup = (typeof L.markerClusterGroup === 'function')
+            ? L.markerClusterGroup({
+                showCoverageOnHover: false,
+                maxClusterRadius: 60,
+                spiderfyOnMaxZoom: true,
+                zoomToBoundsOnClick: true,
+                iconCreateFunction: (cluster) => {
+                    const n = cluster.getChildCount();
+                    const size = n >= 50 ? 54 : (n >= 20 ? 48 : 42);
+                    return L.divIcon({
+                        html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:${n >= 100 ? 13 : 15}px;border:3px solid #fff;box-shadow:0 3px 12px rgba(0,0,0,0.45);cursor:pointer">+${n}</div>`,
+                        className: 'marker-cluster-custom',
+                        iconSize: [size, size],
+                        iconAnchor: [size / 2, size / 2]
+                    });
+                }
+            })
+            : L.layerGroup();
+        this.map.addLayer(this.clusterGroup);
     }
 
     /* -- Filters -- */
@@ -808,7 +833,11 @@ class InteractiveMap {
     }
     addMarkersToMap() { this.clearMarkers(); this.places.forEach(p=>this.createMarker(p)); }
     clearMarkers() {
-        Object.values(this.markers).forEach(({marker})=>{ if(marker?.remove) marker.remove(); });
+        if (this.clusterGroup) {
+            this.clusterGroup.clearLayers();
+        } else {
+            Object.values(this.markers).forEach(({marker})=>{ if(marker?.remove) marker.remove(); });
+        }
         this.markers = {};
     }
     createMarker(place) {
@@ -819,7 +848,8 @@ class InteractiveMap {
             html:`<div class="marker-icon${featured ? ' marker-featured' : ''}" style="background:${this.getCategoryColor(place.category)};">${featured ? '<span class="marker-featured-star"><i class="fas fa-star"></i></span>' : ''}<i class="${this.getCategoryIcon(place.category)}"></i></div>`,
             iconSize:[40,40], iconAnchor:[20,40]
         });
-        const marker = L.marker([place.latitude,place.longitude],{icon,title:place.name,zIndexOffset:featured ? 1000 : 0}).addTo(this.map);
+        const marker = L.marker([place.latitude,place.longitude],{icon,title:place.name,zIndexOffset:featured ? 1000 : 0});
+        if (this.clusterGroup) { this.clusterGroup.addLayer(marker); } else { marker.addTo(this.map); }
         const popup  = L.popup({maxWidth:300,closeButton:true,autoClose:true,closeOnClick:false,offset:L.point(0,-45)})
                         .setContent(this.createPopupContent(place));
         let ht;
