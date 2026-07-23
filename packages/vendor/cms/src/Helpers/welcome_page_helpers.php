@@ -1501,6 +1501,7 @@ if (!function_exists('has_map_points')) {
 
         try {
             return \App\Models\MapPoint::active()
+                ->inDisplayPeriod()
                 ->where('etablissement_id', $etablissement->id)
                 ->exists();
         } catch (\Exception $e) {
@@ -1543,6 +1544,7 @@ if (!function_exists('get_map_points')) {
 
             $query = \App\Models\MapPoint::with($with)
                 ->active()
+                ->inDisplayPeriod()
                 ->where('etablissement_id', $etablissement->id)
                 ->orderBy('is_featured', 'desc')
                 ->orderBy('views', 'desc');
@@ -1653,6 +1655,7 @@ if (!function_exists('get_map_video_points')) {
 
             $query = \App\Models\MapPoint::with($relations)
                 ->active()
+                ->inDisplayPeriod()
                 ->where('etablissement_id', $etablissement->id)
                 ->whereNotNull('latitude')
                 ->whereNotNull('longitude')
@@ -1912,6 +1915,7 @@ if (!function_exists('get_map_center')) {
 
         try {
             $result = \App\Models\MapPoint::active()
+                ->inDisplayPeriod()
                 ->where('etablissement_id', $etablissement->id)
                 ->selectRaw('AVG(latitude) as avg_lat, AVG(longitude) as avg_lng')
                 ->first();

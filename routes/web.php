@@ -103,6 +103,8 @@ Route::prefix('destinations')->name('destinations.')->group(function () {
     Route::get('/region/{slug}', [DestinationPageController::class, 'region'])->name('region');
     Route::get('/ville/{slug}', [DestinationPageController::class, 'ville'])->name('ville');
     Route::get('/secteur/{slug}', [DestinationPageController::class, 'secteur'])->name('secteur');
+    Route::get('/arrondissement/{slug}', [DestinationPageController::class, 'arrondissement'])->name('arrondissement');
+    Route::get('/quartier/{slug}', [DestinationPageController::class, 'quartier'])->name('quartier');
     Route::get('/{path}', [DestinationPageController::class, 'hierarchy'])
         ->where('path', '.*')
         ->name('hierarchy');

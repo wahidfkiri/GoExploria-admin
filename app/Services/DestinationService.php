@@ -8,6 +8,8 @@ use App\Models\Province;
 use App\Models\Region;
 use App\Models\Ville;
 use App\Models\Secteur;
+use App\Models\Arrondissement;
+use App\Models\Quartier;
 use App\Models\Etablissement;
 use App\Models\Activity;
 use Vendor\Cms\Models\Setting;
@@ -304,6 +306,94 @@ class DestinationService
             }
             
             return is_numeric($identifier) 
+                ? $query->find($identifier)
+                : $query->where('code', $identifier)->first();
+        });
+    }
+
+    /**
+     * Récupérer tous les arrondissements actifs
+     */
+    public function getArrondissements(?int $villeId = null, bool $withRelations = false): Collection
+    {
+        $cacheKey = 'destinations.arrondissements.' . ($villeId ?? 'all') . '.' . ($withRelations ? 'with_relations' : 'simple');
+
+        return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($villeId, $withRelations) {
+            $query = Arrondissement::active()->orderBy('name');
+
+            if ($villeId) {
+                $query->where('ville_id', $villeId);
+            }
+
+            if ($withRelations) {
+                $query->with(['ville', 'quartiers' => function ($q) {
+                    $q->active()->orderBy('name');
+                }]);
+            }
+
+            return $query->get();
+        });
+    }
+
+    /**
+     * Récupérer un arrondissement par son ID ou code
+     */
+    public function getArrondissement($identifier, bool $withRelations = false)
+    {
+        $cacheKey = "destinations.arrondissement.{$identifier}." . ($withRelations ? 'with_relations' : 'simple');
+
+        return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($identifier, $withRelations) {
+            $query = Arrondissement::active();
+
+            if ($withRelations) {
+                $query->with(['ville', 'quartiers' => function ($q) {
+                    $q->active()->orderBy('name');
+                }]);
+            }
+
+            return is_numeric($identifier)
+                ? $query->find($identifier)
+                : $query->where('code', $identifier)->first();
+        });
+    }
+
+    /**
+     * Récupérer tous les quartiers actifs
+     */
+    public function getQuartiers(?int $arrondissementId = null, bool $withRelations = false): Collection
+    {
+        $cacheKey = 'destinations.quartiers.' . ($arrondissementId ?? 'all') . '.' . ($withRelations ? 'with_relations' : 'simple');
+
+        return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($arrondissementId, $withRelations) {
+            $query = Quartier::active()->orderBy('name');
+
+            if ($arrondissementId) {
+                $query->where('arrondissement_id', $arrondissementId);
+            }
+
+            if ($withRelations) {
+                $query->with(['arrondissement.ville']);
+            }
+
+            return $query->get();
+        });
+    }
+
+    /**
+     * Récupérer un quartier par son ID ou code
+     */
+    public function getQuartier($identifier, bool $withRelations = false)
+    {
+        $cacheKey = "destinations.quartier.{$identifier}." . ($withRelations ? 'with_relations' : 'simple');
+
+        return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($identifier, $withRelations) {
+            $query = Quartier::active();
+
+            if ($withRelations) {
+                $query->with(['arrondissement.ville']);
+            }
+
+            return is_numeric($identifier)
                 ? $query->find($identifier)
                 : $query->where('code', $identifier)->first();
         });
@@ -664,6 +754,30 @@ class DestinationService
         
         return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($slug) {
             return $this->resolveGeoBySlug(Secteur::class, $slug);
+        });
+    }
+
+    /**
+     * Récupérer un arrondissement par son slug
+     */
+    public function getArrondissementBySlug(string $slug)
+    {
+        $cacheKey = "destinations.arrondissement.slug.{$slug}";
+
+        return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($slug) {
+            return $this->resolveGeoBySlug(Arrondissement::class, $slug);
+        });
+    }
+
+    /**
+     * Récupérer un quartier par son slug
+     */
+    public function getQuartierBySlug(string $slug)
+    {
+        $cacheKey = "destinations.quartier.slug.{$slug}";
+
+        return Cache::remember($cacheKey, self::CACHE_DURATION, function () use ($slug) {
+            return $this->resolveGeoBySlug(Quartier::class, $slug);
         });
     }
 

@@ -80,6 +80,24 @@ class Ville extends Model
         return $this->belongsTo(Country::class);
     }
 
+    // Relation avec les arrondissements
+    public function arrondissements(): HasMany
+    {
+        return $this->hasMany(Arrondissement::class);
+    }
+
+    // Relation avec les quartiers (raccourci via ville_id)
+    public function quartiers(): HasMany
+    {
+        return $this->hasMany(Quartier::class);
+    }
+
+    // Accessor pour le nombre d'arrondissements
+    public function getArrondissementsCountAttribute(): int
+    {
+        return $this->arrondissements()->count();
+    }
+
     // Accessors
     public function getFullNameAttribute(): string
     {

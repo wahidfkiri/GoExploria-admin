@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Arrondissement;
 use App\Models\Continent;
 use App\Models\Country;
 use App\Models\CountryMedia;
+use App\Models\Quartier;
 use App\Models\MapPoint;
 use App\Models\Plan;
 use App\Models\Province;
@@ -125,6 +127,34 @@ class DestinationPageController extends Controller
     }
 
     /**
+     * Afficher la page d'un arrondissement
+     */
+    public function arrondissement(string $slug)
+    {
+        $arrondissement = $this->destinationService->getArrondissementBySlug($slug);
+
+        if (!$arrondissement) {
+            abort(404, 'Arrondissement non trouvé');
+        }
+
+        return $this->renderHomeForDestination($this->resolvedFromModel('arrondissement', $arrondissement));
+    }
+
+    /**
+     * Afficher la page d'un quartier
+     */
+    public function quartier(string $slug)
+    {
+        $quartier = $this->destinationService->getQuartierBySlug($slug);
+
+        if (!$quartier) {
+            abort(404, 'Quartier non trouvé');
+        }
+
+        return $this->renderHomeForDestination($this->resolvedFromModel('quartier', $quartier));
+    }
+
+    /**
      * Page d'index des destinations
      */
     public function index()
@@ -174,6 +204,9 @@ class DestinationPageController extends Controller
         $country = null;
         $province = null;
         $region = null;
+        $secteur = null;
+        $ville = null;
+        $arrondissement = null;
 
         if ($type === 'continent') {
             $items['continent'] = $model;
@@ -195,15 +228,36 @@ class DestinationPageController extends Controller
         }
 
         if ($type === 'ville') {
-            $region = $this->activeFind(Region::class, $model->region_id ?? null);
+            $ville = $model;
+            $secteur = $this->activeFind(Secteur::class, $model->secteur_id ?? null);
+            $region = $this->activeFind(Region::class, $model->region_id ?? ($secteur->region_id ?? null));
             $province = $this->activeFind(Province::class, $model->province_id ?? ($region->province_id ?? null));
             $country = $this->activeFind(Country::class, $model->country_id ?? ($province->country_id ?? null));
         }
 
         if ($type === 'secteur') {
+            $secteur = $model;
             $region = $this->activeFind(Region::class, $model->region_id ?? null);
             $province = $region ? $this->activeFind(Province::class, $region->province_id ?? null) : null;
             $country = $province ? $this->activeFind(Country::class, $province->country_id ?? null) : null;
+        }
+
+        if ($type === 'arrondissement') {
+            $arrondissement = $model;
+            $ville = $this->activeFind(Ville::class, $model->ville_id ?? null);
+        }
+
+        if ($type === 'quartier') {
+            $arrondissement = $this->activeFind(Arrondissement::class, $model->arrondissement_id ?? null);
+            $ville = $this->activeFind(Ville::class, $model->ville_id ?? ($arrondissement->ville_id ?? null));
+        }
+
+        // Remonter la chaîne depuis la ville pour arrondissements et quartiers
+        if (in_array($type, ['arrondissement', 'quartier'], true) && $ville) {
+            $secteur = $this->activeFind(Secteur::class, $ville->secteur_id ?? null);
+            $region = $this->activeFind(Region::class, $ville->region_id ?? ($secteur->region_id ?? null));
+            $province = $this->activeFind(Province::class, $ville->province_id ?? ($region->province_id ?? null));
+            $country = $this->activeFind(Country::class, $ville->country_id ?? ($province->country_id ?? null));
         }
 
         if ($country) {
@@ -222,12 +276,21 @@ class DestinationPageController extends Controller
             $items['region'] = $region;
         }
 
-        if ($type === 'ville') {
-            $items['ville'] = $model;
+        // Ordre du fil d'ariane : … Régions → Secteurs → Villes → Arrondissements → Quartiers
+        if ($secteur) {
+            $items['secteur'] = $secteur;
         }
 
-        if ($type === 'secteur') {
-            $items['secteur'] = $model;
+        if ($ville) {
+            $items['ville'] = $ville;
+        }
+
+        if ($arrondissement) {
+            $items['arrondissement'] = $arrondissement;
+        }
+
+        if ($type === 'quartier') {
+            $items['quartier'] = $model;
         }
 
         return [
@@ -275,35 +338,47 @@ class DestinationPageController extends Controller
 
     private function resolveHierarchyPath(array $segments): ?array
     {
+        // Chaîne complète :
+        // Continent → Pays → Provinces → Régions → Secteurs → Villes → Arrondissements → Quartiers
+        // Chaque niveau est « sautable » : les anciens chemins sans secteur ni
+        // arrondissement (ex. continent/pays/province/region/ville) restent valides.
         $types = [
             'continent' => Continent::class,
             'country' => Country::class,
             'province' => Province::class,
             'region' => Region::class,
-            'ville' => Ville::class,
             'secteur' => Secteur::class,
+            'ville' => Ville::class,
+            'arrondissement' => Arrondissement::class,
+            'quartier' => Quartier::class,
         ];
 
-        if (class_exists('App\\Models\\Quartier')) {
-            $types['quartier'] = 'App\\Models\\Quartier';
-        }
-
+        $typeKeys = array_keys($types);
         $resolved = [];
+        $cursor = 0;
 
-        foreach ($segments as $index => $segment) {
-            $type = array_keys($types)[$index] ?? null;
+        foreach ($segments as $segment) {
+            $model = null;
+            $matchedIndex = null;
 
-            if (!$type) {
-                return null;
+            // Essayer le prochain niveau attendu, puis les suivants (niveaux sautés)
+            for ($i = $cursor; $i < count($typeKeys); $i++) {
+                $type = $typeKeys[$i];
+                $candidate = $this->findActiveModelBySlug($types[$type], $segment, $resolved);
+
+                if ($candidate) {
+                    $model = $candidate;
+                    $matchedIndex = $i;
+                    break;
+                }
             }
-
-            $model = $this->findActiveModelBySlug($types[$type], $segment, $resolved);
 
             if (!$model) {
                 return null;
             }
 
-            $resolved[$type] = $model;
+            $resolved[$typeKeys[$matchedIndex]] = $model;
+            $cursor = $matchedIndex + 1;
         }
 
         $currentType = array_key_last($resolved);
@@ -364,6 +439,10 @@ class DestinationPageController extends Controller
 
         if (isset($parents['secteur']) && Schema::hasColumn($table, 'secteur_id')) {
             $query->where('secteur_id', $parents['secteur']->id);
+        }
+
+        if (isset($parents['arrondissement']) && Schema::hasColumn($table, 'arrondissement_id')) {
+            $query->where('arrondissement_id', $parents['arrondissement']->id);
         }
     }
 
@@ -431,11 +510,27 @@ class DestinationPageController extends Controller
             'continent' => Country::active()->where('continent_id', $model->id)->orderBy('name')->get(),
             'country' => Province::active()->where('country_id', $model->id)->orderBy('name')->get(),
             'province' => Region::active()->where('province_id', $model->id)->orderBy('name')->get(),
-            'region' => Ville::active()->where('region_id', $model->id)->orderBy('name')->get(),
-            'ville' => $this->secteursForVille($model),
+            'region' => $this->childrenForRegion($model),
             'secteur' => Ville::active()->where('secteur_id', $model->id)->orderBy('name')->get(),
+            'ville' => Arrondissement::active()->where('ville_id', $model->id)->orderBy('name')->get(),
+            'arrondissement' => Quartier::active()->where('arrondissement_id', $model->id)->orderBy('name')->get(),
             default => collect(),
         };
+    }
+
+    /**
+     * Enfants d'une région : les secteurs (nouveau niveau intermédiaire)
+     * s'ils existent, sinon les villes directement (compat historique).
+     */
+    private function childrenForRegion(Model $region): Collection
+    {
+        $secteurs = Secteur::active()->where('region_id', $region->id)->orderBy('name')->get();
+
+        if ($secteurs->isNotEmpty()) {
+            return $secteurs;
+        }
+
+        return Ville::active()->where('region_id', $region->id)->orderBy('name')->get();
     }
 
     private function secteursForVille(Model $ville): Collection
@@ -493,7 +588,7 @@ class DestinationPageController extends Controller
                 ], $videos->get(($index + 1) % max($videos->count(), 1)));
             });
 
-        $mapPoints = $this->mapPointsNear($center)->map(function (MapPoint $point) {
+        $mapPoints = $this->mapPointsNear($center, $resolved['current_type'])->map(function (MapPoint $point) {
             return [
                 'id' => 'map-point-' . $point->id,
                 'name' => $point->title,
@@ -506,6 +601,7 @@ class DestinationPageController extends Controller
                 'image' => $point->thumbnail,
                 'details_url' => $point->details_url,
                 'has_details_page' => (bool) $point->has_details_page,
+                'is_featured' => (bool) $point->is_featured,
             ];
         });
 
@@ -533,13 +629,15 @@ class DestinationPageController extends Controller
         ];
     }
 
-    private function mapPointsNear(array $center): Collection
+    private function mapPointsNear(array $center, ?string $pageType = null): Collection
     {
         if (!Schema::hasTable('map_points')) {
             return collect();
         }
 
         return MapPoint::active()
+            ->visibleOn($pageType)
+            ->inDisplayPeriod()
             ->whereNotNull('latitude')
             ->whereNotNull('longitude')
             ->whereBetween('latitude', [$center['lat'] - 3, $center['lat'] + 3])
@@ -631,8 +729,10 @@ class DestinationPageController extends Controller
             'country' => 5,
             'province' => 6,
             'region' => 8,
+            'secteur' => 9,
             'ville' => 11,
-            'secteur' => 13,
+            'arrondissement' => 12,
+            'quartier' => 14,
             default => 6,
         };
     }
@@ -643,9 +743,10 @@ class DestinationPageController extends Controller
             'continent' => 'Pays (Zoom) :',
             'country' => 'Provinces (Zoom) :',
             'province' => 'Régions (Zoom) :',
-            'region' => 'Ville (Zoom) :',
-            'ville' => 'Secteur/Quartier (Zoom) :',
-            'secteur' => 'Ville/Quartier (Zoom) :',
+            'region' => 'Secteurs/Villes (Zoom) :',
+            'secteur' => 'Villes (Zoom) :',
+            'ville' => 'Arrondissements (Zoom) :',
+            'arrondissement' => 'Quartiers (Zoom) :',
             default => 'Destination liée (Zoom) :',
         };
     }
@@ -656,9 +757,10 @@ class DestinationPageController extends Controller
             'continent' => 'Tous les pays',
             'country' => 'Toutes les provinces',
             'province' => 'Toutes les régions',
-            'region' => 'Toutes les villes',
-            'ville' => 'Tous les secteurs/quartiers',
-            'secteur' => 'Toutes les villes/quartiers',
+            'region' => 'Tous les secteurs/villes',
+            'secteur' => 'Toutes les villes',
+            'ville' => 'Tous les arrondissements',
+            'arrondissement' => 'Tous les quartiers',
             default => 'Toutes les destinations',
         };
     }
@@ -669,9 +771,10 @@ class DestinationPageController extends Controller
             'continent' => 'country',
             'country' => 'province',
             'province' => 'region',
-            'region' => 'ville',
-            'ville' => 'secteur',
+            'region' => 'secteur',
             'secteur' => 'ville',
+            'ville' => 'arrondissement',
+            'arrondissement' => 'quartier',
             default => 'destination',
         };
     }

@@ -485,12 +485,16 @@
             return h;
         }
 
-        function getMarkerIcon(cat) {
+        function getMarkerIcon(cat, featured) {
             var s = getCategoryStyle(cat);
+            // Points « Mis en avant » : plus grands, anneau doré + étoile
+            var size = featured ? 40 : 32;
+            var ring = featured ? 'box-shadow:0 0 0 4px rgba(255,193,7,0.45),0 3px 12px rgba(0,0,0,0.5);border:3px solid #FFC107' : 'box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff';
+            var star = featured ? '<span style="position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;background:#FFC107;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.4);z-index:2"><i class="fas fa-star" style="font-size:9px;color:#fff"></i></span>' : '';
             return L.divIcon({
                 className: 'map-marker',
-                html: '<div style="width:32px;height:32px;border-radius:50%;background:' + s.color + ';display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff"><i class="' + s.icon + '" style="font-size:14px;color:#fff"></i></div>',
-                iconSize: [36, 36], iconAnchor: [18, 36]
+                html: '<div style="position:relative;width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + s.color + ';display:flex;align-items:center;justify-content:center;' + ring + '">' + star + '<i class="' + s.icon + '" style="font-size:' + Math.round(size * 0.44) + 'px;color:#fff"></i></div>',
+                iconSize: [size + 4, size + 4], iconAnchor: [(size + 4) / 2, size + 4]
             });
         }
 
@@ -501,7 +505,7 @@
             var bounds = [];
             data.forEach(function (p, idx) {
                 pointsData.push(p);
-                var m = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category) }).addTo(markersLayer).bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper' });
+                var m = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 }).addTo(markersLayer).bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper' });
                 m._pointIndex = idx;
                 bounds.push([p.latitude, p.longitude]);
             });

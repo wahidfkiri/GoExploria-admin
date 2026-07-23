@@ -31,6 +31,9 @@ class MapPoint extends Model
         'user_id',
         'is_active',
         'is_featured',
+        'display_locations',
+        'display_start_date',
+        'display_end_date',
         'views'
     ];
 
@@ -40,10 +43,29 @@ class MapPoint extends Model
         'has_details_page' => 'boolean',
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
+        'display_locations' => 'array',
+        'display_start_date' => 'date',
+        'display_end_date' => 'date',
         'views' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime'
+    ];
+
+    /**
+     * Emplacements d'affichage possibles d'un point map :
+     * page d'accueil + pages de destination (continent → quartier).
+     */
+    public const DISPLAY_LOCATIONS = [
+        'home' => 'Page accueil',
+        'continent' => 'Pages Continent',
+        'country' => 'Pages Pays',
+        'province' => 'Pages Province',
+        'region' => 'Pages Région',
+        'secteur' => 'Pages Secteur',
+        'ville' => 'Pages Ville',
+        'arrondissement' => 'Pages Arrondissement',
+        'quartier' => 'Pages Quartier',
     ];
 
     // Relations
@@ -86,6 +108,44 @@ class MapPoint extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Points visibles sur un emplacement donné (home, continent, … quartier).
+     * NULL ou liste vide = visible partout (rétro-compatibilité).
+     */
+    public function scopeVisibleOn($query, ?string $location)
+    {
+        if (!$location) {
+            return $query;
+        }
+
+        // Alias : le type « city » (travel_destination) équivaut à « ville »
+        if ($location === 'city') {
+            $location = 'ville';
+        }
+
+        return $query->where(function ($q) use ($location) {
+            $q->whereNull('display_locations')
+              ->orWhereRaw("JSON_LENGTH(display_locations) = 0")
+              ->orWhereJsonContains('display_locations', $location);
+        });
+    }
+
+    /**
+     * Points dans leur période d'affichage (bornes optionnelles).
+     */
+    public function scopeInDisplayPeriod($query)
+    {
+        $today = now()->toDateString();
+
+        return $query
+            ->where(function ($q) use ($today) {
+                $q->whereNull('display_start_date')->orWhereDate('display_start_date', '<=', $today);
+            })
+            ->where(function ($q) use ($today) {
+                $q->whereNull('display_end_date')->orWhereDate('display_end_date', '>=', $today);
+            });
     }
 
     public function scopeFeatured($query)

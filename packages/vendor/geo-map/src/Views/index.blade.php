@@ -75,6 +75,14 @@
     .marker-icon { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; box-shadow:0 3px 10px rgba(0,0,0,0.2); transition:all 0.3s ease; cursor:pointer; }
     .marker-icon:hover { transform:scale(1.1); box-shadow:0 5px 15px rgba(0,0,0,0.3); }
     .marker-icon.highlighted { transform:scale(1.2); box-shadow:0 0 0 3px rgba(66,153,225,0.5); }
+    /* Points « Mis en avant » : anneau doré + halo pulsé + étoile */
+    .marker-icon.marker-featured { position:relative; border:3px solid #FFC107; box-shadow:0 0 0 4px rgba(255,193,7,0.45), 0 3px 12px rgba(0,0,0,0.5); animation:featuredPulse 2s ease-in-out infinite; }
+    .marker-featured-star { position:absolute; top:-8px; right:-8px; width:18px; height:18px; border-radius:50%; background:#FFC107; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 4px rgba(0,0,0,0.4); z-index:2; }
+    .marker-featured-star i { font-size:9px; color:#fff; }
+    @keyframes featuredPulse {
+        0%, 100% { box-shadow:0 0 0 4px rgba(255,193,7,0.45), 0 3px 12px rgba(0,0,0,0.5); }
+        50% { box-shadow:0 0 0 8px rgba(255,193,7,0.15), 0 3px 12px rgba(0,0,0,0.5); }
+    }
     .user-marker-icon { width:50px; height:50px; background:linear-gradient(135deg,#00c9b7,#2a5bd7); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:22px; box-shadow:0 3px 15px rgba(0,0,0,0.3); border:3px solid white; animation:userMarkerPulse 2s infinite; }
     @keyframes userMarkerPulse { 0%{transform:scale(1);box-shadow:0 0 0 0 rgba(42,91,215,0.7)} 70%{transform:scale(1.05);box-shadow:0 0 0 10px rgba(42,91,215,0)} 100%{transform:scale(1);box-shadow:0 0 0 0 rgba(42,91,215,0)} }
 
@@ -767,7 +775,8 @@ class InteractiveMap {
         if (this.isLoading) return;
         this.isLoading = true;
         try {
-            const params = {per_page:200};
+            // Contexte d'emplacement : type de la page destination courante, sinon accueil
+            const params = {per_page:200, context: DESTINATION_MAP_CONTEXT?.destination?.type || 'home'};
             const r = await axios.get(`${API_BASE_URL}/points`, {params});
             if (r.data.success) {
                 const allPlaces = Array.isArray(r.data.data) ? r.data.data : [];
@@ -803,12 +812,14 @@ class InteractiveMap {
         this.markers = {};
     }
     createMarker(place) {
+        // Points « Mis en avant » : style doré + étoile + priorité d'affichage
+        const featured = !!place.is_featured;
         const icon = L.divIcon({
             className:'custom-marker',
-            html:`<div class="marker-icon" style="background:${this.getCategoryColor(place.category)};"><i class="${this.getCategoryIcon(place.category)}"></i></div>`,
+            html:`<div class="marker-icon${featured ? ' marker-featured' : ''}" style="background:${this.getCategoryColor(place.category)};">${featured ? '<span class="marker-featured-star"><i class="fas fa-star"></i></span>' : ''}<i class="${this.getCategoryIcon(place.category)}"></i></div>`,
             iconSize:[40,40], iconAnchor:[20,40]
         });
-        const marker = L.marker([place.latitude,place.longitude],{icon,title:place.name}).addTo(this.map);
+        const marker = L.marker([place.latitude,place.longitude],{icon,title:place.name,zIndexOffset:featured ? 1000 : 0}).addTo(this.map);
         const popup  = L.popup({maxWidth:300,closeButton:true,autoClose:true,closeOnClick:false,offset:L.point(0,-45)})
                         .setContent(this.createPopupContent(place));
         let ht;
@@ -1465,14 +1476,25 @@ function initDestinationBreadcrumb() {
 }
 
 /* -- Bootstrap -- */
-document.addEventListener('DOMContentLoaded', ()=>{
+function bootstrapGeoMap() {
+    // Idempotent : évite une double initialisation (Leaflet lèverait
+    // « Map container is already initialized »).
+    if (window.mapApp) { return; }
     initDestinationBreadcrumb();
     window.mapApp = new InteractiveMap();
     document.querySelectorAll('.info-card').forEach(c=>{
         c.addEventListener('mouseenter',function(){ this.classList.add('pulse'); });
         c.addEventListener('mouseleave',function(){ this.classList.remove('pulse'); });
     });
-});
+}
+// Résilient : sur la page d'accueil (contenu below-fold lourd), le
+// DOMContentLoaded est parfois déjà passé quand ce script s'exécute ;
+// on démarre alors immédiatement au lieu d'attendre un événement perdu.
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootstrapGeoMap);
+} else {
+    bootstrapGeoMap();
+}
 
 function sendHeight() {
     if (window.parent&&window.parent!==window) {

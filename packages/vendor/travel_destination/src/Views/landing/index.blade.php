@@ -24,6 +24,18 @@
 
     <nav class="nav__links" aria-label="Navigation principale">
       @php
+        // Type des entités enfants selon la chaîne :
+        // Continent → Pays → Provinces → Régions → Secteurs → Villes → Arrondissements → Quartiers
+        $childType = match ($normalizedType) {
+            'continent' => 'country',
+            'country' => 'province',
+            'province' => 'region',
+            'region' => 'city',
+            'secteur' => 'city',
+            'city' => 'arrondissement',
+            'arrondissement' => 'quartier',
+            default => 'city',
+        };
         $navSections = [];
         if ($aboutContents->count() > 0) $navSections[] = ['id' => 'about', 'label' => 'À propos'];
         if ($destinations->count() > 0 || $childEntities->count() > 0) $navSections[] = ['id' => 'destinations', 'label' => 'Destinations'];
@@ -43,7 +55,7 @@
             @if(isset($childEntities) && $childEntities->count() > 0)
               <div class="nav__mega">
                 @foreach($childEntities as $ce)
-                  <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id, 'slug2' => Str::slug($ce->name ?? $ce->id)]) }}" class="nav__mega-item">
+                  <a href="{{ route('travel-destination.show', ['type' => $childType, 'slug' => $ce->slug ?? $ce->id, 'slug2' => Str::slug($ce->name ?? $ce->id)]) }}" class="nav__mega-item">
                     @if($ce->image) <img src="{{ $ce->image }}" alt="{{ $ce->name }}" loading="lazy" />
                     @else <div class="nav__mega-img-placeholder"></div>
                     @endif
@@ -97,7 +109,7 @@
             @if(isset($childEntities) && $childEntities->count() > 0)
               <div class="mobile-menu__sublinks">
                 @foreach($childEntities as $ce)
-                  <a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $ce->slug ?? $ce->id, 'slug2' => Str::slug($ce->name ?? $ce->id)]) }}" class="mobile-menu__link mobile-menu__link--sub">{{ $ce->name }}</a>
+                  <a href="{{ route('travel-destination.show', ['type' => $childType, 'slug' => $ce->slug ?? $ce->id, 'slug2' => Str::slug($ce->name ?? $ce->id)]) }}" class="mobile-menu__link mobile-menu__link--sub">{{ $ce->name }}</a>
                 @endforeach
               </div>
             @endif
@@ -405,7 +417,7 @@
                 <div class="dest-card__meta"><span class="dest-card__country">{{ $entity->name }}</span></div>
                 <h3 class="dest-card__name">{{ $child->name }}</h3>
                 <div class="dest-card__tags">@if(isset($child->population))<span class="tag">{{ number_format($child->population) }} hab</span>@endif</div>
-                <div class="dest-card__footer"><a href="{{ route('travel-destination.show', ['type' => $normalizedType === 'continent' ? 'country' : ($normalizedType === 'country' ? 'province' : ($normalizedType === 'province' ? 'region' : ($normalizedType === 'region' ? 'city' : 'secteur'))), 'slug' => $child->slug ?? $child->id, 'slug2' => Str::slug($child->name ?? $child->id)]) }}" class="btn btn--sm btn--amber">Explorer</a></div>
+                <div class="dest-card__footer"><a href="{{ route('travel-destination.show', ['type' => $childType, 'slug' => $child->slug ?? $child->id, 'slug2' => Str::slug($child->name ?? $child->id)]) }}" class="btn btn--sm btn--amber">Explorer</a></div>
               </div>
             </article>
           @endforeach
@@ -956,7 +968,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!categories[cat]) categories[cat] = true;
       pointsData.push(p);
       var popupHtml = buildPopupHtml(p, markerIndex);
-      var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured) })
+      var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
         .addTo(markersLayer)
         .bindPopup(popupHtml, { maxWidth: 320, className: 'map-popup-wrapper' });
       marker._pointIndex = markerIndex;
@@ -1032,7 +1044,7 @@ document.addEventListener('DOMContentLoaded', function () {
         markersLayer.clearLayers();
         data.forEach(function (p, idx) {
           if (filter === 'all' || resolveCategorySlug(p.category) === filter) {
-            var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured) })
+            var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
               .addTo(markersLayer)
               .bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper' });
             marker._pointIndex = idx;
@@ -1077,11 +1089,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function getMarkerIcon(category, featured) {
     var size = featured ? 40 : 32;
+    var ring = featured ? 'box-shadow:0 0 0 4px rgba(255,193,7,0.45),0 3px 12px rgba(0,0,0,0.5);border:3px solid #FFC107' : 'box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff';
+    var star = featured ? '<span style="position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;background:#FFC107;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.4);z-index:2"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>' : '';
     var catData = getCategoryData(category);
     if (catData && catData.image) {
       return L.divIcon({
         className: 'map-marker',
-        html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background-size:cover;background-image:url(' + catData.image + ');box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff"></div>',
+        html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background-size:cover;background-image:url(' + catData.image + ');' + ring + ';position:relative">' + star + '</div>',
         iconSize: [size + 4, size + 4],
         iconAnchor: [(size + 4) / 2, size + 4]
       });
@@ -1089,7 +1103,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var color = catData.color || '#e74c3c';
       return L.divIcon({
         className: 'map-marker',
-        html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff"><span class="' + catData.icon_class + '" style="font-size:' + Math.round(size * 0.55) + 'px;color:#fff"></span></div>',
+        html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;' + ring + ';position:relative"><span class="' + catData.icon_class + '" style="font-size:' + Math.round(size * 0.55) + 'px;color:#fff"></span>' + star + '</div>',
         iconSize: [size + 4, size + 4],
         iconAnchor: [(size + 4) / 2, size + 4]
       });
@@ -1098,7 +1112,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var color = colors[category] || colors.default;
     return L.divIcon({
       className: 'map-marker',
-      html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff"><svg viewBox="0 0 24 24" width="' + Math.round(size * 0.6) + '" height="' + Math.round(size * 0.6) + '" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>',
+      html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;' + ring + ';position:relative"><svg viewBox="0 0 24 24" width="' + Math.round(size * 0.6) + '" height="' + Math.round(size * 0.6) + '" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>' + star + '</div>',
       iconSize: [size + 4, size + 4],
       iconAnchor: [(size + 4) / 2, size + 4]
     });

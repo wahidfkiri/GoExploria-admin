@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var mapPointsUrl = '{{ route("travel-destination.map-points", ["type" => $naType, "slug" => $naSlug], false) }}';
     var childEntities = {!! json_encode($naChildEntities->map(function ($ce) {
             $typeName = strtolower(class_basename($ce));
-            $zMap = ['continent' => 3, 'country' => 5, 'province' => 7, 'region' => 9, 'ville' => 11, 'city' => 11, 'secteur' => 13];
+            $zMap = ['continent' => 3, 'country' => 5, 'province' => 7, 'region' => 9, 'secteur' => 10, 'ville' => 11, 'city' => 11, 'arrondissement' => 13, 'quartier' => 14];
             return ['name' => $ce->name, 'slug' => $ce->slug ?? (string) $ce->id, 'type' => class_basename($ce), 'latitude' => $ce->latitude ? (float) $ce->latitude : null, 'longitude' => $ce->longitude ? (float) $ce->longitude : null, 'zoom' => $zMap[$typeName] ?? 10];
         })->values(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
     var mapCategories = {!! json_encode($naMapCategories->keyBy('slug')->map(function ($mc) {
@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })->toArray(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
     var serverPoints = []; // chargés en AJAX pour préserver la vitesse de la page d'accueil
 
-    var zoomByType = { continent: 3, country: 5, province: 7, region: 9, ville: 11, city: 11, secteur: 13 };
+    var zoomByType = { continent: 3, country: 5, province: 7, region: 9, secteur: 10, ville: 11, city: 11, arrondissement: 13, quartier: 14 };
     var isContinent = entityType === 'continent';
     var defaultZoom = entityLat && !isContinent ? (zoomByType[entityType] || 6) : 2;
     var center = entityLat ? [entityLat, entityLng] : [45, -100];
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var pointsData = [];
     var geoFilterActive = null;
     var geoFilterEntity = null;
-    var childTypeMap = { continent: 'country', country: 'province', province: 'region', region: 'city', city: 'secteur', secteur: '' };
+    var childTypeMap = { continent: 'country', country: 'province', province: 'region', region: 'city', secteur: 'city', city: 'arrondissement', arrondissement: 'quartier', quartier: '' };
     var childType = childTypeMap[entityType] || '';
 
     function zoomToEntity(lat, lng, zoom) {
@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var cat = p.category || 'other';
             if (!categories[cat]) categories[cat] = true;
             pointsData.push(p);
-            var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured) })
+            var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
                 .addTo(markersLayer)
                 .bindPopup(buildPopupHtml(p, markerIndex), { maxWidth: 320, className: 'ta-map-popup' });
             marker._pointIndex = markerIndex;
@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 markersLayer.clearLayers();
                 data.forEach(function (p, idx) {
                     if (filter === 'all' || resolveCategorySlug(p.category) === filter) {
-                        var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured) })
+                        var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
                             .addTo(markersLayer)
                             .bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'ta-map-popup' });
                         marker._pointIndex = idx;
@@ -425,16 +425,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function getMarkerIcon(category, featured) {
         var size = featured ? 40 : 32;
+    var ring = featured ? 'box-shadow:0 0 0 4px rgba(255,193,7,0.45),0 3px 12px rgba(0,0,0,0.5);border:3px solid #FFC107' : 'box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff';
+    var star = featured ? '<span style="position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;background:#FFC107;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.4);z-index:2"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>' : '';
         var catData = getCategoryData(category);
         if (catData && catData.image) {
-            return L.divIcon({ className: 'map-marker', html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background-size:cover;background-image:url(' + catData.image + ');box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff"></div>', iconSize: [size + 4, size + 4], iconAnchor: [(size + 4) / 2, size + 4] });
+            return L.divIcon({ className: 'map-marker', html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background-size:cover;background-image:url(' + catData.image + ');' + ring + ';position:relative">' + star + '</div>', iconSize: [size + 4, size + 4], iconAnchor: [(size + 4) / 2, size + 4] });
         } else if (catData && catData.icon_class) {
             var c = catData.color || '#e74c3c';
-            return L.divIcon({ className: 'map-marker', html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + c + ';display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff"><span class="' + catData.icon_class + '" style="font-size:' + Math.round(size * 0.55) + 'px;color:#fff"></span></div>', iconSize: [size + 4, size + 4], iconAnchor: [(size + 4) / 2, size + 4] });
+            return L.divIcon({ className: 'map-marker', html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + c + ';display:flex;align-items:center;justify-content:center;' + ring + ';position:relative"><span class="' + catData.icon_class + '" style="font-size:' + Math.round(size * 0.55) + 'px;color:#fff"></span>' + star + '</div>', iconSize: [size + 4, size + 4], iconAnchor: [(size + 4) / 2, size + 4] });
         }
         var colors = { sightseeing: '#e74c3c', museum: '#3498db', restaurant: '#f39c12', hotel: '#2ecc71', adventure: '#9b59b6', shopping: '#1abc9c', default: '#e74c3c' };
         var color = colors[category] || colors.default;
-        return L.divIcon({ className: 'map-marker', html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff"><svg viewBox="0 0 24 24" width="' + Math.round(size * 0.6) + '" height="' + Math.round(size * 0.6) + '" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>', iconSize: [size + 4, size + 4], iconAnchor: [(size + 4) / 2, size + 4] });
+        return L.divIcon({ className: 'map-marker', html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;' + ring + ';position:relative"><svg viewBox="0 0 24 24" width="' + Math.round(size * 0.6) + '" height="' + Math.round(size * 0.6) + '" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>' + star + '</div>', iconSize: [size + 4, size + 4], iconAnchor: [(size + 4) / 2, size + 4] });
     }
 
     function escapeHtml(str) {

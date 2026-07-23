@@ -121,6 +121,38 @@ class DestinationHelper
     }
 
     /**
+     * Récupérer tous les arrondissements actifs
+     */
+    public static function arrondissements(?int $villeId = null, bool $withRelations = false)
+    {
+        return self::getService()->getArrondissements($villeId, $withRelations);
+    }
+
+    /**
+     * Récupérer un arrondissement
+     */
+    public static function arrondissement($identifier, bool $withRelations = false)
+    {
+        return self::getService()->getArrondissement($identifier, $withRelations);
+    }
+
+    /**
+     * Récupérer tous les quartiers actifs
+     */
+    public static function quartiers(?int $arrondissementId = null, bool $withRelations = false)
+    {
+        return self::getService()->getQuartiers($arrondissementId, $withRelations);
+    }
+
+    /**
+     * Récupérer un quartier
+     */
+    public static function quartier($identifier, bool $withRelations = false)
+    {
+        return self::getService()->getQuartier($identifier, $withRelations);
+    }
+
+    /**
      * Rechercher des destinations
      */
     public static function search(string $query, ?string $type = null)

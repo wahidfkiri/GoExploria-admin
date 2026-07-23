@@ -27,7 +27,11 @@ class MapPointController extends Controller
     {
         try {
             $query = MapPoint::with(['details', 'images', 'mainImage'])
-                ->active();
+                ->active()
+                // Emplacement de la page appelante (home, continent, … quartier)
+                // + période d'affichage paramétrés dans l'espace entreprise.
+                ->visibleOn($request->query('context'))
+                ->inDisplayPeriod();
 
             // Filtre par catégorie
             if ($request->has('category') && $request->category !== 'all') {

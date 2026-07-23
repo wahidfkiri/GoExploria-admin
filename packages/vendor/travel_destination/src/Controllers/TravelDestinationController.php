@@ -27,6 +27,10 @@ class TravelDestinationController extends Controller
         'cities' => 'city',
         'secteur' => 'secteur',
         'secteurs' => 'secteur',
+        'arrondissement' => 'arrondissement',
+        'arrondissements' => 'arrondissement',
+        'quartier' => 'quartier',
+        'quartiers' => 'quartier',
     ];
 
     protected $typeModelMap = [
@@ -36,6 +40,8 @@ class TravelDestinationController extends Controller
         'region' => \App\Models\Region::class,
         'city' => \App\Models\Ville::class,
         'secteur' => \App\Models\Secteur::class,
+        'arrondissement' => \App\Models\Arrondissement::class,
+        'quartier' => \App\Models\Quartier::class,
     ];
 
     protected $typeLabels = [
@@ -45,6 +51,8 @@ class TravelDestinationController extends Controller
         'region' => 'Région',
         'city' => 'Ville',
         'secteur' => 'Secteur',
+        'arrondissement' => 'Arrondissement',
+        'quartier' => 'Quartier',
     ];
 
     public function show($type, $slug)
@@ -86,7 +94,7 @@ class TravelDestinationController extends Controller
         $destinationActivities = method_exists($entity, 'activities') ? $entity->activities()->where('is_active', true)->get() : collect();
 
         $mapPoints = collect();
-        if (in_array($normalizedType, ['continent', 'country', 'province', 'region', 'city', 'secteur'])) {
+        if (in_array($normalizedType, ['continent', 'country', 'province', 'region', 'city', 'secteur', 'arrondissement', 'quartier'])) {
             $radius = match ($normalizedType) {
                 'continent' => 45,
                 'country' => 10,
@@ -94,9 +102,13 @@ class TravelDestinationController extends Controller
                 'region' => 1.5,
                 'city' => 0.3,
                 'secteur' => 0.15,
+                'arrondissement' => 0.1,
+                'quartier' => 0.05,
                 default => 5,
             };
-            $q = MapPoint::with(['details', 'images', 'mainImage'])->active();
+            $q = MapPoint::with(['details', 'images', 'mainImage'])->active()
+                ->visibleOn($normalizedType)
+                ->inDisplayPeriod();
             if ($normalizedType !== 'continent') {
                 $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
                 if ($childrenWithLat->count() > 0) {
@@ -174,7 +186,7 @@ class TravelDestinationController extends Controller
         $filterEntity = null;
 
         if ($filterType && $filterSlug) {
-            $filterMap = ['province' => 'province', 'region' => 'region', 'city' => 'city', 'ville' => 'city', 'secteur' => 'secteur'];
+            $filterMap = ['province' => 'province', 'region' => 'region', 'city' => 'city', 'ville' => 'city', 'secteur' => 'secteur', 'arrondissement' => 'arrondissement', 'quartier' => 'quartier'];
             $normFilter = $filterMap[$filterType] ?? null;
             if ($normFilter) {
                 $filterEntity = $this->loadEntity($normFilter, $filterSlug);
@@ -191,10 +203,14 @@ class TravelDestinationController extends Controller
             'region' => 1.5,
             'city' => 0.3,
             'secteur' => 0.15,
+            'arrondissement' => 0.1,
+            'quartier' => 0.05,
             default => 5,
         };
 
-        $query = MapPoint::with(['details', 'images', 'mainImage'])->active();
+        $query = MapPoint::with(['details', 'images', 'mainImage'])->active()
+            ->visibleOn($targetType)
+            ->inDisplayPeriod();
 
         // For continents, show all map points worldwide (no geo-restriction)
         if ($targetType !== 'continent') {
@@ -277,6 +293,8 @@ class TravelDestinationController extends Controller
             'region' => DestinationHelper::region($slug),
             'city' => DestinationHelper::ville($slug),
             'secteur' => DestinationHelper::secteur($slug),
+            'arrondissement' => DestinationHelper::arrondissement($slug),
+            'quartier' => DestinationHelper::quartier($slug),
             default => null,
         };
 
@@ -292,6 +310,8 @@ class TravelDestinationController extends Controller
             'region' => $service->getRegionBySlug($slug),
             'city' => $service->getVilleBySlug($slug),
             'secteur' => $service->getSecteurBySlug($slug),
+            'arrondissement' => $service->getArrondissementBySlug($slug),
+            'quartier' => $service->getQuartierBySlug($slug),
             default => null,
         };
     }
@@ -352,6 +372,15 @@ class TravelDestinationController extends Controller
                 break;
 
             case 'secteur':
+                $hierarchy = $this->getHierarchyChain($entity);
+                foreach ($hierarchy as $item) {
+                    $breadcrumb->push($item);
+                }
+                $breadcrumb->push(['label' => $entity->name, 'url' => null]);
+                break;
+
+            case 'arrondissement':
+            case 'quartier':
                 $hierarchy = $this->getHierarchyChain($entity);
                 foreach ($hierarchy as $item) {
                     $breadcrumb->push($item);
@@ -488,6 +517,34 @@ class TravelDestinationController extends Controller
                     }
                 }
                 break;
+
+            case 'Arrondissement':
+                // Chaîne de la ville parente, puis la ville elle-même
+                $ville = $entity->ville;
+                if ($ville) {
+                    foreach ($this->getHierarchyChain($ville) as $item) {
+                        $chain->push($item);
+                    }
+                    $chain->push([
+                        'label' => $ville->name,
+                        'url' => route('travel-destination.show', ['type' => 'city', 'slug' => $this->entitySlug($ville)]),
+                    ]);
+                }
+                break;
+
+            case 'Quartier':
+                // Chaîne de l'arrondissement parent, puis l'arrondissement lui-même
+                $arrondissement = $entity->arrondissement;
+                if ($arrondissement) {
+                    foreach ($this->getHierarchyChain($arrondissement) as $item) {
+                        $chain->push($item);
+                    }
+                    $chain->push([
+                        'label' => $arrondissement->name,
+                        'url' => route('travel-destination.show', ['type' => 'arrondissement', 'slug' => $this->entitySlug($arrondissement)]),
+                    ]);
+                }
+                break;
         }
 
         return $chain;
@@ -535,13 +592,27 @@ class TravelDestinationController extends Controller
                 $stats[] = ['label' => 'Secteurs', 'value' => $entity->secteurs->count()];
                 break;
             case 'city':
-                $stats[] = ['label' => 'Altitude', 'value' => ($entity->altitude ?? 0) . 'm'];
+                $stats[] = ['label' => 'Arrondissements', 'value' => $entity->arrondissements->count()];
                 if ($entity->density) {
                     $stats[] = ['label' => 'Densité', 'value' => number_format($entity->density) . '/km²'];
                 }
                 break;
             case 'secteur':
                 $stats[] = ['label' => 'Villes', 'value' => $entity->villes->count()];
+                break;
+            case 'arrondissement':
+                $stats[] = ['label' => 'Quartiers', 'value' => $entity->quartiers->count()];
+                if ($entity->density) {
+                    $stats[] = ['label' => 'Densité', 'value' => number_format($entity->density) . '/km²'];
+                }
+                break;
+            case 'quartier':
+                if ($entity->density) {
+                    $stats[] = ['label' => 'Densité', 'value' => number_format($entity->density) . '/km²'];
+                }
+                if ($entity->households) {
+                    $stats[] = ['label' => 'Ménages', 'value' => number_format($entity->households)];
+                }
                 break;
         }
 
@@ -565,9 +636,13 @@ class TravelDestinationController extends Controller
             case 'region':
                 return $entity->villes()->active()->get();
             case 'city':
-                return collect();
+                return $entity->arrondissements()->active()->get();
             case 'secteur':
                 return $entity->villes()->active()->get();
+            case 'arrondissement':
+                return $entity->quartiers()->active()->get();
+            case 'quartier':
+                return collect();
             default:
                 return collect();
         }
