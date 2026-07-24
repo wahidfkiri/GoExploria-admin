@@ -67,13 +67,14 @@ return [
 
     'https_hsts_seconds' => (int) env('APP_HSTS_SECONDS', 31536000),
 
-    // Hôte canonique : en production on force la forme « www » (surchargeable
-    // via APP_CANONICAL_HOST). En local, null => aucune redirection d'hôte.
+    // Hôte canonique : SANS www (le certificat SSL ne couvre que la forme
+    // sans-www). Surchargeable via APP_CANONICAL_HOST. En local, null => aucune
+    // redirection d'hôte. Redondance de défense avec public/.htaccess.
     'canonical_host' => env('APP_CANONICAL_HOST', env('APP_ENV', 'production') === 'production'
-        ? 'www.goexploriabusiness.com'
+        ? 'goexploriabusiness.com'
         : null),
 
-    'strip_www' => (bool) env('APP_STRIP_WWW', false),
+    'strip_www' => (bool) env('APP_STRIP_WWW', env('APP_ENV', 'production') === 'production'),
 
     /*
     |--------------------------------------------------------------------------
