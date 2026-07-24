@@ -59,10 +59,21 @@ return [
     | Force HTTPS Redirect
     |--------------------------------------------------------------------------
     |
-    | Enable this only when your domain has a valid SSL certificate.
+    | Redirige le HTTP vers HTTPS et vers l'hôte canonique (forme « www »).
+    | Auto-activé en production ; en local (APP_ENV=local) tout reste en http.
     |
     */
-    'force_https' => (bool) env('FORCE_HTTPS', false),
+    'force_https' => (bool) env('FORCE_HTTPS', env('APP_ENV', 'production') === 'production'),
+
+    'https_hsts_seconds' => (int) env('APP_HSTS_SECONDS', 31536000),
+
+    // Hôte canonique : en production on force la forme « www » (surchargeable
+    // via APP_CANONICAL_HOST). En local, null => aucune redirection d'hôte.
+    'canonical_host' => env('APP_CANONICAL_HOST', env('APP_ENV', 'production') === 'production'
+        ? 'www.goexploriabusiness.com'
+        : null),
+
+    'strip_www' => (bool) env('APP_STRIP_WWW', false),
 
     /*
     |--------------------------------------------------------------------------

@@ -3,35 +3,116 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Force le HTTPS et l'hôte canonique (piloté par la config app.*).
+ *
+ * - config('app.force_https')       : active la redirection http -> https.
+ * - config('app.canonical_host')    : hôte cible (ex. www.goexploriabusiness.com).
+ *                                     Si défini, toute autre forme d'hôte y est
+ *                                     redirigée (ajoute/retire le www selon la
+ *                                     valeur). Vide en local => aucune redirection.
+ * - config('app.strip_www')         : repli si canonical_host est vide.
+ * - config('app.https_hsts_seconds'): en-tête Strict-Transport-Security.
+ *
+ * Reconnaît les proxys/CDN (X-Forwarded-Proto, Cloudflare CF-Visitor…) pour
+ * ne pas boucler quand TLS est terminé en amont.
+ */
 class ForceHttps
 {
-    /**
-     * Redirect all requests to canonical HTTPS non-www URL
-     * when FORCE_HTTPS is enabled in .env.
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! config('app.force_https')) {
+        $forceHttps = (bool) config('app.force_https', false);
+        $targetHost = $this->resolveTargetHost($request);
+
+        if (! $forceHttps && $targetHost === $request->getHost()) {
             return $next($request);
         }
 
-        $forwardedProto = strtolower(trim((string) explode(',', (string) $request->header('x-forwarded-proto'))[0]));
-        $isHttps = $request->secure() || $forwardedProto === 'https';
-
-        $currentHost = $request->getHost();
-        $canonicalHost = preg_replace('/^www\./i', '', $currentHost);
-
-        $canonicalUrl = 'https://' . $canonicalHost . $request->getRequestUri();
-        $currentScheme = $isHttps ? 'https' : 'http';
-        $currentUrl = $currentScheme . '://' . $currentHost . $request->getRequestUri();
-
-        if ($currentUrl !== $canonicalUrl) {
-            return redirect()->to($canonicalUrl, 301);
+        if ($forceHttps) {
+            URL::forceScheme('https');
         }
 
-        return $next($request);
+        if ($forceHttps && ! $this->requestUsesHttps($request)) {
+            return $this->redirectToCanonical($request, $targetHost, true);
+        }
+
+        if ($targetHost !== $request->getHost()) {
+            return $this->redirectToCanonical($request, $targetHost, $this->requestUsesHttps($request));
+        }
+
+        $response = $next($request);
+        if ($forceHttps && $this->requestUsesHttps($request)) {
+            $this->applyHsts($response);
+        }
+
+        return $response;
+    }
+
+    protected function requestUsesHttps(Request $request): bool
+    {
+        if ($request->isSecure()) {
+            return true;
+        }
+
+        $forwardedProto = strtolower((string) $request->headers->get('x-forwarded-proto', ''));
+        if (in_array($forwardedProto, ['https', 'wss'], true)) {
+            return true;
+        }
+
+        $forwardedSsl = strtolower((string) $request->headers->get('x-forwarded-ssl', ''));
+        if ($forwardedSsl === 'on') {
+            return true;
+        }
+
+        $frontEndHttps = strtolower((string) $request->headers->get('front-end-https', ''));
+        if ($frontEndHttps === 'on') {
+            return true;
+        }
+
+        $cfVisitor = strtolower((string) $request->headers->get('cf-visitor', ''));
+        if (str_contains($cfVisitor, 'https')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function redirectToCanonical(Request $request, string $host, bool $secure): RedirectResponse
+    {
+        $uri = $request->getRequestUri();
+        $scheme = $secure ? 'https' : 'http';
+        $targetUrl = $scheme . '://' . $host . $uri;
+        $status = in_array($request->getMethod(), ['GET', 'HEAD'], true) ? 301 : 307;
+
+        return redirect()->to($targetUrl, $status);
+    }
+
+    protected function resolveTargetHost(Request $request): string
+    {
+        $canonicalHost = trim((string) config('app.canonical_host', ''));
+        if ($canonicalHost !== '') {
+            return $canonicalHost;
+        }
+
+        $host = $request->getHost();
+        if ((bool) config('app.strip_www', false) && str_starts_with(strtolower($host), 'www.')) {
+            return substr($host, 4);
+        }
+
+        return $host;
+    }
+
+    protected function applyHsts(Response $response): void
+    {
+        $seconds = max(0, (int) config('app.https_hsts_seconds', 31536000));
+
+        if ($seconds > 0) {
+            $response->headers->set('Strict-Transport-Security', 'max-age=' . $seconds . '; includeSubDomains; preload');
+        }
     }
 }
