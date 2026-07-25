@@ -86,6 +86,12 @@
     #gx-ads-popup .gxad-cta{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 16px;border-radius:999px;background:#0284c7;color:#fff;font-weight:700;font-size:13px;text-decoration:none}
     #gx-ads-popup .swiper-pagination{position:static;margin-top:8px;padding-bottom:10px}
     #gx-ads-popup .swiper-pagination-bullet-active{background:#0284c7}
+    /* Flèches de navigation manuelle (annonce précédente / suivante) */
+    #gx-ads-popup .gxad-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:32px;height:32px;border:0;border-radius:50%;background:rgba(15,23,42,.5);color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+    #gx-ads-popup .gxad-nav:hover{background:rgba(2,132,199,.9)}
+    #gx-ads-popup .gxad-prev{left:8px}
+    #gx-ads-popup .gxad-next{right:8px}
+    #gx-ads-popup .gxad-nav.swiper-button-disabled{opacity:.35;cursor:default}
     @media(max-width:420px){#gx-ads-popup{right:12px;left:12px;bottom:12px;width:auto}}
 </style>
 
@@ -133,7 +139,11 @@
                 </div>
             @endforeach
         </div>
-        @if($gxAds->count() > 1)<div class="swiper-pagination"></div>@endif
+        @if($gxAds->count() > 1)
+            <div class="swiper-pagination"></div>
+            <button class="gxad-nav gxad-prev" type="button" aria-label="Annonce précédente"><i class="fas fa-chevron-left"></i></button>
+            <button class="gxad-nav gxad-next" type="button" aria-label="Annonce suivante"><i class="fas fa-chevron-right"></i></button>
+        @endif
     </div>
 </div>
 
@@ -214,6 +224,8 @@
             loop: count > 1,
             autoplay: count > 1 ? { delay: firstDur, disableOnInteraction: false } : false,
             pagination: count > 1 ? { el: pop.querySelector('.swiper-pagination'), clickable: true } : false,
+            // Flèches manuelles précédent / suivant.
+            navigation: count > 1 ? { prevEl: pop.querySelector('.gxad-prev'), nextEl: pop.querySelector('.gxad-next') } : false,
             on: {
                 init: function () { fireImpression(slides[this.realIndex] || slides[0]); },
                 slideChange: function () { fireImpression(slides[this.realIndex]); }
