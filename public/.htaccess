@@ -5,22 +5,6 @@
 
     RewriteEngine On
 
-    # ── Forcer HTTPS + hôte canonique SANS www (production) ──────────────
-    # Le certificat SSL ne couvre que goexploriabusiness.com (sans www) : on
-    # redirige donc tout vers cette forme. X-Forwarded-Proto évite les boucles
-    # quand TLS est terminé par un proxy/CDN en amont. Le dev local utilise
-    # `php artisan serve` (serveur intégré) qui NE lit PAS ce fichier.
-    #
-    # 1) Retire le www (www.example → https://example).
-    RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
-    RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L,NE]
-
-    # 2) Force HTTPS sur le domaine de prod (hors requêtes déjà en HTTPS).
-    RewriteCond %{HTTP_HOST} goexploriabusiness\.com$ [NC]
-    RewriteCond %{HTTPS} !=on
-    RewriteCond %{HTTP:X-Forwarded-Proto} !=https [NC]
-    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
-
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

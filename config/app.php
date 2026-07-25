@@ -56,25 +56,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Force HTTPS Redirect
+    | Force HTTPS (génération d'URLs)
     |--------------------------------------------------------------------------
     |
-    | Redirige le HTTP vers HTTPS et vers l'hôte canonique (forme « www »).
+    | Laravel force uniquement le SCHÉMA https des URLs générées (forceScheme,
+    | via App\Http\Middleware\ForceHttps) + l'en-tête HSTS. Les redirections
+    | canoniques (retrait du www, http→https) sont gérées par le vhost Apache
+    | en production — AUCUNE redirection ici, pour éviter les boucles.
     | Auto-activé en production ; en local (APP_ENV=local) tout reste en http.
     |
     */
     'force_https' => (bool) env('FORCE_HTTPS', env('APP_ENV', 'production') === 'production'),
 
     'https_hsts_seconds' => (int) env('APP_HSTS_SECONDS', 31536000),
-
-    // Hôte canonique : SANS www (le certificat SSL ne couvre que la forme
-    // sans-www). Surchargeable via APP_CANONICAL_HOST. En local, null => aucune
-    // redirection d'hôte. Redondance de défense avec public/.htaccess.
-    'canonical_host' => env('APP_CANONICAL_HOST', env('APP_ENV', 'production') === 'production'
-        ? 'goexploriabusiness.com'
-        : null),
-
-    'strip_www' => (bool) env('APP_STRIP_WWW', env('APP_ENV', 'production') === 'production'),
 
     /*
     |--------------------------------------------------------------------------
