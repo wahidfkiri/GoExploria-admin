@@ -1340,6 +1340,9 @@
     </div>
 </section>
 
+{{-- Carrousel d'annonces (cards) --}}
+@include('components.ads-cards')
+
 <!-- ===== ÉVÉNEMENTS ===== -->
 <section id="evenements">
     <div class="container">

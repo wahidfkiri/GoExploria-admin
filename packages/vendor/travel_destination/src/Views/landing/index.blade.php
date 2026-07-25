@@ -298,6 +298,9 @@
   </div>
 </section>
 
+{{-- Carrousel d'annonces (cards) sous la carte --}}
+@include('components.ads-cards')
+
 <!-- Map Detail Modal -->
 <div class="map-modal" id="mapDetailModal">
   <div class="map-modal__backdrop" id="mapModalBackdrop"></div>

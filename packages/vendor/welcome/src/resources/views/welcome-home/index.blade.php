@@ -536,7 +536,7 @@
         <hr></hr>
             @include('welcome-home.components.SectionNavbarEspaceMedia')
         
-        @include('welcome-home.components.espace_media.BusinessTourism')
+        
         @unless($destinationContext)
             @isset($naMap)
                 @include('welcome-home.components.espace_media.TravelMapAmeriqueNord')
@@ -544,6 +544,9 @@
                 @include('geo-map::index')
             @endisset
         @endunless
+
+        {{-- Carrousel d'annonces (cards) sous la carte --}}
+        @include('components.ads-cards')
         {{-- ══════════════════════════════════════════════════════════════════
              SECTIONS APRÈS LA CARTE — rendues DYNAMIQUEMENT depuis l'admin
              (Constructeur /welcome : tables welcome_zones / welcome_sections).

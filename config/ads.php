@@ -22,6 +22,12 @@ return [
 
     'popup_enabled' => (bool) env('ADS_POPUP_ENABLED', true),
 
+    // Carrousel de cards horizontal (sous la carte / pages destinations & activités).
+    'cards_zone'   => env('ADS_CARDS_ZONE', 'cards_below_map'),
+    'cards_enabled' => (bool) env('ADS_CARDS_ENABLED', true),
+    // Défilement auto (secondes) entre deux glissements du carrousel de cards.
+    'cards_autoplay' => (int) env('ADS_CARDS_AUTOPLAY', 4),
+
     // Durée (heures) de mémorisation de la fermeture du popup par le visiteur.
     'popup_dismiss_hours' => (int) env('ADS_POPUP_DISMISS_HOURS', 12),
 
