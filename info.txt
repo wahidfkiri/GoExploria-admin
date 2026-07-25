@@ -7,3 +7,7 @@ php artisan db:seed --class=SouthAmericaCountriesSeeder
 php artisan db:seed --class=OceaniaCountriesSeeder
 
 php artisan db:seed --class=CanadaProvincesSeeder
+
+
+
+//
