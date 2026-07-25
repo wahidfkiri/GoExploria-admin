@@ -1880,5 +1880,7 @@
         });
     });
 </script>
+{{-- Popup publicitaire rotatif (Ads Manager) --}}
+@include('components.ads-popup')
 </body>
 </html>

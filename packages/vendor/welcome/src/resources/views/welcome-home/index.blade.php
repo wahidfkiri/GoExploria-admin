@@ -673,6 +673,9 @@
     {{-- @include('chat.index') --}}
     @include('welcome-home.components.ButtonTop')
     @include('welcome-home.components.Footer')
+
+    {{-- Popup publicitaire rotatif (Ads Manager) --}}
+    @include('components.ads-popup')
     
     <script defer src="{{ asset('js/welcome/carousel.js') }}"></script>
     <script defer src="{{ asset('js/welcome/navigation.js') }}"></script>

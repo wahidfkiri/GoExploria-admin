@@ -1244,5 +1244,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 </script>
+{{-- Popup publicitaire rotatif (Ads Manager) --}}
+@include('components.ads-popup')
 </body>
 </html>
