@@ -896,9 +896,9 @@ document.addEventListener('DOMContentLoaded', function () {
     L.marker([entityLat, entityLng], {
       icon: L.divIcon({
         className: 'map-marker map-marker--main',
-        html: '<svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>',
-        iconSize: [32, 32],
-        iconAnchor: [16, 32]
+        html: '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>',
+        iconSize: [24, 24],
+        iconAnchor: [12, 24]
       })
     }).addTo(map).bindPopup('<strong>' + entityName + '</strong>');
   }
@@ -914,7 +914,7 @@ document.addEventListener('DOMContentLoaded', function () {
       zoomToBoundsOnClick: true,
       iconCreateFunction: function (cluster) {
         var n = cluster.getChildCount();
-        var size = n >= 50 ? 54 : (n >= 20 ? 48 : 42);
+        var size = n >= 50 ? 44 : (n >= 20 ? 38 : 32);
         return L.divIcon({
           html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:linear-gradient(135deg,#F5A623,#e08900);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:' + (n >= 100 ? 13 : 15) + 'px;border:3px solid #fff;box-shadow:0 3px 12px rgba(0,0,0,0.45);cursor:pointer">+' + n + '</div>',
           className: 'marker-cluster-custom',
@@ -1015,9 +1015,9 @@ document.addEventListener('DOMContentLoaded', function () {
       var marker = L.marker([ce.latitude, ce.longitude], {
         icon: L.divIcon({
           className: 'map-marker map-marker--child',
-          html: '<div style="width:28px;height:28px;border-radius:50%;background:var(--amber,#f5a623);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff;font-size:14px;font-weight:700;color:#000">' + ce.name.charAt(0) + '</div>',
-          iconSize: [32, 32],
-          iconAnchor: [16, 32]
+          html: '<div style="width:22px;height:22px;border-radius:50%;background:var(--amber,#f5a623);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 7px rgba(0,0,0,0.4);border:2px solid #fff;font-size:11px;font-weight:700;color:#000">' + ce.name.charAt(0) + '</div>',
+          iconSize: [22, 22],
+          iconAnchor: [11, 22]
         })
       }).addTo(markersLayer);
       marker.bindPopup('<strong>' + ce.name + '</strong><br><a href="/travel-destination/' + (childType || 'country') + '/' + ce.slug + '" style="color:var(--amber,#f5a623)">Voir les d\u00e9tails</a>');
@@ -1115,9 +1115,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function getMarkerIcon(category, featured) {
-    var size = featured ? 40 : 32;
-    var ring = featured ? 'box-shadow:0 0 0 4px rgba(255,193,7,0.45),0 3px 12px rgba(0,0,0,0.5);border:3px solid #FFC107' : 'box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff';
-    var star = featured ? '<span style="position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;background:#FFC107;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.4);z-index:2"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>' : '';
+    var size = featured ? 30 : 24;
+    var ring = featured ? 'box-shadow:0 0 0 3px rgba(255,193,7,0.45),0 3px 10px rgba(0,0,0,0.5);border:2px solid #FFC107' : 'box-shadow:0 2px 7px rgba(0,0,0,0.4);border:2px solid #fff';
+    var star = featured ? '<span style="position:absolute;top:-5px;right:-5px;width:13px;height:13px;border-radius:50%;background:#FFC107;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.4);z-index:2"><svg viewBox="0 0 24 24" width="8" height="8" fill="#fff"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>' : '';
     var catData = getCategoryData(category);
     if (catData && catData.image) {
       return L.divIcon({

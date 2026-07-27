@@ -74,18 +74,18 @@
 
     /* Markers */
     .custom-marker { background:transparent; border:none; }
-    .marker-icon { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; box-shadow:0 3px 10px rgba(0,0,0,0.2); transition:all 0.3s ease; cursor:pointer; }
+    .marker-icon { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; box-shadow:0 2px 7px rgba(0,0,0,0.2); transition:all 0.3s ease; cursor:pointer; }
     .marker-icon:hover { transform:scale(1.1); box-shadow:0 5px 15px rgba(0,0,0,0.3); }
     .marker-icon.highlighted { transform:scale(1.2); box-shadow:0 0 0 3px rgba(66,153,225,0.5); }
     /* Points « Mis en avant » : anneau doré + halo pulsé + étoile */
     .marker-icon.marker-featured { position:relative; border:3px solid #FFC107; box-shadow:0 0 0 4px rgba(255,193,7,0.45), 0 3px 12px rgba(0,0,0,0.5); animation:featuredPulse 2s ease-in-out infinite; }
-    .marker-featured-star { position:absolute; top:-8px; right:-8px; width:18px; height:18px; border-radius:50%; background:#FFC107; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 4px rgba(0,0,0,0.4); z-index:2; }
-    .marker-featured-star i { font-size:9px; color:#fff; }
+    .marker-featured-star { position:absolute; top:-5px; right:-5px; width:13px; height:13px; border-radius:50%; background:#FFC107; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 4px rgba(0,0,0,0.4); z-index:2; }
+    .marker-featured-star i { font-size:7px; color:#fff; }
     @keyframes featuredPulse {
         0%, 100% { box-shadow:0 0 0 4px rgba(255,193,7,0.45), 0 3px 12px rgba(0,0,0,0.5); }
         50% { box-shadow:0 0 0 8px rgba(255,193,7,0.15), 0 3px 12px rgba(0,0,0,0.5); }
     }
-    .user-marker-icon { width:50px; height:50px; background:linear-gradient(135deg,#00c9b7,#2a5bd7); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:22px; box-shadow:0 3px 15px rgba(0,0,0,0.3); border:3px solid white; animation:userMarkerPulse 2s infinite; }
+    .user-marker-icon { width:34px; height:34px; background:linear-gradient(135deg,#00c9b7,#2a5bd7); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:15px; box-shadow:0 3px 12px rgba(0,0,0,0.3); border:2px solid white; animation:userMarkerPulse 2s infinite; }
     @keyframes userMarkerPulse { 0%{transform:scale(1);box-shadow:0 0 0 0 rgba(42,91,215,0.7)} 70%{transform:scale(1.05);box-shadow:0 0 0 10px rgba(42,91,215,0)} 100%{transform:scale(1);box-shadow:0 0 0 0 rgba(42,91,215,0)} }
 
     /* Places list */
@@ -723,7 +723,7 @@ class InteractiveMap {
                 zoomToBoundsOnClick: true,
                 iconCreateFunction: (cluster) => {
                     const n = cluster.getChildCount();
-                    const size = n >= 50 ? 54 : (n >= 20 ? 48 : 42);
+                    const size = n >= 50 ? 44 : (n >= 20 ? 38 : 32);
                     return L.divIcon({
                         html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:${n >= 100 ? 13 : 15}px;border:3px solid #fff;box-shadow:0 3px 12px rgba(0,0,0,0.45);cursor:pointer">+${n}</div>`,
                         className: 'marker-cluster-custom',
@@ -846,7 +846,7 @@ class InteractiveMap {
         const icon = L.divIcon({
             className:'custom-marker',
             html:`<div class="marker-icon${featured ? ' marker-featured' : ''}" style="background:${this.getCategoryColor(place.category)};">${featured ? '<span class="marker-featured-star"><i class="fas fa-star"></i></span>' : ''}<i class="${this.getCategoryIcon(place.category)}"></i></div>`,
-            iconSize:[40,40], iconAnchor:[20,40]
+            iconSize:[26,26], iconAnchor:[13,26]
         });
         const marker = L.marker([place.latitude,place.longitude],{icon,title:place.name,zIndexOffset:featured ? 1000 : 0});
         if (this.clusterGroup) { this.clusterGroup.addLayer(marker); } else { marker.addTo(this.map); }
@@ -1263,7 +1263,7 @@ class InteractiveMap {
     }
     addUserMarker(lat,lng) {
         if (this.userMarker) this.userMarker.remove();
-        const icon=L.divIcon({className:'custom-marker',html:'<div class="user-marker-icon"><i class="fas fa-user"></i></div>',iconSize:[50,50],iconAnchor:[25,50]});
+        const icon=L.divIcon({className:'custom-marker',html:'<div class="user-marker-icon"><i class="fas fa-user"></i></div>',iconSize:[34,34],iconAnchor:[17,34]});
         this.userMarker=L.marker([lat,lng],{icon,title:'Votre position'}).addTo(this.map);
     }
 
