@@ -1341,7 +1341,7 @@
 </section>
 
 {{-- Carrousel d'annonces (cards) --}}
-@include('components.ads-cards')
+@include('components.ads-cards', ['adContext' => 'activities'])
 
 <!-- ===== ÉVÉNEMENTS ===== -->
 <section id="evenements">
@@ -1884,6 +1884,6 @@
     });
 </script>
 {{-- Popup publicitaire rotatif (Ads Manager) --}}
-@include('components.ads-popup')
+@include('components.ads-popup', ['adContext' => 'activities'])
 </body>
 </html>

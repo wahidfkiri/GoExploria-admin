@@ -546,7 +546,7 @@
         @endunless
 
         {{-- Carrousel d'annonces (cards) sous la carte --}}
-        @include('components.ads-cards')
+        @include('components.ads-cards', ['adContext' => 'home'])
         {{-- ══════════════════════════════════════════════════════════════════
              SECTIONS APRÈS LA CARTE — rendues DYNAMIQUEMENT depuis l'admin
              (Constructeur /welcome : tables welcome_zones / welcome_sections).
@@ -678,7 +678,7 @@
     @include('welcome-home.components.Footer')
 
     {{-- Popup publicitaire rotatif (Ads Manager) --}}
-    @include('components.ads-popup')
+    @include('components.ads-popup', ['adContext' => 'home'])
     
     <script defer src="{{ asset('js/welcome/carousel.js') }}"></script>
     <script defer src="{{ asset('js/welcome/navigation.js') }}"></script>

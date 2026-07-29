@@ -16,6 +16,8 @@
     $gxcAdminUrl = rtrim(config('ads.admin_url'), '/');
     $gxcZone     = config('ads.cards_zone', 'cards_below_map');
     $gxcAutoplay = max(1, (int) config('ads.cards_autoplay', 4)) * 1000;
+    // Contexte de page (home, city, activities…) : filtre display_locations.
+    $gxcCtx = ($adContext ?? null) === 'ville' ? 'city' : ($adContext ?? null);
 
     try {
         $gxcToday     = now()->toDateString();
@@ -32,6 +34,10 @@
                 ->where(fn ($q) => $q->whereNull('ads.start_date')->orWhere('ads.start_date', '<=', $gxcToday))
                 ->where(fn ($q) => $q->whereNull('ads.end_date')->orWhere('ads.end_date', '>=', $gxcToday))
                 ->where(fn ($q) => $q->whereNull('ads.budget_total')->orWhereRaw('ads.budget_total > ads.budget_spent'))
+                ->when($gxcCtx, fn ($q) => $q->where(fn ($w) => $w
+                    ->whereNull('ads.display_locations')
+                    ->orWhereRaw('JSON_LENGTH(ads.display_locations) = 0')
+                    ->orWhereJsonContains('ads.display_locations', $gxcCtx)))
                 ->select('ads.*')
                 ->orderBy('ads.priority')
                 ->limit(($gxcPlacement->max_ads ?: 24))

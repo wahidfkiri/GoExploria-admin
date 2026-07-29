@@ -19,6 +19,8 @@
     $gxAdsAdminUrl = rtrim(config('ads.admin_url'), '/');
     $gxAdsZone     = config('ads.popup_zone', 'popup_bottom_right');
     $gxAdsDefault  = (int) config('ads.popup_default_duration', 5);
+    // Contexte de page (home, city, activities…) : filtre display_locations.
+    $gxCtx = ($adContext ?? null) === 'ville' ? 'city' : ($adContext ?? null);
 
     try {
         $gxToday     = now()->toDateString();
@@ -35,6 +37,10 @@
                 ->where(fn ($q) => $q->whereNull('ads.start_date')->orWhere('ads.start_date', '<=', $gxToday))
                 ->where(fn ($q) => $q->whereNull('ads.end_date')->orWhere('ads.end_date', '>=', $gxToday))
                 ->where(fn ($q) => $q->whereNull('ads.budget_total')->orWhereRaw('ads.budget_total > ads.budget_spent'))
+                ->when($gxCtx, fn ($q) => $q->where(fn ($w) => $w
+                    ->whereNull('ads.display_locations')
+                    ->orWhereRaw('JSON_LENGTH(ads.display_locations) = 0')
+                    ->orWhereJsonContains('ads.display_locations', $gxCtx)))
                 ->select('ads.*')
                 ->orderBy('ads.priority')
                 ->limit(($gxPlacement->max_ads ?: 8))

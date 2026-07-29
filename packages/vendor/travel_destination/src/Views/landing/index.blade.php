@@ -299,7 +299,7 @@
 </section>
 
 {{-- Carrousel d'annonces (cards) sous la carte --}}
-@include('components.ads-cards')
+@include('components.ads-cards', ['adContext' => $normalizedType])
 
 <!-- Map Detail Modal -->
 <div class="map-modal" id="mapDetailModal">
@@ -1248,6 +1248,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {{-- Popup publicitaire rotatif (Ads Manager) --}}
-@include('components.ads-popup')
+@include('components.ads-popup', ['adContext' => $normalizedType])
 </body>
 </html>
