@@ -6,6 +6,7 @@ use App\Helpers\DestinationHelper;
 use App\Models\MapCategory;
 use App\Models\MapPoint;
 use App\Models\PageContent;
+use App\Models\Page;
 use App\Services\DestinationService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -144,10 +145,19 @@ class TravelDestinationController extends Controller
             ->orderByDesc('id')
             ->get();
 
+        // Pages composées dans l'éditeur visuel côté admin : leur HTML/CSS est
+        // injecté tel quel sous les sections standard de la destination.
+        $builderPages = Page::where('pageable_type', get_class($entity))
+            ->where('pageable_id', $entity->id)
+            ->where('is_active', true)
+            ->orderBy('id')
+            ->get();
+
         return view('travel-destination::landing.index', compact(
             'entity',
             'normalizedType',
             'slug',
+            'builderPages',
             'breadcrumb',
             'hierarchy',
             'stats',

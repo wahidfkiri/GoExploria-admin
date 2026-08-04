@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Valeurs et expertises de Go Exploria Business">
-    <title>Valeurs et nos expertises | Go Exploria Business</title>
+    <meta name="description" content="Approche clients 2026-2027 de Go Exploria Business">
+    <title>INFO GO | Go Exploria Business</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -210,6 +210,50 @@
             font-weight: 500;
         }
 
+        /* Cartes à titre : le contenu est groupé pour ne pas s'étaler
+           en colonnes à côté de l'icône. */
+        .values-card-body { display: flex; flex-direction: column; gap: 8px; }
+
+        .values-card-body h2 {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 700;
+            color: #102647;
+            line-height: 1.35;
+        }
+
+        /* Encart « Next Level » */
+        .values-nextlevel {
+            background: linear-gradient(135deg, #102647 0%, #1b3a67 100%);
+            border-radius: 16px;
+            padding: 26px;
+            color: #e8eefb;
+            margin-bottom: 22px;
+        }
+
+        .values-nextlevel .values-badge {
+            background: rgba(212, 175, 55, .18);
+            color: #f3cd6f;
+            border-color: rgba(212, 175, 55, .35);
+            margin-bottom: 14px;
+        }
+
+        .values-nextlevel-title {
+            margin: 0 0 12px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.3;
+        }
+
+        .values-nextlevel p {
+            margin: 0 0 12px;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .values-nextlevel p:last-child { margin-bottom: 0; }
+
         .values-signature {
             background: linear-gradient(135deg, #0f284c 0%, #17345e 100%);
             border-radius: 16px;
@@ -301,14 +345,21 @@
     @include('home-v2.components.VerticalMenu')
     @include('home-v2.components.Header')
 
+    {{-- Contenu repris dans l'éditeur visuel de l'administration : il remplace
+         le corps d'origine, l'en-tête et le pied de page restant gérés ici. --}}
+    @if(isset($sitePage) && $sitePage && $sitePage->usesBuilder())
+    <main class="values-page">
+        {!! $sitePage->renderedContent() !!}
+    </main>
+    @else
     <main class="values-page">
         <div class="values-wrap">
             <section class="values-hero">
                 <div class="values-hero-content">
-                    <span class="values-badge"><i class="fas fa-gem"></i> Go Exploria Business</span>
-                    <h1 class="values-title">Valeurs et nos <span>expertises</span></h1>
+                    <span class="values-badge"><i class="fas fa-gem"></i> Approche clients 2026-2027</span>
+                    <h1 class="values-title">C&rsquo;est quoi <span>Go Exploria Business</span></h1>
                     <p class="values-intro">
-                        Le d&eacute;veloppement web est notre passion depuis plusieurs ann&eacute;es. Notre objectif est de vous faire b&eacute;n&eacute;ficier de notre expertise avec une &eacute;quipe dynamique et d&eacute;di&eacute;e au projet Go Exploria Business. Nous ne suivons pas les tendances, nous les cr&eacute;ons pour votre satisfaction.
+                        Plateforme d&rsquo;information touristique et d&rsquo;affaire qui s&rsquo;adresse au grand public et aux entreprises, r&eacute;gionale, nationale et internationale, qui a pour but de regrouper les lieux g&eacute;ographiques du monde entier.
                     </p>
                     <div class="values-hero-logo-wrap">
                         <div class="values-hero-logo-box">
@@ -328,38 +379,47 @@
 
             <section class="values-body">
                 <p class="values-lead">
-                    La base de notre philosophie : la technologie au service de l&rsquo;humain, et pas l&rsquo;inverse. Nous voulons informer avec le plus de pr&eacute;cisions possible, en toute transparence, et rendre les informations accessibles &agrave; tous.
+                    Ax&eacute; sur la qualit&eacute; des informations : r&eacute;f&eacute;rences clients de qualit&eacute;, forfaits, promotions et les modules de gestion marketing, s&rsquo;adressant aux entreprises et les Partenaires Affili&eacute;s.
                 </p>
 
                 <div class="values-grid">
                     <article class="values-card">
-                        <i class="fas fa-globe"></i>
-                        <p>Rendre nos solutions web accessibles pour l&rsquo;ensemble du monde : vos ambitions seront les n&ocirc;tres.</p>
+                        <i class="fas fa-chart-line"></i>
+                        <div class="values-card-body">
+                            <h2>Un mod&egrave;le &eacute;conomique solide</h2>
+                            <p>Avec un mod&egrave;le &eacute;conomique solide d&eacute;j&agrave; rentable et test&eacute; depuis 2012.</p>
+                            <p>C&rsquo;est un puissant levier &eacute;conomique et d&rsquo;acquisition, ax&eacute; sur la rentabilit&eacute; et des retours sur les investissements marketing et la qualit&eacute; des informations disponibles.</p>
+                        </div>
                     </article>
                     <article class="values-card">
                         <i class="fas fa-handshake"></i>
-                        <p>Partager notre succ&egrave;s avec nos Partenaires Affili&eacute;s : prenez votre place avec nous.</p>
+                        <div class="values-card-body">
+                            <h2>Mise en valeur des Partenaires Affili&eacute;s</h2>
+                            <p>Grace &agrave; l&rsquo;implication de nos Partenaires Affili&eacute;s et Certifi&eacute;s r&eacute;gionaux, nationaux et internationaux, vous aurez toutes les raisons de faire parties de nos solutions d&eacute;di&eacute;s et personnalis&eacute;s.</p>
+                        </div>
                     </article>
-                    <article class="values-card">
-                        <i class="fas fa-lightbulb"></i>
-                        <p>Offrir les meilleures solutions web et proposer nos plans &agrave; des tarifs accessibles.</p>
-                    </article>
-                    <article class="values-card">
-                        <i class="fas fa-network-wired"></i>
-                        <p>&Eacute;voluer avec vous et rendre le monde plus proche gr&acirc;ce &agrave; des outils connect&eacute;s et efficaces.</p>
-                    </article>
+                </div>
+
+                <div class="values-nextlevel">
+                    <span class="values-badge"><i class="fas fa-bolt"></i> Go Exploria Next Level</span>
+                    <h2 class="values-nextlevel-title">Des outils marketing web exclusifs</h2>
+                    <p>Avec une strat&eacute;gie num&eacute;rique performante, (+ de 250&nbsp;000&nbsp;$ / marketing / an).</p>
+                    <p>
+                        Grace une solution compl&egrave;te de plans d&rsquo;affichage, de positionnements web r&eacute;gionale,
+                        nationale et international, des modules gestions efficaces, votre &eacute;quipe d&eacute;di&eacute;e de
+                        Partenaires Affili&eacute;s qui sont pr&eacute;sent pour vous, c&rsquo;est un gage de succ&egrave;s.
+                    </p>
                 </div>
 
                 <div class="values-signature">
                     <p class="values-signature-quote">
-                        Merci &agrave; tous de rendre ce projet &agrave; la hauteur de nos ambitions mutuelles.
+                        Choisissez l&rsquo;efficacit&eacute; nos plans m&eacute;dias.
                     </p>
-                    <p class="values-signature-name">Jean b et l&rsquo;&eacute;quipe de passionn&eacute;s</p>
-                    <p class="values-signature-role">Id&eacute;ateur</p>
                 </div>
             </section>
         </div>
     </main>
+    @endif
 
     @include('home-v2.components.Footer')
     <script src="{{ asset('js/home-v2/menu-api-service.js') }}"></script>

@@ -41,7 +41,16 @@
                 </button>
                 
                 <a href="/" class="logo">
-                    <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}">
+                    {{-- Logo dédié au mobile. <picture> plutôt que deux <img>
+                         masqués en CSS : le navigateur ne télécharge qu'un seul
+                         fichier. Le palier 992 px est celui où le header bascule
+                         déjà en mise en page mobile (cf. styles.css).
+                         display:block en ligne car la règle vit dans deux
+                         feuilles distinctes, dont un bundle généré. --}}
+                    <picture style="display:block;">
+                        <source media="(max-width: 992px)" srcset="{{ asset('Logo-mobile.png') }}">
+                        <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}">
+                    </picture>
                 </a>
                 <a href="#section-carte-amerique-nord" class="logo-map-link" title="Voir la carte interactive">
                     <img src="{{ asset('header_info/map2.png') }}" alt="Carte Interactive" class="logo-map-icon">

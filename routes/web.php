@@ -375,7 +375,9 @@ Route::get('/nos-services/{slug}', [\Vendor\Welcome\Http\Controllers\ServicesCon
 
 // Pages principales du Header
 Route::get('/contact',      fn() => view('home-v2.pages.contact'))->name('contact');
-Route::get('/valeurs',      fn() => view('home-v2.pages.valeurs'))->name('valeurs');
+// Contenu éditable depuis l'administration (constructeur → Pages du site) ;
+// repli sur la vue d'origine tant que la page n'y a pas été reprise.
+Route::get('/valeurs',      [App\Http\Controllers\SitePageController::class, 'valeurs'])->name('valeurs');
 Route::get('/inscription',  fn() => view('home-v2.pages.inscription'))->name('inscription');
 Route::get('/mon-compte',   fn() => redirect()->away('https://app.goexploriabusiness.com/register'))->name('mon-compte');
 Route::get('/devis',        [DevisController::class, 'show'])->name('devis');

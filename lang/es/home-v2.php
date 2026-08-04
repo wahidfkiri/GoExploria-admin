@@ -32,7 +32,7 @@ return [
 
     'header' => [
         'menu' => [
-            'values' => 'NUESTROS VALORES',
+            'values' => 'INFO GO',
             'services' => 'NUESTROS SERVICIOS',
             'plans' => 'NUESTROS PLANES',
             'contact' => 'CONTACTO',
@@ -82,7 +82,7 @@ return [
         ],
         'information_links' => [
             'about' => 'Acerca de',
-            'values' => 'Nuestros Valores',
+            'values' => 'INFO GO',
             'testimonials' => 'Testimonios',
             'faq' => 'Preguntas Frecuentes',
             'contact' => 'Contacto',

@@ -107,7 +107,7 @@ $tr = static function (string $text): string {
 
             {{-- Mobile-only items --}}
             <div class="vertical-menu-v2-item vertical-menu-v2-mobile-only">
-                <a href="#valeurs" class="vertical-menu-v2-link"><span>Nos Valeurs</span></a>
+                <a href="#valeurs" class="vertical-menu-v2-link"><span>INFO GO</span></a>
             </div>
 
             {{-- Accordéon Nos Services --}}

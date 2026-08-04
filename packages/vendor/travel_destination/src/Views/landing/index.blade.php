@@ -703,6 +703,21 @@
   </section>
 @endif
 
+{{-- Pages composées dans l'éditeur visuel (admin → destination → Éditeur visuel).
+     Le CSS enregistré avec la page est émis tel quel : il est global, donc des
+     sélecteurs trop larges (body, h2…) affecteraient aussi les sections
+     ci-dessus — les templates fournis préfixent leurs règles. --}}
+@if(isset($builderPages) && $builderPages->count() > 0)
+  @foreach($builderPages as $builderPage)
+    @if(filled($builderPage->css_content))
+      <style>{!! $builderPage->css_content !!}</style>
+    @endif
+    <section class="builder-page-section" id="page-{{ $builderPage->slug }}">
+      {!! $builderPage->html_content !!}
+    </section>
+  @endforeach
+@endif
+
 <footer class="footer" role="contentinfo">
   <div class="container">
     <div class="footer__grid">
