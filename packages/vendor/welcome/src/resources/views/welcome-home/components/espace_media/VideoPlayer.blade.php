@@ -38,6 +38,22 @@ $vpConfig = [
     ],
 ];
 
+/* Données saisies dans le constructeur /welcome (welcome_sections.settings).
+   Superposées AVANT la traduction : un titre personnalisé doit être traduit
+   comme celui d'origine. */
+$wsData = $wsData ?? [];
+$vpConfig = gx_section_data($vpConfig, $wsData);
+
+if (! empty($wsData['categories']) && is_array($wsData['categories'])) {
+    $saisies = [];
+    foreach ($wsData['categories'] as $c) {
+        if (! empty($c['key'])) {
+            $saisies[$c['key']] = ['label' => $c['label'] ?? $c['key'], 'icon' => $c['icon'] ?? 'fa-play'];
+        }
+    }
+    if ($saisies !== []) { $vpCategoriesSaisies = $saisies; }
+}
+
 if (app()->getLocale() !== 'fr') {
     $vpConfig['title'] = $tr($vpConfig['title']);
     $vpConfig['subtitle'] = $tr($vpConfig['subtitle']);
@@ -58,6 +74,8 @@ $vpCategories = [
     'aventure'    => ['label' => 'Aventure', 'icon' => 'fa-mountain'],
 ];
 
+if (isset($vpCategoriesSaisies)) { $vpCategories = $vpCategoriesSaisies; }
+
 /* ----------------------------------------------------------------
    CHAÎNES RÉSEAUX
 ---------------------------------------------------------------- */
@@ -76,6 +94,9 @@ $vpNetworks = [
     ['name' => 'Odyssée',     'icon' => 'fas fa-satellite-dish',   'url' => 'https://odysee.com',        'desc' => 'Diffusion libre de contenus et communautés niches.'],
     ['name' => 'Bitchute',    'icon' => 'fas fa-rocket',           'url' => 'https://www.bitchute.com',  'desc' => 'Partage vidéo alternatif et canaux spécialisés.'],
 ];
+
+/* Réseaux saisis dans le constructeur : remplacent la liste d'origine. */
+$vpNetworks = gx_section_list($vpNetworks, $wsData, 'networks');
 
 /* ----------------------------------------------------------------
    DESTINATIONS (1 pays par continent, 5 provinces, 5 regions)

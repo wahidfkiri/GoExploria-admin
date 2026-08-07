@@ -2480,3 +2480,54 @@ HTML;
         return $html;
     }
 }
+
+if (! function_exists('gx_section_data')) {
+    /**
+     * Applique les données saisies dans le constructeur /welcome par-dessus les
+     * valeurs d'origine d'un composant.
+     *
+     * Les sections « Composant » sont rendues par une vue Blade dont les données
+     * étaient écrites en dur. L'administration les enregistre désormais dans
+     * welcome_sections.settings ; cette fonction les superpose aux valeurs de la
+     * vue. Une clé absente ou vide laisse la valeur d'origine, ce qui permet de
+     * ne personnaliser qu'une partie d'une section.
+     *
+     * @param  array  $defaut  Les valeurs écrites dans la vue.
+     * @param  mixed  $saisi   welcome_sections.settings (tableau ou null).
+     */
+    function gx_section_data(array $defaut, $saisi): array
+    {
+        if (! is_array($saisi) || $saisi === []) {
+            return $defaut;
+        }
+
+        foreach ($saisi as $cle => $valeur) {
+            if ($valeur === null || $valeur === '' || $valeur === []) {
+                continue;   // vide = on garde l'original
+            }
+
+            // Fusion en profondeur pour les tableaux associatifs (logo_left…),
+            // remplacement complet pour les listes (items, slides…) : compléter
+            // une liste ferait réapparaître des entrées supprimées.
+            $defaut[$cle] = (is_array($valeur) && is_array($defaut[$cle] ?? null)
+                && ! array_is_list($valeur) && ! array_is_list($defaut[$cle]))
+                ? gx_section_data($defaut[$cle], $valeur)
+                : $valeur;
+        }
+
+        return $defaut;
+    }
+}
+
+if (! function_exists('gx_section_list')) {
+    /**
+     * Variante « liste » : renvoie la liste saisie si elle existe, sinon celle
+     * d'origine. Sert aux répéteurs (items, slides, photos, vidéos).
+     */
+    function gx_section_list(array $defaut, $saisi, string $cle): array
+    {
+        $valeur = is_array($saisi) ? ($saisi[$cle] ?? null) : null;
+
+        return (is_array($valeur) && $valeur !== []) ? $valeur : $defaut;
+    }
+}

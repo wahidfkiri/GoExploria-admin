@@ -184,6 +184,11 @@ $tiktokVideos = [
     ],
 ];
 
+/* Données saisies dans le constructeur /welcome : la liste saisie remplace
+   celle d'origine ; vide, elle la laisse intacte. */
+$wsData = $wsData ?? [];
+$tiktokVideos = gx_section_list($tiktokVideos, $wsData, 'videos');
+
 $ttkCategories = [
     1 => 'evenement',
     2 => 'nature',

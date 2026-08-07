@@ -147,6 +147,11 @@ $gxtVideos = [
         'desc'      => "Falaises rouges, plages désertes, fruits de mer frais et vent du large : les Îles-de-la-Madeleine sont le paradis ultime pour les amateurs de nature sauvage.",
     ],
 ];
+
+/* Données saisies dans le constructeur /welcome : la liste saisie remplace
+   celle d'origine ; vide, elle la laisse intacte. */
+$wsData = $wsData ?? [];
+$gxtVideos = gx_section_list($gxtVideos, $wsData, 'videos');
 @endphp
 
 <section id="my-tube" class="gxt-section">

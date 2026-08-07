@@ -583,7 +583,12 @@
                     {!! $wSection->html_content !!}
                     @if(filled($wSection->js_content))<script>{!! $wSection->js_content !!}</script>@endif
                 @elseif($wSection->view && view()->exists($wSection->view))
-                    @include($wSection->view)
+                    {{-- $wsData : données saisies dans le constructeur pour cette
+                         section (welcome_sections.settings). Les composants les
+                         superposent à leurs valeurs d'origine via
+                         gx_section_data() ; un composant qui ne s'en sert pas
+                         continue de fonctionner à l'identique. --}}
+                    @include($wSection->view, ['wsData' => $wSection->settings ?? []])
                 @endif
             @endforeach
         @empty

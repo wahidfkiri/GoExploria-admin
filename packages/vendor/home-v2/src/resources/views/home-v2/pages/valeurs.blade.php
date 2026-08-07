@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Approche clients 2026-2027 de Go Exploria Business">
-    <title>INFO GO | Go Exploria Business</title>
+    {{-- Titre et description pilotés depuis l'administration (Constructeur →
+         Pages du site) ; les valeurs ci-dessous servent de repli tant que la
+         page n'y est pas enregistrée. --}}
+    <meta name="description" content="{{ $sitePage->meta_description ?? 'Approche clients 2026-2027 de Go Exploria Business' }}">
+    <title>{{ $sitePage->meta_title ?? 'INFO GO | Go Exploria Business' }}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

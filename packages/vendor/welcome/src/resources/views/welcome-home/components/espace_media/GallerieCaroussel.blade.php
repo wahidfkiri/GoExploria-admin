@@ -14,6 +14,11 @@ $gicPhotos = [
     ['img' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&h=1200&fit=crop', 'title' => 'Océan Pacifique', 'destination' => 'oceanie', 'destination_label' => 'Australie', 'cat' => 'nature', 'cat_label' => 'Nature', 'ratio' => '16 / 10', 'tags' => ['#international', '#ocean', '#summer', '#australia']],
     ['img' => 'https://images.unsplash.com/photo-1526772662000-3f88f10405ff?w=900&h=1200&fit=crop', 'title' => 'Route des Andes', 'destination' => 'amerique-sud', 'destination_label' => 'Chili', 'cat' => 'aventure', 'cat_label' => 'Aventure', 'ratio' => '5 / 6', 'tags' => ['#international', '#andes', '#roadtrip', '#travel']],
 ];
+
+/* Données saisies dans le constructeur /welcome : la liste saisie remplace
+   celle d'origine ; vide, elle la laisse intacte. */
+$wsData = $wsData ?? [];
+$gicPhotos = gx_section_list($gicPhotos, $wsData, 'photos');
 @endphp
 
 <section id="photos" class="gic-section">

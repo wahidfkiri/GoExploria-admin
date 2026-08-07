@@ -93,17 +93,24 @@ class Etablissement extends Model
     {
         return $this->belongsToMany(Activity::class)
                     ->withTimestamps()
-                    ->withPivot('created_at', 'updated_at');
+                    // is_active et order vivent sur la table de liaison
+                    // `activity_etablissement`, alimentée par l'onglet
+                    // « Activités » du tableau de bord CMS.
+                    ->withPivot('is_active', 'order')
+                    ->orderByPivot('order')
+                    ->orderBy('activities.name');
     }
-    
+
     /**
-     * Relation Many-to-Many avec les activités actives seulement
+     * Activités réellement affichées sur le site de l'établissement :
+     * mises en avant sur la liaison ET actives dans le catalogue commun.
+     * Une activité retirée du catalogue disparaît donc de tous les sites.
      */
     public function activeActivities()
     {
-        return $this->belongsToMany(Activity::class)
+        return $this->activities()
                     ->wherePivot('is_active', true)
-                    ->withTimestamps();
+                    ->where('activities.is_active', true);
     }
 
     /**

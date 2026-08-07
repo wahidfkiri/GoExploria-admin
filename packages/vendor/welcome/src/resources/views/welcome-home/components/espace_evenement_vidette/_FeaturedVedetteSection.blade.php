@@ -14,6 +14,54 @@
         return $maps[$locale][$text] ?? $text;
     };
 
+    /* ------------------------------------------------------------------
+       Données saisies dans le constructeur /welcome.
+
+       Les sept sections « Vedette » passent toutes par ce rendu : la
+       superposition se fait donc ici une seule fois, plutôt que dans chacune
+       d'elles. $wsData vient de welcome-home/index.blade.php ; il est absent
+       quand la vue est incluse directement (repli), d'où le ?? [].
+
+       Une valeur non renseignée laisse celle du composant appelant.
+       ------------------------------------------------------------------ */
+    $wsData = $wsData ?? [];
+
+    if ($wsData !== []) {
+        $title        = $wsData['title']        ?? ($title ?? '');
+        $subtitle     = $wsData['subtitle']     ?? ($subtitle ?? '');
+        $rightLabel   = $wsData['rightLabel']   ?? ($rightLabel ?? '');
+        $learnMoreUrl = $wsData['learnMoreUrl'] ?? ($learnMoreUrl ?? '#');
+
+        // Les catégories sont saisies en liste [{key,label,icon}] ; le rendu
+        // les attend indexées par clé.
+        if (! empty($wsData['categories']) && is_array($wsData['categories'])) {
+            $saisies = [];
+            foreach ($wsData['categories'] as $c) {
+                if (! empty($c['key'])) {
+                    $saisies[$c['key']] = [
+                        'label' => $c['label'] ?? $c['key'],
+                        'icon'  => $c['icon'] ?? 'fa-star',
+                    ];
+                }
+            }
+            if ($saisies !== []) {
+                $categories = $saisies;
+            }
+        }
+
+        $items = gx_section_list($items ?? [], $wsData, 'items');
+
+        // Le diaporama est saisi à plat : la première vignette est la
+        // principale, les suivantes forment la grille.
+        if (! empty($wsData['slides']) && is_array($wsData['slides'])) {
+            $vignettes = array_values($wsData['slides']);
+            $slides = [[
+                'main' => array_shift($vignettes) ?: [],
+                'grid' => $vignettes,
+            ]];
+        }
+    }
+
     $sectionId = $sectionId ?? 'featured-space';
     $carouselId = $sectionId . 'Grid';
     $prevId = $sectionId . 'Prev';

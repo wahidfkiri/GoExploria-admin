@@ -191,6 +191,8 @@
     <script src="{{ asset('js/home-v2/vertical-menu.js') }}"></script>
     <script src="{{ asset('js/home-v2/mega-menu.js') }}"></script>
     @include('cms::web.fallback.partials.gx-galleries')
+    {{-- Activités proposées par l'établissement (onglet « Activités » du CMS). --}}
+    @include('cms::web.fallback.partials.gx-activities')
     @include('cms::web.fallback.partials.gx-announcements')
 </body>
 </html>
