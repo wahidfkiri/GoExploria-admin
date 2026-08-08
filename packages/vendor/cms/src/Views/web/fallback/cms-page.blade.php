@@ -45,13 +45,16 @@
         {!! $content !!}
     </main>
 
+    {{-- Activités proposées par l'établissement, rattachées depuis l'onglet
+         « Activités » du tableau de bord. Dernière section avant le pied
+         de page. --}}
+    @include('cms::web.fallback.partials.gx-activities')
+
     {{-- Footer de l'établissement (cms_header_footers). Rien n'est affiché si null. --}}
     @include('cms::web.fallback.partials.landing-cms-footer', ['forceCmsHeaderFooter' => true])
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @include('cms::web.fallback.partials.gx-galleries')
-    {{-- Activités proposées par l'établissement (onglet « Activités » du CMS). --}}
-    @include('cms::web.fallback.partials.gx-activities')
     @include('cms::web.fallback.partials.gx-announcements')
 </body>
 </html>

@@ -176,6 +176,11 @@
 
     @include('cms::web.fallback.partials.landing-media-slideshow')
 
+    {{-- Activités proposées par l'établissement, rattachées depuis l'onglet
+         « Activités » du tableau de bord. Dernière section avant le pied
+         de page. --}}
+    @include('cms::web.fallback.partials.gx-activities')
+
     {{-- Footer propre à l'établissement (cms_header_footers) puis footer landing --}}
     @include('cms::web.fallback.partials.landing-cms-footer')
     @include('cms::web.fallback.partials.sections.footer')
@@ -191,8 +196,6 @@
     <script src="{{ asset('js/home-v2/vertical-menu.js') }}"></script>
     <script src="{{ asset('js/home-v2/mega-menu.js') }}"></script>
     @include('cms::web.fallback.partials.gx-galleries')
-    {{-- Activités proposées par l'établissement (onglet « Activités » du CMS). --}}
-    @include('cms::web.fallback.partials.gx-activities')
     @include('cms::web.fallback.partials.gx-announcements')
 </body>
 </html>
