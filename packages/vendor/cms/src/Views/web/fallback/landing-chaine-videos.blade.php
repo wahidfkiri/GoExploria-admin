@@ -159,7 +159,9 @@
     </style>
 </head>
 <body class="vh-video-channel-page">
-    @include('home-v2.components.Header')
+    @unless($embedInPlatform ?? false)
+        @include('home-v2.components.Header')
+    @endunless
 
     <main class="vh-page">
     @include('cms::web.fallback.partials.landing-cms-header')

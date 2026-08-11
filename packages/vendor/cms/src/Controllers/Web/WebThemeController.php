@@ -112,12 +112,63 @@ class WebThemeController extends Controller
     public function clearPreview(Request $request, $etablissementId)
     {
         $etablissement = Etablissement::findOrFail($etablissementId);
-        
+
         // Nettoyer la session
         session()->forget(['theme_preview_mode', 'preview_theme_id', 'preview_theme_slug', 'preview_page_id', 'quick_preview']);
-        
+
         // Rediriger vers la page d'accueil sans paramètre
         return redirect()->route('cms.company.home', ['etablissementId' => $etablissement->id]);
+    }
+
+    /**
+     * SHELL PLATEFORME — affiche le site de l'établissement DANS GoExploria
+     * Business : Header GoExploria + iframe (site isolé) + Footer GoExploria.
+     *
+     * Le site de l'établissement est chargé dans une iframe same-origin
+     * (route `cms.company.embed`) : isolation totale du CSS/JS/CDN du template
+     * vis-à-vis de la plateforme. Hauteur pilotée par postMessage (voir la vue
+     * cms::web.embed.platform-shell + le partial child-bridge).
+     */
+    public function platformSite(Request $request, $etablissementId)
+    {
+        $etablissement = Etablissement::findOrFail($etablissementId);
+
+        return view('cms::web.embed.platform-shell', compact('etablissement'));
+    }
+
+    /**
+     * CONTENU DE L'IFRAME — rend le site de l'établissement en mode
+     * « embarqué » : identique à la page d'accueil publique, mais
+     *   1) sans le chrome plateforme (Header/menu GoExploria), fourni par le
+     *      shell parent — piloté par la variable partagée `embedInPlatform` ;
+     *   2) avec le pont de hauteur (child-bridge) injecté avant </body>.
+     */
+    public function embed(Request $request, $etablissementId)
+    {
+        // Signale à toutes les vues incluses de masquer le chrome plateforme.
+        View::share('embedInPlatform', true);
+
+        // Réutilise EXACTEMENT le pipeline de rendu de la page d'accueil
+        // (thème actif ou landing de repli) pour rester iso-fonctionnel.
+        $response = $this->home($request, $etablissementId);
+
+        // Injecte le pont de hauteur côté enfant juste avant </body>.
+        try {
+            $content = method_exists($response, 'getContent') ? $response->getContent() : null;
+
+            if (is_string($content) && $content !== '') {
+                $pos = strripos($content, '</body>');
+                if ($pos !== false) {
+                    $bridge = view('cms::web.embed.partials.child-bridge')->render();
+                    $content = substr($content, 0, $pos) . $bridge . substr($content, $pos);
+                    $response->setContent($content);
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Embed height-bridge injection failed: ' . $e->getMessage());
+        }
+
+        return $response;
     }
 
     /**

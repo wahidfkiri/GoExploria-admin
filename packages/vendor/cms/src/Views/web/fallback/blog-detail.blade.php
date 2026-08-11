@@ -72,7 +72,7 @@
         $cmsHasEtabHeader = function_exists('get_cms_header_html')
             && trim((string) get_cms_header_html($etablissement->id)) !== '';
     @endphp
-    @unless($cmsHasEtabHeader)
+    @unless($cmsHasEtabHeader || ($embedInPlatform ?? false))
         @include('home-v2.components.VerticalMenu')
         @include('home-v2.components.Header')
     @endunless

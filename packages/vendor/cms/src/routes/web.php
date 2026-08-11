@@ -32,7 +32,14 @@ Route::middleware(['web'])->group(function () {
         
         // Page d'accueil - ACCEPTE LE PARAMETRE GET preview_theme
         Route::get('/', [WebThemeController::class, 'home'])->name('home');
-        
+
+        // ── Affichage du site établissement DANS GoExploria Business ──
+        // Shell plateforme : Header GoExploria + iframe (site isolé) + Footer.
+        Route::get('/site', [WebThemeController::class, 'platformSite'])->name('site');
+        // Contenu de l'iframe : le site rendu en mode « embarqué » (sans chrome
+        // plateforme, avec pont de hauteur). Sert de `src` à l'iframe du shell.
+        Route::get('/embed', [WebThemeController::class, 'embed'])->name('embed');
+
         // Pages dynamiques - ACCEPTE LE PARAMETRE GET preview_theme
         Route::get('/page/{slug}', [WebThemeController::class, 'showPage'])->name('page');
 

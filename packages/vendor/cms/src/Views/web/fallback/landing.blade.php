@@ -147,8 +147,10 @@
 </head>
 <body>
     {{-- Chrome global de la plateforme --}}
-    {{-- Chrome global : uniquement si l'établissement n'a pas son propre header. --}}
-    @unless($cmsHasEtabHeader)
+    {{-- Chrome global : uniquement si l'établissement n'a pas son propre header,
+         ET si on n'est pas embarqué dans le shell plateforme (mode iframe :
+         le Header/menu GoExploria est fourni par le document parent). --}}
+    @unless($cmsHasEtabHeader || ($embedInPlatform ?? false))
         @include('home-v2.components.VerticalMenu')
         @include('home-v2.components.Header')
     @endunless
