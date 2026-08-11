@@ -47,6 +47,19 @@ class WebThemeController extends Controller
      */
     public function home(Request $request, $etablissementId)
     {
+        // TOUS les sites d'établissement s'affichent DANS le shell GoExploria
+        // Business (header + footer globaux). Le site réel est rendu isolé dans
+        // une iframe same-origin (route cms.company.embed → renderSite()).
+        return $this->platformSite($request, $etablissementId);
+    }
+
+    /**
+     * Rendu BRUT du site de l'établissement (thème actif ou landing de repli).
+     * = ancien corps de home(). Sert de CONTENU d'iframe via embed(), et n'est
+     * jamais servi seul avec le chrome plateforme (fourni par le shell parent).
+     */
+    protected function renderSite(Request $request, $etablissementId)
+    {
         // Récupérer l'établissement
         $etablissement = Etablissement::findOrFail($etablissementId);
         $this->etablissement = $etablissement;
@@ -148,9 +161,10 @@ class WebThemeController extends Controller
         // Signale à toutes les vues incluses de masquer le chrome plateforme.
         View::share('embedInPlatform', true);
 
-        // Réutilise EXACTEMENT le pipeline de rendu de la page d'accueil
-        // (thème actif ou landing de repli) pour rester iso-fonctionnel.
-        $response = $this->home($request, $etablissementId);
+        // Rendu BRUT du site (thème actif ou landing de repli). On appelle
+        // renderSite() et NON home() : home() rend désormais le shell, ce qui
+        // provoquerait une récursion shell → iframe → shell.
+        $response = $this->renderSite($request, $etablissementId);
 
         // Injecte le pont de hauteur côté enfant juste avant </body>.
         try {
