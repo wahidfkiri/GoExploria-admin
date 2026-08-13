@@ -296,11 +296,16 @@ function taNaInitMap() {
     if (window.GX_MAPS && window.GX_MAPS.key && window.GxGoogleMap) {
         window.GxGoogleMap.load(window.GX_MAPS.key, { mapId: window.GX_MAPS.mapId })
             .then(function () {
+                // Vue par défaut centrée sur l'Amérique du Nord (continent) ;
+                // sinon l'entité courante (pages destination).
+                var gCenter = isContinent ? { lat: 46, lng: -96 } : { lat: center[0], lng: center[1] };
+                var gZoom = isContinent ? 3 : defaultZoom;
                 var eng = window.GxGoogleMap.create('taNaMapCanvas', {
-                    center: { lat: center[0], lng: center[1] },
-                    zoom: defaultZoom,
+                    center: gCenter,
+                    zoom: gZoom,
                     mapId: window.GX_MAPS.mapId || undefined,
-                    streetView: true
+                    streetView: true,
+                    cluster: true
                 });
                 var gPoints = [];
 
@@ -333,7 +338,9 @@ function taNaInitMap() {
                             featured: !!p.is_featured
                         });
                     });
-                    eng.fitToMarkers(40);
+                    // Sur le continent, on garde la vue Amérique du Nord ; sur une
+                    // page destination, on cadre sur les points.
+                    if (!isContinent) eng.fitToMarkers(40);
                 }
 
                 // Bouton « Voir détails » des popups (délégation : robuste avec les

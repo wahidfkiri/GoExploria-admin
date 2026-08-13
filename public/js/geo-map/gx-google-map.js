@@ -74,10 +74,12 @@
 
     /* Marqueur HTML via OverlayView (fonctionne SANS Map ID). */
     function makeHtmlMarker(gmaps, map, position, html, handlers, featured) {
+        handlers = handlers || {};
         function Marker() {
             this._latLng = new gmaps.LatLng(position.lat, position.lng);
             this._html = html;
             this._div = null;
+            this._hidden = false;
             this.setMap(map);
         }
         Marker.prototype = new gmaps.OverlayView();
@@ -87,12 +89,13 @@
             div.style.transform = 'translate(-50%, -100%)';
             div.style.cursor = 'pointer';
             div.style.zIndex = featured ? '1000' : '1';
+            if (this._hidden) div.style.display = 'none';
             div.innerHTML = this._html;
             this._div = div;
             this.getPanes().overlayMouseTarget.appendChild(div);
             var self = this;
+            // Popup au CLIC uniquement (plus de survol).
             div.addEventListener('click', function (e) { e.stopPropagation(); if (handlers.onClick) handlers.onClick(self); });
-            div.addEventListener('mouseenter', function () { if (handlers.onHover) handlers.onHover(self); });
         };
         Marker.prototype.draw = function () {
             if (!this._div) return;
@@ -106,6 +109,10 @@
             this._div = null;
         };
         Marker.prototype.getLatLng = function () { return this._latLng; };
+        Marker.prototype.setVisible = function (v) {
+            this._hidden = !v;
+            if (this._div) this._div.style.display = v ? '' : 'none';
+        };
         return new Marker();
     }
 
@@ -124,6 +131,14 @@
             clickableIcons: false,
             gestureHandling: 'greedy'
         });
+
+        // Clustering « +N » (optionnel) : recalcul à chaque déplacement/zoom.
+        this._bubbles = [];
+        this._cluster = options.cluster === true;
+        if (this._cluster) {
+            var self = this;
+            this.map.addListener('idle', function () { self._renderClusters(); });
+        }
     }
 
     Engine.prototype._open = function (latLng, html, place, onOpen) {
@@ -141,21 +156,60 @@
 
         var html = cfg.iconHtml || buildIconHtml(cfg.icon, cfg.featured);
         var marker = makeHtmlMarker(this.gmaps, this.map, pos, html, {
+            // Popup au CLIC uniquement.
             onClick: function (m) {
                 self._open(m.getLatLng(), cfg.popupHtml, place, cfg.onOpen);
                 if (typeof cfg.onClick === 'function') cfg.onClick(place);
-            },
-            onHover: function (m) { self._open(m.getLatLng(), cfg.popupHtml, place, cfg.onOpen); }
+            }
         }, cfg.featured);
 
         this.markers.push({ marker: marker, position: pos });
+        if (this._cluster) this._renderClusters();
         return { open: function () { self._open(marker.getLatLng(), cfg.popupHtml, place, cfg.onOpen); } };
+    };
+
+    /* Regroupement « +N » : à faible zoom, les marqueurs proches (grille de
+       pixels) sont masqués et remplacés par une bulle « +N ». Clic sur la
+       bulle = zoom sur la zone. Au-delà du zoom 11, tout est individuel. */
+    Engine.prototype._renderClusters = function () {
+        var gmaps = this.gmaps, map = this.map, self = this;
+        this._bubbles.forEach(function (b) { b.setMap(null); });
+        this._bubbles = [];
+
+        var proj = map.getProjection ? map.getProjection() : null;
+        var zoom = map.getZoom();
+        if (!proj || zoom >= 11) {
+            this.markers.forEach(function (m) { m.marker.setVisible(true); });
+            return;
+        }
+        var scale = Math.pow(2, zoom), GRID = 60, groups = {};
+        this.markers.forEach(function (m) {
+            var pt = proj.fromLatLngToPoint(m.marker.getLatLng());
+            var key = Math.floor(pt.x * scale / GRID) + ':' + Math.floor(pt.y * scale / GRID);
+            (groups[key] = groups[key] || []).push(m);
+        });
+        Object.keys(groups).forEach(function (key) {
+            var g = groups[key];
+            if (g.length === 1) { g[0].marker.setVisible(true); return; }
+            g.forEach(function (m) { m.marker.setVisible(false); });
+            var lat = 0, lng = 0;
+            g.forEach(function (m) { lat += m.position.lat; lng += m.position.lng; });
+            lat /= g.length; lng /= g.length;
+            var n = g.length, size = n >= 50 ? 54 : (n >= 20 ? 48 : 42);
+            var html = '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:linear-gradient(135deg,#F5A623,#e08900);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:' + (n >= 100 ? 13 : 15) + 'px;border:3px solid #fff;box-shadow:0 3px 12px rgba(0,0,0,0.45)">+' + n + '</div>';
+            var bubble = makeHtmlMarker(gmaps, map, { lat: lat, lng: lng }, html, {
+                onClick: function () { map.panTo({ lat: lat, lng: lng }); map.setZoom(Math.min(16, map.getZoom() + 2)); }
+            }, false);
+            self._bubbles.push(bubble);
+        });
     };
 
     Engine.prototype.clearMarkers = function () {
         if (this._openInfo) { this._openInfo.close(); this._openInfo = null; }
         this.markers.forEach(function (m) { m.marker.setMap(null); });
         this.markers = [];
+        this._bubbles.forEach(function (b) { b.setMap(null); });
+        this._bubbles = [];
     };
 
     Engine.prototype.closePopup = function () {
