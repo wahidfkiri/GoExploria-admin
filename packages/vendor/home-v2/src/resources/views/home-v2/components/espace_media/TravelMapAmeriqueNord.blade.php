@@ -323,10 +323,12 @@ function taNaInitMap() {
                     gPoints = data.slice();
                     data.forEach(function (p, idx) {
                         if (p.latitude == null || p.longitude == null) return;
+                        var cd = getCategoryData(p.category) || {};
                         eng.addMarker(p, {
                             position: { lat: Number(p.latitude), lng: Number(p.longitude) },
-                            color: gColor(p.category),
-                            iconHtml: (window.L ? getMarkerIcon(p.category, p.is_featured).options.html : ''),
+                            // Icône issue de la BASE (map_categories) : image ou
+                            // icon_class + couleur, comme les marqueurs Leaflet.
+                            icon: { color: gColor(p.category), iconClass: cd.icon_class, image: cd.image },
                             popupHtml: buildPopupHtml(p, idx),
                             featured: !!p.is_featured
                         });
