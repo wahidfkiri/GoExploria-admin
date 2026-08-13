@@ -39,6 +39,14 @@ return [
     'client_id' => env('GOOGLE_CLIENT_ID'),
     'client_secret' => env('GOOGLE_CLIENT_SECRET'),
     'redirect' => env('GOOGLE_REDIRECT_URI'),
+
+    // Google Maps JavaScript API (carte + Street View) pour la migration des
+    // cartes Leaflet. Tant que 'key' est vide, le front reste sur Leaflet
+    // (repli automatique, aucune régression).
+    'maps' => [
+        'key' => env('GOOGLE_MAPS_API_KEY'),
+        'map_id' => env('GOOGLE_MAPS_MAP_ID'), // requis par AdvancedMarkerElement
+    ],
 ],
 
 'facebook' => [

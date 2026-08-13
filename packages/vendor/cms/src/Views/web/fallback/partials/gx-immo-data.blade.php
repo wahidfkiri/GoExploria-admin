@@ -21,8 +21,18 @@
 @php
     $gxImmoPayload = null;
 
+    // La requête ne part que si la page EST le template immobilier : sa classe
+    // d'enveloppe `immo-tpl` en est la signature (§3 des règles templates, qui
+    // impose ce préfixe sur chaque sélecteur). Sans ce garde-fou, tout site —
+    // restaurant, garage — paierait une requête inutile à chaque affichage.
+    $gxEstTemplateImmo = \Illuminate\Support\Str::contains(
+        collect($cmsPageSections ?? [])->map(fn ($p) => (string) data_get($p, 'content'))->implode(''),
+        'immo-tpl'
+    );
+
     try {
-        if (isset($etablissement)
+        if ($gxEstTemplateImmo
+            && isset($etablissement)
             && class_exists(\Vendor\Cms\Models\Property::class)
             && \Illuminate\Support\Facades\Schema::connection('cms')->hasTable('cms_properties')) {
 
