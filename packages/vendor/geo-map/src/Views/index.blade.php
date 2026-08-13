@@ -632,7 +632,7 @@
 <script>
     window.GX_MAPS = { key: @json($gmKey), mapId: @json($gmMapId ?: '') };
 </script>
-<script src="{{ asset('js/geo-map/gx-google-map.js') }}"></script>
+<script src="{{ asset('js/geo-map/gx-google-map.js') }}?v={{ @filemtime(public_path('js/geo-map/gx-google-map.js')) ?: '4' }}"></script>
 @endif
 
 <script>

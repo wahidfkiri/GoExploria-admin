@@ -214,7 +214,7 @@
 <script>
     window.GX_MAPS = window.GX_MAPS || { key: @json($gmKey), mapId: @json($gmMapId ?: '') };
 </script>
-<script src="{{ asset('js/geo-map/gx-google-map.js') }}"></script>
+<script src="{{ asset('js/geo-map/gx-google-map.js') }}?v={{ @filemtime(public_path('js/geo-map/gx-google-map.js')) ?: '4' }}"></script>
 <style>
     /* Popup vidéo dans les InfoWindow Google (le CSS Leaflet ne s'y applique pas). */
     .gm-style .map-popup { width: 280px; max-width: 78vw; }
