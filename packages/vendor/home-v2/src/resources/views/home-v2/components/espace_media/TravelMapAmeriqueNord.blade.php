@@ -352,6 +352,19 @@ function taNaInitMap() {
                     if (pt) showPlaceModal(pt);
                 });
 
+                // Fermeture du modal : les handlers d'origine (bouton ×, backdrop,
+                // Échap) sont branchés APRÈS le `return` de cette branche Google →
+                // on les rebranche ici (closePlaceModal est hoistée).
+                var naClose = document.getElementById('taNaMapModalClose');
+                var naBackdrop = document.getElementById('taNaMapModalBackdrop');
+                if (naClose) naClose.addEventListener('click', closePlaceModal);
+                if (naBackdrop) naBackdrop.addEventListener('click', closePlaceModal);
+                document.addEventListener('keydown', function (e) {
+                    if (e.key !== 'Escape') return;
+                    var m = document.getElementById('taNaMapModal');
+                    if (m && m.style.display !== 'none') closePlaceModal();
+                });
+
                 // Recherche géo → recentrage (flyTo Leaflet → panTo Google).
                 var gSearch = document.getElementById('taNaMapGeoSearch');
                 var gDrop = document.getElementById('taNaMapGeoDropdown');
