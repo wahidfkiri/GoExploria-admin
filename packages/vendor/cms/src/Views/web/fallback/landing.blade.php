@@ -164,6 +164,11 @@
     <main>
         @include('cms::web.fallback.partials.landing-map-video-points')
 
+        {{-- Biens immobiliers de l'établissement, remis au template AVANT son
+             contenu : son script lit window.GX_IMMO au démarrage. Sans biens
+             saisis, ce bloc n'émet rien et le template garde sa démonstration. --}}
+        @include('cms::web.fallback.partials.gx-immo-data')
+
         @if(collect($cmsPageSections ?? [])->isNotEmpty())
             @foreach(collect($cmsPageSections) as $cmsPage)
                 {!! data_get($cmsPage, 'content') !!}
@@ -187,9 +192,38 @@
     @include('cms::web.fallback.partials.landing-cms-footer')
     @include('cms::web.fallback.partials.sections.footer')
 
-    @include('cms::web.fallback.partials.landing-contact-ajax')
+    {{-- ── ÉLÉMENTS FLOTTANTS ────────────────────────────────────────────
+         En mode « embed », le site est rendu dans une iframe SANS défilement
+         propre, haute comme son contenu : c'est la page PARENTE qui défile.
+         Un `position: fixed` s'y cale donc sur la boîte de l'iframe et non
+         sur l'écran — le bouton reste collé au fond du document au lieu de
+         suivre le visiteur.
+
+         Ces éléments sont donc rendus par le shell parent
+         (cms::web.embed.platform-shell), où `fixed` retrouve son sens.
+
+         Le PANIER fait exception : sa logique d'ajout écoute les clics sur
+         les boutons produit, qui sont ici. On le garde donc, et on masque
+         seulement son interface — l'état transite par localStorage, et
+         l'événement `storage` met à jour l'exemplaire visible du parent. --}}
+    @unless($embedInPlatform ?? false)
+        @include('cms::web.fallback.partials.landing-contact-ajax')
+        @include('cms::web.fallback.partials.landing-back-to-top')
+    @endunless
+
     @include('cms::web.fallback.partials.landing-cart-drawer')
-    @include('cms::web.fallback.partials.landing-back-to-top')
+
+    @if($embedInPlatform ?? false)
+        <style>
+            /* L'interface du panier est celle du parent ; ici on ne garde que
+               la mécanique. Sans cela, deux paniers se superposeraient, dont
+               un mal positionné. */
+            .cms-cart-fab,
+            .cms-cart-drawer,
+            .cms-cart-backdrop,
+            .cms-cart-toast { display: none !important; }
+        </style>
+    @endif
 
     {{-- Swiper : hero-sliders des templates/sections CMS. --}}
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

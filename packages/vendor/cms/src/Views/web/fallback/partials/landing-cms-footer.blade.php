@@ -15,5 +15,10 @@
     {!! $cmsFooterHtml !!}
 @endif
 
-{{-- Bouton flottant « Contactez-nous » + drawer de contact (AJAX → base CMS) --}}
-@includeWhen(isset($etablissement), 'cms::web.fallback.partials.landing-contact-widget')
+{{-- Bouton flottant « Contactez-nous » + drawer de contact (AJAX → base CMS).
+
+     Pas en mode « embed » : le site y est rendu dans une iframe sans
+     défilement propre, où `position: fixed` se cale sur la boîte de l'iframe
+     et non sur l'écran. Le shell parent le rend à sa place. --}}
+@includeWhen(isset($etablissement) && ! ($embedInPlatform ?? false),
+             'cms::web.fallback.partials.landing-contact-widget')

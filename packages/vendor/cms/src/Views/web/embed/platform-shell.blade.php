@@ -108,6 +108,55 @@
         }
         @keyframes gxspin { to { transform: rotate(360deg); } }
         .gx-embed-stage.is-ready .gx-embed-loading { display: none; }
+
+        /* ——— Bouton « Menu du site » (mobile) ———————————————————————
+           L'en-tête de l'établissement vit DANS l'iframe, en position:fixed.
+           Or l'iframe n'a pas de défilement propre : sa hauteur suit le
+           contenu, et c'est cette page qui défile. Un position:fixed à
+           l'intérieur se cale donc sur la boîte de l'iframe — l'en-tête reste
+           en haut du document et sort de l'écran dès qu'on défile. Mesuré :
+           le burger passe à −1 397 px après 1 500 px de défilement, et le
+           menu du template devient inatteignable.
+
+           Aucune règle CSS écrite dans l'iframe ne peut corriger cela : seul
+           un élément de CE document peut se caler sur l'écran. D'où ce
+           bouton, qui demande à l'iframe d'ouvrir son propre menu. */
+        .gx-embed-menu {
+            position: fixed;
+            left: 20px;
+            bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+            z-index: 9997;
+            display: none;
+            align-items: center;
+            gap: 9px;
+            padding: 12px 18px;
+            font-family: Montserrat, system-ui, sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+            background: #111827;
+            border: 0;
+            border-radius: 999px;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, .3);
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(12px);
+            transition: opacity .22s ease, transform .22s ease;
+        }
+        /* Uniquement sur mobile — au-dessus de 1024 px les templates montrent
+           leur navigation complète, il n'y a pas de menu à ouvrir. */
+        @media (max-width: 1024px) {
+            .gx-embed-menu { display: inline-flex; }
+        }
+        /* Et seulement une fois qu'on a défilé : en haut de page, l'en-tête du
+           site est visible, le bouton ferait double emploi. */
+        .gx-embed-menu.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: none;
+        }
+        .gx-embed-menu:hover { background: #1f2937; }
     </style>
 </head>
 <body>
@@ -133,8 +182,39 @@
         </iframe>
     </main>
 
+    {{-- Bouton « Menu du site » : voir le commentaire de .gx-embed-menu. --}}
+    <button type="button" class="gx-embed-menu" id="gxEmbedMenu" aria-label="Ouvrir le menu du site">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+        Menu du site
+    </button>
+
     {{-- ── FOOTER GoExploria Business (dédié) ─────────────────────────── --}}
     @include('cms::web.embed.partials.platform-footer')
+
+    {{-- ── ÉLÉMENTS FLOTTANTS ─────────────────────────────────────────────
+         Contact, panier et retour-en-haut vivent ICI, dans le document
+         parent, et non dans l'iframe.
+
+         Raison : l'iframe n'a pas de défilement propre (scrolling="no", sa
+         hauteur suit le contenu) ; c'est cette page qui défile. Un
+         `position: fixed` À L'INTÉRIEUR se cale donc sur la boîte de
+         l'iframe et reste collé au fond du document au lieu de suivre le
+         visiteur. Rendus ici, ils se calent sur l'écran comme prévu.
+
+         Le PANIER partage son état avec l'iframe par localStorage : le
+         template ajoute au panier depuis l'iframe, l'événement `storage`
+         prévient ce document, et le compteur se met à jour. C'est le
+         mécanisme que le partial utilise déjà pour synchroniser plusieurs
+         onglets — un parent et son iframe sont deux documents de même
+         origine, il fonctionne à l'identique.
+
+         Le paiement redirige désormais la page ENTIÈRE et non l'iframe. --}}
+    @include('cms::web.fallback.partials.landing-contact-ajax')
+    @include('cms::web.fallback.partials.landing-contact-widget')
+    @include('cms::web.fallback.partials.landing-cart-drawer')
+    @include('cms::web.fallback.partials.landing-back-to-top')
 
     {{-- ── Assets JS de la plateforme (header/menu/footer) ────────────── --}}
     <script src="{{ asset('js/home-v2/navigation.js') }}"></script>
@@ -171,7 +251,40 @@
             var data = e.data || {};
             if (data.channel !== CHANNEL) return;
             if (data.type === 'height') applyHeight(data.height);
+            // L'enfant demande à remonter en haut : son en-tête y est, et
+            // c'est là que son panneau de menu s'ouvre.
+            if (data.type === 'scroll-top') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         });
+
+        /* ── Bouton « Menu du site » ──────────────────────────────────────
+           L'en-tête de l'établissement est DANS l'iframe, laquelle n'a pas de
+           défilement propre : son position:fixed se cale sur la boîte de
+           l'iframe et sort de l'écran dès qu'on défile. Ce bouton-ci, lui,
+           est dans le document qui défile — il tient. Il demande à l'iframe
+           d'ouvrir son propre menu (voir partials/child-bridge). */
+        var boutonMenu = document.getElementById('gxEmbedMenu');
+        if (boutonMenu) {
+            boutonMenu.addEventListener('click', function () {
+                try {
+                    frame.contentWindow.postMessage(
+                        { channel: CHANNEL, type: 'open-menu' }, selfOrigin
+                    );
+                } catch (err) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+
+            // Visible seulement une fois qu'on a quitté le haut de page : en
+            // haut, l'en-tête du site est là, le bouton ferait double emploi.
+            var seuil = 400;
+            var maj = function () {
+                boutonMenu.classList.toggle('is-visible', window.scrollY > seuil);
+            };
+            window.addEventListener('scroll', maj, { passive: true });
+            maj();
+        }
 
         // Demander un recalcul quand la largeur du parent change (responsive :
         // le reflow interne du template modifie sa hauteur).

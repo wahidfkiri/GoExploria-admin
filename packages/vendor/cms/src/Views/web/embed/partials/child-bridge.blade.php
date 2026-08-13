@@ -69,11 +69,58 @@
         }
     }
 
-    // 4) Le parent peut demander un recalcul (ex. après resize de la fenêtre).
+    /* Ouvre le menu mobile du template, sur demande du parent.
+
+       POURQUOI : l'en-tête de l'établissement est en position:fixed, mais
+       l'iframe n'a pas de défilement propre — sa hauteur suit le contenu et
+       c'est la page parente qui défile. Un position:fixed s'y cale donc sur
+       la boîte de l'iframe : l'en-tête reste en haut du document et sort de
+       l'écran dès qu'on défile. Mesuré : le burger passe à −1 397 px après
+       1 500 px de défilement, et le menu devient inatteignable.
+
+       Aucune règle CSS écrite ICI ne peut corriger cela — seul un élément du
+       document PARENT peut se caler sur l'écran. Le parent affiche donc un
+       bouton flottant, et nous ouvrons le menu du template à sa demande.
+
+       On cherche le déclencheur parmi les noms préfixés des templates maison
+       puis les noms génériques. À défaut, on se contente de remonter en haut :
+       l'en-tête y est, l'utilisateur reprend la main. */
+    function ouvrirMenuMobile() {
+        var candidats = [
+            '.calibre-burger', '.ae-burger', '[class$="-burger"]', '[class*="-burger "]',
+            '.navbar-toggler', '.menu-toggle', '.hamburger', '.burger', '.nav-toggle', '.menu-btn'
+        ];
+        var declencheur = null;
+
+        for (var i = 0; i < candidats.length && !declencheur; i++) {
+            try {
+                var el = document.querySelector(candidats[i]);
+                // Uniquement s'il est réellement affiché : sous 1025 px les
+                // templates masquent leur navigation de bureau et montrent le
+                // burger — c'est celui-là qu'on veut.
+                if (el && el.getClientRects().length) { declencheur = el; }
+            } catch (err) { /* sélecteur non supporté : on passe */ }
+        }
+
+        // Remonter en haut dans TOUS les cas : le panneau s'ouvre sous
+        // l'en-tête, qui se trouve en haut du document.
+        try {
+            window.parent.postMessage({ channel: CHANNEL, type: 'scroll-top' }, parentOrigin);
+        } catch (err) { /* silencieux */ }
+
+        if (!declencheur) { return; }
+        // Laisser le défilement du parent se faire avant d'ouvrir, sinon le
+        // panneau s'ouvre hors de vue.
+        setTimeout(function () { try { declencheur.click(); } catch (err) {} }, 320);
+    }
+
+    // 4) Messages du parent : recalcul de hauteur, ouverture du menu.
     window.addEventListener('message', function (e) {
         if (e.origin !== parentOrigin) return;
         var data = e.data || {};
-        if (data.channel === CHANNEL && data.type === 'request-height') postHeight(true);
+        if (data.channel !== CHANNEL) return;
+        if (data.type === 'request-height') postHeight(true);
+        if (data.type === 'open-menu') ouvrirMenuMobile();
     });
 
     // Démarrage + pouls régulier léger pour les contenus qui grandissent

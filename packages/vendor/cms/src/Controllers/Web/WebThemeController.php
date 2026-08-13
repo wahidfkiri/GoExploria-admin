@@ -1258,7 +1258,62 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             $content = data_get($template->config, 'page_content');
         }
 
-        return trim((string) $content);
+        // Les templates portent les coordonnées de leur maquette. Les éléments
+        // marqués data-gx-bind reçoivent ici celles de l'établissement ; les
+        // autres, et ceux dont la donnée manque, gardent leur valeur d'origine.
+        // Remplacement au rendu seulement : rien n'est réécrit en base, et
+        // corriger la fiche de l'établissement suffit à mettre le site à jour.
+        $coordonnees = $this->coordonneesPourTemplate();
+
+        return \Vendor\Cms\Support\TemplateDataBinder::bind(
+            trim((string) $content),
+            $this->etablissement,
+            [
+                'lat'   => $coordonnees['lat'] ?? null,
+                'lng'   => $coordonnees['lng'] ?? null,
+                'hours' => $this->horairesPourTemplate(),
+            ]
+        );
+    }
+
+    /**
+     * Coordonnées de l'établissement, mémorisées.
+     *
+     * Calculées à la demande et non lues depuis la variable de la vue : le
+     * contenu des templates est préparé AVANT elle dans buildLandingData().
+     */
+    private ?array $coordonneesTemplate = null;
+
+    private function coordonneesPourTemplate(): array
+    {
+        return $this->coordonneesTemplate ??= $this->resolveEtablissementCoordinates();
+    }
+
+    /**
+     * Horaires réels de l'établissement, sans repli.
+     *
+     * Le repli générique de la page d'accueil ne convient pas ici : le template
+     * porte déjà ses propres horaires, et il vaut mieux les laisser que d'y
+     * substituer des horaires inventés. Un tableau vide signifie « ne touche à
+     * rien » pour le lieur.
+     */
+    private ?array $horairesTemplate = null;
+
+    private function horairesPourTemplate(): array
+    {
+        if ($this->horairesTemplate !== null) {
+            return $this->horairesTemplate;
+        }
+
+        try {
+            $horaires = function_exists('get_establishment_opening_hours')
+                ? get_establishment_opening_hours($this->etablissement, [])
+                : [];
+        } catch (\Throwable $e) {
+            $horaires = [];
+        }
+
+        return $this->horairesTemplate = is_array($horaires) ? $horaires : [];
     }
 
     /**
