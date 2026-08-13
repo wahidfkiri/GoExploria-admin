@@ -234,6 +234,9 @@
             'adresse' => trim(collect([$point->adresse, $point->ville, $point->code_postal])->filter()->implode(', ')),
             'youtube_id' => $point->youtube_id,
             'embed_url' => $point->embed_url,
+            // Provenance de la vidéo : 'youtube' ou 'file'. Sans elle, la
+            // page devrait redeviner la source depuis l'adresse.
+            'video_type' => method_exists($point, 'estVideoFichier') && $point->estVideoFichier() ? 'file' : 'youtube',
             'gallery' => $pointImages->isNotEmpty() ? $pointImages : $landingMapFallbackGallery,
             'socials' => $pointSocialLinks->isNotEmpty() ? $pointSocialLinks : $landingMapSocialLinks,
             'website' => $landingMapNormalizeSocialUrl($details?->website ?: ($point->has_details_page ? $point->details_url : null) ?: $landingMapEstablishmentWebsite),
@@ -290,7 +293,7 @@
             .map-popup__detail-btn{display:block;width:100%;padding:10px 16px;background:var(--td-amber);color:#000;border-radius:var(--td-radius-sm);font-size:0.82rem;font-weight:600;text-align:center;transition:all var(--td-transition);cursor:pointer;border:0}
             .map-popup__detail-btn:hover{background:var(--td-amber-dark)}
             .map-popup__video{height:160px;overflow:hidden;background:#000}
-            .map-popup__video iframe{width:100%;height:100%;border:0}
+            .map-popup__video iframe,.map-popup__video video{width:100%;height:100%;border:0;object-fit:cover;background:#000}
             .map-region-filter{text-align:center;margin-bottom:16px}
             .map-region-select{padding:10px 20px;border:1px solid var(--td-border);border-radius:50px;font-size:0.85rem;font-weight:600;color:var(--td-sand);background:var(--td-glass-bg);cursor:pointer;min-width:220px;max-width:100%;outline:none;transition:border-color var(--td-transition);appearance:auto}
             .map-region-select:hover,.map-region-select:focus{border-color:var(--td-amber)}
@@ -311,7 +314,7 @@
             .map-modal__close:hover{color:var(--td-amber);background:var(--td-glass-bg)}
             .map-modal__body{padding:0 32px 32px}
             .map-modal__video{width:100%;height:0;padding-bottom:56.25%;position:relative;background:#000;border-radius:var(--td-radius-sm) var(--td-radius-sm) 0 0;overflow:hidden}
-            .map-modal__video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+            .map-modal__video iframe,.map-modal__video video{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:contain;background:#000}
             .map-modal__video:empty{display:none}
             .map-modal__gallery{display:flex;gap:8px;overflow-x:auto;margin-bottom:24px;padding-bottom:8px}
             .map-modal__gallery img{width:160px;height:100px;object-fit:cover;border-radius:var(--td-radius-sm);flex-shrink:0}
@@ -398,7 +401,8 @@
         <style>
             .gm-style .map-popup { width: 280px; max-width: 78vw; }
             .gm-style .map-popup__video { height: 160px; background: #000; }
-            .gm-style .map-popup__video iframe { width: 100%; height: 100%; border: 0; display: block; }
+            .gm-style .map-popup__video iframe,
+            .gm-style .map-popup__video video { width: 100%; height: 100%; border: 0; display: block; object-fit: cover; background: #000; }
             .gm-style .map-popup__body { padding: 12px 14px; }
             .gm-style .map-popup__title { font-size: 0.95rem; font-weight: 700; margin: 0 0 6px; color: #111827; }
             .gm-style .map-popup__desc { font-size: 0.8rem; color: #4b5563; line-height: 1.5; margin: 0 0 10px; }
@@ -416,6 +420,7 @@
         var uniqueCategories = {};
         pointsRaw.forEach(function (p) {
             if (!Number.isFinite(Number(p.latitude)) || !Number.isFinite(Number(p.longitude))) return;
+            var estFichier = p.video_type === 'file';
             if (!p.youtube_id && !p.embed_url) return;
             var cat = (p.category || 'Autre').trim();
             if (cat) uniqueCategories[cat] = true;
@@ -428,8 +433,11 @@
                 category: cat || 'Autre',
                 region: p.region || 'Autre region',
                 adresse: p.adresse || '',
-                youtube_id: p.youtube_id || '',
-                embed_url: p.embed_url || (p.youtube_id ? 'https://www.youtube.com/embed/' + p.youtube_id + '?autoplay=0&rel=0&playsinline=1' : ''),
+                youtube_id: estFichier ? '' : (p.youtube_id || ''),
+                video_type: estFichier ? 'file' : 'youtube',
+                embed_url: estFichier
+                    ? (p.embed_url || '')
+                    : (p.embed_url || (p.youtube_id ? 'https://www.youtube.com/embed/' + p.youtube_id + '?autoplay=0&rel=0&playsinline=1' : '')),
                 gallery: Array.isArray(p.gallery) ? p.gallery : [],
                 socials: Array.isArray(p.socials) ? p.socials : [],
                 website: p.website || ''
@@ -542,10 +550,39 @@
             });
         }
 
+        /* Un point vidéo vient soit de YouTube, soit d'un fichier servi en
+           direct. Les deux passent par ce lecteur unique : sans lui, chaque
+           endroit qui affiche une vidéo devrait connaître les deux cas. */
+        function buildVideoPlayer(p, autoplay) {
+            if (!p) return '';
+
+            if (p.video_type === 'file') {
+                if (!p.embed_url) return '';
+                // playsinline : sans lui, iOS ouvre la vidéo en plein écran
+                // et quitte la carte.
+                return '<video src="' + escapeAttr(p.embed_url) + '" controls preload="metadata" '
+                     + 'playsinline' + (autoplay ? ' autoplay muted' : '')
+                     + ' style="width:100%;height:100%;object-fit:cover;background:#000;border:0"></video>';
+            }
+
+            var eu = p.embed_url || (p.youtube_id
+                ? 'https://www.youtube.com/embed/' + p.youtube_id + (autoplay ? '?autoplay=1' : '?autoplay=0&rel=0')
+                : '');
+            if (!eu) return '';
+
+            return '<iframe src="' + escapeAttr(eu) + '" frameborder="0" allowfullscreen></iframe>';
+        }
+
+        function escapeAttr(v) {
+            return String(v == null ? '' : v)
+                .replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+                .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
         function buildPopupHtml(p, idx) {
-            var eu = p.youtube_id ? 'https://www.youtube.com/embed/' + p.youtube_id + '?autoplay=1' : '';
+            var lecteur = buildVideoPlayer(p, true);
             var h = '<div class="map-popup">';
-            if (eu) h += '<div class="map-popup__video"><iframe src="' + eu + '" frameborder="0" allowfullscreen></iframe></div>';
+            if (lecteur) h += '<div class="map-popup__video">' + lecteur + '</div>';
             h += '<div class="map-popup__body"><h4 class="map-popup__title">' + escapeHtml(p.title) + '</h4>';
             if (p.description) { var _pd = plainText(p.description); if (_pd) h += '<p class="map-popup__desc">' + escapeHtml(_pd.substring(0, 120)) + (_pd.length > 120 ? '…' : '') + '</p>'; }
             h += '<button class="map-popup__detail-btn" data-index="' + idx + '">Voir d\u00e9tails</button></div></div>';
@@ -630,8 +667,7 @@
             if (!modal || !mc) return;
             document.getElementById('map-modal-title').textContent = point.title || 'D\u00e9tails';
             var ve = document.getElementById('mapModalVideo');
-            var eu = point.youtube_id ? 'https://www.youtube.com/embed/' + point.youtube_id + '?autoplay=0&rel=0' : '';
-            if (ve) ve.innerHTML = eu ? '<iframe src="' + eu + '" frameborder="0" allowfullscreen></iframe>' : '';
+            if (ve) ve.innerHTML = buildVideoPlayer(point, false);
             var de = modal.querySelector('.map-modal__description');
             // Rendu HTML décodé (jamais de balises visibles type "<p>…</p>")
             de.innerHTML = decodeHtml(point.description || '');

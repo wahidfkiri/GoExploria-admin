@@ -45,12 +45,21 @@
                 ->get();
 
             if ($gxImmoBiens->isNotEmpty()) {
+                // Nombre d'annonces par négociateur, compté sur les biens déjà
+                // chargés : le template l'affiche sur sa fiche, et une requête
+                // de plus pour un chiffre qu'on a sous la main serait du gâchis.
+                $gxImmoParAgent = $gxImmoBiens->groupBy('agent_id')->map->count();
+
                 $gxImmoAgents = $gxImmoBiens
                     ->pluck('agent')
                     ->filter()
                     ->unique('id')
                     ->values()
-                    ->map(fn ($a) => $a->toApiArray());
+                    ->map(function ($a) use ($gxImmoParAgent) {
+                        $a->properties_count = $gxImmoParAgent[$a->id] ?? 0;
+
+                        return $a->toApiArray();
+                    });
 
                 $gxImmoPayload = [
                     'properties' => $gxImmoBiens->map(fn ($p) => $p->toApiArray())->values(),
