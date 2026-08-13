@@ -388,6 +388,24 @@
     @once
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     @endonce
+    @once
+        @if(config('services.google.maps.key'))
+        {{-- Bascule Google Maps (rues/satellite + Street View). Sans clé → Leaflet. --}}
+        <script>
+            window.GX_MAPS = window.GX_MAPS || { key: @json(config('services.google.maps.key')), mapId: @json(config('services.google.maps.map_id') ?: '') };
+        </script>
+        <script src="{{ asset('js/geo-map/gx-google-map.js') }}?v={{ @filemtime(public_path('js/geo-map/gx-google-map.js')) ?: '4' }}"></script>
+        <style>
+            .gm-style .map-popup { width: 280px; max-width: 78vw; }
+            .gm-style .map-popup__video { height: 160px; background: #000; }
+            .gm-style .map-popup__video iframe { width: 100%; height: 100%; border: 0; display: block; }
+            .gm-style .map-popup__body { padding: 12px 14px; }
+            .gm-style .map-popup__title { font-size: 0.95rem; font-weight: 700; margin: 0 0 6px; color: #111827; }
+            .gm-style .map-popup__desc { font-size: 0.8rem; color: #4b5563; line-height: 1.5; margin: 0 0 10px; }
+            .gm-style .map-popup__detail-btn { display: block; width: 100%; padding: 9px 14px; background: #F5A623; color: #000; border: 0; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
+        </style>
+        @endif
+    @endonce
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         var mapEl = document.getElementById('{{ $landingMapId }}');
@@ -448,6 +466,55 @@
 
         var lats = points.map(function (p) { return p.latitude; });
         var lngs = points.map(function (p) { return p.longitude; });
+
+        // ── Backend Google Maps (rues/satellite + Street View natif) ─────
+        // Réutilise getCategoryStyle / buildPopupHtml / showPlaceModal /
+        // closePlaceModal (hoistées) → MÊME logique de marqueurs + popup vidéo
+        // + modale. Sans Map ID, marqueurs HTML via OverlayView (icône + couleur
+        // de la catégorie). Le filtre catégorie/région reste à câbler (Leaflet).
+        if (window.GX_MAPS && window.GX_MAPS.key && window.GxGoogleMap) {
+            var gLat0 = (Math.min.apply(null, lats) + Math.max.apply(null, lats)) / 2;
+            var gLng0 = (Math.min.apply(null, lngs) + Math.max.apply(null, lngs)) / 2;
+            window.GxGoogleMap.load(window.GX_MAPS.key, { mapId: window.GX_MAPS.mapId })
+                .then(function () {
+                    var eng = window.GxGoogleMap.create(mapEl, {
+                        center: { lat: gLat0, lng: gLng0 }, zoom: 8,
+                        mapId: window.GX_MAPS.mapId || undefined, streetView: true, cluster: true
+                    });
+                    var gPoints = points.slice();
+                    points.forEach(function (p, idx) {
+                        var s = getCategoryStyle(p.category);
+                        eng.addMarker(p, {
+                            position: { lat: Number(p.latitude), lng: Number(p.longitude) },
+                            icon: { color: s.color, iconClass: s.icon },
+                            popupHtml: buildPopupHtml(p, idx),
+                            featured: !!p.is_featured
+                        });
+                    });
+                    eng.fitToMarkers(40);
+
+                    // Bouton « Voir détails » (délégation, robuste InfoWindow).
+                    document.addEventListener('click', function (e) {
+                        var b = e.target.closest && e.target.closest('.map-popup__detail-btn');
+                        if (!b) return;
+                        var pt = gPoints[parseInt(b.getAttribute('data-index'), 10)];
+                        if (pt) showPlaceModal(pt);
+                    });
+                    // Fermeture du modal (handlers d'origine après le return).
+                    var mClose = document.getElementById('mapModalClose');
+                    var mBackdrop = document.getElementById('mapModalBackdrop');
+                    if (mClose) mClose.addEventListener('click', closePlaceModal);
+                    if (mBackdrop) mBackdrop.addEventListener('click', closePlaceModal);
+                    document.addEventListener('keydown', function (e) {
+                        if (e.key !== 'Escape') return;
+                        var m = document.getElementById('mapDetailModal');
+                        if (m && m.style.display !== 'none') closePlaceModal();
+                    });
+                })
+                .catch(function (e) { console.warn('Google Maps indisponible :', e); });
+            return;
+        }
+
         var map = L.map('{{ $landingMapId }}', {
             center: [(Math.min.apply(null, lats) + Math.max.apply(null, lats)) / 2, (Math.min.apply(null, lngs) + Math.max.apply(null, lngs)) / 2],
             zoom: 8, zoomControl: true, scrollWheelZoom: true
