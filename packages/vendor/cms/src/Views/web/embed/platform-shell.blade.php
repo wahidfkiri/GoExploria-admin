@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/footer.css') }}">
 
     <style>
-        /* ——— Réinitialisation ——— */
+        /* --- Réinitialisation --- */
         html, body { margin: 0; padding: 0; }
         body {
             background: #ffffff;
@@ -82,7 +82,7 @@
         @keyframes gxspin { to { transform: rotate(360deg); } }
         .gx-embed-stage.is-ready .gx-embed-loading { display: none; }
 
-        /* ── HEADER FIXE DU CONTENU (cloné depuis l'iframe) ────────────── */
+        /* --- HEADER FIXE DU CONTENU (cloné depuis l'iframe) --- */
         .gx-content-header {
             position: fixed;
             top: 96px;
@@ -119,7 +119,7 @@
             padding: 0 20px;
         }
 
-        /* ── BOUTON « Menu du site » (mobile) ──────────────────────────── */
+        /* --- BOUTON Menu du site (mobile) --- */
         .gx-embed-menu {
             position: fixed;
             left: 20px;
@@ -200,21 +200,21 @@
     </style>
 </head>
 <body>
-    {{-- ── HEADER GoExploria Business ─────────────────────────────────── --}}
+    {{-- HEADER GoExploria Business --}}
     @include('cms::web.embed.partials.platform-header')
 
-    {{-- ── HEADER FIXE DU CONTENU (cloné depuis l'iframe) ─────────────── ──}}
+    {{-- HEADER FIXE DU CONTENU (cloné depuis l'iframe) --}}
     <div class="gx-content-header" id="gxContentHeader">
         <div class="gx-content-header-inner" id="gxContentHeaderInner">
             <!-- Le header de l'établissement sera cloné ici automatiquement -->
         </div>
     </div>
 
-    {{-- ── SITE DE L'ÉTABLISSEMENT ─────────────────────────────────────── ──}}
+    {{-- SITE DE L'ÉTABLISSEMENT --}}
     <main class="gx-embed-stage" id="gxEmbedStage">
         <div class="gx-embed-loading" aria-live="polite">
             <span class="gx-embed-spinner" role="status" aria-hidden="true"></span>
-            Chargement du site…
+            Chargement du site...
         </div>
         <iframe
             id="gxEmbedFrame"
@@ -229,7 +229,7 @@
         </iframe>
     </main>
 
-    {{-- Bouton « Menu du site » --}}
+    {{-- Bouton Menu du site --}}
     <button type="button" class="gx-embed-menu" id="gxEmbedMenu" aria-label="Ouvrir le menu du site">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
             <path d="M4 7h16M4 12h16M4 17h16"/>
@@ -237,10 +237,10 @@
         Menu du site
     </button>
 
-    {{-- ── FOOTER GoExploria Business ─────────────────────────────────── ──}}
+    {{-- FOOTER GoExploria Business --}}
     @include('cms::web.embed.partials.platform-footer')
 
-    {{-- ── ÉLÉMENTS FLOTTANTS ──────────────────────────────────────────── ──}}
+    {{-- ÉLÉMENTS FLOTTANTS --}}
     @include('cms::web.fallback.partials.landing-contact-ajax')
     @include('cms::web.fallback.partials.landing-contact-widget')
     @include('cms::web.fallback.partials.landing-cart-drawer')
@@ -253,7 +253,7 @@
         </svg>
     </button>
 
-    {{-- ── Assets JS de la plateforme ─────────────────────────────────── ──}}
+    {{-- Assets JS de la plateforme --}}
     <script src="{{ asset('js/home-v2/navigation.js') }}"></script>
     <script src="{{ asset('js/home-v2/menu-api-service.js') }}"></script>
     <script src="{{ asset('js/home-v2/mega-menu-service.js') }}"></script>
@@ -265,7 +265,7 @@
     <script src="{{ asset('js/home-v2/destinations-search.js') }}"></script>
     <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
 
-    {{-- ── SCRIPT PRINCIPAL : Détection automatique du header ─────────── ──}}
+    {{-- SCRIPT PRINCIPAL : Détection automatique du header --}}
     <script>
     (function() {
         'use strict';
@@ -285,15 +285,12 @@
         var detectionInterval = null;
         var isDetecting = false;
 
-        // ── FONCTIONS PRINCIPALES ───────────────────────────────────────
-
         function applyHeight(h) {
             if (!h || h < 1) return;
             frame.style.height = h + 'px';
             stage.classList.add('is-ready');
         }
 
-        // ── DÉTECTION AUTOMATIQUE DU HEADER DANS L'IFRAME ──────────────
         function detectAndCloneHeader() {
             if (isDetecting) return;
             isDetecting = true;
@@ -305,15 +302,12 @@
                     return;
                 }
 
-                // Chercher le header dans l'iframe
                 var header = findHeaderInDocument(doc);
                 
                 if (header) {
-                    // Vérifier si c'est un header fixe ou sticky
                     var style = frame.contentWindow.getComputedStyle(header);
                     var isFixed = style.position === 'fixed' || style.position === 'sticky';
                     
-                    // Ou vérifier par les classes
                     var hasFixedClass = header.classList.contains('fixed') || 
                                        header.classList.contains('sticky') ||
                                        header.classList.contains('header-fixed') ||
@@ -327,8 +321,6 @@
                     }
                 }
 
-                // Si on a trouvé un header mais pas fixe, on le clone quand même
-                // mais on ne l'affiche que quand on défile
                 if (header) {
                     cloneHeaderToParent(header, doc);
                     isDetecting = false;
@@ -338,14 +330,11 @@
                 isDetecting = false;
 
             } catch (err) {
-                // Erreur de cross-origin ou autre
-                console.log('Erreur de détection:', err);
                 isDetecting = false;
             }
         }
 
         function findHeaderInDocument(doc) {
-            // Liste des sélecteurs possibles pour trouver le header
             var selectors = [
                 'header.header-fixed',
                 'header.sticky-header',
@@ -370,7 +359,6 @@
                 if (el) return el;
             }
 
-            // Fallback: chercher n'importe quel header
             var headers = doc.querySelectorAll('header');
             if (headers.length > 0) return headers[0];
 
@@ -379,16 +367,13 @@
 
         function cloneHeaderToParent(header, doc) {
             try {
-                // Cloner le header
                 var clone = header.cloneNode(true);
                 
-                // Nettoyer les scripts
                 var scripts = clone.querySelectorAll('script');
                 scripts.forEach(function(script) {
                     script.remove();
                 });
 
-                // Nettoyer les attributs de style problématiques
                 clone.style.position = 'relative';
                 clone.style.top = 'auto';
                 clone.style.left = 'auto';
@@ -397,7 +382,6 @@
                 clone.style.width = '100%';
                 clone.style.zIndex = 'auto';
                 
-                // Récupérer les styles calculés pour les conserver
                 var computedStyle = frame.contentWindow.getComputedStyle(header);
                 var importantStyles = ['background', 'background-color', 'color', 'font-family', 
                                       'font-size', 'font-weight', 'padding', 'margin', 'display',
@@ -411,55 +395,45 @@
                     }
                 });
 
-                // Mesurer la hauteur réelle
                 var rect = header.getBoundingClientRect();
                 var height = rect.height || 64;
 
-                // Injecter dans le parent
                 headerInner.innerHTML = '';
                 headerInner.appendChild(clone);
                 
-                // Afficher le header
                 headerContainer.style.display = 'block';
                 headerContainer.style.top = (window.innerWidth <= 992 ? '80px' : '96px');
                 
-                // Mettre à jour la hauteur
                 headerHeight = height;
                 updatePadding(height);
                 
-                // Afficher avec animation
                 requestAnimationFrame(function() {
                     headerContainer.classList.add('is-visible');
                     isHeaderFixed = true;
                     updateHeaderVisibility();
                 });
 
-                // Afficher le bouton de scroll
                 if (scrollBtn) {
                     scrollBtn.classList.add('is-visible');
                 }
 
-                // Arrêter la détection
                 if (detectionInterval) {
                     clearInterval(detectionInterval);
                     detectionInterval = null;
                 }
 
-                // Synchroniser les clics sur les liens
                 synchronizeClicks(clone);
 
             } catch (err) {
-                console.log('Erreur de clonage:', err);
+                // console.log('Erreur de clonage:', err);
             }
         }
 
         function synchronizeClicks(clonedHeader) {
-            // Pour les liens et boutons du header cloné, rediriger vers l'iframe
             var links = clonedHeader.querySelectorAll('a, button');
             links.forEach(function(el) {
                 el.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Essayer de cliquer sur l'élément correspondant dans l'iframe
                     try {
                         var doc = frame.contentDocument || frame.contentWindow.document;
                         var target = findCorrespondingElement(el, doc);
@@ -467,7 +441,6 @@
                             target.click();
                         }
                     } catch (err) {
-                        // Si on ne trouve pas, on scrolle en haut
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
                 });
@@ -475,13 +448,11 @@
         }
 
         function findCorrespondingElement(el, doc) {
-            // Essayer de trouver par ID
             if (el.id) {
                 var found = doc.getElementById(el.id);
                 if (found) return found;
             }
             
-            // Essayer par attribut data
             var dataAttrs = el.dataset;
             for (var key in dataAttrs) {
                 var selector = '[data-' + key + '="' + dataAttrs[key] + '"]';
@@ -489,7 +460,6 @@
                 if (found) return found;
             }
             
-            // Essayer par texte
             var text = el.textContent.trim();
             if (text) {
                 var elements = doc.querySelectorAll('a, button');
@@ -503,7 +473,6 @@
             return null;
         }
 
-        // ── GESTION DU PADDING ──────────────────────────────────────────
         function updatePadding(height) {
             var isMobile = window.innerWidth <= 992;
             var basePadding = isMobile ? 80 : 96;
@@ -511,7 +480,6 @@
             stage.classList.add('has-content-header');
         }
 
-        // ── VISIBILITÉ DU HEADER FIXE ──────────────────────────────────
         function updateHeaderVisibility() {
             if (!headerContainer || !isHeaderFixed) return;
             var seuil = headerHeight || 100;
@@ -523,7 +491,6 @@
             }
         }
 
-        // ── RÉCEPTION DES MESSAGES DE L'IFRAME ─────────────────────────
         window.addEventListener('message', function(e) {
             if (e.origin !== selfOrigin) return;
             if (e.source !== frame.contentWindow) return;
@@ -540,7 +507,6 @@
                     break;
 
                 case 'open-menu':
-                    // Essayer d'ouvrir le menu dans l'iframe
                     try {
                         var doc = frame.contentDocument || frame.contentWindow.document;
                         var menuBtn = doc.querySelector('.menu-toggle, .navbar-toggler, .hamburger, [aria-label="Menu"]');
@@ -556,7 +522,6 @@
             }
         });
 
-        // ── BOUTON MENU ──────────────────────────────────────────────────
         var boutonMenu = document.getElementById('gxEmbedMenu');
         if (boutonMenu) {
             boutonMenu.addEventListener('click', function() {
@@ -577,7 +542,6 @@
             majMenu();
         }
 
-        // ── BOUTON SCROLL ───────────────────────────────────────────────
         if (scrollBtn) {
             scrollBtn.addEventListener('click', function() {
                 if (isHeaderFixed) {
@@ -587,7 +551,6 @@
             });
         }
 
-        // ── ÉVÉNEMENTS DE SCROLL ───────────────────────────────────────
         var scrollTimeout = null;
         window.addEventListener('scroll', function() {
             if (scrollTimeout) return;
@@ -597,14 +560,11 @@
             }, 50);
         }, { passive: true });
 
-        // ── DÉTECTION AUTOMATIQUE ──────────────────────────────────────
         function startDetection() {
-            // Détection immédiate
             setTimeout(function() {
                 detectAndCloneHeader();
             }, 500);
 
-            // Détection périodique (pour les templates qui chargent tard)
             var attempts = 0;
             detectionInterval = setInterval(function() {
                 attempts++;
@@ -616,7 +576,6 @@
                 detectAndCloneHeader();
             }, 1000);
 
-            // Détection au chargement de l'iframe
             frame.addEventListener('load', function() {
                 setTimeout(function() {
                     detectAndCloneHeader();
@@ -624,15 +583,12 @@
             });
         }
 
-        // ── INITIALISATION ─────────────────────────────────────────────
         startDetection();
 
-        // ── RECALCUL AU REDIMENSIONNEMENT ─────────────────────────────
         var resizeTimeout = null;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(function() {
-                // Recalculer la hauteur du header si présent
                 if (isHeaderFixed && headerContainer) {
                     var rect = headerContainer.getBoundingClientRect();
                     if (rect.height !== headerHeight) {
@@ -641,7 +597,6 @@
                     }
                 }
                 
-                // Mettre à jour la position du header
                 if (headerContainer) {
                     var isMobile = window.innerWidth <= 992;
                     headerContainer.style.top = isMobile ? '80px' : '96px';
