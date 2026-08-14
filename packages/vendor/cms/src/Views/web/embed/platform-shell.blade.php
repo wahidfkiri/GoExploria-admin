@@ -256,7 +256,79 @@
             if (data.type === 'scroll-top') {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
+            if (data.type === 'request-viewport') envoyerBandeVisible();
+            // Une modale s'ouvre dans l'iframe : elle doit suivre le
+            // défilement de CETTE page, seule à en avoir un.
+            if (data.type === 'overlay-open') suivreBandeVisible(true);
+            if (data.type === 'overlay-close') suivreBandeVisible(false);
         });
+
+        /* ── Bande visible de l'iframe ────────────────────────────────────
+           L'iframe est haute comme son contenu et ne défile pas : son enfant
+           ne peut donc pas savoir ce que le visiteur a réellement sous les
+           yeux. On le lui dit — décalage depuis le haut de l'iframe, et
+           hauteur visible — pour qu'il y place ses modales. */
+        function envoyerBandeVisible() {
+            var boite = frame.getBoundingClientRect();
+            var hauteurEcran = window.innerHeight || document.documentElement.clientHeight;
+
+            // Intersection entre l'iframe et l'écran, exprimée dans le repère
+            // de l'iframe.
+            var debut = Math.max(0, -boite.top);
+            var fin = Math.min(boite.height, hauteurEcran - boite.top);
+
+            try {
+                frame.contentWindow.postMessage({
+                    channel: CHANNEL,
+                    type: 'viewport',
+                    offset: debut,
+                    height: Math.max(0, fin - debut)
+                }, selfOrigin);
+            } catch (err) { /* silencieux */ }
+        }
+
+        var suiviBande = null;
+        var defilementAvant = null;
+
+        function suivreBandeVisible(actif) {
+            if (actif) {
+                envoyerBandeVisible();
+                if (suiviBande) return;
+
+                /* Verrou de défilement — c'est CETTE page qui défile, pas
+                   l'iframe. Sans lui, le visiteur peut faire sortir le site de
+                   l'écran alors que sa modale est ouverte : elle n'aurait plus
+                   de bande visible où se poser. C'est aussi le comportement
+                   attendu d'une modale. La barre de défilement disparaissant,
+                   on compense sa largeur pour éviter un sursaut de la mise en
+                   page. */
+                var barre = window.innerWidth - document.documentElement.clientWidth;
+                defilementAvant = {
+                    overflow: document.body.style.overflow,
+                    paddingRight: document.body.style.paddingRight
+                };
+                document.body.style.overflow = 'hidden';
+                if (barre > 0) { document.body.style.paddingRight = barre + 'px'; }
+
+                // Filet de sécurité : certains navigateurs mobiles laissent
+                // passer un défilement élastique malgré le verrou.
+                suiviBande = function () { envoyerBandeVisible(); };
+                window.addEventListener('scroll', suiviBande, { passive: true });
+                window.addEventListener('resize', suiviBande, { passive: true });
+                return;
+            }
+
+            if (defilementAvant) {
+                document.body.style.overflow = defilementAvant.overflow;
+                document.body.style.paddingRight = defilementAvant.paddingRight;
+                defilementAvant = null;
+            }
+
+            if (!suiviBande) return;
+            window.removeEventListener('scroll', suiviBande);
+            window.removeEventListener('resize', suiviBande);
+            suiviBande = null;
+        }
 
         /* ── Bouton « Menu du site » ──────────────────────────────────────
            L'en-tête de l'établissement est DANS l'iframe, laquelle n'a pas de

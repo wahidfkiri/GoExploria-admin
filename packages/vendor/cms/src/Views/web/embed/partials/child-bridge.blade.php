@@ -114,13 +114,67 @@
         setTimeout(function () { try { declencheur.click(); } catch (err) {} }, 320);
     }
 
-    // 4) Messages du parent : recalcul de hauteur, ouverture du menu.
+    /* ── 4) Modales du template ────────────────────────────────────────────
+       L'iframe est haute comme son contenu et n'a pas de défilement propre :
+       sa « fenêtre » couvre donc TOUT le document. Une modale en
+       position:fixed s'y centre au milieu de la page, pas de l'écran — le
+       visiteur qui a défilé ne voit rien s'ouvrir.
+
+       Le template signale ses ouvertures par un événement (gx:overlay-open).
+       On demande alors au parent quelle bande de l'iframe est visible, et on
+       y recale la modale en position absolue. Le template, lui, ignore tout
+       de l'embarquement. */
+    var modaleCourante = null;
+    var stylesInitiaux = null;
+
+    function ancrerModale(offset, hauteur) {
+        if (!modaleCourante) return;
+        var s = modaleCourante.style;
+        s.position = 'absolute';
+        s.top = Math.max(0, offset) + 'px';
+        s.bottom = 'auto';
+        s.height = Math.max(160, hauteur) + 'px';
+    }
+
+    function demanderBandeVisible() {
+        try {
+            window.parent.postMessage({ channel: CHANNEL, type: 'request-viewport' }, parentOrigin);
+        } catch (err) { /* silencieux */ }
+    }
+
+    window.addEventListener('gx:overlay-open', function (e) {
+        var el = e.detail && e.detail.element;
+        if (!el) return;
+        modaleCourante = el;
+        // On garde l'écriture d'origine pour la rendre telle quelle à la
+        // fermeture : le template doit retrouver sa feuille de style intacte.
+        stylesInitiaux = el.getAttribute('style');
+        demanderBandeVisible();
+        try {
+            window.parent.postMessage({ channel: CHANNEL, type: 'overlay-open' }, parentOrigin);
+        } catch (err) { /* silencieux */ }
+    });
+
+    window.addEventListener('gx:overlay-close', function () {
+        if (modaleCourante) {
+            if (stylesInitiaux === null) { modaleCourante.removeAttribute('style'); }
+            else { modaleCourante.setAttribute('style', stylesInitiaux); }
+        }
+        modaleCourante = null;
+        stylesInitiaux = null;
+        try {
+            window.parent.postMessage({ channel: CHANNEL, type: 'overlay-close' }, parentOrigin);
+        } catch (err) { /* silencieux */ }
+    });
+
+    // 5) Messages du parent : recalcul de hauteur, menu, bande visible.
     window.addEventListener('message', function (e) {
         if (e.origin !== parentOrigin) return;
         var data = e.data || {};
         if (data.channel !== CHANNEL) return;
         if (data.type === 'request-height') postHeight(true);
         if (data.type === 'open-menu') ouvrirMenuMobile();
+        if (data.type === 'viewport') ancrerModale(data.offset, data.height);
     });
 
     // Démarrage + pouls régulier léger pour les contenus qui grandissent
