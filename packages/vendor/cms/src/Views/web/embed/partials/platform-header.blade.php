@@ -14,4 +14,4 @@
      par construction : aucun sélecteur / JS partagé possible.
      ═══════════════════════════════════════════════════════════════════════ --}}
 @include('home-v2.components.VerticalMenu')
-@include('home-v2.components.Header')
+@include('home-v2.components.Header') 

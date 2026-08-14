@@ -109,6 +109,96 @@
         @keyframes gxspin { to { transform: rotate(360deg); } }
         .gx-embed-stage.is-ready .gx-embed-loading { display: none; }
 
+        /* ── HEADER FIXE DU CONTENU (reçu de l'iframe) ────────────────────
+           Ce header est affiché par le parent pour simuler un header fixe
+           alors que le contenu réel est dans l'iframe. Il reçoit le HTML du
+           header de l'établissement via postMessage. */
+        .gx-content-header {
+            position: fixed;
+            top: 96px; /* Sous le header GoExploria */
+            left: 0;
+            right: 0;
+            z-index: 9998;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transform: translateY(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+            /* Le contenu HTML sera injecté ici */
+        }
+        @media (max-width: 992px) {
+            .gx-content-header {
+                top: 80px;
+            }
+        }
+        .gx-content-header.is-visible {
+            transform: translateY(0);
+        }
+        /* Animation d'entrée plus douce */
+        .gx-content-header.is-visible {
+            animation: gxHeaderSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes gxHeaderSlideIn {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        /* Cache le header fixe quand on est en haut de page (le header du contenu
+           est visible dans l'iframe) */
+        .gx-content-header.is-hidden-at-top {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ── CONTENEUR POUR LE HEADER FIXE (reçu de l'iframe) ──────────── */
+        .gx-content-header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Ajustement pour les écrans très larges */
+        @media (min-width: 1400px) {
+            .gx-content-header-inner {
+                padding: 0 40px;
+            }
+        }
+
+        /* ── BOUTON POUR REVENIR AU HEADER DU CONTENU ──────────────────── */
+        .gx-content-header-scroll-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: #16794c;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+        @media (max-width: 1024px) {
+            .gx-content-header-scroll-btn { bottom: 140px; }
+        }
+        .gx-content-header-scroll-btn.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .gx-content-header-scroll-btn:hover {
+            background: #0f5d3a;
+            transform: scale(1.05);
+        }
+
         /* ——— Bouton « Menu du site » (mobile) ———————————————————————
            L'en-tête de l'établissement vit DANS l'iframe, en position:fixed.
            Or l'iframe n'a pas de défilement propre : sa hauteur suit le
@@ -157,11 +247,29 @@
             transform: none;
         }
         .gx-embed-menu:hover { background: #1f2937; }
+
+        /* Ajustement pour éviter que le header fixe du contenu ne cache
+           le contenu de l'iframe */
+        .gx-embed-stage.has-content-header {
+            padding-top: 160px; /* Ajuster selon la hauteur du header du contenu */
+        }
+        @media (max-width: 992px) {
+            .gx-embed-stage.has-content-header {
+                padding-top: 140px;
+            }
+        }
     </style>
 </head>
 <body>
     {{-- ── HEADER GoExploria Business (dédié) ─────────────────────────── --}}
     @include('cms::web.embed.partials.platform-header')
+
+    {{-- ── HEADER FIXE DU CONTENU (injecté par l'iframe) ──────────────── --}}
+    <div class="gx-content-header" id="gxContentHeader" style="display:none;">
+        <div class="gx-content-header-inner" id="gxContentHeaderInner">
+            <!-- Le HTML du header de l'établissement sera injecté ici -->
+        </div>
+    </div>
 
     {{-- ── SITE DE L'ÉTABLISSEMENT (isolé en iframe) ──────────────────── --}}
     <main class="gx-embed-stage" id="gxEmbedStage">
@@ -216,6 +324,13 @@
     @include('cms::web.fallback.partials.landing-cart-drawer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 
+    {{-- Bouton pour remonter au header du contenu (uniquement quand le header fixe est affiché) --}}
+    <button type="button" class="gx-content-header-scroll-btn" id="gxContentHeaderScrollBtn" aria-label="Remonter au menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 19V5M5 12l7-7 7 7"/>
+        </svg>
+    </button>
+
     {{-- ── Assets JS de la plateforme (header/menu/footer) ────────────── --}}
     <script src="{{ asset('js/home-v2/navigation.js') }}"></script>
     <script src="{{ asset('js/home-v2/menu-api-service.js') }}"></script>
@@ -234,8 +349,13 @@
         var CHANNEL = 'gx-embed';
         var stage = document.getElementById('gxEmbedStage');
         var frame = document.getElementById('gxEmbedFrame');
+        var headerContainer = document.getElementById('gxContentHeader');
+        var headerInner = document.getElementById('gxContentHeaderInner');
+        var scrollBtn = document.getElementById('gxContentHeaderScrollBtn');
         if (!frame) return;
         var selfOrigin = window.location.origin;
+        var headerHeight = 0;
+        var isHeaderFixed = false;
 
         function applyHeight(h) {
             if (!h || h < 1) return;
@@ -243,37 +363,142 @@
             stage.classList.add('is-ready');
         }
 
-        // Réception de la hauteur mesurée par l'enfant (child-bridge).
+        // ── Réception des messages de l'iframe ──────────────────────────
         window.addEventListener('message', function (e) {
             // On n'accepte QUE les messages same-origin de notre iframe.
             if (e.origin !== selfOrigin) return;
             if (e.source !== frame.contentWindow) return;
             var data = e.data || {};
             if (data.channel !== CHANNEL) return;
-            if (data.type === 'height') applyHeight(data.height);
-            // L'enfant demande à remonter en haut : son en-tête y est, et
-            // c'est là que son panneau de menu s'ouvre.
-            if (data.type === 'scroll-top') {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            switch (data.type) {
+                case 'height':
+                    applyHeight(data.height);
+                    break;
+
+                case 'scroll-top':
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    break;
+
+                case 'request-viewport':
+                    envoyerBandeVisible();
+                    break;
+
+                case 'overlay-open':
+                    suivreBandeVisible(true);
+                    break;
+
+                case 'overlay-close':
+                    suivreBandeVisible(false);
+                    break;
+
+                // ── NOUVEAU : Recevoir le header du contenu ──────────────
+                case 'header-fixed':
+                    if (data.html) {
+                        afficherHeaderFixe(data.html, data.height || 64);
+                    }
+                    break;
+
+                case 'header-unfix':
+                    cacherHeaderFixe();
+                    break;
+
+                case 'header-toggle':
+                    // Demande de bascule manuelle (ex: clic sur un bouton dans l'iframe)
+                    if (isHeaderFixed) {
+                        cacherHeaderFixe();
+                    } else {
+                        // L'iframe doit envoyer le HTML à ce moment
+                        frame.contentWindow.postMessage(
+                            { channel: CHANNEL, type: 'request-header' }, selfOrigin
+                        );
+                    }
+                    break;
             }
-            if (data.type === 'request-viewport') envoyerBandeVisible();
-            // Une modale s'ouvre dans l'iframe : elle doit suivre le
-            // défilement de CETTE page, seule à en avoir un.
-            if (data.type === 'overlay-open') suivreBandeVisible(true);
-            if (data.type === 'overlay-close') suivreBandeVisible(false);
         });
 
-        /* ── Bande visible de l'iframe ────────────────────────────────────
-           L'iframe est haute comme son contenu et ne défile pas : son enfant
-           ne peut donc pas savoir ce que le visiteur a réellement sous les
-           yeux. On le lui dit — décalage depuis le haut de l'iframe, et
-           hauteur visible — pour qu'il y place ses modales. */
+        // ── GESTION DU HEADER FIXE ───────────────────────────────────────
+        function afficherHeaderFixe(html, hauteur) {
+            if (!headerContainer || !headerInner) return;
+            
+            // Injecter le HTML du header
+            headerInner.innerHTML = html;
+            headerContainer.style.display = 'block';
+            
+            // Mesurer la hauteur réelle
+            var rect = headerContainer.getBoundingClientRect();
+            headerHeight = rect.height || hauteur || 64;
+            
+            // Appliquer le padding-top au stage pour compenser
+            var currentPadding = parseInt(stage.style.paddingTop) || 96;
+            stage.style.paddingTop = (currentPadding + headerHeight) + 'px';
+            stage.classList.add('has-content-header');
+            
+            // Afficher avec animation
+            requestAnimationFrame(function() {
+                headerContainer.classList.add('is-visible');
+                // Masquer en haut de page
+                majHeaderVisibility();
+                isHeaderFixed = true;
+            });
+            
+            // Afficher le bouton de scroll
+            if (scrollBtn) {
+                scrollBtn.classList.add('is-visible');
+            }
+            
+            // Notifier l'iframe que le header est affiché
+            try {
+                frame.contentWindow.postMessage({
+                    channel: CHANNEL,
+                    type: 'header-displayed',
+                    height: headerHeight
+                }, selfOrigin);
+            } catch (err) { /* silencieux */ }
+        }
+
+        function cacherHeaderFixe() {
+            if (!headerContainer) return;
+            headerContainer.classList.remove('is-visible');
+            headerContainer.style.display = 'none';
+            stage.classList.remove('has-content-header');
+            
+            // Restaurer le padding-top original
+            var isMobile = window.innerWidth <= 992;
+            stage.style.paddingTop = isMobile ? '80px' : '96px';
+            
+            if (scrollBtn) {
+                scrollBtn.classList.remove('is-visible');
+            }
+            
+            isHeaderFixed = false;
+            
+            // Notifier l'iframe
+            try {
+                frame.contentWindow.postMessage({
+                    channel: CHANNEL,
+                    type: 'header-hidden'
+                }, selfOrigin);
+            } catch (err) { /* silencieux */ }
+        }
+
+        function majHeaderVisibility() {
+            if (!headerContainer || !isHeaderFixed) return;
+            var seuil = 100; // Seuil en pixels
+            var shouldHide = window.scrollY < seuil;
+            headerContainer.classList.toggle('is-hidden-at-top', shouldHide);
+            
+            // Le bouton de scroll est visible seulement quand le header est caché
+            if (scrollBtn) {
+                scrollBtn.classList.toggle('is-visible', shouldHide && isHeaderFixed);
+            }
+        }
+
+        // ── BANDE VISIBLE DE L'IFRAME ────────────────────────────────────
         function envoyerBandeVisible() {
             var boite = frame.getBoundingClientRect();
             var hauteurEcran = window.innerHeight || document.documentElement.clientHeight;
 
-            // Intersection entre l'iframe et l'écran, exprimée dans le repère
-            // de l'iframe.
             var debut = Math.max(0, -boite.top);
             var fin = Math.min(boite.height, hauteurEcran - boite.top);
 
@@ -290,14 +515,6 @@
         var suiviBande = null;
         var defilementAvant = null;
         var zIndexAvant = null;
-
-        /* Le site vit dans une iframe, et un z-index posé DANS un document
-           iframé ne peut pas en sortir : l'iframe est un seul élément dans
-           l'empilement de cette page. `.gx-embed-stage` la maintient
-           volontairement sous le header plateforme (z-index: 0) — sauf
-           pendant une modale, qui doit couvrir toute la page. On élève donc
-           l'étage entier, au-dessus du plus haut z-index du chrome
-           plateforme (le méga-menu mobile monte à 9999999). */
         var Z_MODALE = '10000001';
 
         function suivreBandeVisible(actif) {
@@ -312,13 +529,6 @@
                     scene.style.zIndex = Z_MODALE;
                 }
 
-                /* Verrou de défilement — c'est CETTE page qui défile, pas
-                   l'iframe. Sans lui, le visiteur peut faire sortir le site de
-                   l'écran alors que sa modale est ouverte : elle n'aurait plus
-                   de bande visible où se poser. C'est aussi le comportement
-                   attendu d'une modale. La barre de défilement disparaissant,
-                   on compense sa largeur pour éviter un sursaut de la mise en
-                   page. */
                 var barre = window.innerWidth - document.documentElement.clientWidth;
                 defilementAvant = {
                     overflow: document.body.style.overflow,
@@ -327,8 +537,6 @@
                 document.body.style.overflow = 'hidden';
                 if (barre > 0) { document.body.style.paddingRight = barre + 'px'; }
 
-                // Filet de sécurité : certains navigateurs mobiles laissent
-                // passer un défilement élastique malgré le verrou.
                 suiviBande = function () { envoyerBandeVisible(); };
                 window.addEventListener('scroll', suiviBande, { passive: true });
                 window.addEventListener('resize', suiviBande, { passive: true });
@@ -352,12 +560,7 @@
             suiviBande = null;
         }
 
-        /* ── Bouton « Menu du site » ──────────────────────────────────────
-           L'en-tête de l'établissement est DANS l'iframe, laquelle n'a pas de
-           défilement propre : son position:fixed se cale sur la boîte de
-           l'iframe et sort de l'écran dès qu'on défile. Ce bouton-ci, lui,
-           est dans le document qui défile — il tient. Il demande à l'iframe
-           d'ouvrir son propre menu (voir partials/child-bridge). */
+        // ── BOUTON « Menu du site » ──────────────────────────────────────
         var boutonMenu = document.getElementById('gxEmbedMenu');
         if (boutonMenu) {
             boutonMenu.addEventListener('click', function () {
@@ -370,22 +573,60 @@
                 }
             });
 
-            // Visible seulement une fois qu'on a quitté le haut de page : en
-            // haut, l'en-tête du site est là, le bouton ferait double emploi.
-            var seuil = 400;
-            var maj = function () {
-                boutonMenu.classList.toggle('is-visible', window.scrollY > seuil);
+            var seuilMenu = 400;
+            var majMenu = function () {
+                boutonMenu.classList.toggle('is-visible', window.scrollY > seuilMenu);
             };
-            window.addEventListener('scroll', maj, { passive: true });
-            maj();
+            window.addEventListener('scroll', majMenu, { passive: true });
+            majMenu();
         }
 
-        // Demander un recalcul quand la largeur du parent change (responsive :
-        // le reflow interne du template modifie sa hauteur).
+        // ── BOUTON DE SCROLL VERS LE HEADER ──────────────────────────────
+        if (scrollBtn) {
+            scrollBtn.addEventListener('click', function () {
+                if (isHeaderFixed) {
+                    // Faire défiler jusqu'en haut du header fixe
+                    var targetTop = headerContainer.getBoundingClientRect().top + window.scrollY;
+                    window.scrollTo({ top: targetTop - 10, behavior: 'smooth' });
+                } else {
+                    // Si le header n'est pas fixe, demander à l'iframe de scroller
+                    try {
+                        frame.contentWindow.postMessage(
+                            { channel: CHANNEL, type: 'scroll-top' }, selfOrigin
+                        );
+                    } catch (err) {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                }
+            });
+        }
+
+        // ── GESTION DU SCROLL POUR LE HEADER ─────────────────────────────
+        var majHeaderDebounce = null;
+        window.addEventListener('scroll', function () {
+            if (majHeaderDebounce) return;
+            majHeaderDebounce = setTimeout(function() {
+                majHeaderVisibility();
+                majHeaderDebounce = null;
+            }, 50);
+        }, { passive: true });
+
+        // ── RECALCUL DE LA HAUTEUR ──────────────────────────────────────
         var rt;
         window.addEventListener('resize', function () {
             clearTimeout(rt);
             rt = setTimeout(function () {
+                // Recalculer la hauteur du header fixe si présent
+                if (isHeaderFixed && headerContainer) {
+                    var rect = headerContainer.getBoundingClientRect();
+                    if (rect.height !== headerHeight) {
+                        headerHeight = rect.height;
+                        var isMobile = window.innerWidth <= 992;
+                        var basePadding = isMobile ? 80 : 96;
+                        stage.style.paddingTop = (basePadding + headerHeight) + 'px';
+                    }
+                }
+                
                 try {
                     frame.contentWindow.postMessage(
                         { channel: CHANNEL, type: 'request-height' }, selfOrigin
@@ -394,8 +635,7 @@
             }, 200);
         }, { passive: true });
 
-        // Filet de sécurité : si aucun message n'arrive (JS enfant bloqué),
-        // on tente une mesure directe (possible car same-origin) au load.
+        // ── FILET DE SÉCURITÉ ────────────────────────────────────────────
         frame.addEventListener('load', function () {
             setTimeout(function () {
                 if (stage.classList.contains('is-ready')) return;
