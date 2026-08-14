@@ -65,7 +65,6 @@
 </header>
 <div class="cgh-spacer" aria-hidden="true"></div>
 
-    @include('cms::web.embed.partials.platform-header')
 
 <script>
 (function(){
