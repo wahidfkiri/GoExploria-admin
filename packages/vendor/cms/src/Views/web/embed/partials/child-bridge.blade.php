@@ -129,10 +129,29 @@
 
     function ancrerModale(offset, hauteur) {
         if (!modaleCourante) return;
+
         var s = modaleCourante.style;
         s.position = 'absolute';
-        s.top = Math.max(0, offset) + 'px';
         s.bottom = 'auto';
+
+        /* `offset` compte depuis le haut du DOCUMENT, mais `top` s'exprime
+           dans le repère du parent POSITIONNÉ. L'enveloppe du template
+           (.immo-tpl, .calibre-tpl…) est en position:relative, et celle qui
+           porte le contenu commence sous la région d'en-tête. Sans cette
+           correction la modale se pose la hauteur de l'en-tête trop bas —
+           c'est-à-dire hors de l'écran.
+
+           offsetParent n'est lisible qu'une fois la position passée en
+           absolute : un élément fixed n'en a pas. */
+        var origine = 0;
+        var parent = modaleCourante.offsetParent;
+        if (parent && parent !== document.body && parent !== document.documentElement) {
+            origine = parent.getBoundingClientRect().top + (window.pageYOffset || 0);
+        }
+
+        // Volontairement non borné à 0 : si la bande visible est au-dessus de
+        // l'enveloppe, un `top` négatif est la bonne réponse.
+        s.top = Math.round(offset - origine) + 'px';
         s.height = Math.max(160, hauteur) + 'px';
     }
 
