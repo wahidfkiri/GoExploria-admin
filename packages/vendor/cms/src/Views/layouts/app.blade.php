@@ -52,7 +52,6 @@
     <div class="main-container">
     @include('home-v2.components.VerticalMenu')
     @include('home-v2.components.Header')
-    @include('cms::web.embed.partials.platform-header')
 
     @yield('content')
     </main>
