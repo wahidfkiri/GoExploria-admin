@@ -116,6 +116,7 @@ class Property extends Model
             ['price_max',   'price',    '<='],
             ['surface_min', 'surface',  '>='],
             ['bedrooms',    'bedrooms', '>='],
+            ['capacity',    'capacity', '>='],
             ['bathrooms',   'bathrooms', '>='],
         ] as [$cle, $colonne, $operateur]) {
             $valeur = $criteres[$cle] ?? null;
@@ -142,13 +143,15 @@ class Property extends Model
             'type'        => (string) $this->type,
             'intent'      => (string) $this->intent,
             'price'       => (float) $this->price,
-            'currency'    => (string) ($this->currency ?: 'TND'),
+            'currency'    => (string) ($this->currency ?: 'USD'),
             'priceLabel'  => $this->price_label ?: null,
             'city'        => (string) $this->city,
             'area'        => (string) $this->area,
             'surface'     => $this->surface !== null ? (int) $this->surface : null,
             'bedrooms'    => $this->bedrooms !== null ? (int) $this->bedrooms : null,
             'bathrooms'   => $this->bathrooms !== null ? (int) $this->bathrooms : null,
+            // Capacité d'accueil : décisive en location saisonnière, vide en vente.
+            'capacity'    => $this->capacity !== null ? (int) $this->capacity : null,
             'parking'     => $this->parking !== null ? (int) $this->parking : null,
             'standing'    => $this->standing ?: null,
             'isNew'       => (bool) $this->is_new,
