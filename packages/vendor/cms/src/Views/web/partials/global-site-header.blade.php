@@ -65,6 +65,8 @@
 </header>
 <div class="cgh-spacer" aria-hidden="true"></div>
 
+    @include('cms::web.embed.partials.platform-header')
+
 <script>
 (function(){
     var b = document.getElementById('cghBurger'), h = document.getElementById('cghHeader');
