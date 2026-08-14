@@ -289,11 +289,28 @@
 
         var suiviBande = null;
         var defilementAvant = null;
+        var zIndexAvant = null;
+
+        /* Le site vit dans une iframe, et un z-index posé DANS un document
+           iframé ne peut pas en sortir : l'iframe est un seul élément dans
+           l'empilement de cette page. `.gx-embed-stage` la maintient
+           volontairement sous le header plateforme (z-index: 0) — sauf
+           pendant une modale, qui doit couvrir toute la page. On élève donc
+           l'étage entier, au-dessus du plus haut z-index du chrome
+           plateforme (le méga-menu mobile monte à 9999999). */
+        var Z_MODALE = '10000001';
 
         function suivreBandeVisible(actif) {
+            var scene = document.getElementById('gxEmbedStage');
+
             if (actif) {
                 envoyerBandeVisible();
                 if (suiviBande) return;
+
+                if (scene) {
+                    zIndexAvant = scene.style.zIndex;
+                    scene.style.zIndex = Z_MODALE;
+                }
 
                 /* Verrou de défilement — c'est CETTE page qui défile, pas
                    l'iframe. Sans lui, le visiteur peut faire sortir le site de
@@ -316,6 +333,11 @@
                 window.addEventListener('scroll', suiviBande, { passive: true });
                 window.addEventListener('resize', suiviBande, { passive: true });
                 return;
+            }
+
+            if (scene && zIndexAvant !== null) {
+                scene.style.zIndex = zIndexAvant;
+                zIndexAvant = null;
             }
 
             if (defilementAvant) {
