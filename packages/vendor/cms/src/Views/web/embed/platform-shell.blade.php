@@ -1,5 +1,5 @@
 {{-- ═══════════════════════════════════════════════════════════════════════
-     SHELL PLATEFORME — Menus totalement isolés
+     SHELL PLATEFORME — Version corrigée sans boucle de chargement
      ═══════════════════════════════════════════════════════════════════════ --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -31,7 +31,6 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/footer.css') }}">
 
     <style>
-        /* --- Reset --- */
         html, body { 
             margin: 0; 
             padding: 0; 
@@ -57,7 +56,6 @@
             }
         }
 
-        /* --- Layout --- */
         .gx-embed-wrapper {
             display: flex;
             flex-direction: column;
@@ -76,7 +74,6 @@
             padding-top: calc(var(--header-height) + var(--extracted-header-height, 64px));
         }
 
-        /* --- Loader --- */
         .gx-embed-loader {
             display: flex;
             flex-direction: column;
@@ -101,7 +98,27 @@
             to { transform: rotate(360deg); }
         }
 
-        /* --- Header extrait (isolation totale) --- */
+        .gx-embed-loader .error-icon {
+            font-size: 48px;
+            color: #dc2626;
+        }
+
+        .gx-embed-loader .retry-btn {
+            margin-top: 12px;
+            padding: 8px 24px;
+            background: #16794c;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .gx-embed-loader .retry-btn:hover {
+            background: #0f5d3a;
+        }
+
+        /* --- Header extrait --- */
         .gx-extracted-header {
             position: fixed;
             top: var(--header-height);
@@ -114,8 +131,6 @@
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: none;
             will-change: transform;
-            /* Isolation : le header extrait n'interfère pas avec le header plateforme */
-            pointer-events: auto;
         }
 
         .gx-extracted-header.is-visible {
@@ -129,25 +144,18 @@
             pointer-events: none;
         }
 
-        /* IMPORTANT : Tout ce qui est dans le header extrait est isolé */
         .gx-extracted-header-inner {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
-        /* Le header extrait ne doit pas affecter le header plateforme */
-        .gx-extracted-header * {
-            /* Les styles du template s'appliquent mais restent dans ce conteneur */
-        }
-
-        /* --- Shadow DOM Container --- */
         #gxShadowContainer {
             width: 100%;
             min-height: 200px;
         }
 
-        /* --- Bouton menu mobile (pour ouvrir le menu du landing) --- */
+        /* --- Bouton menu mobile --- */
         .gx-embed-menu-btn {
             position: fixed;
             left: 20px;
@@ -186,7 +194,6 @@
             background: #1f2937;
         }
 
-        /* --- Bouton scroll top --- */
         .gx-scroll-top-btn {
             position: fixed;
             right: 20px;
@@ -247,10 +254,10 @@
 </head>
 <body>
     <div class="gx-embed-wrapper">
-        {{-- HEADER GoExploria (plateforme) --}}
+        {{-- HEADER GoExploria --}}
         @include('cms::web.embed.partials.platform-header')
 
-        {{-- HEADER EXTRAIT (landing) - isolé --}}
+        {{-- HEADER EXTRAIT --}}
         <div class="gx-extracted-header" id="gxExtractedHeader">
             <div class="gx-extracted-header-inner" id="gxExtractedHeaderInner"></div>
         </div>
@@ -268,21 +275,20 @@
         @include('cms::web.embed.partials.platform-footer')
     </div>
 
-    {{-- Éléments flottants de la plateforme --}}
+    {{-- Éléments flottants --}}
     @include('cms::web.fallback.partials.landing-contact-ajax')
     @include('cms::web.fallback.partials.landing-contact-widget')
     @include('cms::web.fallback.partials.landing-cart-drawer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 
-    {{-- Bouton pour ouvrir le menu du landing (mobile) --}}
-    <button type="button" class="gx-embed-menu-btn" id="gxEmbedMenuBtn" aria-label="Ouvrir le menu du site">
+    {{-- Boutons --}}
+    <button type="button" class="gx-embed-menu-btn" id="gxEmbedMenuBtn" aria-label="Ouvrir le menu">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             <path d="M4 7h16M4 12h16M4 17h16"/>
         </svg>
         Menu du site
     </button>
 
-    {{-- Bouton scroll top --}}
     <button type="button" class="gx-scroll-top-btn" id="gxScrollTopBtn" aria-label="Remonter">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 19V5M5 12l7-7 7 7"/>
@@ -301,7 +307,7 @@
     <script src="{{ asset('js/home-v2/destinations-search.js') }}"></script>
     <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
 
-    {{-- Script principal (corrigé pour l'isolation des menus) --}}
+    {{-- Script principal (version corrigée) --}}
     <script>
         (function() {
             'use strict';
@@ -314,11 +320,11 @@
                 embedUrl: '{{ route("cms.company.embed", ["etablissementId" => $etablissement->id]) }}'
             };
 
-            // ── FLAGS ──────────────────────────────────────────────────
+            // ── FLAG POUR ÉVITER LES BOUCLES ──────────────────────────
             var isLoaded = false;
             var isLoading = false;
             var loadAttempts = 0;
-            var MAX_ATTEMPTS = 1;
+            var MAX_ATTEMPTS = 1; // Un seul chargement
 
             // ── ÉLÉMENTS DOM ──────────────────────────────────────────
             var elements = {
@@ -335,57 +341,38 @@
             var isHeaderFixed = false;
             var headerHeight = 64;
 
-            // ── FONCTIONS DE NETTOYAGE POUR ÉVITER LES CONFLITS ──────
-
-            /**
-             * Nettoie les scripts pour éviter les conflits avec la plateforme
-             */
-            function cleanScriptContent(content) {
-                if (!content) return content;
-
-                // Bloquer les appels qui pourraient recharger la page
-                var blockedPatterns = [
+            // ── INTERCEPTION DES SCRIPTS PROBLÉMATIQUES ──────────────
+            function shouldSkipScript(scriptContent, scriptSrc) {
+                // Ignorer les scripts qui pourraient recharger la page
+                var skipPatterns = [
                     'location.reload',
                     'window.location.reload',
                     'document.location.reload',
+                    'location.href =',
+                    'window.location.href =',
                     'history.pushState',
                     'history.replaceState',
+                    'ajax',
                     'fetch(',
                     'XMLHttpRequest',
                     '$.ajax',
-                    'axios'
+                    'axios',
+                    // Scripts de tracking qui peuvent causer des boucles
+                    'google-analytics',
+                    'gtag',
+                    'facebook-pixel',
+                    'hotjar',
+                    'clarity'
                 ];
 
-                var cleaned = content;
-                blockedPatterns.forEach(function(pattern) {
-                    var regex = new RegExp(pattern, 'gi');
-                    cleaned = cleaned.replace(regex, '/* EMBED: ' + pattern + ' bloqué */');
-                });
+                var content = (scriptContent || '').toLowerCase();
+                var src = (scriptSrc || '').toLowerCase();
 
-                return cleaned;
-            }
-
-            /**
-             * Vérifie si un script peut causer des conflits
-             */
-            function isConflictScript(src, content) {
-                var conflictPatterns = [
-                    'navigation.js',
-                    'vertical-menu.js',
-                    'mega-menu.js',
-                    'menu-api-service.js',
-                    'header-fixed',
-                    'sticky-header'
-                ];
-
-                var source = (src || '').toLowerCase();
-                var text = (content || '').toLowerCase();
-
-                for (var i = 0; i < conflictPatterns.length; i++) {
-                    if (source.indexOf(conflictPatterns[i]) !== -1) {
+                for (var i = 0; i < skipPatterns.length; i++) {
+                    if (content.indexOf(skipPatterns[i]) !== -1) {
                         return true;
                     }
-                    if (text.indexOf(conflictPatterns[i]) !== -1) {
+                    if (src.indexOf(skipPatterns[i]) !== -1) {
                         return true;
                     }
                 }
@@ -400,12 +387,15 @@
                 }
 
                 if (loadAttempts >= MAX_ATTEMPTS) {
+                    console.warn('✅ Contenu déjà chargé, arrêt des tentatives');
                     return;
                 }
 
                 loadAttempts++;
                 isLoading = true;
                 setState('loading');
+
+                console.log('📥 Chargement du contenu (tentative ' + loadAttempts + ')');
 
                 fetch(CONFIG.embedUrl, {
                     headers: {
@@ -424,9 +414,10 @@
                     isLoaded = true;
                     isLoading = false;
                     setState('loaded');
+                    console.log('✅ Contenu chargé avec succès');
                 })
                 .catch(function(error) {
-                    console.error('Erreur:', error);
+                    console.error('❌ Erreur:', error);
                     isLoading = false;
                     setState('error', error.message);
                 });
@@ -434,16 +425,21 @@
 
             // ── RENDU DU CONTENU ──────────────────────────────────────
             function renderContent(html) {
+                // Créer le Shadow DOM
                 createShadowRoot();
 
+                // Extraire le body
                 var content = extractBody(html);
+                
+                // Extraire les styles (garder seulement les styles)
                 var styles = extractStyles(html);
+                
+                // Extraire le header
                 var headerHtml = extractHeader(html);
 
                 // Injecter les styles
                 styles.forEach(function(styleContent) {
                     var styleEl = document.createElement('style');
-                    // Isoler les styles en ajoutant un scope
                     styleEl.textContent = styleContent;
                     shadowRoot.appendChild(styleEl);
                 });
@@ -458,7 +454,7 @@
                     extractAndDisplayHeader(headerHtml);
                 }
 
-                // Exécuter les scripts (avec nettoyage)
+                // Exécuter les scripts (avec filtrage)
                 executeScriptsSafely(wrapper);
 
                 // Initialiser les composants du template
@@ -477,28 +473,10 @@
                     shadowRoot = elements.container.attachShadow({ mode: 'open' });
                 }
 
-                // Style de base pour le shadow DOM
                 var resetStyle = document.createElement('style');
                 resetStyle.textContent = `
-                    :host { 
-                        display: block; 
-                        width: 100%; 
-                    }
-                    /* Reset pour éviter les conflits */
-                    * {
-                        box-sizing: border-box;
-                    }
-                    /* Isolation des menus - tous les sélecteurs sont scopés */
-                    .menu-toggle, .navbar-toggler, .hamburger {
-                        cursor: pointer;
-                    }
-                    .nav-menu, .navbar-collapse, .main-menu, .mobile-menu {
-                        display: none;
-                    }
-                    .nav-menu.show, .navbar-collapse.show, .main-menu.show, .mobile-menu.show,
-                    .nav-menu.active, .navbar-collapse.active, .main-menu.active, .mobile-menu.active {
-                        display: block;
-                    }
+                    :host { display: block; width: 100%; }
+                    * { box-sizing: border-box; }
                 `;
                 shadowRoot.appendChild(resetStyle);
 
@@ -560,8 +538,9 @@
                     var src = oldScript.getAttribute('src') || '';
                     var content = oldScript.textContent || '';
 
-                    // Ignorer les scripts de la plateforme (conflits)
-                    if (isConflictScript(src, content)) {
+                    // Vérifier si ce script peut causer une boucle
+                    if (shouldSkipScript(content, src)) {
+                        console.log('⏭️ Script ignoré (potentiellement problématique):', src || 'inline');
                         oldScript.parentNode.removeChild(oldScript);
                         return;
                     }
@@ -574,22 +553,33 @@
                     });
                     
                     if (src) {
-                        // Script externe
+                        // Script externe - le charger
                         newScript.src = src;
                         newScript.async = false;
                     } else if (content) {
-                        // Script inline - nettoyer
-                        var cleaned = cleanScriptContent(content);
-                        newScript.textContent = cleaned;
+                        // Script inline - l'exécuter
+                        // Nettoyer le contenu pour éviter les rechargements
+                        var cleanedContent = content
+                            .replace(/location\.reload/g, '// location.reload')
+                            .replace(/window\.location\.reload/g, '// window.location.reload')
+                            .replace(/document\.location\.reload/g, '// document.location.reload')
+                            .replace(/history\.pushState/g, '// history.pushState')
+                            .replace(/history\.replaceState/g, '// history.replaceState');
+
+                        newScript.textContent = cleanedContent;
                     } else {
                         oldScript.parentNode.removeChild(oldScript);
                         return;
                     }
                     
+                    // Ajouter un flag pour identifier que ce script est dans un embed
                     newScript.setAttribute('data-embed-executed', 'true');
+                    
                     oldScript.parentNode.replaceChild(newScript, oldScript);
                     scriptCounter++;
                 });
+
+                console.log('📝 Scripts exécutés:', scriptCounter);
             }
 
             // ── EXTRACTION ET AFFICHAGE DU HEADER ─────────────────────
@@ -602,12 +592,10 @@
 
                 if (!header) return;
 
-                // Supprimer les scripts pour éviter les conflits
                 header.querySelectorAll('script').forEach(function(el) {
                     el.remove();
                 });
 
-                // Nettoyer les attributs problématiques
                 header.style.position = 'relative';
                 header.style.top = 'auto';
                 header.style.left = 'auto';
@@ -617,27 +605,11 @@
                 header.style.zIndex = 'auto';
                 header.style.transform = 'none';
 
-                // Remplacer les classes conflictuelles
-                var classList = header.className.split(' ');
-                var newClasses = [];
-                classList.forEach(function(cls) {
-                    // Garder les classes mais éviter les conflits avec la plateforme
-                    if (cls.indexOf('fixed') !== -1 || cls.indexOf('sticky') !== -1) {
-                        newClasses.push(cls + '-extracted');
-                    } else {
-                        newClasses.push(cls);
-                    }
-                });
-                header.className = newClasses.join(' ');
-
-                // Mesurer la hauteur
                 headerHeight = header.offsetHeight || 64;
 
-                // Injecter
                 elements.headerInner.innerHTML = '';
                 elements.headerInner.appendChild(header);
 
-                // Afficher
                 elements.header.style.display = 'block';
                 updateHeaderPosition();
 
@@ -653,7 +625,6 @@
                     elements.scrollBtn.classList.add('is-visible');
                 }
 
-                // Synchroniser les clics
                 synchronizeClicks(header);
             }
 
@@ -663,7 +634,6 @@
                 links.forEach(function(el) {
                     el.addEventListener('click', function(e) {
                         e.preventDefault();
-                        e.stopPropagation();
                         
                         var target = null;
                         
@@ -692,10 +662,8 @@
             // ── INITIALISATION DES COMPOSANTS ─────────────────────────
             function initializeTemplate() {
                 setTimeout(function() {
-                    if (!shadowRoot) return;
-
-                    // Initialiser SWIPER (si présent)
-                    if (typeof Swiper !== 'undefined') {
+                    // Swiper
+                    if (typeof Swiper !== 'undefined' && shadowRoot) {
                         shadowRoot.querySelectorAll('.swiper-container, .swiper').forEach(function(el) {
                             if (el.swiper) {
                                 el.swiper.destroy(true, true);
@@ -706,79 +674,56 @@
                         });
                     }
 
-                    // Initialiser les menus mobiles UNIQUEMENT dans le shadow DOM
-                    var menuToggles = shadowRoot.querySelectorAll('.menu-toggle, .navbar-toggler, .hamburger');
-                    menuToggles.forEach(function(btn) {
-                        // Supprimer les anciens écouteurs
-                        var newBtn = btn.cloneNode(true);
-                        btn.parentNode.replaceChild(newBtn, btn);
-                        
-                        newBtn.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            
-                            var target = this.dataset.target || this.getAttribute('data-target');
-                            if (target) {
-                                var menu = shadowRoot.querySelector(target);
-                                if (menu) {
-                                    menu.classList.toggle('show');
-                                    menu.classList.toggle('active');
-                                    this.classList.toggle('is-active');
+                    // Menus mobiles
+                    if (shadowRoot) {
+                        shadowRoot.querySelectorAll('.menu-toggle, .navbar-toggler, .hamburger').forEach(function(btn) {
+                            btn.addEventListener('click', function(e) {
+                                var target = this.dataset.target || this.getAttribute('data-target');
+                                if (target) {
+                                    var menu = shadowRoot.querySelector(target);
+                                    if (menu) {
+                                        menu.classList.toggle('show');
+                                        menu.classList.toggle('active');
+                                        this.classList.toggle('is-active');
+                                    }
                                 }
-                            }
+                            });
                         });
-                    });
+                    }
 
-                    // Déclencher DOMContentLoaded (une seule fois)
+                    // Événement DOMContentLoaded (une seule fois)
                     var event = new Event('DOMContentLoaded', { bubbles: true });
-                    shadowRoot.dispatchEvent(event);
+                    if (shadowRoot) {
+                        shadowRoot.dispatchEvent(event);
+                    }
 
                 }, 300);
             }
 
-            // ── OUVERTURE DU MENU MOBILE (landing) ──────────────────
+            // ── OUVERTURE DU MENU MOBILE ──────────────────────────────
             function openMobileMenu() {
-                if (!shadowRoot) {
-                    console.warn('Shadow DOM non disponible');
-                    return;
-                }
+                if (!shadowRoot) return;
 
-                // 1. Chercher le bouton de menu dans le shadow DOM
+                // Chercher le bouton de menu
                 var menuToggle = shadowRoot.querySelector('.menu-toggle, .navbar-toggler, .hamburger, [aria-label="Menu"], [aria-label="Toggle navigation"]');
                 
-                if (menuToggle) {
-                    console.log('🔘 Bouton menu trouvé, clic simulé');
+                if (menuToggle && menuToggle.click) {
                     menuToggle.click();
                     return;
                 }
 
-                // 2. Fallback: toggle le menu directement
-                var menuSelectors = [
-                    '.nav-menu', '.navbar-collapse', '.main-menu', 
-                    '.mobile-menu', '.menu-mobile', '[class*="menu"]:not(.menu-toggle)'
-                ];
-                
-                var menu = null;
-                for (var i = 0; i < menuSelectors.length; i++) {
-                    menu = shadowRoot.querySelector(menuSelectors[i]);
-                    if (menu) break;
-                }
-
+                // Fallback: toggle le menu directement
+                var menu = shadowRoot.querySelector('.nav-menu, .navbar-collapse, .main-menu, .mobile-menu, .menu-mobile');
                 if (menu) {
-                    console.log('📋 Menu trouvé, toggle direct');
                     menu.classList.toggle('show');
                     menu.classList.toggle('active');
                     
-                    // Chercher le bouton associé
                     var parent = menu.closest('nav') || menu.parentElement;
                     var btn = parent ? parent.querySelector('.menu-toggle, .navbar-toggler, .hamburger') : null;
                     if (btn) {
                         btn.classList.toggle('is-active');
                     }
-                    return;
                 }
-
-                console.warn('⚠️ Aucun menu trouvé dans le shadow DOM');
             }
 
             // ── UTILITAIRES ─────────────────────────────────────────────
@@ -849,16 +794,13 @@
 
             // ── ÉVÉNEMENTS ──────────────────────────────────────────────
 
-            // Bouton menu (ouvre le menu du landing)
+            // Menu
             if (elements.menuBtn) {
                 elements.menuBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    e.stopPropagation();
-                    console.log('🔄 Clic sur le bouton menu du landing');
                     openMobileMenu();
                 });
 
-                // Visibilité du bouton menu
                 var menuThreshold = 400;
                 window.addEventListener('scroll', function() {
                     var shouldShow = window.scrollY > menuThreshold;
@@ -868,7 +810,7 @@
                 elements.menuBtn.classList.toggle('is-visible', window.scrollY > menuThreshold);
             }
 
-            // Bouton scroll top
+            // Scroll top
             if (elements.scrollBtn) {
                 elements.scrollBtn.addEventListener('click', function() {
                     if (isHeaderFixed) {
@@ -931,6 +873,19 @@
             } else {
                 loadContent();
             }
+
+            // Empêcher les rechargements intempestifs via les liens internes
+            document.addEventListener('click', function(e) {
+                var link = e.target.closest('a');
+                if (link && link.href && link.href.indexOf(window.location.origin) === 0) {
+                    if (link.href !== window.location.href && link.target !== '_blank') {
+                        e.preventDefault();
+                        // Navigation SPA
+                        window.history.pushState(null, '', link.href);
+                        // Ne pas recharger, juste mettre à jour l'URL
+                    }
+                }
+            });
 
         })();
     </script>
