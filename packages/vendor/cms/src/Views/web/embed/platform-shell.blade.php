@@ -1,21 +1,16 @@
 {{-- ═══════════════════════════════════════════════════════════════════════
-     SHELL PLATEFORME — Affiche le site d'un établissement DANS GoExploria
-     Business, avec ISOLATION TOTALE via Shadow DOM.
-     
-     Le contenu est chargé dans un Shadow DOM, ce qui isole :
-     - Les CSS (styles du template vs plateforme)
-     - Les JS (pas de conflit de variables globales)
-     - Le DOM (les sélecteurs ne se mélangent pas)
-     
-     LE HEADER EST FIXE CAR IL EST DANS LE DOM PRINCIPAL
+     SHELL PLATEFORME — Version corrigée sans boucle de chargement
      ═══════════════════════════════════════════════════════════════════════ --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ function_exists('get_site_name') ? get_site_name($etablissement->id) : $etablissement->name }} — GoExploria Business</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>{{ $etablissement->name }} — GoExploria Business</title>
 
+    {{-- Polices --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -36,74 +31,113 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/footer.css') }}">
 
     <style>
-        /* --- Réinitialisation --- */
-        html, body { margin: 0; padding: 0; }
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%;
+        }
         body {
             background: #ffffff;
             overflow-x: hidden;
+            font-family: 'Montserrat', system-ui, sans-serif;
         }
 
-        /* --- Zone du contenu --- */
-        .gx-content-stage {
-            width: 100%;
-            padding-top: 96px;
-            box-sizing: border-box;
+        :root {
+            --header-height: 96px;
+            --mobile-header-height: 80px;
+            --z-header: 9998;
+            --z-menu: 9997;
+        }
+
+        @media (max-width: 992px) {
+            :root {
+                --header-height: 80px;
+                --mobile-header-height: 80px;
+            }
+        }
+
+        .gx-embed-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .gx-embed-content {
+            flex: 1;
+            padding-top: var(--header-height);
             position: relative;
             z-index: 0;
-            min-height: 80vh;
-        }
-        @media (max-width: 992px) {
-            .gx-content-stage { padding-top: 80px; }
+            min-height: 60vh;
         }
 
-        /* --- Chargeur --- */
-        .gx-content-loader {
+        .gx-embed-content.has-extracted-header {
+            padding-top: calc(var(--header-height) + var(--extracted-header-height, 64px));
+        }
+
+        .gx-embed-loader {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            padding: 80px 16px;
+            gap: 16px;
+            padding: 80px 20px;
             color: #6b7280;
-            font-family: Montserrat, system-ui, sans-serif;
             font-size: 14px;
         }
-        .gx-content-loader .spinner {
-            width: 22px; height: 22px; border-radius: 50%;
-            border: 3px solid #e5e7eb; border-top-color: #16794c;
-            animation: spin .8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* --- Shadow DOM Container --- */
-        #gxShadowContainer {
-            width: 100%;
-            min-height: 200px;
+        .gx-embed-loader .spinner {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 4px solid #e5e7eb;
+            border-top-color: #16794c;
+            animation: spin 0.8s linear infinite;
         }
 
-        /* --- Header extrait du template (affiché dans le DOM parent) --- */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .gx-embed-loader .error-icon {
+            font-size: 48px;
+            color: #dc2626;
+        }
+
+        .gx-embed-loader .retry-btn {
+            margin-top: 12px;
+            padding: 8px 24px;
+            background: #16794c;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .gx-embed-loader .retry-btn:hover {
+            background: #0f5d3a;
+        }
+
+        /* --- Header extrait --- */
         .gx-extracted-header {
             position: fixed;
-            top: 96px;
+            top: var(--header-height);
             left: 0;
             right: 0;
-            z-index: 9998;
+            z-index: var(--z-header);
             background: #ffffff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transform: translateY(-100%);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: none;
-            max-height: 80vh;
-            overflow-y: auto;
+            will-change: transform;
         }
-        @media (max-width: 992px) {
-            .gx-extracted-header {
-                top: 80px;
-            }
-        }
+
         .gx-extracted-header.is-visible {
             transform: translateY(0);
             display: block;
         }
+
         .gx-extracted-header.is-hidden-at-top {
             transform: translateY(-100%);
             opacity: 0;
@@ -116,57 +150,56 @@
             padding: 0 20px;
         }
 
-        /* --- Ajustement du padding --- */
-        .gx-content-stage.has-extracted-header {
-            padding-top: 160px;
-        }
-        @media (max-width: 992px) {
-            .gx-content-stage.has-extracted-header {
-                padding-top: 140px;
-            }
+        #gxShadowContainer {
+            width: 100%;
+            min-height: 200px;
         }
 
-        /* --- Bouton Menu du site (mobile) --- */
-        .gx-embed-menu {
+        /* --- Bouton menu mobile --- */
+        .gx-embed-menu-btn {
             position: fixed;
             left: 20px;
             bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-            z-index: 9997;
+            z-index: var(--z-menu);
             display: none;
             align-items: center;
             gap: 9px;
             padding: 12px 18px;
-            font-family: Montserrat, system-ui, sans-serif;
             font-size: 14px;
             font-weight: 800;
             color: #ffffff;
             background: #111827;
-            border: 0;
+            border: none;
             border-radius: 999px;
-            box-shadow: 0 14px 34px rgba(0, 0, 0, .3);
+            box-shadow: 0 14px 34px rgba(0,0,0,0.3);
             cursor: pointer;
             opacity: 0;
             pointer-events: none;
             transform: translateY(12px);
-            transition: opacity .22s ease, transform .22s ease;
+            transition: opacity 0.22s ease, transform 0.22s ease;
+            font-family: 'Montserrat', system-ui, sans-serif;
         }
+
         @media (max-width: 1024px) {
-            .gx-embed-menu { display: inline-flex; }
+            .gx-embed-menu-btn { display: inline-flex; }
         }
-        .gx-embed-menu.is-visible {
+
+        .gx-embed-menu-btn.is-visible {
             opacity: 1;
             pointer-events: auto;
             transform: none;
         }
-        .gx-embed-menu:hover { background: #1f2937; }
 
-        /* --- Bouton scroll top --- */
+        .gx-embed-menu-btn:hover {
+            background: #1f2937;
+        }
+
         .gx-scroll-top-btn {
             position: fixed;
             right: 20px;
             bottom: 80px;
-            z-index: 9999;
-            display: none;
+            z-index: var(--z-menu);
+            display: flex;
             align-items: center;
             justify-content: center;
             width: 44px;
@@ -182,58 +215,80 @@
             transform: translateY(20px);
             pointer-events: none;
         }
+
         @media (max-width: 1024px) {
             .gx-scroll-top-btn { bottom: 140px; }
         }
+
         .gx-scroll-top-btn.is-visible {
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
         }
+
         .gx-scroll-top-btn:hover {
             background: #0f5d3a;
             transform: scale(1.05);
         }
+
+        /* --- États --- */
+        .gx-embed-content.is-loading .gx-embed-loader {
+            display: flex;
+        }
+        .gx-embed-content.is-loading #gxShadowContainer {
+            display: none;
+        }
+        .gx-embed-content.is-loaded .gx-embed-loader {
+            display: none;
+        }
+        .gx-embed-content.is-loaded #gxShadowContainer {
+            display: block;
+        }
+        .gx-embed-content.has-error .gx-embed-loader {
+            display: flex;
+        }
+        .gx-embed-content.has-error #gxShadowContainer {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    {{-- HEADER GoExploria Business --}}
-    @include('cms::web.embed.partials.platform-header')
+    <div class="gx-embed-wrapper">
+        {{-- HEADER GoExploria --}}
+        @include('cms::web.embed.partials.platform-header')
 
-    {{-- HEADER EXTRAIT DU TEMPLATE (affiché en fixed dans le parent) --}}
-    <div class="gx-extracted-header" id="gxExtractedHeader">
-        <div class="gx-extracted-header-inner" id="gxExtractedHeaderInner">
-            <!-- Le header du template sera extrait et affiché ici -->
+        {{-- HEADER EXTRAIT --}}
+        <div class="gx-extracted-header" id="gxExtractedHeader">
+            <div class="gx-extracted-header-inner" id="gxExtractedHeaderInner"></div>
         </div>
+
+        {{-- CONTENU PRINCIPAL --}}
+        <main class="gx-embed-content is-loading" id="gxEmbedContent">
+            <div class="gx-embed-loader" id="gxEmbedLoader">
+                <div class="spinner"></div>
+                <span>Chargement du site...</span>
+            </div>
+            <div id="gxShadowContainer"></div>
+        </main>
+
+        {{-- FOOTER GoExploria --}}
+        @include('cms::web.embed.partials.platform-footer')
     </div>
 
-    {{-- CONTENU DE L'ÉTABLISSEMENT (dans Shadow DOM) --}}
-    <main class="gx-content-stage" id="gxContentStage">
-        <div class="gx-content-loader" id="gxContentLoader">
-            <span class="spinner" role="status" aria-hidden="true"></span>
-            Chargement du site...
-        </div>
-        <div id="gxShadowContainer"></div>
-    </main>
-
-    {{-- FOOTER GoExploria Business --}}
-    @include('cms::web.embed.partials.platform-footer')
-
-    {{-- ÉLÉMENTS FLOTTANTS --}}
+    {{-- Éléments flottants --}}
     @include('cms::web.fallback.partials.landing-contact-ajax')
     @include('cms::web.fallback.partials.landing-contact-widget')
     @include('cms::web.fallback.partials.landing-cart-drawer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 
-    {{-- Bouton Menu du site --}}
-    <button type="button" class="gx-embed-menu" id="gxEmbedMenu" aria-label="Ouvrir le menu du site">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+    {{-- Boutons --}}
+    <button type="button" class="gx-embed-menu-btn" id="gxEmbedMenuBtn" aria-label="Ouvrir le menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             <path d="M4 7h16M4 12h16M4 17h16"/>
         </svg>
         Menu du site
     </button>
 
-    {{-- Bouton scroll top --}}
     <button type="button" class="gx-scroll-top-btn" id="gxScrollTopBtn" aria-label="Remonter">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 19V5M5 12l7-7 7 7"/>
@@ -252,477 +307,587 @@
     <script src="{{ asset('js/home-v2/destinations-search.js') }}"></script>
     <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
 
-    {{-- SCRIPT PRINCIPAL AVEC SHADOW DOM --}}
+    {{-- Script principal (version corrigée) --}}
     <script>
-    (function() {
-        'use strict';
+        (function() {
+            'use strict';
 
-        var container = document.getElementById('gxShadowContainer');
-        var loader = document.getElementById('gxContentLoader');
-        var stage = document.getElementById('gxContentStage');
-        var headerContainer = document.getElementById('gxExtractedHeader');
-        var headerInner = document.getElementById('gxExtractedHeaderInner');
-        var scrollBtn = document.getElementById('gxScrollTopBtn');
-        var menuBtn = document.getElementById('gxEmbedMenu');
+            // ── CONFIGURATION ──────────────────────────────────────────
+            var CONFIG = {
+                headerHeight: 96,
+                mobileHeaderHeight: 80,
+                etablissementId: {{ $etablissement->id }},
+                embedUrl: '{{ route("cms.company.embed", ["etablissementId" => $etablissement->id]) }}'
+            };
 
-        if (!container) return;
+            // ── FLAG POUR ÉVITER LES BOUCLES ──────────────────────────
+            var isLoaded = false;
+            var isLoading = false;
+            var loadAttempts = 0;
+            var MAX_ATTEMPTS = 1; // Un seul chargement
 
-        var url = '{{ route('cms.company.embed', ['etablissementId' => $etablissement->id]) }}';
-        var shadowRoot = null;
-        var isHeaderFixed = false;
-        var headerHeight = 0;
-        var templateStyles = [];
+            // ── ÉLÉMENTS DOM ──────────────────────────────────────────
+            var elements = {
+                container: document.getElementById('gxShadowContainer'),
+                loader: document.getElementById('gxEmbedLoader'),
+                content: document.getElementById('gxEmbedContent'),
+                header: document.getElementById('gxExtractedHeader'),
+                headerInner: document.getElementById('gxExtractedHeaderInner'),
+                menuBtn: document.getElementById('gxEmbedMenuBtn'),
+                scrollBtn: document.getElementById('gxScrollTopBtn')
+            };
 
-        // ── CRÉATION DU SHADOW DOM ──────────────────────────────────────
-        function createShadowRoot() {
-            if (container.shadowRoot) {
-                shadowRoot = container.shadowRoot;
-                shadowRoot.innerHTML = '';
-            } else {
-                shadowRoot = container.attachShadow({ mode: 'open' });
+            var shadowRoot = null;
+            var isHeaderFixed = false;
+            var headerHeight = 64;
+
+            // ── INTERCEPTION DES SCRIPTS PROBLÉMATIQUES ──────────────
+            function shouldSkipScript(scriptContent, scriptSrc) {
+                // Ignorer les scripts qui pourraient recharger la page
+                var skipPatterns = [
+                    'location.reload',
+                    'window.location.reload',
+                    'document.location.reload',
+                    'location.href =',
+                    'window.location.href =',
+                    'history.pushState',
+                    'history.replaceState',
+                    'ajax',
+                    'fetch(',
+                    'XMLHttpRequest',
+                    '$.ajax',
+                    'axios',
+                    // Scripts de tracking qui peuvent causer des boucles
+                    'google-analytics',
+                    'gtag',
+                    'facebook-pixel',
+                    'hotjar',
+                    'clarity'
+                ];
+
+                var content = (scriptContent || '').toLowerCase();
+                var src = (scriptSrc || '').toLowerCase();
+
+                for (var i = 0; i < skipPatterns.length; i++) {
+                    if (content.indexOf(skipPatterns[i]) !== -1) {
+                        return true;
+                    }
+                    if (src.indexOf(skipPatterns[i]) !== -1) {
+                        return true;
+                    }
+                }
+
+                return false;
             }
 
-            // Style par défaut pour le shadow DOM (réinitialisation)
-            var resetStyle = document.createElement('style');
-            resetStyle.textContent = `
-                :host {
-                    display: block;
-                    width: 100%;
-                    min-height: 200px;
+            // ── CHARGEMENT DU CONTENU ──────────────────────────────────
+            function loadContent() {
+                if (isLoaded || isLoading) {
+                    return;
                 }
-                /* Réinitialisation minimale */
-                * {
-                    box-sizing: border-box;
-                }
-                body {
-                    margin: 0;
-                    padding: 0;
-                }
-            `;
-            shadowRoot.appendChild(resetStyle);
 
-            return shadowRoot;
-        }
-
-        // ── CHARGEMENT DU CONTENU ──────────────────────────────────────
-        function loadContent() {
-            if (loader) loader.style.display = 'flex';
-            container.innerHTML = '';
-
-            fetch(url, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'text/html'
+                if (loadAttempts >= MAX_ATTEMPTS) {
+                    console.warn('✅ Contenu déjà chargé, arrêt des tentatives');
+                    return;
                 }
-            })
-            .then(function(response) {
-                if (!response.ok) {
-                    throw new Error('Erreur de chargement');
-                }
-                return response.text();
-            })
-            .then(function(html) {
-                if (loader) loader.style.display = 'none';
 
-                // Créer le shadow root
+                loadAttempts++;
+                isLoading = true;
+                setState('loading');
+
+                console.log('📥 Chargement du contenu (tentative ' + loadAttempts + ')');
+
+                fetch(CONFIG.embedUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'text/html'
+                    }
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('Erreur HTTP ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(function(html) {
+                    renderContent(html);
+                    isLoaded = true;
+                    isLoading = false;
+                    setState('loaded');
+                    console.log('✅ Contenu chargé avec succès');
+                })
+                .catch(function(error) {
+                    console.error('❌ Erreur:', error);
+                    isLoading = false;
+                    setState('error', error.message);
+                });
+            }
+
+            // ── RENDU DU CONTENU ──────────────────────────────────────
+            function renderContent(html) {
+                // Créer le Shadow DOM
                 createShadowRoot();
 
-                // Extraire le contenu
-                var content = extractContent(html);
+                // Extraire le body
+                var content = extractBody(html);
                 
-                // Extraire les styles du template
+                // Extraire les styles (garder seulement les styles)
                 var styles = extractStyles(html);
-                templateStyles = styles;
+                
+                // Extraire le header
+                var headerHtml = extractHeader(html);
 
-                // Injecter les styles dans le shadow DOM
+                // Injecter les styles
                 styles.forEach(function(styleContent) {
                     var styleEl = document.createElement('style');
                     styleEl.textContent = styleContent;
                     shadowRoot.appendChild(styleEl);
                 });
 
-                // Injecter le contenu dans le shadow DOM
+                // Injecter le contenu
                 var wrapper = document.createElement('div');
                 wrapper.innerHTML = content;
                 shadowRoot.appendChild(wrapper);
 
-                // Extraire et afficher le header dans le parent
-                extractAndDisplayHeader(wrapper);
+                // Extraire et afficher le header
+                if (headerHtml) {
+                    extractAndDisplayHeader(headerHtml);
+                }
 
-                // Exécuter les scripts dans le shadow DOM
-                executeScriptsInShadow(wrapper);
+                // Exécuter les scripts (avec filtrage)
+                executeScriptsSafely(wrapper);
 
                 // Initialiser les composants du template
-                initializeTemplateInShadow();
+                initializeTemplate();
 
                 // Ajuster la hauteur
                 adjustHeight();
+            }
 
-                console.log('✅ Contenu chargé avec succès dans Shadow DOM');
-            })
-            .catch(function(error) {
-                console.error('Erreur:', error);
-                if (loader) {
-                    loader.innerHTML = `
-                        <span style="color:#dc2626;">❌</span>
-                        <span>Erreur de chargement. <a href="${url}" target="_blank">Voir le site directement</a></span>
-                    `;
+            // ── SHADOW DOM ─────────────────────────────────────────────
+            function createShadowRoot() {
+                if (elements.container.shadowRoot) {
+                    shadowRoot = elements.container.shadowRoot;
+                    shadowRoot.innerHTML = '';
+                } else {
+                    shadowRoot = elements.container.attachShadow({ mode: 'open' });
                 }
-            });
-        }
 
-        // ── EXTRACTION DU CONTENU ──────────────────────────────────────
-        function extractContent(html) {
-            var match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-            if (match && match[1]) {
-                return match[1];
-            }
-            return html;
-        }
+                var resetStyle = document.createElement('style');
+                resetStyle.textContent = `
+                    :host { display: block; width: 100%; }
+                    * { box-sizing: border-box; }
+                `;
+                shadowRoot.appendChild(resetStyle);
 
-        // ── EXTRACTION DES STYLES ──────────────────────────────────────
-        function extractStyles(html) {
-            var styles = [];
-            var regex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
-            var match;
-            while ((match = regex.exec(html)) !== null) {
-                styles.push(match[1]);
+                return shadowRoot;
             }
 
-            // Extraire aussi les link CSS
-            var linkRegex = /<link[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["'][^>]*>/gi;
-            while ((match = linkRegex.exec(html)) !== null) {
-                var href = match[1];
-                // On ne peut pas charger les liens CSS directement dans le shadow DOM
-                // On les ignore ou on les charge via fetch
-                styles.push('/* Link CSS ignoré: ' + href + ' */');
+            // ── EXTRACTION ─────────────────────────────────────────────
+            function extractBody(html) {
+                var match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+                if (match && match[1]) {
+                    return match[1];
+                }
+                return html;
             }
 
-            return styles;
-        }
+            function extractStyles(html) {
+                var styles = [];
+                var regex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+                var match;
+                while ((match = regex.exec(html)) !== null) {
+                    styles.push(match[1]);
+                }
+                return styles;
+            }
 
-        // ── EXTRACTION ET AFFICHAGE DU HEADER ──────────────────────────
-        function extractAndDisplayHeader(wrapper) {
-            // Chercher le header dans le shadow DOM
-            var header = wrapper.querySelector('header') || 
-                        wrapper.querySelector('.header') || 
-                        wrapper.querySelector('[role="banner"]') ||
-                        wrapper.querySelector('#header');
+            function extractHeader(html) {
+                var temp = document.createElement('div');
+                temp.innerHTML = html;
 
-            if (header) {
-                // Cloner le header
-                var clone = header.cloneNode(true);
-                
-                // Nettoyer les scripts
-                var scripts = clone.querySelectorAll('script');
-                scripts.forEach(function(script) {
-                    script.remove();
-                });
+                var selectors = [
+                    'header.header-fixed', 'header.sticky-header', 'header.fixed-top',
+                    'header.sticky-top', 'header[class*="fixed"]', 'header[class*="sticky"]',
+                    '.header-fixed', '.sticky-header', '.fixed-header',
+                    'header:first-of-type', '.header:first-of-type',
+                    '[role="banner"]', '#header', '#main-header', '#site-header'
+                ];
 
-                // Nettoyer les attributs problématiques
-                clone.style.position = 'relative';
-                clone.style.top = 'auto';
-                clone.style.left = 'auto';
-                clone.style.right = 'auto';
-                clone.style.bottom = 'auto';
-                clone.style.width = '100%';
-                clone.style.zIndex = 'auto';
-                clone.style.transform = 'none';
-
-                // Récupérer les styles calculés
-                var computedStyle = window.getComputedStyle(header);
-                var importantStyles = ['background', 'background-color', 'color', 'font-family', 
-                                      'font-size', 'font-weight', 'padding', 'margin', 'display',
-                                      'align-items', 'justify-content', 'flex-direction', 'flex-wrap',
-                                      'border-bottom', 'box-shadow', 'height', 'min-height'];
-                
-                importantStyles.forEach(function(prop) {
-                    var value = computedStyle[prop];
-                    if (value && value !== 'none' && value !== 'normal' && value !== 'auto') {
-                        clone.style[prop] = value;
+                for (var i = 0; i < selectors.length; i++) {
+                    var el = temp.querySelector(selectors[i]);
+                    if (el) {
+                        return el.outerHTML;
                     }
+                }
+
+                var header = temp.querySelector('header');
+                if (header) {
+                    return header.outerHTML;
+                }
+
+                return null;
+            }
+
+            // ── EXÉCUTION SÉCURISÉE DES SCRIPTS ──────────────────────
+            function executeScriptsSafely(wrapper) {
+                var scripts = wrapper.querySelectorAll('script');
+                var scriptCounter = 0;
+
+                scripts.forEach(function(oldScript) {
+                    var src = oldScript.getAttribute('src') || '';
+                    var content = oldScript.textContent || '';
+
+                    // Vérifier si ce script peut causer une boucle
+                    if (shouldSkipScript(content, src)) {
+                        console.log('⏭️ Script ignoré (potentiellement problématique):', src || 'inline');
+                        oldScript.parentNode.removeChild(oldScript);
+                        return;
+                    }
+
+                    var newScript = document.createElement('script');
+                    
+                    // Copier les attributs
+                    Array.from(oldScript.attributes).forEach(function(attr) {
+                        newScript.setAttribute(attr.name, attr.value);
+                    });
+                    
+                    if (src) {
+                        // Script externe - le charger
+                        newScript.src = src;
+                        newScript.async = false;
+                    } else if (content) {
+                        // Script inline - l'exécuter
+                        // Nettoyer le contenu pour éviter les rechargements
+                        var cleanedContent = content
+                            .replace(/location\.reload/g, '// location.reload')
+                            .replace(/window\.location\.reload/g, '// window.location.reload')
+                            .replace(/document\.location\.reload/g, '// document.location.reload')
+                            .replace(/history\.pushState/g, '// history.pushState')
+                            .replace(/history\.replaceState/g, '// history.replaceState');
+
+                        newScript.textContent = cleanedContent;
+                    } else {
+                        oldScript.parentNode.removeChild(oldScript);
+                        return;
+                    }
+                    
+                    // Ajouter un flag pour identifier que ce script est dans un embed
+                    newScript.setAttribute('data-embed-executed', 'true');
+                    
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                    scriptCounter++;
                 });
 
-                // Mesurer la hauteur
-                var rect = header.getBoundingClientRect();
-                headerHeight = rect.height || 64;
+                console.log('📝 Scripts exécutés:', scriptCounter);
+            }
 
-                // Injecter dans le parent
-                headerInner.innerHTML = '';
-                headerInner.appendChild(clone);
+            // ── EXTRACTION ET AFFICHAGE DU HEADER ─────────────────────
+            function extractAndDisplayHeader(headerHtml) {
+                if (!elements.headerInner) return;
 
-                // Afficher le header
-                headerContainer.style.display = 'block';
-                headerContainer.style.top = (window.innerWidth <= 992 ? '80px' : '96px');
-                
-                // Mettre à jour le padding
+                var temp = document.createElement('div');
+                temp.innerHTML = headerHtml;
+                var header = temp.firstElementChild;
+
+                if (!header) return;
+
+                header.querySelectorAll('script').forEach(function(el) {
+                    el.remove();
+                });
+
+                header.style.position = 'relative';
+                header.style.top = 'auto';
+                header.style.left = 'auto';
+                header.style.right = 'auto';
+                header.style.bottom = 'auto';
+                header.style.width = '100%';
+                header.style.zIndex = 'auto';
+                header.style.transform = 'none';
+
+                headerHeight = header.offsetHeight || 64;
+
+                elements.headerInner.innerHTML = '';
+                elements.headerInner.appendChild(header);
+
+                elements.header.style.display = 'block';
+                updateHeaderPosition();
+
                 updatePadding(headerHeight);
 
-                // Afficher avec animation
                 requestAnimationFrame(function() {
-                    headerContainer.classList.add('is-visible');
+                    elements.header.classList.add('is-visible');
                     isHeaderFixed = true;
                     updateHeaderVisibility();
                 });
 
-                // Afficher le bouton de scroll
-                if (scrollBtn) {
-                    scrollBtn.classList.add('is-visible');
+                if (elements.scrollBtn) {
+                    elements.scrollBtn.classList.add('is-visible');
                 }
 
-                // Synchroniser les clics
-                synchronizeClicks(clone);
-            }
-        }
-
-        // ── SYNCHRONISATION DES CLICS ──────────────────────────────────
-        function synchronizeClicks(clonedHeader) {
-            var links = clonedHeader.querySelectorAll('a, button');
-            links.forEach(function(el) {
-                el.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    // Simuler le clic dans le shadow DOM
-                    var target = findCorrespondingElementInShadow(el);
-                    if (target && target.click) {
-                        target.click();
-                    }
-                });
-            });
-        }
-
-        function findCorrespondingElementInShadow(el) {
-            if (!shadowRoot) return null;
-
-            // Par ID
-            if (el.id) {
-                var found = shadowRoot.getElementById(el.id);
-                if (found) return found;
+                synchronizeClicks(header);
             }
 
-            // Par attribut data
-            var dataAttrs = el.dataset;
-            for (var key in dataAttrs) {
-                var selector = '[data-' + key + '="' + dataAttrs[key] + '"]';
-                var found = shadowRoot.querySelector(selector);
-                if (found) return found;
-            }
-
-            // Par texte
-            var text = el.textContent.trim();
-            if (text) {
-                var elements = shadowRoot.querySelectorAll('a, button');
-                for (var i = 0; i < elements.length; i++) {
-                    if (elements[i].textContent.trim() === text) {
-                        return elements[i];
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        // ── EXÉCUTION DES SCRIPTS DANS LE SHADOW DOM ───────────────────
-        function executeScriptsInShadow(wrapper) {
-            var scripts = wrapper.querySelectorAll('script');
-            scripts.forEach(function(oldScript) {
-                var newScript = document.createElement('script');
-                
-                // Copier les attributs
-                Array.from(oldScript.attributes).forEach(function(attr) {
-                    newScript.setAttribute(attr.name, attr.value);
-                });
-                
-                // Copier le contenu
-                if (oldScript.src) {
-                    newScript.src = oldScript.src;
-                    newScript.async = false;
-                } else {
-                    newScript.textContent = oldScript.textContent;
-                }
-                
-                // Remplacer dans le shadow DOM
-                oldScript.parentNode.replaceChild(newScript, oldScript);
-            });
-        }
-
-        // ── INITIALISATION DES COMPOSANTS ──────────────────────────────
-        function initializeTemplateInShadow() {
-            // Réinitialiser les composants dans le shadow DOM
-            setTimeout(function() {
-                // Réinitialiser les swipers
-                if (shadowRoot && typeof Swiper !== 'undefined') {
-                    shadowRoot.querySelectorAll('.swiper-container, .swiper').forEach(function(el) {
-                        if (el.swiper) {
-                            el.swiper.destroy(true, true);
+            // ── SYNCHRONISATION DES CLICS ─────────────────────────────
+            function synchronizeClicks(clonedHeader) {
+                var links = clonedHeader.querySelectorAll('a, button');
+                links.forEach(function(el) {
+                    el.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        var target = null;
+                        
+                        if (el.id) {
+                            target = shadowRoot.getElementById(el.id);
                         }
-                        new Swiper(el, {
-                            // Options
-                        });
-                    });
-                }
-
-                // Réinitialiser les menus mobiles
-                if (shadowRoot) {
-                    var menuToggles = shadowRoot.querySelectorAll('.menu-toggle, .navbar-toggler, .hamburger');
-                    menuToggles.forEach(function(btn) {
-                        btn.addEventListener('click', function(e) {
-                            var target = this.dataset.target || this.getAttribute('data-target');
-                            if (target) {
-                                var menu = shadowRoot.querySelector(target);
-                                if (menu) {
-                                    menu.classList.toggle('show');
-                                    menu.classList.toggle('active');
-                                    this.classList.toggle('is-active');
+                        
+                        if (!target && el.textContent.trim()) {
+                            var text = el.textContent.trim();
+                            var elements = shadowRoot.querySelectorAll('a, button');
+                            for (var i = 0; i < elements.length; i++) {
+                                if (elements[i].textContent.trim() === text) {
+                                    target = elements[i];
+                                    break;
                                 }
                             }
-                        });
+                        }
+                        
+                        if (target && target.click) {
+                            target.click();
+                        }
                     });
-                }
-
-                // Déclencher l'événement pour les scripts qui en dépendent
-                var event = new Event('DOMContentLoaded', { bubbles: true });
-                if (shadowRoot) {
-                    shadowRoot.dispatchEvent(event);
-                }
-                document.dispatchEvent(event);
-
-            }, 100);
-        }
-
-        // ── GESTION DU PADDING ──────────────────────────────────────────
-        function updatePadding(height) {
-            var isMobile = window.innerWidth <= 992;
-            var basePadding = isMobile ? 80 : 96;
-            stage.style.paddingTop = (basePadding + height) + 'px';
-            stage.classList.add('has-extracted-header');
-        }
-
-        // ── VISIBILITÉ DU HEADER ────────────────────────────────────────
-        function updateHeaderVisibility() {
-            if (!headerContainer || !isHeaderFixed) return;
-            var seuil = headerHeight || 100;
-            var shouldHide = window.scrollY < seuil;
-            headerContainer.classList.toggle('is-hidden-at-top', shouldHide);
-            
-            if (scrollBtn) {
-                scrollBtn.classList.toggle('is-visible', shouldHide && isHeaderFixed);
+                });
             }
-        }
 
-        // ── AJUSTEMENT DE LA HAUTEUR ────────────────────────────────────
-        function adjustHeight() {
-            if (!shadowRoot) return;
-            var height = shadowRoot.host.scrollHeight || 200;
-            stage.style.minHeight = (height + 100) + 'px';
-        }
+            // ── INITIALISATION DES COMPOSANTS ─────────────────────────
+            function initializeTemplate() {
+                setTimeout(function() {
+                    // Swiper
+                    if (typeof Swiper !== 'undefined' && shadowRoot) {
+                        shadowRoot.querySelectorAll('.swiper-container, .swiper').forEach(function(el) {
+                            if (el.swiper) {
+                                el.swiper.destroy(true, true);
+                            }
+                            try {
+                                new Swiper(el, {});
+                            } catch(e) {}
+                        });
+                    }
 
-        // ── OBSERVER LES CHANGEMENTS ────────────────────────────────────
-        function observeChanges() {
-            if (!shadowRoot) return;
+                    // Menus mobiles
+                    if (shadowRoot) {
+                        shadowRoot.querySelectorAll('.menu-toggle, .navbar-toggler, .hamburger').forEach(function(btn) {
+                            btn.addEventListener('click', function(e) {
+                                var target = this.dataset.target || this.getAttribute('data-target');
+                                if (target) {
+                                    var menu = shadowRoot.querySelector(target);
+                                    if (menu) {
+                                        menu.classList.toggle('show');
+                                        menu.classList.toggle('active');
+                                        this.classList.toggle('is-active');
+                                    }
+                                }
+                            });
+                        });
+                    }
 
-            // Observer les mutations dans le shadow DOM
-            if (window.MutationObserver) {
+                    // Événement DOMContentLoaded (une seule fois)
+                    var event = new Event('DOMContentLoaded', { bubbles: true });
+                    if (shadowRoot) {
+                        shadowRoot.dispatchEvent(event);
+                    }
+
+                }, 300);
+            }
+
+            // ── OUVERTURE DU MENU MOBILE ──────────────────────────────
+            function openMobileMenu() {
+                if (!shadowRoot) return;
+
+                // Chercher le bouton de menu
+                var menuToggle = shadowRoot.querySelector('.menu-toggle, .navbar-toggler, .hamburger, [aria-label="Menu"], [aria-label="Toggle navigation"]');
+                
+                if (menuToggle && menuToggle.click) {
+                    menuToggle.click();
+                    return;
+                }
+
+                // Fallback: toggle le menu directement
+                var menu = shadowRoot.querySelector('.nav-menu, .navbar-collapse, .main-menu, .mobile-menu, .menu-mobile');
+                if (menu) {
+                    menu.classList.toggle('show');
+                    menu.classList.toggle('active');
+                    
+                    var parent = menu.closest('nav') || menu.parentElement;
+                    var btn = parent ? parent.querySelector('.menu-toggle, .navbar-toggler, .hamburger') : null;
+                    if (btn) {
+                        btn.classList.toggle('is-active');
+                    }
+                }
+            }
+
+            // ── UTILITAIRES ─────────────────────────────────────────────
+            function setState(state, message) {
+                var content = elements.content;
+                content.classList.remove('is-loading', 'is-loaded', 'has-error');
+                
+                if (state === 'loading') {
+                    content.classList.add('is-loading');
+                    if (elements.loader) {
+                        elements.loader.innerHTML = `
+                            <div class="spinner"></div>
+                            <span>Chargement du site...</span>
+                        `;
+                    }
+                } else if (state === 'loaded') {
+                    content.classList.add('is-loaded');
+                } else if (state === 'error') {
+                    content.classList.add('has-error');
+                    if (elements.loader) {
+                        elements.loader.innerHTML = `
+                            <div class="error-icon">❌</div>
+                            <span>${message || 'Erreur de chargement'}</span>
+                            <button class="retry-btn" onclick="location.reload()">Réessayer</button>
+                        `;
+                    }
+                }
+            }
+
+            function isMobile() {
+                return window.innerWidth <= 992;
+            }
+
+            function updateHeaderPosition() {
+                if (elements.header) {
+                    var top = isMobile() ? CONFIG.mobileHeaderHeight : CONFIG.headerHeight;
+                    elements.header.style.top = top + 'px';
+                }
+            }
+
+            function updatePadding(height) {
+                var content = elements.content;
+                content.style.setProperty('--extracted-header-height', (height || 64) + 'px');
+                content.classList.add('has-extracted-header');
+            }
+
+            function updateHeaderVisibility() {
+                if (!elements.header || !isHeaderFixed) return;
+                
+                var threshold = headerHeight || 100;
+                var shouldHide = window.scrollY < threshold;
+                
+                elements.header.classList.toggle('is-hidden-at-top', shouldHide);
+                
+                if (elements.scrollBtn) {
+                    elements.scrollBtn.classList.toggle('is-visible', shouldHide && isHeaderFixed);
+                }
+            }
+
+            function adjustHeight() {
+                if (!shadowRoot) return;
+                var height = shadowRoot.host.scrollHeight || 200;
+                var content = elements.content;
+                if (content) {
+                    content.style.minHeight = (height + 100) + 'px';
+                }
+            }
+
+            // ── ÉVÉNEMENTS ──────────────────────────────────────────────
+
+            // Menu
+            if (elements.menuBtn) {
+                elements.menuBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openMobileMenu();
+                });
+
+                var menuThreshold = 400;
+                window.addEventListener('scroll', function() {
+                    var shouldShow = window.scrollY > menuThreshold;
+                    elements.menuBtn.classList.toggle('is-visible', shouldShow);
+                }, { passive: true });
+                
+                elements.menuBtn.classList.toggle('is-visible', window.scrollY > menuThreshold);
+            }
+
+            // Scroll top
+            if (elements.scrollBtn) {
+                elements.scrollBtn.addEventListener('click', function() {
+                    if (isHeaderFixed) {
+                        var rect = elements.header.getBoundingClientRect();
+                        var top = rect.top + window.scrollY - 10;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                });
+            }
+
+            // Scroll header
+            var scrollTimeout = null;
+            window.addEventListener('scroll', function() {
+                if (scrollTimeout) return;
+                scrollTimeout = setTimeout(function() {
+                    updateHeaderVisibility();
+                    scrollTimeout = null;
+                }, 50);
+            }, { passive: true });
+
+            // Resize
+            var resizeTimeout = null;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    if (isHeaderFixed && elements.header) {
+                        var rect = elements.header.getBoundingClientRect();
+                        if (rect.height !== headerHeight) {
+                            headerHeight = rect.height;
+                            updatePadding(headerHeight);
+                        }
+                        updateHeaderPosition();
+                    }
+                    adjustHeight();
+                }, 200);
+            }, { passive: true });
+
+            // Observers
+            if (window.MutationObserver && elements.container) {
                 var observer = new MutationObserver(function() {
                     adjustHeight();
                 });
-                observer.observe(shadowRoot.host, {
+                observer.observe(elements.container, {
                     childList: true,
                     subtree: true,
                     attributes: true
                 });
             }
 
-            // ResizeObserver
-            if (window.ResizeObserver) {
+            if (window.ResizeObserver && elements.container) {
                 var ro = new ResizeObserver(function() {
                     adjustHeight();
                 });
-                ro.observe(container);
+                ro.observe(elements.container);
             }
-        }
 
-        // ── ÉVÉNEMENTS DE SCROLL ──────────────────────────────────────
-        var scrollTimeout = null;
-        window.addEventListener('scroll', function() {
-            if (scrollTimeout) return;
-            scrollTimeout = setTimeout(function() {
-                updateHeaderVisibility();
-                scrollTimeout = null;
-            }, 50);
-        }, { passive: true });
+            // ── DÉMARRAGE ──────────────────────────────────────────────
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', loadContent);
+            } else {
+                loadContent();
+            }
 
-        // ── BOUTON MENU ──────────────────────────────────────────────────
-        if (menuBtn) {
-            menuBtn.addEventListener('click', function() {
-                // Ouvrir le menu dans le shadow DOM
-                if (shadowRoot) {
-                    var menuToggle = shadowRoot.querySelector('.menu-toggle, .navbar-toggler, .hamburger');
-                    if (menuToggle && menuToggle.click) {
-                        menuToggle.click();
-                    } else {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Empêcher les rechargements intempestifs via les liens internes
+            document.addEventListener('click', function(e) {
+                var link = e.target.closest('a');
+                if (link && link.href && link.href.indexOf(window.location.origin) === 0) {
+                    if (link.href !== window.location.href && link.target !== '_blank') {
+                        e.preventDefault();
+                        // Navigation SPA
+                        window.history.pushState(null, '', link.href);
+                        // Ne pas recharger, juste mettre à jour l'URL
                     }
                 }
             });
 
-            var seuilMenu = 400;
-            var majMenu = function() {
-                menuBtn.classList.toggle('is-visible', window.scrollY > seuilMenu);
-            };
-            window.addEventListener('scroll', majMenu, { passive: true });
-            majMenu();
-        }
-
-        // ── BOUTON SCROLL ──────────────────────────────────────────────────
-        if (scrollBtn) {
-            scrollBtn.addEventListener('click', function() {
-                if (isHeaderFixed) {
-                    var targetTop = headerContainer.getBoundingClientRect().top + window.scrollY;
-                    window.scrollTo({ top: targetTop - 10, behavior: 'smooth' });
-                }
-            });
-        }
-
-        // ── RECALCUL AU REDIMENSIONNEMENT ──────────────────────────────
-        var resizeTimeout = null;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(function() {
-                if (isHeaderFixed && headerContainer) {
-                    var rect = headerContainer.getBoundingClientRect();
-                    if (rect.height !== headerHeight) {
-                        headerHeight = rect.height;
-                        updatePadding(headerHeight);
-                    }
-                }
-                
-                if (headerContainer) {
-                    var isMobile = window.innerWidth <= 992;
-                    headerContainer.style.top = isMobile ? '80px' : '96px';
-                }
-                
-                adjustHeight();
-            }, 200);
-        }, { passive: true });
-
-        // ── INITIALISATION ──────────────────────────────────────────────
-        loadContent();
-        observeChanges();
-
-        // ── RECHARGER SI L'URL CHANGE ──────────────────────────────────
-        document.addEventListener('click', function(e) {
-            var link = e.target.closest('a');
-            if (link && link.href && link.href.indexOf(window.location.origin) === 0) {
-                if (link.href !== window.location.href && link.target !== '_blank') {
-                    e.preventDefault();
-                    // Navigation SPA
-                    window.history.pushState(null, '', link.href);
-                    loadContent();
-                }
-            }
-        });
-
-    })();
+        })();
     </script>
 </body>
 </html>
