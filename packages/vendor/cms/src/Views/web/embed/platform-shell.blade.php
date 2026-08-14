@@ -1,22 +1,43 @@
 {{-- ═══════════════════════════════════════════════════════════════════════
-     SHELL PLATEFORME — Version corrigée sans boucle de chargement
+     SHELL PLATEFORME — Affiche le site d'un établissement DANS GoExploria
+     Business, isolé dans une iframe same-origin, entre le Header et le
+     Footer GoExploria dédiés.
+
+        ┌─────────────────────────────────────────┐
+        │ HEADER GoExploria Business (document parent)
+        ├─────────────────────────────────────────┤
+        │ <iframe> → site établissement (document isolé)
+        │     ├── HTML / CSS / JS / CDN / plugins
+        │     └── header + menu mobile PROPRES au template
+        ├─────────────────────────────────────────┤
+        │ FOOTER GoExploria Business (document parent)
+        └─────────────────────────────────────────┘
+
+     Isolation : l'iframe crée un document séparé → aucun CSS/JS/DOM du
+     template ne peut atteindre le header/footer/menu de la plateforme, et
+     inversement. Les versions de Bootstrap/jQuery/Swiper/etc. du template
+     n'entrent jamais en conflit avec celles de GoExploria.
+
+     Hauteur : jamais fixe. Le contenu de l'iframe mesure sa hauteur et la
+     transmet par postMessage (cf. partials/child-bridge) ; ce shell adapte
+     l'iframe en conséquence. Fonctionne desktop ET mobile.
+
+     Nécessite : $etablissement
      ═══════════════════════════════════════════════════════════════════════ --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    
-    <title>{{ $etablissement->name }} — GoExploria Business</title>
+    <title>{{ function_exists('get_site_name') ? get_site_name($etablissement->id) : $etablissement->name }} — GoExploria Business</title>
 
-    {{-- Polices --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    {{-- Assets de la plateforme --}}
+    {{-- Assets de la plateforme (identiques à cms::layouts.app) pour que le
+         Header/Footer GoExploria aient exactement le même rendu que sur `/`. --}}
     <link rel="stylesheet" href="{{ asset('css/home-v2/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-menu.css') }}">
     <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-menu-videos.css') }}">
@@ -31,271 +52,171 @@
     <link rel="stylesheet" href="{{ asset('css/home-v2/footer.css') }}">
 
     <style>
-        html, body { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%;
-        }
+        /* ——— Réinitialisation minimale du shell (n'affecte PAS l'iframe) ——— */
+        html, body { margin: 0; padding: 0; }
         body {
             background: #ffffff;
+            /* La police globale reste celle de la plateforme (styles.css). */
             overflow-x: hidden;
-            font-family: 'Montserrat', system-ui, sans-serif;
         }
 
-        :root {
-            --header-height: 96px;
-            --mobile-header-height: 80px;
-            --z-header: 9998;
-            --z-menu: 9997;
-        }
-
-        @media (max-width: 992px) {
-            :root {
-                --header-height: 80px;
-                --mobile-header-height: 80px;
-            }
-        }
-
-        .gx-embed-wrapper {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .gx-embed-content {
-            flex: 1;
-            padding-top: var(--header-height);
+        /* Zone du site établissement : occupe toute la largeur, sous le header
+           fixe de la plateforme. Le padding-top compense le header sticky
+           (~96px desktop, ~80px mobile) comme le font les pages `/company`. */
+        .gx-embed-stage {
+            width: 100%;
+            padding-top: 96px;
+            box-sizing: border-box;
+            /* Contexte d'empilement bas : le header/menu plateforme (z-index
+               élevés) passent TOUJOURS au-dessus de l'iframe. */
             position: relative;
             z-index: 0;
-            min-height: 60vh;
+        }
+        @media (max-width: 992px) {
+            .gx-embed-stage { padding-top: 80px; }
         }
 
-        .gx-embed-content.has-extracted-header {
-            padding-top: calc(var(--header-height) + var(--extracted-header-height, 64px));
+        .gx-embed-frame {
+            display: block;
+            width: 100%;
+            border: 0;
+            margin: 0;
+            /* Hauteur initiale avant la 1re mesure ; remplacée par le pont JS. */
+            height: 100vh;
+            /* Le scroll est porté par la page parente (hauteur = contenu). */
+            overflow: hidden;
+            background: #ffffff;
         }
 
-        .gx-embed-loader {
+        /* Voile de chargement le temps que l'iframe et la 1re mesure arrivent. */
+        .gx-embed-loading {
+            position: absolute;
+            inset: 96px 0 auto 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 16px;
-            padding: 80px 20px;
+            gap: 12px;
+            padding: 48px 16px;
             color: #6b7280;
+            font-family: Montserrat, system-ui, sans-serif;
             font-size: 14px;
         }
-
-        .gx-embed-loader .spinner {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 4px solid #e5e7eb;
-            border-top-color: #16794c;
-            animation: spin 0.8s linear infinite;
+        .gx-embed-spinner {
+            width: 22px; height: 22px; border-radius: 50%;
+            border: 3px solid #e5e7eb; border-top-color: #16794c;
+            animation: gxspin .8s linear infinite;
         }
+        @keyframes gxspin { to { transform: rotate(360deg); } }
+        .gx-embed-stage.is-ready .gx-embed-loading { display: none; }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        /* ——— Bouton « Menu du site » (mobile) ———————————————————————
+           L'en-tête de l'établissement vit DANS l'iframe, en position:fixed.
+           Or l'iframe n'a pas de défilement propre : sa hauteur suit le
+           contenu, et c'est cette page qui défile. Un position:fixed à
+           l'intérieur se cale donc sur la boîte de l'iframe — l'en-tête reste
+           en haut du document et sort de l'écran dès qu'on défile. Mesuré :
+           le burger passe à −1 397 px après 1 500 px de défilement, et le
+           menu du template devient inatteignable.
 
-        .gx-embed-loader .error-icon {
-            font-size: 48px;
-            color: #dc2626;
-        }
-
-        .gx-embed-loader .retry-btn {
-            margin-top: 12px;
-            padding: 8px 24px;
-            background: #16794c;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .gx-embed-loader .retry-btn:hover {
-            background: #0f5d3a;
-        }
-
-        /* --- Header extrait --- */
-        .gx-extracted-header {
-            position: fixed;
-            top: var(--header-height);
-            left: 0;
-            right: 0;
-            z-index: var(--z-header);
-            background: #ffffff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transform: translateY(-100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: none;
-            will-change: transform;
-        }
-
-        .gx-extracted-header.is-visible {
-            transform: translateY(0);
-            display: block;
-        }
-
-        .gx-extracted-header.is-hidden-at-top {
-            transform: translateY(-100%);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .gx-extracted-header-inner {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        #gxShadowContainer {
-            width: 100%;
-            min-height: 200px;
-        }
-
-        /* --- Bouton menu mobile --- */
-        .gx-embed-menu-btn {
+           Aucune règle CSS écrite dans l'iframe ne peut corriger cela : seul
+           un élément de CE document peut se caler sur l'écran. D'où ce
+           bouton, qui demande à l'iframe d'ouvrir son propre menu. */
+        .gx-embed-menu {
             position: fixed;
             left: 20px;
             bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-            z-index: var(--z-menu);
+            z-index: 9997;
             display: none;
             align-items: center;
             gap: 9px;
             padding: 12px 18px;
+            font-family: Montserrat, system-ui, sans-serif;
             font-size: 14px;
             font-weight: 800;
             color: #ffffff;
             background: #111827;
-            border: none;
+            border: 0;
             border-radius: 999px;
-            box-shadow: 0 14px 34px rgba(0,0,0,0.3);
+            box-shadow: 0 14px 34px rgba(0, 0, 0, .3);
             cursor: pointer;
             opacity: 0;
             pointer-events: none;
             transform: translateY(12px);
-            transition: opacity 0.22s ease, transform 0.22s ease;
-            font-family: 'Montserrat', system-ui, sans-serif;
+            transition: opacity .22s ease, transform .22s ease;
         }
-
+        /* Uniquement sur mobile — au-dessus de 1024 px les templates montrent
+           leur navigation complète, il n'y a pas de menu à ouvrir. */
         @media (max-width: 1024px) {
-            .gx-embed-menu-btn { display: inline-flex; }
+            .gx-embed-menu { display: inline-flex; }
         }
-
-        .gx-embed-menu-btn.is-visible {
+        /* Et seulement une fois qu'on a défilé : en haut de page, l'en-tête du
+           site est visible, le bouton ferait double emploi. */
+        .gx-embed-menu.is-visible {
             opacity: 1;
             pointer-events: auto;
             transform: none;
         }
-
-        .gx-embed-menu-btn:hover {
-            background: #1f2937;
-        }
-
-        .gx-scroll-top-btn {
-            position: fixed;
-            right: 20px;
-            bottom: 80px;
-            z-index: var(--z-menu);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
-            background: #16794c;
-            color: #ffffff;
-            border: none;
-            border-radius: 50%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            opacity: 0;
-            transform: translateY(20px);
-            pointer-events: none;
-        }
-
-        @media (max-width: 1024px) {
-            .gx-scroll-top-btn { bottom: 140px; }
-        }
-
-        .gx-scroll-top-btn.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        .gx-scroll-top-btn:hover {
-            background: #0f5d3a;
-            transform: scale(1.05);
-        }
-
-        /* --- États --- */
-        .gx-embed-content.is-loading .gx-embed-loader {
-            display: flex;
-        }
-        .gx-embed-content.is-loading #gxShadowContainer {
-            display: none;
-        }
-        .gx-embed-content.is-loaded .gx-embed-loader {
-            display: none;
-        }
-        .gx-embed-content.is-loaded #gxShadowContainer {
-            display: block;
-        }
-        .gx-embed-content.has-error .gx-embed-loader {
-            display: flex;
-        }
-        .gx-embed-content.has-error #gxShadowContainer {
-            display: none;
-        }
+        .gx-embed-menu:hover { background: #1f2937; }
     </style>
 </head>
 <body>
-    <div class="gx-embed-wrapper">
-        {{-- HEADER GoExploria --}}
-        @include('cms::web.embed.partials.platform-header')
+    {{-- ── HEADER GoExploria Business (dédié) ─────────────────────────── --}}
+    @include('cms::web.embed.partials.platform-header')
 
-        {{-- HEADER EXTRAIT --}}
-        <div class="gx-extracted-header" id="gxExtractedHeader">
-            <div class="gx-extracted-header-inner" id="gxExtractedHeaderInner"></div>
+    {{-- ── SITE DE L'ÉTABLISSEMENT (isolé en iframe) ──────────────────── --}}
+    <main class="gx-embed-stage" id="gxEmbedStage">
+        <div class="gx-embed-loading" aria-live="polite">
+            <span class="gx-embed-spinner" role="status" aria-hidden="true"></span>
+            Chargement du site…
         </div>
+        <iframe
+            id="gxEmbedFrame"
+            class="gx-embed-frame"
+            src="{{ route('cms.company.embed', ['etablissementId' => $etablissement->id]) }}"
+            title="Site de {{ $etablissement->name }}"
+            scrolling="no"
+            loading="eager"
+            referrerpolicy="same-origin"
+            allow="autoplay; fullscreen; picture-in-picture; encrypted-media; clipboard-write"
+            sandbox="allow-scripts allow-forms allow-popups allow-same-origin allow-popups-to-escape-sandbox allow-modals allow-downloads">
+        </iframe>
+    </main>
 
-        {{-- CONTENU PRINCIPAL --}}
-        <main class="gx-embed-content is-loading" id="gxEmbedContent">
-            <div class="gx-embed-loader" id="gxEmbedLoader">
-                <div class="spinner"></div>
-                <span>Chargement du site...</span>
-            </div>
-            <div id="gxShadowContainer"></div>
-        </main>
-
-        {{-- FOOTER GoExploria --}}
-        @include('cms::web.embed.partials.platform-footer')
-    </div>
-
-    {{-- Éléments flottants --}}
-    @include('cms::web.fallback.partials.landing-contact-ajax')
-    @include('cms::web.fallback.partials.landing-contact-widget')
-    @include('cms::web.fallback.partials.landing-cart-drawer')
-    @include('cms::web.fallback.partials.landing-back-to-top')
-
-    {{-- Boutons --}}
-    <button type="button" class="gx-embed-menu-btn" id="gxEmbedMenuBtn" aria-label="Ouvrir le menu">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    {{-- Bouton « Menu du site » : voir le commentaire de .gx-embed-menu. --}}
+    <button type="button" class="gx-embed-menu" id="gxEmbedMenu" aria-label="Ouvrir le menu du site">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
             <path d="M4 7h16M4 12h16M4 17h16"/>
         </svg>
         Menu du site
     </button>
 
-    <button type="button" class="gx-scroll-top-btn" id="gxScrollTopBtn" aria-label="Remonter">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 19V5M5 12l7-7 7 7"/>
-        </svg>
-    </button>
+    {{-- ── FOOTER GoExploria Business (dédié) ─────────────────────────── --}}
+    @include('cms::web.embed.partials.platform-footer')
 
-    {{-- Assets JS de la plateforme --}}
+    {{-- ── ÉLÉMENTS FLOTTANTS ─────────────────────────────────────────────
+         Contact, panier et retour-en-haut vivent ICI, dans le document
+         parent, et non dans l'iframe.
+
+         Raison : l'iframe n'a pas de défilement propre (scrolling="no", sa
+         hauteur suit le contenu) ; c'est cette page qui défile. Un
+         `position: fixed` À L'INTÉRIEUR se cale donc sur la boîte de
+         l'iframe et reste collé au fond du document au lieu de suivre le
+         visiteur. Rendus ici, ils se calent sur l'écran comme prévu.
+
+         Le PANIER partage son état avec l'iframe par localStorage : le
+         template ajoute au panier depuis l'iframe, l'événement `storage`
+         prévient ce document, et le compteur se met à jour. C'est le
+         mécanisme que le partial utilise déjà pour synchroniser plusieurs
+         onglets — un parent et son iframe sont deux documents de même
+         origine, il fonctionne à l'identique.
+
+         Le paiement redirige désormais la page ENTIÈRE et non l'iframe. --}}
+    @include('cms::web.fallback.partials.landing-contact-ajax')
+    @include('cms::web.fallback.partials.landing-contact-widget')
+    @include('cms::web.fallback.partials.landing-cart-drawer')
+    @include('cms::web.fallback.partials.landing-back-to-top')
+
+    {{-- ── Assets JS de la plateforme (header/menu/footer) ────────────── --}}
     <script src="{{ asset('js/home-v2/navigation.js') }}"></script>
     <script src="{{ asset('js/home-v2/menu-api-service.js') }}"></script>
     <script src="{{ asset('js/home-v2/mega-menu-service.js') }}"></script>
@@ -307,587 +228,185 @@
     <script src="{{ asset('js/home-v2/destinations-search.js') }}"></script>
     <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
 
-    {{-- Script principal (version corrigée) --}}
+    {{-- ── PONT PARENT ↔ IFRAME (hauteur dynamique) ───────────────────── --}}
     <script>
-        (function() {
-            'use strict';
+    (function () {
+        var CHANNEL = 'gx-embed';
+        var stage = document.getElementById('gxEmbedStage');
+        var frame = document.getElementById('gxEmbedFrame');
+        if (!frame) return;
+        var selfOrigin = window.location.origin;
 
-            // ── CONFIGURATION ──────────────────────────────────────────
-            var CONFIG = {
-                headerHeight: 96,
-                mobileHeaderHeight: 80,
-                etablissementId: {{ $etablissement->id }},
-                embedUrl: '{{ route("cms.company.embed", ["etablissementId" => $etablissement->id]) }}'
-            };
+        function applyHeight(h) {
+            if (!h || h < 1) return;
+            frame.style.height = h + 'px';
+            stage.classList.add('is-ready');
+        }
 
-            // ── FLAG POUR ÉVITER LES BOUCLES ──────────────────────────
-            var isLoaded = false;
-            var isLoading = false;
-            var loadAttempts = 0;
-            var MAX_ATTEMPTS = 1; // Un seul chargement
+        // Réception de la hauteur mesurée par l'enfant (child-bridge).
+        window.addEventListener('message', function (e) {
+            // On n'accepte QUE les messages same-origin de notre iframe.
+            if (e.origin !== selfOrigin) return;
+            if (e.source !== frame.contentWindow) return;
+            var data = e.data || {};
+            if (data.channel !== CHANNEL) return;
+            if (data.type === 'height') applyHeight(data.height);
+            // L'enfant demande à remonter en haut : son en-tête y est, et
+            // c'est là que son panneau de menu s'ouvre.
+            if (data.type === 'scroll-top') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            if (data.type === 'request-viewport') envoyerBandeVisible();
+            // Une modale s'ouvre dans l'iframe : elle doit suivre le
+            // défilement de CETTE page, seule à en avoir un.
+            if (data.type === 'overlay-open') suivreBandeVisible(true);
+            if (data.type === 'overlay-close') suivreBandeVisible(false);
+        });
 
-            // ── ÉLÉMENTS DOM ──────────────────────────────────────────
-            var elements = {
-                container: document.getElementById('gxShadowContainer'),
-                loader: document.getElementById('gxEmbedLoader'),
-                content: document.getElementById('gxEmbedContent'),
-                header: document.getElementById('gxExtractedHeader'),
-                headerInner: document.getElementById('gxExtractedHeaderInner'),
-                menuBtn: document.getElementById('gxEmbedMenuBtn'),
-                scrollBtn: document.getElementById('gxScrollTopBtn')
-            };
+        /* ── Bande visible de l'iframe ────────────────────────────────────
+           L'iframe est haute comme son contenu et ne défile pas : son enfant
+           ne peut donc pas savoir ce que le visiteur a réellement sous les
+           yeux. On le lui dit — décalage depuis le haut de l'iframe, et
+           hauteur visible — pour qu'il y place ses modales. */
+        function envoyerBandeVisible() {
+            var boite = frame.getBoundingClientRect();
+            var hauteurEcran = window.innerHeight || document.documentElement.clientHeight;
 
-            var shadowRoot = null;
-            var isHeaderFixed = false;
-            var headerHeight = 64;
+            // Intersection entre l'iframe et l'écran, exprimée dans le repère
+            // de l'iframe.
+            var debut = Math.max(0, -boite.top);
+            var fin = Math.min(boite.height, hauteurEcran - boite.top);
 
-            // ── INTERCEPTION DES SCRIPTS PROBLÉMATIQUES ──────────────
-            function shouldSkipScript(scriptContent, scriptSrc) {
-                // Ignorer les scripts qui pourraient recharger la page
-                var skipPatterns = [
-                    'location.reload',
-                    'window.location.reload',
-                    'document.location.reload',
-                    'location.href =',
-                    'window.location.href =',
-                    'history.pushState',
-                    'history.replaceState',
-                    'ajax',
-                    'fetch(',
-                    'XMLHttpRequest',
-                    '$.ajax',
-                    'axios',
-                    // Scripts de tracking qui peuvent causer des boucles
-                    'google-analytics',
-                    'gtag',
-                    'facebook-pixel',
-                    'hotjar',
-                    'clarity'
-                ];
+            try {
+                frame.contentWindow.postMessage({
+                    channel: CHANNEL,
+                    type: 'viewport',
+                    offset: debut,
+                    height: Math.max(0, fin - debut)
+                }, selfOrigin);
+            } catch (err) { /* silencieux */ }
+        }
 
-                var content = (scriptContent || '').toLowerCase();
-                var src = (scriptSrc || '').toLowerCase();
+        var suiviBande = null;
+        var defilementAvant = null;
+        var zIndexAvant = null;
 
-                for (var i = 0; i < skipPatterns.length; i++) {
-                    if (content.indexOf(skipPatterns[i]) !== -1) {
-                        return true;
-                    }
-                    if (src.indexOf(skipPatterns[i]) !== -1) {
-                        return true;
-                    }
+        /* Le site vit dans une iframe, et un z-index posé DANS un document
+           iframé ne peut pas en sortir : l'iframe est un seul élément dans
+           l'empilement de cette page. `.gx-embed-stage` la maintient
+           volontairement sous le header plateforme (z-index: 0) — sauf
+           pendant une modale, qui doit couvrir toute la page. On élève donc
+           l'étage entier, au-dessus du plus haut z-index du chrome
+           plateforme (le méga-menu mobile monte à 9999999). */
+        var Z_MODALE = '10000001';
+
+        function suivreBandeVisible(actif) {
+            var scene = document.getElementById('gxEmbedStage');
+
+            if (actif) {
+                envoyerBandeVisible();
+                if (suiviBande) return;
+
+                if (scene) {
+                    zIndexAvant = scene.style.zIndex;
+                    scene.style.zIndex = Z_MODALE;
                 }
 
-                return false;
+                /* Verrou de défilement — c'est CETTE page qui défile, pas
+                   l'iframe. Sans lui, le visiteur peut faire sortir le site de
+                   l'écran alors que sa modale est ouverte : elle n'aurait plus
+                   de bande visible où se poser. C'est aussi le comportement
+                   attendu d'une modale. La barre de défilement disparaissant,
+                   on compense sa largeur pour éviter un sursaut de la mise en
+                   page. */
+                var barre = window.innerWidth - document.documentElement.clientWidth;
+                defilementAvant = {
+                    overflow: document.body.style.overflow,
+                    paddingRight: document.body.style.paddingRight
+                };
+                document.body.style.overflow = 'hidden';
+                if (barre > 0) { document.body.style.paddingRight = barre + 'px'; }
+
+                // Filet de sécurité : certains navigateurs mobiles laissent
+                // passer un défilement élastique malgré le verrou.
+                suiviBande = function () { envoyerBandeVisible(); };
+                window.addEventListener('scroll', suiviBande, { passive: true });
+                window.addEventListener('resize', suiviBande, { passive: true });
+                return;
             }
 
-            // ── CHARGEMENT DU CONTENU ──────────────────────────────────
-            function loadContent() {
-                if (isLoaded || isLoading) {
-                    return;
-                }
-
-                if (loadAttempts >= MAX_ATTEMPTS) {
-                    console.warn('✅ Contenu déjà chargé, arrêt des tentatives');
-                    return;
-                }
-
-                loadAttempts++;
-                isLoading = true;
-                setState('loading');
-
-                console.log('📥 Chargement du contenu (tentative ' + loadAttempts + ')');
-
-                fetch(CONFIG.embedUrl, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'text/html'
-                    }
-                })
-                .then(function(response) {
-                    if (!response.ok) {
-                        throw new Error('Erreur HTTP ' + response.status);
-                    }
-                    return response.text();
-                })
-                .then(function(html) {
-                    renderContent(html);
-                    isLoaded = true;
-                    isLoading = false;
-                    setState('loaded');
-                    console.log('✅ Contenu chargé avec succès');
-                })
-                .catch(function(error) {
-                    console.error('❌ Erreur:', error);
-                    isLoading = false;
-                    setState('error', error.message);
-                });
+            if (scene && zIndexAvant !== null) {
+                scene.style.zIndex = zIndexAvant;
+                zIndexAvant = null;
             }
 
-            // ── RENDU DU CONTENU ──────────────────────────────────────
-            function renderContent(html) {
-                // Créer le Shadow DOM
-                createShadowRoot();
-
-                // Extraire le body
-                var content = extractBody(html);
-                
-                // Extraire les styles (garder seulement les styles)
-                var styles = extractStyles(html);
-                
-                // Extraire le header
-                var headerHtml = extractHeader(html);
-
-                // Injecter les styles
-                styles.forEach(function(styleContent) {
-                    var styleEl = document.createElement('style');
-                    styleEl.textContent = styleContent;
-                    shadowRoot.appendChild(styleEl);
-                });
-
-                // Injecter le contenu
-                var wrapper = document.createElement('div');
-                wrapper.innerHTML = content;
-                shadowRoot.appendChild(wrapper);
-
-                // Extraire et afficher le header
-                if (headerHtml) {
-                    extractAndDisplayHeader(headerHtml);
-                }
-
-                // Exécuter les scripts (avec filtrage)
-                executeScriptsSafely(wrapper);
-
-                // Initialiser les composants du template
-                initializeTemplate();
-
-                // Ajuster la hauteur
-                adjustHeight();
+            if (defilementAvant) {
+                document.body.style.overflow = defilementAvant.overflow;
+                document.body.style.paddingRight = defilementAvant.paddingRight;
+                defilementAvant = null;
             }
 
-            // ── SHADOW DOM ─────────────────────────────────────────────
-            function createShadowRoot() {
-                if (elements.container.shadowRoot) {
-                    shadowRoot = elements.container.shadowRoot;
-                    shadowRoot.innerHTML = '';
-                } else {
-                    shadowRoot = elements.container.attachShadow({ mode: 'open' });
-                }
+            if (!suiviBande) return;
+            window.removeEventListener('scroll', suiviBande);
+            window.removeEventListener('resize', suiviBande);
+            suiviBande = null;
+        }
 
-                var resetStyle = document.createElement('style');
-                resetStyle.textContent = `
-                    :host { display: block; width: 100%; }
-                    * { box-sizing: border-box; }
-                `;
-                shadowRoot.appendChild(resetStyle);
-
-                return shadowRoot;
-            }
-
-            // ── EXTRACTION ─────────────────────────────────────────────
-            function extractBody(html) {
-                var match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-                if (match && match[1]) {
-                    return match[1];
-                }
-                return html;
-            }
-
-            function extractStyles(html) {
-                var styles = [];
-                var regex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
-                var match;
-                while ((match = regex.exec(html)) !== null) {
-                    styles.push(match[1]);
-                }
-                return styles;
-            }
-
-            function extractHeader(html) {
-                var temp = document.createElement('div');
-                temp.innerHTML = html;
-
-                var selectors = [
-                    'header.header-fixed', 'header.sticky-header', 'header.fixed-top',
-                    'header.sticky-top', 'header[class*="fixed"]', 'header[class*="sticky"]',
-                    '.header-fixed', '.sticky-header', '.fixed-header',
-                    'header:first-of-type', '.header:first-of-type',
-                    '[role="banner"]', '#header', '#main-header', '#site-header'
-                ];
-
-                for (var i = 0; i < selectors.length; i++) {
-                    var el = temp.querySelector(selectors[i]);
-                    if (el) {
-                        return el.outerHTML;
-                    }
-                }
-
-                var header = temp.querySelector('header');
-                if (header) {
-                    return header.outerHTML;
-                }
-
-                return null;
-            }
-
-            // ── EXÉCUTION SÉCURISÉE DES SCRIPTS ──────────────────────
-            function executeScriptsSafely(wrapper) {
-                var scripts = wrapper.querySelectorAll('script');
-                var scriptCounter = 0;
-
-                scripts.forEach(function(oldScript) {
-                    var src = oldScript.getAttribute('src') || '';
-                    var content = oldScript.textContent || '';
-
-                    // Vérifier si ce script peut causer une boucle
-                    if (shouldSkipScript(content, src)) {
-                        console.log('⏭️ Script ignoré (potentiellement problématique):', src || 'inline');
-                        oldScript.parentNode.removeChild(oldScript);
-                        return;
-                    }
-
-                    var newScript = document.createElement('script');
-                    
-                    // Copier les attributs
-                    Array.from(oldScript.attributes).forEach(function(attr) {
-                        newScript.setAttribute(attr.name, attr.value);
-                    });
-                    
-                    if (src) {
-                        // Script externe - le charger
-                        newScript.src = src;
-                        newScript.async = false;
-                    } else if (content) {
-                        // Script inline - l'exécuter
-                        // Nettoyer le contenu pour éviter les rechargements
-                        var cleanedContent = content
-                            .replace(/location\.reload/g, '// location.reload')
-                            .replace(/window\.location\.reload/g, '// window.location.reload')
-                            .replace(/document\.location\.reload/g, '// document.location.reload')
-                            .replace(/history\.pushState/g, '// history.pushState')
-                            .replace(/history\.replaceState/g, '// history.replaceState');
-
-                        newScript.textContent = cleanedContent;
-                    } else {
-                        oldScript.parentNode.removeChild(oldScript);
-                        return;
-                    }
-                    
-                    // Ajouter un flag pour identifier que ce script est dans un embed
-                    newScript.setAttribute('data-embed-executed', 'true');
-                    
-                    oldScript.parentNode.replaceChild(newScript, oldScript);
-                    scriptCounter++;
-                });
-
-                console.log('📝 Scripts exécutés:', scriptCounter);
-            }
-
-            // ── EXTRACTION ET AFFICHAGE DU HEADER ─────────────────────
-            function extractAndDisplayHeader(headerHtml) {
-                if (!elements.headerInner) return;
-
-                var temp = document.createElement('div');
-                temp.innerHTML = headerHtml;
-                var header = temp.firstElementChild;
-
-                if (!header) return;
-
-                header.querySelectorAll('script').forEach(function(el) {
-                    el.remove();
-                });
-
-                header.style.position = 'relative';
-                header.style.top = 'auto';
-                header.style.left = 'auto';
-                header.style.right = 'auto';
-                header.style.bottom = 'auto';
-                header.style.width = '100%';
-                header.style.zIndex = 'auto';
-                header.style.transform = 'none';
-
-                headerHeight = header.offsetHeight || 64;
-
-                elements.headerInner.innerHTML = '';
-                elements.headerInner.appendChild(header);
-
-                elements.header.style.display = 'block';
-                updateHeaderPosition();
-
-                updatePadding(headerHeight);
-
-                requestAnimationFrame(function() {
-                    elements.header.classList.add('is-visible');
-                    isHeaderFixed = true;
-                    updateHeaderVisibility();
-                });
-
-                if (elements.scrollBtn) {
-                    elements.scrollBtn.classList.add('is-visible');
-                }
-
-                synchronizeClicks(header);
-            }
-
-            // ── SYNCHRONISATION DES CLICS ─────────────────────────────
-            function synchronizeClicks(clonedHeader) {
-                var links = clonedHeader.querySelectorAll('a, button');
-                links.forEach(function(el) {
-                    el.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        
-                        var target = null;
-                        
-                        if (el.id) {
-                            target = shadowRoot.getElementById(el.id);
-                        }
-                        
-                        if (!target && el.textContent.trim()) {
-                            var text = el.textContent.trim();
-                            var elements = shadowRoot.querySelectorAll('a, button');
-                            for (var i = 0; i < elements.length; i++) {
-                                if (elements[i].textContent.trim() === text) {
-                                    target = elements[i];
-                                    break;
-                                }
-                            }
-                        }
-                        
-                        if (target && target.click) {
-                            target.click();
-                        }
-                    });
-                });
-            }
-
-            // ── INITIALISATION DES COMPOSANTS ─────────────────────────
-            function initializeTemplate() {
-                setTimeout(function() {
-                    // Swiper
-                    if (typeof Swiper !== 'undefined' && shadowRoot) {
-                        shadowRoot.querySelectorAll('.swiper-container, .swiper').forEach(function(el) {
-                            if (el.swiper) {
-                                el.swiper.destroy(true, true);
-                            }
-                            try {
-                                new Swiper(el, {});
-                            } catch(e) {}
-                        });
-                    }
-
-                    // Menus mobiles
-                    if (shadowRoot) {
-                        shadowRoot.querySelectorAll('.menu-toggle, .navbar-toggler, .hamburger').forEach(function(btn) {
-                            btn.addEventListener('click', function(e) {
-                                var target = this.dataset.target || this.getAttribute('data-target');
-                                if (target) {
-                                    var menu = shadowRoot.querySelector(target);
-                                    if (menu) {
-                                        menu.classList.toggle('show');
-                                        menu.classList.toggle('active');
-                                        this.classList.toggle('is-active');
-                                    }
-                                }
-                            });
-                        });
-                    }
-
-                    // Événement DOMContentLoaded (une seule fois)
-                    var event = new Event('DOMContentLoaded', { bubbles: true });
-                    if (shadowRoot) {
-                        shadowRoot.dispatchEvent(event);
-                    }
-
-                }, 300);
-            }
-
-            // ── OUVERTURE DU MENU MOBILE ──────────────────────────────
-            function openMobileMenu() {
-                if (!shadowRoot) return;
-
-                // Chercher le bouton de menu
-                var menuToggle = shadowRoot.querySelector('.menu-toggle, .navbar-toggler, .hamburger, [aria-label="Menu"], [aria-label="Toggle navigation"]');
-                
-                if (menuToggle && menuToggle.click) {
-                    menuToggle.click();
-                    return;
-                }
-
-                // Fallback: toggle le menu directement
-                var menu = shadowRoot.querySelector('.nav-menu, .navbar-collapse, .main-menu, .mobile-menu, .menu-mobile');
-                if (menu) {
-                    menu.classList.toggle('show');
-                    menu.classList.toggle('active');
-                    
-                    var parent = menu.closest('nav') || menu.parentElement;
-                    var btn = parent ? parent.querySelector('.menu-toggle, .navbar-toggler, .hamburger') : null;
-                    if (btn) {
-                        btn.classList.toggle('is-active');
-                    }
-                }
-            }
-
-            // ── UTILITAIRES ─────────────────────────────────────────────
-            function setState(state, message) {
-                var content = elements.content;
-                content.classList.remove('is-loading', 'is-loaded', 'has-error');
-                
-                if (state === 'loading') {
-                    content.classList.add('is-loading');
-                    if (elements.loader) {
-                        elements.loader.innerHTML = `
-                            <div class="spinner"></div>
-                            <span>Chargement du site...</span>
-                        `;
-                    }
-                } else if (state === 'loaded') {
-                    content.classList.add('is-loaded');
-                } else if (state === 'error') {
-                    content.classList.add('has-error');
-                    if (elements.loader) {
-                        elements.loader.innerHTML = `
-                            <div class="error-icon">❌</div>
-                            <span>${message || 'Erreur de chargement'}</span>
-                            <button class="retry-btn" onclick="location.reload()">Réessayer</button>
-                        `;
-                    }
-                }
-            }
-
-            function isMobile() {
-                return window.innerWidth <= 992;
-            }
-
-            function updateHeaderPosition() {
-                if (elements.header) {
-                    var top = isMobile() ? CONFIG.mobileHeaderHeight : CONFIG.headerHeight;
-                    elements.header.style.top = top + 'px';
-                }
-            }
-
-            function updatePadding(height) {
-                var content = elements.content;
-                content.style.setProperty('--extracted-header-height', (height || 64) + 'px');
-                content.classList.add('has-extracted-header');
-            }
-
-            function updateHeaderVisibility() {
-                if (!elements.header || !isHeaderFixed) return;
-                
-                var threshold = headerHeight || 100;
-                var shouldHide = window.scrollY < threshold;
-                
-                elements.header.classList.toggle('is-hidden-at-top', shouldHide);
-                
-                if (elements.scrollBtn) {
-                    elements.scrollBtn.classList.toggle('is-visible', shouldHide && isHeaderFixed);
-                }
-            }
-
-            function adjustHeight() {
-                if (!shadowRoot) return;
-                var height = shadowRoot.host.scrollHeight || 200;
-                var content = elements.content;
-                if (content) {
-                    content.style.minHeight = (height + 100) + 'px';
-                }
-            }
-
-            // ── ÉVÉNEMENTS ──────────────────────────────────────────────
-
-            // Menu
-            if (elements.menuBtn) {
-                elements.menuBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    openMobileMenu();
-                });
-
-                var menuThreshold = 400;
-                window.addEventListener('scroll', function() {
-                    var shouldShow = window.scrollY > menuThreshold;
-                    elements.menuBtn.classList.toggle('is-visible', shouldShow);
-                }, { passive: true });
-                
-                elements.menuBtn.classList.toggle('is-visible', window.scrollY > menuThreshold);
-            }
-
-            // Scroll top
-            if (elements.scrollBtn) {
-                elements.scrollBtn.addEventListener('click', function() {
-                    if (isHeaderFixed) {
-                        var rect = elements.header.getBoundingClientRect();
-                        var top = rect.top + window.scrollY - 10;
-                        window.scrollTo({ top: top, behavior: 'smooth' });
-                    }
-                });
-            }
-
-            // Scroll header
-            var scrollTimeout = null;
-            window.addEventListener('scroll', function() {
-                if (scrollTimeout) return;
-                scrollTimeout = setTimeout(function() {
-                    updateHeaderVisibility();
-                    scrollTimeout = null;
-                }, 50);
-            }, { passive: true });
-
-            // Resize
-            var resizeTimeout = null;
-            window.addEventListener('resize', function() {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(function() {
-                    if (isHeaderFixed && elements.header) {
-                        var rect = elements.header.getBoundingClientRect();
-                        if (rect.height !== headerHeight) {
-                            headerHeight = rect.height;
-                            updatePadding(headerHeight);
-                        }
-                        updateHeaderPosition();
-                    }
-                    adjustHeight();
-                }, 200);
-            }, { passive: true });
-
-            // Observers
-            if (window.MutationObserver && elements.container) {
-                var observer = new MutationObserver(function() {
-                    adjustHeight();
-                });
-                observer.observe(elements.container, {
-                    childList: true,
-                    subtree: true,
-                    attributes: true
-                });
-            }
-
-            if (window.ResizeObserver && elements.container) {
-                var ro = new ResizeObserver(function() {
-                    adjustHeight();
-                });
-                ro.observe(elements.container);
-            }
-
-            // ── DÉMARRAGE ──────────────────────────────────────────────
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', loadContent);
-            } else {
-                loadContent();
-            }
-
-            // Empêcher les rechargements intempestifs via les liens internes
-            document.addEventListener('click', function(e) {
-                var link = e.target.closest('a');
-                if (link && link.href && link.href.indexOf(window.location.origin) === 0) {
-                    if (link.href !== window.location.href && link.target !== '_blank') {
-                        e.preventDefault();
-                        // Navigation SPA
-                        window.history.pushState(null, '', link.href);
-                        // Ne pas recharger, juste mettre à jour l'URL
-                    }
+        /* ── Bouton « Menu du site » ──────────────────────────────────────
+           L'en-tête de l'établissement est DANS l'iframe, laquelle n'a pas de
+           défilement propre : son position:fixed se cale sur la boîte de
+           l'iframe et sort de l'écran dès qu'on défile. Ce bouton-ci, lui,
+           est dans le document qui défile — il tient. Il demande à l'iframe
+           d'ouvrir son propre menu (voir partials/child-bridge). */
+        var boutonMenu = document.getElementById('gxEmbedMenu');
+        if (boutonMenu) {
+            boutonMenu.addEventListener('click', function () {
+                try {
+                    frame.contentWindow.postMessage(
+                        { channel: CHANNEL, type: 'open-menu' }, selfOrigin
+                    );
+                } catch (err) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             });
 
-        })();
+            // Visible seulement une fois qu'on a quitté le haut de page : en
+            // haut, l'en-tête du site est là, le bouton ferait double emploi.
+            var seuil = 400;
+            var maj = function () {
+                boutonMenu.classList.toggle('is-visible', window.scrollY > seuil);
+            };
+            window.addEventListener('scroll', maj, { passive: true });
+            maj();
+        }
+
+        // Demander un recalcul quand la largeur du parent change (responsive :
+        // le reflow interne du template modifie sa hauteur).
+        var rt;
+        window.addEventListener('resize', function () {
+            clearTimeout(rt);
+            rt = setTimeout(function () {
+                try {
+                    frame.contentWindow.postMessage(
+                        { channel: CHANNEL, type: 'request-height' }, selfOrigin
+                    );
+                } catch (err) { /* silencieux */ }
+            }, 200);
+        }, { passive: true });
+
+        // Filet de sécurité : si aucun message n'arrive (JS enfant bloqué),
+        // on tente une mesure directe (possible car same-origin) au load.
+        frame.addEventListener('load', function () {
+            setTimeout(function () {
+                if (stage.classList.contains('is-ready')) return;
+                try {
+                    var doc = frame.contentDocument || frame.contentWindow.document;
+                    var h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+                    applyHeight(h);
+                } catch (err) { /* cross-origin ou bloqué : on garde 100vh */ }
+            }, 400);
+        });
+    })();
     </script>
 </body>
 </html>
