@@ -1,6 +1,6 @@
 {{-- ═══════════════════════════════════════════════════════════════════════
-     SHELL PLATEFORME — Version optimisée avec gestion des erreurs,
-     cache et Shadow DOM pour une isolation totale.
+     SHELL PLATEFORME — Affiche le site d'un établissement DANS GoExploria
+     Business, avec ISOLATION TOTALE via Shadow DOM.
      ═══════════════════════════════════════════════════════════════════════ --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -11,20 +11,26 @@
     
     <title>{{ $etablissement->name }} — GoExploria Business</title>
 
-    {{-- Préchargement des polices --}}
+    {{-- Polices --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    {{-- Assets de la plateforme (version minifiée) --}}
-    @stack('platform-styles')
-    <link rel="stylesheet" href="{{ mix('css/home-v2/styles.min.css') }}">
-    <link rel="stylesheet" href="{{ mix('css/home-v2/vertical-menu.min.css') }}">
-    <link rel="stylesheet" href="{{ mix('css/home-v2/navigation.min.css') }}">
-    <link rel="stylesheet" href="{{ mix('css/home-v2/footer.min.css') }}">
+    {{-- Assets de la plateforme (sans Mix) --}}
+    <link rel="stylesheet" href="{{ asset('css/home-v2/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-menu-videos.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/navigation.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/vertical-destinations-mega.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/mega-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-mega-menu-modern.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/destinations-search.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/search-bar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/videos-dropdown.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/services-mega-menu-v2.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/home-v2/footer.css') }}">
 
-    {{-- Styles de l'embed --}}
     <style>
         /* --- Reset --- */
         html, body { 
@@ -38,13 +44,20 @@
             font-family: 'Montserrat', system-ui, sans-serif;
         }
 
-        /* --- Variables configurables --- */
+        /* --- Variables --- */
         :root {
-            --header-height: {{ $config['headerHeight'] }}px;
-            --mobile-header-height: {{ $config['mobileHeaderHeight'] }}px;
-            --z-header: {{ $config['zIndex']['header'] }};
-            --z-menu: {{ $config['zIndex']['menu'] }};
-            --z-modal: {{ $config['zIndex']['modal'] }};
+            --header-height: 96px;
+            --mobile-header-height: 80px;
+            --z-header: 9998;
+            --z-menu: 9997;
+            --z-modal: 10000001;
+        }
+
+        @media (max-width: 992px) {
+            :root {
+                --header-height: 80px;
+                --mobile-header-height: 80px;
+            }
         }
 
         /* --- Layout --- */
@@ -59,22 +72,11 @@
             padding-top: var(--header-height);
             position: relative;
             z-index: 0;
-        }
-
-        @media (max-width: 992px) {
-            .gx-embed-content {
-                padding-top: var(--mobile-header-height);
-            }
+            min-height: 60vh;
         }
 
         .gx-embed-content.has-extracted-header {
             padding-top: calc(var(--header-height) + var(--extracted-header-height, 64px));
-        }
-
-        @media (max-width: 992px) {
-            .gx-embed-content.has-extracted-header {
-                padding-top: calc(var(--mobile-header-height) + var(--extracted-header-height, 64px));
-            }
         }
 
         /* --- Loader --- */
@@ -86,6 +88,7 @@
             gap: 16px;
             padding: 80px 20px;
             color: #6b7280;
+            font-size: 14px;
         }
 
         .gx-embed-loader .spinner {
@@ -97,13 +100,28 @@
             animation: spin 0.8s linear infinite;
         }
 
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         .gx-embed-loader .error-icon {
             font-size: 48px;
             color: #dc2626;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .gx-embed-loader .retry-btn {
+            margin-top: 12px;
+            padding: 8px 24px;
+            background: #16794c;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .gx-embed-loader .retry-btn:hover {
+            background: #0f5d3a;
         }
 
         /* --- Header extrait --- */
@@ -116,15 +134,9 @@
             background: #ffffff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transform: translateY(-100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: none;
             will-change: transform;
-        }
-
-        @media (max-width: 992px) {
-            .gx-extracted-header {
-                top: var(--mobile-header-height);
-            }
         }
 
         .gx-extracted-header.is-visible {
@@ -142,12 +154,6 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
-        }
-
-        @media (min-width: 1400px) {
-            .gx-extracted-header-inner {
-                padding: 0 40px;
-            }
         }
 
         /* --- Shadow DOM Container --- */
@@ -178,6 +184,7 @@
             pointer-events: none;
             transform: translateY(12px);
             transition: opacity 0.22s ease, transform 0.22s ease;
+            font-family: 'Montserrat', system-ui, sans-serif;
         }
 
         @media (max-width: 1024px) {
@@ -256,34 +263,6 @@
         .gx-embed-content.has-error #gxShadowContainer {
             display: none;
         }
-
-        /* --- Toast notifications --- */
-        .gx-toast {
-            position: fixed;
-            top: calc(var(--header-height) + 20px);
-            right: 20px;
-            z-index: 99999;
-            padding: 16px 24px;
-            background: #1f2937;
-            color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transform: translateX(120%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 400px;
-        }
-
-        .gx-toast.is-visible {
-            transform: translateX(0);
-        }
-
-        .gx-toast.error {
-            background: #dc2626;
-        }
-
-        .gx-toast.success {
-            background: #16794c;
-        }
     </style>
 </head>
 <body>
@@ -332,457 +311,538 @@
         </svg>
     </button>
 
-    {{-- Toast --}}
-    <div class="gx-toast" id="gxToast"></div>
+    {{-- Assets JS de la plateforme (sans Mix) --}}
+    <script src="{{ asset('js/home-v2/navigation.js') }}"></script>
+    <script src="{{ asset('js/home-v2/menu-api-service.js') }}"></script>
+    <script src="{{ asset('js/home-v2/mega-menu-service.js') }}"></script>
+    <script src="{{ asset('js/home-v2/vertical-menu-dynamic.js') }}"></script>
+    <script src="{{ asset('js/home-v2/vertical-menu.js') }}"></script>
+    <script src="{{ asset('js/home-v2/vertical-destinations-mega.js') }}"></script>
+    <script src="{{ asset('js/home-v2/mega-menu.js') }}"></script>
+    <script src="{{ asset('js/home-v2/destinations-mega-menu.js') }}"></script>
+    <script src="{{ asset('js/home-v2/destinations-search.js') }}"></script>
+    <script src="{{ asset('js/home-v2/search-bar.js') }}"></script>
 
-    {{-- Assets JS de la plateforme (version minifiée) --}}
-    @stack('platform-scripts')
-    <script src="{{ mix('js/home-v2/navigation.min.js') }}"></script>
-    <script src="{{ mix('js/home-v2/vertical-menu.min.js') }}"></script>
-    <script src="{{ mix('js/home-v2/mega-menu.min.js') }}"></script>
-
-    {{-- Script principal de l'embed --}}
+    {{-- Script principal --}}
     <script>
         (function() {
             'use strict';
 
-            class EmbedManager {
-                constructor(config) {
-                    this.config = config;
-                    this.elements = {
-                        container: document.getElementById('gxShadowContainer'),
-                        loader: document.getElementById('gxEmbedLoader'),
-                        content: document.getElementById('gxEmbedContent'),
-                        header: document.getElementById('gxExtractedHeader'),
-                        headerInner: document.getElementById('gxExtractedHeaderInner'),
-                        menuBtn: document.getElementById('gxEmbedMenuBtn'),
-                        scrollBtn: document.getElementById('gxScrollTopBtn'),
-                        toast: document.getElementById('gxToast')
-                    };
+            // ── CONFIGURATION ──────────────────────────────────────────
+            var CONFIG = {
+                headerHeight: 96,
+                mobileHeaderHeight: 80,
+                etablissementId: {{ $etablissement->id }},
+                embedUrl: '{{ route("cms.company.embed", ["etablissementId" => $etablissement->id]) }}'
+            };
 
-                    this.shadowRoot = null;
-                    this.isHeaderFixed = false;
-                    this.headerHeight = 0;
-                    this.state = {
-                        isLoading: true,
-                        isLoaded: false,
-                        hasError: false
-                    };
+            // ── ÉLÉMENTS DOM ──────────────────────────────────────────
+            var elements = {
+                container: document.getElementById('gxShadowContainer'),
+                loader: document.getElementById('gxEmbedLoader'),
+                content: document.getElementById('gxEmbedContent'),
+                header: document.getElementById('gxExtractedHeader'),
+                headerInner: document.getElementById('gxExtractedHeaderInner'),
+                menuBtn: document.getElementById('gxEmbedMenuBtn'),
+                scrollBtn: document.getElementById('gxScrollTopBtn')
+            };
 
-                    this.init();
+            var shadowRoot = null;
+            var isHeaderFixed = false;
+            var headerHeight = 64;
+
+            // ── CHARGEMENT DU CONTENU ──────────────────────────────────
+            function loadContent() {
+                setState('loading');
+
+                fetch(CONFIG.embedUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'text/html'
+                    }
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('Erreur HTTP ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(function(html) {
+                    renderContent(html);
+                    setState('loaded');
+                })
+                .catch(function(error) {
+                    console.error('Erreur:', error);
+                    setState('error', error.message);
+                });
+            }
+
+            // ── RENDU DU CONTENU ──────────────────────────────────────
+            function renderContent(html) {
+                // Créer le Shadow DOM
+                createShadowRoot();
+
+                // Extraire le body
+                var content = extractBody(html);
+                
+                // Extraire les styles
+                var styles = extractStyles(html);
+                
+                // Extraire le header
+                var headerHtml = extractHeader(html);
+
+                // Injecter les styles
+                styles.forEach(function(styleContent) {
+                    var styleEl = document.createElement('style');
+                    styleEl.textContent = styleContent;
+                    shadowRoot.appendChild(styleEl);
+                });
+
+                // Injecter le contenu
+                var wrapper = document.createElement('div');
+                wrapper.innerHTML = content;
+                shadowRoot.appendChild(wrapper);
+
+                // Extraire et afficher le header
+                if (headerHtml) {
+                    extractAndDisplayHeader(headerHtml);
                 }
 
-                init() {
-                    if (!this.elements.container) return;
-                    this.loadContent();
-                    this.setupEventListeners();
-                    this.setupObservers();
+                // Exécuter les scripts
+                executeScripts(wrapper);
+
+                // Initialiser les composants du template
+                initializeTemplate();
+
+                // Ajuster la hauteur
+                adjustHeight();
+            }
+
+            // ── SHADOW DOM ─────────────────────────────────────────────
+            function createShadowRoot() {
+                if (elements.container.shadowRoot) {
+                    shadowRoot = elements.container.shadowRoot;
+                    shadowRoot.innerHTML = '';
+                } else {
+                    shadowRoot = elements.container.attachShadow({ mode: 'open' });
                 }
 
-                // ── CHARGEMENT DU CONTENU ──────────────────────────────
-                async loadContent() {
-                    try {
-                        this.setState('loading');
+                // Style de base
+                var resetStyle = document.createElement('style');
+                resetStyle.textContent = `
+                    :host { display: block; width: 100%; }
+                    * { box-sizing: border-box; }
+                `;
+                shadowRoot.appendChild(resetStyle);
+
+                return shadowRoot;
+            }
+
+            // ── EXTRACTION ─────────────────────────────────────────────
+            function extractBody(html) {
+                var match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+                if (match && match[1]) {
+                    return match[1];
+                }
+                return html;
+            }
+
+            function extractStyles(html) {
+                var styles = [];
+                var regex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+                var match;
+                while ((match = regex.exec(html)) !== null) {
+                    styles.push(match[1]);
+                }
+                return styles;
+            }
+
+            function extractHeader(html) {
+                // Créer un DOM temporaire
+                var temp = document.createElement('div');
+                temp.innerHTML = html;
+
+                // Chercher le header
+                var selectors = [
+                    'header.header-fixed',
+                    'header.sticky-header',
+                    'header.fixed-top',
+                    'header.sticky-top',
+                    'header[class*="fixed"]',
+                    'header[class*="sticky"]',
+                    '.header-fixed',
+                    '.sticky-header',
+                    '.fixed-header',
+                    'header:first-of-type',
+                    '.header:first-of-type',
+                    '[role="banner"]',
+                    '#header',
+                    '#main-header',
+                    '#site-header'
+                ];
+
+                for (var i = 0; i < selectors.length; i++) {
+                    var el = temp.querySelector(selectors[i]);
+                    if (el) {
+                        return el.outerHTML;
+                    }
+                }
+
+                // Fallback: n'importe quel header
+                var header = temp.querySelector('header');
+                if (header) {
+                    return header.outerHTML;
+                }
+
+                return null;
+            }
+
+            // ── EXTRACTION ET AFFICHAGE DU HEADER ─────────────────────
+            function extractAndDisplayHeader(headerHtml) {
+                if (!elements.headerInner) return;
+
+                // Créer un élément temporaire
+                var temp = document.createElement('div');
+                temp.innerHTML = headerHtml;
+                var header = temp.firstElementChild;
+
+                if (!header) return;
+
+                // Nettoyer les scripts
+                header.querySelectorAll('script').forEach(function(el) {
+                    el.remove();
+                });
+
+                // Nettoyer les attributs problématiques
+                header.style.position = 'relative';
+                header.style.top = 'auto';
+                header.style.left = 'auto';
+                header.style.right = 'auto';
+                header.style.bottom = 'auto';
+                header.style.width = '100%';
+                header.style.zIndex = 'auto';
+                header.style.transform = 'none';
+
+                // Mesurer la hauteur
+                headerHeight = header.offsetHeight || 64;
+
+                // Injecter
+                elements.headerInner.innerHTML = '';
+                elements.headerInner.appendChild(header);
+
+                // Afficher
+                elements.header.style.display = 'block';
+                updateHeaderPosition();
+
+                // Mettre à jour le padding
+                updatePadding(headerHeight);
+
+                // Animation
+                requestAnimationFrame(function() {
+                    elements.header.classList.add('is-visible');
+                    isHeaderFixed = true;
+                    updateHeaderVisibility();
+                });
+
+                // Afficher le bouton de scroll
+                if (elements.scrollBtn) {
+                    elements.scrollBtn.classList.add('is-visible');
+                }
+
+                // Synchroniser les clics
+                synchronizeClicks(header);
+            }
+
+            // ── SYNCHRONISATION DES CLICS ─────────────────────────────
+            function synchronizeClicks(clonedHeader) {
+                var links = clonedHeader.querySelectorAll('a, button');
+                links.forEach(function(el) {
+                    el.addEventListener('click', function(e) {
+                        e.preventDefault();
                         
-                        const url = '{{ route("embed.content", ["etablissementId" => $etablissement->id]) }}';
-                        const response = await fetch(url, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'Accept': 'application/json'
+                        // Chercher l'élément correspondant dans le shadow DOM
+                        var target = null;
+                        
+                        if (el.id) {
+                            target = shadowRoot.getElementById(el.id);
+                        }
+                        
+                        if (!target && el.textContent.trim()) {
+                            var text = el.textContent.trim();
+                            var elements = shadowRoot.querySelectorAll('a, button');
+                            for (var i = 0; i < elements.length; i++) {
+                                if (elements[i].textContent.trim() === text) {
+                                    target = elements[i];
+                                    break;
+                                }
                             }
-                        });
-
-                        if (!response.ok) {
-                            throw new Error(`HTTP ${response.status}`);
                         }
-
-                        const data = await response.json();
                         
-                        if (!data.success) {
-                            throw new Error(data.message || 'Erreur de chargement');
+                        if (target && target.click) {
+                            target.click();
                         }
+                    });
+                });
+            }
 
-                        this.renderContent(data.data);
-                        this.setState('loaded');
-
-                    } catch (error) {
-                        console.error('Erreur:', error);
-                        this.setState('error', error.message);
-                        this.showToast(error.message, 'error');
-                    }
-                }
-
-                // ── RENDU DU CONTENU ────────────────────────────────────
-                renderContent(data) {
-                    // Créer le Shadow DOM
-                    this.createShadowRoot();
-
-                    // Injecter les styles
-                    if (data.styles && data.styles.length > 0) {
-                        data.styles.forEach(styleContent => {
-                            const styleEl = document.createElement('style');
-                            styleEl.textContent = styleContent;
-                            this.shadowRoot.appendChild(styleEl);
-                        });
-                    }
-
-                    // Injecter le contenu
-                    const wrapper = document.createElement('div');
-                    wrapper.innerHTML = data.content || '';
-                    this.shadowRoot.appendChild(wrapper);
-
-                    // Extraire et afficher le header
-                    if (data.header) {
-                        this.extractAndDisplayHeader(data.header);
-                    }
-
-                    // Exécuter les scripts
-                    if (data.scripts && data.scripts.length > 0) {
-                        this.executeScripts(data.scripts);
-                    }
-
-                    // Initialiser les composants
-                    this.initializeComponents();
-
-                    // Ajuster la hauteur
-                    this.adjustHeight();
-                }
-
-                // ── SHADOW DOM ──────────────────────────────────────────
-                createShadowRoot() {
-                    if (this.elements.container.shadowRoot) {
-                        this.shadowRoot = this.elements.container.shadowRoot;
-                        this.shadowRoot.innerHTML = '';
+            // ── EXÉCUTION DES SCRIPTS ─────────────────────────────────
+            function executeScripts(wrapper) {
+                var scripts = wrapper.querySelectorAll('script');
+                scripts.forEach(function(oldScript) {
+                    var newScript = document.createElement('script');
+                    
+                    // Copier les attributs
+                    Array.from(oldScript.attributes).forEach(function(attr) {
+                        newScript.setAttribute(attr.name, attr.value);
+                    });
+                    
+                    // Copier le contenu
+                    if (oldScript.src) {
+                        newScript.src = oldScript.src;
+                        newScript.async = false;
                     } else {
-                        this.shadowRoot = this.elements.container.attachShadow({ mode: 'open' });
+                        newScript.textContent = oldScript.textContent;
                     }
+                    
+                    // Remplacer
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+            }
 
-                    // Style de base
-                    const resetStyle = document.createElement('style');
-                    resetStyle.textContent = `
-                        :host { display: block; width: 100%; }
-                        * { box-sizing: border-box; }
-                    `;
-                    this.shadowRoot.appendChild(resetStyle);
-
-                    return this.shadowRoot;
-                }
-
-                // ── EXTRACTION DU HEADER ───────────────────────────────
-                extractAndDisplayHeader(headerHtml) {
-                    if (!this.elements.headerInner) return;
-
-                    // Nettoyer le header
-                    const temp = document.createElement('div');
-                    temp.innerHTML = headerHtml;
-                    const header = temp.firstElementChild;
-
-                    if (!header) return;
-
-                    // Nettoyer les scripts
-                    header.querySelectorAll('script').forEach(el => el.remove());
-
-                    // Nettoyer les attributs problématiques
-                    header.style.position = 'relative';
-                    header.style.top = 'auto';
-                    header.style.left = 'auto';
-                    header.style.right = 'auto';
-                    header.style.bottom = 'auto';
-                    header.style.width = '100%';
-                    header.style.zIndex = 'auto';
-                    header.style.transform = 'none';
-
-                    // Mesurer la hauteur
-                    const rect = header.getBoundingClientRect();
-                    this.headerHeight = rect.height || 64;
-
-                    // Injecter
-                    this.elements.headerInner.innerHTML = '';
-                    this.elements.headerInner.appendChild(header);
-
-                    // Afficher
-                    this.elements.header.style.display = 'block';
-                    this.elements.header.style.top = this.isMobile() 
-                        ? `${this.config.mobileHeaderHeight}px` 
-                        : `${this.config.headerHeight}px`;
-
-                    // Mettre à jour le padding
-                    this.updatePadding(this.headerHeight);
-
-                    // Animation
-                    requestAnimationFrame(() => {
-                        this.elements.header.classList.add('is-visible');
-                        this.isHeaderFixed = true;
-                        this.updateHeaderVisibility();
-                    });
-
-                    // Bouton scroll
-                    if (this.elements.scrollBtn) {
-                        this.elements.scrollBtn.classList.add('is-visible');
-                    }
-
-                    // Synchroniser les clics
-                    this.synchronizeClicks(header);
-                }
-
-                // ── EXÉCUTION DES SCRIPTS ──────────────────────────────
-                executeScripts(scripts) {
-                    scripts.forEach(scriptData => {
-                        const script = document.createElement('script');
-                        
-                        if (scriptData.type === 'external') {
-                            script.src = scriptData.src;
-                            script.async = false;
-                        } else {
-                            script.textContent = scriptData.content;
+            // ── INITIALISATION DES COMPOSANTS ─────────────────────────
+            function initializeTemplate() {
+                setTimeout(function() {
+                    // 1. Ouvrir automatiquement le menu si c'est un mobile
+                    if (window.innerWidth <= 1024) {
+                        // Vérifier si le menu est présent
+                        var menuToggle = shadowRoot ? shadowRoot.querySelector('.menu-toggle, .navbar-toggler, .hamburger') : null;
+                        if (menuToggle) {
+                            // Ne pas ouvrir automatiquement, laisser l'utilisateur cliquer
                         }
-
-                        this.shadowRoot.appendChild(script);
-                    });
-                }
-
-                // ── INITIALISATION DES COMPOSANTS ──────────────────────
-                initializeComponents() {
-                    setTimeout(() => {
-                        // Réinitialiser Swiper
-                        if (typeof Swiper !== 'undefined' && this.shadowRoot) {
-                            this.shadowRoot.querySelectorAll('.swiper-container, .swiper').forEach(el => {
-                                if (el.swiper) el.swiper.destroy(true, true);
-                                new Swiper(el, {});
-                            });
-                        }
-
-                        // Réinitialiser les menus mobiles
-                        if (this.shadowRoot) {
-                            this.shadowRoot.querySelectorAll('.menu-toggle, .navbar-toggler, .hamburger')
-                                .forEach(btn => {
-                                    btn.addEventListener('click', (e) => {
-                                        const target = btn.dataset.target || btn.getAttribute('data-target');
-                                        if (target) {
-                                            const menu = this.shadowRoot.querySelector(target);
-                                            if (menu) {
-                                                menu.classList.toggle('show');
-                                                menu.classList.toggle('active');
-                                                btn.classList.toggle('is-active');
-                                            }
-                                        }
-                                    });
-                                });
-                        }
-
-                        // Déclencher DOMContentLoaded
-                        const event = new Event('DOMContentLoaded', { bubbles: true });
-                        if (this.shadowRoot) this.shadowRoot.dispatchEvent(event);
-                        document.dispatchEvent(event);
-
-                    }, 100);
-                }
-
-                // ── UTILITAIRES ──────────────────────────────────────────
-                setState(state, message = '') {
-                    this.state.isLoading = state === 'loading';
-                    this.state.isLoaded = state === 'loaded';
-                    this.state.hasError = state === 'error';
-
-                    const content = this.elements.content;
-                    content.classList.remove('is-loading', 'is-loaded', 'has-error');
-                    
-                    if (state === 'loading') content.classList.add('is-loading');
-                    if (state === 'loaded') content.classList.add('is-loaded');
-                    if (state === 'error') content.classList.add('has-error');
-
-                    if (state === 'error' && this.elements.loader) {
-                        this.elements.loader.innerHTML = `
-                            <div class="error-icon">❌</div>
-                            <span>${message}</span>
-                            <button onclick="location.reload()" style="
-                                margin-top: 12px;
-                                padding: 8px 24px;
-                                background: #16794c;
-                                color: #fff;
-                                border: none;
-                                border-radius: 4px;
-                                cursor: pointer;
-                            ">Réessayer</button>
-                        `;
                     }
-                }
 
-                isMobile() {
-                    return window.innerWidth <= 992;
-                }
-
-                updatePadding(height) {
-                    const isMobile = this.isMobile();
-                    const basePadding = isMobile 
-                        ? this.config.mobileHeaderHeight 
-                        : this.config.headerHeight;
-                    
-                    const content = this.elements.content;
-                    content.style.setProperty('--extracted-header-height', height + 'px');
-                    content.classList.add('has-extracted-header');
-                }
-
-                updateHeaderVisibility() {
-                    if (!this.elements.header || !this.isHeaderFixed) return;
-                    
-                    const threshold = this.headerHeight || 100;
-                    const shouldHide = window.scrollY < threshold;
-                    
-                    this.elements.header.classList.toggle('is-hidden-at-top', shouldHide);
-                    
-                    if (this.elements.scrollBtn) {
-                        this.elements.scrollBtn.classList.toggle('is-visible', shouldHide && this.isHeaderFixed);
-                    }
-                }
-
-                adjustHeight() {
-                    if (!this.shadowRoot) return;
-                    const height = this.shadowRoot.host.scrollHeight || 200;
-                    const content = this.elements.content;
-                    if (content) {
-                        content.style.minHeight = (height + 100) + 'px';
-                    }
-                }
-
-                synchronizeClicks(clonedHeader) {
-                    clonedHeader.querySelectorAll('a, button').forEach(el => {
-                        el.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            
-                            // Chercher l'élément correspondant dans le shadow DOM
-                            let target = null;
-                            
-                            if (el.id) {
-                                target = this.shadowRoot.getElementById(el.id);
+                    // 2. Réinitialiser Swiper
+                    if (typeof Swiper !== 'undefined' && shadowRoot) {
+                        shadowRoot.querySelectorAll('.swiper-container, .swiper').forEach(function(el) {
+                            if (el.swiper) {
+                                el.swiper.destroy(true, true);
                             }
-                            
-                            if (!target && el.textContent.trim()) {
-                                const text = el.textContent.trim();
-                                const elements = this.shadowRoot.querySelectorAll('a, button');
-                                for (let i = 0; i < elements.length; i++) {
-                                    if (elements[i].textContent.trim() === text) {
-                                        target = elements[i];
-                                        break;
+                            try {
+                                new Swiper(el, {});
+                            } catch(e) {}
+                        });
+                    }
+
+                    // 3. Réinitialiser les menus mobiles
+                    if (shadowRoot) {
+                        shadowRoot.querySelectorAll('.menu-toggle, .navbar-toggler, .hamburger').forEach(function(btn) {
+                            btn.addEventListener('click', function(e) {
+                                var target = this.dataset.target || this.getAttribute('data-target');
+                                if (target) {
+                                    var menu = shadowRoot.querySelector(target);
+                                    if (menu) {
+                                        menu.classList.toggle('show');
+                                        menu.classList.toggle('active');
+                                        this.classList.toggle('is-active');
                                     }
                                 }
-                            }
-                            
-                            if (target && target.click) {
-                                target.click();
-                            }
-                        });
-                    });
-                }
-
-                // ── TOAST ─────────────────────────────────────────────────
-                showToast(message, type = 'info') {
-                    const toast = this.elements.toast;
-                    if (!toast) return;
-
-                    toast.textContent = message;
-                    toast.className = `gx-toast ${type}`;
-                    toast.classList.add('is-visible');
-
-                    clearTimeout(this.toastTimeout);
-                    this.toastTimeout = setTimeout(() => {
-                        toast.classList.remove('is-visible');
-                    }, 5000);
-                }
-
-                // ── ÉVÉNEMENTS ──────────────────────────────────────────
-                setupEventListeners() {
-                    // Menu
-                    if (this.elements.menuBtn) {
-                        this.elements.menuBtn.addEventListener('click', () => {
-                            if (this.shadowRoot) {
-                                const toggle = this.shadowRoot.querySelector('.menu-toggle, .navbar-toggler, .hamburger');
-                                if (toggle && toggle.click) toggle.click();
-                            }
-                        });
-
-                        let menuThreshold = 400;
-                        let menuVisible = false;
-                        window.addEventListener('scroll', () => {
-                            const shouldShow = window.scrollY > menuThreshold;
-                            if (shouldShow !== menuVisible) {
-                                menuVisible = shouldShow;
-                                this.elements.menuBtn.classList.toggle('is-visible', shouldShow);
-                            }
-                        }, { passive: true });
-                        
-                        // État initial
-                        this.elements.menuBtn.classList.toggle('is-visible', window.scrollY > menuThreshold);
-                    }
-
-                    // Scroll top
-                    if (this.elements.scrollBtn) {
-                        this.elements.scrollBtn.addEventListener('click', () => {
-                            if (this.isHeaderFixed) {
-                                const rect = this.elements.header.getBoundingClientRect();
-                                const top = rect.top + window.scrollY - 10;
-                                window.scrollTo({ top, behavior: 'smooth' });
-                            }
+                            });
                         });
                     }
 
-                    // Scroll pour la visibilité du header
-                    let scrollTimeout = null;
-                    window.addEventListener('scroll', () => {
-                        if (scrollTimeout) return;
-                        scrollTimeout = setTimeout(() => {
-                            this.updateHeaderVisibility();
-                            scrollTimeout = null;
-                        }, 50);
-                    }, { passive: true });
+                    // 4. Déclencher DOMContentLoaded
+                    var event = new Event('DOMContentLoaded', { bubbles: true });
+                    if (shadowRoot) {
+                        shadowRoot.dispatchEvent(event);
+                    }
+                    document.dispatchEvent(event);
 
-                    // Resize
-                    let resizeTimeout = null;
-                    window.addEventListener('resize', () => {
-                        clearTimeout(resizeTimeout);
-                        resizeTimeout = setTimeout(() => {
-                            if (this.isHeaderFixed && this.elements.header) {
-                                const rect = this.elements.header.getBoundingClientRect();
-                                if (rect.height !== this.headerHeight) {
-                                    this.headerHeight = rect.height;
-                                    this.updatePadding(this.headerHeight);
-                                }
-                                
-                                this.elements.header.style.top = this.isMobile()
-                                    ? `${this.config.mobileHeaderHeight}px`
-                                    : `${this.config.headerHeight}px`;
-                            }
-                            
-                            this.adjustHeight();
-                        }, 200);
-                    }, { passive: true });
+                }, 200);
+            }
+
+            // ── GESTION DU MENU (ouverture depuis le bouton flottant) ──
+            function openMobileMenu() {
+                if (!shadowRoot) return;
+
+                // Chercher le bouton de menu dans le shadow DOM
+                var menuToggle = shadowRoot.querySelector('.menu-toggle, .navbar-toggler, .hamburger, [aria-label="Menu"], [aria-label="Toggle navigation"]');
+                
+                if (menuToggle) {
+                    // Simuler un clic
+                    if (menuToggle.click) {
+                        menuToggle.click();
+                        return;
+                    }
                 }
 
-                // ── OBSERVATEURS ────────────────────────────────────────
-                setupObservers() {
-                    // MutationObserver pour la hauteur
-                    if (window.MutationObserver && this.shadowRoot) {
-                        const observer = new MutationObserver(() => this.adjustHeight());
-                        observer.observe(this.shadowRoot.host, {
-                            childList: true,
-                            subtree: true,
-                            attributes: true
-                        });
+                // Fallback: chercher le menu et le rendre visible
+                var menu = shadowRoot.querySelector('.nav-menu, .navbar-collapse, .main-menu, .mobile-menu, .menu-mobile, [class*="menu"]');
+                if (menu) {
+                    menu.classList.toggle('show');
+                    menu.classList.toggle('active');
+                    
+                    // Chercher aussi le bouton correspondant
+                    var parent = menu.closest('nav') || menu.parentElement;
+                    var btn = parent ? parent.querySelector('.menu-toggle, .navbar-toggler, .hamburger') : null;
+                    if (btn) {
+                        btn.classList.toggle('is-active');
                     }
+                }
 
-                    // ResizeObserver
-                    if (window.ResizeObserver && this.elements.container) {
-                        const ro = new ResizeObserver(() => this.adjustHeight());
-                        ro.observe(this.elements.container);
+                // Si rien ne fonctionne, scroller en haut
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // ── UTILITAIRES ─────────────────────────────────────────────
+            function setState(state, message) {
+                var content = elements.content;
+                content.classList.remove('is-loading', 'is-loaded', 'has-error');
+                
+                if (state === 'loading') {
+                    content.classList.add('is-loading');
+                    if (elements.loader) {
+                        elements.loader.innerHTML = `
+                            <div class="spinner"></div>
+                            <span>Chargement du site...</span>
+                        `;
+                    }
+                } else if (state === 'loaded') {
+                    content.classList.add('is-loaded');
+                } else if (state === 'error') {
+                    content.classList.add('has-error');
+                    if (elements.loader) {
+                        elements.loader.innerHTML = `
+                            <div class="error-icon">❌</div>
+                            <span>${message || 'Erreur de chargement'}</span>
+                            <button class="retry-btn" onclick="location.reload()">Réessayer</button>
+                        `;
                     }
                 }
             }
 
-            // ── INITIALISATION ──────────────────────────────────────────
-            document.addEventListener('DOMContentLoaded', () => {
-                const config = @json($config);
-                window.embedManager = new EmbedManager(config);
-            });
+            function isMobile() {
+                return window.innerWidth <= 992;
+            }
+
+            function updateHeaderPosition() {
+                if (elements.header) {
+                    var top = isMobile() ? CONFIG.mobileHeaderHeight : CONFIG.headerHeight;
+                    elements.header.style.top = top + 'px';
+                }
+            }
+
+            function updatePadding(height) {
+                var content = elements.content;
+                content.style.setProperty('--extracted-header-height', (height || 64) + 'px');
+                content.classList.add('has-extracted-header');
+            }
+
+            function updateHeaderVisibility() {
+                if (!elements.header || !isHeaderFixed) return;
+                
+                var threshold = headerHeight || 100;
+                var shouldHide = window.scrollY < threshold;
+                
+                elements.header.classList.toggle('is-hidden-at-top', shouldHide);
+                
+                if (elements.scrollBtn) {
+                    elements.scrollBtn.classList.toggle('is-visible', shouldHide && isHeaderFixed);
+                }
+            }
+
+            function adjustHeight() {
+                if (!shadowRoot) return;
+                var height = shadowRoot.host.scrollHeight || 200;
+                var content = elements.content;
+                if (content) {
+                    content.style.minHeight = (height + 100) + 'px';
+                }
+            }
+
+            // ── ÉVÉNEMENTS ──────────────────────────────────────────────
+
+            // 1. Bouton menu
+            if (elements.menuBtn) {
+                elements.menuBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openMobileMenu();
+                });
+
+                // Visibilité du bouton menu
+                var menuThreshold = 400;
+                window.addEventListener('scroll', function() {
+                    var shouldShow = window.scrollY > menuThreshold;
+                    elements.menuBtn.classList.toggle('is-visible', shouldShow);
+                }, { passive: true });
+                
+                elements.menuBtn.classList.toggle('is-visible', window.scrollY > menuThreshold);
+            }
+
+            // 2. Bouton scroll top
+            if (elements.scrollBtn) {
+                elements.scrollBtn.addEventListener('click', function() {
+                    if (isHeaderFixed) {
+                        var rect = elements.header.getBoundingClientRect();
+                        var top = rect.top + window.scrollY - 10;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                });
+            }
+
+            // 3. Scroll pour le header
+            var scrollTimeout = null;
+            window.addEventListener('scroll', function() {
+                if (scrollTimeout) return;
+                scrollTimeout = setTimeout(function() {
+                    updateHeaderVisibility();
+                    scrollTimeout = null;
+                }, 50);
+            }, { passive: true });
+
+            // 4. Resize
+            var resizeTimeout = null;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    if (isHeaderFixed && elements.header) {
+                        var rect = elements.header.getBoundingClientRect();
+                        if (rect.height !== headerHeight) {
+                            headerHeight = rect.height;
+                            updatePadding(headerHeight);
+                        }
+                        updateHeaderPosition();
+                    }
+                    adjustHeight();
+                }, 200);
+            }, { passive: true });
+
+            // 5. MutationObserver pour la hauteur
+            if (window.MutationObserver && elements.container) {
+                var observer = new MutationObserver(function() {
+                    adjustHeight();
+                });
+                observer.observe(elements.container, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true
+                });
+            }
+
+            // 6. ResizeObserver
+            if (window.ResizeObserver && elements.container) {
+                var ro = new ResizeObserver(function() {
+                    adjustHeight();
+                });
+                ro.observe(elements.container);
+            }
+
+            // ── DÉMARRAGE ──────────────────────────────────────────────
+            // Attendre que le DOM soit chargé
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', loadContent);
+            } else {
+                loadContent();
+            }
 
         })();
     </script>
