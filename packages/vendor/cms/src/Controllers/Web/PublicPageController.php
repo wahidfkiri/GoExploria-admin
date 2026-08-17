@@ -9,10 +9,14 @@ use Vendor\Cms\Models\Setting;
 use Vendor\Cms\Models\ContactMessage;
 use Vendor\Cms\Models\Media;
 use Vendor\Cms\Models\Traits\HasSettings;
+use App\Models\Customer;
 use App\Models\Etablissement;
+use App\Models\OnlineOrder;
+use App\Models\OnlineOrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\File;
@@ -23,6 +27,16 @@ use Illuminate\Support\Facades\Validator;
 class PublicPageController extends Controller
 {
     use HasSettings;
+
+    /**
+     * Devise des commandes passées depuis les sites d'établissement.
+     *
+     * Les prix sont affichés en dollars sur tout le front (tiroir panier,
+     * checkout, PayPal) : la colonne `currency` doit dire la même chose, sans
+     * quoi les totaux de l'espace entreprise seraient libellés à tort en euros
+     * (valeur par défaut de la table).
+     */
+    protected const DEVISE_COMMANDE = 'CAD';
 
     protected $etablissement;
     protected $activeTheme;
@@ -497,8 +511,21 @@ class PublicPageController extends Controller
                     return null;
                 }
 
-                $unitPrice = (float) ($product->price_ttc ?? $product->price_ht ?? 0);
                 $quantity = (int) $item['quantity'];
+
+                // Le prix affiché au client est le TTC. Le HT est reconstitué
+                // depuis le taux de taxe du produit lorsqu'il n'est pas saisi,
+                // pour que la facture et les statistiques restent justes.
+                $taxRate = (float) ($product->tax_rate ?? 0);
+                $unitTtc = (float) ($product->price_ttc ?? 0);
+                $unitHt = (float) ($product->price_ht ?? 0);
+
+                if ($unitTtc <= 0 && $unitHt > 0) {
+                    $unitTtc = $taxRate > 0 ? round($unitHt * (1 + $taxRate / 100), 2) : $unitHt;
+                }
+                if ($unitHt <= 0 && $unitTtc > 0) {
+                    $unitHt = $taxRate > 0 ? round($unitTtc / (1 + $taxRate / 100), 2) : $unitTtc;
+                }
 
                 return [
                     'product_id' => $product->id,
@@ -508,8 +535,11 @@ class PublicPageController extends Controller
                     'reference' => $product->reference,
                     'category' => optional($product->category)->name ?: optional($product->family)->name,
                     'quantity' => $quantity,
-                    'unit_price' => $unitPrice,
-                    'line_total' => round($unitPrice * $quantity, 2),
+                    'tax_rate' => $taxRate,
+                    'unit_price' => $unitTtc,
+                    'unit_price_ht' => $unitHt,
+                    'line_total_ht' => round($unitHt * $quantity, 2),
+                    'line_total' => round($unitTtc * $quantity, 2),
                 ];
             })
             ->filter()
@@ -527,52 +557,92 @@ class PublicPageController extends Controller
             : 'Paiement à la livraison';
         $visitorName = trim((string) $request->input('first_name') . ' ' . (string) $request->input('last_name'));
         $grandTotal = round((float) $lines->sum('line_total'), 2);
-        $createdMessages = collect();
+        $paye = $paymentMethod === 'paypal' && $paymentReference !== '';
+        $commandes = collect();
+        $aNotifier = collect();
 
+        // Un panier peut mélanger les produits de plusieurs établissements :
+        // chacun reçoit SA commande, sinon un commerçant verrait les lignes
+        // d'un confrère. La référence commune relie le tout côté client.
         try {
-            foreach ($lines->groupBy('etablissement_id') as $etablissementId => $groupLines) {
-                $summary = $groupLines
-                    ->map(fn ($line) => '- ' . $line['name'] . ' x ' . $line['quantity'] . ' = ' . number_format($line['line_total'], 2, ',', ' ') . ' $')
-                    ->implode("\n");
+            DB::transaction(function () use (
+                $request, $lines, $reference, $paymentMethod, $paymentReference,
+                $visitorName, $grandTotal, $paye, &$commandes, &$aNotifier
+            ) {
+                $rang = 0;
 
-                $message = "Commande {$reference}\n\n"
-                    . "Client: {$visitorName}\n"
-                    . "Email: " . $request->input('email') . "\n"
-                    . "Telephone: " . ($request->input('phone') ?: '-') . "\n"
-                    . "Paiement: {$paymentLabel}\n\n"
-                    . "Produits:\n{$summary}\n\n"
-                    . "Message client:\n" . ($request->input('message') ?: '-');
+                foreach ($lines->groupBy('etablissement_id') as $etablissementId => $groupLines) {
+                    $etablissementId = (int) $etablissementId;
+                    $rang++;
 
-                $createdMessages->push(ContactMessage::create([
-                    'etablissement_id' => (int) $etablissementId,
-                    'form_name' => 'landing_product_checkout',
-                    'source' => 'landing_checkout',
-                    'source_url' => $request->headers->get('referer') ?: $request->fullUrl(),
-                    'referrer' => $request->headers->get('referer'),
-                    'name' => $visitorName,
-                    'first_name' => $request->input('first_name'),
-                    'last_name' => $request->input('last_name'),
-                    'email' => $request->input('email'),
-                    'phone' => $request->input('phone'),
-                    'company' => $request->input('company'),
-                    'subject' => 'Commande produits ' . $reference,
-                    'message' => $message,
-                    'status' => 'new',
-                    'priority' => 'high',
-                    'consent' => true,
-                    'ip_address' => $request->ip(),
-                    'user_agent' => substr((string) $request->userAgent(), 0, 500),
-                    'metadata' => [
-                        'type' => 'product_checkout',
-                        'reference' => $reference,
-                        'grand_total' => $grandTotal,
-                        'etablissement_total' => round((float) $groupLines->sum('line_total'), 2),
-                        'items' => $groupLines->values()->all(),
-                    ],
-                ]));
-            }
+                    $client = $this->resoudreClientCommande($request, $etablissementId, $visitorName);
+
+                    $totalHt = round((float) $groupLines->sum('line_total_ht'), 2);
+                    $totalTtc = round((float) $groupLines->sum('line_total'), 2);
+
+                    $commande = OnlineOrder::create([
+                        'order_number' => $reference . '-' . $rang,
+                        'etablissement_id' => $etablissementId,
+                        'customer_id' => $client->id,
+                        'status' => $paye ? 'paid' : 'pending_payment',
+                        'payment_status' => $paye ? 'paid' : 'pending',
+                        'subtotal_ht' => $totalHt,
+                        'subtotal_ttc' => $totalTtc,
+                        'tax_total' => round($totalTtc - $totalHt, 2),
+                        'shipping_amount' => 0,
+                        'discount_amount' => 0,
+                        'total' => $totalTtc,
+                        'currency' => self::DEVISE_COMMANDE,
+                        'payment_gateway_code' => $paymentMethod === 'paypal' ? 'paypal' : null,
+                        'billing_address' => [
+                            'first_name' => $request->input('first_name'),
+                            'last_name' => $request->input('last_name'),
+                            'email' => $request->input('email'),
+                            'phone' => $request->input('phone'),
+                            'company' => $request->input('company'),
+                        ],
+                        'notes' => $request->input('message') ?: null,
+                        'metadata' => [
+                            'source' => 'cms_checkout',
+                            'reference_panier' => $reference,
+                            'payment_method' => $paymentMethod,
+                            'payment_reference' => $paymentReference ?: null,
+                            'grand_total_panier' => $grandTotal,
+                            'ip' => $request->ip(),
+                        ],
+                        'ordered_at' => now(),
+                        'paid_at' => $paye ? now() : null,
+                    ]);
+
+                    foreach ($groupLines as $ligne) {
+                        OnlineOrderItem::create([
+                            'online_order_id' => $commande->id,
+                            'product_id' => $ligne['product_id'],
+                            'product_name' => $ligne['name'],
+                            'product_reference' => $ligne['reference'],
+                            'quantity' => $ligne['quantity'],
+                            'unit_price_ht' => $ligne['unit_price_ht'],
+                            'unit_price_ttc' => $ligne['unit_price'],
+                            'tax_rate' => $ligne['tax_rate'],
+                            'tax_amount' => round($ligne['line_total'] - $ligne['line_total_ht'], 2),
+                            'line_subtotal_ht' => $ligne['line_total_ht'],
+                            'line_subtotal_ttc' => $ligne['line_total'],
+                            'line_total' => $ligne['line_total'],
+                            'metadata' => ['category' => $ligne['category']],
+                        ]);
+
+                        // Compteur de ventes du catalogue : sert au tri
+                        // « meilleures ventes » des grilles de template.
+                        Product::where('id', $ligne['product_id'])
+                            ->increment('sales_count', $ligne['quantity']);
+                    }
+
+                    $commandes->push($commande);
+                    $aNotifier->push([$commande, $groupLines]);
+                }
+            });
         } catch (\Throwable $e) {
-            \Log::error('Unable to save checkout request: ' . $e->getMessage(), [
+            \Log::error('Unable to save checkout order: ' . $e->getMessage(), [
                 'reference' => $reference,
                 'exception' => $e,
             ]);
@@ -580,18 +650,254 @@ class PublicPageController extends Controller
             return $this->checkoutValidationResponse($request, ['checkout' => ['Impossible d enregistrer la commande.']]);
         }
 
+        // APRÈS la transaction, volontairement. La messagerie vit sur la
+        // connexion « cms », distincte de celle des commandes : une écriture
+        // pendant la transaction ne serait de toute façon pas couverte par le
+        // rollback, et ferait attendre un verrou. On notifie donc une fois la
+        // commande durablement enregistrée.
+        foreach ($aNotifier as [$commande, $groupLines]) {
+            $this->notifierCommande(
+                $request,
+                $commande,
+                $groupLines,
+                $reference,
+                $visitorName,
+                $paymentLabel,
+                $grandTotal
+            );
+        }
+
         $response = [
             'success' => true,
-            'message' => 'Votre commande a ete envoyee.',
+            'message' => 'Votre commande a ete enregistree.',
             'reference' => $reference,
-            'messages_count' => $createdMessages->count(),
+            'orders_count' => $commandes->count(),
+            'order_numbers' => $commandes->pluck('order_number')->all(),
+            'total' => $grandTotal,
+            'redirect_url' => route('cms.checkout.success', ['reference' => $reference]),
         ];
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json($response);
         }
 
-        return redirect()->route('cms.checkout')->with('checkout_success', $response);
+        return redirect()->route('cms.checkout.success', ['reference' => $reference]);
+    }
+
+    /**
+     * Retrouve ou crée le client de l'établissement à partir de l'e-mail saisi.
+     *
+     * Le rattachement est fait PAR ÉTABLISSEMENT : deux commerçants ne
+     * partagent pas leur fichier client, et un même acheteur existe donc une
+     * fois chez chacun.
+     */
+    protected function resoudreClientCommande(Request $request, int $etablissementId, string $visitorName): Customer
+    {
+        $email = trim((string) $request->input('email'));
+        $entreprise = trim((string) $request->input('company'));
+
+        $donnees = [
+            'type' => $entreprise !== '' ? 'entreprise' : 'particulier',
+            'prenom' => $request->input('first_name'),
+            'nom' => $request->input('last_name') ?: $visitorName,
+            'telephone' => $request->input('phone'),
+            'entreprise_nom' => $entreprise ?: null,
+        ];
+
+        $client = Customer::where('etablissement_id', $etablissementId)
+            ->where('email', $email)
+            ->first();
+
+        if ($client) {
+            // On complète les champs restés vides sans écraser une fiche déjà
+            // renseignée par le commerçant.
+            $client->fill(array_filter(
+                $donnees,
+                fn ($valeur, $cle) => !empty($valeur) && empty($client->{$cle}),
+                ARRAY_FILTER_USE_BOTH
+            ))->save();
+
+            return $client;
+        }
+
+        return Customer::create($donnees + [
+            'etablissement_id' => $etablissementId,
+            'email' => $email,
+        ]);
+    }
+
+    /**
+     * Dépose la commande dans la messagerie de l'établissement.
+     *
+     * Volontairement tolérante aux pannes : si la notification échoue, la
+     * commande — déjà enregistrée — ne doit pas être perdue pour autant.
+     */
+    protected function notifierCommande(
+        Request $request,
+        OnlineOrder $commande,
+        $groupLines,
+        string $reference,
+        string $visitorName,
+        string $paymentLabel,
+        float $grandTotal
+    ): void {
+        try {
+            $recap = $groupLines
+                ->map(fn ($l) => '- ' . $l['name'] . ' x ' . $l['quantity']
+                    . ' = ' . number_format($l['line_total'], 2, ',', ' ') . ' $')
+                ->implode("\n");
+
+            ContactMessage::create([
+                'etablissement_id' => $commande->etablissement_id,
+                'form_name' => 'landing_product_checkout',
+                'source' => 'landing_checkout',
+                'source_url' => $request->headers->get('referer') ?: $request->fullUrl(),
+                'referrer' => $request->headers->get('referer'),
+                'name' => $visitorName,
+                'first_name' => $request->input('first_name'),
+                'last_name' => $request->input('last_name'),
+                'email' => $request->input('email'),
+                'phone' => $request->input('phone'),
+                'company' => $request->input('company'),
+                'subject' => 'Commande ' . $commande->order_number,
+                'message' => "Commande {$commande->order_number}\n\n"
+                    . "Client: {$visitorName}\n"
+                    . 'Email: ' . $request->input('email') . "\n"
+                    . 'Telephone: ' . ($request->input('phone') ?: '-') . "\n"
+                    . "Paiement: {$paymentLabel}\n\n"
+                    . "Produits:\n{$recap}\n\n"
+                    . 'Total etablissement: ' . number_format((float) $commande->total, 2, ',', ' ') . " $\n\n"
+                    . "Message client:\n" . ($request->input('message') ?: '-'),
+                'status' => 'new',
+                'priority' => 'high',
+                'consent' => true,
+                'ip_address' => $request->ip(),
+                'user_agent' => substr((string) $request->userAgent(), 0, 500),
+                'metadata' => [
+                    'type' => 'product_checkout',
+                    'reference' => $reference,
+                    'online_order_id' => $commande->id,
+                    'order_number' => $commande->order_number,
+                    'grand_total' => $grandTotal,
+                    'etablissement_total' => (float) $commande->total,
+                    'items' => $groupLines->values()->all(),
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            \Log::warning('Checkout notification failed: ' . $e->getMessage(), [
+                'order_number' => $commande->order_number,
+            ]);
+        }
+    }
+
+    /**
+     * Boutique d'un établissement : tous ses produits publiés.
+     *
+     * Sert de page de repli aux liens posés par TemplateProducts sur les
+     * grilles de template, et de catalogue complet quand la grille de la page
+     * d'accueil n'en montre qu'une sélection.
+     */
+    public function products(Request $request, $etablissementId)
+    {
+        $etablissement = Etablissement::findOrFail($etablissementId);
+
+        $produits = Product::query()
+            ->with(['category:id,name', 'family:id,name'])
+            ->where('etablissement_id', $etablissement->id)
+            ->where('is_public', true)
+            ->where('is_available_for_sale', true)
+            ->orderByDesc('sales_count')
+            ->orderByDesc('created_at')
+            ->paginate(24);
+
+        $html = view('cms::web.fallback.products-index', [
+            'etablissement' => $etablissement,
+            'produits' => $produits,
+            'siteUrl' => url('/company/' . $etablissement->id),
+        ])->render();
+
+        return $this->buildResponse($html, [
+            'title' => 'Boutique — ' . $etablissement->name,
+            'description' => 'Tous les produits proposés par ' . $etablissement->name . '.',
+        ]);
+    }
+
+    /**
+     * Fiche d'un produit.
+     *
+     * Le filtre par établissement n'est pas décoratif : sans lui, l'URL d'un
+     * établissement permettrait d'afficher le produit d'un autre commerçant,
+     * et le bouton « ajouter au panier » rattacherait la vente au mauvais.
+     */
+    public function productShow(Request $request, $etablissementId, $productId)
+    {
+        $etablissement = Etablissement::findOrFail($etablissementId);
+
+        $produit = Product::query()
+            ->with(['category:id,name', 'family:id,name'])
+            ->where('etablissement_id', $etablissement->id)
+            ->where('is_public', true)
+            ->findOrFail($productId);
+
+        // Compteur de consultations, sans faire échouer la page s'il manque.
+        try {
+            Product::where('id', $produit->id)->increment('views_count');
+        } catch (\Throwable $e) {
+            // colonne absente ou base en lecture seule : sans importance ici
+        }
+
+        $similaires = Product::query()
+            ->where('etablissement_id', $etablissement->id)
+            ->where('is_public', true)
+            ->where('is_available_for_sale', true)
+            ->where('id', '!=', $produit->id)
+            ->when($produit->product_category_id, fn ($q) => $q->where('product_category_id', $produit->product_category_id))
+            ->orderByDesc('sales_count')
+            ->limit(4)
+            ->get();
+
+        $html = view('cms::web.fallback.product-show', [
+            'etablissement' => $etablissement,
+            'produit' => $produit,
+            'similaires' => $similaires,
+            'siteUrl' => url('/company/' . $etablissement->id),
+            'boutiqueUrl' => url('/company/' . $etablissement->id . '/produits'),
+        ])->render();
+
+        return $this->buildResponse($html, [
+            'title' => $produit->meta_title ?: ($produit->name . ' — ' . $etablissement->name),
+            'description' => $produit->meta_description
+                ?: \Illuminate\Support\Str::limit(strip_tags((string) $produit->short_description), 155),
+        ]);
+    }
+
+    /**
+     * Confirmation d'achat : récapitule les commandes créées à partir de leur
+     * référence de panier commune.
+     */
+    public function checkoutSuccess(Request $request, string $reference)
+    {
+        $commandes = OnlineOrder::with(['items', 'etablissement:id,name'])
+            ->where('order_number', 'like', $reference . '-%')
+            ->orderBy('id')
+            ->get();
+
+        if ($commandes->isEmpty()) {
+            abort(404, 'Commande introuvable.');
+        }
+
+        $html = view('cms::web.fallback.checkout-success', [
+            'reference' => $reference,
+            'commandes' => $commandes,
+            'total' => round((float) $commandes->sum('total'), 2),
+            'boutiqueUrl' => url('/'),
+        ])->render();
+
+        return $this->buildResponse($html, [
+            'title' => 'Commande confirmée',
+            'description' => 'Confirmation de votre commande ' . $reference . '.',
+            'robots' => 'noindex,nofollow',
+        ]);
     }
 
     protected function checkoutValidationResponse(Request $request, array $errors)

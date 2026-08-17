@@ -222,6 +222,11 @@
                 render();
                 showNotice('ok', `Commande confirmée ✓ Référence : ${data.reference}`);
                 form.reset();
+                // Page de confirmation : numéros de commande et récapitulatif
+                // détaillé, que ce simple bandeau ne peut pas porter.
+                if (data.redirect_url) {
+                    window.location.assign(data.redirect_url);
+                }
                 return true;
             } catch (e) {
                 showNotice('err', "Impossible d'envoyer la commande pour le moment.");

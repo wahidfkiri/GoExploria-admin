@@ -99,7 +99,10 @@
         price: Number(data.productPrice || data.price || 0),
         image: data.productImage || data.image || '',
         url: data.productUrl || data.url || window.location.href,
-        quantity: 1
+        // La fiche produit a un sélecteur de quantité et pose
+        // data-product-quantity. Les boutons qui ne le portent pas (grilles de
+        // template, cartes de boutique) ajoutent une unité, comme avant.
+        quantity: Math.max(1, Math.min(99, Number(data.productQuantity || 1)))
     });
     const render = () => {
         const cart = read();
@@ -136,7 +139,10 @@
         const cart = read();
         const found = cart.items.find(row => String(row.id) === item.id);
         if (found) {
-            found.quantity = Number(found.quantity || 1) + 1;
+            // On ajoute la quantité demandée, pas systématiquement 1 : sinon
+            // « 6 » choisi sur la fiche produit n'en ajouterait qu'un de plus
+            // quand l'article est déjà au panier.
+            found.quantity = Math.min(99, Number(found.quantity || 1) + item.quantity);
         } else {
             cart.items.push(item);
         }

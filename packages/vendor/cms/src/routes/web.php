@@ -15,6 +15,11 @@ Route::middleware(['web'])->group(function () {
     Route::get('/chaine-videos/search', [WebThemeController::class, 'globalVideoSearch'])->name('cms.videos.search');
     Route::get('/achat', [PublicPageController::class, 'checkout'])->name('cms.checkout');
     Route::post('/achat', [PublicPageController::class, 'submitCheckout'])->name('cms.checkout.submit');
+    // Confirmation d'achat. La référence est celle du PANIER : elle est commune
+    // aux commandes créées pour chaque établissement représenté dans le panier.
+    Route::get('/achat/confirmation/{reference}', [PublicPageController::class, 'checkoutSuccess'])
+        ->where('reference', 'CMD-[A-Za-z0-9\-]+')
+        ->name('cms.checkout.success');
 
     // Redirection de la racine vers le premier établissement
     // Route::get('/', function () {
@@ -87,6 +92,13 @@ Route::middleware(['web'])->group(function () {
         
         // Nettoyer la prévisualisation
         Route::get('/clear-preview', [WebThemeController::class, 'clearPreview'])->name('clear-preview');
+
+        // Boutique. À déclarer AVANT la route fourre-tout `/{slug}` ci-dessous,
+        // qui avalerait sinon « /produits ».
+        Route::get('/produits', [PublicPageController::class, 'products'])->name('products');
+        Route::get('/produits/{productId}', [PublicPageController::class, 'productShow'])
+            ->where('productId', '[0-9]+')
+            ->name('products.show');
 
         // URL SEO: /company/{etablissementId}/{slug}
         // Le slug est informatif; le rendu reste celui de la page d'accueil.

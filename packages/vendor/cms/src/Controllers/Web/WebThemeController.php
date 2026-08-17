@@ -226,12 +226,25 @@ class WebThemeController extends Controller
             $content = $this->injectDynamicContent($content);
         }
 
-        return view('cms::web.fallback.cms-page', [
+        // Même traitement que sur la page d'accueil : une page intérieure peut
+        // elle aussi porter une grille produits (rayon, promotions…).
+        $content = \Vendor\Cms\Support\TemplateProducts::hydrate(
+            $content,
+            $this->etablissement->id ?? null
+        );
+
+        $html = view('cms::web.fallback.cms-page', [
             'etablissement' => $this->etablissement,
             'page' => $page,
             'content' => $content,
             'brandLogoUrl' => function_exists('get_logo_url') ? get_logo_url($this->etablissement->id) : null,
-        ]);
+        ])->render();
+
+        // Passe par buildResponse() — et non plus par un view() direct — pour
+        // que ces pages reçoivent, comme la page d'accueil, le tiroir panier et
+        // les balises SEO. Sans cela, un « Ajouter au panier » posé sur une page
+        // intérieure n'avait aucun panier pour l'accueillir.
+        return $this->buildResponse($html, $this->buildSeoContext($page));
     }
 
     /**
@@ -1265,7 +1278,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         // corriger la fiche de l'établissement suffit à mettre le site à jour.
         $coordonnees = $this->coordonneesPourTemplate();
 
-        return \Vendor\Cms\Support\TemplateDataBinder::bind(
+        $content = \Vendor\Cms\Support\TemplateDataBinder::bind(
             trim((string) $content),
             $this->etablissement,
             [
@@ -1273,6 +1286,14 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 'lng'   => $coordonnees['lng'] ?? null,
                 'hours' => $this->horairesPourTemplate(),
             ]
+        );
+
+        // Grilles marquées data-gx-products : les cartes de démonstration sont
+        // remplacées par le vrai catalogue de l'établissement (espace entreprise
+        // → E-commerce). Sans produit publié, la démonstration reste en place.
+        return \Vendor\Cms\Support\TemplateProducts::hydrate(
+            $content,
+            $this->etablissement->id ?? null
         );
     }
 
