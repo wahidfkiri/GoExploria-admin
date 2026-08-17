@@ -227,11 +227,10 @@ class WebThemeController extends Controller
         }
 
         // Même traitement que sur la page d'accueil : une page intérieure peut
-        // elle aussi porter une grille produits (rayon, promotions…).
-        $content = \Vendor\Cms\Support\TemplateProducts::hydrate(
-            $content,
-            $this->etablissement->id ?? null
-        );
+        // elle aussi porter une grille produits ou rayons.
+        $etablissementId = $this->etablissement->id ?? null;
+        $content = \Vendor\Cms\Support\TemplateProducts::hydrate($content, $etablissementId);
+        $content = \Vendor\Cms\Support\TemplateCategories::hydrate($content, $etablissementId);
 
         $html = view('cms::web.fallback.cms-page', [
             'etablissement' => $this->etablissement,
@@ -1288,13 +1287,15 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             ]
         );
 
-        // Grilles marquées data-gx-products : les cartes de démonstration sont
-        // remplacées par le vrai catalogue de l'établissement (espace entreprise
-        // → E-commerce). Sans produit publié, la démonstration reste en place.
-        return \Vendor\Cms\Support\TemplateProducts::hydrate(
-            $content,
-            $this->etablissement->id ?? null
-        );
+        // Grilles marquées data-gx-products / data-gx-categories : les cartes de
+        // démonstration sont remplacées par le vrai catalogue et les vrais
+        // rayons de l'établissement (espace entreprise → E-commerce). Sans
+        // donnée publiée, la démonstration reste en place.
+        $etablissementId = $this->etablissement->id ?? null;
+
+        $content = \Vendor\Cms\Support\TemplateProducts::hydrate($content, $etablissementId);
+
+        return \Vendor\Cms\Support\TemplateCategories::hydrate($content, $etablissementId);
     }
 
     /**
@@ -2318,6 +2319,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     {
         $html = $this->injectSeoMeta($html, $seoContext);
         $html = $this->injectCartDrawer($html);
+        $html = $this->injectProductModal($html);
         $html = $this->injectSwiperAssets($html);
 
         return response($html, 200, [
@@ -2386,6 +2388,41 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         // des backreferences par preg_replace.
         return preg_replace_callback('/<\/body>/i', function () use ($drawer) {
             return $drawer . '</body>';
+        }, $html, 1);
+    }
+
+    /**
+     * Injecte la modale de détail produit sur les pages qui portent des cartes
+     * hydratées (`data-gx-modal`). Rien à faire ailleurs : une page sans
+     * produit n'a aucune raison d'embarquer ce balisage ni ce script.
+     */
+    protected function injectProductModal($html)
+    {
+        if (!is_string($html) || $html === '') {
+            return $html;
+        }
+        if (stripos($html, '</body>') === false) {
+            return $html;
+        }
+        if (stripos($html, 'data-gx-modal') === false) {
+            return $html;   // aucune carte produit sur cette page
+        }
+        if (stripos($html, 'data-gxpm-shell') !== false) {
+            return $html;   // déjà présente
+        }
+
+        try {
+            $modale = view('cms::web.fallback.partials.gx-product-modal')->render();
+        } catch (\Throwable $e) {
+            \Log::warning('Product modal injection failed: ' . $e->getMessage());
+
+            return $html;
+        }
+
+        // Même précaution que pour le tiroir : le script contient des `${...}`
+        // que preg_replace prendrait pour des références de capture.
+        return preg_replace_callback('/<\/body>/i', function () use ($modale) {
+            return $modale . '</body>';
         }, $html, 1);
     }
 

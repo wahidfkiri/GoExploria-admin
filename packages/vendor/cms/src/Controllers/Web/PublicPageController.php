@@ -801,24 +801,76 @@ class PublicPageController extends Controller
     {
         $etablissement = Etablissement::findOrFail($etablissementId);
 
+        // Filtre par rayon : c'est la cible des tuiles « Nos rayons » du site.
+        // Le rayon doit appartenir à l'établissement (ou à la plateforme),
+        // sinon l'URL permettrait de sonder les rayons privés d'un confrère.
+        $rayon = null;
+        if ($request->filled('rayon')) {
+            $rayon = \App\Models\ProductCategory::pourEtablissement($etablissement->id)
+                ->find((int) $request->input('rayon'));
+        }
+
+        // Recherche plein texte simple : nom, description courte et référence.
+        // La référence est incluse parce qu'un client rappelle souvent une
+        // commande par ce code plutôt que par le libellé du produit.
+        $recherche = trim((string) $request->input('q'));
+
         $produits = Product::query()
             ->with(['category:id,name', 'family:id,name'])
             ->where('etablissement_id', $etablissement->id)
             ->where('is_public', true)
             ->where('is_available_for_sale', true)
+            ->when($rayon, fn ($q) => $q->where('product_category_id', $rayon->id))
+            ->when($recherche !== '', function ($q) use ($recherche) {
+                // Les jokers du client sont neutralisés : « 100 % » ne doit pas
+                // se comporter comme un joker SQL.
+                $terme = '%' . str_replace(['%', '_'], ['\%', '\_'], $recherche) . '%';
+
+                $q->where(function ($sous) use ($terme) {
+                    $sous->where('name', 'like', $terme)
+                        ->orWhere('short_description', 'like', $terme)
+                        ->orWhere('reference', 'like', $terme);
+                });
+            })
             ->orderByDesc('sales_count')
             ->orderByDesc('created_at')
-            ->paginate(24);
+            ->paginate(24)
+            ->withQueryString();
+
+        // Rayons non vides, pour la barre de filtres. whereHas et non having() :
+        // `products_count` est une sous-requête, pas un agrégat, et SQLite
+        // refuse un HAVING sans GROUP BY.
+        $siens = fn ($q) => $q
+            ->where('etablissement_id', $etablissement->id)
+            ->where('is_public', true)
+            ->where('is_available_for_sale', true);
+
+        $rayons = \App\Models\ProductCategory::pourEtablissement($etablissement->id)
+            ->where('is_active', true)
+            ->withCount(['products' => $siens])
+            ->whereHas('products', $siens)
+            ->orderBy('order')
+            ->orderBy('name')
+            ->get();
 
         $html = view('cms::web.fallback.products-index', [
             'etablissement' => $etablissement,
             'produits' => $produits,
+            'rayons' => $rayons,
+            'rayonActif' => $rayon,
+            'recherche' => $recherche,
             'siteUrl' => url('/company/' . $etablissement->id),
+            'boutiqueUrl' => url('/company/' . $etablissement->id . '/produits'),
         ])->render();
 
         return $this->buildResponse($html, [
-            'title' => 'Boutique — ' . $etablissement->name,
-            'description' => 'Tous les produits proposés par ' . $etablissement->name . '.',
+            'title' => ($rayon ? $rayon->name . ' — ' : '') . 'Boutique — ' . $etablissement->name,
+            'description' => $rayon
+                ? 'Les produits du rayon ' . $rayon->name . ' chez ' . $etablissement->name . '.'
+                : 'Tous les produits proposés par ' . $etablissement->name . '.',
+            // Une page de résultats n'a pas à être indexée : autant d'URL que
+            // de requêtes, pour un contenu qui existe déjà dans la boutique.
+            'robots' => $recherche !== '' ? 'noindex,follow' : null,
         ]);
     }
 

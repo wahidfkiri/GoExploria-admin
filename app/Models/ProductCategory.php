@@ -13,6 +13,7 @@ class ProductCategory extends Model
     protected $table = 'product_categories';
 
     protected $fillable = [
+        'etablissement_id',
         'name',
         'slug',
         'description',
@@ -29,6 +30,23 @@ class ProductCategory extends Model
         'is_active' => 'boolean',
         'metadata' => 'array'
     ];
+
+    public function etablissement()
+    {
+        return $this->belongsTo(Etablissement::class);
+    }
+
+    /**
+     * Rayons visibles par un établissement : les siens ET ceux de la
+     * plateforme (etablissement_id null), qui restent partagés par tous.
+     */
+    public function scopePourEtablissement($query, $etablissementId)
+    {
+        return $query->where(function ($q) use ($etablissementId) {
+            $q->where('etablissement_id', $etablissementId)
+                ->orWhereNull('etablissement_id');
+        });
+    }
 
     public function parent()
     {

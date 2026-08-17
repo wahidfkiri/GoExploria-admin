@@ -21,6 +21,25 @@
     .shop-title{font-size:clamp(28px,5vw,46px);line-height:1.06;margin:8px 0 10px}
     .shop-sub{color:var(--muted);max-width:720px}
 
+    /* ===== Recherche ===== */
+    .shop-search{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+    .shop-search-field{position:relative;flex:1 1 320px}
+    .shop-search-field i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:14px;pointer-events:none}
+    .shop-search-field input{width:100%;border:1px solid var(--line);border-radius:999px;background:#fff;padding:13px 18px 13px 42px;font:inherit;font-size:15px}
+    .shop-search-field input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,197,66,.25)}
+    .shop-search-field input::-webkit-search-cancel-button{cursor:pointer}
+    .shop-search-btn{border:0;border-radius:999px;background:var(--ink);color:#fff;font-weight:800;font-size:14px;padding:13px 24px;cursor:pointer}
+    .shop-search-btn:hover{filter:brightness(1.15)}
+    .shop-search-clear{font-size:14px;font-weight:700;color:var(--muted);text-decoration:underline}
+
+    /* ===== Filtres par rayon ===== */
+    .shop-filters{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:24px}
+    .shop-filter{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:700;transition:.18s}
+    .shop-filter:hover{border-color:#cbd5e1}
+    .shop-filter.is-active{background:var(--ink);border-color:var(--ink);color:#fff}
+    .shop-filter span{font-size:11px;font-weight:800;background:#eef2f7;color:#475569;border-radius:999px;padding:2px 7px}
+    .shop-filter.is-active span{background:rgba(255,255,255,.22);color:#fff}
+
     /* ===== Grille produits ===== */
     .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
     .shop-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:0 14px 35px rgba(15,23,42,.06);transition:transform .22s ease,box-shadow .22s ease}

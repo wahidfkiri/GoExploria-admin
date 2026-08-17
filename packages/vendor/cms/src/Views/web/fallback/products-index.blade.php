@@ -20,19 +20,74 @@
         </div>
 
         <div class="shop-head">
-            <span class="shop-kicker">Boutique</span>
-            <h1 class="shop-title">Nos produits</h1>
+            <span class="shop-kicker">{{ $rayonActif ? 'Rayon' : 'Boutique' }}</span>
+            <h1 class="shop-title">{{ $rayonActif ? $rayonActif->name : 'Nos produits' }}</h1>
             <p class="shop-sub">
-                {{ $produits->total() }}
-                {{ $produits->total() > 1 ? 'produits disponibles' : 'produit disponible' }}
-                chez {{ $etablissement->name }}.
+                @if ($recherche !== '')
+                    {{ $produits->total() }}
+                    {{ $produits->total() > 1 ? 'résultats' : 'résultat' }}
+                    pour « {{ $recherche }} »{{ $rayonActif ? ' dans ce rayon' : '' }}.
+                @else
+                    {{ $produits->total() }}
+                    {{ $produits->total() > 1 ? 'produits disponibles' : 'produit disponible' }}
+                    {{ $rayonActif ? 'dans ce rayon.' : 'chez ' . $etablissement->name . '.' }}
+                @endif
             </p>
         </div>
 
+        <form class="shop-search" method="get" action="{{ $boutiqueUrl }}" role="search">
+            {{-- Le rayon actif est conservé : chercher ne doit pas faire sortir
+                 du rayon qu'on est en train de parcourir. --}}
+            @if ($rayonActif)
+                <input type="hidden" name="rayon" value="{{ $rayonActif->id }}">
+            @endif
+            <div class="shop-search-field">
+                <i class="fas fa-magnifying-glass"></i>
+                <input type="search" name="q" value="{{ $recherche }}"
+                       placeholder="Rechercher un produit, une référence…"
+                       aria-label="Rechercher un produit">
+            </div>
+            <button type="submit" class="shop-search-btn">Rechercher</button>
+            @if ($recherche !== '')
+                <a class="shop-search-clear"
+                   href="{{ $boutiqueUrl }}{{ $rayonActif ? '?rayon=' . $rayonActif->id : '' }}">
+                    Effacer
+                </a>
+            @endif
+        </form>
+
+        @if ($rayons->isNotEmpty())
+            <div class="shop-filters">
+                <a href="{{ $boutiqueUrl }}" class="shop-filter {{ $rayonActif ? '' : 'is-active' }}">
+                    Tous les rayons
+                </a>
+                @foreach ($rayons as $rayon)
+                    <a href="{{ $boutiqueUrl }}?rayon={{ $rayon->id }}"
+                       class="shop-filter {{ $rayonActif && $rayonActif->id === $rayon->id ? 'is-active' : '' }}">
+                        {{ $rayon->name }} <span>{{ $rayon->products_count }}</span>
+                    </a>
+                @endforeach
+            </div>
+        @endif
+
         @if ($produits->isEmpty())
             <div class="shop-empty">
-                <p style="margin:0 0 6px;font-weight:800;color:var(--ink)">Aucun produit en ligne pour le moment.</p>
-                <p style="margin:0">Revenez bientôt, le catalogue se remplit au fil des arrivages.</p>
+                <p style="margin:0 0 6px;font-weight:800;color:var(--ink)">
+                    @if ($recherche !== '')
+                        Aucun produit ne correspond à « {{ $recherche }} ».
+                    @elseif ($rayonActif)
+                        Ce rayon est vide pour le moment.
+                    @else
+                        Aucun produit en ligne pour le moment.
+                    @endif
+                </p>
+                <p style="margin:0">
+                    @if ($recherche !== '' || $rayonActif)
+                        <a href="{{ $boutiqueUrl }}" style="text-decoration:underline">Voir tous les produits</a>
+                    @else
+                        Revenez bientôt, le catalogue se remplit au fil des arrivages.
+                    @endif
+                </p>
             </div>
         @else
             <div class="shop-grid">
