@@ -153,7 +153,14 @@ class TravelDestinationController extends Controller
             ->orderBy('id')
             ->get();
 
-        return view('travel-destination::landing.index', compact(
+        // Le template « Carnet d'Atlas » est le gabarit par défaut de toutes les
+        // destinations. L'ancienne page reste accessible via ?template=classic
+        // (repli le temps que le contenu de chaque destination soit repris).
+        $view = request()->query('template') === 'classic'
+            ? 'travel-destination::landing.classic'
+            : 'travel-destination::landing.index';
+
+        return view($view, compact(
             'entity',
             'normalizedType',
             'slug',

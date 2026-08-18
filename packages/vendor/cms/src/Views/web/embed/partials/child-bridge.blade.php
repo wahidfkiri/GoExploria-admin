@@ -161,6 +161,78 @@
         } catch (err) { /* silencieux */ }
     }
 
+    /* Bande visible LUE DIRECTEMENT dans le parent.
+       `parentOrigin` vaut l'origine de l'enfant : si le parent est servi
+       depuis une autre origine, le postMessage part dans le vide et la
+       reponse « viewport » n'arrive jamais. La modale resterait alors en
+       position:fixed, c'est-a-dire centree sur TOUT le document de l'iframe,
+       donc hors de l'ecran. Cette lecture directe ne demande rien a personne ;
+       elle echoue proprement si le parent est d'une autre origine. */
+    function bandeVisibleDirecte() {
+        try {
+            var cadre = window.frameElement;
+            if (!cadre) { return null; }
+
+            var boite = cadre.getBoundingClientRect();
+            var hauteurEcran = window.parent.innerHeight
+                || (window.parent.document.documentElement || {}).clientHeight
+                || 0;
+
+            if (!hauteurEcran) { return null; }
+
+            var debut = Math.max(0, -boite.top);
+            var fin = Math.min(boite.height, hauteurEcran - boite.top);
+
+            return { offset: debut, height: Math.max(160, fin - debut) };
+        } catch (err) {
+            return null;                    // parent d'une autre origine
+        }
+    }
+
+    function recalerDirectement() {
+        var bande = bandeVisibleDirecte();
+        if (bande) { ancrerModale(bande.offset, bande.height); }
+    }
+
+    /* Suivi du defilement du parent.
+       Un ecouteur `scroll` pose sur `window.parent` depuis l'iframe ne se
+       declenche pas de facon fiable d'un contexte a l'autre. Tant qu'une
+       modale est ouverte, on recalcule donc a chaque trame : c'est quelques
+       lectures de geometrie, et cela ne depend ni d'un evenement ni d'une
+       reponse du parent. La boucle s'arrete a la fermeture. */
+    var minuteur = null;
+    var derniereBande = '';
+
+    function boucler() {
+        if (!modaleCourante) { suivreParent(false); return; }
+
+        var bande = bandeVisibleDirecte();
+        if (!bande) { return; }
+
+        // On n'ecrit que si la bande a bouge : sinon on toucherait au style
+        // dix fois par seconde pour rien.
+        var signature = bande.offset + 'x' + bande.height;
+        if (signature === derniereBande) { return; }
+
+        derniereBande = signature;
+        ancrerModale(bande.offset, bande.height);
+    }
+
+    /* Minuteur et non requestAnimationFrame : rAF est suspendu des que le
+       document ne produit plus d'images (onglet en arriere-plan, panneau
+       masque, iframe non composee), et la modale resterait alors figee la ou
+       le visiteur l'a ouverte. Un intervalle court ne depend de rien de tout
+       cela, et ne tourne que pendant l'ouverture. */
+    function suivreParent(actif) {
+        if (actif) {
+            derniereBande = '';
+            if (minuteur === null) { minuteur = window.setInterval(boucler, 100); }
+            return;
+        }
+
+        if (minuteur !== null) { window.clearInterval(minuteur); minuteur = null; }
+    }
+
     window.addEventListener('gx:overlay-open', function (e) {
         var el = e.detail && e.detail.element;
         if (!el) return;
@@ -168,6 +240,10 @@
         // On garde l'écriture d'origine pour la rendre telle quelle à la
         // fermeture : le template doit retrouver sa feuille de style intacte.
         stylesInitiaux = el.getAttribute('style');
+        // D'abord la lecture directe — immediate et sans aller-retour — puis
+        // la demande au parent, qui affinera s'il repond.
+        recalerDirectement();
+        suivreParent(true);
         demanderBandeVisible();
         try {
             window.parent.postMessage({ channel: CHANNEL, type: 'overlay-open' }, parentOrigin);
@@ -181,6 +257,7 @@
         }
         modaleCourante = null;
         stylesInitiaux = null;
+        suivreParent(false);
         try {
             window.parent.postMessage({ channel: CHANNEL, type: 'overlay-close' }, parentOrigin);
         } catch (err) { /* silencieux */ }

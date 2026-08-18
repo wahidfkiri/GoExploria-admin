@@ -195,7 +195,14 @@ class TemplateProducts extends TemplateGrid
             $carte->setAttribute('data-gx-unit', (string) $produit->billing_unit);
         }
         if ($galerie !== []) {
-            $carte->setAttribute('data-gx-gallery', json_encode($galerie, JSON_UNESCAPED_SLASHES));
+            // `data-gxpm-gallery` et NON `data-gx-gallery` : ce dernier est le
+            // marqueur du composant galeries de la plateforme, qui scanne la
+            // page et REMPLACE le contenu des elements portant cet attribut.
+            // Chaque carte produit hydratee se faisait ainsi vider de son
+            // contenu sur le site reel, remplacee par « Impossible de charger
+            // la galerie ». L'attribut est donc nomme dans l'espace de la
+            // modale produit (gxpm), qui est son seul lecteur.
+            $carte->setAttribute('data-gxpm-gallery', json_encode($galerie, JSON_UNESCAPED_SLASHES));
         }
 
         $texte = trim((string) ($produit->long_description ?: $produit->short_description ?: ''));

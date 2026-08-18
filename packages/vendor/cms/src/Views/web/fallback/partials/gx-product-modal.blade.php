@@ -134,7 +134,7 @@
 
         // Galerie : celle du produit si elle existe, sinon l'image de la carte.
         let galerie = [];
-        try { galerie = JSON.parse(d.gxGallery || '[]'); } catch (e) { galerie = []; }
+        try { galerie = JSON.parse(d.gxpmGallery || '[]'); } catch (e) { galerie = []; }
         if (!galerie.length) {
             const img = carte.querySelector('img');
             if (img && img.src) galerie = [img.src];
