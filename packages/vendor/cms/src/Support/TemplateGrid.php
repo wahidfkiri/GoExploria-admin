@@ -124,7 +124,18 @@ abstract class TemplateGrid
             $balise = substr($reste, $debutBalise, $finOuvrante - $debutBalise);
             $interieur = substr($reste, $finOuvrante, $debutFermante - $finOuvrante);
 
-            $nouveau = $this->remplirGrille($balise, $interieur);
+            // Échec cloisonné à LA section. Les sections sont indépendantes
+            // (l'une est automatique, l'autre à sélection manuelle) : qu'une
+            // requête échoue ne doit pas priver la page entière de ses données.
+            // La section fautive garde sa démonstration, les autres s'hydratent.
+            try {
+                $nouveau = $this->remplirGrille($balise, $interieur);
+            } catch (\Throwable $e) {
+                Log::warning(static::class . ' : section ignorée — ' . $e->getMessage(), [
+                    'etablissement_id' => $this->etablissementId,
+                ]);
+                $nouveau = $interieur;
+            }
 
             $sortie .= substr($reste, 0, $finOuvrante) . $nouveau;
             $sortie .= substr($reste, $debutFermante, $finFermante - $debutFermante);
@@ -193,14 +204,18 @@ abstract class TemplateGrid
         }
 
         $modele = $cartes[0];
+        $formatRang = $this->formatRang($xpath, $modele);
 
         // Les clones sont insérés AVANT le modèle puis les cartes d'origine
         // sont retirées : l'ordre est respecté sans avoir à manipuler
         // nextSibling pendant qu'on modifie l'arbre.
+        $rang = 0;
         foreach ($elements as $element) {
+            $rang++;
             $clone = $modele->cloneNode(true);
             $modele->parentNode->insertBefore($clone, $modele);
             $this->remplirCarte($doc, $xpath, $clone, $element, $options);
+            $this->numeroter($xpath, $clone, $rang, $formatRang);
         }
 
         foreach ($cartes as $ancienne) {
@@ -215,6 +230,60 @@ abstract class TemplateGrid
         }
 
         return $out;
+    }
+
+    /**
+     * Repère la façon dont le gabarit numérote ses cartes.
+     *
+     * Certaines listes affichent un rang décoratif (« 01 », « A »). Cloner la
+     * carte modèle le recopierait à l'identique sur toutes les lignes : la
+     * liste afficherait cinq fois « 01 ». On relève donc le format une seule
+     * fois, sur le modèle, pour le reproduire ensuite.
+     *
+     * @return array{type:string,taille:int}|null
+     */
+    protected function formatRang(\DOMXPath $xpath, \DOMElement $modele): ?array
+    {
+        $noeuds = $xpath->query('.//*[@data-gx-field="index"]', $modele);
+        if (! $noeuds || $noeuds->length === 0) {
+            return null;
+        }
+
+        $texte = trim($noeuds->item(0)->textContent);
+
+        if (preg_match('/^\d+$/', $texte)) {
+            return ['type' => 'chiffre', 'taille' => strlen($texte)];
+        }
+
+        if (preg_match('/^[A-Za-z]$/', $texte)) {
+            return ['type' => 'lettre', 'taille' => (int) (ctype_upper($texte))];
+        }
+
+        return null;
+    }
+
+    /** Écrit le rang de la carte dans son champ `index`, s'il y en a un. */
+    protected function numeroter(\DOMXPath $xpath, \DOMElement $carte, int $rang, ?array $format): void
+    {
+        if ($format === null) {
+            return;
+        }
+
+        $noeuds = $xpath->query('.//*[@data-gx-field="index"]', $carte);
+        if (! $noeuds || $noeuds->length === 0) {
+            return;
+        }
+
+        if ($format['type'] === 'lettre') {
+            // Au-delà de Z on repart à A : mieux vaut un doublon discret qu'un
+            // caractère hors alphabet.
+            $lettre = chr(ord('A') + (($rang - 1) % 26));
+            $valeur = $format['taille'] ? $lettre : strtolower($lettre);
+        } else {
+            $valeur = str_pad((string) $rang, $format['taille'], '0', STR_PAD_LEFT);
+        }
+
+        $noeuds->item(0)->textContent = $valeur;
     }
 
     /** @return array{0:\DOMDocument,1:\DOMElement}|null */
@@ -239,7 +308,7 @@ abstract class TemplateGrid
         return $racine ? [$doc, $racine] : null;
     }
 
-    /** @return array{limit:int,category:string,sort:string,currency:string} */
+    /** @return array{limit:int,category:string,sort:string,currency:string,pick:string} */
     protected function options(string $balise): array
     {
         $lire = function (string $suffixe) use ($balise): string {
@@ -260,6 +329,10 @@ abstract class TemplateGrid
             'category' => $lire('-category'),
             'sort' => $lire('-sort'),
             'currency' => $lire('-currency') ?: ProductPresenter::SYMBOLE,
+            // Section « à la carte » : le commerçant coche lui-même les produits
+            // qui la composent depuis son espace. Vide = remplissage
+            // automatique, comportement d'origine.
+            'pick' => $lire('-pick'),
         ];
     }
 

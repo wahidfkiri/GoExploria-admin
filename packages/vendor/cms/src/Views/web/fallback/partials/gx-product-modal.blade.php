@@ -88,8 +88,32 @@
     const boutonAjout = $('[data-gxpm-add]');
     const champQte = $('[data-gxpm-qty]');
 
-    const ouvrir = () => { shell.classList.add('is-open'); backdrop.classList.add('is-open'); document.body.style.overflow = 'hidden'; };
-    const fermer = () => { shell.classList.remove('is-open'); backdrop.classList.remove('is-open'); document.body.style.overflow = ''; };
+    /* Le site est affiché DANS UNE IFRAME sans défilement propre, dont la
+       hauteur suit celle du contenu : `position:fixed` s'ancre alors au
+       document entier, et la modale se centrait au milieu de toute la page —
+       soit très loin sous la bande réellement visible.
+
+       Le pont parent-enfant (cf. embed/partials/child-bridge) sait replacer
+       une modale sur la bande visible ; il suffit de l'en informer. Hors
+       iframe, personne n'écoute et le `position:fixed` d'origine s'applique. */
+    const signaler = (nom) => {
+        try {
+            window.dispatchEvent(new CustomEvent(nom, { detail: { element: shell } }));
+        } catch (e) { /* navigateur sans CustomEvent : la modale reste utilisable */ }
+    };
+
+    const ouvrir = () => {
+        shell.classList.add('is-open');
+        backdrop.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+        signaler('gx:overlay-open');
+    };
+    const fermer = () => {
+        shell.classList.remove('is-open');
+        backdrop.classList.remove('is-open');
+        document.body.style.overflow = '';
+        signaler('gx:overlay-close');
+    };
 
     const remplir = (carte) => {
         const d = carte.dataset;

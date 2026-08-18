@@ -51,10 +51,20 @@ class TemplateCategories extends TemplateGrid
             ->pourEtablissement($this->etablissementId)
             ->where('is_active', true)
             ->withCount(['products' => $siens])
-            // whereHas et non having() : `products_count` est une sous-requête,
-            // pas un agrégat, et SQLite refuse un HAVING sans GROUP BY (MySQL
-            // le tolère — la faute ne serait apparue qu'en production).
-            ->whereHas('products', $siens);
+            ->where(function ($q) use ($siens) {
+                // Un rayon créé par le commerçant s'affiche dès sa création,
+                // même sans produit : il vient de le créer dans son espace, ne
+                // pas le voir apparaître sur le site serait incompréhensible.
+                $q->where('etablissement_id', $this->etablissementId)
+                    // Une catégorie de plateforme, en revanche, n'a d'intérêt
+                    // que si elle contient des produits de CET établissement.
+                    //
+                    // whereHas et non having() : `products_count` est une
+                    // sous-requête, pas un agrégat, et SQLite refuse un HAVING
+                    // sans GROUP BY (MySQL le tolère — la faute ne serait
+                    // apparue qu'en production).
+                    ->orWhereHas('products', $siens);
+            });
 
         match ($options['sort']) {
             'name' => $query->orderBy('name'),

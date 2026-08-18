@@ -31,6 +31,11 @@ use App\Models\Product;
  *   data-gx-products-category   filtre sur le nom de catégorie ou de famille
  *   data-gx-products-sort       recent | sales | price | price-desc
  *   data-gx-products-currency   symbole monétaire (déf. : $)
+ *   data-gx-products-pick       clé de section à sélection manuelle : seuls les
+ *                               produits cochés pour cette clé dans l'espace
+ *                               entreprise y figurent (déf. : automatique)
+ *   data-gx-products-label      libellé lisible de la section, repris tel quel
+ *                               dans les cases à cocher de l'espace entreprise
  *
  * Champs reconnus sur les descendants de la carte (`data-gx-field`) :
  *   image, name, desc, category, tag, price, unit, add, link
@@ -58,6 +63,14 @@ class TemplateProducts extends TemplateGrid
             ->where('etablissement_id', $this->etablissementId)
             ->where('is_public', true)
             ->where('is_available_for_sale', true);
+
+        // Section à sélection manuelle : n'y figurent que les produits cochés
+        // pour cette section dans l'espace entreprise. Aucun produit coché ?
+        // La requête ne renvoie rien et [[TemplateGrid]] garde la démonstration
+        // — préférable à une section vide sur un site en ligne.
+        if (($options['pick'] ?? '') !== '') {
+            $query->whereJsonContains('metadata->template_sections', $options['pick']);
+        }
 
         if ($options['category'] !== '') {
             $categorie = $options['category'];
