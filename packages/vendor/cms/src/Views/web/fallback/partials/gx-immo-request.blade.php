@@ -1,27 +1,26 @@
 {{-- ═══════════════════════════════════════════════════════════════════════
      Demande de réservation depuis la fiche d'un bien.
 
-     POURQUOI CE BLOC EXISTE
+     TROIS DÉFAUTS DU GABARIT, CORRIGÉS ICI
 
-     Le template immobilier porte déjà un formulaire dans sa fiche de bien,
-     mais il ne l'envoie nulle part : son script se contente d'ajouter la
-     classe `is-sent`, qui masque les champs et affiche « votre demande a bien
-     été envoyée ». Le visiteur croit être passé, l'agence ne reçoit rien.
+     1. Le formulaire n'envoyait rien. Le script du template ajoutait la classe
+        `is-sent`, qui masque les champs et affiche « votre demande a bien été
+        envoyée ». Le visiteur croyait être passé, l'agence ne recevait rien.
 
-     POURQUOI ICI ET NON DANS LE TEMPLATE
+     2. Il vivait DANS la section « votre interlocuteur », que le gabarit
+        masque en bloc quand le bien n'a pas de négociateur
+        (`blocAgent.hidden = !agent`). Sur un bien sans négociateur — le cas le
+        plus courant au départ — il n'y avait donc aucun formulaire. On le sort
+        dans sa propre section, toujours visible.
 
-     Modifier le gabarit ne toucherait que les sites INSTALLÉS ENSUITE : une
-     page déjà en ligne en est une copie figée. Ce bloc est injecté au rendu,
-     comme le tiroir panier et la modale produit — il atteint donc aussi les
-     sites existants, sans réinstallation.
+     3. Il lui manquait les dates de séjour et le nombre de voyageurs.
 
-     CE QU'IL FAIT
+     POURQUOI ICI ET NON DANS LE GABARIT
 
-     1. Complète le formulaire avec les champs d'un séjour — arrivée, départ,
-        adultes, enfants — s'ils n'y sont pas déjà.
-     2. Retient le bien affiché, pour que l'agence sache de quoi on parle.
-     3. Envoie réellement la demande, puis laisse le template afficher son
-        message de succès. En cas d'échec, il le dit au lieu de mentir.
+     Modifier le gabarit ne toucherait que les sites installés ENSUITE : une
+     page en ligne en est une copie figée. Ce bloc est injecté au rendu, comme
+     le tiroir panier et la modale produit — il atteint donc aussi les sites
+     existants, sans réinstallation.
 
      Rien n'est touché sur une page sans fiche de bien.
      ═══════════════════════════════════════════════════════════════════════ --}}
@@ -33,21 +32,27 @@
         display: block; margin-bottom: 4px;
         font-size: 12px; font-weight: 700; letter-spacing: .02em; opacity: .75;
     }
-    /* On reprend la mise en forme des champs du template plutôt que d'en
+    /* On reprend la mise en forme des champs du gabarit plutôt que d'en
        imposer une : la fiche doit rester d'un seul tenant. */
-    .gxir-field input {
+    .gxir-field input, .gxir-field textarea {
         width: 100%; padding: 11px 13px; border-radius: 10px;
         border: 1px solid rgba(128, 128, 128, .35);
         background: rgba(255, 255, 255, .04); color: inherit;
         font: inherit; line-height: 1.3;
     }
-    .gxir-field input:focus { outline: 2px solid rgba(128, 128, 128, .45); outline-offset: 1px; }
+    .gxir-field input:focus, .gxir-field textarea:focus {
+        outline: 2px solid rgba(128, 128, 128, .45); outline-offset: 1px;
+    }
+    /* Compagnie et contact ne se saisissent pas : ils rappellent à qui l'on
+       écrit. Grisés pour que ce soit lisible d'un coup d'œil. */
+    .gxir-field input[readonly] { opacity: .65; cursor: default; }
     .gxir-error {
         display: none; margin-top: 10px; padding: 10px 12px; border-radius: 10px;
         background: rgba(220, 38, 38, .12); color: #dc2626;
         font-size: 13px; font-weight: 600;
     }
     .gxir-error.is-visible { display: block; }
+    .gxir-note { margin-top: 10px; font-size: 12px; opacity: .7; }
 </style>
 
 <script>
@@ -58,17 +63,15 @@
     window.__gxImmoRequest = true;
 
     var URL_ENVOI = @json(route('cms.company.immobilier.demande', ['etablissementId' => $etablissement->id ?? 0]));
+    var COMPAGNIE = @json($etablissement->name ?? '');
 
     function jeton() {
         var m = document.querySelector('meta[name="csrf-token"]');
         return m ? m.getAttribute('content') : '';
     }
 
-    /* Le formulaire de la fiche, et lui seul : le template en porte un second
-       pour la newsletter, qui ne doit pas partir vers ce point d'entrée. */
-    function formulaireFiche() {
-        var fiche = document.querySelector('[data-im-detail]');
-        return fiche ? fiche.querySelector('form[data-demo-form]') : null;
+    function fiche() {
+        return document.querySelector('[data-im-detail]');
     }
 
     function champ(nom, libelle, type, attributs) {
@@ -79,8 +82,8 @@
         etiquette.textContent = libelle;
         etiquette.setAttribute('for', 'gxir-' + nom);
 
-        var saisie = document.createElement('input');
-        saisie.type = type;
+        var saisie = document.createElement(type === 'textarea' ? 'textarea' : 'input');
+        if (type !== 'textarea') { saisie.type = type; }
         saisie.id = 'gxir-' + nom;
         saisie.name = nom;
         saisie.setAttribute('data-gxir-champ', nom);
@@ -94,50 +97,146 @@
         return bloc;
     }
 
-    /* Champs du séjour, insérés avant le message pour suivre l'ordre naturel :
-       qui je suis, quand je viens, combien nous sommes, ce que je demande. */
+    /**
+     * Le formulaire, sorti de la section « votre interlocuteur ».
+     *
+     * Le gabarit masque cette section quand le bien n'a pas de négociateur, et
+     * le formulaire disparaissait avec elle. On le déplace dans sa propre
+     * section — en le déplaçant plutôt qu'en le recréant, il garde la mise en
+     * forme du gabarit et son message de succès.
+     *
+     * Si le gabarit n'en porte aucun (page plus ancienne, ou formulaire
+     * supprimé dans l'éditeur), on le construit.
+     */
+    function formulaire() {
+        var racine = fiche();
+        if (!racine) { return null; }
+
+        var deja = racine.querySelector('[data-gxir-section] form');
+        if (deja) { return deja; }
+
+        var corps = racine.querySelector('.im-detail-body') || racine;
+
+        var section = document.createElement('div');
+        section.className = 'im-detail-section';
+        section.setAttribute('data-gxir-section', '');
+
+        var titre = document.createElement('h4');
+        titre.textContent = 'Contacter le propriétaire';
+        section.appendChild(titre);
+
+        var form = racine.querySelector('form[data-demo-form]');
+
+        if (!form) {
+            form = document.createElement('form');
+            form.className = 'im-contact-form';
+            form.setAttribute('data-demo-form', '');
+
+            var champs = document.createElement('div');
+            champs.setAttribute('data-form-fields', '');
+            champs.appendChild(champ('name', 'Nom complet', 'text', { required: 'required', maxlength: 190 }));
+            champs.appendChild(champ('email', 'Courriel', 'email', { required: 'required', maxlength: 190 }));
+            champs.appendChild(champ('phone', 'Téléphone', 'tel', { required: 'required', maxlength: 40 }));
+            champs.appendChild(champ('message', 'Message', 'textarea', { rows: 3, maxlength: 2000 }));
+
+            var envoi = document.createElement('button');
+            envoi.type = 'submit';
+            envoi.className = 'im-btn im-btn--primary im-btn--block';
+            envoi.textContent = 'Contacter le propriétaire';
+            champs.appendChild(envoi);
+
+            var succes = document.createElement('div');
+            succes.setAttribute('data-form-success', '');
+            succes.textContent = 'Le message a bien été envoyé !';
+
+            form.appendChild(champs);
+            form.appendChild(succes);
+
+        }
+
+        section.appendChild(form);
+        corps.appendChild(section);
+
+        return form;
+    }
+
+    /* Champs ajoutés, dans l'ordre de lecture : à qui j'écris, qui je suis,
+       quand je viens, combien nous sommes, ce que je demande. */
     function completer(form) {
-        if (form.querySelector('[data-gxir-champ]')) { return; }
-
         var zone = form.querySelector('[data-form-fields]') || form;
-        var message = zone.querySelector('textarea');
-        var avant = message ? (message.closest('.im-field') || message) : null;
 
-        var aujourdHui = new Date().toISOString().slice(0, 10);
-
-        var dates = document.createElement('div');
-        dates.className = 'gxir-grid';
-        dates.appendChild(champ('arrival_date', 'Date d’arrivée', 'date', { min: aujourdHui }));
-        dates.appendChild(champ('departure_date', 'Date de départ', 'date', { min: aujourdHui }));
-
-        var voyageurs = document.createElement('div');
-        voyageurs.className = 'gxir-grid';
-        voyageurs.appendChild(champ('adults', 'Nb. adulte(s)', 'number', { min: 0, max: 99, value: 2 }));
-        voyageurs.appendChild(champ('children', 'Nb. enfant(s)', 'number', { min: 0, max: 99, value: 0 }));
-
-        if (avant) {
-            zone.insertBefore(dates, avant);
-            zone.insertBefore(voyageurs, avant);
-        } else {
-            zone.appendChild(dates);
-            zone.appendChild(voyageurs);
+        if (!form.querySelector('[data-gxir-champ="company"]')) {
+            var entete = document.createElement('div');
+            entete.className = 'gxir-grid';
+            entete.appendChild(champ('company', 'Compagnie', 'text', { readonly: 'readonly' }));
+            entete.appendChild(champ('contact', 'Contact', 'text', { readonly: 'readonly' }));
+            zone.insertBefore(entete, zone.firstChild);
         }
 
-        // Le départ ne peut pas précéder l'arrivée : on le contraint dès la
-        // saisie, plutôt que de laisser le serveur refuser après coup.
-        var arrivee = form.querySelector('[data-gxir-champ="arrival_date"]');
-        var depart = form.querySelector('[data-gxir-champ="departure_date"]');
-        if (arrivee && depart) {
-            arrivee.addEventListener('change', function () {
-                depart.min = arrivee.value || aujourdHui;
-                if (depart.value && depart.value < depart.min) { depart.value = depart.min; }
-            });
+        if (!form.querySelector('[data-gxir-champ="arrival_date"]')) {
+            var message = zone.querySelector('textarea');
+            var avant = message ? (message.closest('.im-field') || message.closest('.gxir-field') || message) : null;
+            var aujourdHui = new Date().toISOString().slice(0, 10);
+
+            var dates = document.createElement('div');
+            dates.className = 'gxir-grid';
+            dates.appendChild(champ('arrival_date', 'Date d’arrivée', 'date', { min: aujourdHui }));
+            dates.appendChild(champ('departure_date', 'Date de départ', 'date', { min: aujourdHui }));
+
+            var voyageurs = document.createElement('div');
+            voyageurs.className = 'gxir-grid';
+            voyageurs.appendChild(champ('adults', 'Nb. adulte(s)', 'number', { min: 0, max: 99, value: 2 }));
+            voyageurs.appendChild(champ('children', 'Nb. enfant(s)', 'number', { min: 0, max: 99, value: 0 }));
+
+            if (avant) {
+                zone.insertBefore(dates, avant);
+                zone.insertBefore(voyageurs, avant);
+            } else {
+                zone.appendChild(dates);
+                zone.appendChild(voyageurs);
+            }
+
+            // Le départ ne peut pas précéder l'arrivée : contraint dès la
+            // saisie, plutôt que refusé par le serveur après coup.
+            var arrivee = form.querySelector('[data-gxir-champ="arrival_date"]');
+            var depart = form.querySelector('[data-gxir-champ="departure_date"]');
+            if (arrivee && depart) {
+                arrivee.addEventListener('change', function () {
+                    depart.min = arrivee.value || aujourdHui;
+                    if (depart.value && depart.value < depart.min) { depart.value = depart.min; }
+                });
+            }
         }
 
-        var erreur = document.createElement('div');
-        erreur.className = 'gxir-error';
-        erreur.setAttribute('data-gxir-erreur', '');
-        zone.appendChild(erreur);
+        if (!form.querySelector('[data-gxir-erreur]')) {
+            var erreur = document.createElement('div');
+            erreur.className = 'gxir-error';
+            erreur.setAttribute('data-gxir-erreur', '');
+            zone.appendChild(erreur);
+
+            var note = document.createElement('p');
+            note.className = 'gxir-note';
+            note.textContent = 'En envoyant ce formulaire, vous acceptez d’être contacté au sujet de ce bien.';
+            zone.appendChild(note);
+        }
+    }
+
+    /* Compagnie et contact se remplissent à chaque ouverture : le négociateur
+       change d'un bien à l'autre. */
+    function rappelerDestinataire(form) {
+        var racine = fiche();
+        var compagnie = form.querySelector('[data-gxir-champ="company"]');
+        var contact = form.querySelector('[data-gxir-champ="contact"]');
+
+        if (compagnie) { compagnie.value = COMPAGNIE; }
+
+        if (contact) {
+            var nom = racine ? racine.querySelector('[data-im-d-agent-name]') : null;
+            var bloc = racine ? racine.querySelector('[data-im-d-agent]') : null;
+            var visible = bloc && !bloc.hidden;
+
+            contact.value = (visible && nom && nom.textContent.trim()) ? nom.textContent.trim() : COMPAGNIE;
+        }
     }
 
     function valeur(form, nom) {
@@ -145,14 +244,14 @@
         return el && el.value !== '' ? el.value : null;
     }
 
-    /* Identité du bien affiché : le template pose son id sur la fiche quand il
+    /* Identité du bien affiché : le gabarit pose son id sur la fiche quand il
        l'ouvre. On accepte aussi le préfixe « p » de GX_IMMO. */
     function bienAffiche() {
-        var fiche = document.querySelector('[data-im-detail]');
-        if (!fiche) { return null; }
+        var racine = fiche();
+        if (!racine) { return null; }
 
-        var brut = fiche.getAttribute('data-im-detail-id')
-            || fiche.getAttribute('data-property-id')
+        var brut = racine.getAttribute('data-im-detail-id')
+            || racine.getAttribute('data-property-id')
             || (window.__gxImmoBienCourant || null);
 
         if (!brut) { return null; }
@@ -162,25 +261,35 @@
         return /^\d+$/.test(chiffres) ? chiffres : null;
     }
 
-    function envoyer(form) {
-        var erreur = form.querySelector('[data-gxir-erreur]');
-        var champs = form.querySelectorAll('input, textarea');
-        var identite = { name: '', email: '', phone: '', message: '' };
+    function identite(form) {
+        var valeurs = { name: '', email: '', phone: '', message: '' };
 
-        // Le gabarit ne nomme pas ses champs : on les reconnaît par leur type.
-        champs.forEach(function (el) {
-            if (el.hasAttribute('data-gxir-champ')) { return; }
-            if (el.tagName === 'TEXTAREA') { identite.message = el.value; return; }
-            if (el.type === 'email') { identite.email = el.value; return; }
-            if (el.type === 'tel') { identite.phone = el.value; return; }
-            if (el.type === 'text' && !identite.name) { identite.name = el.value; }
+        // Le formulaire du gabarit ne nomme pas ses champs : on les reconnaît
+        // par leur type. Le nôtre les nomme, et passe par le même chemin.
+        form.querySelectorAll('input, textarea').forEach(function (el) {
+            var nomme = el.getAttribute('data-gxir-champ');
+            if (nomme === 'company' || nomme === 'contact') { return; }
+            if (nomme && valeurs[nomme] !== undefined) { valeurs[nomme] = el.value; return; }
+            if (nomme) { return; }
+
+            if (el.tagName === 'TEXTAREA') { valeurs.message = el.value; return; }
+            if (el.type === 'email') { valeurs.email = el.value; return; }
+            if (el.type === 'tel') { valeurs.phone = el.value; return; }
+            if (el.type === 'text' && !valeurs.name) { valeurs.name = el.value; }
         });
 
+        return valeurs;
+    }
+
+    function envoyer(form) {
+        var erreur = form.querySelector('[data-gxir-erreur]');
+        var champs = identite(form);
+
         var corps = new FormData();
-        corps.append('name', identite.name);
-        corps.append('email', identite.email);
-        corps.append('phone', identite.phone);
-        corps.append('message', identite.message);
+        corps.append('name', champs.name);
+        corps.append('email', champs.email);
+        corps.append('phone', champs.phone);
+        corps.append('message', champs.message);
 
         ['arrival_date', 'departure_date', 'adults', 'children'].forEach(function (nom) {
             var v = valeur(form, nom);
@@ -197,45 +306,65 @@
         }).then(function (r) {
             return r.json().catch(function () { return { success: false }; });
         }).then(function (data) {
-            if (!data || data.success !== true) { throw new Error(data && data.message); }
+            if (!data || data.success !== true) {
+                // Marqué comme venant du serveur : lui seul écrit des messages
+                // destinés au visiteur. Une panne réseau produit « Failed to
+                // fetch », qu'il n'a pas à lire.
+                var refus = new Error((data && data.message) || '');
+                refus.duServeur = true;
+                throw refus;
+            }
             if (erreur) { erreur.classList.remove('is-visible'); }
+            form.classList.add('is-sent');
         }).catch(function (e) {
-            // On retire le succès affiché par le script du gabarit : mieux vaut
-            // dire que l'envoi a échoué que laisser croire à une demande reçue.
+            // On retire le succès affiché par le gabarit : mieux vaut annoncer
+            // l'échec que laisser croire à une demande reçue.
             form.classList.remove('is-sent');
             if (erreur) {
-                erreur.textContent = (e && e.message)
-                    || 'Votre demande n’a pas pu être envoyée. Réessayez ou appelez-nous.';
+                erreur.textContent = (e && e.duServeur && e.message)
+                    ? e.message
+                    : 'Votre demande n’a pas pu être envoyée. Réessayez ou appelez-nous.';
                 erreur.classList.add('is-visible');
             }
         });
     }
 
     function brancher() {
-        var form = formulaireFiche();
-        if (!form || form.__gxirBranche) { return; }
+        var form = formulaire();
+        if (!form) { return; }
 
         completer(form);
+        rappelerDestinataire(form);
+
+        if (form.__gxirBranche) { return; }
         form.__gxirBranche = true;
 
-        // Le gabarit garde son propre écouteur : il continue d'afficher son
-        // message de succès. Le nôtre s'ajoute et fait l'envoi réel.
-        form.addEventListener('submit', function () {
-            if (form.checkValidity && !form.checkValidity()) { return; }
+        form.addEventListener('submit', function (e) {
+            // TOUJOURS, sans compter sur le gabarit. Son script appelle bien
+            // preventDefault, mais s'il est absent — page éditée, script
+            // retiré, formulaire déplacé hors de sa portée — le navigateur
+            // enverrait le formulaire en GET : la page changerait, les
+            // coordonnées du visiteur finiraient dans l'URL, et la demande
+            // serait perdue. Vérifié : c'est exactement ce qui se produisait.
+            e.preventDefault();
+            if (form.checkValidity && !form.checkValidity()) {
+                if (form.reportValidity) { form.reportValidity(); }
+                return;
+            }
             envoyer(form);
         });
     }
 
-    /* La fiche est présente dès le chargement, mais son formulaire peut être
-       reconstruit par le gabarit : on rebranche à l'ouverture. */
+    /* La fiche est là dès le chargement, mais son contenu change à chaque
+       ouverture : on rebranche et on rafraîchit le destinataire. */
     function surveiller() {
         brancher();
 
-        var fiche = document.querySelector('[data-im-detail]');
-        if (!fiche || typeof MutationObserver === 'undefined') { return; }
+        var racine = fiche();
+        if (!racine || typeof MutationObserver === 'undefined') { return; }
 
         new MutationObserver(function () { brancher(); })
-            .observe(fiche, { attributes: true, attributeFilter: ['aria-hidden', 'class', 'data-im-detail-id'] });
+            .observe(racine, { attributes: true, attributeFilter: ['aria-hidden', 'class', 'data-im-detail-id'] });
     }
 
     if (document.readyState === 'loading') {

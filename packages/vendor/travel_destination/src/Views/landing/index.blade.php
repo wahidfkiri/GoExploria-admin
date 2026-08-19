@@ -468,30 +468,44 @@
         <span class="eyebrow">Immersion</span>
         <h2>{{ $video->title ?? $entity->name . ' en vidéo' }}</h2>
       </div>
+      {{-- Lecture EN PLACE : la maquette ouvrait une modale YouTube depuis une
+           photo cliquable, le lecteur est désormais directement dans la page. --}}
+      @php
+        preg_match('/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', (string) $video->video_url, $ytMatch);
+        preg_match('#vimeo\.com/(?:video/)?(\d+)#', (string) $video->video_url, $vmMatch);
+        $videoBox = 'position:relative;width:100%;padding-top:56.25%;background:#0f172a;border-radius:var(--radius-lg);overflow:hidden;';
+        $videoFrame = 'position:absolute;top:0;left:0;width:100%;height:100%;border:0;';
+      @endphp
       <div class="video-frame reveal">
-        <img src="{{ $video->image_url ?? $heroBg }}" alt="{{ $video->title ?? $entity->name }}" loading="lazy">
-        @php
-          preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/', (string) $video->video_url, $ytMatch);
-          $videoType = isset($ytMatch[1]) ? 'youtube' : 'local';
-          $videoSrc = isset($ytMatch[1]) ? 'https://www.youtube.com/embed/' . $ytMatch[1] : $video->video_url;
-        @endphp
-        <button class="play-btn" data-video-play data-video-type="{{ $videoType }}" data-video-src="{{ $videoSrc }}" aria-label="Lancer la vidéo">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        </button>
-        @if($video->content)
-          <div class="video-caption">
-            <h3>{{ $video->title ?? $entity->name }}</h3>
-            <p>{{ Str::limit(strip_tags($video->content), 140) }}</p>
-          </div>
-        @endif
+        <div style="{{ $videoBox }}">
+          @if(isset($ytMatch[1]))
+            <iframe style="{{ $videoFrame }}"
+                    src="https://www.youtube.com/embed/{{ $ytMatch[1] }}?rel=0&modestbranding=1&playsinline=1"
+                    title="{{ $video->title ?? $entity->name }}"
+                    allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
+                    allowfullscreen loading="lazy"></iframe>
+          @elseif(isset($vmMatch[1]))
+            <iframe style="{{ $videoFrame }}"
+                    src="https://player.vimeo.com/video/{{ $vmMatch[1] }}"
+                    title="{{ $video->title ?? $entity->name }}"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowfullscreen loading="lazy"></iframe>
+          @else
+            <video style="{{ $videoFrame }}object-fit:cover" controls playsinline preload="metadata"
+                   @if($video->image_url ?? null) poster="{{ $video->image_url }}" @endif>
+              <source src="{{ $video->video_url }}">
+            </video>
+          @endif
+        </div>
       </div>
+      @if($video->content)
+        <div class="video-caption reveal">
+          <h3>{{ $video->title ?? $entity->name }}</h3>
+          <p>{{ Str::limit(strip_tags($video->content), 140) }}</p>
+        </div>
+      @endif
     </div>
   </section>
-
-  <div class="video-modal">
-    <div class="modal-inner"></div>
-    <button class="video-modal-close" aria-label="Fermer la vidéo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  </div>
 @endif
 
 {{-- ==========================================================================

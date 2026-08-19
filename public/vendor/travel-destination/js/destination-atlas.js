@@ -391,9 +391,12 @@
 (function () {
   "use strict";
 
-  /* Les pages composées dans VvvebJS sont injectées après le rendu initial du
-     document : leurs .reveal / .faq-item / [data-slider] ne sont pas vus par
-     les initialisations du DOMContentLoaded. On les révèle simplement. */
+  /* La page de destination porte l'essentiel du contenu : on la révèle tout de
+     suite plutôt que de la laisser dépendre de l'IntersectionObserver.
+     Le template pose .reveal{opacity:0} et compte sur un script pour ajouter
+     .is-visible — si ce script ne s'exécutait pas, la page occuperait sa
+     hauteur sans rien peindre. Compromis assumé : ce bloc n'a pas l'animation
+     d'apparition des sections standard, mais il ne peut jamais rester blanc. */
   document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".builder-page-section .reveal").forEach(function (el) {
       el.classList.add("is-visible");

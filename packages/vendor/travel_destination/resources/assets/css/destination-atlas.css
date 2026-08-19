@@ -959,6 +959,12 @@ section{position:relative;}
 .gx-map-placeholder span{font-size:.92rem;color:var(--brand);letter-spacing:.06em;text-transform:uppercase;}
 .gx-map-placeholder small{max-width:34ch;opacity:.8;}
 
+.video-frame{aspect-ratio:auto;background:transparent;}
+.video-frame::after{content:none;}
+.destination-video .video-caption{position:static;max-width:none;margin-top:22px;color:var(--fg);}
+.destination-video .video-caption h3{font-size:1.5rem;}
+.destination-video .video-caption p{color:var(--fg-soft);margin-top:.4em;font-size:.95rem;}
+
 
 /* ==========================================================================
    COMPLÉMENTS GO EXPLORIA — carte réelle, contenus dynamiques
