@@ -1761,4 +1761,80 @@ class PublicPageController extends Controller
 
         return back()->withErrors($validator)->withInput();
     }
+
+    /**
+     * Demande de réservation ou de visite envoyée depuis la fiche d'un bien.
+     *
+     * Le template immobilier portait un formulaire qui se contentait
+     * d'afficher « votre demande a bien été envoyée » : rien ne partait, et la
+     * demande était perdue. Elle est désormais enregistrée et remonte dans
+     * l'onglet « Immobilier » de l'espace entreprise.
+     *
+     * Le titre et la référence du bien sont RECOPIÉS dans la demande : un bien
+     * retiré du site ne doit pas rendre illisibles les demandes déjà reçues.
+     */
+    public function submitPropertyRequest(Request $request, $etablissementId)
+    {
+        $donnees = $request->validate([
+            'property_id'    => ['nullable', 'integer'],
+            'name'           => ['required', 'string', 'max:190'],
+            'email'          => ['required', 'email', 'max:190'],
+            'phone'          => ['nullable', 'string', 'max:40'],
+            'arrival_date'   => ['nullable', 'date'],
+            // Le départ ne peut pas précéder l'arrivée ; `after_or_equal` et
+            // non `after` : une visite se demande pour une seule journée.
+            'departure_date' => ['nullable', 'date', 'after_or_equal:arrival_date'],
+            'adults'         => ['nullable', 'integer', 'min:0', 'max:99'],
+            'children'       => ['nullable', 'integer', 'min:0', 'max:99'],
+            'message'        => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        try {
+            $etablissement = \App\Models\Etablissement::findOrFail($etablissementId);
+
+            // Le bien doit appartenir à CET établissement : sans ce contrôle,
+            // une demande pourrait être rattachée au bien d'une autre agence.
+            $bien = null;
+            if (! empty($donnees['property_id'])
+                && class_exists(\Vendor\Cms\Models\Property::class)) {
+                $bien = \Vendor\Cms\Models\Property::where('etablissement_id', $etablissement->id)
+                    ->find($donnees['property_id']);
+            }
+
+            $demande = \Vendor\Cms\Models\PropertyRequest::create([
+                'etablissement_id'   => $etablissement->id,
+                'property_id'        => $bien?->id,
+                'agent_id'           => $bien?->agent_id,
+                'property_title'     => $bien?->title,
+                'property_reference' => $bien?->reference,
+                'name'               => $donnees['name'],
+                'email'              => $donnees['email'],
+                'phone'              => $donnees['phone'] ?? null,
+                'arrival_date'       => $donnees['arrival_date'] ?? null,
+                'departure_date'     => $donnees['departure_date'] ?? null,
+                'adults'             => $donnees['adults'] ?? null,
+                'children'           => $donnees['children'] ?? null,
+                'message'            => $donnees['message'] ?? null,
+                'status'             => \Vendor\Cms\Models\PropertyRequest::STATUT_NOUVEAU,
+                'ip'                 => $request->ip(),
+                'user_agent'         => substr((string) $request->userAgent(), 0, 255),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Votre demande a bien été envoyée.',
+                'id'      => $demande->id,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Demande immobilière : ' . $e->getMessage(), [
+                'etablissement_id' => $etablissementId,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => "Votre demande n'a pas pu être enregistrée. Réessayez ou appelez-nous.",
+            ], 500);
+        }
+    }
+
 }

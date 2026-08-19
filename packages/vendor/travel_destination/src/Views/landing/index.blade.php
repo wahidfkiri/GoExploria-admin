@@ -157,9 +157,14 @@
      ========================================================================== --}}
 <header class="site-header">
   <div class="container">
-    <a href="{{ url('/') }}" class="logo">
-      <svg class="logo-mark" width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 18c3-6 6-9 9-9s6 3 9 9" stroke="currentColor" stroke-width="1.6"/><path d="M3 13c3-6 6-9 9-9s6 3 9 9" stroke="currentColor" stroke-width="1.6" opacity=".5"/></svg>
-      <span>GoExploria<small>{{ $typeLabels[$normalizedType] ?? 'Destination' }}</small></span>
+    {{-- Même logo et même bascule mobile que l'en-tête de la page d'accueil
+         (welcome-home/components/Header.blade.php) : <picture> plutôt que deux
+         <img> masqués en CSS, le navigateur ne télécharge qu'un fichier. --}}
+    <a href="{{ url('/') }}" class="logo" aria-label="{{ __('home-v2.brand.name_upper') }}">
+      <picture>
+        <source media="(max-width: 992px)" srcset="{{ asset('Logo-mobile.png') }}">
+        <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}">
+      </picture>
     </a>
 
     <nav class="main-nav" aria-label="Navigation principale">
@@ -704,9 +709,8 @@
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="{{ url('/') }}" class="logo">
-          <svg class="logo-mark" width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 18c3-6 6-9 9-9s6 3 9 9" stroke="currentColor" stroke-width="1.6"/><path d="M3 13c3-6 6-9 9-9s6 3 9 9" stroke="currentColor" stroke-width="1.6" opacity=".5"/></svg>
-          <span>GoExploria</span>
+        <a href="{{ url('/') }}" class="logo" aria-label="{{ __('home-v2.brand.name_upper') }}">
+          <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}">
         </a>
         <p>Le guide de référence pour explorer les plus belles destinations, une région à la fois.</p>
       </div>

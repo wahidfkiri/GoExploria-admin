@@ -1051,6 +1051,35 @@ section{position:relative;}
 .builder-page-section{display:block;}
 .builder-page-section .gx-dest-tpl{background:transparent;}
 
+/* --------------------------------------------------------------------------
+   LOGO IMAGE — le même que l'en-tête de la page d'accueil
+   (welcome-home/components/Header.blade.php). Il remplace le lockup texte
+   « GoExploria » de la maquette, d'où la neutralisation des règles de texte.
+   Le <picture> bascule sur Logo-mobile.png à 992 px : cette variante est une
+   bannière large et basse, elle demande une hauteur plus faible.
+   -------------------------------------------------------------------------- */
+.logo picture{display:block;}
+.site-header .logo img{
+  height:clamp(42px,4.4vw,56px);width:auto;max-width:min(280px,52vw);
+  object-fit:contain;display:block;
+  /* Au repos l'en-tête est transparent sur la photo du héros : l'ombre
+     décolle le logo des zones claires de l'image. */
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
+  transition:height .35s var(--ease), filter .35s var(--ease);
+}
+/* En-tête devenu opaque : plus de photo derrière, plus besoin d'ombre. */
+.site-header.is-scrolled .logo img{height:clamp(34px,3.4vw,44px);filter:none;}
+
+.site-footer .footer-brand .logo{display:inline-flex;}
+.site-footer .footer-brand .logo img{
+  height:54px;width:auto;max-width:240px;object-fit:contain;display:block;
+}
+
+@media (max-width:992px){
+  .site-header .logo img{height:32px;max-width:60vw;}
+  .site-header.is-scrolled .logo img{height:28px;}
+}
+
 /* Fil d'Ariane hors héros (destinations sans image de bannière) */
 .breadcrumb-strip{padding:18px 0;border-bottom:1px solid var(--line);}
 .breadcrumb-strip ol{display:flex;flex-wrap:wrap;gap:.55em;align-items:center;font-family:var(--font-mono);font-size:.74rem;color:var(--fg-soft);text-transform:uppercase;letter-spacing:.06em;}

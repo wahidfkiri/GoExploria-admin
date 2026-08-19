@@ -2320,6 +2320,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $html = $this->injectSeoMeta($html, $seoContext);
         $html = $this->injectCartDrawer($html);
         $html = $this->injectProductModal($html);
+        $html = $this->injectImmoRequestForm($html);
         $html = $this->injectSwiperAssets($html);
 
         return response($html, 200, [
@@ -2388,6 +2389,48 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         // des backreferences par preg_replace.
         return preg_replace_callback('/<\/body>/i', function () use ($drawer) {
             return $drawer . '</body>';
+        }, $html, 1);
+    }
+
+    /**
+     * Branche le formulaire de demande de la fiche d'un bien.
+     *
+     * Le gabarit immobilier affiche un message de succès sans rien envoyer :
+     * ce bloc complète le formulaire (dates, voyageurs) et transmet vraiment
+     * la demande. Injecté au rendu, il atteint aussi les sites déjà installés,
+     * dont la page est une copie figée du gabarit.
+     *
+     * N'agit que sur les pages qui portent la fiche (`data-im-detail`).
+     */
+    protected function injectImmoRequestForm($html)
+    {
+        if (! is_string($html) || $html === '') {
+            return $html;
+        }
+        if (stripos($html, '</body>') === false) {
+            return $html;
+        }
+        if (stripos($html, 'data-im-detail') === false) {
+            return $html;   // pas de fiche de bien sur cette page
+        }
+        if (stripos($html, '__gxImmoRequest') !== false) {
+            return $html;   // déjà branché
+        }
+
+        try {
+            $bloc = view('cms::web.fallback.partials.gx-immo-request', [
+                'etablissement' => $this->etablissement,
+            ])->render();
+        } catch (\Throwable $e) {
+            \Log::warning('Immo request form injection failed: ' . $e->getMessage());
+
+            return $html;
+        }
+
+        // preg_replace_callback et non preg_replace : le script contient des
+        // séquences que le remplacement prendrait pour des références.
+        return preg_replace_callback('/<\/body>/i', function () use ($bloc) {
+            return $bloc . '</body>';
         }, $html, 1);
     }
 
