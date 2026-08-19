@@ -36,36 +36,39 @@
       </div>
     </div>
 
-    <div class="map-layout reveal">
-      <div class="map-info">
-        <h3>{{ $entity->name }}</h3>
-        @if($mapLat !== null && $mapLng !== null)
-          <p class="coord">
-            {{ number_format(abs($mapLat), 4) }}° {{ $mapLat >= 0 ? 'N' : 'S' }},
-            {{ number_format(abs($mapLng), 4) }}° {{ $mapLng >= 0 ? 'E' : 'O' }}
-          </p>
+  </div>
+
+  {{-- Carte PLEINE LARGEUR : elle sort du conteneur, le panneau d'informations
+       se pose dessus (et s'empile dessous en mobile, cf. destination-atlas.css). --}}
+  <div class="map-fullbleed reveal">
+    <div class="map-canvas">
+      <div id="travel-map" class="travel-map"></div>
+    </div>
+    <div class="map-info map-info--floating">
+      <h3>{{ $entity->name }}</h3>
+      @if($mapLat !== null && $mapLng !== null)
+        <p class="coord">
+          {{ number_format(abs($mapLat), 4) }}° {{ $mapLat >= 0 ? 'N' : 'S' }},
+          {{ number_format(abs($mapLng), 4) }}° {{ $mapLng >= 0 ? 'E' : 'O' }}
+        </p>
+      @endif
+      <p>Cliquez sur un marqueur pour ouvrir sa fiche : photos, vidéo, horaires et coordonnées.</p>
+      <ul class="map-poi-list">
+        <li><span class="name">Points d'intérêt</span><span class="dist">{{ $mapPointCount }}</span></li>
+        @if($mapChildCount > 0)
+          <li><span class="name">Destinations à explorer</span><span class="dist">{{ $mapChildCount }}</span></li>
         @endif
-        <p>Cliquez sur un marqueur pour ouvrir sa fiche : photos, vidéo, horaires et coordonnées.</p>
-        <ul class="map-poi-list">
-          <li><span class="name">Points d'intérêt</span><span class="dist">{{ $mapPointCount }}</span></li>
-          @if($mapChildCount > 0)
-            <li><span class="name">Destinations à explorer</span><span class="dist">{{ $mapChildCount }}</span></li>
-          @endif
-          @if($mapActivityCount > 0)
-            <li><span class="name">Activités</span><span class="dist">{{ $mapActivityCount }}</span></li>
-          @endif
-        </ul>
-        @if($mapLat !== null && $mapLng !== null)
-          <a href="https://www.openstreetmap.org/?mlat={{ $mapLat }}&mlon={{ $mapLng }}#map=10/{{ $mapLat }}/{{ $mapLng }}"
-             target="_blank" rel="noopener" class="btn btn-primary">
-            Itinéraire
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
+        @if($mapActivityCount > 0)
+          <li><span class="name">Activités</span><span class="dist">{{ $mapActivityCount }}</span></li>
         @endif
-      </div>
-      <div class="map-embed">
-        <div id="travel-map" class="travel-map"></div>
-      </div>
+      </ul>
+      @if($mapLat !== null && $mapLng !== null)
+        <a href="https://www.openstreetmap.org/?mlat={{ $mapLat }}&mlon={{ $mapLng }}#map=10/{{ $mapLat }}/{{ $mapLng }}"
+           target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+          Itinéraire
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      @endif
     </div>
   </div>
 </section>

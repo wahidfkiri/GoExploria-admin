@@ -922,17 +922,52 @@ section{position:relative;}
   .final-cta-actions{flex-direction:column;align-items:stretch;}
 }
 
+.map-fullbleed{position:relative;width:100%;}
+.map-canvas{
+  width:100%;height:clamp(460px,68vh,760px);
+  background:var(--bg-raised);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  overflow:hidden;
+}
+.map-canvas > *{width:100%;height:100%;}
+.map-info--floating{
+  position:absolute;top:28px;left:max(24px,calc((100% - var(--container)) / 2 + var(--gutter)));
+  width:min(360px,calc(100% - 48px));
+  max-height:calc(100% - 56px);overflow:auto;
+  background:var(--bg-raised);
+  border:1px solid var(--line);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);
+  padding:24px;
+  z-index:5;
+}
+.map-info--floating h3{font-size:1.35rem;}
+.map-info--floating .map-poi-list{margin-top:14px;}
+.map-info--floating .btn{margin-top:6px;}
+
+/* Sous 900 px la carte flottante mangerait la carte : on l'empile dessous. */
+@media (max-width:900px){
+  .map-canvas{height:clamp(360px,52vh,520px);}
+  .map-info--floating{
+    position:static;width:auto;max-height:none;
+    margin:0 var(--gutter);margin-top:-40px;
+  }
+}
+
+.gx-map-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;height:100%;padding:32px;background:
+  repeating-linear-gradient(45deg,rgba(45,95,110,.06) 0 12px,transparent 12px 24px);
+  color:var(--fg-soft);font-family:var(--font-mono);font-size:.8rem;}
+.gx-map-placeholder span{font-size:.92rem;color:var(--brand);letter-spacing:.06em;text-transform:uppercase;}
+.gx-map-placeholder small{max-width:34ch;opacity:.8;}
+
 
 /* ==========================================================================
    COMPLÉMENTS GO EXPLORIA — carte réelle, contenus dynamiques
    (ajoutés par scripts/build_destination_template.py, ne pas éditer ici)
    ========================================================================== */
 
-/* La carte occupe la colonne large de .map-layout ; Leaflet exige une hauteur
-   explicite sur son conteneur. */
-.map-embed .travel-map,
-.travel-map{width:100%;height:100%;min-height:460px;background:var(--bg-raised);}
-.map-embed{position:relative;}
+/* La carte remplit sa toile pleine largeur ; Leaflet comme Google Maps
+   exigent une hauteur explicite sur leur conteneur. */
+.travel-map{width:100%;height:100%;background:var(--bg-raised);}
 .leaflet-container{font-family:var(--font-body);}
 .leaflet-popup-content-wrapper{border-radius:var(--radius-md);}
 
