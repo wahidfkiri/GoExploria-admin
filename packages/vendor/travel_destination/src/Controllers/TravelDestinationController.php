@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Vendor\TravelDestination\Support\DestinationDefaultPage;
 
 class TravelDestinationController extends Controller
 {
@@ -145,11 +146,18 @@ class TravelDestinationController extends Controller
             ->orderByDesc('id')
             ->get();
 
+        // LA page de destination (template « Carnet d'Atlas ») : toute
+        // destination en possède une. Si l'administrateur ne l'a jamais
+        // touchée, elle n'existe pas en base et c'est le gabarit qui est rendu ;
+        // s'il l'a masquée, on n'affiche rien.
+        $defaultPage = DestinationDefaultPage::resolve($entity);
+
         // Pages composées dans l'éditeur visuel côté admin : leur HTML/CSS est
         // injecté tel quel sous les sections standard de la destination.
         $builderPages = Page::where('pageable_type', get_class($entity))
             ->where('pageable_id', $entity->id)
             ->where('is_active', true)
+            ->where('is_default', false)
             ->orderBy('id')
             ->get();
 
@@ -164,6 +172,7 @@ class TravelDestinationController extends Controller
             'entity',
             'normalizedType',
             'slug',
+            'defaultPage',
             'builderPages',
             'breadcrumb',
             'hierarchy',

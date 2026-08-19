@@ -707,6 +707,17 @@
      Le CSS enregistré avec la page est émis tel quel : il est global, donc des
      sélecteurs trop larges (body, h2…) affecteraient aussi les sections
      ci-dessus — les templates fournis préfixent leurs règles. --}}
+{{-- LA page de destination (template « Carnet d'Atlas »), rendue ici aussi pour
+     que ?template=classic n'escamote pas le contenu principal. --}}
+@if(! empty($defaultPage))
+  @if(filled($defaultPage['css']))
+    <style>{!! $defaultPage['css'] !!}</style>
+  @endif
+  <section class="builder-page-section" id="page-{{ $defaultPage['slug'] }}">
+    {!! $defaultPage['html'] !!}
+  </section>
+@endif
+
 @if(isset($builderPages) && $builderPages->count() > 0)
   @foreach($builderPages as $builderPage)
     @if(filled($builderPage->css_content))

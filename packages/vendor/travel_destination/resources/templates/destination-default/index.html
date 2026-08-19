@@ -1,0 +1,905 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Work+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+.gx-dest-tpl{--c-ink:#182726;--c-ink-soft:#3d4c4a;--c-paper:#f3efe4;--c-paper-raised:#faf7ee;--c-river:#2d5f6e;--c-river-dark:#1e4552;--c-ochre:#bd7a3c;--c-ochre-light:#e0a862;--c-forest:#46593c;--c-line: 27,43,44;--c-line-a:rgba(var(--c-line),0.14);--c-line-a-strong:rgba(var(--c-line),0.28);--bg:var(--c-paper);--bg-raised:var(--c-paper-raised);--fg:var(--c-ink);--fg-soft:var(--c-ink-soft);--brand:var(--c-river);--brand-dark:var(--c-river-dark);--accent:var(--c-ochre);--accent-light:var(--c-ochre-light);--secondary:var(--c-forest);--line:var(--c-line-a);--line-strong:var(--c-line-a-strong);--card-bg:var(--c-paper-raised);--overlay-scrim:rgba(20,32,31,0.55);--shadow-sm:0 1px 3px rgba(20,32,31,0.08);--shadow-md:0 8px 24px rgba(20,32,31,0.10);--shadow-lg:0 24px 60px rgba(20,32,31,0.16);--font-display:'Fraunces','Georgia',serif;--font-body:'Work Sans',-apple-system,sans-serif;--font-mono:'JetBrains Mono',ui-monospace,monospace;--radius-sm:6px;--radius-md:14px;--radius-lg:26px;--radius-pill:999px;--container:1280px;--gutter:clamp(20px,5vw,64px);--section-pad:clamp(64px,10vw,128px);--ease:cubic-bezier(.22,.68,0,1);--dur:.6s;color-scheme: light;}.gx-dest-tpl[data-theme="dark"],[data-theme="dark"] .gx-dest-tpl{--bg:#14201f;--bg-raised:#1b2928;--fg:#f0ece0;--fg-soft:#c3c2b4;--brand:#6fa9b9;--brand-dark:#4d8393;--accent:#e0a862;--accent-light:#f0c48b;--secondary:#8ba179;--line:rgba(240,236,224,0.14);--line-strong:rgba(240,236,224,0.26);--card-bg:#1b2928;--overlay-scrim:rgba(10,16,15,0.62);--shadow-sm:0 1px 3px rgba(0,0,0,0.3);--shadow-md:0 8px 24px rgba(0,0,0,0.35);--shadow-lg:0 24px 60px rgba(0,0,0,0.5);color-scheme: dark;}.gx-dest-tpl *,.gx-dest-tpl *::before,.gx-dest-tpl *::after{box-sizing:border-box;margin:0;padding:0;}.gx-dest-tpl{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}.gx-dest-tpl{font-family:var(--font-body);background:var(--bg);color:var(--fg);line-height:1.6;overflow-x:hidden;transition:background .4s var(--ease),color .4s var(--ease);}.gx-dest-tpl img{max-width:100%;display:block;}.gx-dest-tpl a{color:inherit;text-decoration:none;}.gx-dest-tpl ul{list-style:none;}.gx-dest-tpl button{font:inherit;background:none;border:none;cursor:pointer;color:inherit;}.gx-dest-tpl input,.gx-dest-tpl textarea{font:inherit;}.gx-dest-tpl svg{display:block;}.gx-dest-tpl :focus-visible{outline:2px solid var(--accent);outline-offset:3px;}.gx-dest-tpl h1,.gx-dest-tpl h2,.gx-dest-tpl h3,.gx-dest-tpl h4{font-family:var(--font-display);font-weight:500;line-height:1.08;letter-spacing:-0.01em;}.gx-dest-tpl .container{max-width:var(--container);margin:0 auto;padding:0 var(--gutter);}.gx-dest-tpl section{position:relative;}.gx-dest-tpl .eyebrow{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);display:inline-flex;align-items:center;gap:.6em;}.gx-dest-tpl .eyebrow::before{content:"";width:22px;height:1px;background:var(--accent);display:inline-block;}.gx-dest-tpl .coord{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.04em;color:var(--fg-soft);opacity:.75;}.gx-dest-tpl .section-head{max-width:680px;margin-bottom:clamp(32px,5vw,56px);}.gx-dest-tpl .section-head h2{font-size:clamp(2rem,3.6vw,3.1rem);margin-top:.5em;}.gx-dest-tpl .section-head p{margin-top:1em;color:var(--fg-soft);font-size:1.05rem;max-width:52ch;}.gx-dest-tpl .section-head.center{margin-left:auto;margin-right:auto;text-align:center;}.gx-dest-tpl .chapter-index{font-family:var(--font-mono);font-size:.72rem;color:var(--fg-soft);letter-spacing:.08em;}.gx-dest-tpl .btn{display:inline-flex;align-items:center;gap:.6em;padding:.95em 1.7em;border-radius:var(--radius-pill);font-family:var(--font-body);font-weight:600;font-size:.92rem;letter-spacing:.01em;transition:transform .35s var(--ease),background .3s ease,color .3s ease,box-shadow .3s ease;white-space:nowrap;border:1px solid transparent;}.gx-dest-tpl .btn svg{width:15px;height:15px;transition:transform .35s var(--ease);}.gx-dest-tpl .btn:hover svg{transform:translateX(4px);}.gx-dest-tpl .btn:hover{transform:translateY(-2px);}.gx-dest-tpl .btn-primary{background:var(--accent);color:#1a1204;box-shadow:var(--shadow-sm);}.gx-dest-tpl .btn-primary:hover{background:var(--accent-light);box-shadow:var(--shadow-md);}.gx-dest-tpl .btn-outline{border-color:var(--line-strong);color:var(--fg);}.gx-dest-tpl .btn-outline:hover{border-color:var(--accent);background:rgba(189,122,60,.08);}.gx-dest-tpl .btn-ghost-light{border-color:rgba(255,255,255,.5);color:#fff;}.gx-dest-tpl .btn-ghost-light:hover{background:#fff;color:var(--c-ink);}.gx-dest-tpl .btn-sm{padding:.6em 1.2em;font-size:.8rem;}.gx-dest-tpl .btn-block{width:100%;justify-content:center;}.gx-dest-tpl .contour-divider{width:100%;height:56px;color:var(--brand);opacity:.35;}.gx-dest-tpl .contour-divider path{fill:none;stroke:currentColor;stroke-width:1;}.gx-dest-tpl .site-header{position:fixed;top:0;left:0;right:0;z-index:100;padding:22px 0;transition:padding .35s var(--ease),background .35s var(--ease),box-shadow .35s var(--ease);}.gx-dest-tpl .site-header .container{display:flex;align-items:center;justify-content:space-between;gap:24px;}.gx-dest-tpl .site-header.is-scrolled{padding:12px 0;background:rgba(var(--c-line),0.0);}.gx-dest-tpl[data-theme="light"] .site-header.is-scrolled,[data-theme="light"] .gx-dest-tpl .site-header.is-scrolled,.gx-dest-tpl .site-header.is-scrolled{background:var(--bg);box-shadow:var(--shadow-sm);border-bottom:1px solid var(--line);}.gx-dest-tpl .logo{display:flex;align-items:center;gap:.6em;font-family:var(--font-display);font-size:1.3rem;font-weight:600;color:#fff;transition:color .35s var(--ease);}.gx-dest-tpl .site-header.is-scrolled .logo{color:var(--fg);}.gx-dest-tpl .logo .logo-mark{color:var(--accent);}.gx-dest-tpl .logo small{display:block;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.14em;font-weight:400;opacity:.75;text-transform:uppercase;}.gx-dest-tpl .main-nav{display:flex;align-items:center;gap:2.2em;}.gx-dest-tpl .main-nav a{font-size:.92rem;font-weight:500;color:#fff;position:relative;padding:.2em 0;transition:color .35s var(--ease);}.gx-dest-tpl .site-header.is-scrolled .main-nav a{color:var(--fg);}.gx-dest-tpl .main-nav a::after{content:"";position:absolute;left:0;bottom:-3px;width:0;height:1px;background:var(--accent);transition:width .3s var(--ease);}.gx-dest-tpl .main-nav a:hover::after{width:100%;}.gx-dest-tpl .header-actions{display:flex;align-items:center;gap:14px;}.gx-dest-tpl .theme-toggle{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.35);color:#fff;transition:all .35s var(--ease);}.gx-dest-tpl .site-header.is-scrolled .theme-toggle{border-color:var(--line-strong);color:var(--fg);}.gx-dest-tpl .theme-toggle:hover{border-color:var(--accent);color:var(--accent);}.gx-dest-tpl .theme-toggle svg{width:17px;height:17px;}.gx-dest-tpl .theme-toggle .icon-moon{display:none;}.gx-dest-tpl[data-theme="dark"] .theme-toggle .icon-sun,[data-theme="dark"] .gx-dest-tpl .theme-toggle .icon-sun{display:none;}.gx-dest-tpl[data-theme="dark"] .theme-toggle .icon-moon,[data-theme="dark"] .gx-dest-tpl .theme-toggle .icon-moon{display:block;}.gx-dest-tpl .hamburger{display:none;width:38px;height:38px;flex-direction:column;justify-content:center;align-items:center;gap:5px;border:1px solid rgba(255,255,255,.35);border-radius:50%;color:#fff;}.gx-dest-tpl .site-header.is-scrolled .hamburger{border-color:var(--line-strong);color:var(--fg);}.gx-dest-tpl .hamburger span{width:14px;height:1.5px;background:currentColor;display:block;transition:all .3s var(--ease);}.gx-dest-tpl .hamburger.is-active span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}.gx-dest-tpl .hamburger.is-active span:nth-child(2){opacity:0;}.gx-dest-tpl .hamburger.is-active span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}.gx-dest-tpl .mobile-nav{position:fixed;inset:0;background:var(--bg);z-index:99;display:flex;flex-direction:column;padding:110px var(--gutter) 40px;transform:translateY(-100%);opacity:0;transition:transform .5s var(--ease),opacity .4s var(--ease);pointer-events:none;}.gx-dest-tpl .mobile-nav.is-open{transform:translateY(0);opacity:1;pointer-events:auto;}.gx-dest-tpl .mobile-nav a{font-family:var(--font-display);font-size:2rem;padding:.4em 0;border-bottom:1px solid var(--line);color:var(--fg);}.gx-dest-tpl .mobile-nav .btn{margin-top:2em;align-self:flex-start;}.gx-dest-tpl .hero{min-height:100svh;display:flex;align-items:flex-end;position:relative;overflow:hidden;color:#fff;}.gx-dest-tpl .hero-media{position:absolute;inset:0;z-index:0;}.gx-dest-tpl .hero-media img,.gx-dest-tpl .hero-media video{width:100%;height:100%;object-fit:cover;}.gx-dest-tpl .hero-media::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(15,22,21,.86) 0%,rgba(15,22,21,.28) 46%,rgba(15,22,21,.15) 100%);}.gx-dest-tpl .hero-contour{position:absolute;left:0;right:0;bottom:0;z-index:1;color:rgba(255,255,255,.5);width:100%;}.gx-dest-tpl .hero-inner{position:relative;z-index:2;width:100%;padding:0 var(--gutter) clamp(48px,8vw,88px);}.gx-dest-tpl .breadcrumb{display:flex;align-items:center;gap:.6em;font-family:var(--font-mono);font-size:.75rem;letter-spacing:.06em;color:rgba(255,255,255,.75);margin-bottom:1.6em;text-transform:uppercase;}.gx-dest-tpl .breadcrumb span{opacity:.5;}.gx-dest-tpl .hero-grid{display:grid;grid-template-columns:1.4fr .9fr;gap:40px;align-items:end;}.gx-dest-tpl .hero-title{font-size:clamp(3rem,8vw,6.6rem);font-weight:500;letter-spacing:-0.02em;}.gx-dest-tpl .hero-title em{font-style:italic;color:var(--accent-light);font-weight:400;}.gx-dest-tpl .hero-sub{font-size:1.15rem;max-width:46ch;margin-top:.9em;color:rgba(255,255,255,.86);font-weight:300;}.gx-dest-tpl .hero-locate{display:flex;align-items:center;gap:.7em;font-family:var(--font-mono);font-size:.8rem;margin-top:1.4em;color:rgba(255,255,255,.7);}.gx-dest-tpl .hero-locate svg{width:14px;height:14px;color:var(--accent);}.gx-dest-tpl .hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:2.2em;}.gx-dest-tpl .hero-meta-panel{display:flex;flex-direction:column;gap:14px;border-left:1px solid rgba(255,255,255,.28);padding-left:28px;}.gx-dest-tpl .hero-meta-panel .item{display:flex;justify-content:space-between;gap:20px;font-size:.85rem;}.gx-dest-tpl .hero-meta-panel .item span:first-child{font-family:var(--font-mono);color:rgba(255,255,255,.6);}.gx-dest-tpl .hero-meta-panel .item span:last-child{font-weight:600;}.gx-dest-tpl .hero-scroll{position:absolute;right:var(--gutter);bottom:28px;z-index:2;writing-mode:vertical-rl;display:flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.14em;color:rgba(255,255,255,.7);text-transform:uppercase;}.gx-dest-tpl .hero-scroll .line{width:1px;height:46px;background:rgba(255,255,255,.5);position:relative;overflow:hidden;}.gx-dest-tpl .hero-scroll .line::after{content:"";position:absolute;top:0;left:0;width:100%;height:40%;background:var(--accent);animation:gxdScrollLine 2.4s ease-in-out infinite;}@keyframes gxdScrollLine{0%{transform:translateY(-100%);}100%{transform:translateY(250%);}}.gx-dest-tpl .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s var(--ease),transform .8s var(--ease);}.gx-dest-tpl .reveal.is-visible{opacity:1;transform:translateY(0);}.gx-dest-tpl .reveal-stagger > *{transition-delay:calc(var(--i,0) * 90ms);}.gx-dest-tpl .intro{padding:var(--section-pad) 0;}.gx-dest-tpl .intro .container{display:grid;grid-template-columns:.95fr 1.05fr;gap:clamp(32px,6vw,90px);align-items:center;}.gx-dest-tpl .intro-media{position:relative;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);}.gx-dest-tpl .intro-media img{aspect-ratio:4/5;object-fit:cover;}.gx-dest-tpl .intro-media-tag{position:absolute;left:20px;bottom:20px;background:var(--bg-raised);color:var(--fg);padding:.7em 1.1em;border-radius:var(--radius-md);font-family:var(--font-mono);font-size:.72rem;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:.6em;}.gx-dest-tpl .intro-media-tag svg{width:14px;height:14px;color:var(--accent);}.gx-dest-tpl .intro-content h2{font-size:clamp(2rem,3.4vw,2.9rem);}.gx-dest-tpl .intro-content p{color:var(--fg-soft);margin-top:1.1em;font-size:1.05rem;max-width:56ch;}.gx-dest-tpl .intro-stat{display:flex;gap:26px;margin-top:2em;padding-top:2em;border-top:1px solid var(--line);}.gx-dest-tpl .intro-stat .num{font-family:var(--font-display);font-size:2.4rem;color:var(--brand);}.gx-dest-tpl .intro-stat .label{font-family:var(--font-mono);font-size:.72rem;color:var(--fg-soft);max-width:16ch;margin-top:.2em;}.gx-dest-tpl .intro-content .btn{margin-top:2em;}.gx-dest-tpl .info-strip{padding:56px 0;background:var(--bg-raised);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}.gx-dest-tpl .info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-radius:var(--radius-lg);overflow:hidden;}.gx-dest-tpl .info-card{background:var(--bg-raised);padding:28px 24px;display:flex;flex-direction:column;gap:10px;}.gx-dest-tpl .info-card svg{width:22px;height:22px;color:var(--accent);}.gx-dest-tpl .info-card .val{font-family:var(--font-display);font-size:1.5rem;}.gx-dest-tpl .info-card .lbl{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-soft);}.gx-dest-tpl .highlights{padding:var(--section-pad) 0;}.gx-dest-tpl .highlight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}.gx-dest-tpl .highlight-card{border-radius:var(--radius-lg);overflow:hidden;background:var(--card-bg);box-shadow:var(--shadow-sm);transition:transform .5s var(--ease),box-shadow .5s var(--ease);}.gx-dest-tpl .highlight-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}.gx-dest-tpl .highlight-media{position:relative;aspect-ratio:5/4;overflow:hidden;}.gx-dest-tpl .highlight-media img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease);}.gx-dest-tpl .highlight-card:hover .highlight-media img{transform:scale(1.07);}.gx-dest-tpl .highlight-icon{position:absolute;top:16px;left:16px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:var(--brand-dark);}.gx-dest-tpl .highlight-icon svg{width:19px;height:19px;}.gx-dest-tpl .highlight-body{padding:22px 24px 26px;}.gx-dest-tpl .highlight-body h3{font-size:1.25rem;}.gx-dest-tpl .highlight-body p{color:var(--fg-soft);margin-top:.6em;font-size:.94rem;}.gx-dest-tpl .gallery{padding:var(--section-pad) 0;}.gx-dest-tpl .gallery-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:36px;flex-wrap:wrap;}.gx-dest-tpl .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:190px;gap:14px;}.gx-dest-tpl .gallery-item{position:relative;border-radius:var(--radius-md);overflow:hidden;cursor:pointer;}.gx-dest-tpl .gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease);}.gx-dest-tpl .gallery-item:hover img{transform:scale(1.08);}.gx-dest-tpl .gallery-item .g-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(15,22,21,.7),transparent 55%);display:flex;align-items:flex-end;padding:14px;opacity:0;transition:opacity .4s ease;}.gx-dest-tpl .gallery-item:hover .g-overlay{opacity:1;}.gx-dest-tpl .gallery-item .g-overlay span{color:#fff;font-family:var(--font-mono);font-size:.72rem;}.gx-dest-tpl .gallery-item.span-2{grid-column:span 2;}.gx-dest-tpl .gallery-item.row-2{grid-row:span 2;}.gx-dest-tpl .masonry-gallery{columns:4 220px;column-gap:14px;}.gx-dest-tpl .masonry-gallery .m-item{break-inside:avoid;margin-bottom:14px;border-radius:var(--radius-md);overflow:hidden;position:relative;}.gx-dest-tpl .masonry-gallery .m-item img{width:100%;display:block;transition:transform .7s var(--ease);}.gx-dest-tpl .masonry-gallery .m-item:hover img{transform:scale(1.06);}.gx-dest-tpl .lightbox{position:fixed;inset:0;z-index:200;background:rgba(10,15,14,.94);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;}.gx-dest-tpl .lightbox.is-open{opacity:1;pointer-events:auto;}.gx-dest-tpl .lightbox img{max-width:88vw;max-height:82vh;border-radius:var(--radius-sm);object-fit:contain;}.gx-dest-tpl .lightbox-close,.gx-dest-tpl .lightbox-prev,.gx-dest-tpl .lightbox-next{position:absolute;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.3);color:#fff;display:flex;align-items:center;justify-content:center;transition:all .3s ease;}.gx-dest-tpl .lightbox-close:hover,.gx-dest-tpl .lightbox-prev:hover,.gx-dest-tpl .lightbox-next:hover{border-color:var(--accent);color:var(--accent);}.gx-dest-tpl .lightbox-close{top:24px;right:24px;}.gx-dest-tpl .lightbox-prev{left:24px;top:50%;transform:translateY(-50%);}.gx-dest-tpl .lightbox-next{right:24px;top:50%;transform:translateY(-50%);}.gx-dest-tpl .lightbox-counter{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);color:rgba(255,255,255,.7);font-size:.78rem;}.gx-dest-tpl .video-section{padding:var(--section-pad) 0;}.gx-dest-tpl .video-frame{position:relative;border-radius:var(--radius-lg);overflow:hidden;aspect-ratio:16/8;box-shadow:var(--shadow-lg);}.gx-dest-tpl .video-frame img{width:100%;height:100%;object-fit:cover;}.gx-dest-tpl .video-frame::after{content:"";position:absolute;inset:0;background:rgba(10,16,15,.4);}.gx-dest-tpl .video-caption{position:absolute;left:32px;bottom:32px;z-index:3;color:#fff;max-width:460px;}.gx-dest-tpl .video-caption h3{font-size:1.7rem;}.gx-dest-tpl .video-caption p{margin-top:.5em;color:rgba(255,255,255,.82);font-size:.95rem;}.gx-dest-tpl .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:86px;height:86px;border-radius:50%;background:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center;z-index:3;transition:transform .4s var(--ease),background .3s ease;}.gx-dest-tpl .play-btn:hover{transform:translate(-50%,-50%) scale(1.08);background:var(--accent);}.gx-dest-tpl .play-btn svg{width:24px;height:24px;color:var(--c-ink);margin-left:3px;}.gx-dest-tpl .video-modal{position:fixed;inset:0;z-index:200;background:rgba(10,15,14,.94);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;padding:5vw;}.gx-dest-tpl .video-modal.is-open{opacity:1;pointer-events:auto;}.gx-dest-tpl .video-modal .modal-inner{width:100%;max-width:1000px;aspect-ratio:16/9;position:relative;}.gx-dest-tpl .video-modal iframe,.gx-dest-tpl .video-modal video{width:100%;height:100%;border-radius:var(--radius-md);}.gx-dest-tpl .video-modal-close{position:absolute;top:-50px;right:0;color:#fff;width:40px;height:40px;border:1px solid rgba(255,255,255,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;}.gx-dest-tpl .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}.gx-dest-tpl .card-grid.cols-4{grid-template-columns:repeat(4,1fr);}.gx-dest-tpl .poi-card{background:var(--card-bg);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .5s var(--ease),box-shadow .5s var(--ease);display:flex;flex-direction:column;}.gx-dest-tpl .poi-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}.gx-dest-tpl .poi-media{position:relative;aspect-ratio:4/3;overflow:hidden;}.gx-dest-tpl .poi-media img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease);}.gx-dest-tpl .poi-card:hover .poi-media img{transform:scale(1.07);}.gx-dest-tpl .poi-badge{position:absolute;top:14px;left:14px;background:var(--bg-raised);padding:.4em .9em;border-radius:var(--radius-pill);font-family:var(--font-mono);font-size:.66rem;letter-spacing:.04em;text-transform:uppercase;color:var(--brand-dark);}.gx-dest-tpl .poi-rating{position:absolute;top:14px;right:14px;background:rgba(20,32,31,.55);color:#fff;padding:.35em .7em;border-radius:var(--radius-pill);font-size:.78rem;display:flex;align-items:center;gap:.3em;backdrop-filter:blur(4px);}.gx-dest-tpl .poi-rating svg{width:12px;height:12px;color:var(--accent-light);}.gx-dest-tpl .poi-body{padding:20px 22px 24px;display:flex;flex-direction:column;gap:8px;flex:1;}.gx-dest-tpl .poi-body h3{font-size:1.15rem;}.gx-dest-tpl .poi-loc{display:flex;align-items:center;gap:.4em;font-size:.82rem;color:var(--fg-soft);}.gx-dest-tpl .poi-loc svg{width:13px;height:13px;color:var(--accent);}.gx-dest-tpl .poi-desc{font-size:.88rem;color:var(--fg-soft);flex:1;}.gx-dest-tpl .poi-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:14px;border-top:1px solid var(--line);font-size:.82rem;}.gx-dest-tpl .poi-price{font-family:var(--font-mono);font-weight:500;color:var(--brand);}.gx-dest-tpl .poi-foot a{display:flex;align-items:center;gap:.35em;font-weight:600;}.gx-dest-tpl .poi-foot a svg{width:13px;height:13px;transition:transform .3s var(--ease);}.gx-dest-tpl .poi-foot a:hover svg{transform:translateX(3px);}.gx-dest-tpl .slider-section{padding:var(--section-pad) 0;overflow:hidden;}.gx-dest-tpl .slider-viewport{overflow:hidden;}.gx-dest-tpl .slider-track{display:flex;gap:22px;will-change:transform;transition:transform .6s var(--ease);}.gx-dest-tpl .slider-controls{display:flex;gap:12px;}.gx-dest-tpl .slider-btn{width:46px;height:46px;border-radius:50%;border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center;transition:all .3s ease;}.gx-dest-tpl .slider-btn:hover{border-color:var(--accent);color:var(--accent);}.gx-dest-tpl .slider-btn svg{width:16px;height:16px;}.gx-dest-tpl .feature-slide{position:relative;min-width:min(560px,80vw);border-radius:var(--radius-lg);overflow:hidden;aspect-ratio:4/5;}.gx-dest-tpl .feature-slide img{width:100%;height:100%;object-fit:cover;}.gx-dest-tpl .feature-slide::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(12,18,17,.86),transparent 60%);}.gx-dest-tpl .feature-slide-body{position:absolute;left:24px;right:24px;bottom:24px;z-index:2;color:#fff;}.gx-dest-tpl .feature-slide .poi-badge{background:rgba(255,255,255,.92);}.gx-dest-tpl .feature-slide-body h3{font-size:1.5rem;margin-top:10px;}.gx-dest-tpl .feature-slide-body p{font-size:.88rem;color:rgba(255,255,255,.82);margin-top:.5em;}.gx-dest-tpl .feature-slide-body .btn{margin-top:14px;}.gx-dest-tpl .testimonial-slide{min-width:min(480px,86vw);background:var(--card-bg);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-sm);}.gx-dest-tpl .testimonial-stars{display:flex;gap:4px;color:var(--accent);margin-bottom:16px;}.gx-dest-tpl .testimonial-stars svg{width:15px;height:15px;}.gx-dest-tpl .testimonial-slide p{font-family:var(--font-display);font-size:1.2rem;font-style:italic;line-height:1.5;}.gx-dest-tpl .testimonial-person{display:flex;align-items:center;gap:12px;margin-top:22px;}.gx-dest-tpl .testimonial-person img{width:46px;height:46px;border-radius:50%;object-fit:cover;}.gx-dest-tpl .testimonial-person .name{font-weight:600;font-size:.92rem;}.gx-dest-tpl .testimonial-person .loc{font-family:var(--font-mono);font-size:.72rem;color:var(--fg-soft);}.gx-dest-tpl .map-section{padding:var(--section-pad) 0;}.gx-dest-tpl .map-layout{display:grid;grid-template-columns:1fr 1.3fr;gap:1px;background:var(--line);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-md);}.gx-dest-tpl .map-info{background:var(--bg-raised);padding:clamp(28px,4vw,48px);display:flex;flex-direction:column;justify-content:center;gap:20px;}.gx-dest-tpl .map-info h3{font-size:1.7rem;}.gx-dest-tpl .map-info p{color:var(--fg-soft);font-size:.95rem;}.gx-dest-tpl .map-poi-list{display:flex;flex-direction:column;gap:14px;margin-top:6px;}.gx-dest-tpl .map-poi-list li{display:flex;justify-content:space-between;gap:12px;font-size:.86rem;padding-bottom:14px;border-bottom:1px solid var(--line);}.gx-dest-tpl .map-poi-list .name{font-weight:600;}.gx-dest-tpl .map-poi-list .dist{font-family:var(--font-mono);color:var(--fg-soft);font-size:.78rem;}.gx-dest-tpl .map-embed{min-height:420px;background:var(--bg-raised);}.gx-dest-tpl .map-embed iframe{width:100%;height:100%;min-height:420px;border:0;filter:saturate(.85);}.gx-dest-tpl .editorial{padding:var(--section-pad) 0;}.gx-dest-tpl .editorial .container{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,6vw,80px);align-items:center;}.gx-dest-tpl .editorial.reverse .container{grid-template-columns:.95fr 1.05fr;}.gx-dest-tpl .editorial.reverse .editorial-media{order:2;}.gx-dest-tpl .editorial-media{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);position:relative;}.gx-dest-tpl .editorial-media img{aspect-ratio:5/4;object-fit:cover;}.gx-dest-tpl .editorial-content p{color:var(--fg-soft);margin-top:1.1em;max-width:56ch;}.gx-dest-tpl .tag-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:1.6em;}.gx-dest-tpl .tag-row span{font-family:var(--font-mono);font-size:.72rem;padding:.5em 1em;border:1px solid var(--line-strong);border-radius:var(--radius-pill);}.gx-dest-tpl .timeline{margin-top:2em;display:flex;flex-direction:column;}.gx-dest-tpl .timeline-item{display:grid;grid-template-columns:90px 1fr;gap:20px;padding:20px 0;border-top:1px solid var(--line);}.gx-dest-tpl .timeline-item:last-child{border-bottom:1px solid var(--line);}.gx-dest-tpl .timeline-item .year{font-family:var(--font-mono);color:var(--brand);font-size:.85rem;}.gx-dest-tpl .timeline-item h4{font-size:1.05rem;margin-bottom:.3em;}.gx-dest-tpl .timeline-item p{color:var(--fg-soft);font-size:.9rem;}.gx-dest-tpl .stats-section{padding:var(--section-pad) 0;background:var(--brand-dark);color:#fff;position:relative;overflow:hidden;}.gx-dest-tpl .stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;position:relative;z-index:1;}.gx-dest-tpl .stat-item{text-align:center;padding:0 10px;}.gx-dest-tpl .stat-item .num{font-family:var(--font-display);font-size:clamp(2.2rem,4vw,3.4rem);color:var(--accent-light);}.gx-dest-tpl .stat-item .lbl{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;margin-top:.6em;opacity:.85;}.gx-dest-tpl .stats-section .contour-divider{position:absolute;top:0;left:0;opacity:.12;color:#fff;}.gx-dest-tpl .seasons{padding:var(--section-pad) 0;}.gx-dest-tpl .season-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}.gx-dest-tpl .season-card{position:relative;border-radius:var(--radius-lg);overflow:hidden;aspect-ratio:3/4.2;}.gx-dest-tpl .season-card img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease);}.gx-dest-tpl .season-card:hover img{transform:scale(1.08);}.gx-dest-tpl .season-card::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(12,18,17,.88),rgba(12,18,17,.1) 55%);}.gx-dest-tpl .season-body{position:absolute;left:18px;right:18px;bottom:18px;z-index:2;color:#fff;}.gx-dest-tpl .season-body .temp{font-family:var(--font-mono);font-size:.78rem;color:var(--accent-light);}.gx-dest-tpl .season-body h3{font-size:1.35rem;margin-top:.3em;}.gx-dest-tpl .season-body p{font-size:.82rem;color:rgba(255,255,255,.8);margin-top:.5em;}.gx-dest-tpl .itinerary{padding:var(--section-pad) 0;}.gx-dest-tpl .itin-track{display:flex;flex-direction:column;}.gx-dest-tpl .itin-item{display:grid;grid-template-columns:120px 1fr 1.3fr;gap:28px;padding:32px 0;border-top:1px solid var(--line);align-items:center;}.gx-dest-tpl .itin-item:last-child{border-bottom:1px solid var(--line);}.gx-dest-tpl .itin-day{font-family:var(--font-mono);color:var(--brand);}.gx-dest-tpl .itin-day .d-num{font-family:var(--font-display);font-size:2.2rem;color:var(--fg);display:block;}.gx-dest-tpl .itin-content h3{font-size:1.25rem;}.gx-dest-tpl .itin-content p{color:var(--fg-soft);font-size:.9rem;margin-top:.4em;max-width:46ch;}.gx-dest-tpl .itin-media{border-radius:var(--radius-md);overflow:hidden;aspect-ratio:16/9;}.gx-dest-tpl .itin-media img{width:100%;height:100%;object-fit:cover;}.gx-dest-tpl .faq{padding:var(--section-pad) 0;}.gx-dest-tpl .faq-list{max-width:820px;margin:0 auto;}.gx-dest-tpl .faq-item{border-bottom:1px solid var(--line);}.gx-dest-tpl .faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;padding:24px 4px;text-align:left;font-family:var(--font-display);font-size:1.15rem;gap:20px;}.gx-dest-tpl .faq-q .plus{width:30px;height:30px;border-radius:50%;border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;transition:transform .4s var(--ease),border-color .3s ease;}.gx-dest-tpl .faq-q .plus::before,.gx-dest-tpl .faq-q .plus::after{content:"";position:absolute;background:var(--fg);transition:transform .3s ease,opacity .3s ease;}.gx-dest-tpl .faq-q .plus::before{width:10px;height:1.4px;}.gx-dest-tpl .faq-q .plus::after{width:1.4px;height:10px;}.gx-dest-tpl .faq-item.is-open .plus{transform:rotate(135deg);border-color:var(--accent);}.gx-dest-tpl .faq-a{max-height:0;overflow:hidden;transition:max-height .45s var(--ease);}.gx-dest-tpl .faq-a-inner{padding:0 4px 26px;color:var(--fg-soft);max-width:70ch;font-size:.95rem;}.gx-dest-tpl .newsletter{padding:var(--section-pad) 0;}.gx-dest-tpl .newsletter-box{background:var(--brand);color:#fff;border-radius:var(--radius-lg);padding:clamp(36px,6vw,72px);display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;position:relative;overflow:hidden;}.gx-dest-tpl .newsletter-box h2{font-size:clamp(1.8rem,3vw,2.5rem);}.gx-dest-tpl .newsletter-box p{color:rgba(255,255,255,.82);margin-top:.8em;max-width:44ch;}.gx-dest-tpl .newsletter-form{display:flex;flex-direction:column;gap:14px;}.gx-dest-tpl .newsletter-input-row{display:flex;gap:10px;}.gx-dest-tpl .newsletter-input-row input{flex:1;padding:1em 1.3em;border-radius:var(--radius-pill);border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;}.gx-dest-tpl .newsletter-input-row input::placeholder{color:rgba(255,255,255,.6);}.gx-dest-tpl .newsletter-consent{display:flex;align-items:flex-start;gap:.6em;font-size:.78rem;color:rgba(255,255,255,.75);}.gx-dest-tpl .newsletter-consent input{margin-top:.2em;}.gx-dest-tpl .newsletter-note{font-family:var(--font-mono);font-size:.75rem;margin-top:8px;color:rgba(255,255,255,.75);display:none;}.gx-dest-tpl .newsletter-note.is-visible{display:block;}.gx-dest-tpl .final-cta{position:relative;min-height:66vh;display:flex;align-items:center;color:#fff;overflow:hidden;}.gx-dest-tpl .final-cta .hero-media::after{background:linear-gradient(120deg,rgba(15,22,21,.82),rgba(30,69,82,.55));}.gx-dest-tpl .final-cta-inner{position:relative;z-index:2;text-align:center;width:100%;padding:0 var(--gutter);}.gx-dest-tpl .final-cta h2{font-size:clamp(2.4rem,5.5vw,4.4rem);max-width:16ch;margin:0 auto;}.gx-dest-tpl .final-cta p{max-width:48ch;margin:1em auto 0;color:rgba(255,255,255,.82);}.gx-dest-tpl .final-cta-actions{display:flex;justify-content:center;gap:16px;margin-top:2.2em;flex-wrap:wrap;}.gx-dest-tpl .site-footer{background:var(--c-ink);color:#eee6d6;padding:80px 0 0;}.gx-dest-tpl .footer-top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1.2fr;gap:40px;padding-bottom:56px;border-bottom:1px solid rgba(255,255,255,.12);}.gx-dest-tpl .footer-brand .logo{color:#fff;margin-bottom:16px;}.gx-dest-tpl .footer-brand p{color:rgba(238,230,214,.65);font-size:.9rem;max-width:32ch;}.gx-dest-tpl .footer-social{display:flex;gap:10px;margin-top:20px;}.gx-dest-tpl .footer-social a{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;transition:all .3s ease;}.gx-dest-tpl .footer-social a:hover{border-color:var(--accent);color:var(--accent);}.gx-dest-tpl .footer-social svg{width:15px;height:15px;}.gx-dest-tpl .footer-col h4{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-light);margin-bottom:18px;}.gx-dest-tpl .footer-col ul{display:flex;flex-direction:column;gap:11px;}.gx-dest-tpl .footer-col a{color:rgba(238,230,214,.75);font-size:.9rem;transition:color .3s ease;}.gx-dest-tpl .footer-col a:hover{color:#fff;}.gx-dest-tpl .footer-contact li{display:flex;gap:.6em;font-size:.88rem;color:rgba(238,230,214,.75);margin-bottom:12px;}.gx-dest-tpl .footer-contact svg{width:15px;height:15px;color:var(--accent);flex-shrink:0;margin-top:2px;}.gx-dest-tpl .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding:24px 0;font-size:.8rem;color:rgba(238,230,214,.55);flex-wrap:wrap;gap:12px;}.gx-dest-tpl .footer-legal{display:flex;gap:20px;}.gx-dest-tpl .footer-legal a:hover{color:#fff;}@media (max-width:1024px){.gx-dest-tpl .main-nav,.gx-dest-tpl .header-actions .theme-toggle ~ .btn{display:none;}.gx-dest-tpl .hamburger{display:flex;}.gx-dest-tpl .hero-grid{grid-template-columns:1fr;}.gx-dest-tpl .hero-meta-panel{border-left:none;border-top:1px solid rgba(255,255,255,.28);padding-left:0;padding-top:20px;flex-direction:row;flex-wrap:wrap;}.gx-dest-tpl .intro .container,.gx-dest-tpl .editorial .container,.gx-dest-tpl .editorial.reverse .container{grid-template-columns:1fr;}.gx-dest-tpl .editorial.reverse .editorial-media{order:0;}.gx-dest-tpl .info-grid{grid-template-columns:repeat(2,1fr);}.gx-dest-tpl .highlight-grid,.gx-dest-tpl .card-grid{grid-template-columns:repeat(2,1fr);}.gx-dest-tpl .card-grid.cols-4{grid-template-columns:repeat(2,1fr);}.gx-dest-tpl .gallery-grid{grid-template-columns:repeat(2,1fr);}.gx-dest-tpl .masonry-gallery{columns:2 220px;}.gx-dest-tpl .map-layout{grid-template-columns:1fr;}.gx-dest-tpl .stats-grid{grid-template-columns:repeat(3,1fr);row-gap:32px;}.gx-dest-tpl .season-grid{grid-template-columns:repeat(2,1fr);}.gx-dest-tpl .itin-item{grid-template-columns:1fr;gap:14px;}.gx-dest-tpl .itin-media{order:-1;}.gx-dest-tpl .newsletter-box{grid-template-columns:1fr;}.gx-dest-tpl .footer-top{grid-template-columns:1fr 1fr;}}@media (max-width:640px){.gx-dest-tpl{--section-pad:64px;}.gx-dest-tpl .hero{align-items:flex-end;}.gx-dest-tpl .hero-scroll{display:none;}.gx-dest-tpl .hero-title{font-size:clamp(2.4rem,11vw,3.4rem);}.gx-dest-tpl .highlight-grid,.gx-dest-tpl .card-grid,.gx-dest-tpl .card-grid.cols-4{grid-template-columns:1fr;}.gx-dest-tpl .info-grid{grid-template-columns:1fr 1fr;}.gx-dest-tpl .gallery-grid{grid-template-columns:1fr 1fr;grid-auto-rows:140px;}.gx-dest-tpl .gallery-item.span-2{grid-column:span 2;}.gx-dest-tpl .masonry-gallery{columns:2 140px;}.gx-dest-tpl .stats-grid{grid-template-columns:repeat(2,1fr);}.gx-dest-tpl .season-grid{grid-template-columns:1fr;}.gx-dest-tpl .itin-item{grid-template-columns:1fr;}.gx-dest-tpl .footer-top{grid-template-columns:1fr;}.gx-dest-tpl .video-frame{aspect-ratio:4/5;}.gx-dest-tpl .newsletter-input-row{flex-direction:column;}.gx-dest-tpl .final-cta-actions{flex-direction:column;align-items:stretch;}}.gx-dest-tpl .map-fullbleed{position:relative;width:100%;}.gx-dest-tpl .map-canvas{width:100%;height:clamp(460px,68vh,760px);background:var(--bg-raised);border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;}.gx-dest-tpl .map-canvas > *{width:100%;height:100%;}.gx-dest-tpl .map-info--floating{position:absolute;top:28px;left:max(24px,calc((100% - var(--container)) / 2 + var(--gutter)));width:min(360px,calc(100% - 48px));max-height:calc(100% - 56px);overflow:auto;background:var(--bg-raised);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:24px;z-index:5;}.gx-dest-tpl .map-info--floating h3{font-size:1.35rem;}.gx-dest-tpl .map-info--floating .map-poi-list{margin-top:14px;}.gx-dest-tpl .map-info--floating .btn{margin-top:6px;}@media (max-width:900px){.gx-dest-tpl .map-canvas{height:clamp(360px,52vh,520px);}.gx-dest-tpl .map-info--floating{position:static;width:auto;max-height:none;margin:0 var(--gutter);margin-top:-40px;}}.gx-dest-tpl .gx-map-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;height:100%;padding:32px;background: repeating-linear-gradient(45deg,rgba(45,95,110,.06) 0 12px,transparent 12px 24px);color:var(--fg-soft);font-family:var(--font-mono);font-size:.8rem;}.gx-dest-tpl .gx-map-placeholder span{font-size:.92rem;color:var(--brand);letter-spacing:.06em;text-transform:uppercase;}.gx-dest-tpl .gx-map-placeholder small{max-width:34ch;opacity:.8;}
+</style>
+<div class="gx-dest-tpl" data-theme="light">
+<section class="map-section destination-map" id="carte" data-gx-destination-map>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">S'orienter</span>
+      <h2>Carte de la destination</h2>
+      <p>Les points d'intérêt de la destination sont chargés automatiquement depuis Go&nbsp;Exploria.</p>
+    </div>
+  </div>
+  <div class="map-fullbleed reveal">
+    <div class="map-canvas">
+      <div class="gx-map-placeholder" data-gx-map-canvas>
+        <span>Carte dynamique Go Exploria</span>
+        <small>Le site public affiche ici la carte réelle de la destination, en pleine largeur.</small>
+      </div>
+    </div>
+    <div class="map-info map-info--floating">
+      <h3 data-gx-map-title>Baie-Saint-Paul</h3>
+      <p class="coord" data-gx-map-coord>47.4501° N, 70.5019° O</p>
+      <p data-gx-map-address>Repérez en un coup d'œil les lieux, activités et adresses de la destination.</p>
+      <ul class="map-poi-list" data-gx-map-list>
+        <li><span class="name">Points d'intérêt</span><span class="dist">auto</span></li>
+        <li><span class="name">Activités</span><span class="dist">auto</span></li>
+        <li><span class="name">Hébergements &amp; tables</span><span class="dist">auto</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section class="intro destination-intro" id="a-propos">
+  <div class="container">
+    <div class="intro-media reveal">
+      <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=900&auto=format&fit=crop" alt="Rue principale de Baie-Saint-Paul avec ses galeries d'art" loading="lazy">
+      <div class="intro-media-tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/><circle cx="12" cy="9" r="2.4"/></svg>
+        Charlevoix, Québec
+      </div>
+    </div>
+    <div class="intro-content reveal">
+      <span class="eyebrow">L'arrivée</span>
+      <h2>Un village d'artistes niché entre fleuve et montagnes</h2>
+      <p>Fondée sur les rives sinueuses de la rivière du Gouffre, Baie-Saint-Paul s'est bâtie une réputation de capitale culturelle depuis plus d'un siècle. Ses galeries, ses ateliers d'artistes et son architecture patrimoniale cohabitent avec des paysages spectaculaires classés réserve de la biosphère par l'UNESCO.</p>
+      <p>Ici, chaque saison redessine le paysage : les couleurs flamboyantes de l'automne, la lumière rasante de l'hiver, le vert éclatant de l'été. Une destination à vivre à un rythme différent.</p>
+      <div class="intro-stat">
+        <div>
+          <div class="num">+40</div>
+          <div class="label">Galeries et ateliers d'art</div>
+        </div>
+        <div>
+          <div class="num">1972</div>
+          <div class="label">Réserve de la biosphère UNESCO</div>
+        </div>
+      </div>
+      <a href="#points-forts" class="btn btn-outline">
+        En savoir plus
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+<section class="info-strip destination-info">
+  <div class="container">
+    <div class="info-grid">
+      <div class="info-card reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div class="val">7 300</div><div class="lbl">Population</div>
+      </div>
+      <div class="info-card reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/><circle cx="12" cy="9" r="2.4"/></svg>
+        <div class="val">Charlevoix</div><div class="lbl">Région</div>
+      </div>
+      <div class="info-card reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
+        <div class="val">Juin – Oct.</div><div class="lbl">Meilleure période</div>
+      </div>
+      <div class="info-card reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg>
+        <div class="val">CAD $</div><div class="lbl">Monnaie</div>
+      </div>
+      <div class="info-card reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <div class="val">Français</div><div class="lbl">Langue</div>
+      </div>
+      <div class="info-card reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3a15 15 0 0 1 0 18M3 12h18"/></svg>
+        <div class="val">Canada</div><div class="lbl">Pays</div>
+      </div>
+      <div class="info-card reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2a5 5 0 0 0-5 5c0 3.87 5 12 5 12s5-8.13 5-12a5 5 0 0 0-5-5z"/><circle cx="12" cy="7" r="1.6"/></svg>
+        <div class="val">120 m</div><div class="lbl">Altitude</div>
+      </div>
+      <div class="info-card reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"/></svg>
+        <div class="val">18°C</div><div class="lbl">Température moyenne</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="highlights destination-highlights" id="points-forts">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Pourquoi visiter</span>
+      <h2>Ce qui rend Baie-Saint-Paul unique</h2>
+      <p>Entre paysages classés, gastronomie de terroir et scène artistique vivante, la région se découvre à son propre rythme.</p>
+    </div>
+    <div class="highlight-grid reveal-stagger">
+      <article class="highlight-card reveal">
+        <div class="highlight-media">
+          <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800&auto=format&fit=crop" alt="Paysage naturel de Charlevoix" loading="lazy">
+          <span class="highlight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg></span>
+        </div>
+        <div class="highlight-body">
+          <h3>Nature spectaculaire</h3>
+          <p>Fleuve, montagnes et vallées se rencontrent dans un paysage classé réserve de la biosphère.</p>
+        </div>
+      </article>
+      <article class="highlight-card reveal">
+        <div class="highlight-media">
+          <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?q=80&w=800&auto=format&fit=crop" alt="Galerie d'art à Baie-Saint-Paul" loading="lazy">
+          <span class="highlight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2a10 10 0 1 0 0 20 3 3 0 0 0 0-6h-1a2 2 0 0 1 0-4h4a3 3 0 0 0 0-6z"/></svg></span>
+        </div>
+        <div class="highlight-body">
+          <h3>Culture vivante</h3>
+          <p>Plus de quarante galeries et ateliers d'artistes ouverts au public, hérités d'un siècle de tradition.</p>
+        </div>
+      </article>
+      <article class="highlight-card reveal">
+        <div class="highlight-media">
+          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800&auto=format&fit=crop" alt="Gastronomie locale de Charlevoix" loading="lazy">
+          <span class="highlight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 3v7a3 3 0 0 0 3 3v8M4 3v7M8 3v10M20 3c-2 0-3 2-3 5s1 5 3 5v8"/></svg></span>
+        </div>
+        <div class="highlight-body">
+          <h3>Gastronomie de terroir</h3>
+          <p>Fromageries, cidreries et tables champêtres célèbrent les produits du garde-manger charlevoisien.</p>
+        </div>
+      </article>
+      <article class="highlight-card reveal">
+        <div class="highlight-media">
+          <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=800&auto=format&fit=crop" alt="Randonnée en montagne à Charlevoix" loading="lazy">
+          <span class="highlight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21l4-14 4 14M2 21h20M11 10L8 3M13 10l3-7"/></svg></span>
+        </div>
+        <div class="highlight-body">
+          <h3>Aventures en plein air</h3>
+          <p>Randonnée, kayak de mer, vélo de montagne : le terrain se prête à toutes les intensités.</p>
+        </div>
+      </article>
+      <article class="highlight-card reveal">
+        <div class="highlight-media">
+          <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=800&auto=format&fit=crop" alt="Patrimoine architectural de Charlevoix" loading="lazy">
+          <span class="highlight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg></span>
+        </div>
+        <div class="highlight-body">
+          <h3>Patrimoine authentique</h3>
+          <p>Maisons ancestrales, moulins et églises témoignent de trois siècles d'histoire québécoise.</p>
+        </div>
+      </article>
+      <article class="highlight-card reveal">
+        <div class="highlight-media">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop" alt="Famille en vacances à Charlevoix" loading="lazy">
+          <span class="highlight-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1M14 21v-1a5 5 0 0 1 8-4"/></svg></span>
+        </div>
+        <div class="highlight-body">
+          <h3>Idéal en famille</h3>
+          <p>Plages fluviales, fermes éducatives et sentiers doux conviennent aux visiteurs de tous âges.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+<section class="highlights destination-activities" id="activites">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">À faire sur place</span>
+      <h2>Activités à découvrir</h2>
+      <p>Des expériences pour tous les rythmes, de la balade contemplative à l'aventure en montagne.</p>
+    </div>
+    <div class="card-grid cols-4 reveal-stagger">
+
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=700&auto=format&fit=crop" alt="Randonnée au Massif de Charlevoix" loading="lazy">
+          <span class="poi-badge">Plein air</span>
+          <span class="poi-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.8</span>
+        </div>
+        <div class="poi-body">
+          <h3>Randonnée au Massif</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Petite-Rivière-St-François</div>
+          <p class="poi-desc">Sentiers panoramiques offrant une vue imprenable sur le fleuve Saint-Laurent.</p>
+          <div class="poi-foot">
+            <span class="poi-price">Dès 0 $ · 3h</span>
+            <a href="#">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?q=80&w=700&auto=format&fit=crop" alt="Kayak de mer sur le fleuve Saint-Laurent" loading="lazy">
+          <span class="poi-badge">Nautique</span>
+          <span class="poi-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.9</span>
+        </div>
+        <div class="poi-body">
+          <h3>Kayak de mer au fleuve</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Port de Baie-Saint-Paul</div>
+          <p class="poi-desc">Une descente guidée à la recherche des bélugas du Saint-Laurent.</p>
+          <div class="poi-foot">
+            <span class="poi-price">65 $ · 2h30</span>
+            <a href="#">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?q=80&w=700&auto=format&fit=crop" alt="Circuit des galeries d'art" loading="lazy">
+          <span class="poi-badge">Culture</span>
+          <span class="poi-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.7</span>
+        </div>
+        <div class="poi-body">
+          <h3>Circuit des galeries d'art</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Rue Saint-Jean-Baptiste</div>
+          <p class="poi-desc">Une promenade libre à travers quarante galeries et ateliers d'artistes.</p>
+          <div class="poi-foot">
+            <span class="poi-price">Gratuit · 2h</span>
+            <a href="#">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1516214104703-d870798883c5?q=80&w=700&auto=format&fit=crop" alt="Vélo de montagne au Massif de Charlevoix" loading="lazy">
+          <span class="poi-badge">Sport</span>
+          <span class="poi-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.6</span>
+        </div>
+        <div class="poi-body">
+          <h3>Vélo de montagne</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Centre de vélo de montagne</div>
+          <p class="poi-desc">Plus de 50 km de sentiers techniques pour tous les niveaux.</p>
+          <div class="poi-foot">
+            <span class="poi-price">45 $ · Journée</span>
+            <a href="#">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?q=80&w=700&auto=format&fit=crop" alt="Observation des baleines" loading="lazy">
+          <span class="poi-badge">Faune</span>
+          <span class="poi-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.9</span>
+        </div>
+        <div class="poi-body">
+          <h3>Croisière aux baleines</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Baie-Sainte-Catherine</div>
+          <p class="poi-desc">Observation des rorquals et bélugas au confluent du Saguenay.</p>
+          <div class="poi-foot">
+            <span class="poi-price">89 $ · 3h</span>
+            <a href="#">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=700&auto=format&fit=crop" alt="Marché public de Baie-Saint-Paul" loading="lazy">
+          <span class="poi-badge">Terroir</span>
+          <span class="poi-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.7</span>
+        </div>
+        <div class="poi-body">
+          <h3>Marché public et fermes</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Centre-ville</div>
+          <p class="poi-desc">Fromages fins, cidres de glace et produits maraîchers du garde-manger local.</p>
+          <div class="poi-foot">
+            <span class="poi-price">Gratuit · 1h30</span>
+            <a href="#">Découvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+<section class="slider-section destination-featured-activities" id="activites-vedette">
+  <div class="container">
+    <div class="gallery-head reveal">
+      <div class="section-head" style="margin-bottom:0;">
+        <span class="eyebrow">Sélection Go Exploria</span>
+        <h2>Activités en vedette</h2>
+      </div>
+      <div class="slider-controls">
+        <button class="slider-btn slider-prev" aria-label="Précédent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button class="slider-btn slider-next" aria-label="Suivant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+    <div class="slider-viewport reveal" data-slider>
+      <div class="slider-track">
+        <div class="feature-slide">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop" alt="Sommet du Massif de Charlevoix" loading="lazy">
+          <div class="feature-slide-body">
+            <span class="poi-badge">Coup de cœur</span>
+            <h3>Via ferrata du Massif</h3>
+            <p>Grimpez la falaise face au fleuve avec vue sur l'Isle-aux-Coudres.</p>
+            <a href="#" class="btn btn-primary btn-sm">Réserver</a>
+          </div>
+        </div>
+        <div class="feature-slide">
+          <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=800&auto=format&fit=crop" alt="Randonnée au parc des Grands-Jardins" loading="lazy">
+          <div class="feature-slide-body">
+            <span class="poi-badge">Nature</span>
+            <h3>Parc des Grands-Jardins</h3>
+            <p>Taïga et caribous à quelques minutes du centre-ville.</p>
+            <a href="#" class="btn btn-primary btn-sm">Réserver</a>
+          </div>
+        </div>
+        <div class="feature-slide">
+          <img src="https://images.unsplash.com/photo-1508615039623-a25605d2b022?q=80&w=800&auto=format&fit=crop" alt="Descente en canyon" loading="lazy">
+          <div class="feature-slide-body">
+            <span class="poi-badge">Sensation</span>
+            <h3>Canyoning des Sept-Chutes</h3>
+            <p>Rappels et glissades naturelles dans un canyon spectaculaire.</p>
+            <a href="#" class="btn btn-primary btn-sm">Réserver</a>
+          </div>
+        </div>
+        <div class="feature-slide">
+          <img src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?q=80&w=800&auto=format&fit=crop" alt="Vol en montgolfière au-dessus de Charlevoix" loading="lazy">
+          <div class="feature-slide-body">
+            <span class="poi-badge">Exclusif</span>
+            <h3>Montgolfière au lever du jour</h3>
+            <p>Survolez le fleuve et les villages endormis dans la lumière du matin.</p>
+            <a href="#" class="btn btn-primary btn-sm">Réserver</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="highlights destination-must-see" id="destinations">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Ne pas manquer</span>
+      <h2>Les lieux incontournables</h2>
+    </div>
+    <div class="card-grid reveal-stagger">
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=700&auto=format&fit=crop" alt="Musée d'art contemporain de Baie-Saint-Paul" loading="lazy">
+          <span class="poi-badge">Culture</span>
+        </div>
+        <div class="poi-body">
+          <h3>Musée d'art contemporain</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Rue Ambroise-Fafard</div>
+          <p class="poi-desc">Collection permanente et expositions temporaires d'artistes québécois.</p>
+          <div class="poi-foot"><span class="poi-price">15 $</span><a href="#">Voir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5?q=80&w=700&auto=format&fit=crop" alt="Isle-aux-Coudres" loading="lazy">
+          <span class="poi-badge">Île</span>
+        </div>
+        <div class="poi-body">
+          <h3>Isle-aux-Coudres</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Accessible par traversier gratuit</div>
+          <p class="poi-desc">Moulins historiques, vélo de campagne et vue imprenable sur le fleuve.</p>
+          <div class="poi-foot"><span class="poi-price">Gratuit</span><a href="#">Voir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=700&auto=format&fit=crop" alt="Parc national des Hautes-Gorges" loading="lazy">
+          <span class="poi-badge">Nature</span>
+        </div>
+        <div class="poi-body">
+          <h3>Parc des Hautes-Gorges</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>45 min du centre-ville</div>
+          <p class="poi-desc">Falaises de plus de 800 mètres surplombant la rivière Malbaie.</p>
+          <div class="poi-foot"><span class="poi-price">9,50 $</span><a href="#">Voir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+<section class="gallery destination-gallery" id="galerie">
+  <div class="container">
+    <div class="gallery-head reveal">
+      <div class="section-head" style="margin-bottom:0;">
+        <span class="eyebrow">En images</span>
+        <h2>Baie-Saint-Paul en photos</h2>
+      </div>
+      <a href="#" class="btn btn-outline">
+        Voir toutes les photos
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+    <div class="gallery-grid reveal">
+      <div class="gallery-item span-2 row-2" data-lightbox-src="https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1400&auto=format&fit=crop" data-lightbox-alt="Vue panoramique de Baie-Saint-Paul">
+        <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=900&auto=format&fit=crop" alt="Vue panoramique de Baie-Saint-Paul" loading="lazy">
+        <div class="g-overlay"><span>Vue panoramique</span></div>
+      </div>
+      <div class="gallery-item" data-lightbox-src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop" data-lightbox-alt="Forêt d'automne">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop" alt="Forêt d'automne" loading="lazy">
+        <div class="g-overlay"><span>Couleurs d'automne</span></div>
+      </div>
+      <div class="gallery-item" data-lightbox-src="https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5?q=80&w=1200&auto=format&fit=crop" data-lightbox-alt="Rivière du Gouffre">
+        <img src="https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5?q=80&w=600&auto=format&fit=crop" alt="Rivière du Gouffre" loading="lazy">
+        <div class="g-overlay"><span>Rivière du Gouffre</span></div>
+      </div>
+      <div class="gallery-item" data-lightbox-src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1200&auto=format&fit=crop" data-lightbox-alt="Sommets de Charlevoix">
+        <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=600&auto=format&fit=crop" alt="Sommets de Charlevoix" loading="lazy">
+        <div class="g-overlay"><span>Sommets environnants</span></div>
+      </div>
+      <div class="gallery-item" data-lightbox-src="https://images.unsplash.com/photo-1508615039623-a25605d2b022?q=80&w=1200&auto=format&fit=crop" data-lightbox-alt="Chaîne de montagnes">
+        <img src="https://images.unsplash.com/photo-1508615039623-a25605d2b022?q=80&w=600&auto=format&fit=crop" alt="Chaîne de montagnes" loading="lazy">
+        <div class="g-overlay"><span>Chaîne des Laurentides</span></div>
+      </div>
+      <div class="gallery-item span-2" data-lightbox-src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?q=80&w=1400&auto=format&fit=crop" data-lightbox-alt="Panorama de montagnes">
+        <img src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?q=80&w=900&auto=format&fit=crop" alt="Panorama de montagnes" loading="lazy">
+        <div class="g-overlay"><span>Panorama d'automne</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="gallery destination-gallery-masonry">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Instants glanés</span>
+      <h2>Carnet visuel de la région</h2>
+    </div>
+    <div class="masonry-gallery reveal">
+      <div class="m-item" data-lightbox-src="https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=1200&auto=format&fit=crop" data-lightbox-alt="Forêt automnale">
+        <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=500&auto=format&fit=crop" alt="Forêt automnale" loading="lazy">
+      </div>
+      <div class="m-item" data-lightbox-src="https://images.unsplash.com/photo-1476231682828-37e571bc172f?q=80&w=1200&auto=format&fit=crop" data-lightbox-alt="Sentier forestier">
+        <img src="https://images.unsplash.com/photo-1476231682828-37e571bc172f?q=80&w=500&auto=format&fit=crop" alt="Sentier forestier" loading="lazy">
+      </div>
+      <div class="m-item" data-lightbox-src="https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=1200&auto=format&fit=crop" data-lightbox-alt="Coucher de soleil sur les montagnes">
+        <img src="https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=500&auto=format&fit=crop" alt="Coucher de soleil" loading="lazy">
+      </div>
+      <div class="m-item" data-lightbox-src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=1200&auto=format&fit=crop" data-lightbox-alt="Lac paisible">
+        <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=500&auto=format&fit=crop" alt="Lac paisible" loading="lazy">
+      </div>
+      <div class="m-item" data-lightbox-src="https://images.unsplash.com/photo-1439066615861-d1af74d74000?q=80&w=1200&auto=format&fit=crop" data-lightbox-alt="Montagnes brumeuses">
+        <img src="https://images.unsplash.com/photo-1439066615861-d1af74d74000?q=80&w=500&auto=format&fit=crop" alt="Montagnes brumeuses" loading="lazy">
+      </div>
+      <div class="m-item" data-lightbox-src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=1200&auto=format&fit=crop" data-lightbox-alt="Vallée verdoyante">
+        <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=500&auto=format&fit=crop" alt="Vallée verdoyante" loading="lazy">
+      </div>
+      <div class="m-item" data-lightbox-src="https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?q=80&w=1200&auto=format&fit=crop" data-lightbox-alt="Canyon et rivière">
+        <img src="https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?q=80&w=500&auto=format&fit=crop" alt="Canyon et rivière" loading="lazy">
+      </div>
+      <div class="m-item" data-lightbox-src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1200&auto=format&fit=crop" data-lightbox-alt="Lac de montagne">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=500&auto=format&fit=crop" alt="Lac de montagne" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- lightbox markup shared by gallery + masonry -->
+<section class="video-section destination-video">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Immersion</span>
+      <h2>Baie-Saint-Paul vue du ciel</h2>
+    </div>
+    <div class="video-frame reveal">
+      <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1600&auto=format&fit=crop" alt="Vue aérienne de Baie-Saint-Paul" loading="lazy">
+      <button class="play-btn" data-video-play data-video-type="youtube" data-video-src="https://www.youtube.com/embed/dQw4w9WgXcQ" aria-label="Lancer la vidéo">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="video-caption">
+        <h3>Trois minutes à Charlevoix</h3>
+        <p>Une immersion aérienne entre fleuve, montagnes et villages patrimoniaux.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="highlights destination-hotels" id="hebergements">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Séjourner</span>
+      <h2>Où séjourner ?</h2>
+      <p>Des auberges patrimoniales aux chalets nichés en forêt, un hébergement pour chaque style de voyage.</p>
+    </div>
+    <div class="card-grid reveal-stagger">
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=700&auto=format&fit=crop" alt="Auberge patrimoniale à Baie-Saint-Paul" loading="lazy">
+          <span class="poi-badge">Auberge</span>
+          <span class="poi-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.8</span>
+        </div>
+        <div class="poi-body">
+          <h3>Auberge la Muse</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Centre-ville</div>
+          <div class="poi-foot"><span class="poi-price">189 $ / nuit</span><a href="#">Réserver <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=700&auto=format&fit=crop" alt="Hôtel avec vue sur le fleuve" loading="lazy">
+          <span class="poi-badge">Hôtel</span>
+          <span class="poi-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.6</span>
+        </div>
+        <div class="poi-body">
+          <h3>Hôtel du Fleuve</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Front fluvial</div>
+          <div class="poi-foot"><span class="poi-price">249 $ / nuit</span><a href="#">Réserver <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?q=80&w=700&auto=format&fit=crop" alt="Chalet en forêt à Charlevoix" loading="lazy">
+          <span class="poi-badge">Chalet</span>
+          <span class="poi-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.9</span>
+        </div>
+        <div class="poi-body">
+          <h3>Chalets du Massif</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Petite-Rivière-St-François</div>
+          <div class="poi-foot"><span class="poi-price">320 $ / nuit</span><a href="#">Réserver <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+<section class="highlights destination-restaurants" id="restaurants">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Se régaler</span>
+      <h2>Les meilleures adresses</h2>
+    </div>
+    <div class="card-grid reveal-stagger">
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=700&auto=format&fit=crop" alt="Restaurant gastronomique de Charlevoix" loading="lazy">
+          <span class="poi-badge">Gastronomique</span>
+          <span class="poi-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.9</span>
+        </div>
+        <div class="poi-body">
+          <h3>Le Saint-Pub</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Rue Saint-Jean-Baptiste</div>
+          <p class="poi-desc">Cuisine de brasserie artisanale et produits régionaux.</p>
+          <div class="poi-foot"><span class="poi-price">$$ · Québécoise</span><a href="#">Réserver <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?q=80&w=700&auto=format&fit=crop" alt="Bistro de fromagerie" loading="lazy">
+          <span class="poi-badge">Bistro</span>
+          <span class="poi-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.7</span>
+        </div>
+        <div class="poi-body">
+          <h3>La Fromagerie du Terroir</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Route du fleuve</div>
+          <p class="poi-desc">Plateaux de fromages fins et cidres de glace en accord.</p>
+          <div class="poi-foot"><span class="poi-price">$ · Terroir</span><a href="#">Réserver <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=700&auto=format&fit=crop" alt="Table champêtre" loading="lazy">
+          <span class="poi-badge">Table champêtre</span>
+          <span class="poi-rating"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>4.8</span>
+        </div>
+        <div class="poi-body">
+          <h3>La Ferme des Monts</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Rang Sainte-Croix</div>
+          <p class="poi-desc">Menu dégustation entièrement issu de la production maison.</p>
+          <div class="poi-foot"><span class="poi-price">$$$ · Terroir</span><a href="#">Réserver <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+<section class="editorial destination-gastronomy">
+  <div class="container">
+    <div class="editorial-media reveal">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=900&auto=format&fit=crop" alt="Table de produits du terroir charlevoisien" loading="lazy">
+    </div>
+    <div class="editorial-content reveal">
+      <span class="eyebrow">Le garde-manger</span>
+      <h2>Une gastronomie ancrée dans le territoire</h2>
+      <p>Charlevoix cultive depuis des générations une agriculture de niche : agneau de pré-salé, fromages fins primés, cidres de glace et micro-brasseries artisanales composent une route gourmande reconnue à l'échelle internationale.</p>
+      <div class="tag-row">
+        <span>Agneau de Charlevoix</span>
+        <span>Fromages fins</span>
+        <span>Cidre de glace</span>
+        <span>Vergers</span>
+        <span>Micro-brasseries</span>
+      </div>
+      <a href="#restaurants" class="btn btn-outline">
+        La route gourmande
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+<section class="editorial reverse destination-heritage">
+  <div class="container">
+    <div class="editorial-media reveal">
+      <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=900&auto=format&fit=crop" alt="Architecture patrimoniale de Baie-Saint-Paul" loading="lazy">
+    </div>
+    <div class="editorial-content reveal">
+      <span class="eyebrow">Mémoire vivante</span>
+      <h2>Culture et patrimoine</h2>
+      <p>Depuis la fin du XIXe siècle, peintres et artisans sont attirés par la lumière unique de Charlevoix. Cette tradition artistique cohabite avec un patrimoine bâti exceptionnel, préservé au fil des générations.</p>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="year">1890</span>
+          <div><h4>Arrivée des premiers peintres</h4><p>Le Groupe de Baie-Saint-Paul pose les bases de la vocation artistique du village.</p></div>
+        </div>
+        <div class="timeline-item">
+          <span class="year">1972</span>
+          <div><h4>Réserve de la biosphère</h4><p>L'UNESCO reconnaît la richesse écologique et culturelle de la région de Charlevoix.</p></div>
+        </div>
+        <div class="timeline-item">
+          <span class="year">Aujourd'hui</span>
+          <div><h4>Capitale culturelle vivante</h4><p>Festivals, résidences d'artistes et symposiums animent le village toute l'année.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="highlights destination-events" id="evenements">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Agenda</span>
+      <h2>Événements à venir</h2>
+    </div>
+    <div class="card-grid cols-4 reveal-stagger">
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=700&auto=format&fit=crop" alt="Symposium de peinture" loading="lazy">
+          <span class="poi-badge">14–22 Sept.</span>
+        </div>
+        <div class="poi-body">
+          <h3>Symposium de la nouvelle peinture</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Centre d'exposition</div>
+          <p class="poi-desc">Artistes en création publique dans les rues du village.</p>
+          <div class="poi-foot"><a href="#">Détails <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=700&auto=format&fit=crop" alt="Festival gourmand" loading="lazy">
+          <span class="poi-badge">3–5 Oct.</span>
+        </div>
+        <div class="poi-body">
+          <h3>Route des saveurs de Charlevoix</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Centre-ville</div>
+          <p class="poi-desc">Producteurs et chefs locaux réunis pour une fin de semaine gourmande.</p>
+          <div class="poi-foot"><a href="#">Détails <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=700&auto=format&fit=crop" alt="Marche des couleurs d'automne" loading="lazy">
+          <span class="poi-badge">10 Oct.</span>
+        </div>
+        <div class="poi-body">
+          <h3>La Marche des couleurs</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Parc des Grands-Jardins</div>
+          <p class="poi-desc">Randonnée guidée au sommet de la saison des couleurs.</p>
+          <div class="poi-foot"><a href="#">Détails <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+      <article class="poi-card reveal">
+        <div class="poi-media">
+          <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=700&auto=format&fit=crop" alt="Marché de Noël" loading="lazy">
+          <span class="poi-badge">6–8 Déc.</span>
+        </div>
+        <div class="poi-body">
+          <h3>Marché de Noël artisanal</h3>
+          <div class="poi-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-7.4 7-13a7 7 0 1 0-14 0c0 5.6 7 13 7 13z"/></svg>Place de l'église</div>
+          <p class="poi-desc">Artisans locaux, chocolat chaud et lumières hivernales.</p>
+          <div class="poi-foot"><a href="#">Détails <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+<section class="highlights destination-experiences">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Immersion totale</span>
+      <h2>Expériences à ne pas manquer</h2>
+    </div>
+    <div class="highlight-grid reveal-stagger">
+      <article class="highlight-card reveal">
+        <div class="highlight-media" style="aspect-ratio:4/5;">
+          <img src="https://images.unsplash.com/photo-1516214104703-d870798883c5?q=80&w=800&auto=format&fit=crop" alt="Randonnée immersive" loading="lazy">
+        </div>
+        <div class="highlight-body"><h3>Randonnée au lever du soleil</h3><p>Départ à l'aube vers les points de vue les plus spectaculaires du Massif.</p></div>
+      </article>
+      <article class="highlight-card reveal">
+        <div class="highlight-media" style="aspect-ratio:4/5;">
+          <img src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?q=80&w=800&auto=format&fit=crop" alt="Croisière fluviale" loading="lazy">
+        </div>
+        <div class="highlight-body"><h3>Croisière au fil du fleuve</h3><p>Une navigation contemplative jusqu'au confluent du Saguenay.</p></div>
+      </article>
+      <article class="highlight-card reveal">
+        <div class="highlight-media" style="aspect-ratio:4/5;">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=800&auto=format&fit=crop" alt="Repas gastronomique" loading="lazy">
+        </div>
+        <div class="highlight-body"><h3>Table d'hôte chez le producteur</h3><p>Un repas confectionné avec les récoltes du jour, à la ferme même.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+<section class="slider-section destination-testimonials">
+  <div class="container">
+    <div class="gallery-head reveal">
+      <div class="section-head" style="margin-bottom:0;">
+        <span class="eyebrow">Avis voyageurs</span>
+        <h2>Ce que nos visiteurs disent</h2>
+      </div>
+      <div class="slider-controls">
+        <button class="slider-btn slider-prev" aria-label="Précédent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button class="slider-btn slider-next" aria-label="Suivant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+    <div class="slider-viewport reveal" data-slider>
+      <div class="slider-track">
+        <div class="testimonial-slide">
+          <div class="testimonial-stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+          <p>« Un village où le temps ralentit. Les couleurs d'automne sur le fleuve sont inoubliables. »</p>
+          <div class="testimonial-person">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop" alt="Portrait de Claire M." loading="lazy">
+            <div><div class="name">Claire M.</div><div class="loc">Lyon, France</div></div>
+          </div>
+        </div>
+        <div class="testimonial-slide">
+          <div class="testimonial-stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+          <p>« Le kayak au milieu des bélugas restera le moment fort de notre voyage au Québec. »</p>
+          <div class="testimonial-person">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop" alt="Portrait de Marc D." loading="lazy">
+            <div><div class="name">Marc D.</div><div class="loc">Bruxelles, Belgique</div></div>
+          </div>
+        </div>
+        <div class="testimonial-slide">
+          <div class="testimonial-stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></div>
+          <p>« Les galeries d'art valent à elles seules le détour. Une vraie capitale culturelle. »</p>
+          <div class="testimonial-person">
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=100&auto=format&fit=crop" alt="Portrait de Sophie L." loading="lazy">
+            <div><div class="name">Sophie L.</div><div class="loc">Montréal, Canada</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="stats-section destination-stats">
+  <svg class="contour-divider" viewBox="0 0 1440 90" preserveAspectRatio="none"><path d="M0 60 C 200 20, 400 90, 620 40 S 1000 70, 1200 30 S 1440 55, 1440 55" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+  <div class="container">
+    <div class="stats-grid reveal-stagger">
+      <div class="stat-item reveal"><div class="num"><span data-counter="120">0</span>+</div><div class="lbl">Activités</div></div>
+      <div class="stat-item reveal"><div class="num"><span data-counter="50">0</span>+</div><div class="lbl">Restaurants</div></div>
+      <div class="stat-item reveal"><div class="num"><span data-counter="30">0</span>+</div><div class="lbl">Hébergements</div></div>
+      <div class="stat-item reveal"><div class="num"><span data-counter="10">0</span>+</div><div class="lbl">Événements / an</div></div>
+      <div class="stat-item reveal"><div class="num"><span data-counter="500">0</span>+</div><div class="lbl">Visiteurs / an (milliers)</div></div>
+    </div>
+  </div>
+</section>
+<section class="seasons destination-seasons">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Planifier</span>
+      <h2>Quand visiter ?</h2>
+    </div>
+    <div class="season-grid reveal-stagger">
+      <div class="season-card reveal">
+        <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=600&auto=format&fit=crop" alt="Printemps à Charlevoix" loading="lazy">
+        <div class="season-body"><span class="temp">8–14°C</span><h3>Printemps</h3><p>Cabanes à sucre et éveil de la nature après l'hiver.</p></div>
+      </div>
+      <div class="season-card reveal">
+        <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=600&auto=format&fit=crop" alt="Été à Charlevoix" loading="lazy">
+        <div class="season-body"><span class="temp">18–24°C</span><h3>Été</h3><p>Randonnée, kayak et marchés en plein air.</p></div>
+      </div>
+      <div class="season-card reveal">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop" alt="Automne à Charlevoix" loading="lazy">
+        <div class="season-body"><span class="temp">6–16°C</span><h3>Automne</h3><p>Couleurs flamboyantes, la saison la plus prisée.</p></div>
+      </div>
+      <div class="season-card reveal">
+        <img src="https://images.unsplash.com/photo-1439066615861-d1af74d74000?q=80&w=600&auto=format&fit=crop" alt="Hiver à Charlevoix" loading="lazy">
+        <div class="season-body"><span class="temp">-12–-2°C</span><h3>Hiver</h3><p>Ski au Massif et traîneau à chiens sous la neige.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="itinerary destination-itinerary">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Suggestion</span>
+      <h2>Itinéraire recommandé — 4 jours</h2>
+    </div>
+    <div class="itin-track">
+      <div class="itin-item reveal">
+        <div class="itin-day"><span class="d-num">01</span>Jour 1</div>
+        <div class="itin-content"><h3>Découverte du village</h3><p>Circuit des galeries d'art, marché public et installation à l'auberge.</p></div>
+        <div class="itin-media"><img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=600&auto=format&fit=crop" alt="Découverte du village" loading="lazy"></div>
+      </div>
+      <div class="itin-item reveal">
+        <div class="itin-day"><span class="d-num">02</span>Jour 2</div>
+        <div class="itin-content"><h3>Nature et grand air</h3><p>Randonnée au Massif et kayak de mer en après-midi.</p></div>
+        <div class="itin-media"><img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=600&auto=format&fit=crop" alt="Nature et grand air" loading="lazy"></div>
+      </div>
+      <div class="itin-item reveal">
+        <div class="itin-day"><span class="d-num">03</span>Jour 3</div>
+        <div class="itin-content"><h3>Route gourmande</h3><p>Fromagerie, cidrerie et table d'hôte chez le producteur.</p></div>
+        <div class="itin-media"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=600&auto=format&fit=crop" alt="Route gourmande" loading="lazy"></div>
+      </div>
+      <div class="itin-item reveal">
+        <div class="itin-day"><span class="d-num">04</span>Jour 4</div>
+        <div class="itin-content"><h3>Culture et patrimoine</h3><p>Musée d'art contemporain et balade sur l'Isle-aux-Coudres.</p></div>
+        <div class="itin-media"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=600&auto=format&fit=crop" alt="Culture et patrimoine" loading="lazy"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="faq destination-faq">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="eyebrow">Questions fréquentes</span>
+      <h2>Tout savoir avant de partir</h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item is-open">
+        <button class="faq-q"><span>Comment se rendre à Baie-Saint-Paul ?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Par la route 138 depuis Québec (environ 1h15), ou via un service de navette touristique en haute saison.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>Quand visiter Baie-Saint-Paul ?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">L'automne (fin septembre à mi-octobre) offre les paysages les plus spectaculaires ; l'été reste idéal pour les activités nautiques.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>Où dormir sur place ?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Le centre-ville regroupe auberges et hôtels de charme ; les environs offrent des chalets en forêt pour plus d'intimité.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>Que faire en 2 ou 3 jours ?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Consultez notre itinéraire recommandé de 4 jours ci-dessus, facilement condensable selon votre disponibilité.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>Combien de jours prévoir ?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Trois à quatre jours permettent de couvrir l'essentiel entre culture, nature et gastronomie.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>Quel budget prévoir ?</span><span class="plus"></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Comptez entre 150 $ et 300 $ CAD par jour et par personne, hébergement et repas inclus, selon le niveau de confort.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="newsletter destination-newsletter">
+  <div class="container">
+    <div class="newsletter-box reveal">
+      <div>
+        <h2>Recevez les meilleures expériences de la destination</h2>
+        <p>Conseils d'initiés, bons plans saisonniers et itinéraires exclusifs, directement dans votre boîte courriel.</p>
+      </div>
+      <form class="newsletter-form" data-newsletter-form>
+        <div class="newsletter-input-row">
+          <input type="email" placeholder="Votre adresse courriel" required aria-label="Adresse courriel">
+          <button type="submit" class="btn btn-primary">S'abonner</button>
+        </div>
+        <label class="newsletter-consent">
+          <input type="checkbox" required>
+          J'accepte de recevoir des communications de Go Exploria et je peux me désabonner à tout moment.
+        </label>
+        <p class="newsletter-note"></p>
+      </form>
+    </div>
+  </div>
+</section>
+<section class="final-cta destination-final-cta" id="contact">
+  <div class="hero-media">
+    <img src="https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=1920&auto=format&fit=crop" alt="Coucher de soleil sur Charlevoix" loading="lazy">
+  </div>
+  <div class="final-cta-inner">
+    <span class="eyebrow" style="justify-content:center;color:var(--accent-light);">Prêt pour l'aventure</span>
+    <h2>Prêt à découvrir cette destination ?</h2>
+    <p>Composez votre séjour sur mesure à Baie-Saint-Paul, entre nature, culture et gastronomie.</p>
+    <div class="final-cta-actions">
+      <a href="#activites" class="btn btn-primary">
+        Explorer les activités
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#" class="btn btn-ghost-light">Planifier mon séjour</a>
+    </div>
+  </div>
+</section>
+<div class="lightbox">
+  <button class="lightbox-close" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button class="lightbox-prev" aria-label="Image précédente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <img src="" alt="">
+  <button class="lightbox-next" aria-label="Image suivante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button>
+  <div class="lightbox-counter">1 / 1</div>
+</div>
+<div class="video-modal">
+  <div class="modal-inner"></div>
+  <button class="video-modal-close" aria-label="Fermer la vidéo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</div>
+</div>

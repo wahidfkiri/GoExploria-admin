@@ -67,20 +67,37 @@
         }
     }
 
-    // Pages composées dans l'éditeur visuel. Leur première section est
+    // Contenus composés dans l'éditeur visuel. Leur première section est
     // l'emplacement de la carte : la vraie carte étant rendue en tête de page,
     // on retire cet emplacement pour ne pas l'afficher deux fois.
-    $builderBlocks = collect($builderPages ?? [])->map(function ($page) {
-        return [
+    $stripMapPlaceholder = fn ($html) => preg_replace(
+        '/<section\b[^>]*data-gx-destination-map\b[^>]*>.*?<\/section>/is',
+        '',
+        (string) $html
+    );
+
+    $builderBlocks = collect();
+
+    // D'abord LA page de destination : chaque destination en possède une, issue
+    // du template « Carnet d'Atlas ». $defaultPage vaut null si l'administrateur
+    // l'a masquée ; sinon il porte soit la version personnalisée enregistrée,
+    // soit le gabarit rendu à la volée (aucune ligne en base).
+    if (! empty($defaultPage)) {
+        $builderBlocks->push([
+            'slug' => $defaultPage['slug'],
+            'css'  => $defaultPage['css'],
+            'html' => $stripMapPlaceholder($defaultPage['html']),
+        ]);
+    }
+
+    // Puis les pages visuelles ajoutées à côté.
+    foreach ($builderPages ?? [] as $page) {
+        $builderBlocks->push([
             'slug' => $page->slug,
             'css'  => (string) $page->css_content,
-            'html' => preg_replace(
-                '/<section\b[^>]*data-gx-destination-map\b[^>]*>.*?<\/section>/is',
-                '',
-                (string) $page->html_content
-            ),
-        ];
-    });
+            'html' => $stripMapPlaceholder($page->html_content),
+        ]);
+    }
 
     // Ancres du menu : seules les sections réellement rendues y figurent.
     $navSections = [['id' => 'map', 'label' => 'Carte']];

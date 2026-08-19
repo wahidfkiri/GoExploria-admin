@@ -14,12 +14,16 @@ class Page extends Model
         'html_content',
         'css_content',
         'is_active',
+        // Marque LA page de destination issue du gabarit « Carnet d'Atlas »
+        // (une seule par destination) face aux pages visuelles libres.
+        'is_default',
         'pageable_id',
         'pageable_type'
     ];
 
     protected $casts = [
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'is_default' => 'boolean'
     ];
 
     /**
