@@ -1801,6 +1801,28 @@ class PublicPageController extends Controller
                     ->find($donnees['property_id']);
             }
 
+            // Le calendrier grise déjà les nuits prises, mais il vit chez le
+            // visiteur : on revérifie ici. Deux personnes peuvent demander les
+            // mêmes dates à la même seconde, et rien n'empêche d'appeler ce
+            // point d'entrée sans passer par la page.
+            if ($bien
+                && ! empty($donnees['arrival_date'])
+                && ! empty($donnees['departure_date'])
+                && class_exists(\Vendor\Cms\Models\PropertyBooking::class)
+                && \Illuminate\Support\Facades\Schema::connection('cms')->hasTable('cms_property_bookings')) {
+
+                $occupe = \Vendor\Cms\Models\PropertyBooking::pourBien($bien->id)
+                    ->chevauchant($donnees['arrival_date'], $donnees['departure_date'])
+                    ->exists();
+
+                if ($occupe) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Ces dates viennent d\'être réservées. Choisissez d\'autres nuits.',
+                    ], 422);
+                }
+            }
+
             $demande = \Vendor\Cms\Models\PropertyRequest::create([
                 'etablissement_id'   => $etablissement->id,
                 'property_id'        => $bien?->id,
@@ -1834,6 +1856,55 @@ class PublicPageController extends Controller
                 'success' => false,
                 'message' => "Votre demande n'a pas pu être enregistrée. Réessayez ou appelez-nous.",
             ], 500);
+        }
+    }
+
+
+    /**
+     * Nuits déjà prises d'un bien, pour le calendrier du site.
+     *
+     * On ne renvoie que les périodes qui ne sont pas entièrement passées : le
+     * calendrier ne remonte pas dans le temps, et une agence qui loue depuis
+     * des années n'a pas à charger tout son historique à chaque ouverture.
+     *
+     * Seules les dates sortent d'ici — jamais le nom du client ni le libellé
+     * interne du blocage : c'est une page publique.
+     */
+    public function propertyAvailability(Request $request, $etablissementId, $propertyId)
+    {
+        try {
+            $etablissement = \App\Models\Etablissement::findOrFail($etablissementId);
+
+            $bien = \Vendor\Cms\Models\Property::where('etablissement_id', $etablissement->id)
+                ->find($propertyId);
+
+            if (! $bien) {
+                return response()->json(['success' => true, 'periods' => []]);
+            }
+
+            if (! \Illuminate\Support\Facades\Schema::connection('cms')->hasTable('cms_property_bookings')) {
+                return response()->json(['success' => true, 'periods' => []]);
+            }
+
+            $periodes = \Vendor\Cms\Models\PropertyBooking::pourBien($bien->id)
+                ->aVenir()
+                ->orderBy('start_date')
+                ->limit(400)
+                ->get()
+                ->map(fn ($p) => [
+                    'start' => $p->start_date->toDateString(),
+                    'end'   => $p->end_date->toDateString(),
+                ]);
+
+            return response()->json([
+                'success' => true,
+                'periods' => $periodes,
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Disponibilités du bien : ' . $e->getMessage());
+
+            // Un calendrier sans période grisée vaut mieux qu'une fiche cassée.
+            return response()->json(['success' => true, 'periods' => []]);
         }
     }
 

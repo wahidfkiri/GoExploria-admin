@@ -2418,9 +2418,14 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         }
 
         try {
+            // Le calendrier vient APRÈS le formulaire : il s'installe dans les
+            // champs de date que celui-ci pose.
             $bloc = view('cms::web.fallback.partials.gx-immo-request', [
                 'etablissement' => $this->etablissement,
-            ])->render();
+            ])->render()
+                . view('cms::web.fallback.partials.gx-immo-calendar', [
+                    'etablissement' => $this->etablissement,
+                ])->render();
         } catch (\Throwable $e) {
             \Log::warning('Immo request form injection failed: ' . $e->getMessage());
 

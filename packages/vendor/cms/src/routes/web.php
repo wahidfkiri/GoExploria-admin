@@ -79,18 +79,15 @@ Route::middleware(['web'])->group(function () {
         // Contact
         Route::get('/contact', [PublicPageController::class, 'contact'])->name('contact');
         Route::post('/contact/send', [PublicPageController::class, 'sendContact'])->name('contact.send');
-
         // Demande de reservation ou de visite envoyee depuis la fiche d'un
         // bien du template immobilier. Recue par le site, suivie dans
         // l'onglet « Immobilier » de l'espace entreprise.
         Route::post('/immobilier/demande', [PublicPageController::class, 'submitPropertyRequest'])
             ->name('immobilier.demande');
 
-        // Demande de reservation ou de visite envoyee depuis la fiche d'un
-        // bien du template immobilier. Recue par le site, suivie dans
-        // l'onglet « Immobilier » de l'espace entreprise.
-        Route::post('/immobilier/demande', [PublicPageController::class, 'submitPropertyRequest'])
-            ->name('immobilier.demande');
+        // Nuits deja prises d'un bien : le calendrier de la fiche les grise.
+        Route::get('/immobilier/disponibilites/{propertyId}', [PublicPageController::class, 'propertyAvailability'])
+            ->name('immobilier.disponibilites');
 
         // Page specifique Chaine videos
         Route::get('/chaine-videos', [WebThemeController::class, 'videoChannel'])->name('videos.channel');
