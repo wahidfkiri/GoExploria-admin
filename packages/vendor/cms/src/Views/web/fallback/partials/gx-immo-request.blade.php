@@ -65,9 +65,19 @@
     var URL_ENVOI = @json(route('cms.company.immobilier.demande', ['etablissementId' => $etablissement->id ?? 0]));
     var COMPAGNIE = @json($etablissement->name ?? '');
 
+    /* Jeton CSRF pose ICI, a la generation de la page.
+       La vue du site (landing.blade.php) ne porte PAS de balise
+       <meta name="csrf-token"> — contrairement a la boutique ou au paiement.
+       Se reposer sur elle renvoyait une chaine vide, et Laravel refusait
+       l'envoi avec « CSRF token mismatch ». La balise reste consultee en
+       premier au cas ou une autre vue en pose une plus fraiche. */
+    var JETON = @json(csrf_token());
+
     function jeton() {
         var m = document.querySelector('meta[name="csrf-token"]');
-        return m ? m.getAttribute('content') : '';
+        var duMeta = m ? (m.getAttribute('content') || '') : '';
+
+        return duMeta || JETON;
     }
 
     function fiche() {
@@ -286,6 +296,7 @@
         var champs = identite(form);
 
         var corps = new FormData();
+        corps.append('_token', jeton());
         corps.append('name', champs.name);
         corps.append('email', champs.email);
         corps.append('phone', champs.phone);
