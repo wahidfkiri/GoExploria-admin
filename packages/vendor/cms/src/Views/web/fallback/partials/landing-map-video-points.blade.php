@@ -342,7 +342,10 @@
         ->values();
 @endphp
 
-@if($landingMapPoints->isNotEmpty())
+{{-- On teste le PAYLOAD, pas les seuls points vidéo : depuis que les biens
+     immobiliers rejoignent la carte, un établissement peut n'avoir aucun point
+     vidéo et pourtant des biens à situer. Le payload est l'union des deux. --}}
+@if($landingMapPayload->isNotEmpty())
     @once
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
@@ -381,6 +384,7 @@
             .map-popup__body{padding:14px 16px}
             .map-popup__title{font-size:0.95rem;font-weight:600;margin-bottom:6px;color:var(--td-sand)}
             .map-popup__desc{font-size:0.8rem;color:var(--td-text-muted);line-height:1.5;margin-bottom:10px}
+            .map-popup__price{font-size:0.95rem;font-weight:700;color:var(--td-amber);margin-bottom:6px}
             .map-popup__detail-btn{display:block;width:100%;padding:10px 16px;background:var(--td-amber);color:#000;border-radius:var(--td-radius-sm);font-size:0.82rem;font-weight:600;text-align:center;transition:all var(--td-transition);cursor:pointer;border:0}
             .map-popup__detail-btn:hover{background:var(--td-amber-dark)}
             .map-popup__video{height:160px;overflow:hidden;background:#000}
@@ -512,7 +516,10 @@
         pointsRaw.forEach(function (p) {
             if (!Number.isFinite(Number(p.latitude)) || !Number.isFinite(Number(p.longitude))) return;
             var estFichier = p.video_type === 'file';
-            if (!p.youtube_id && !p.embed_url) return;
+            // La carte est celle des points VIDÉO : un point sans vidéo n'a
+            // rien à y montrer. Un bien immobilier fait exception — c'est sa
+            // photo et sa fiche qui font le contenu.
+            if (!p.youtube_id && !p.embed_url && !p.is_property) return;
             var cat = (p.category || 'Autre').trim();
             if (cat) uniqueCategories[cat] = true;
             points.push({
@@ -531,7 +538,9 @@
                     : (p.embed_url || (p.youtube_id ? 'https://www.youtube.com/embed/' + p.youtube_id + '?autoplay=0&rel=0&playsinline=1' : '')),
                 gallery: Array.isArray(p.gallery) ? p.gallery : [],
                 socials: Array.isArray(p.socials) ? p.socials : [],
-                website: p.website || ''
+                website: p.website || '',
+                is_property: !!p.is_property,
+                immo: p.immo || null
             });
         });
         if (!points.length) return;
@@ -670,12 +679,45 @@
                 .replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
+        /* Média de tête : la vidéo du point, ou la photo du bien quand il n'en
+           a pas. Sans cela, le popup d'un bien s'ouvrirait sur du vide. */
+        function buildMediaHtml(p, autoplay) {
+            var lecteur = buildVideoPlayer(p, autoplay);
+            if (lecteur) return lecteur;
+            if (p.is_property && p.immo && p.immo.cover) {
+                return '<img src="' + escapeAttr(p.immo.cover) + '" alt="' + escapeAttr(p.title || '') + '" '
+                     + 'loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">';
+            }
+            return '';
+        }
+
+        /* Chiffres cles d'un bien, repris a l'identique dans le popup et la
+           modale pour que les deux racontent la meme chose. */
+        function immoFacts(p) {
+            if (!p.is_property || !p.immo) return [];
+            var i = p.immo;
+            return [
+                i.intent, i.type, i.surface,
+                i.bedrooms ? i.bedrooms + ' ch.' : null,
+                i.bathrooms ? i.bathrooms + ' sdb' : null
+            ].filter(Boolean);
+        }
+
         function buildPopupHtml(p, idx) {
-            var lecteur = buildVideoPlayer(p, true);
+            var media = buildMediaHtml(p, true);
             var h = '<div class="map-popup">';
-            if (lecteur) h += '<div class="map-popup__video">' + lecteur + '</div>';
+            if (media) h += '<div class="map-popup__video">' + media + '</div>';
             h += '<div class="map-popup__body"><h4 class="map-popup__title">' + escapeHtml(p.title) + '</h4>';
-            if (p.description) { var _pd = plainText(p.description); if (_pd) h += '<p class="map-popup__desc">' + escapeHtml(_pd.substring(0, 120)) + (_pd.length > 120 ? '…' : '') + '</p>'; }
+
+            if (p.is_property && p.immo) {
+                if (p.immo.price) h += '<p class="map-popup__price">' + escapeHtml(p.immo.price) + '</p>';
+                var facts = immoFacts(p);
+                if (facts.length) h += '<p class="map-popup__desc">' + escapeHtml(facts.join(' \u00b7 ')) + '</p>';
+            } else if (p.description) {
+                var _pd = plainText(p.description);
+                if (_pd) h += '<p class="map-popup__desc">' + escapeHtml(_pd.substring(0, 120)) + (_pd.length > 120 ? '\u2026' : '') + '</p>';
+            }
+
             h += '<button class="map-popup__detail-btn" data-index="' + idx + '">Voir d\u00e9tails</button></div></div>';
             return h;
         }
@@ -758,11 +800,20 @@
             if (!modal || !mc) return;
             document.getElementById('map-modal-title').textContent = point.title || 'D\u00e9tails';
             var ve = document.getElementById('mapModalVideo');
-            if (ve) ve.innerHTML = buildVideoPlayer(point, false);
+            if (ve) ve.innerHTML = buildMediaHtml(point, false);
             var de = modal.querySelector('.map-modal__description');
             // Rendu HTML décodé (jamais de balises visibles type "<p>…</p>")
             de.innerHTML = decodeHtml(point.description || '');
             var mh = '';
+            // Un bien met en avant son prix et ses caracteristiques ; le
+            // reste (categorie, adresse, region) suit comme tout point.
+            if (point.is_property && point.immo) {
+                if (point.immo.price) mh += '<span class="map-modal__tag">' + escapeHtml(point.immo.price) + '</span>';
+                immoFacts(point).forEach(function (f) {
+                    mh += '<span class="map-modal__meta-item">' + escapeHtml(f) + '</span>';
+                });
+                if (point.immo.reference) mh += '<span class="map-modal__meta-item">R\u00e9f. ' + escapeHtml(point.immo.reference) + '</span>';
+            }
             if (point.category) mh += '<span class="map-modal__tag">' + escapeHtml(point.category) + '</span>';
             if (point.adresse) mh += '<span class="map-modal__tag">' + escapeHtml(point.adresse) + '</span>';
             if (point.region) mh += '<span class="map-modal__meta-item">&#9906; ' + escapeHtml(point.region) + '</span>';
