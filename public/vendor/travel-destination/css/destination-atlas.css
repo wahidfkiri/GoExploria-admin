@@ -977,6 +977,67 @@ section{position:relative;}
 .leaflet-container{font-family:var(--font-body);}
 .leaflet-popup-content-wrapper{border-radius:var(--radius-md);}
 
+/* --------------------------------------------------------------------------
+   FILTRE HIÉRARCHIQUE DE LA CARTE
+   Une ligne de champs, un par niveau du fil d'Ariane. Les niveaux déjà fixés
+   par la page courante sont des jetons en lecture seule ; les niveaux plus
+   fins sont des champs de recherche à liste déroulante.
+   -------------------------------------------------------------------------- */
+.map-filterbar{margin-bottom:22px;}
+.map-filterbar__head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px;flex-wrap:wrap;}
+.map-filterbar__reset{
+  display:inline-flex;align-items:center;gap:.5em;
+  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;
+  padding:.5em 1em;border:1px solid var(--line-strong);border-radius:var(--radius-pill);
+  color:var(--fg-soft);transition:all .3s ease;
+}
+.map-filterbar__reset:hover{border-color:var(--accent);color:var(--accent);}
+.map-filterbar__reset svg{width:13px;height:13px;}
+
+.map-filterbar__chain{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;}
+.map-filterbar__chain.is-loading{opacity:.6;pointer-events:none;}
+
+.map-filterfield{position:relative;display:flex;flex-direction:column;gap:5px;min-width:190px;flex:0 1 220px;}
+.map-filterfield__label{
+  font-family:var(--font-mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-soft);
+}
+.map-filterfield__input{
+  width:100%;padding:.62em 1em;border-radius:var(--radius-pill);
+  border:1px solid var(--line-strong);background:var(--bg-raised);color:var(--fg);font-size:.88rem;
+  transition:border-color .3s ease, box-shadow .3s ease;
+}
+.map-filterfield__input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(45,95,110,.14);}
+.map-filterfield.is-active .map-filterfield__input{border-color:var(--accent);background:rgba(189,122,60,.08);font-weight:600;}
+
+/* Niveaux imposés par la page courante : information, pas commande. */
+.map-filterfield--fixed{gap:5px;}
+.map-filterfield__fixed-value{
+  padding:.62em 1em;border-radius:var(--radius-pill);
+  border:1px dashed var(--line-strong);background:transparent;color:var(--fg-soft);
+  font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+.map-filterfield__list{
+  position:absolute;top:100%;left:0;right:0;z-index:30;margin-top:6px;
+  background:var(--bg-raised);border:1px solid var(--line);border-radius:var(--radius-md);
+  box-shadow:var(--shadow-lg);max-height:300px;overflow-y:auto;display:none;
+}
+.map-filterfield__list.is-open{display:block;}
+.map-filterfield__option{
+  display:block;width:100%;text-align:left;padding:.6em 1em;font-size:.86rem;
+  border-bottom:1px solid var(--line);cursor:pointer;background:transparent;color:var(--fg);
+}
+.map-filterfield__option:last-child{border-bottom:0;}
+.map-filterfield__option:hover{background:rgba(45,95,110,.1);color:var(--brand);}
+.map-filterfield__option.is-all{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-soft);}
+/* Sans coordonnées, la carte ne peut pas s'y recentrer : on le signale. */
+.map-filterfield__option.is-nogeo{opacity:.6;font-style:italic;}
+.map-filterfield__empty{padding:.8em 1em;font-size:.82rem;color:var(--fg-soft);font-style:italic;}
+
+@media (max-width:640px){
+  .map-filterfield{flex:1 1 100%;min-width:0;}
+}
+
 /* Filtres de la carte */
 .map-toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;align-items:center;}
 .map-filter-btn{

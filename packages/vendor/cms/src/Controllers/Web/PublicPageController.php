@@ -1801,6 +1801,28 @@ class PublicPageController extends Controller
                     ->find($donnees['property_id']);
             }
 
+            // Duree demandee, confrontee aux regles du bien. Le calendrier
+            // les applique deja, mais il vit chez le visiteur : ces bornes
+            // sont un engagement de l'agence, pas une aide de saisie.
+            if ($bien && ! empty($donnees['arrival_date']) && ! empty($donnees['departure_date'])) {
+                $nuits = (int) \Illuminate\Support\Carbon::parse($donnees['arrival_date'])
+                    ->diffInDays(\Illuminate\Support\Carbon::parse($donnees['departure_date']));
+
+                if ($nuits > 0 && $bien->min_nights && $nuits < (int) $bien->min_nights) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Ce bien se reserve pour ' . $bien->min_nights . ' nuits minimum.',
+                    ], 422);
+                }
+
+                if ($nuits > 0 && $bien->max_nights && $nuits > (int) $bien->max_nights) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Ce bien se reserve pour ' . $bien->max_nights . ' nuits au maximum.',
+                    ], 422);
+                }
+            }
+
             // Le calendrier grise déjà les nuits prises, mais il vit chez le
             // visiteur : on revérifie ici. Deux personnes peuvent demander les
             // mêmes dates à la même seconde, et rien n'empêche d'appeler ce
@@ -1879,11 +1901,11 @@ class PublicPageController extends Controller
                 ->find($propertyId);
 
             if (! $bien) {
-                return response()->json(['success' => true, 'periods' => []]);
+                return response()->json(['success' => true, 'periods' => [], 'rules' => null]);
             }
 
             if (! \Illuminate\Support\Facades\Schema::connection('cms')->hasTable('cms_property_bookings')) {
-                return response()->json(['success' => true, 'periods' => []]);
+                return response()->json(['success' => true, 'periods' => [], 'rules' => null]);
             }
 
             $periodes = \Vendor\Cms\Models\PropertyBooking::pourBien($bien->id)
@@ -1899,12 +1921,21 @@ class PublicPageController extends Controller
             return response()->json([
                 'success' => true,
                 'periods' => $periodes,
+                // Regles lues par le calendrier : duree acceptee et tarif.
+                // Nulles quand l'agence ne les a pas renseignees — le
+                // calendrier n'affiche alors ni total ni contrainte.
+                'rules'   => [
+                    'minNights' => $bien->min_nights !== null ? (int) $bien->min_nights : null,
+                    'maxNights' => $bien->max_nights !== null ? (int) $bien->max_nights : null,
+                    'nightly'   => $bien->nightly_price !== null ? (float) $bien->nightly_price : null,
+                    'currency'  => $bien->currency ?: 'USD',
+                ],
             ]);
         } catch (\Throwable $e) {
             Log::warning('Disponibilités du bien : ' . $e->getMessage());
 
             // Un calendrier sans période grisée vaut mieux qu'une fiche cassée.
-            return response()->json(['success' => true, 'periods' => []]);
+            return response()->json(['success' => true, 'periods' => [], 'rules' => null]);
         }
     }
 

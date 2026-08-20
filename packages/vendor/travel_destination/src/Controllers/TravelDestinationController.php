@@ -152,6 +152,9 @@ class TravelDestinationController extends Controller
         // s'il l'a masquée, on n'affiche rien.
         $defaultPage = DestinationDefaultPage::resolve($entity);
 
+        // Chaîne de filtres de la carte, calquée sur le fil d'Ariane.
+        $mapFilterChain = $this->buildMapFilterChain($normalizedType, $entity);
+
         // Pages composées dans l'éditeur visuel côté admin : leur HTML/CSS est
         // injecté tel quel sous les sections standard de la destination.
         $builderPages = Page::where('pageable_type', get_class($entity))
@@ -173,6 +176,7 @@ class TravelDestinationController extends Controller
             'normalizedType',
             'slug',
             'defaultPage',
+            'mapFilterChain',
             'builderPages',
             'breadcrumb',
             'hierarchy',
@@ -195,6 +199,202 @@ class TravelDestinationController extends Controller
             'mapPoints',
             'ads'
         ));
+    }
+
+    /**
+     * Enfants directs d'une destination, pour la cascade de filtres de la carte.
+     *
+     * Le filtre descend la chaîne un niveau à la fois : on ne précharge pas
+     * l'arborescence entière (551 destinations, et les villes vont croître),
+     * chaque niveau est demandé au moment où l'utilisateur ouvre son champ.
+     */
+    public function children($type, $slug)
+    {
+        $normalizedType = $this->typeMap[$type] ?? null;
+
+        if ($normalizedType === null) {
+            return response()->json(['success' => false, 'message' => 'Type inconnu'], 404);
+        }
+
+        $entity = $this->loadEntity($normalizedType, $slug);
+
+        if (! $entity) {
+            return response()->json(['success' => false, 'message' => 'Destination introuvable'], 404);
+        }
+
+        [$childType, $children] = $this->filterChildren($normalizedType, $entity);
+
+        return response()->json([
+            'success' => true,
+            'type'    => $childType,
+            'label'   => $childType ? ($this->typeLabels[$childType] ?? $childType) : null,
+            'items'   => $this->formatFilterOptions($childType, $children),
+        ]);
+    }
+
+    /**
+     * Enfants d'une destination pour le filtre.
+     *
+     * Diffère de getChildEntities() sur un point : une région expose ses
+     * SECTEURS quand elle en a (sinon ses villes). La chaîne du fil d'Ariane
+     * comporte ce niveau, le filtre doit donc pouvoir s'y arrêter.
+     *
+     * @return array{0: ?string, 1: \Illuminate\Support\Collection}
+     */
+    protected function filterChildren($type, $entity): array
+    {
+        switch ($type) {
+            case 'continent':
+                return ['country', $entity->countries()->active()->get()];
+            case 'country':
+                return ['province', $entity->provinces()->active()->get()];
+            case 'province':
+                return ['region', $entity->regions()->active()->get()];
+            case 'region':
+                $secteurs = $entity->secteurs()->active()->get();
+                return $secteurs->count() > 0
+                    ? ['secteur', $secteurs]
+                    : ['city', $entity->villes()->active()->get()];
+            case 'secteur':
+                return ['city', $entity->villes()->active()->get()];
+            case 'city':
+                return ['arrondissement', $entity->arrondissements()->active()->get()];
+            case 'arrondissement':
+                return ['quartier', $entity->quartiers()->active()->get()];
+            default:
+                return [null, collect()];
+        }
+    }
+
+    /**
+     * Options prêtes pour le champ : le zoom accompagne chaque entrée, la carte
+     * n'a donc pas à deviner l'échelle du niveau sélectionné.
+     */
+    protected function formatFilterOptions(?string $childType, $children): array
+    {
+        if ($childType === null) {
+            return [];
+        }
+
+        $zoom = [
+            'continent' => 3, 'country' => 5, 'province' => 7, 'region' => 9,
+            'secteur' => 11, 'city' => 12, 'arrondissement' => 14, 'quartier' => 15,
+        ][$childType] ?? 10;
+
+        return $children
+            ->filter(fn ($child) => filled($child->name ?? null))
+            ->map(fn ($child) => [
+                'name'      => $child->name,
+                'slug'      => (string) ($child->slug ?? $child->id),
+                'type'      => $childType,
+                'latitude'  => is_numeric($child->latitude ?? null) ? (float) $child->latitude : null,
+                'longitude' => is_numeric($child->longitude ?? null) ? (float) $child->longitude : null,
+                'zoom'      => $zoom,
+            ])
+            ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Chaîne de filtres affichée au-dessus de la carte, calquée sur le fil
+     * d'Ariane : un champ par niveau, du plus large au plus fin.
+     *
+     * Les niveaux au-dessus de la destination courante (et elle-même) sont
+     * figés — on est déjà sur cette page. Le premier niveau en dessous est
+     * pré-rempli avec les enfants déjà chargés ; les suivants se remplissent
+     * en cascade via l'endpoint `children`.
+     */
+    protected function buildMapFilterChain($type, $entity): array
+    {
+        $chain = [];
+
+        foreach ($this->ancestorsOf($type, $entity) as $ancestor) {
+            $chain[] = [
+                'type'    => $ancestor['type'],
+                'label'   => $this->typeLabels[$ancestor['type']] ?? $ancestor['type'],
+                'fixed'   => true,
+                'current' => $ancestor['name'],
+                'options' => [],
+            ];
+        }
+
+        $chain[] = [
+            'type'    => $type,
+            'label'   => $this->typeLabels[$type] ?? $type,
+            'fixed'   => true,
+            'current' => $entity->name,
+            'options' => [],
+        ];
+
+        [$childType, $children] = $this->filterChildren($type, $entity);
+
+        if ($childType !== null && $children->count() > 0) {
+            $chain[] = [
+                'type'    => $childType,
+                'label'   => $this->typeLabels[$childType] ?? $childType,
+                'fixed'   => false,
+                'current' => null,
+                'options' => $this->formatFilterOptions($childType, $children),
+            ];
+        }
+
+        return $chain;
+    }
+
+    /**
+     * Ancêtres d'une destination, du plus large au plus proche.
+     *
+     * Chaque niveau est facultatif (une ville peut pendre d'un secteur, d'une
+     * région, d'une province ou directement d'un pays) : on remonte donc de
+     * parent en parent au lieu de supposer une chaîne complète.
+     */
+    protected function ancestorsOf($type, $entity): array
+    {
+        $parents = [];
+        $cursor = $entity;
+        $cursorType = $type;
+
+        $parentOf = [
+            'country'        => ['continent' => 'continent'],
+            'province'       => ['country' => 'country'],
+            'region'         => ['province' => 'province'],
+            'secteur'        => ['region' => 'region'],
+            'city'           => ['secteur' => 'secteur', 'region' => 'region', 'province' => 'province', 'country' => 'country'],
+            'arrondissement' => ['ville' => 'city'],
+            'quartier'       => ['arrondissement' => 'arrondissement', 'ville' => 'city'],
+        ];
+
+        // Garde-fou : la chaîne compte 8 niveaux, une boucle de relations mal
+        // formées ne doit pas faire tourner la page indéfiniment.
+        for ($depth = 0; $depth < 8; $depth++) {
+            $candidates = $parentOf[$cursorType] ?? [];
+            $found = null;
+
+            foreach ($candidates as $relation => $parentType) {
+                $parent = $cursor->{$relation} ?? null;
+                if ($parent) {
+                    $found = [$parent, $parentType];
+                    break;
+                }
+            }
+
+            if ($found === null) {
+                break;
+            }
+
+            [$parent, $parentType] = $found;
+            array_unshift($parents, [
+                'type' => $parentType,
+                'name' => $parent->name,
+                'slug' => (string) ($parent->slug ?? $parent->id),
+            ]);
+
+            $cursor = $parent;
+            $cursorType = $parentType;
+        }
+
+        return $parents;
     }
 
     public function mapPoints($type, $slug, Request $request)

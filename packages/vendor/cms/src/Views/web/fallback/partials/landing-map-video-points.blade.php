@@ -243,6 +243,97 @@
         ];
     })->values();
 
+    /* ═══════════════════════════════════════════════════════════════════════
+       BIENS IMMOBILIERS SUR LA CARTE DE L'ÉTABLISSEMENT
+
+       Un bien placé côté admin (onglet Immobilier → « Position sur la carte »)
+       rejoint ici les points de la carte, dans la MÊME liste : il hérite donc
+       du filtre par catégorie, du popup et de la modale de détail existants,
+       sans dupliquer une seconde carte.
+
+       Le bien reste la source de vérité : rien n'est recopié dans map_points,
+       une modification côté admin se voit immédiatement.
+
+       Seuls les biens VISIBLES et POSITIONNÉS entrent : sans coordonnées, un
+       bien n'a pas de place sur une carte.
+       ═══════════════════════════════════════════════════════════════════════ */
+    try {
+        if (isset($etablissement)
+            && class_exists(\Vendor\Cms\Models\Property::class)
+            && \Illuminate\Support\Facades\Schema::connection('cms')->hasTable('cms_properties')) {
+
+            $landingMapBiens = \Vendor\Cms\Models\Property::forEtablissement($etablissement->id)
+                ->visible()
+                ->whereNotNull('latitude')
+                ->whereNotNull('longitude')
+                ->orderBy('position')
+                ->orderByDesc('id')
+                ->limit(200)
+                ->get();
+
+            $landingMapBiensPayload = $landingMapBiens->map(function ($bien) use ($landingMapMediaUrl) {
+                // Galerie : la couverture d'abord, puis les photos du bien.
+                $images = collect([$bien->vignette()])
+                    ->merge((array) $bien->gallery)
+                    ->filter()
+                    ->unique()
+                    ->take(12)
+                    ->map(fn ($url) => [
+                        'src'     => $url,
+                        'thumb'   => $url,
+                        'caption' => (string) $bien->title,
+                    ])
+                    ->values();
+
+                $prix = $bien->price > 0
+                    ? trim(number_format((float) $bien->price, 0, ',', ' ') . ' ' . ($bien->currency ?: 'USD')
+                        . ' ' . (string) $bien->price_label)
+                    : null;
+
+                return [
+                    'id'          => 'immo-' . $bien->id,
+                    'title'       => (string) $bien->title,
+                    'description' => (string) $bien->description,
+                    // Sa propre catégorie : le filtre de la carte la propose
+                    // alors comme n'importe quelle autre.
+                    'category'    => 'Immobilier',
+                    'region'      => trim((string) ($bien->city ?: $bien->area)) ?: 'Autre region',
+                    'latitude'    => (float) $bien->latitude,
+                    'longitude'   => (float) $bien->longitude,
+                    'adresse'     => trim(collect([$bien->address, $bien->area, $bien->city])->filter()->implode(', ')),
+                    // Un bien peut porter une vidéo ; sinon le popup montre sa photo.
+                    'youtube_id'  => null,
+                    'embed_url'   => $bien->estVideo() ? $bien->urlLectureVideo() : null,
+                    'video_type'  => 'youtube',
+                    'gallery'     => $images,
+                    'socials'     => [],
+                    'website'     => null,
+                    // Laissez-passer : la carte n'affiche que des points vidéo,
+                    // un bien doit pouvoir y figurer sans vidéo.
+                    'is_property' => true,
+                    'immo'        => [
+                        'price'     => $prix,
+                        'type'      => $bien->type ?: null,
+                        'intent'    => \Vendor\Cms\Models\Property::INTENTS[$bien->intent] ?? null,
+                        'surface'   => $bien->surface ? $bien->surface . ' m²' : null,
+                        'bedrooms'  => $bien->bedrooms !== null ? (int) $bien->bedrooms : null,
+                        'bathrooms' => $bien->bathrooms !== null ? (int) $bien->bathrooms : null,
+                        'reference' => $bien->reference ?: null,
+                        'cover'     => $bien->vignette(),
+                    ],
+                ];
+            });
+
+            if ($landingMapBiensPayload->isNotEmpty()) {
+                $landingMapPayload = $landingMapPayload->concat($landingMapBiensPayload)->values();
+            }
+        }
+    } catch (\Throwable $e) {
+        // Les biens sont un complément : leur indisponibilité ne doit jamais
+        // empêcher la carte de s'afficher.
+        report($e);
+    }
+
     $landingMapRegions = $landingMapPayload
         ->pluck('region')
         ->filter()

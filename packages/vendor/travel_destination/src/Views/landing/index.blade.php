@@ -783,6 +783,10 @@
 {{-- Moteur de la carte (Leaflet + grappes, ou Google Maps si une clé existe) --}}
 @include('travel-destination::landing.partials.map-scripts')
 
+{{-- Filtre hiérarchique posé au-dessus de la carte. Chargé APRÈS le moteur :
+     il s'appuie sur le contrat window.GX_DEST_MAP que celui-ci publie. --}}
+@include('travel-destination::landing.partials.map-filter')
+
 {{-- Popup publicitaire rotatif (Ads Manager) --}}
 @include('components.ads-popup', ['adContext' => $normalizedType])
 

@@ -74,6 +74,18 @@
         font: inherit; font-size: 12px; text-decoration: underline; cursor: pointer;
     }
     .gxcal__legende { margin-top: 8px; font-size: 11.5px; opacity: .65; }
+    /* Le total : c'est le chiffre que le visiteur cherche, il doit se voir. */
+    .gxcal__total {
+        display: flex; align-items: baseline; justify-content: space-between;
+        gap: 10px; margin-top: 8px; padding: 11px 13px; border-radius: 10px;
+        background: rgba(31, 58, 92, .1); font-size: 13px;
+    }
+    .gxcal__total b { font-size: 19px; font-weight: 900; }
+    .gxcal__contrainte {
+        margin-top: 8px; padding: 9px 12px; border-radius: 10px;
+        background: rgba(217, 119, 6, .13); color: #b45309;
+        font-size: 12.5px; font-weight: 600;
+    }
 </style>
 
 <script>
@@ -135,11 +147,53 @@
         this.prises = {};
         this.debut = null;
         this.fin = null;
+        // Règles du bien : durée acceptée et tarif à la nuit. Nulles tant que
+        // l'agence ne les a pas renseignées.
+        this.regles = { minNights: null, maxNights: null, nightly: null, currency: 'USD' };
     }
 
-    Calendrier.prototype.definirPeriodes = function (periodes) {
+    Calendrier.prototype.definirPeriodes = function (periodes, regles) {
         this.prises = nuitsOccupees(periodes);
+        if (regles) {
+            this.regles = {
+                minNights: regles.minNights || null,
+                maxNights: regles.maxNights || null,
+                nightly:   regles.nightly   || null,
+                currency:  regles.currency  || 'USD'
+            };
+        }
         this.dessiner();
+    };
+
+    var SYMBOLES = { USD: '$', CAD: '$', EUR: '€', GBP: '£', MAD: 'MAD', TND: 'TND' };
+
+    function montant(valeur, devise) {
+        var arrondi = Math.round(valeur * 100) / 100;
+
+        return arrondi.toLocaleString('fr-CA', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+            + ' ' + (SYMBOLES[devise] || devise || '');
+    }
+
+    Calendrier.prototype.nuits = function () {
+        if (!this.debut || !this.fin) { return 0; }
+
+        return Math.round((jour(this.fin) - jour(this.debut)) / 86400000);
+    };
+
+    /* Ce qui empêche d'envoyer la demande, en toutes lettres. Renvoie null
+       quand la durée convient — ou qu'aucune borne n'est posée. */
+    Calendrier.prototype.contrainte = function () {
+        var n = this.nuits();
+        if (!n) { return null; }
+
+        if (this.regles.minNights && n < this.regles.minNights) {
+            return 'Séjour de ' + this.regles.minNights + ' nuits minimum sur ce bien.';
+        }
+        if (this.regles.maxNights && n > this.regles.maxNights) {
+            return 'Séjour de ' + this.regles.maxNights + ' nuits au maximum sur ce bien.';
+        }
+
+        return null;
     };
 
     Calendrier.prototype.effacer = function () {
@@ -240,16 +294,39 @@
             + '</div>';
 
         if (this.debut) {
-            var nuits = this.fin ? Math.round((jour(this.fin) - jour(this.debut)) / 86400000) : 0;
+            var nuits = this.nuits();
             html += '<div class="gxcal__resume"><span>'
                  + (this.fin
                     ? '<b>' + nuits + ' nuit' + (nuits > 1 ? 's' : '') + '</b> — du '
                       + this.debut + ' au ' + this.fin
                     : 'Arrivée le <b>' + this.debut + '</b> — choisissez la date de départ')
                  + '</span><button type="button" class="gxcal__effacer" data-gxcal-effacer>Effacer</button></div>';
+
+            // Total : montant à la nuit × nuits retenues. Rien n'est affiché
+            // sans tarif renseigné — mieux vaut pas de total qu'un faux.
+            if (nuits && this.regles.nightly) {
+                html += '<div class="gxcal__total"><span>'
+                     + montant(this.regles.nightly, this.regles.currency) + ' × ' + nuits
+                     + ' nuit' + (nuits > 1 ? 's' : '')
+                     + '</span><b>' + montant(this.regles.nightly * nuits, this.regles.currency) + '</b></div>';
+            }
+
+            var souci = this.contrainte();
+            if (souci) {
+                html += '<div class="gxcal__contrainte">' + souci + '</div>';
+            }
         }
 
-        html += '<p class="gxcal__legende">Les nuits barrées sont déjà réservées. '
+        var bornes = [];
+        if (this.regles.minNights) { bornes.push(this.regles.minNights + ' nuits minimum'); }
+        if (this.regles.maxNights) { bornes.push(this.regles.maxNights + ' nuits maximum'); }
+        if (this.regles.nightly) {
+            bornes.push(montant(this.regles.nightly, this.regles.currency) + ' la nuit');
+        }
+
+        html += '<p class="gxcal__legende">'
+             + (bornes.length ? '<b>' + bornes.join(' · ') + '</b><br>' : '')
+             + 'Les nuits barrées sont déjà réservées. '
              + 'Le jour du départ reste disponible pour une nouvelle arrivée.</p>';
 
         this.zone.innerHTML = html;
@@ -301,10 +378,12 @@
             headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
         }).then(function (r) { return r.json(); })
           .then(function (d) {
-              cache[bien] = (d && d.periods) || [];
+              cache[bien] = { periodes: (d && d.periods) || [], regles: (d && d.rules) || null };
               return cache[bien];
           })
-          .catch(function () { return []; });   // sans réponse : aucun jour grisé
+          // Sans réponse : aucun jour grisé, aucune règle. Le serveur
+          // revérifiera de toute façon.
+          .catch(function () { return { periodes: [], regles: null }; });
     }
 
     var calendrier = null;
@@ -337,6 +416,20 @@
                 arrivee.value = debut || '';
                 depart.value = fin || '';
             });
+
+            /* Une durée hors bornes est bloquée ICI, avant l'envoi : le
+               serveur la refuserait de toute façon, autant l'éviter au
+               visiteur. On se place en capture pour passer avant l'écouteur
+               du formulaire, qui lui déclenche l'envoi. */
+            form.addEventListener('submit', function (e) {
+                var souci = calendrier.contrainte();
+                if (souci) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    calendrier.dessiner();
+                    zone.scrollIntoView({ block: 'nearest' });
+                }
+            }, true);
             calendrier.brancher();
             calendrier.dessiner();
         }
@@ -346,9 +439,11 @@
 
         calendrier.bienCourant = bien;
         calendrier.effacer();
-        chargerPeriodes(bien).then(function (periodes) {
+        chargerPeriodes(bien).then(function (reponse) {
             // Le visiteur a pu changer de bien entre-temps.
-            if (calendrier.bienCourant === bien) { calendrier.definirPeriodes(periodes); }
+            if (calendrier.bienCourant === bien) {
+                calendrier.definirPeriodes(reponse.periodes, reponse.regles);
+            }
         });
     }
 

@@ -2425,7 +2425,10 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             ])->render()
                 . view('cms::web.fallback.partials.gx-immo-calendar', [
                     'etablissement' => $this->etablissement,
-                ])->render();
+                ])->render()
+                // Media principal de la fiche : photo ou video. Lit GX_IMMO,
+                // deja pose par gx-immo-data — aucune requete de plus.
+                . view('cms::web.fallback.partials.gx-immo-media')->render();
         } catch (\Throwable $e) {
             \Log::warning('Immo request form injection failed: ' . $e->getMessage());
 

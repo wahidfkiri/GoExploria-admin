@@ -165,6 +165,15 @@ document.addEventListener('DOMContentLoaded', function () {
           if (m && m.style.display !== 'none') closePlaceModal();
         });
 
+        // Adaptateur pour le filtre hiérarchique (map-filter.blade.php) :
+        // il ne connaît ni Google ni Leaflet, seulement ces deux verbes.
+        window.GX_DEST_MAP = {
+          focus: function (lat, lng, zoom) { eng.panTo(lat, lng, zoom); },
+          render: function (points) { gRender(points); },
+          fitAll: function () { eng.fitToMarkers(40); }
+        };
+        document.dispatchEvent(new CustomEvent('gx:map-ready'));
+
         // Points : serverPoints pré-chargés, sinon AJAX (comme Leaflet).
         if (serverPoints && serverPoints.length) gRender(serverPoints);
         else fetch(mapPointsUrl).then(function (r) { return r.json(); })
@@ -340,6 +349,15 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .catch(function (err) { console.error('Map reload error:', err); var mapEl = document.getElementById('travel-map'); if (mapEl) mapEl.insertAdjacentHTML('afterend', '<div style="padding:12px;background:#fee;color:#c00;border-radius:8px">Map points failed to load: ' + err.message + '</div>'); });
   }
+
+  // Même contrat que la branche Google, pour que le filtre hiérarchique
+  // fonctionne à l'identique quel que soit le moteur de carte actif.
+  window.GX_DEST_MAP = {
+    focus: function (lat, lng, zoom) { map.flyTo([lat, lng], zoom || defaultZoom, { duration: 1 }); },
+    render: function (points) { renderPointsOnMap(points); },
+    fitAll: function () { zoomToEntity(entityLat, entityLng, defaultZoom); }
+  };
+  document.dispatchEvent(new CustomEvent('gx:map-ready'));
 
   function rebuildCategoryFilters(categories, data) {
     var filterEl = document.getElementById('mapFilters');

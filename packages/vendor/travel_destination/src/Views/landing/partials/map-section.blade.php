@@ -24,13 +24,45 @@
       <p>Repérez d'un coup d'œil les lieux, activités et adresses de la destination.</p>
     </div>
 
-    <div class="map-toolbar reveal">
-      <div class="map-geo-filter" id="mapGeoFilter">
-        <input type="text" class="map-geo-filter__search" id="mapGeoSearch"
-               placeholder="Rechercher une destination…" autocomplete="off"
-               aria-label="Filtrer la carte par destination">
-        <div class="map-geo-filter__dropdown" id="mapGeoDropdown"></div>
+    {{-- ======================================================================
+         FILTRE HIÉRARCHIQUE — un champ par niveau, dans l'ordre du fil
+         d'Ariane (Continent → Pays → Province → Région → Secteur → Ville →
+         Arrondissement → Quartier).
+
+         Les niveaux jusqu'à la destination courante sont figés : on est déjà
+         sur cette page. Les niveaux en dessous sont des champs de recherche
+         qui se remplissent en cascade, et chaque choix recentre la carte.
+         ====================================================================== --}}
+    <div class="map-filterbar reveal" id="mapFilterBar">
+      <div class="map-filterbar__head">
+        <span class="eyebrow">Filtrer la carte</span>
+        <button type="button" class="map-filterbar__reset" id="mapFilterReset" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+          Toute la destination
+        </button>
       </div>
+
+      <div class="map-filterbar__chain" id="mapFilterChain">
+        @foreach($mapFilterChain as $level)
+          @if($level['fixed'])
+            <div class="map-filterfield map-filterfield--fixed">
+              <span class="map-filterfield__label">{{ $level['label'] }}</span>
+              <span class="map-filterfield__fixed-value">{{ $level['current'] }}</span>
+            </div>
+          @else
+            <div class="map-filterfield" data-level="{{ $level['type'] }}">
+              <label class="map-filterfield__label" for="mapFilter-{{ $level['type'] }}">{{ $level['label'] }}</label>
+              <input type="text" class="map-filterfield__input" id="mapFilter-{{ $level['type'] }}"
+                     placeholder="Tous — {{ mb_strtolower($level["label"]) }}s"
+                     autocomplete="off" role="combobox" aria-expanded="false"
+                     aria-label="Filtrer par {{ mb_strtolower($level["label"]) }}"
+                     data-options='@json($level['options'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_APOS)'>
+              <div class="map-filterfield__list" role="listbox"></div>
+            </div>
+          @endif
+        @endforeach
+      </div>
+
       <div class="map-filters" id="mapFilters">
         <button class="map-filter-btn active" data-filter="all">Tous</button>
       </div>
