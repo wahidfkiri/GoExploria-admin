@@ -359,11 +359,56 @@
         return f || null;
     }
 
+    /* ------------------------------------------------------------------
+       QUEL BIEN LA FICHE MONTRE-T-ELLE ?
+
+       Le gabarit ouvre sa fiche avec `ouvrirFiche(id)` mais n'inscrit cet id
+       NULLE PART : ni sur le panneau, ni dans une variable. Nos trois greffes
+       (calendrier, formulaire de demande, média) le cherchaient pourtant sur
+       le panneau — elles ne le trouvaient jamais, et le calendrier ne
+       demandait donc aucune période : AUCUN jour n'était grisé.
+
+       On récupère l'identité à la source. Le gabarit n'ouvre une fiche que
+       depuis un élément `[data-im-open]`, qui porte l'id exact remis à
+       `ouvrirFiche` : c'est la référence. La carte englobante (`data-id`)
+       sert de repli. En phase de capture, on note l'id AVANT que le gabarit
+       n'ouvre la fiche, et on le recopie sur le panneau — ce qui réveille
+       aussi les observateurs des deux autres greffes (formulaire, média).
+    ------------------------------------------------------------------ */
+    if (!window.__gxImmoIdentiteBranchee) {
+        window.__gxImmoIdentiteBranchee = true;
+
+        document.addEventListener('click', function (ev) {
+            var cible = ev.target;
+            if (!cible || !cible.closest) { return; }
+
+            // Le bouton favori vit dans la carte sans ouvrir la fiche.
+            if (cible.closest('.im-fav')) { return; }
+
+            var declencheur = cible.closest('[data-im-open]');
+            var carte = cible.closest('[data-im-card]');
+
+            var id = (declencheur && declencheur.getAttribute('data-im-open'))
+                || (carte && carte.getAttribute('data-id'));
+
+            if (!id) { return; }
+
+            window.__gxImmoBienCourant = id;
+
+            var panneau = document.querySelector('[data-im-detail]');
+            if (panneau) { panneau.setAttribute('data-im-detail-id', id); }
+        }, true);
+    }
+
     function bienAffiche() {
         var f = document.querySelector('[data-im-detail]');
         if (!f) { return null; }
 
-        var brut = f.getAttribute('data-im-detail-id') || f.getAttribute('data-property-id');
+        var brut = f.getAttribute('data-im-detail-id')
+            || f.getAttribute('data-property-id')
+            // Même repli que le formulaire de demande : il lui manquait ici.
+            || (window.__gxImmoBienCourant || null);
+
         if (!brut) { return null; }
 
         var n = String(brut).replace(/^p/, '');

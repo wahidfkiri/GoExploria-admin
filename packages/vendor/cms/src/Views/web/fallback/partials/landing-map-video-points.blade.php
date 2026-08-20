@@ -388,6 +388,15 @@
             .map-popup__detail-btn{display:block;width:100%;padding:10px 16px;background:var(--td-amber);color:#000;border-radius:var(--td-radius-sm);font-size:0.82rem;font-weight:600;text-align:center;transition:all var(--td-transition);cursor:pointer;border:0}
             .map-popup__detail-btn:hover{background:var(--td-amber-dark)}
             .map-popup__video{height:160px;overflow:hidden;background:#000}
+            .map-popup__video .gxmap-swiper{width:100%;height:100%}
+            /* Dans les DEUX boîtes média (popup et modale), le conteneur est
+               étiré par positionnement absolu : la hauteur doit être propagée
+               jusqu'aux diapositives, sinon Swiper les calcule à 0 et rien ne
+               s'affiche alors même que les images sont chargées. */
+            .map-popup__video .gxmap-swiper .swiper,.map-popup__video .gxmap-swiper .swiper-wrapper,
+            .map-popup__video .gxmap-swiper .swiper-slide,
+            .map-modal__video .gxmap-swiper .swiper,.map-modal__video .gxmap-swiper .swiper-wrapper,
+            .map-modal__video .gxmap-swiper .swiper-slide{height:100%}
             .map-popup__video iframe,.map-popup__video video{width:100%;height:100%;border:0;object-fit:cover;background:#000}
             .map-region-filter{text-align:center;margin-bottom:16px}
             .map-region-select{padding:10px 20px;border:1px solid var(--td-border);border-radius:50px;font-size:0.85rem;font-weight:600;color:var(--td-sand);background:var(--td-glass-bg);cursor:pointer;min-width:220px;max-width:100%;outline:none;transition:border-color var(--td-transition);appearance:auto}
@@ -398,7 +407,10 @@
             .map-filter-btn.active{background:var(--td-amber);color:#000;border-color:var(--td-amber)}
             .map-filter-btn__icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;font-size:1rem;flex-shrink:0}
             .map-filter-btn__label{white-space:nowrap}
-            .map-modal{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.8);overflow-y:auto}
+            /* Au-dessus de toute la charte globale : header (10060) et
+               méga-menus (jusqu'à 9999999). Le modal est déplacé sous <body>
+               à l'ouverture, ce z-index se compare donc bien à eux. */
+            .map-modal{display:none;position:fixed;inset:0;z-index:10000000;background:rgba(0,0,0,0.8);overflow-y:auto}
             .map-modal__backdrop{position:fixed;inset:0;z-index:-1}
             .map-modal__content{position:relative;width:min(1140px,96vw);max-height:92vh;background:var(--td-card-bg);border-radius:var(--td-radius-md);overflow-y:auto;margin:40px auto;animation:modalSlideIn .3s ease}
             .map-modal__socials{display:none;flex-wrap:wrap;gap:10px;margin:14px 0 4px}
@@ -409,10 +421,28 @@
             .map-modal__close:hover{color:var(--td-amber);background:var(--td-glass-bg)}
             .map-modal__body{padding:0 32px 32px}
             .map-modal__video{width:100%;height:0;padding-bottom:56.25%;position:relative;background:#000;border-radius:var(--td-radius-sm) var(--td-radius-sm) 0 0;overflow:hidden}
-            .map-modal__video iframe,.map-modal__video video{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:contain;background:#000}
+            .map-modal__video iframe,.map-modal__video video,
+            .map-modal__video img,.map-modal__video .gxmap-swiper{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:contain;background:#000}
             .map-modal__video:empty{display:none}
             .map-modal__gallery{display:flex;gap:8px;overflow-x:auto;margin-bottom:24px;padding-bottom:8px}
             .map-modal__gallery img{width:160px;height:100px;object-fit:cover;border-radius:var(--td-radius-sm);flex-shrink:0}
+            /* Carrousel : le conteneur reprend la main sur le repli en défilement. */
+            .map-modal__gallery:has(.gxmap-swiper){display:block;overflow:visible;padding-bottom:0}
+            .map-modal__gallery .gxmap-swiper{width:100%;border-radius:var(--td-radius-sm);overflow:hidden}
+            .map-modal__gallery .gxmap-swiper .swiper-slide{height:320px}
+            .map-modal__gallery .gxmap-swiper img{width:100%;height:100%;object-fit:cover;border-radius:0;flex-shrink:1}
+
+            /* Carrousel commun popup + modale */
+            .gxmap-swiper{position:relative;background:#000}
+            .gxmap-swiper .swiper-slide{display:flex;align-items:center;justify-content:center;background:#000}
+            .gxmap-swiper .swiper-slide img{width:100%;height:100%;object-fit:cover;display:block}
+            .gxmap-swiper .swiper-button-prev,.gxmap-swiper .swiper-button-next{width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.45);color:var(--td-sand,#e9dcc3);transition:background .2s ease}
+            .gxmap-swiper .swiper-button-prev:after,.gxmap-swiper .swiper-button-next:after{font-size:12px;font-weight:800}
+            .gxmap-swiper .swiper-button-prev:hover,.gxmap-swiper .swiper-button-next:hover{background:var(--td-amber,#d4af37);color:#000}
+            .gxmap-swiper .swiper-pagination-bullet{background:var(--td-sand,#e9dcc3);opacity:.55}
+            .gxmap-swiper .swiper-pagination-bullet-active{background:var(--td-amber,#d4af37);opacity:1}
+            /* Compteur : utile dès que la galerie dépasse quelques photos. */
+            .gxmap-swiper__compte{position:absolute;right:8px;top:8px;z-index:2;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;font-weight:700;letter-spacing:.02em}
             .map-modal__title{font-family:'Italiana',serif;font-size:1.6rem;margin-bottom:12px;color:var(--td-sand)}
             .map-modal__description{font-size:0.92rem;color:var(--td-text-muted);line-height:1.7;margin-bottom:16px}
             .map-modal__meta{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:20px}
@@ -679,14 +709,100 @@
                 .replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        /* Média de tête : la vidéo du point, ou la photo du bien quand il n'en
-           a pas. Sans cela, le popup d'un bien s'ouvrirait sur du vide. */
+        /* ------------------------------------------------------------------
+           CARROUSELS
+
+           Les deux moteurs de carte n'offrent pas le même crochet : Leaflet
+           émet « popupopen », Google insère son InfoWindow sans prévenir. On
+           n'initialise donc pas au moment de l'ouverture : un observateur
+           réveille tout carrousel dès qu'il entre dans le document, quel que
+           soit celui qui l'a posé.
+        ------------------------------------------------------------------ */
+        function imagesDe(p) {
+            return (p.gallery || [])
+                .map(function (img) { return (img && (img.src || img.thumb)) || ''; })
+                .filter(Boolean);
+        }
+
+        /* Un carrousel n'a de sens qu'à partir de deux images : au-dessous on
+           renvoie une simple photo, qui se charge plus vite et ne montre ni
+           flèches ni puces inutiles. */
+        function galerieHtml(p, options) {
+            options = options || {};
+            var images = imagesDe(p);
+            if (!images.length) { return ''; }
+
+            var alt = escapeAttr(p.title || '');
+
+            /* ⚠ PAS de loading="lazy" ici : popup et modale ne sont construits
+               QU'À l'ouverture, et leur conteneur vient d'être révélé. Le
+               chargement paresseux n'y gagne rien et laisse la vue blanche —
+               le navigateur ne juge jamais ces images « visibles ». */
+            if (images.length === 1) {
+                return '<img src="' + escapeAttr(images[0]) + '" alt="' + alt + '">';
+            }
+
+            var slides = images.map(function (src) {
+                return '<div class="swiper-slide"><img src="' + escapeAttr(src) + '" alt="' + alt + '"></div>';
+            }).join('');
+
+            return '<div class="gxmap-swiper" data-gxmap-swiper>'
+                 + '<span class="gxmap-swiper__compte">' + images.length + ' photos</span>'
+                 + '<div class="swiper"><div class="swiper-wrapper">' + slides + '</div>'
+                 + (options.puces === false ? '' : '<div class="swiper-pagination"></div>')
+                 + '<div class="swiper-button-prev"></div><div class="swiper-button-next"></div>'
+                 + '</div></div>';
+        }
+
+        var swipersVivants = [];
+
+        function detruireSwipers() {
+            swipersVivants.forEach(function (s) {
+                try { s.destroy(true, true); } catch (e) {}
+            });
+            swipersVivants = [];
+        }
+
+        function initSwipers(racine) {
+            if (typeof Swiper === 'undefined') { return; }   // page sans Swiper : le repli suffit
+
+            (racine || document).querySelectorAll('[data-gxmap-swiper]').forEach(function (bloc) {
+                if (bloc.__gxPret) { return; }
+                var piste = bloc.querySelector('.swiper');
+                if (!piste) { return; }
+                bloc.__gxPret = true;
+
+                swipersVivants.push(new Swiper(piste, {
+                    loop: bloc.querySelectorAll('.swiper-slide').length > 2,
+                    spaceBetween: 0,
+                    pagination: { el: bloc.querySelector('.swiper-pagination'), clickable: true },
+                    navigation: {
+                        prevEl: bloc.querySelector('.swiper-button-prev'),
+                        nextEl: bloc.querySelector('.swiper-button-next')
+                    },
+                    keyboard: { enabled: true }
+                }));
+            });
+        }
+
+        // Popups Leaflet ET InfoWindows Google passent par le document : un seul
+        // observateur suffit à les couvrir tous les deux.
+        if (typeof MutationObserver !== 'undefined') {
+            new MutationObserver(function () { initSwipers(document); })
+                .observe(document.body, { childList: true, subtree: true });
+        }
+
+        /* Média de tête : la vidéo du point, sinon ses photos. Un bien sans
+           vidéo montre ainsi toute sa galerie au lieu de sa seule couverture. */
         function buildMediaHtml(p, autoplay) {
             var lecteur = buildVideoPlayer(p, autoplay);
             if (lecteur) return lecteur;
+
+            var galerie = galerieHtml(p, { puces: true });
+            if (galerie) { return galerie; }
+
             if (p.is_property && p.immo && p.immo.cover) {
-                return '<img src="' + escapeAttr(p.immo.cover) + '" alt="' + escapeAttr(p.title || '') + '" '
-                     + 'loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">';
+                return '<img src="' + escapeAttr(p.immo.cover) + '" alt="' + escapeAttr(p.title || '') + '">';
             }
             return '';
         }
@@ -785,6 +901,7 @@
         map.on('popupopen', function (e) {
             var c = e.popup.getElement();
             if (!c) return;
+            initSwipers(c);
             c.querySelectorAll('.map-popup__detail-btn').forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     var idx = parseInt(btn.getAttribute('data-index'));
@@ -798,9 +915,34 @@
             var modal = document.getElementById('mapDetailModal');
             var mc = document.getElementById('mapModalMeta');
             if (!modal || !mc) return;
+
+            /* ------------------------------------------------------------------
+               LE MODAL DOIT VIVRE À LA RACINE DU DOCUMENT
+
+               Les sections du site sont animées : un ancêtre porte un
+               `transform`, ce qui a DEUX conséquences pour un enfant en
+               `position:fixed` —
+                 • il crée un contexte d'empilement, donc le z-index du modal
+                   (99999) ne se compare plus au header global (10060) mais
+                   reste prisonnier de la section ;
+                 • le `fixed` se cale sur cet ancêtre au lieu de la fenêtre,
+                   et le contenu remonte sous le header (mesuré à -10 px).
+
+               Le déplacer une fois sous <body> règle les deux d'un coup, sans
+               dépendre du z-index de la charte globale.
+            ------------------------------------------------------------------ */
+            if (modal.parentElement !== document.body) {
+                document.body.appendChild(modal);
+            }
+
+            // Les carrousels de la fiche précédente partent AVANT toute
+            // reconstruction : les détruire en cours de route emporterait ceux
+            // qu'on vient de créer (le média principal, posé juste après).
+            detruireSwipers();
+
             document.getElementById('map-modal-title').textContent = point.title || 'D\u00e9tails';
             var ve = document.getElementById('mapModalVideo');
-            if (ve) ve.innerHTML = buildMediaHtml(point, false);
+            if (ve) { ve.innerHTML = buildMediaHtml(point, false); }
             var de = modal.querySelector('.map-modal__description');
             // Rendu HTML décodé (jamais de balises visibles type "<p>…</p>")
             de.innerHTML = decodeHtml(point.description || '');
@@ -819,16 +961,7 @@
             if (point.region) mh += '<span class="map-modal__meta-item">&#9906; ' + escapeHtml(point.region) + '</span>';
             mc.innerHTML = mh;
             var ge = document.getElementById('mapModalGallery');
-            ge.innerHTML = '';
-            if (point.gallery && point.gallery.length) {
-                point.gallery.forEach(function (img) {
-                    var el = document.createElement('img');
-                    el.src = img.thumb || img.src || '';
-                    el.alt = img.caption || '';
-                    el.loading = 'lazy';
-                    ge.appendChild(el);
-                });
-            }
+            ge.innerHTML = galerieHtml(point, { puces: true });
             // Réseaux sociaux (affichés seulement s'ils existent)
             var se = document.getElementById('mapModalSocials');
             if (se) {
@@ -853,6 +986,11 @@
             if (point.website) { wl.href = point.website; wl.style.display = 'inline-flex'; } else { wl.style.display = 'none'; }
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
+
+            // ⚠ APRÈS l'affichage seulement : initialisé pendant que la modale
+            // est encore masquée, Swiper mesure 0 et n'applique jamais ses
+            // classes d'état ni ses positions — les photos restent figées.
+            initSwipers(modal);
         }
 
         function closePlaceModal() {
