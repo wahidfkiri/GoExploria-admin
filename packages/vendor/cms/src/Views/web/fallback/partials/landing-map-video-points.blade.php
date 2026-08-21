@@ -417,8 +417,12 @@
             .map-modal__social{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--td-glass-bg,rgba(255,255,255,.08));border:1px solid var(--td-glass-border,rgba(255,255,255,.15));color:var(--td-sand,#e9dcc3);font-size:16px;text-decoration:none;transition:all .2s ease}
             .map-modal__social:hover{transform:translateY(-2px);background:var(--td-amber,#d4af37);color:#0a1628}
             @keyframes modalSlideIn{from{transform:translateY(-50px);opacity:0}to{transform:translateY(0);opacity:1}}
-            .map-modal__close{position:absolute;top:16px;right:16px;z-index:1;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:var(--td-text-muted);background:rgba(0,0,0,0.1);border-radius:50%;transition:all var(--td-transition);cursor:pointer;border:0}
-            .map-modal__close:hover{color:var(--td-amber);background:var(--td-glass-bg)}
+            /* ⚠ Swiper pose lui-même `z-index:1` sur `.swiper` : à valeur égale
+               c'est l'ordre du DOM qui tranche, et le média vient APRÈS ce
+               bouton — il le recouvrait. D'où un cran plus haut, et un fond
+               assez opaque pour rester lisible sur n'importe quelle photo. */
+            .map-modal__close{position:absolute;top:16px;right:16px;z-index:6;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;line-height:1;color:#fff;background:rgba(0,0,0,0.55);backdrop-filter:blur(2px);border-radius:50%;transition:all var(--td-transition);cursor:pointer;border:0;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+            .map-modal__close:hover{color:#000;background:var(--td-amber,#d4af37)}
             .map-modal__body{padding:0 32px 32px}
             .map-modal__video{width:100%;height:0;padding-bottom:56.25%;position:relative;background:#000;border-radius:var(--td-radius-sm) var(--td-radius-sm) 0 0;overflow:hidden}
             .map-modal__video iframe,.map-modal__video video,
@@ -429,7 +433,11 @@
             /* Carrousel : le conteneur reprend la main sur le repli en défilement. */
             .map-modal__gallery:has(.gxmap-swiper){display:block;overflow:visible;padding-bottom:0}
             .map-modal__gallery .gxmap-swiper{width:100%;border-radius:var(--td-radius-sm);overflow:hidden}
-            .map-modal__gallery .gxmap-swiper .swiper-slide{height:320px}
+            /* Quatre vignettes de front : la diapositive n'occupe plus toute
+               la largeur, elle est donc bien plus basse qu'en vue unique. */
+            .map-modal__gallery .gxmap-swiper{overflow:visible}
+            .map-modal__gallery .gxmap-swiper .swiper{overflow:hidden;border-radius:var(--td-radius-sm)}
+            .map-modal__gallery .gxmap-swiper .swiper-slide{height:170px;border-radius:var(--td-radius-sm);overflow:hidden}
             .map-modal__gallery .gxmap-swiper img{width:100%;height:100%;object-fit:cover;border-radius:0;flex-shrink:1}
 
             /* Carrousel commun popup + modale */
@@ -654,7 +662,11 @@
                 return '<div class="swiper-slide"><img src="' + escapeAttr(src) + '" alt="' + alt + '"></div>';
             }).join('');
 
-            return '<div class="gxmap-swiper" data-gxmap-swiper>'
+            // La variante voyage sur l'attribut : `initSwipers` est générique et
+            // ne connaît pas l'appelant, c'est le balisage qui la renseigne.
+            var variante = options.variante === 'galerie' ? 'galerie' : 'media';
+
+            return '<div class="gxmap-swiper" data-gxmap-swiper="' + variante + '">'
                  + '<span class="gxmap-swiper__compte">' + images.length + ' photos</span>'
                  + '<div class="swiper"><div class="swiper-wrapper">' + slides + '</div>'
                  + (options.puces === false ? '' : '<div class="swiper-pagination"></div>')
@@ -680,16 +692,40 @@
                 if (!piste) { return; }
                 bloc.__gxPret = true;
 
-                swipersVivants.push(new Swiper(piste, {
-                    loop: bloc.querySelectorAll('.swiper-slide').length > 2,
-                    spaceBetween: 0,
+                var nb = bloc.querySelectorAll('.swiper-slide').length;
+                var estGalerie = bloc.getAttribute('data-gxmap-swiper') === 'galerie';
+
+                var reglages = {
                     pagination: { el: bloc.querySelector('.swiper-pagination'), clickable: true },
                     navigation: {
                         prevEl: bloc.querySelector('.swiper-button-prev'),
                         nextEl: bloc.querySelector('.swiper-button-next')
                     },
                     keyboard: { enabled: true }
-                }));
+                };
+
+                if (estGalerie) {
+                    // Quatre vignettes de front sur grand écran, moins à mesure
+                    // que la place manque.
+                    reglages.slidesPerView = 2;
+                    reglages.spaceBetween = 8;
+                    reglages.breakpoints = {
+                        480:  { slidesPerView: 2, spaceBetween: 8 },
+                        768:  { slidesPerView: 3, spaceBetween: 8 },
+                        1024: { slidesPerView: 4, spaceBetween: 10 }
+                    };
+                    // Pas de boucle : Swiper exige au moins deux fois plus de
+                    // diapositives que de vues simultanées, ce qu'une galerie de
+                    // 5 photos n'atteint pas — elle sauterait à l'affichage.
+                    reglages.loop = false;
+                    reglages.slidesPerGroup = 1;
+                } else {
+                    reglages.slidesPerView = 1;
+                    reglages.spaceBetween = 0;
+                    reglages.loop = nb > 2;
+                }
+
+                swipersVivants.push(new Swiper(piste, reglages));
             });
         }
 
@@ -969,7 +1005,7 @@
             if (point.region) mh += '<span class="map-modal__meta-item">&#9906; ' + escapeHtml(point.region) + '</span>';
             mc.innerHTML = mh;
             var ge = document.getElementById('mapModalGallery');
-            ge.innerHTML = galerieHtml(point, { puces: true });
+            ge.innerHTML = galerieHtml(point, { puces: true, variante: 'galerie' });
             // Réseaux sociaux (affichés seulement s'ils existent)
             var se = document.getElementById('mapModalSocials');
             if (se) {
