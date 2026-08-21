@@ -320,6 +320,16 @@
                         'bathrooms' => $bien->bathrooms !== null ? (int) $bien->bathrooms : null,
                         'reference' => $bien->reference ?: null,
                         'cover'     => $bien->vignette(),
+                        // Compléments repris de la fiche du gabarit.
+                        'standing'  => $bien->standing ?: null,
+                        'city'      => $bien->city ?: null,
+                        'area'      => $bien->area ?: null,
+                        'parking'   => $bien->parking !== null ? (int) $bien->parking : null,
+                        'capacity'  => $bien->capacity !== null ? (int) $bien->capacity : null,
+                        'nightly'   => $bien->nightly_price !== null
+                            ? number_format((float) $bien->nightly_price, 0, ',', ' ') . ' ' . ($bien->currency ?: 'USD') . ' / nuit'
+                            : null,
+                        'amenities' => array_values(array_filter((array) $bien->amenities)),
                     ],
                 ];
             });
@@ -457,6 +467,17 @@
             .map-modal__tag{padding:4px 12px;background:rgba(245,166,35,0.12);color:var(--td-amber);border-radius:50px;font-size:0.75rem;font-weight:600}
             .map-modal__meta-item{font-size:0.82rem;color:var(--td-text-muted)}
             .map-modal__actions{margin-top:24px}
+            .map-modal__immo{margin-bottom:20px}
+            .map-modal__immo-titre{font-size:0.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--td-amber,#d4af37);margin:18px 0 10px}
+            .map-modal__specs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+            .map-modal__spec{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--td-glass-border,rgba(255,255,255,.15));border-radius:var(--td-radius-sm)}
+            .map-modal__spec-lbl{font-size:0.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--td-text-muted)}
+            .map-modal__spec-val{font-size:0.95rem;font-weight:700;color:var(--td-sand,#e9dcc3)}
+            .map-modal__equip{display:flex;flex-wrap:wrap;gap:8px}
+            .map-modal__equip span{padding:5px 12px;border-radius:999px;font-size:0.78rem;color:var(--td-sand,#e9dcc3);background:var(--td-glass-bg,rgba(255,255,255,.08));border:1px solid var(--td-glass-border,rgba(255,255,255,.15))}
+            /* Le bloc réservation est emprunté au gabarit : on lui donne
+               un cadre, sans toucher à ses styles d'origine. */
+            .map-modal__reservation:not(:empty){margin-top:22px;padding-top:20px;border-top:1px solid var(--td-glass-border,rgba(255,255,255,.15))}
             .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:50px;font-size:0.9rem;font-weight:600;text-decoration:none;transition:all var(--td-transition)}
             .btn--primary{background:var(--td-amber);color:#000;border:1px solid var(--td-amber)}
             .btn--primary:hover{background:var(--td-amber-dark);border-color:var(--td-amber-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,166,35,0.4)}
@@ -512,6 +533,12 @@
                     <h3 class="map-modal__title" id="map-modal-title"></h3>
                     <div class="map-modal__description"></div>
                     <div class="map-modal__meta" id="mapModalMeta"></div>
+                    {{-- Complément propre aux biens : équipements et
+                         caractéristiques que la fiche du gabarit affiche. --}}
+                    <div class="map-modal__immo" id="mapModalImmo"></div>
+                    {{-- Accueille le bloc « demande de réservation » du gabarit :
+                         il y est DÉPLACÉ à l'ouverture, puis rendu à sa place. --}}
+                    <div class="map-modal__reservation" id="mapModalReservation"></div>
                     <div class="map-modal__socials" id="mapModalSocials"></div>
                     <div class="map-modal__actions">
                         <a href="#" class="btn btn--primary" id="mapModalWebsite" target="_blank" rel="noopener">Visiter le site</a>
@@ -863,6 +890,87 @@
             ].filter(Boolean);
         }
 
+        /* Caractéristiques et équipements, comme sur la fiche du gabarit. */
+        function immoDetailsHtml(p) {
+            if (!p.is_property || !p.immo) { return ''; }
+            var i = p.immo;
+
+            var specs = [
+                ['Type', i.type], ['Transaction', i.intent], ['Standing', i.standing],
+                ['Surface', i.surface], ['Chambres', i.bedrooms], ['Salles de bain', i.bathrooms],
+                ['Stationnement', i.parking], ['Capacité', i.capacity ? i.capacity + ' pers.' : null],
+                ['Nuitée', i.nightly], ['Quartier', i.area], ['Ville', i.city],
+                ['Référence', i.reference]
+            ].filter(function (c) { return c[1] !== null && c[1] !== undefined && c[1] !== ''; });
+
+            var h = '';
+            if (specs.length) {
+                h += '<div class="map-modal__immo-titre">Caractéristiques</div><div class="map-modal__specs">';
+                specs.forEach(function (c) {
+                    h += '<div class="map-modal__spec"><span class="map-modal__spec-lbl">' + escapeHtml(c[0]) + '</span>'
+                       + '<span class="map-modal__spec-val">' + escapeHtml(String(c[1])) + '</span></div>';
+                });
+                h += '</div>';
+            }
+
+            var equip = (i.amenities || []).filter(Boolean);
+            if (equip.length) {
+                h += '<div class="map-modal__immo-titre">Équipements</div><div class="map-modal__equip">';
+                equip.forEach(function (e) { h += '<span>' + escapeHtml(String(e)) + '</span>'; });
+                h += '</div>';
+            }
+            return h;
+        }
+
+        /* ------------------------------------------------------------------
+           BLOC « DEMANDE DE RÉSERVATION » — EMPRUNTÉ, PAS DUPLIQUÉ
+
+           Le gabarit possède déjà ce bloc (formulaire + calendrier des
+           disponibilités), posé dans sa fiche par gx-immo-request et
+           gx-immo-calendar. Le recopier ici obligerait à maintenir deux
+           formulaires et deux calendriers.
+
+           On DÉPLACE donc le nœud dans la modale à l'ouverture, puis on le
+           rend à sa place à la fermeture : le déplacement préserve les
+           écouteurs, et le calendrier garde ses périodes.
+
+           Le formulaire lit l'identité du bien sur le panneau du gabarit :
+           on l'y inscrit avant, exactement comme le fait un clic sur une carte.
+        ------------------------------------------------------------------ */
+        var reservationEmpruntee = null;   // { noeud, parent, suivant }
+
+        function emprunterReservation(point) {
+            rendreReservation();
+
+            var accueil = document.getElementById('mapModalReservation');
+            if (!accueil || !point.is_property) { return; }
+
+            var section = document.querySelector('[data-gxir-section]');
+            if (!section) { return; }   // gabarit sans formulaire : rien à emprunter
+
+            var id = String(point.id || '').replace(/^immo-/, '');
+            if (!id) { return; }
+
+            // Identité lue par le formulaire ET par le calendrier.
+            window.__gxImmoBienCourant = id;
+            var panneau = document.querySelector('[data-im-detail]');
+            if (panneau) { panneau.setAttribute('data-im-detail-id', id); }
+
+            reservationEmpruntee = {
+                noeud: section,
+                parent: section.parentNode,
+                suivant: section.nextSibling
+            };
+            accueil.appendChild(section);
+        }
+
+        function rendreReservation() {
+            if (!reservationEmpruntee) { return; }
+            var e = reservationEmpruntee;
+            reservationEmpruntee = null;
+            if (e.parent) { e.parent.insertBefore(e.noeud, e.suivant); }
+        }
+
         function buildPopupHtml(p, idx) {
             var media = buildMediaHtml(p, true);
             var h = '<div class="map-popup">';
@@ -1004,6 +1112,10 @@
             if (point.adresse) mh += '<span class="map-modal__tag">' + escapeHtml(point.adresse) + '</span>';
             if (point.region) mh += '<span class="map-modal__meta-item">&#9906; ' + escapeHtml(point.region) + '</span>';
             mc.innerHTML = mh;
+            var ie = document.getElementById('mapModalImmo');
+            if (ie) { ie.innerHTML = immoDetailsHtml(point); }
+            emprunterReservation(point);
+
             var ge = document.getElementById('mapModalGallery');
             ge.innerHTML = galerieHtml(point, { puces: true, variante: 'galerie' });
             // Réseaux sociaux (affichés seulement s'ils existent)
@@ -1040,6 +1152,9 @@
         function closePlaceModal() {
             var modal = document.getElementById('mapDetailModal');
             if (!modal) return;
+            // Le bloc réservation appartient à la fiche du gabarit : il doit y
+            // retourner, sinon celle-ci se retrouverait sans formulaire.
+            rendreReservation();
             modal.style.display = 'none';
             document.body.style.overflow = '';
         }

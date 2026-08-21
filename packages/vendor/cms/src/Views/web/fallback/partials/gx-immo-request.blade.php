@@ -80,7 +80,14 @@
         return duMeta || JETON;
     }
 
+    /* Panneau d'accueil du formulaire. La modale de la carte peut l'avoir
+       emprunté : dans ce cas c'est elle qui le porte, et c'est là qu'il faut
+       le retrouver — sinon un second formulaire serait créé dans la fiche. */
     function fiche() {
+        var emprunte = document.querySelector('[data-gxir-section]');
+        if (emprunte && !emprunte.closest('[data-im-detail]')) {
+            return emprunte.parentElement;
+        }
         return document.querySelector('[data-im-detail]');
     }
 

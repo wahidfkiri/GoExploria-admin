@@ -354,9 +354,13 @@
     };
 
     /* Le formulaire est posé par gx-immo-request : on attend qu'il existe. */
+    /* Le bloc de demande vit normalement dans la fiche du gabarit, mais la
+       modale de la carte l'EMPRUNTE le temps de son affichage. On le cherche
+       donc d'abord à sa place habituelle, puis partout ailleurs. */
     function formulaire() {
-        var f = document.querySelector('[data-im-detail] [data-gxir-section] form');
-        return f || null;
+        return document.querySelector('[data-im-detail] [data-gxir-section] form')
+            || document.querySelector('[data-gxir-section] form')
+            || null;
     }
 
     /* ------------------------------------------------------------------
