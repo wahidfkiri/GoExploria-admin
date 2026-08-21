@@ -610,6 +610,96 @@
         // closePlaceModal (hoistées) → MÊME logique de marqueurs + popup vidéo
         // + modale. Sans Map ID, marqueurs HTML via OverlayView (icône + couleur
         // de la catégorie). Le filtre catégorie/région reste à câbler (Leaflet).
+        /* ------------------------------------------------------------------
+           CARROUSELS
+
+           Les deux moteurs de carte n'offrent pas le même crochet : Leaflet
+           émet « popupopen », Google insère son InfoWindow sans prévenir. On
+           n'initialise donc pas au moment de l'ouverture : un observateur
+           réveille tout carrousel dès qu'il entre dans le document, quel que
+           soit celui qui l'a posé.
+
+           ⚠ CE BLOC DOIT RESTER AVANT LA BRANCHE GOOGLE MAPS.
+           Celle-ci se termine par un `return` : tout ce qui suit n'est
+           jamais EXÉCUTÉ quand une clé Google est configurée — donc en
+           production. Les `function` sont hissées et survivent, mais pas
+           `var swipersVivants = []` (resté undefined → la modale plantait)
+           ni l'enregistrement de l'observateur (→ carrousels morts).
+        ------------------------------------------------------------------ */
+        function imagesDe(p) {
+            return (p.gallery || [])
+                .map(function (img) { return (img && (img.src || img.thumb)) || ''; })
+                .filter(Boolean);
+        }
+
+        /* Un carrousel n'a de sens qu'à partir de deux images : au-dessous on
+           renvoie une simple photo, qui se charge plus vite et ne montre ni
+           flèches ni puces inutiles. */
+        function galerieHtml(p, options) {
+            options = options || {};
+            var images = imagesDe(p);
+            if (!images.length) { return ''; }
+
+            var alt = escapeAttr(p.title || '');
+
+            /* ⚠ PAS de loading="lazy" ici : popup et modale ne sont construits
+               QU'À l'ouverture, et leur conteneur vient d'être révélé. Le
+               chargement paresseux n'y gagne rien et laisse la vue blanche —
+               le navigateur ne juge jamais ces images « visibles ». */
+            if (images.length === 1) {
+                return '<img src="' + escapeAttr(images[0]) + '" alt="' + alt + '">';
+            }
+
+            var slides = images.map(function (src) {
+                return '<div class="swiper-slide"><img src="' + escapeAttr(src) + '" alt="' + alt + '"></div>';
+            }).join('');
+
+            return '<div class="gxmap-swiper" data-gxmap-swiper>'
+                 + '<span class="gxmap-swiper__compte">' + images.length + ' photos</span>'
+                 + '<div class="swiper"><div class="swiper-wrapper">' + slides + '</div>'
+                 + (options.puces === false ? '' : '<div class="swiper-pagination"></div>')
+                 + '<div class="swiper-button-prev"></div><div class="swiper-button-next"></div>'
+                 + '</div></div>';
+        }
+
+        var swipersVivants = [];
+
+        function detruireSwipers() {
+            swipersVivants.forEach(function (s) {
+                try { s.destroy(true, true); } catch (e) {}
+            });
+            swipersVivants = [];
+        }
+
+        function initSwipers(racine) {
+            if (typeof Swiper === 'undefined') { return; }   // page sans Swiper : le repli suffit
+
+            (racine || document).querySelectorAll('[data-gxmap-swiper]').forEach(function (bloc) {
+                if (bloc.__gxPret) { return; }
+                var piste = bloc.querySelector('.swiper');
+                if (!piste) { return; }
+                bloc.__gxPret = true;
+
+                swipersVivants.push(new Swiper(piste, {
+                    loop: bloc.querySelectorAll('.swiper-slide').length > 2,
+                    spaceBetween: 0,
+                    pagination: { el: bloc.querySelector('.swiper-pagination'), clickable: true },
+                    navigation: {
+                        prevEl: bloc.querySelector('.swiper-button-prev'),
+                        nextEl: bloc.querySelector('.swiper-button-next')
+                    },
+                    keyboard: { enabled: true }
+                }));
+            });
+        }
+
+        // Popups Leaflet ET InfoWindows Google passent par le document : un seul
+        // observateur suffit à les couvrir tous les deux.
+        if (typeof MutationObserver !== 'undefined') {
+            new MutationObserver(function () { initSwipers(document); })
+                .observe(document.body, { childList: true, subtree: true });
+        }
+
         if (window.GX_MAPS && window.GX_MAPS.key && window.GxGoogleMap) {
             var gLat0 = (Math.min.apply(null, lats) + Math.max.apply(null, lats)) / 2;
             var gLng0 = (Math.min.apply(null, lngs) + Math.max.apply(null, lngs)) / 2;
@@ -709,88 +799,6 @@
                 .replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        /* ------------------------------------------------------------------
-           CARROUSELS
-
-           Les deux moteurs de carte n'offrent pas le même crochet : Leaflet
-           émet « popupopen », Google insère son InfoWindow sans prévenir. On
-           n'initialise donc pas au moment de l'ouverture : un observateur
-           réveille tout carrousel dès qu'il entre dans le document, quel que
-           soit celui qui l'a posé.
-        ------------------------------------------------------------------ */
-        function imagesDe(p) {
-            return (p.gallery || [])
-                .map(function (img) { return (img && (img.src || img.thumb)) || ''; })
-                .filter(Boolean);
-        }
-
-        /* Un carrousel n'a de sens qu'à partir de deux images : au-dessous on
-           renvoie une simple photo, qui se charge plus vite et ne montre ni
-           flèches ni puces inutiles. */
-        function galerieHtml(p, options) {
-            options = options || {};
-            var images = imagesDe(p);
-            if (!images.length) { return ''; }
-
-            var alt = escapeAttr(p.title || '');
-
-            /* ⚠ PAS de loading="lazy" ici : popup et modale ne sont construits
-               QU'À l'ouverture, et leur conteneur vient d'être révélé. Le
-               chargement paresseux n'y gagne rien et laisse la vue blanche —
-               le navigateur ne juge jamais ces images « visibles ». */
-            if (images.length === 1) {
-                return '<img src="' + escapeAttr(images[0]) + '" alt="' + alt + '">';
-            }
-
-            var slides = images.map(function (src) {
-                return '<div class="swiper-slide"><img src="' + escapeAttr(src) + '" alt="' + alt + '"></div>';
-            }).join('');
-
-            return '<div class="gxmap-swiper" data-gxmap-swiper>'
-                 + '<span class="gxmap-swiper__compte">' + images.length + ' photos</span>'
-                 + '<div class="swiper"><div class="swiper-wrapper">' + slides + '</div>'
-                 + (options.puces === false ? '' : '<div class="swiper-pagination"></div>')
-                 + '<div class="swiper-button-prev"></div><div class="swiper-button-next"></div>'
-                 + '</div></div>';
-        }
-
-        var swipersVivants = [];
-
-        function detruireSwipers() {
-            swipersVivants.forEach(function (s) {
-                try { s.destroy(true, true); } catch (e) {}
-            });
-            swipersVivants = [];
-        }
-
-        function initSwipers(racine) {
-            if (typeof Swiper === 'undefined') { return; }   // page sans Swiper : le repli suffit
-
-            (racine || document).querySelectorAll('[data-gxmap-swiper]').forEach(function (bloc) {
-                if (bloc.__gxPret) { return; }
-                var piste = bloc.querySelector('.swiper');
-                if (!piste) { return; }
-                bloc.__gxPret = true;
-
-                swipersVivants.push(new Swiper(piste, {
-                    loop: bloc.querySelectorAll('.swiper-slide').length > 2,
-                    spaceBetween: 0,
-                    pagination: { el: bloc.querySelector('.swiper-pagination'), clickable: true },
-                    navigation: {
-                        prevEl: bloc.querySelector('.swiper-button-prev'),
-                        nextEl: bloc.querySelector('.swiper-button-next')
-                    },
-                    keyboard: { enabled: true }
-                }));
-            });
-        }
-
-        // Popups Leaflet ET InfoWindows Google passent par le document : un seul
-        // observateur suffit à les couvrir tous les deux.
-        if (typeof MutationObserver !== 'undefined') {
-            new MutationObserver(function () { initSwipers(document); })
-                .observe(document.body, { childList: true, subtree: true });
-        }
 
         /* Média de tête : la vidéo du point, sinon ses photos. Un bien sans
            vidéo montre ainsi toute sa galerie au lieu de sa seule couverture. */
