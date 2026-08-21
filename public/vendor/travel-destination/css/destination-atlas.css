@@ -922,7 +922,8 @@ section{position:relative;}
   .final-cta-actions{flex-direction:column;align-items:stretch;}
 }
 
-.map-fullbleed{position:relative;width:100%;}
+/* La carte reste sous la barre de filtres : voir la note sur .map-filterbar. */
+.map-fullbleed{position:relative;z-index:1;width:100%;}
 .map-canvas{
   width:100%;height:clamp(460px,68vh,760px);
   background:var(--bg-raised);
@@ -983,7 +984,19 @@ section{position:relative;}
    par la page courante sont des jetons en lecture seule ; les niveaux plus
    fins sont des champs de recherche à liste déroulante.
    -------------------------------------------------------------------------- */
-.map-filterbar{margin-bottom:22px;}
+/* La barre de filtres doit se dessiner AU-DESSUS de la carte.
+   Piège : .reveal applique un transform aux deux blocs, ce qui fait de chacun
+   un contexte d'empilement. Le z-index de la liste déroulante (30) est donc
+   confiné à la barre et ne peut pas franchir sa frontière ; la carte, plus bas
+   dans le document et positionnée, se dessinait par-dessus. Ce sont les deux
+   blocs eux-mêmes qu'il faut hiérarchiser — d'où ce z-index ici, et le
+   z-index:1 sur .map-fullbleed.
+   60 reste sous le header fixe (100) et sous la fiche d'un point (210). */
+.map-filterbar{position:relative;z-index:60;margin-bottom:22px;}
+
+/* Une liste ouverte doit aussi passer devant les champs voisins de la ligne,
+   qui la recouvriraient sinon dès la deuxième colonne. */
+.map-filterfield:focus-within{z-index:40;}
 .map-filterbar__head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px;flex-wrap:wrap;}
 .map-filterbar__reset{
   display:inline-flex;align-items:center;gap:.5em;

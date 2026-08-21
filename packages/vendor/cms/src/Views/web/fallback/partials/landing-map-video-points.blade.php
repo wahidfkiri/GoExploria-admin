@@ -420,7 +420,32 @@
             /* Au-dessus de toute la charte globale : header (10060) et
                méga-menus (jusqu'à 9999999). Le modal est déplacé sous <body>
                à l'ouverture, ce z-index se compare donc bien à eux. */
-            .map-modal{display:none;position:fixed;inset:0;z-index:10000000;background:rgba(0,0,0,0.8);overflow-y:auto}
+            /* ══════════════════════════════════════════════════════════════
+               MODALE EN THÈME CLAIR
+
+               Le reste de la carte suit la palette sombre du site (jetons
+               --td-*). La modale, elle, est un panneau de lecture : on y
+               REDÉFINIT LOCALEMENT ces mêmes jetons en clair, plutôt que de
+               réécrire chaque règle. Tout ce qu'elle contient suit — y compris
+               le bloc de réservation emprunté au gabarit, dont les champs
+               héritent de la couleur du texte.
+
+               Le voile de fond reste sombre : c'est lui qui détache le panneau.
+               ══════════════════════════════════════════════════════════════ */
+            .map-modal{
+                --td-card-bg:#ffffff;
+                --td-sand:#1b1b18;
+                --td-text-muted:#5b6472;
+                --td-glass-bg:rgba(27,27,24,.05);
+                --td-glass-border:rgba(27,27,24,.12);
+                /* L'ambre de la marque tombe à 2:1 sur blanc : illisible pour
+                   du texte. On garde la teinte, assombrie (≈6:1), et l'ambre
+                   d'origine reste réservé aux aplats et aux bordures. */
+                --td-amber-texte:#8a5a00;
+                display:none;position:fixed;inset:0;z-index:10000000;
+                background:rgba(0,0,0,0.8);overflow-y:auto;
+                color:#1b1b18;
+            }
             .map-modal__backdrop{position:fixed;inset:0;z-index:-1}
             .map-modal__content{position:relative;width:min(1140px,96vw);max-height:92vh;background:var(--td-card-bg);border-radius:var(--td-radius-md);overflow-y:auto;margin:40px auto;animation:modalSlideIn .3s ease}
             .map-modal__socials{display:none;flex-wrap:wrap;gap:10px;margin:14px 0 4px}
@@ -478,6 +503,60 @@
             /* Le bloc réservation est emprunté au gabarit : on lui donne
                un cadre, sans toucher à ses styles d'origine. */
             .map-modal__reservation:not(:empty){margin-top:22px;padding-top:20px;border-top:1px solid var(--td-glass-border,rgba(255,255,255,.15))}
+
+            /* ══════════════════════════════════════════════════════════════
+               STYLES DU BLOC DE RÉSERVATION EMPRUNTÉ
+
+               ⚠ La feuille du gabarit immobilier est scopée sous `.immo-tpl`
+               (règle des templates : chaque sélecteur porte ce préfixe). Une
+               fois le bloc déplacé dans la modale — qui vit sous <body>, hors
+               du gabarit — `.im-btn`, `.im-detail-section` et consorts ne
+               correspondent plus à rien : le bouton redevenait un bouton
+               système nu et la section perdait ses marges.
+
+               On redonne donc ici l'essentiel de leur apparence, en reprenant
+               la palette du gabarit (--im-blue #1F3A5C).
+               ══════════════════════════════════════════════════════════════ */
+            /* Accents ambrés : version lisible sur le fond clair. */
+            .map-modal .map-modal__tag{color:var(--td-amber-texte);background:rgba(245,166,35,.16)}
+            .map-modal .map-modal__immo-titre{color:var(--td-amber-texte)}
+
+            .map-modal .im-detail-section{padding:0;border-top:0}
+            .map-modal .im-detail-section h4{font-size:1.15rem;font-weight:700;margin:0 0 14px;color:var(--td-sand)}
+
+            .map-modal .im-btn{
+                display:inline-flex;align-items:center;justify-content:center;gap:8px;
+                padding:13px 22px;border:0;border-radius:10px;cursor:pointer;
+                font:inherit;font-size:.92rem;font-weight:700;line-height:1;
+                transition:background .2s ease,transform .2s ease,box-shadow .2s ease;
+            }
+            .map-modal .im-btn--primary{background:#1F3A5C;color:#fff}
+            .map-modal .im-btn--primary:hover{background:#16283F;transform:translateY(-1px);box-shadow:0 6px 18px rgba(31,58,92,.28)}
+            .map-modal .im-btn--block{width:100%}
+            .map-modal .im-btn:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+
+            /* Champs : le fond translucide du gabarit était pensé pour un
+               panneau sombre — sur fond blanc il disparaissait. */
+            .map-modal .gxir-field label{color:var(--td-text-muted)}
+            .map-modal .gxir-field input,
+            .map-modal .gxir-field textarea{
+                background:#fff;border-color:rgba(27,27,24,.18);color:#1b1b18;
+            }
+            .map-modal .gxir-field input:focus,
+            .map-modal .gxir-field textarea:focus{
+                border-color:#1F3A5C;box-shadow:0 0 0 3px rgba(31,58,92,.12);outline:none;
+            }
+            .map-modal .gxir-field input::placeholder,
+            .map-modal .gxir-field textarea::placeholder{color:rgba(27,27,24,.42)}
+            .map-modal .gxir-note{color:var(--td-text-muted);opacity:1}
+            .map-modal [data-form-success]{color:#15803d;font-weight:600}
+
+            /* Calendrier : neutre par construction (color:inherit, gris), il
+               suit le thème clair. Seules ces deux nuances méritent un cran
+               de contraste sur fond blanc. */
+            .map-modal .gxcal__resume,
+            .map-modal .gxcal__total{background:rgba(27,27,24,.05)}
+            .map-modal .gxcal__jour:hover:not(:disabled){background:rgba(31,58,92,.1)}
             .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:50px;font-size:0.9rem;font-weight:600;text-decoration:none;transition:all var(--td-transition)}
             .btn--primary{background:var(--td-amber);color:#000;border:1px solid var(--td-amber)}
             .btn--primary:hover{background:var(--td-amber-dark);border-color:var(--td-amber-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,166,35,0.4)}
