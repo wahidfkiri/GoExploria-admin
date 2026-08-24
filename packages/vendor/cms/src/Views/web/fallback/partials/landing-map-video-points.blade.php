@@ -565,6 +565,39 @@
             .map-modal .gxir-note{color:var(--td-text-muted);opacity:1}
             .map-modal [data-form-success]{color:#15803d;font-weight:600}
 
+            /* ⚠ LE FORMULAIRE EMPRUNTÉ MÊLE DEUX ORIGINES
+
+               La greffe ajoute ses champs en `.gxir-field`, mais elle DÉPLACE
+               le formulaire du gabarit, dont les champs restent en
+               `.im-field`. Or seule la feuille du gabarit les habille, et elle
+               est scopée `.immo-tpl` / `.resid-tpl` : une fois le bloc sous
+               <body>, ces champs redevenaient des contrôles bruts du
+               navigateur — mesuré 177 × 21 px, Arial 13 px, bordure `inset`,
+               à côté de champs de 554 × 47 px dans le MÊME formulaire.
+
+               On leur donne donc ici la même apparence qu'aux `.gxir-field`.
+               Toute règle ajoutée pour `.gxir-field` doit l'être aussi ici. */
+            .map-modal .im-field{margin-bottom:10px}
+            .map-modal .im-field input,
+            .map-modal .im-field textarea,
+            .map-modal .im-field select{
+                width:100%;padding:11px 13px;border-radius:10px;
+                border:1px solid rgba(27,27,24,.18);
+                background:#fff;color:#1b1b18;font:inherit;line-height:1.3;
+            }
+            .map-modal .im-field textarea{min-height:96px;resize:vertical}
+            .map-modal .im-field input:focus,
+            .map-modal .im-field textarea:focus{
+                border-color:#1F3A5C;box-shadow:0 0 0 3px rgba(31,58,92,.12);outline:none;
+            }
+            .map-modal .im-field input::placeholder,
+            .map-modal .im-field textarea::placeholder{color:rgba(27,27,24,.42)}
+            /* La note du gabarit et celle de la greffe se suivent : sans
+               cela, l'une était en 16 px encre et l'autre en 12 px grise. */
+            .map-modal .im-form-note{
+                margin-top:10px;font-size:12px;color:var(--td-text-muted);text-align:center;
+            }
+
             /* Calendrier : neutre par construction (color:inherit, gris), il
                suit le thème clair. Seules ces deux nuances méritent un cran
                de contraste sur fond blanc. */
