@@ -40,6 +40,30 @@
        Portees par le marqueur de la section, ces regles suivent le bloc
        partout ou on le deplace. Un gabarit peut toujours les surcharger.
        ══════════════════════════════════════════════════════════════════════ */
+    /* ══════════════════════════════════════════════════════════════════════
+       LA VISIONNEUSE DOIT RESTER DANS LA BANDE VISIBLE
+
+       En `position:fixed`, un calque s'ancre au DOCUMENT quand le site est
+       rendu dans une iframe sans defilement propre : mesure sur la fiche
+       9642, la visionneuse couvrait les 10 289 px de l'iframe et l'image
+       tombait a 1 993 px sous le haut de l'ecran — invisible.
+
+       En `absolute`, elle epouse la boite de la fiche, que le pont a deja
+       recalee sur la bande visible. Verifie en situation : image a 94→627 px,
+       centree, navigation intacte.
+
+       ⚠ Pourquoi ici plutot que dans le gabarit : une page INSTALLEE porte
+       trois copies de la feuille du gabarit (regions d'en-tete et de pied +
+       contenu), qui se mettent a jour separement. Sur 9642 la copie du pied,
+       rendue en dernier, imposait encore `fixed`. Cette feuille-ci est
+       injectee avant </body>, donc APRES toutes les regions : elle tranche,
+       et corrige les sites deja installes sans avoir a les reinstaller.
+
+       On ne touche QUE la position — le centrage, la largeur et le style de
+       la fiche restent le choix de chaque gabarit (NadiImmo garde son tiroir).
+       ══════════════════════════════════════════════════════════════════════ */
+    [data-im-detail] .im-lightbox { position: absolute; }
+
     [data-gxir-section] [data-form-success] { display: none; }
     [data-gxir-section] .is-sent [data-form-fields] { display: none; }
     [data-gxir-section] .is-sent [data-form-success] { display: block; }
