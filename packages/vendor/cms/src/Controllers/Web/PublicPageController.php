@@ -1864,13 +1864,22 @@ class PublicPageController extends Controller
                 'user_agent'         => substr((string) $request->userAgent(), 0, 255),
             ]);
 
+            // ── Copie dans la messagerie de contact ──────────────────────
+            // Le client suit ses arrivées depuis l'onglet « Messages contact » :
+            // une demande de bien doit y figurer comme les autres, sinon elle
+            // n'existe que dans une liste qu'il faut penser à ouvrir.
+            //
+            // La demande immobilière reste la SOURCE DE VÉRITÉ (dates, bien,
+            // statut) ; ce message n'en est qu'une notification lisible.
+            $this->copierDemandeDansMessagerie($request, $etablissement, $bien, $donnees, $demande);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Votre demande a bien été envoyée.',
                 'id'      => $demande->id,
             ]);
         } catch (\Throwable $e) {
-            Log::error('Demande immobilière : ' . $e->getMessage(), [
+            \Log::error('Demande immobilière : ' . $e->getMessage(), [
                 'etablissement_id' => $etablissementId,
             ]);
 
@@ -1878,6 +1887,101 @@ class PublicPageController extends Controller
                 'success' => false,
                 'message' => "Votre demande n'a pas pu être enregistrée. Réessayez ou appelez-nous.",
             ], 500);
+        }
+    }
+
+    /**
+     * Recopie une demande de bien dans la messagerie de contact.
+     *
+     * ⚠ HORS DU CHEMIN CRITIQUE, et volontairement : quand on arrive ici la
+     * demande est DÉJÀ enregistrée. Une messagerie indisponible (table
+     * absente, colonne manquante) ne doit jamais faire perdre la demande d'un
+     * visiteur — on journalise et on continue.
+     *
+     * Le détail du séjour part dans le corps du message et non seulement dans
+     * `metadata` : la fiche de l'espace entreprise affiche le message, pas les
+     * métadonnées. Les deux sont renseignés — l'un pour l'œil, l'autre pour la
+     * machine.
+     */
+    private function copierDemandeDansMessagerie(
+        Request $request,
+        $etablissement,
+        $bien,
+        array $donnees,
+        $demande
+    ): void {
+        try {
+            $jour = static function ($iso) {
+                return $iso ? \Illuminate\Support\Carbon::parse($iso)->format('d/m/Y') : null;
+            };
+
+            $recap = [];
+
+            if ($bien) {
+                $recap[] = 'Bien : ' . $bien->title
+                    . ($bien->reference ? ' (' . $bien->reference . ')' : '');
+            }
+
+            $arrivee = $jour($donnees['arrival_date'] ?? null);
+            $depart = $jour($donnees['departure_date'] ?? null);
+
+            if ($arrivee && $depart) {
+                $nuits = (int) \Illuminate\Support\Carbon::parse($donnees['arrival_date'])
+                    ->diffInDays(\Illuminate\Support\Carbon::parse($donnees['departure_date']));
+                $recap[] = 'Séjour : du ' . $arrivee . ' au ' . $depart
+                    . ($nuits > 0 ? ' (' . $nuits . ' nuit' . ($nuits > 1 ? 's' : '') . ')' : '');
+            } elseif ($arrivee) {
+                $recap[] = 'Arrivée souhaitée : ' . $arrivee;
+            }
+
+            $adultes = $donnees['adults'] ?? null;
+            $enfants = $donnees['children'] ?? null;
+            if ($adultes !== null || $enfants !== null) {
+                $recap[] = 'Voyageurs : ' . (int) $adultes . ' adulte(s), ' . (int) $enfants . ' enfant(s)';
+            }
+
+            $corps = trim((string) ($donnees['message'] ?? ''));
+            if ($recap) {
+                // Ligne de séparation : la fiche rend le message en
+                // `white-space: pre-line`, les retours sont donc conservés.
+                $corps = trim($corps . "\n\n— Détail de la demande —\n" . implode("\n", $recap));
+            }
+
+            ContactMessage::create([
+                'etablissement_id' => $etablissement->id,
+                // Affiché tel quel en tête de la fiche du message.
+                'form_name'        => 'demande_appartement',
+                'source'           => 'landing_page',
+                'source_url'       => $request->headers->get('referer') ?: $request->fullUrl(),
+                'referrer'         => $request->headers->get('referer'),
+                'name'             => $donnees['name'],
+                'email'            => $donnees['email'],
+                'phone'            => $donnees['phone'] ?? null,
+                'subject'          => $bien
+                    ? 'Demande — ' . $bien->title
+                    : 'Demande de renseignements (bien immobilier)',
+                'message'          => $corps !== '' ? $corps : 'Demande envoyée depuis la fiche du bien.',
+                'status'           => 'new',
+                'priority'         => 'normal',
+                'consent'          => true,
+                'ip_address'       => $request->ip(),
+                'user_agent'       => substr((string) $request->userAgent(), 0, 500),
+                // Reprise structurée : de quoi retrouver la demande d'origine.
+                'metadata'         => [
+                    'property_request_id' => $demande->id,
+                    'property_id'         => $bien?->id,
+                    'property_reference'  => $bien?->reference,
+                    'arrival_date'        => $donnees['arrival_date'] ?? null,
+                    'departure_date'      => $donnees['departure_date'] ?? null,
+                    'adults'              => $adultes,
+                    'children'            => $enfants,
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            \Log::warning('Copie de la demande immobiliere dans la messagerie : ' . $e->getMessage(), [
+                'etablissement_id'    => $etablissement->id ?? null,
+                'property_request_id' => $demande->id ?? null,
+            ]);
         }
     }
 
@@ -1903,6 +2007,8 @@ class PublicPageController extends Controller
             if (! $bien) {
                 return response()->json(['success' => true, 'periods' => [], 'rules' => null]);
             }
+
+
 
             if (! \Illuminate\Support\Facades\Schema::connection('cms')->hasTable('cms_property_bookings')) {
                 return response()->json(['success' => true, 'periods' => [], 'rules' => null]);
@@ -1932,7 +2038,7 @@ class PublicPageController extends Controller
                 ],
             ]);
         } catch (\Throwable $e) {
-            Log::warning('Disponibilités du bien : ' . $e->getMessage());
+            \Log::warning('Disponibilités du bien : ' . $e->getMessage());
 
             // Un calendrier sans période grisée vaut mieux qu'une fiche cassée.
             return response()->json(['success' => true, 'periods' => [], 'rules' => null]);
