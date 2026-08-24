@@ -563,7 +563,22 @@
             .map-modal .gxir-field input::placeholder,
             .map-modal .gxir-field textarea::placeholder{color:rgba(27,27,24,.42)}
             .map-modal .gxir-note{color:var(--td-text-muted);opacity:1}
-            .map-modal [data-form-success]{color:#15803d;font-weight:600}
+            /* ⚠ L'ACCUSÉ DE RÉCEPTION EST MASQUÉ PAR DÉFAUT — et c'est le
+               gabarit qui le masquait.
+
+               Les deux gabarits immobiliers déclarent le même mécanisme, mais
+               sous leur enveloppe : `.immo-tpl [data-form-success]{display:none}`
+               et `form.is-sent` qui échange les deux blocs. Le formulaire
+               emprunté vit sous `.map-modal`, hors de cette enveloppe : plus
+               rien ne le masquait, et « Votre demande a bien été envoyée »
+               s'affichait dès l'OUVERTURE de la fiche, avant tout envoi.
+
+               On redéclare donc ici les trois règles, en visant l'attribut
+               plutôt que la classe du formulaire : la greffe peut construire
+               le sien de toutes pièces. */
+            .map-modal [data-form-success]{display:none;color:#15803d;font-weight:600;text-align:center;padding:12px 0}
+            .map-modal .is-sent [data-form-fields]{display:none}
+            .map-modal .is-sent [data-form-success]{display:block}
 
             /* ⚠ LE FORMULAIRE EMPRUNTÉ MÊLE DEUX ORIGINES
 
@@ -1080,6 +1095,15 @@
             window.__gxImmoBienCourant = id;
             var panneau = document.querySelector('[data-im-detail]');
             if (panneau) { panneau.setAttribute('data-im-detail-id', id); }
+
+            /* Un formulaire par bien : on repart d'une ardoise propre.
+               Sans cela, une demande envoyée pour un bien laissait son accusé
+               de réception à la place du formulaire pour TOUS les suivants —
+               le visiteur ne pouvait plus rien demander sans recharger. */
+            var envoye = section.querySelector('.is-sent') || (section.classList.contains('is-sent') ? section : null);
+            if (envoye) { envoye.classList.remove('is-sent'); }
+            var erreur = section.querySelector('[data-gxir-erreur]');
+            if (erreur) { erreur.classList.remove('is-visible'); }
 
             reservationEmpruntee = {
                 noeud: section,

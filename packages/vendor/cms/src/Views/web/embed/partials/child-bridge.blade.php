@@ -23,19 +23,45 @@
     var parentOrigin = window.location.origin; // same-origin par conception
     var lastHeight = 0;
 
+    /* ⚠ NE JAMAIS MESURER SUR documentElement — C'EST UN CLIQUET
+
+       Le parent donne à l'iframe la hauteur que nous annonçons ; cette
+       hauteur DEVIENT notre fenêtre. Or `documentElement.scrollHeight` ne
+       descend jamais sous la fenêtre : il vaut donc toujours au moins la
+       dernière valeur annoncée. Un `Math.max` qui l'inclut ne peut plus
+       jamais redescendre — la moindre inflation accidentelle est définitive.
+
+       Constaté en production : contenu réel 10 288 px, hauteur annoncée
+       30 706 px, soit 20 418 px de blanc sous le pied de page, et rien pour
+       s'en défaire à part recharger. On ne mesure donc plus que le CORPS,
+       dont la hauteur suit le contenu. */
     function currentHeight() {
-        var d = document.documentElement;
         var b = document.body;
-        return Math.max(
-            b ? b.scrollHeight : 0,
-            b ? b.offsetHeight : 0,
-            d ? d.scrollHeight : 0,
-            d ? d.offsetHeight : 0
-        );
+        if (!b) { return 0; }
+
+        var boite = b.getBoundingClientRect();
+        var bas = boite.bottom + (window.pageYOffset || 0);
+        var style = window.getComputedStyle(b);
+        bas += parseFloat(style.marginBottom) || 0;
+
+        return Math.ceil(Math.max(b.scrollHeight, b.offsetHeight, bas));
     }
 
+    /* Hauteur gelée pendant qu'un calque est ancré.
+
+       Un calque recalé sur la bande visible est en `position:absolute` à
+       plusieurs milliers de pixels du haut : il entre alors dans le débord
+       du document et rallonge la page d'autant. Pire, la page rallongée
+       agrandit l'iframe, donc la bande visible, donc le décalage du calque —
+       l'emballement est immédiat.
+
+       Le contenu ne bouge pas pendant qu'une modale est ouverte (le
+       défilement du corps est verrouillé) : on annonce donc la hauteur
+       mesurée AVANT l'ancrage, jusqu'à la fermeture. */
+    var hauteurGelee = null;
+
     function postHeight(force) {
-        var h = currentHeight();
+        var h = hauteurGelee !== null ? hauteurGelee : currentHeight();
         if (!force && Math.abs(h - lastHeight) < 2) return; // anti-bruit
         lastHeight = h;
         try {
@@ -237,6 +263,9 @@
         var el = e.detail && e.detail.element;
         if (!el) return;
         modaleCourante = el;
+        // AVANT tout ancrage : une fois le calque en position absolue, la
+        // mesure inclurait sa hauteur ajoutée au décalage de la bande.
+        if (hauteurGelee === null) { hauteurGelee = currentHeight(); }
         // On garde l'écriture d'origine pour la rendre telle quelle à la
         // fermeture : le template doit retrouver sa feuille de style intacte.
         stylesInitiaux = el.getAttribute('style');
@@ -258,6 +287,11 @@
         modaleCourante = null;
         stylesInitiaux = null;
         suivreParent(false);
+        // Le calque a repris sa place : on remesure, et on corrige au parent
+        // même si rien n'a changé — c'est le seul moment où la page peut
+        // RAPETISSER.
+        hauteurGelee = null;
+        postHeight(true);
         try {
             window.parent.postMessage({ channel: CHANNEL, type: 'overlay-close' }, parentOrigin);
         } catch (err) { /* silencieux */ }
