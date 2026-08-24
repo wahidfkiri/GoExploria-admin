@@ -25,6 +25,25 @@
      Rien n'est touché sur une page sans fiche de bien.
      ═══════════════════════════════════════════════════════════════════════ --}}
 <style>
+    /* ══════════════════════════════════════════════════════════════════════
+       LE MECANISME `is-sent` VOYAGE AVEC LE BLOC
+
+       C'est CETTE greffe qui cree `[data-form-fields]` et `[data-form-success]`
+       et qui pose `is-sent` a l'envoi. Les regles d'affichage lui appartiennent
+       donc aussi. Elles vivaient jusqu'ici dans la feuille de chaque gabarit
+       hote (`.immo-tpl`, `.resid-tpl`) — et un hote finit toujours par les
+       oublier : deplace dans la modale de la carte, le bloc perdait son
+       masquage et affichait « Votre demande a bien ete envoyee » AVANT tout
+       envoi, tandis que les champs restaient visibles. Le bouton semblait
+       alors ne rien faire, puisque rien ne changeait a l'ecran.
+
+       Portees par le marqueur de la section, ces regles suivent le bloc
+       partout ou on le deplace. Un gabarit peut toujours les surcharger.
+       ══════════════════════════════════════════════════════════════════════ */
+    [data-gxir-section] [data-form-success] { display: none; }
+    [data-gxir-section] .is-sent [data-form-fields] { display: none; }
+    [data-gxir-section] .is-sent [data-form-success] { display: block; }
+
     .gxir-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .gxir-grid .gxir-field { margin: 0; }
     .gxir-field { margin-bottom: 10px; }
