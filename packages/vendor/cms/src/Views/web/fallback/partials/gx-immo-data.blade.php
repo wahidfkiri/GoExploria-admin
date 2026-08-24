@@ -21,13 +21,23 @@
 @php
     $gxImmoPayload = null;
 
-    // La requête ne part que si la page EST le template immobilier : sa classe
-    // d'enveloppe `immo-tpl` en est la signature (§3 des règles templates, qui
-    // impose ce préfixe sur chaque sélecteur). Sans ce garde-fou, tout site —
+    // La requête ne part que si la page EST un template immobilier : sa classe
+    // d'enveloppe en est la signature (§3 des règles templates, qui impose ce
+    // préfixe sur chaque sélecteur). Sans ce garde-fou, tout site —
     // restaurant, garage — paierait une requête inutile à chaque affichage.
+    //
+    // ⚠ UNE ENVELOPPE PAR TEMPLATE IMMOBILIER : `immo-tpl` pour NadiImmo,
+    // `resid-tpl` pour « Résidence — location d'appartements ». Tout nouveau
+    // gabarit de cette famille DOIT être ajouté ici, sinon window.GX_IMMO
+    // n'est jamais émis et le site reste bloqué sur les biens de
+    // démonstration — sans la moindre erreur pour le signaler. Les autres
+    // greffes (formulaire de demande, calendrier, média de la fiche) se
+    // branchent, elles, sur `data-im-detail` et n'ont rien à déclarer.
+    $gxEnveloppesImmo = ['immo-tpl', 'resid-tpl'];
+
     $gxEstTemplateImmo = \Illuminate\Support\Str::contains(
         collect($cmsPageSections ?? [])->map(fn ($p) => (string) data_get($p, 'content'))->implode(''),
-        'immo-tpl'
+        $gxEnveloppesImmo
     );
 
     try {
