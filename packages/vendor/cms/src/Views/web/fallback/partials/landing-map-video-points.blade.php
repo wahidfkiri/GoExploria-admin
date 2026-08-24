@@ -445,9 +445,23 @@
                 display:none;position:fixed;inset:0;z-index:10000000;
                 background:rgba(0,0,0,0.8);overflow-y:auto;
                 color:#1b1b18;
+                /* Le script ouvre en `display:flex` (voir showPlaceModal) : la
+                   mise en page PEUT donc s'appuyer sur flex, à condition que
+                   TOUS les points d'ouverture s'accordent — d'où le test
+                   d'ouverture centralisé plutôt qu'un `=== 'block'` disséminé. */
+                align-items:flex-start;justify-content:center;
             }
             .map-modal__backdrop{position:fixed;inset:0;z-index:-1}
-            .map-modal__content{position:relative;width:min(1140px,96vw);max-height:92vh;background:var(--td-card-bg);border-radius:var(--td-radius-md);overflow-y:auto;margin:40px auto;animation:modalSlideIn .3s ease}
+            /* ⚠ `margin:auto` et NON `align-items:center` : centré quand il y a
+               de la place, mais sans rogner le haut quand le panneau dépasse —
+               un enfant flex centré par `align-items` devient inatteignable par
+               le haut dès qu'il est plus grand que son conteneur.
+
+               Et `max-height` en % du conteneur, plus en vh : une fois la page
+               embarquée, le pont donne à la modale la hauteur de la BANDE
+               VISIBLE, tandis que `vh` mesurerait l'iframe entière — soit,
+               ici, plus de trois fois trop haut. */
+            .map-modal__content{position:relative;width:min(1140px,96vw);max-height:calc(100% - 48px);background:var(--td-card-bg);border-radius:var(--td-radius-md);overflow-y:auto;margin:auto;animation:modalSlideIn .3s ease}
             .map-modal__socials{display:none;flex-wrap:wrap;gap:10px;margin:14px 0 4px}
             .map-modal__social{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--td-glass-bg,rgba(255,255,255,.08));border:1px solid var(--td-glass-border,rgba(255,255,255,.15));color:var(--td-sand,#e9dcc3);font-size:16px;text-decoration:none;transition:all .2s ease}
             .map-modal__social:hover{transform:translateY(-2px);background:var(--td-amber,#d4af37);color:#0a1628}
@@ -877,8 +891,7 @@
                     if (mBackdrop) mBackdrop.addEventListener('click', closePlaceModal);
                     document.addEventListener('keydown', function (e) {
                         if (e.key !== 'Escape') return;
-                        var m = document.getElementById('mapDetailModal');
-                        if (m && m.style.display !== 'none') closePlaceModal();
+                        if (modaleOuverte(document.getElementById('mapDetailModal'))) closePlaceModal();
                     });
                 })
                 .catch(function (e) { console.warn('Google Maps indisponible :', e); });
@@ -1142,6 +1155,32 @@
             });
         });
 
+        /* Ouverte ou non : un seul test, parce que l'affichage vaut « flex »
+           et non « block ». Trois endroits le demandaient, chacun avec sa
+           propre comparaison — l'un d'eux serait resté sur « block ». */
+        function modaleOuverte(m) {
+            return !!m && m.style.display !== '' && m.style.display !== 'none';
+        }
+
+        /* ------------------------------------------------------------------
+           LE SITE EST AFFICHÉ DANS UNE IFRAME SANS DÉFILEMENT PROPRE
+
+           Sa hauteur suit celle du contenu : `position:fixed` s'ancre donc au
+           DOCUMENT entier, pas à l'écran. La modale se centrait au milieu de
+           toute la page — mesuré à -1 440 px après 1 500 px de défilement,
+           c'est-à-dire nulle part.
+
+           Le pont parent-enfant (embed/partials/child-bridge) sait replacer un
+           calque sur la bande réellement visible ; encore faut-il l'en
+           informer. Hors iframe, personne n'écoute et le `position:fixed`
+           d'origine s'applique tel quel.
+        ------------------------------------------------------------------ */
+        function signalerCalque(nom, element) {
+            try {
+                window.dispatchEvent(new CustomEvent(nom, { detail: { element: element } }));
+            } catch (e) { /* sans CustomEvent : la modale reste utilisable */ }
+        }
+
         function showPlaceModal(point) {
             var modal = document.getElementById('mapDetailModal');
             var mc = document.getElementById('mapModalMeta');
@@ -1219,8 +1258,14 @@
             }
             var wl = document.getElementById('mapModalWebsite');
             if (point.website) { wl.href = point.website; wl.style.display = 'inline-flex'; } else { wl.style.display = 'none'; }
-            modal.style.display = 'block';
+            modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
+
+            /* APRÈS l'affichage : le pont lit `offsetParent` pour convertir
+               l'offset de la bande visible dans le repère de l'enveloppe, et
+               un élément encore en `display:none` n'en a pas — le panneau se
+               poserait alors la hauteur de l'en-tête trop bas. */
+            signalerCalque('gx:overlay-open', modal);
 
             // ⚠ APRÈS l'affichage seulement : initialisé pendant que la modale
             // est encore masquée, Swiper mesure 0 et n'applique jamais ses
@@ -1234,6 +1279,13 @@
             // Le bloc réservation appartient à la fiche du gabarit : il doit y
             // retourner, sinon celle-ci se retrouverait sans formulaire.
             rendreReservation();
+
+            /* ⚠ AVANT de masquer, et l'ordre n'est pas indifférent : à la
+               fermeture, le pont REND l'attribut style capturé à l'ouverture —
+               c'est-à-dire « display: flex ». Masquer d'abord, signaler
+               ensuite, et la modale se rouvrait toute seule. */
+            signalerCalque('gx:overlay-close', modal);
+
             modal.style.display = 'none';
             document.body.style.overflow = '';
         }
@@ -1241,7 +1293,7 @@
         document.getElementById('mapModalClose').addEventListener('click', closePlaceModal);
         document.getElementById('mapModalBackdrop').addEventListener('click', closePlaceModal);
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') { var m = document.getElementById('mapDetailModal'); if (m && m.style.display === 'block') closePlaceModal(); }
+            if (e.key === 'Escape' && modaleOuverte(document.getElementById('mapDetailModal'))) { closePlaceModal(); }
         });
     });
     </script>
