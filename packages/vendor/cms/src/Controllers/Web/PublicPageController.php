@@ -436,15 +436,39 @@ class PublicPageController extends Controller
             \Log::warning('Checkout PayPal config lookup failed: ' . $e->getMessage());
         }
 
+        // Panier isolé par établissement : on tente de résoudre l'établissement
+        // depuis ?etablissement= pour afficher son nom et son panier uniquement.
+        $checkoutEtablissement = null;
+        $checkoutEtablissementId = $request->input('etablissement') ?: $request->input('etablissementId') ?: $request->input('etablissement_id');
+        if ($checkoutEtablissementId) {
+            try {
+                $checkoutEtablissement = Etablissement::find((int) $checkoutEtablissementId);
+            } catch (\Throwable $e) {
+                $checkoutEtablissement = null;
+            }
+        }
+
         $html = view('cms::web.fallback.checkout', [
             'checkoutSubmitUrl' => route('cms.checkout.submit'),
             'paypal' => $paypal,
+            'etablissement' => $checkoutEtablissement,
         ])->render();
 
         return $this->buildResponse($html, [
-            'title' => 'Finaliser ma commande',
+            'title' => $checkoutEtablissement ? ('Finaliser ma commande — ' . $checkoutEtablissement->name) : 'Finaliser ma commande',
             'description' => 'Finalisation des commandes produits GoExploria.',
         ]);
+    }
+
+    /**
+     * Checkout isolé par établissement : /company/{etablissementId}/achat
+     * Délègue au checkout global en injectant l'ID dans la requête.
+     */
+    public function companyCheckout(Request $request, $etablissementId)
+    {
+        $request->merge(['etablissement' => $etablissementId]);
+
+        return $this->checkout($request);
     }
 
     public function submitCheckout(Request $request)

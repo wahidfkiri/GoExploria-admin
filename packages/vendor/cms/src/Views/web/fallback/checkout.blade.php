@@ -85,11 +85,25 @@
         </div>
     </header>
 
+    @php
+        $checkoutEtablissement = $etablissement ?? null;
+        if (!$checkoutEtablissement && request()->filled('etablissement')) {
+            try { $checkoutEtablissement = \App\Models\Etablissement::find(request()->input('etablissement')); } catch (\Throwable $e) {}
+        }
+        $checkoutEtablissementId = $checkoutEtablissement ? (string) $checkoutEtablissement->id : (request()->input('etablissement') ? (string) request()->input('etablissement') : null);
+        $checkoutEtablissementName = $checkoutEtablissement ? $checkoutEtablissement->name : null;
+    @endphp
     <main class="checkout-wrap">
         <div class="checkout-head">
-            <div class="checkout-kicker">Achat produits</div>
+            <div class="checkout-kicker">Achat produits @if($checkoutEtablissementName) — {{ $checkoutEtablissementName }} @endif</div>
             <h1 class="checkout-title">Finaliser ma commande</h1>
-            <p class="checkout-sub">Votre panier peut contenir des produits de plusieurs établissements. Chaque établissement recevra sa partie de la commande.</p>
+            <p class="checkout-sub">
+                @if($checkoutEtablissementName)
+                    Votre panier contient uniquement les produits de <strong>{{ $checkoutEtablissementName }}</strong>. Seul cet établissement recevra la commande.
+                @else
+                    Votre panier est isolé par établissement : seuls les produits du site visité s'affichent ici.
+                @endif
+            </p>
         </div>
 
         <div class="checkout-grid">
@@ -144,7 +158,7 @@
                 <div class="trust">
                     <span><i class="fas fa-lock"></i> Paiement sécurisé</span>
                     <span><i class="fas fa-rotate-left"></i> Support dédié</span>
-                    <span><i class="fas fa-store"></i> Multi-établissements</span>
+                    <span><i class="fas fa-store"></i> @if($checkoutEtablissementName) {{ $checkoutEtablissementName }} @else Mono-établissement @endif</span>
                 </div>
             </aside>
         </div>
@@ -155,7 +169,9 @@
     @endphp
     <script>
     (() => {
-        const key = 'cms_landing_cart_v1';
+        const baseKey = 'cms_landing_cart_v1';
+        const legacyKey = baseKey;
+        const injectedCheckoutEtablissementId = @json($checkoutEtablissementId);
         const paypalCfg = @json($paypalCfg);
         const form = document.getElementById('cmsCheckoutForm');
         const payload = document.getElementById('cartPayload');
@@ -169,12 +185,61 @@
         const submit = document.getElementById('checkoutSubmit');
         const paypalWrap = document.getElementById('paypal-buttons');
 
+        const detectEtablissementId = () => {
+            if (injectedCheckoutEtablissementId) return String(injectedCheckoutEtablissementId);
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const q = params.get('etablissement') || params.get('etablissementId') || params.get('etablissement_id');
+                if (q) return String(q);
+                const ref = document.referrer || '';
+                const m = ref.match(/\/company\/(\d+)/);
+                if (m) return m[1];
+                // dernier établissement visité : on cherche la clé la plus récente ?
+                // fallback : s'il n'y a qu'une seule clé isolée, on la prend.
+            } catch (e) {}
+            return null;
+        };
+        const currentEtablissementId = detectEtablissementId();
+        const key = currentEtablissementId ? `${baseKey}_${currentEtablissementId}` : baseKey;
+
         const money = v => `${Number(v || 0).toLocaleString('fr-CA', {minimumFractionDigits: 2, maximumFractionDigits: 2})} $`;
         const esc = v => String(v || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
         const read = () => {
             try {
-                const parsed = JSON.parse(localStorage.getItem(key) || '{"items":[]}');
-                return {items: Array.isArray(parsed.items) ? parsed.items : []};
+                const raw = localStorage.getItem(key);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    return {items: Array.isArray(parsed.items) ? parsed.items : []};
+                }
+                if (key !== legacyKey && currentEtablissementId) {
+                    try {
+                        const legacyRaw = localStorage.getItem(legacyKey);
+                        if (legacyRaw) {
+                            const legacyParsed = JSON.parse(legacyRaw);
+                            const legacyItems = Array.isArray(legacyParsed.items) ? legacyParsed.items : [];
+                            const filtered = legacyItems.filter(it => String(it.etablissement_id || it.etablissementId || '') === String(currentEtablissementId));
+                            if (filtered.length) return {items: filtered};
+                        }
+                    } catch (e) {}
+                }
+                // Dernier filet : si aucun etablissement détecté et clé globale vide,
+                // on agrège toutes les clés isolées pour l'affichage global
+                if (!currentEtablissementId) {
+                    try {
+                        let aggregated = [];
+                        for (let i = 0; i < localStorage.length; i++) {
+                            const k = localStorage.key(i);
+                            if (k && k.startsWith(baseKey + '_')) {
+                                try {
+                                    const p = JSON.parse(localStorage.getItem(k) || '{}');
+                                    if (Array.isArray(p.items)) aggregated = aggregated.concat(p.items);
+                                } catch (e) {}
+                            }
+                        }
+                        if (aggregated.length) return {items: aggregated};
+                    } catch (e) {}
+                }
+                return {items: []};
             } catch (e) { return {items: []}; }
         };
         const cartTotal = cart => cart.items.reduce((s, it) => s + Number(it.price || 0) * Number(it.quantity || 0), 0);
@@ -218,7 +283,20 @@
                 });
                 const data = await res.json();
                 if (!res.ok || !data.success) { showNotice('err', data.message || 'Merci de vérifier les informations.'); return false; }
-                localStorage.removeItem(key);
+                try { localStorage.removeItem(key); } catch (e) {}
+                // Nettoyage aussi de la clé legacy pour les items de cet établissement
+                if (key !== legacyKey && currentEtablissementId) {
+                    try {
+                        const legacyRaw = localStorage.getItem(legacyKey);
+                        if (legacyRaw) {
+                            const legacyParsed = JSON.parse(legacyRaw);
+                            const legacyItems = Array.isArray(legacyParsed.items) ? legacyParsed.items : [];
+                            const remaining = legacyItems.filter(it => String(it.etablissement_id || it.etablissementId || '') !== String(currentEtablissementId));
+                            if (remaining.length) localStorage.setItem(legacyKey, JSON.stringify({items: remaining}));
+                            else localStorage.removeItem(legacyKey);
+                        }
+                    } catch (e) {}
+                }
                 render();
                 showNotice('ok', `Commande confirmée ✓ Référence : ${data.reference}`);
                 form.reset();
@@ -300,7 +378,7 @@
             }
         };
 
-        window.addEventListener('storage', e => { if (e.key === key) render(); });
+        window.addEventListener('storage', e => { if (e.key === key || e.key === legacyKey || (e.key && e.key.startsWith(baseKey))) render(); });
         render();
     })();
     </script>

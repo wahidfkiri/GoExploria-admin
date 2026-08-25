@@ -133,10 +133,40 @@
         </div>
     </div>
 
-    {{-- Le panier a été transformé en commande : on le vide, sinon un retour en
-         arrière le montrerait encore plein et inviterait à commander deux fois. --}}
+    {{-- Le panier a été transformé en commande : on vide les clés isolées
+         par établissement + la clé legacy, sinon un retour arrière le montrerait
+         encore plein et inviterait à commander deux fois. --}}
     <script>
-        try { localStorage.removeItem('cms_landing_cart_v1'); } catch (e) {}
+        (() => {
+            const baseKey = 'cms_landing_cart_v1';
+            try {
+                // Si on connaît les établissements commandés, on vide précisément leurs paniers
+                const etablissementIds = @json($commandes->pluck('etablissement_id')->filter()->unique()->values());
+                if (Array.isArray(etablissementIds) && etablissementIds.length) {
+                    etablissementIds.forEach(id => {
+                        try { localStorage.removeItem(baseKey + '_' + String(id)); } catch (e) {}
+                    });
+                    // Nettoyer aussi la clé legacy des items de ces établissements
+                    try {
+                        const legacyRaw = localStorage.getItem(baseKey);
+                        if (legacyRaw) {
+                            const parsed = JSON.parse(legacyRaw);
+                            const items = Array.isArray(parsed.items) ? parsed.items : [];
+                            const remaining = items.filter(it => !etablissementIds.map(String).includes(String(it.etablissement_id || it.etablissementId || '')));
+                            if (remaining.length) localStorage.setItem(baseKey, JSON.stringify({items: remaining}));
+                            else localStorage.removeItem(baseKey);
+                        }
+                    } catch (e) { try { localStorage.removeItem(baseKey); } catch (e2) {} }
+                } else {
+                    // Fallback : vide tout ce qui ressemble à un panier cms
+                    try { localStorage.removeItem(baseKey); } catch (e) {}
+                    for (let i = localStorage.length - 1; i >= 0; i--) {
+                        const k = localStorage.key(i);
+                        if (k && k.startsWith(baseKey)) try { localStorage.removeItem(k); } catch (e) {}
+                    }
+                }
+            } catch (e) { try { localStorage.removeItem(baseKey); } catch (e2) {} }
+        })();
     </script>
 </body>
 </html>

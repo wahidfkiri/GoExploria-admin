@@ -2378,7 +2378,9 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         }
 
         try {
-            $drawer = view('cms::web.fallback.partials.landing-cart-drawer')->render();
+            $drawer = view('cms::web.fallback.partials.landing-cart-drawer', [
+                'etablissement' => $this->etablissement,
+            ])->render();
         } catch (\Throwable $e) {
             \Log::warning('Cart drawer injection failed: ' . $e->getMessage());
             return $html;

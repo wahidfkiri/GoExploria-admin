@@ -109,6 +109,10 @@ Route::middleware(['web'])->group(function () {
             ->where('productId', '[0-9]+')
             ->name('products.show');
 
+        // Achat isolé par établissement (panier session ss établissement)
+        Route::get('/achat', [PublicPageController::class, 'companyCheckout'])->name('checkout');
+        Route::post('/achat', [PublicPageController::class, 'submitCheckout'])->name('checkout.submit');
+
         // URL SEO: /company/{etablissementId}/{slug}
         // Le slug est informatif; le rendu reste celui de la page d'accueil.
         Route::get('/{slug}', [WebThemeController::class, 'home'])->name('home.slug');

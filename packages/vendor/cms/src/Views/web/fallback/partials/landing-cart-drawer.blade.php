@@ -1,8 +1,28 @@
 @once
 @php
-    $cmsCartCheckoutUrl = \Illuminate\Support\Facades\Route::has('cms.checkout')
-        ? route('cms.checkout')
-        : url('/achat');
+    // Panier isolé par établissement : on fige l'ID ici pour que la clé
+    // localStorage soit scindée par site. Sans établissement (ex. page globale)
+    // on retombe sur la clé historique pour compatibilité.
+    $cartEtablissementId = isset($etablissement) && $etablissement ? ($etablissement->id ?? null) : null;
+    $cartEtablissementId = $cartEtablissementId ? (string) $cartEtablissementId : null;
+    $cartEtablissementName = isset($etablissement) && $etablissement ? ($etablissement->name ?? null) : null;
+    // URL checkout : préfère la route scindée /company/{id}/achat si dispo
+    $cmsCartCheckoutUrl = null;
+    if ($cartEtablissementId) {
+        if (\Illuminate\Support\Facades\Route::has('cms.company.checkout')) {
+            try {
+                $cmsCartCheckoutUrl = route('cms.company.checkout', ['etablissementId' => $cartEtablissementId]);
+            } catch (\Throwable $e) {
+                $cmsCartCheckoutUrl = null;
+            }
+        }
+        if (!$cmsCartCheckoutUrl) {
+            $base = \Illuminate\Support\Facades\Route::has('cms.checkout') ? route('cms.checkout') : url('/achat');
+            $cmsCartCheckoutUrl = $base . (str_contains($base, '?') ? '&' : '?') . 'etablissement=' . $cartEtablissementId;
+        }
+    } else {
+        $cmsCartCheckoutUrl = \Illuminate\Support\Facades\Route::has('cms.checkout') ? route('cms.checkout') : url('/achat');
+    }
 @endphp
 
 <style>
@@ -37,7 +57,13 @@
     <div class="cms-cart-head">
         <div>
             <h3>Votre panier</h3>
-            <div class="cms-cart-item-meta">Produits de plusieurs etablissements acceptes</div>
+            <div class="cms-cart-item-meta">
+                @if(!empty($cartEtablissementName))
+                    {{ $cartEtablissementName }} · Uniquement ses produits
+                @else
+                    Produits de cet établissement uniquement
+                @endif
+            </div>
         </div>
         <button class="cms-cart-close" type="button" data-cms-cart-close aria-label="Fermer"><i class="fas fa-xmark"></i></button>
     </div>
@@ -52,7 +78,10 @@
 
 <script>
 (() => {
-    const key = 'cms_landing_cart_v1';
+    const baseKey = 'cms_landing_cart_v1';
+    const legacyKey = baseKey;
+    const injectedEtablissementId = @json($cartEtablissementId);
+    const injectedEtablissementName = @json($cartEtablissementName);
     const checkoutUrl = @json($cmsCartCheckoutUrl);
     const drawer = document.querySelector('[data-cms-cart-drawer]');
     const backdrop = document.querySelector('.cms-cart-backdrop');
@@ -61,18 +90,77 @@
     const totalNode = document.querySelector('[data-cms-cart-total]');
     const toast = document.querySelector('[data-cms-cart-toast]');
 
+    const detectEtablissementId = () => {
+        if (injectedEtablissementId) return String(injectedEtablissementId);
+        try {
+            const m = window.location.pathname.match(/\/company\/(\d+)/);
+            if (m) return m[1];
+            const frame = document.getElementById('gxEmbedFrame');
+            if (frame && frame.src) {
+                const fm = frame.src.match(/\/company\/(\d+)/);
+                if (fm) return fm[1];
+            }
+            // data attribut posé sur le body ou le drawer par le parent
+            const bodyId = document.body?.dataset?.etablissementId;
+            if (bodyId) return String(bodyId);
+        } catch (e) {}
+        return null;
+    };
+    const currentEtablissementId = detectEtablissementId();
+    const key = currentEtablissementId ? `${baseKey}_${currentEtablissementId}` : baseKey;
+
     const money = value => `${Number(value || 0).toLocaleString('fr-CA', {minimumFractionDigits: 2, maximumFractionDigits: 2})} $`;
     const esc = value => String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
     const read = () => {
         try {
-            const parsed = JSON.parse(localStorage.getItem(key) || '{"items":[]}');
-            return {items: Array.isArray(parsed.items) ? parsed.items : []};
+            const raw = localStorage.getItem(key);
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                return {items: Array.isArray(parsed.items) ? parsed.items : []};
+            }
+            // Migration douce depuis l'ancienne clé globale : si la nouvelle clé
+            // est vide mais l'ancienne contient des produits de cet établissement,
+            // on les importe. Évite que les paniers existants disparaissent au
+            // déploiement.
+            if (key !== legacyKey && currentEtablissementId) {
+                try {
+                    const legacyRaw = localStorage.getItem(legacyKey);
+                    if (legacyRaw) {
+                        const legacyParsed = JSON.parse(legacyRaw);
+                        const legacyItems = Array.isArray(legacyParsed.items) ? legacyParsed.items : [];
+                        const filtered = legacyItems.filter(it => String(it.etablissement_id || it.etablissementId || '') === String(currentEtablissementId));
+                        if (filtered.length) {
+                            const migrated = {items: filtered};
+                            try { localStorage.setItem(key, JSON.stringify(migrated)); } catch (e) {}
+                            return migrated;
+                        }
+                    }
+                } catch (e) {}
+            }
+            return {items: []};
         } catch (e) {
             return {items: []};
         }
     };
     const write = cart => {
+        // Écrit toujours dans la clé isolée. Pour la compatibilité inter-doc
+        // (parent iframe + enfant), on nettoie l'ancienne clé globale des items
+        // qui viennent d'être déplacés, sans la vider brutalement.
         localStorage.setItem(key, JSON.stringify({items: cart.items || []}));
+        if (key !== legacyKey && currentEtablissementId) {
+            try {
+                const legacyRaw = localStorage.getItem(legacyKey);
+                if (legacyRaw) {
+                    const legacyParsed = JSON.parse(legacyRaw);
+                    const legacyItems = Array.isArray(legacyParsed.items) ? legacyParsed.items : [];
+                    const remaining = legacyItems.filter(it => String(it.etablissement_id || it.etablissementId || '') !== String(currentEtablissementId));
+                    if (remaining.length !== legacyItems.length) {
+                        if (remaining.length) localStorage.setItem(legacyKey, JSON.stringify({items: remaining}));
+                        else localStorage.removeItem(legacyKey);
+                    }
+                }
+            } catch (e) {}
+        }
         window.dispatchEvent(new CustomEvent('cms-cart-updated', {detail: cart}));
     };
     const open = () => {
@@ -93,8 +181,8 @@
     };
     const normalizeItem = data => ({
         id: String(data.productId || data.id || ''),
-        etablissement_id: String(data.etablissementId || ''),
-        etablissement_name: data.etablissementName || '',
+        etablissement_id: String(data.etablissementId || currentEtablissementId || ''),
+        etablissement_name: data.etablissementName || injectedEtablissementName || '',
         name: data.productName || data.name || 'Produit',
         price: Number(data.productPrice || data.price || 0),
         image: data.productImage || data.image || '',
@@ -184,12 +272,20 @@
                 showToast('Votre panier est vide');
                 return;
             }
-            window.location.href = checkoutUrl;
+            try {
+                const url = new URL(checkoutUrl, window.location.origin);
+                if (currentEtablissementId) url.searchParams.set('etablissement', currentEtablissementId);
+                window.location.href = url.toString();
+            } catch (e) {
+                window.location.href = checkoutUrl + (currentEtablissementId ? (checkoutUrl.includes('?') ? '&' : '?') + 'etablissement=' + encodeURIComponent(currentEtablissementId) : '');
+            }
         }
     });
     window.addEventListener('storage', event => {
-        if (event.key === key) render();
+        if (event.key === key || event.key === legacyKey) render();
     });
+    // Écoute aussi l'événement custom pour synchro intra-page (iframe parent/enfant)
+    window.addEventListener('cms-cart-updated', render);
     render();
 })();
 </script>
