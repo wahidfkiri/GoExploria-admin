@@ -135,6 +135,11 @@
         ];
     })->filter(fn ($slide) => ! empty($slide['media']) || ! empty($slide['poster']))->values();
 
+    // Annonces de la zone « slider_home_welcome » (Ads Manager) : elles
+    // deviennent des slides du hero, vignette comprise. Sans annonce active,
+    // la collection revient inchangée.
+    $heroSlides = \App\Support\AdsHeroSlides::fusionner($heroSlides);
+
     $hasHeroSlides = $heroSlides->isNotEmpty();
     $heroId = 'goHomeHero' . substr(md5((string) request()->fullUrl()), 0, 8);
 @endphp
@@ -175,8 +180,13 @@
                             : null;
                         $ctaUrl = trim((string) ($slide['button_url'] ?? ''));
                         $ctaText = trim((string) ($slide['button_text'] ?? ''));
+                        // Slides publicitaires : suivi des impressions et des clics.
+                        $estPub = ! empty($slide['sponsored']);
+                        $pubImpression = $estPub ? (string) ($slide['ad_impression'] ?? '') : '';
+                        $pubClic = $estPub ? (string) ($slide['ad_click'] ?? '') : '';
                     @endphp
-                    <div class="swiper-slide">
+                    <div class="swiper-slide @if($estPub) go-hero-sponsored @endif"
+                         @if($pubImpression !== '') data-gxads-imp="{{ $pubImpression }}" @endif>
                         <div class="go-hero-media" @if(!empty($slide['poster'])) style="background-image:url('{{ $slide['poster'] }}')" @endif>
                             @if($isVideo && $youtubeSrc)
                                 <iframe class="go-hero-youtube go-hero-deferred-frame" @if($loop->first) src="{{ $youtubeSrc }}" @endif data-src="{{ $youtubeSrc }}" data-youtube-id="{{ $youtubeId }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="{{ $loop->first ? 'eager' : 'lazy' }}"></iframe>
@@ -191,12 +201,20 @@
                             @endif
                         </div>
                         <div class="go-hero-content">
+                            @if($estPub)
+                                {{-- Mention explicite : un visiteur doit pouvoir
+                                     distinguer une annonce du contenu éditorial.
+                                     Clé accentuée : $tr rend la clé telle quelle en français. --}}
+                                <span class="go-hero-sponsor-tag">{{ $tr('Sponsorisé') }}</span>
+                            @endif
                             <h1 class="go-hero-title">{{ $slide['title'] }}</h1>
                             @if(!empty($slide['description']))
                                 <p class="go-hero-description">{{ $slide['description'] }}</p>
                             @endif
                             @if($ctaUrl !== '' && $ctaText !== '')
-                                <a class="go-hero-cta" href="{{ $ctaUrl }}" target="_blank" rel="noopener noreferrer">
+                                <a class="go-hero-cta" href="{{ $ctaUrl }}" target="_blank"
+                                   rel="noopener noreferrer @if($estPub) sponsored @endif"
+                                   @if($pubClic !== '') data-gxads-click="{{ $pubClic }}" @endif>
                                     {{ $ctaText }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
                                 </a>
                             @endif
@@ -403,6 +421,22 @@
         font-size: clamp(1rem, 2vw, 1.45rem);
         line-height: 1.6;
         color: rgba(255,255,255,.92);
+    }
+
+    /* Mention « Sponsorisé » : lisible sans écraser le titre du slide. */
+    .go-hero-sponsor-tag {
+        display: inline-block;
+        margin-bottom: 12px;
+        padding: 4px 12px;
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #fff;
+        background: rgba(15, 23, 42, .62);
+        border: 1px solid rgba(255, 255, 255, .28);
+        border-radius: 999px;
+        backdrop-filter: blur(3px);
     }
 
     .go-hero-cta {
@@ -941,7 +975,41 @@ document.addEventListener('DOMContentLoaded', function () {
             nextEl: root.querySelector('.swiper-button-next'),
             prevEl: root.querySelector('.swiper-button-prev')
         },
-        keyboard: { enabled: true }
+        keyboard: { enabled: true },
+        on: {
+            // Le slide affiché compte son impression (annonces seulement).
+            init: () => compterImpressionPub(),
+            slideChange: () => compterImpressionPub()
+        }
+    });
+
+    /**
+     * Suivi publicitaire « au mieux » : il ne doit jamais gêner la page.
+     *
+     * Swiper duplique les slides quand la boucle est active : le drapeau
+     * `_vue` évite de compter deux fois la même annonce.
+     */
+    function pingPub(url) {
+        if (!url) return;
+        try {
+            if (navigator.sendBeacon) { navigator.sendBeacon(url); return; }
+            const px = new Image();
+            px.src = url + (url.indexOf('?') === -1 ? '?' : '&') + '_=' + Date.now();
+        } catch (e) {}
+    }
+
+    function compterImpressionPub() {
+        const actif = root.querySelector('.hero-swiper .swiper-slide-active[data-gxads-imp]');
+        if (!actif || actif._vue) return;
+        actif._vue = true;
+        const url = actif.getAttribute('data-gxads-imp');
+        pingPub(url + (url.indexOf('?') === -1 ? '?' : '&')
+            + 'url=' + encodeURIComponent(location.href));
+    }
+
+    // Clic sur le bouton d'une annonce, sans retarder la navigation.
+    root.querySelectorAll('[data-gxads-click]').forEach((lien) => {
+        lien.addEventListener('click', () => pingPub(lien.getAttribute('data-gxads-click')));
     });
 
     const thumbnails = Array.from(root.querySelectorAll('.go-hero-thumbnail'));
