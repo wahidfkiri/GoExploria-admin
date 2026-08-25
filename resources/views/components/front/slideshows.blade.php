@@ -115,7 +115,60 @@ resources/views/components/front/slideshows.blade.php
     .galleryCarousel-badge-popular {
         background: linear-gradient(135deg, #1e90ff, #3742fa);
     }
-    
+
+    /* ── Vues sponsorisées (Ads Manager) ─────────────────────────────────
+       Le badge « sponsor » reste sobre : il signale l'annonce sans crier. */
+    .galleryCarousel-badge-sponsor {
+        background: rgba(15, 23, 42, 0.72);
+        backdrop-filter: blur(2px);
+    }
+
+    /* Une annonce cliquable est un <a> : il doit se comporter comme la tuile
+       <div> qu'il remplace. */
+    a.galleryCarousel-sponsored {
+        display: block;
+        position: relative;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    /* Annonce sans visuel : un fond neutre plutôt qu'une image cassée. */
+    .galleryCarousel-noImage {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+    }
+
+    /* Une vue sponsorisée peut compter moins de 4 tuiles (dernier groupe
+       incomplet) : la grille s'ajuste au lieu de laisser des cases vides. */
+    .galleryCarousel-grid-1 {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+    }
+
+    .galleryCarousel-grid-2 {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
+
+    .galleryCarousel-grid-3 {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
+
+    .galleryCarousel-grid-3 .galleryCarousel-tile:first-child {
+        grid-column: span 2;
+    }
+
+    /* Un groupe d'une seule annonce : la grande image occupe toute la vue. */
+    .galleryCarousel-grid-0 {
+        display: none;
+    }
+
+    .galleryCarousel-slide:has(.galleryCarousel-grid-0) .galleryCarousel-mainTile {
+        width: 100%;
+    }
+
     .galleryCarousel-title {
         font-size: 1.1rem;
         font-weight: 700;
@@ -652,12 +705,86 @@ resources/views/components/front/slideshows.blade.php
         }
     ];
 
+    // Vues sponsorisées (Ads Manager, zone « slider_home_welcome »), préparées
+    // côté serveur par components/ads-home-slider.blade.php. Absentes si la
+    // zone est vide ou désactivée : le carrousel fonctionne alors à l'identique.
+    if (Array.isArray(window.GX_ADS_HOME_SLIDES) && window.GX_ADS_HOME_SLIDES.length) {
+        if (window.GX_ADS_HOME_FIRST === false) {
+            galleryCarouselSlides.push(...window.GX_ADS_HOME_SLIDES);
+        } else {
+            galleryCarouselSlides.unshift(...window.GX_ADS_HOME_SLIDES);
+        }
+    }
+
     // Variables du slider
     let galleryCarouselCurrentSlide = 0;
     let galleryCarouselAutoSlideInterval;
     let galleryCarouselIsTransitioning = false;
     const galleryCarouselSlideDuration = 10000;
     const galleryCarouselTransitionDuration = 30000;
+
+    // Échappement : les slides éditoriaux sont écrits en dur, mais le titre et
+    // la description d'une annonce viennent de l'admin.
+    function galleryCarouselEchapper(valeur) {
+        return String(valeur == null ? '' : valeur).replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[c]);
+    }
+
+    /**
+     * Construit une tuile du carrousel.
+     *
+     * Deux comportements de clic cohabitent :
+     *   • slide éditorial  -> ouvre la modale vidéo (classe galleryCarousel-item) ;
+     *   • annonce          -> mène à sa destination, avec suivi du clic.
+     * Une annonce ne porte donc PAS galleryCarousel-item, sauf si elle a une
+     * vidéo : dans ce cas elle se regarde comme les autres.
+     */
+    function galleryCarouselTuile(item, classes) {
+        const titre = galleryCarouselEchapper(item.title);
+        const desc  = galleryCarouselEchapper(item.description);
+        const video = galleryCarouselEchapper(item.videoId);
+        const pub   = Boolean(item.sponsored);
+        const lien  = pub ? String(item.href || '') : '';
+
+        // Sans vidéo, pas de bouton lecture : il ne mènerait nulle part.
+        //
+        // Une annonce qui a une destination ne joue PAS sa vidéo au clic : les
+        // deux comportements se disputeraient le même geste, et mener au
+        // partenaire est la raison d'être de l'annonce.
+        const cliquableVideo = Boolean(video) && !(pub && lien);
+        const classeItem = cliquableVideo ? ' galleryCarousel-item' : '';
+
+        const media = item.image
+            ? `<img src="${galleryCarouselEchapper(item.image)}" alt="${titre}" loading="lazy">`
+            : '<div class="galleryCarousel-noImage"></div>';
+
+        const contenu = `
+            ${item.badge ? `<div class="galleryCarousel-badge galleryCarousel-badge-${galleryCarouselEchapper(item.badge)}">${galleryCarouselEchapper(item.badge)}</div>` : ''}
+            ${media}
+            <div class="galleryCarousel-overlay">
+                <div class="galleryCarousel-title">${titre}</div>
+                <div class="galleryCarousel-description">${desc}</div>
+            </div>
+            ${cliquableVideo ? '<div class="galleryCarousel-playBtn"><i class="fas fa-play"></i></div>' : ''}
+        `;
+
+        const attrs = `data-video-id="${video}" data-title="${titre}"`;
+
+        if (pub && lien) {
+            const cible = item.newTab ? ' target="_blank" rel="noopener sponsored"' : '';
+            return `<a class="${classes}${classeItem} galleryCarousel-sponsored"
+                       href="${galleryCarouselEchapper(lien)}"${cible} ${attrs}
+                       data-gxads-click="${galleryCarouselEchapper(item.track || '')}"
+                       data-gxads-imp="${galleryCarouselEchapper(item.imp || '')}">${contenu}</a>`;
+        }
+
+        const suivi = pub
+            ? ` data-gxads-imp="${galleryCarouselEchapper(item.imp || '')}"`
+            : '';
+
+        return `<div class="${classes}${classeItem}${pub ? ' galleryCarousel-sponsored' : ''}" ${attrs}${suivi}>${contenu}</div>`;
+    }
 
     // Initialisation du slider avec duplication des slides pour un effet infini
     function galleryCarouselInit() {
@@ -671,32 +798,20 @@ resources/views/components/front/slideshows.blade.php
             const slideElement = document.createElement('div');
             slideElement.className = 'galleryCarousel-slide';
             
+            const grande = galleryCarouselTuile(slide.largeImage,
+                'galleryCarousel-column galleryCarousel-half galleryCarousel-mainTile');
+            const tuiles = slide.smallImages.map(img =>
+                galleryCarouselTuile(img, 'galleryCarousel-tile')).join('');
+
+            // Une vue sponsorisée incomplète (moins de 4 tuiles) ne doit pas
+            // laisser de cases vides : la grille s'adapte au nombre réel.
+            const classeGrille = 'galleryCarousel-column galleryCarousel-half galleryCarousel-grid'
+                + (slide.sponsored ? ` galleryCarousel-grid-${slide.smallImages.length}` : '');
+
             slideElement.innerHTML = `
-                <div class="galleryCarousel-column galleryCarousel-half galleryCarousel-mainTile galleryCarousel-item" data-video-id="${slide.largeImage.videoId}" data-title="${slide.largeImage.title}">
-                    ${slide.largeImage.badge ? `<div class="galleryCarousel-badge galleryCarousel-badge-${slide.largeImage.badge}">${slide.largeImage.badge}</div>` : ''}
-                    <img src="${slide.largeImage.image}" alt="${slide.largeImage.title}" loading="lazy">
-                    <div class="galleryCarousel-overlay">
-                        <div class="galleryCarousel-title">${slide.largeImage.title}</div>
-                        <div class="galleryCarousel-description">${slide.largeImage.description}</div>
-                    </div>
-                    <div class="galleryCarousel-playBtn">
-                        <i class="fas fa-play"></i>
-                    </div>
-                </div>
-                <div class="galleryCarousel-column galleryCarousel-half galleryCarousel-grid">
-                    ${slide.smallImages.map(img => `
-                        <div class="galleryCarousel-tile galleryCarousel-item" data-video-id="${img.videoId}" data-title="${img.title}">
-                            ${img.badge ? `<div class="galleryCarousel-badge galleryCarousel-badge-${img.badge}">${img.badge}</div>` : ''}
-                            <img src="${img.image}" alt="${img.title}" loading="lazy">
-                            <div class="galleryCarousel-overlay">
-                                <div class="galleryCarousel-title">${img.title}</div>
-                                <div class="galleryCarousel-description">${img.description}</div>
-                            </div>
-                            <div class="galleryCarousel-playBtn">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                    `).join('')}
+                ${grande}
+                <div class="${classeGrille}">
+                    ${tuiles}
                 </div>
             `;
             
@@ -720,6 +835,7 @@ resources/views/components/front/slideshows.blade.php
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const imageItem = this.closest('.galleryCarousel-item');
+                if (!imageItem) return;
                 const videoId = imageItem.dataset.videoId;
                 const title = imageItem.dataset.title;
                 galleryCarouselOpenVideoModal(videoId, title);
@@ -735,11 +851,51 @@ resources/views/components/front/slideshows.blade.php
             });
         });
         
-        // Mettre à jour l'affichage du slider
+        // Suivi des clics sur les annonces, sans retarder la navigation.
+        document.querySelectorAll('[data-gxads-click]').forEach(lien => {
+            lien.addEventListener('click', function () {
+                galleryCarouselPing(this.getAttribute('data-gxads-click'));
+            });
+        });
+
+        // Mettre à jour l'affichage du slider (compte aussi les impressions
+        // publicitaires de la première vue).
         galleryCarouselUpdateSlider();
-        
+
         // Démarrer le défilement automatique
         galleryCarouselStartAutoSlide();
+    }
+
+    // Appel de suivi « au mieux » : il ne doit jamais gêner la page.
+    function galleryCarouselPing(url) {
+        if (!url) return;
+        try {
+            if (navigator.sendBeacon) { navigator.sendBeacon(url); return; }
+            const px = new Image();
+            px.src = url + (url.indexOf('?') === -1 ? '?' : '&') + '_=' + Date.now();
+        } catch (e) {}
+    }
+
+    /**
+     * Compte une impression pour les annonces de la vue affichée.
+     *
+     * Les slides sont dupliqués pour l'effet infini : une même annonce apparaît
+     * deux fois dans le DOM. Le drapeau `_vue` évite de la compter deux fois.
+     */
+    function galleryCarouselCompterImpressions() {
+        const piste = document.getElementById('galleryCarouselTrack');
+        if (!piste) return;
+
+        const vue = piste.children[galleryCarouselCurrentSlide];
+        if (!vue) return;
+
+        vue.querySelectorAll('[data-gxads-imp]').forEach(annonce => {
+            const url = annonce.getAttribute('data-gxads-imp');
+            if (!url || annonce._vue) return;
+            annonce._vue = true;
+            galleryCarouselPing(url + (url.indexOf('?') === -1 ? '?' : '&')
+                + 'url=' + encodeURIComponent(location.href));
+        });
     }
 
     // Aller à un slide spécifique
@@ -848,8 +1004,11 @@ resources/views/components/front/slideshows.blade.php
     function galleryCarouselUpdateSlider() {
         const sliderTrack = document.getElementById('galleryCarouselTrack');
         const translateX = -galleryCarouselCurrentSlide * 100;
-        
+
         sliderTrack.style.transform = `translateX(${translateX}%)`;
+
+        // La vue qui arrive à l'écran compte ses impressions publicitaires.
+        galleryCarouselCompterImpressions();
     }
 
     // Ouvrir la modal vidéo

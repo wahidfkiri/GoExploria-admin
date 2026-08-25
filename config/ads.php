@@ -28,6 +28,13 @@ return [
     // Défilement auto (secondes) entre deux glissements du carrousel de cards.
     'cards_autoplay' => (int) env('ADS_CARDS_AUTOPLAY', 4),
 
+    // Slider de la page d'accueil : les annonces s'intercalent comme vues du
+    // carrousel « welcome », groupées par 5 (1 grande image + 4 tuiles).
+    'home_slider_zone'    => env('ADS_HOME_SLIDER_ZONE', 'slider_home_welcome'),
+    'home_slider_enabled' => (bool) env('ADS_HOME_SLIDER_ENABLED', true),
+    // Placer les vues sponsorisées avant (true) ou après (false) l'éditorial.
+    'home_slider_first'   => (bool) env('ADS_HOME_SLIDER_FIRST', true),
+
     // Durée (heures) de mémorisation de la fermeture du popup par le visiteur.
     'popup_dismiss_hours' => (int) env('ADS_POPUP_DISMISS_HOURS', 12),
 

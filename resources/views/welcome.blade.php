@@ -2365,6 +2365,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     @include('components.front.navbar')
     @include('components.front.horizontal-nav')
+    {{-- Publie les vues sponsorisées AVANT le carrousel, qui les y fusionne. --}}
+    @include('components.ads-home-slider')
     @include('components.front.slideshows')
 
     <!-- Video Slider Full Width -->
