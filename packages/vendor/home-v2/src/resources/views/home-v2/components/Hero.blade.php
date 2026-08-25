@@ -203,7 +203,9 @@
                             @if($estPub)
                                 {{-- Mention explicite : un visiteur doit pouvoir
                                      distinguer une annonce du contenu éditorial. --}}
-                                <span class="go-hero-sponsor-tag">{{ $tr('Sponsorise') }}</span>
+                                {{-- Clé accentuée : $tr rend la clé telle quelle en
+                                     français, et « Sponsorise » s'afficherait sans accent. --}}
+                                <span class="go-hero-sponsor-tag">{{ $tr('Sponsorisé') }}</span>
                             @endif
                             <h1 class="go-hero-title">{{ $slide['title'] }}</h1>
                             @if(!empty($slide['description']))
