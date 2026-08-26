@@ -170,7 +170,12 @@ class WebThemeController extends Controller
         try {
             $content = method_exists($response, 'getContent') ? $response->getContent() : null;
 
-            if (is_string($content) && $content !== '') {
+            // buildResponse() pose désormais le pont sur TOUTE page
+            // d'établissement. Ce filet ne sert plus que pour un chemin de
+            // rendu qui ne passerait pas par lui ; il ne doit surtout pas en
+            // poser un second, deux ponts se disputant la hauteur annoncée.
+            if (is_string($content) && $content !== ''
+                && strpos($content, "CHANNEL = 'gx-embed'") === false) {
                 $pos = strripos($content, '</body>');
                 if ($pos !== false) {
                     $bridge = view('cms::web.embed.partials.child-bridge')->render();
@@ -2322,10 +2327,67 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $html = $this->injectProductModal($html);
         $html = $this->injectImmoRequestForm($html);
         $html = $this->injectSwiperAssets($html);
+        $html = $this->injectEmbedBridge($html);
 
         return response($html, 200, [
             'Content-Type' => 'text/html; charset=utf-8',
         ]);
+    }
+
+    /**
+     * Injecte le pont parent-enfant sur TOUTE page d'établissement.
+     *
+     * ─────────────────────────────────────────────────────────────────────
+     * POURQUOI ICI, ET PLUS SEULEMENT DANS embed()
+     * ─────────────────────────────────────────────────────────────────────
+     * Le pont n'était posé que par `embed()`, qui ne rend que l'ACCUEIL. Or
+     * l'iframe du shell ne se referme pas quand le visiteur clique un lien du
+     * menu : elle navigue vers `/company/{id}/page/{slug}`, une page rendue
+     * sans pont. Conséquences, toutes silencieuses :
+     *
+     *   • la hauteur n'est plus annoncée — l'iframe garde celle de l'accueil,
+     *     et la page intérieure se retrouve tronquée ou suivie d'un grand vide ;
+     *   • aucune modale n'est recalée sur la bande visible : dans une iframe
+     *     haute comme son contenu, un `position:fixed` se centre sur la PAGE,
+     *     donc la fiche s'ouvre tout en bas.
+     *
+     * Ce défaut est resté invisible tant que les gabarits n'avaient qu'une
+     * page. Il est apparu avec les pages secondaires livrées par les
+     * templates (voir TemplateInstaller::createSecondaryPages).
+     *
+     * Poser le pont partout ne coûte rien : sa toute première ligne est
+     * `if (window.self === window.top) return;`. Hors iframe, il ne fait
+     * strictement rien.
+     */
+    protected function injectEmbedBridge($html)
+    {
+        if (! is_string($html) || $html === '') {
+            return $html;
+        }
+
+        $pos = strripos($html, '</body>');
+
+        if ($pos === false) {
+            return $html;
+        }
+
+        // Déjà posé : embed() garde son injection, et deux ponts se
+        // disputeraient la hauteur annoncée. Le shell parent porte le même
+        // marqueur, mais il ne passe jamais par cet entonnoir — platformSite()
+        // le rend directement.
+        if (strpos($html, "CHANNEL = 'gx-embed'") !== false) {
+            return $html;
+        }
+
+        try {
+            $pont = view('cms::web.embed.partials.child-bridge')->render();
+        } catch (\Throwable $e) {
+            Log::warning('Embed bridge injection failed: ' . $e->getMessage());
+
+            return $html;
+        }
+
+        return substr($html, 0, $pos) . $pont . substr($html, $pos);
     }
 
     /**
