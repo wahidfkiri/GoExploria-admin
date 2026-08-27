@@ -169,7 +169,40 @@
 
     <nav class="main-nav" aria-label="Navigation principale">
       @foreach($navSections as $ns)
-        <a href="#{{ $ns['id'] }}">{{ $ns['label'] }}</a>
+        @if($ns['id'] === 'activites' && $destinationActivities->count() > 0)
+          {{-- Méga-menu « Activités » : liste des activités liées à cette
+               destination (jointure $entity->activities()). Survol = ouverture
+               (desktop) ; clic = ouverture (tactile) ou saut vers #activites. --}}
+          <div class="td-mega" data-td-mega>
+            <a href="#activites" class="td-mega-trigger" aria-haspopup="true" aria-expanded="false">
+              {{ $ns['label'] }}
+              <svg class="td-mega-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+            </a>
+            <div class="td-mega-panel" role="menu">
+              <div class="td-mega-head">
+                <span>Activités à {{ $entity->name }}</span>
+                <a href="#activites" class="td-mega-all">Tout voir ({{ $destinationActivities->count() }})</a>
+              </div>
+              <div class="td-mega-grid">
+                @foreach($destinationActivities->take(12) as $activity)
+                  <a class="td-mega-item" role="menuitem" href="{{ route('activity.show', ['slug' => $activity->slug]) }}">
+                    <span class="td-mega-thumb">
+                      <img src="{{ $activity->image_url ?: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=200&auto=format&fit=crop' }}" alt="{{ $activity->name }}" loading="lazy">
+                    </span>
+                    <span class="td-mega-txt">
+                      <span class="td-mega-name">{{ $activity->name }}</span>
+                      @if($activity->category?->name ?? null)
+                        <span class="td-mega-cat">{{ $activity->category->name }}</span>
+                      @endif
+                    </span>
+                  </a>
+                @endforeach
+              </div>
+            </div>
+          </div>
+        @else
+          <a href="#{{ $ns['id'] }}">{{ $ns['label'] }}</a>
+        @endif
       @endforeach
     </nav>
 
@@ -188,6 +221,32 @@
     </div>
   </div>
 </header>
+
+<script>
+(function () {
+  // Méga-menu « Activités » : le survol l'ouvre (desktop, via CSS). Ici on gère
+  // le CLIC pour les écrans tactiles (pas de survol) + fermeture au clic
+  // extérieur / touche Échap. Sur desktop, le clic laisse filer l'ancre #activites.
+  var mega = document.querySelector('.main-nav .td-mega');
+  if (!mega) return;
+  var trigger = mega.querySelector('.td-mega-trigger');
+  var noHover = window.matchMedia && window.matchMedia('(hover: none)').matches;
+
+  trigger.addEventListener('click', function (e) {
+    if (noHover) {
+      e.preventDefault();
+      var open = mega.classList.toggle('is-open');
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+  });
+  document.addEventListener('click', function (e) {
+    if (!mega.contains(e.target)) { mega.classList.remove('is-open'); trigger.setAttribute('aria-expanded', 'false'); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { mega.classList.remove('is-open'); trigger.setAttribute('aria-expanded', 'false'); }
+  });
+})();
+</script>
 
 <nav class="mobile-nav" aria-label="Navigation mobile">
   @foreach($navSections as $ns)
