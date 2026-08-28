@@ -43,6 +43,10 @@ class DestinationsMegaMenu {
         if (this.trigger) {
             // Ouverture uniquement au clic sur le trigger Destinations.
             this.trigger.addEventListener('click', (e) => {
+                // Le mega-menu est imbriqué DANS le trigger : ne jamais intercepter
+                // les clics sur ses liens (pays, provinces…), sinon preventDefault
+                // annule la navigation. On les laisse suivre leur href.
+                if (e.target.closest('a[href]')) return;
                 e.preventDefault();
                 e.stopPropagation();
                 this.isOpen ? this.hide() : this.show();
