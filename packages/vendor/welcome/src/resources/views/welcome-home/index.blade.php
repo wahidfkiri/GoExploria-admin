@@ -698,7 +698,7 @@
     {{-- Charger le mega menu Destinations pour le menu vertical --}}
     <script defer src="{{ asset('js/welcome/vertical-destinations-mega.js') }}"></script>
     <script defer src="{{ asset('js/welcome/mega-menu.js') }}"></script>
-    <script defer src="{{ asset('js/welcome/destinations-mega-menu.js') }}"></script>
+    <script defer src="{{ asset('js/welcome/destinations-mega-menu.js') }}?v={{ @filemtime(public_path('js/welcome/destinations-mega-menu.js')) ?: '1' }}"></script>
     <script defer src="{{ asset('js/welcome/destinations-search.js') }}"></script>
     <script defer src="{{ asset('js/welcome/search-bar.js') }}"></script>
     {{-- Charger le service API pour la carte interactive --}}

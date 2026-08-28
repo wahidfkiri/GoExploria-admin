@@ -244,53 +244,33 @@ class DestinationsMegaMenu {
         }
     }
     
-    async createCountryItemWithChildren(country, continent) {
+    createCountryItemWithChildren(country, continent) {
+        // Item pays = SIMPLE LIEN vers la page destination
+        // (/travel-destination/country/{slug}). Le chargement AJAX des provinces
+        // sous chaque pays a ete retire : navigation directe au clic.
         const item = document.createElement('div');
         item.className = 'destinations-mega-country-item';
         item.dataset.countryId = country.id;
-        
+
         const link = document.createElement('a');
-        link.href = this.service.getDestinationUrl({...country, type: 'country'});
+        link.href = this.service.getDestinationUrl({ ...country, type: 'country' });
         link.className = 'destinations-mega-country-link';
-        
+
         const imageUrl = country.image_url || country.image || this.getDefaultImage('country');
         const img = document.createElement('img');
         img.src = imageUrl;
         img.alt = country.name;
         img.className = 'destinations-mega-country-img';
         img.addEventListener('error', () => { img.src = this.getDefaultImage('country'); });
-        
+
         const nameSpan = document.createElement('span');
         nameSpan.textContent = country.name;
-        
+
         link.appendChild(img);
         link.appendChild(nameSpan);
-        
-        // Mettre à jour le fil d'Ariane au focus clavier, sans ouverture au survol.
-        link.addEventListener('focus', () => {
-            this.updateBreadcrumb([continent, country]);
-        });
+        link.addEventListener('focus', () => { this.updateBreadcrumb([continent, country]); });
+
         item.appendChild(link);
-        
-        // Charger directement les provinces/villes
-        try {
-            const provinces = await this.service.getProvincesByCountry(country.id);
-            
-            if (provinces.length > 0) {
-                const provincesList = document.createElement('div');
-                provincesList.className = 'destinations-mega-provinces-list';
-                
-                provinces.forEach(province => {
-                    const provinceItem = this.createProvinceItem(province, country, continent);
-                    provincesList.appendChild(provinceItem);
-                });
-                
-                item.appendChild(provincesList);
-            }
-        } catch (error) {
-            console.error(`Erreur chargement provinces pour ${country.name}:`, error);
-        }
-        
         return item;
     }
     
