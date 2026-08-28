@@ -1195,6 +1195,15 @@
                 </label>
                 @error('consent')<span class="field-error">{{ $message }}</span>@enderror
 
+                @if(config('services.recaptcha.site_key'))
+                    {{-- Protection anti-spam Google reCAPTCHA v2 --}}
+                    <div class="recaptcha-field" style="margin:6px 0 14px;">
+                        <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                        @error('g-recaptcha-response')<span class="field-error">{{ $message }}</span>@enderror
+                    </div>
+                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                @endif
+
                 <input type="hidden" name="payment_method" id="paymentMethodField" value="">
                 <div class="form-actions">
                     <button type="submit" name="checkout_action" value="request" class="submit-btn submit-btn--request">

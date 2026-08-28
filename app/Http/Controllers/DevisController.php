@@ -126,6 +126,15 @@ class DevisController extends Controller
             'consent.accepted' => 'Veuillez accepter la politique de confidentialité.',
         ]);
 
+        // Vérification anti-spam Google reCAPTCHA (désactivée si aucune clé).
+        if (! $this->recaptchaPasses($request)) {
+            $message = 'Échec de la vérification reCAPTCHA. Veuillez confirmer que vous n\'êtes pas un robot.';
+            if ($request->wantsJson()) {
+                return response()->json(['error' => $message], 422);
+            }
+            return back()->withErrors(['g-recaptcha-response' => $message])->withInput();
+        }
+
         $validated['service_subject'] = 'Demande de devis services';
         $checkoutAction = $validated['checkout_action'] ?? 'request';
         $validated['project_details'] = $validated['project_details'] ?? null;
@@ -236,6 +245,43 @@ class DevisController extends Controller
     /**
      * Catalogue des services de facturation
      */
+    /**
+     * Vérifie le jeton Google reCAPTCHA v2 du formulaire /devis.
+     *
+     * Retourne true si aucune clé secrète n'est configurée (protection
+     * désactivée), ou si Google confirme le jeton. En cas d'erreur réseau vers
+     * Google, on n'empêche PAS la soumission (fail-open) pour ne pas perdre de
+     * leads ; on échoue en revanche si le jeton est absent ou invalide.
+     */
+    private function recaptchaPasses(Request $request): bool
+    {
+        $secret = config('services.recaptcha.secret_key');
+        if (empty($secret)) {
+            return true;
+        }
+
+        $token = (string) $request->input('g-recaptcha-response');
+        if ($token === '') {
+            return false;
+        }
+
+        try {
+            $response = \Illuminate\Support\Facades\Http::asForm()->timeout(8)->post(
+                'https://www.google.com/recaptcha/api/siteverify',
+                [
+                    'secret' => $secret,
+                    'response' => $token,
+                    'remoteip' => $request->ip(),
+                ]
+            );
+
+            return (bool) $response->json('success', false);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('reCAPTCHA verify error: ' . $e->getMessage());
+            return true; // fail-open sur erreur réseau
+        }
+    }
+
     private function billingServicesCatalog(): Collection
     {
         return BillingRequestService::query()

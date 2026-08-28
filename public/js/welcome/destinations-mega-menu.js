@@ -244,14 +244,11 @@ class DestinationsMegaMenu {
         }
     }
     
-    createCountryItemWithChildren(country, continent) {
-        // Item pays = SIMPLE LIEN vers la page destination
-        // (/travel-destination/country/{slug}). Le chargement AJAX des provinces
-        // sous chaque pays a ete retire : navigation directe au clic.
+    async createCountryItemWithChildren(country, continent) {
         const item = document.createElement('div');
         item.className = 'destinations-mega-country-item';
-        item.dataset.countryId = country.id;
 
+        // Pays = lien direct vers /travel-destination/country/{slug}.
         const link = document.createElement('a');
         link.href = this.service.getDestinationUrl({ ...country, type: 'country' });
         link.className = 'destinations-mega-country-link';
@@ -269,8 +266,24 @@ class DestinationsMegaMenu {
         link.appendChild(img);
         link.appendChild(nameSpan);
         link.addEventListener('focus', () => { this.updateBreadcrumb([continent, country]); });
-
         item.appendChild(link);
+
+        // Liste des PROVINCES ACTIVES (status=1) du pays : l'API ne renvoie que
+        // les provinces actives (Province::active()), chacune est un simple lien.
+        try {
+            const provinces = await this.service.getProvincesByCountry(country.id);
+            if (provinces.length > 0) {
+                const provincesList = document.createElement('div');
+                provincesList.className = 'destinations-mega-provinces-list';
+                provinces.forEach((province) => {
+                    provincesList.appendChild(this.createProvinceItem(province, country, continent));
+                });
+                item.appendChild(provincesList);
+            }
+        } catch (error) {
+            console.error(`Erreur chargement provinces pour ${country.name}:`, error);
+        }
+
         return item;
     }
     

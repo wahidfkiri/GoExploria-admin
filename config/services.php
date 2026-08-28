@@ -58,6 +58,13 @@ return [
 'weather' => [
         'api_key' => env('OPENWEATHER_API_KEY'),
     ],
+
+    // Google reCAPTCHA (v2 « Je ne suis pas un robot ») pour le formulaire /devis.
+    // Si les clés sont vides, la protection est simplement désactivée.
+    'recaptcha' => [
+        'site_key' => env('RECAPTCHA_SITE_KEY'),
+        'secret_key' => env('RECAPTCHA_SECRET_KEY'),
+    ],
     
     'stocks' => [
         'api_key' => env('ALPHAVANTAGE_API_KEY'),
