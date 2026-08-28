@@ -4,7 +4,10 @@
     use Illuminate\Support\Str;
 
     $staticContinents = Continent::with(['countries' => function ($q) {
-        $q->active()->orderBy('name')->with('provinces');
+        $q->active()->orderBy('name')->with(['provinces' => function ($p) {
+            // Uniquement les provinces ACTIVES (status = 1).
+            $p->active()->orderBy('name');
+        }]);
     }])->active()->orderBy('name')->get();
 @endphp
 <div class="vmenu-destinations-mega" id="verticalDestinationsMega">
