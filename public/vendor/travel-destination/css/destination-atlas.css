@@ -1194,7 +1194,7 @@ section{position:relative;}
 }
 .td-mega:hover .td-mega-panel,.td-mega.is-open .td-mega-panel{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0)}
 .td-mega-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 4px 12px;padding-bottom:10px;border-bottom:1px solid var(--line,rgba(27,43,44,.14))}
-.td-mega-head span{font-family:var(--font-display,serif);font-weight:600;font-size:.95rem}
+.td-mega-head span{font-family:var(--font-display,serif);font-weight:600;font-size:.95rem;color:#000}
 .td-mega-all{font-size:.78rem;color:var(--accent,#bd7a3c);font-weight:600;text-decoration:none;white-space:nowrap}
 .td-mega-all:hover{text-decoration:underline}
 .td-mega-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
