@@ -265,22 +265,18 @@
 
     @if(!($hideSearchBarV2 ?? false))
         @once
-        <style>
-            /* search-bar-v2 : masquée au chargement de l'accueil, révélée après
-               3 s. On garde visibility (espace réservé) → aucun saut de layout. */
-            .go-hero-search-layer.gx-delayed-search{opacity:0;visibility:hidden;transition:opacity .5s ease}
-            .go-hero-search-layer.gx-delayed-search.is-shown{opacity:1;visibility:visible}
-        </style>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                var layer = document.querySelector('.go-hero-search-layer.gx-delayed-search');
-                if (!layer) return;
-                // 3 s après l'affichage de la page d'accueil.
-                setTimeout(function () { layer.classList.add('is-shown'); }, 3000);
+                // Révèle la search-bar-v2 (overlay masqué par défaut) 3 s après
+                // l'affichage de l'accueil, via la classe OFFICIELLE du site
+                // `hero-search-visible` : elle gère opacity + visibility +
+                // pointer-events + transform (indispensable pour que le clic sur
+                // « Destinations » ouvre bien le mega-menu).
+                setTimeout(function () { document.body.classList.add('hero-search-visible'); }, 3000);
             });
         </script>
         @endonce
-        <div class="go-hero-search-layer gx-delayed-search">
+        <div class="go-hero-search-layer">
             <div class="search-bar-v2">
                 <div class="search-bar-v2-container">
                     <div class="search-bar-v2-destinations">
