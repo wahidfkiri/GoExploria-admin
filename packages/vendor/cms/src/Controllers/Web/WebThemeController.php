@@ -2328,6 +2328,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $html = $this->injectCartDrawer($html);
         $html = $this->injectProductModal($html);
         $html = $this->injectImmoRequestForm($html);
+        $html = $this->injectLandingMap($html);
         $html = $this->injectSwiperAssets($html);
         $html = $this->injectEmbedBridge($html);
 
@@ -2429,6 +2430,55 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
      * établissements. Ne fait rien si le panier est déjà présent (pages landing
      * qui l'incluent déjà) ou si la page n'a pas de balise </body>.
      */
+    /**
+     * Branche la carte interactive de l'établissement sur un gabarit CMS.
+     *
+     * La carte et ses points sont saisis dans l'onglet « Carte et vidéos » de
+     * l'espace entreprise, mais le partial qui les affiche n'était inclus que
+     * dans les vues de repli (`landing.blade.php`) : un site rendu par un
+     * gabarit CMS ne la montrait JAMAIS, quoi que le client active côté admin.
+     *
+     * Le gabarit déclare l'emplacement voulu avec une section porteuse de
+     * `data-gx-map` ; ce bloc la remplace par la vraie carte au rendu. Comme
+     * les autres greffes, l'injection se fait à l'affichage : elle atteint donc
+     * aussi les sites déjà installés, dont la page est une copie figée.
+     *
+     * ⚠ Le partial est ENTIÈREMENT gardé : sans carte activée ou sans point
+     * saisi, il ne rend rien. On retire alors la section d'attente plutôt que
+     * de laisser un titre au-dessus du vide.
+     */
+    protected function injectLandingMap($html)
+    {
+        if (!is_string($html) || $html === '') {
+            return $html;
+        }
+
+        // Une section d'attente, jamais imbriquée : le motif s'arrête au
+        // premier `</section>`, ce que le gabarit garantit.
+        $motif = '#<section[^>]*data-gx-map[^>]*>.*?</section>#is';
+
+        if (!preg_match($motif, $html)) {
+            return $html;
+        }
+
+        try {
+            $carte = view('cms::web.fallback.partials.landing-map-video-points', [
+                'etablissement' => $this->etablissement,
+                'siteName'      => $this->etablissement->name ?? null,
+            ])->render();
+        } catch (\Throwable $e) {
+            \Log::warning('Landing map injection failed: ' . $e->getMessage());
+
+            return $html;
+        }
+
+        // preg_replace interpréterait les `$` du partial comme des références
+        // arrière : on passe par un rappel.
+        return preg_replace_callback($motif, function () use ($carte) {
+            return $carte;
+        }, $html, 1);
+    }
+
     protected function injectCartDrawer($html)
     {
         if (!is_string($html) || $html === '') {
