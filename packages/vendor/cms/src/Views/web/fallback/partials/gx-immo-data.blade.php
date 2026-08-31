@@ -29,13 +29,14 @@
     // ⚠ UNE ENVELOPPE PAR GABARIT QUI CONSOMME LES BIENS : `immo-tpl` pour
     // NadiImmo, `resid-tpl` pour « Résidence — location d'appartements »,
     // `voyago-tpl` pour « Voyago — agence de voyage », dont les forfaits sont
-    // saisis dans le même onglet Immobilier. Tout nouveau
+    // saisis dans le même onglet Immobilier, `sylva-tpl` pour « Sylva — chalets
+    // à louer », `boisrond-tpl` pour « Bois Rond ». Tout nouveau
     // gabarit de cette famille DOIT être ajouté ici, sinon window.GX_IMMO
     // n'est jamais émis et le site reste bloqué sur les biens de
     // démonstration — sans la moindre erreur pour le signaler. Les autres
     // greffes (formulaire de demande, calendrier, média de la fiche) se
     // branchent, elles, sur `data-im-detail` et n'ont rien à déclarer.
-    $gxEnveloppesImmo = ['immo-tpl', 'resid-tpl', 'voyago-tpl'];
+    $gxEnveloppesImmo = ['immo-tpl', 'resid-tpl', 'voyago-tpl', 'sylva-tpl', 'boisrond-tpl'];
 
     $gxEstTemplateImmo = \Illuminate\Support\Str::contains(
         collect($cmsPageSections ?? [])->map(fn ($p) => (string) data_get($p, 'content'))->implode(''),

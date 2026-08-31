@@ -1,0 +1,1792 @@
+[
+  {
+    "url": "https://www.bonjourquebec.com/fr-ca/ou-aller/regions-du-quebec/cote-nord",
+    "timestamp": "2026-08-31 14:29:47",
+    "metadata": {
+      "url": "https://www.bonjourquebec.com/fr-ca/ou-aller/regions-du-quebec/cote-nord",
+      "title": "Tourisme et plein air sur la Côte-Nord | Régions du Québec | Bonjour Québec",
+      "description": "En vacances ou en voyage sur la Côte-Nord, découvrez Tadoussac, baleines, gastronomie, kayak, motoneige, Anticosti, pêche, centrales hydroélectriques.",
+      "keywords": "Côte-Nord, nature immense",
+      "language": "fr-CA",
+      "canonical": "https://www.bonjourquebec.com/fr-ca/ou-aller/regions-du-quebec/cote-nord",
+      "robots": "",
+      "og_title": "Tourisme et plein air sur la Côte-Nord | Régions du Québec | Bonjour Québec",
+      "og_description": "En vacances ou en voyage sur la Côte-Nord, découvrez Tadoussac, baleines, gastronomie, kayak, motoneige, Anticosti, pêche, centrales hydroélectriques.",
+      "og_image": "",
+      "og_type": "article",
+      "twitter_card": "",
+      "twitter_title": "",
+      "twitter_description": "",
+      "twitter_image": "",
+      "json_ld": [
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebPage",
+              "@id": "https://www.bonjourquebec.com/fr/ou-aller/regions-du-quebec/cote-nord",
+              "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://www.bonjourquebec.com/fr-ca"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Où aller au Québec",
+                    "item": "https://www.bonjourquebec.com/fr-ca/ou-aller"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "Régions du Québec",
+                    "item": "https://www.bonjourquebec.com/fr-ca/ou-aller/regions-du-quebec"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 4,
+                    "name": "Côte-Nord",
+                    "item": "https://www.bonjourquebec.com/fr-ca/ou-aller/regions-du-quebec/cote-nord"
+                  }
+                ]
+              },
+              "description": "En vacances ou en voyage sur la Côte-Nord, découvrez Tadoussac, baleines, gastronomie, kayak, motoneige, Anticosti, pêche, centrales hydroélectriques.",
+              "author": {
+                "@type": "Organization",
+                "@id": "https://www.bonjourquebec.com#organization"
+              }
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://www.bonjourquebec.com#website",
+              "name": "Bonjour Québec",
+              "url": "https://www.bonjourquebec.com"
+            }
+          ]
+        }
+      ]
+    },
+    "content": {
+      "headings": [
+        {
+          "level": 1,
+          "text": "Côte-Nord",
+          "id": "",
+          "class": "title"
+        },
+        {
+          "level": 2,
+          "text": "Main navigation - Fr - Canada",
+          "id": "block-tq-glider-main-menu-fr-ca-menu",
+          "class": "visually-hidden"
+        },
+        {
+          "level": 2,
+          "text": "Fil d'Ariane",
+          "id": "system-breadcrumb",
+          "class": "visually-hidden"
+        },
+        {
+          "level": 2,
+          "text": "À découvrir absolument",
+          "id": "",
+          "class": "text-ticker-info"
+        },
+        {
+          "level": 2,
+          "text": "Les principaux attraits de la Côte-Nord",
+          "id": "les-principaux-attraits-de-la-cote-nord",
+          "class": ""
+        },
+        {
+          "level": 2,
+          "text": "Explorez la Côte-Nord et son charme côtier",
+          "id": "",
+          "class": ""
+        },
+        {
+          "level": 2,
+          "text": "Planifiez votre séjour sur la Côte-Nord",
+          "id": "",
+          "class": ""
+        },
+        {
+          "level": 2,
+          "text": "Inscrivez-vous à notre infolettre",
+          "id": "",
+          "class": ""
+        },
+        {
+          "level": 2,
+          "text": "Menu Social FR-CA",
+          "id": "block-menusocialfrca-menu",
+          "class": "visually-hidden"
+        },
+        {
+          "level": 2,
+          "text": "Besoin d’aide pour planifier votre voyage?",
+          "id": "",
+          "class": ""
+        },
+        {
+          "level": 2,
+          "text": "Pays et langues",
+          "id": "",
+          "class": ""
+        },
+        {
+          "level": 2,
+          "text": "1 877 266-5687",
+          "id": "block-footercontactfrca-menu",
+          "class": ""
+        },
+        {
+          "level": 2,
+          "text": "Liens utiles",
+          "id": "block-sitesspecialisesfrca-menu",
+          "class": ""
+        },
+        {
+          "level": 2,
+          "text": "Main navigation - Fr - Canada",
+          "id": "block-main-menu-mobile-fr-ca-menu",
+          "class": ""
+        },
+        {
+          "level": 2,
+          "text": "Bonjour Québec sur les réseaux sociaux",
+          "id": "block-menusocial-menu",
+          "class": "visually-hidden"
+        },
+        {
+          "level": 2,
+          "text": "Menu icones - Fr - Canada",
+          "id": "block-menuiconesfrcanada-menu",
+          "class": "visually-hidden"
+        },
+        {
+          "level": 3,
+          "text": "Tadoussac",
+          "id": "",
+          "class": ""
+        },
+        {
+          "level": 3,
+          "text": "Route des Baleines",
+          "id": "",
+          "class": ""
+        },
+        {
+          "level": 3,
+          "text": "Archipel de Mingan",
+          "id": "",
+          "class": ""
+        },
+        {
+          "level": 4,
+          "text": "Comment s'y rendre",
+          "id": "",
+          "class": ""
+        },
+        {
+          "level": 4,
+          "text": "Distances des villes principales",
+          "id": "",
+          "class": ""
+        },
+        {
+          "level": 4,
+          "text": "Le saviez-vous?",
+          "id": "",
+          "class": "subtitle"
+        },
+        {
+          "level": 4,
+          "text": "À la découverte du fjord du Saguenay",
+          "id": "",
+          "class": ""
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "La Route des Baleines nous entraîne sur plus de 800 kilomètres le long du fleuve Saint-Laurent, de Tadoussac à Kegaska, au bout de la route 138. On peut pousser l’exploration vers le nord à partir de Baie-Comeau, à la rencontre des gigantesques installations hydroélectriques, nos pyramides des temps modernes à nous!",
+          "class": ""
+        },
+        {
+          "text": "On fait dans l’immensité, alors soyez prêt à ouvrir grands les yeux. Baleines, rochers en forme de pots de fleurs et Jardin des glaciers : tout est énorme.",
+          "class": ""
+        },
+        {
+          "text": "Bordant le majestueux Saint-Laurent, Tadoussac annonce le début de la Route des Baleines, à l’embouchure du fjord du Saguenay. C’est le garde-manger des géants des mers qui viennent se nourrir l’été et l’automne.",
+          "class": ""
+        },
+        {
+          "text": "En plus des croisières aux baleines, Tadoussac est aussi reconnue pour son histoire, sa vitalité estivale et son Festival de la Chanson.",
+          "class": ""
+        },
+        {
+          "text": "Tadoussac fut le premier poste de traite des fourrures de Nouvelle-France en 1600. Maintenant, les castors et autres animaux sont bien tranquilles dans la nature. Les visiteurs, eux, découvrent ce mode de vie d’antan au Poste de traite Chauvin.",
+          "class": ""
+        },
+        {
+          "text": "La baie de Tadoussac fait partie du Club des plus belles baies du monde.",
+          "class": ""
+        },
+        {
+          "text": "La baie de Tadoussac, parmi les plus belles du monde",
+          "class": "component-modal-carousel-images-gallery__slide__infos__title"
+        },
+        {
+          "text": "Poste de traite Chauvin",
+          "class": "component-modal-carousel-images-gallery__slide__infos__title"
+        },
+        {
+          "text": "Nous, ce ne sont pas les écureuils dans notre cour qui nous émerveillent, mais les baleines dans notre fleuve. À partir de Tadoussac, on a même rebaptisé la route 138 en Route des Baleines et mis de jolis panneaux bleus arborant une baleine blanche, pour être sûr que vous ne ratiez pas les nombreux sites consacrés à nos mammifères marins.",
+          "class": ""
+        },
+        {
+          "text": "Vous en aurez pour 880 kilomètres dans le sillon de nos géants des mers. Treize espèces de baleines fréquentent le Saint-Laurent l’été et l’automne. On les observe de la rive ou bien sur l’eau, en bateau de croisière, en kayak de mer ou dans des zodiacs, et on les entend chanter, pour vrai!",
+          "class": ""
+        },
+        {
+          "text": "La langue d’une baleine bleue pèse autant qu’une femelle éléphant, soit environ 3 629 kg (8 000 lb).",
+          "class": ""
+        },
+        {
+          "text": "La Route des Baleines",
+          "class": "component-modal-carousel-images-gallery__slide__infos__title"
+        },
+        {
+          "text": "Baleine dans le fleuve Saint-Laurent",
+          "class": "component-modal-carousel-images-gallery__slide__infos__desc"
+        },
+        {
+          "text": "© Tourisme Côte-Nord, M. Loiselle",
+          "class": "component-modal-carousel-images-gallery__slide__infos__credit"
+        },
+        {
+          "text": "La Route des Baleines",
+          "class": "component-modal-carousel-images-gallery__slide__infos__title"
+        },
+        {
+          "text": "Protégeant plus de 1 000 îles et îlots sur 110 kilomètres carrés, la réserve de parc national de l’Archipel-de-Mingan se démarque par la plus grande concentration de monolithes d’érosion au Canada. Des mono quoi? D’immenses blocs de pierre debout : des géants de calcaire. Curiosité de la géologie nord-côtière, ces rochers s’érodent au fil du temps, sculptés par la mer et le vent. Ils prennent la forme de pots de fleurs et d’autres surprises artistiques que nous réserve Mère Nature.",
+          "class": ""
+        },
+        {
+          "text": "En bateau, kayak, voilier ou planche à pagaie, puis à pied sur les îles, on immortalise la beauté de ce bout du monde en photographiant les paysages à la géologie débridée, la flore particulière – dont des plantes rares – et une faune très active. Au fait, si vous cherchez les perroquets à l’île du même nom, sachez que c’est le surnom des amusants petits macareux moines!",
+          "class": ""
+        },
+        {
+          "text": "On peut dormir dans une auberge aménagée à l'ancienne station de phare de l’île aux Perroquets.",
+          "class": ""
+        },
+        {
+          "text": "Réserve de parc national de l’Archipel-de-Mingan",
+          "class": "component-modal-carousel-images-gallery__slide__infos__title"
+        },
+        {
+          "text": "Sentier des monolithes",
+          "class": "component-modal-carousel-images-gallery__slide__infos__desc"
+        },
+        {
+          "text": "Réserve de parc national de l’Archipel-de-Mingan",
+          "class": "component-modal-carousel-images-gallery__slide__infos__title"
+        },
+        {
+          "text": "Parcs Canada © E.Lajeunesse",
+          "class": "component-modal-carousel-images-gallery__slide__infos__credit"
+        },
+        {
+          "text": "Explorez la carte de la région pour y découvrir ses villes, villages, incontournables et lieux inusités.",
+          "class": ""
+        },
+        {
+          "text": "Nous sommes très festifs. Grandes manifestations culturelles ou sportives, fiestas urbaines ou pittoresques fêtes de villages, on est toujours prêt à s’amuser!",
+          "class": ""
+        },
+        {
+          "text": "Que ce soit au cœur de la nature ou de la ville, planifiez votre voyage de rêve et découvrez nos suggestions d'activités.",
+          "class": ""
+        },
+        {
+          "text": "En ville ou en nature, trouvez l'hébergement parfait pour vous.",
+          "class": ""
+        },
+        {
+          "text": "Inspirations de voyage, suggestions d'activités selon la saison et conseils utiles.",
+          "class": ""
+        },
+        {
+          "text": "Pour finaliser votre abonnement :Confirmez votre adresse électronique en cliquant sur le lien reçu par courriel.",
+          "class": ""
+        },
+        {
+          "text": "Communiquez avec nos spécialistes de la destination ➔",
+          "class": ""
+        }
+      ],
+      "lists": [
+        {
+          "type": "ul",
+          "items": [
+            "Découvrir",
+            "Où aller",
+            "Quoi faire",
+            "Se préparer",
+            "Blogue"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Fr - Canada",
+            "Fr - France",
+            "Français",
+            "En - Canada",
+            "En - USA",
+            "En - United Kingdom",
+            "English",
+            "Es - Mexico"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Carte du Québec",
+            "Planificateur de voyage0",
+            "Clavardage",
+            "Fermer"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "VilleTadoussacVoir plus",
+            "VilleBaie-ComeauVoir plus",
+            "VilleSept-ÎlesVoir plus",
+            "VillePort-CartierVoir plus",
+            "VilleNatashquanVoir plus",
+            "Route / circuit touristiqueRoute des BaleinesVoir plus",
+            "AttraitsArchipel de MinganVoir plus",
+            "AttraitsCentrales hydroélectriquesVoir plus",
+            "Route / circuit touristiqueRoute Trans-Québec–LabradorVoir plus",
+            "CroisièreNavire depuis Sept-ÎlesVoir plus",
+            "Réserve fauniqueRéserve faunique de Port-Cartier–Sept-ÎlesVoir plus",
+            "Parc national du QuébecParc national d’AnticostiVoir plus",
+            "AttraitsEssipit et Les EscouminsVoir plus",
+            "AttraitsLa fin de la route 138Voir plus",
+            "AttraitsBioluminescence sur la merVoir plus",
+            "PlageRivière-au-TonnerreVoir plus",
+            "AttraitsRéservoir ManicouaganVoir plus",
+            "AttraitsHarrington HarbourVoir plus",
+            "Autre hébergementPointe-aux-OutardesVoir plus",
+            "Bureau d'accueil touristiqueRagueneauVoir plus",
+            "Parc régional / municipalChute ManitouVoir plus",
+            "AttraitsMur-écran de FermontVoir plus",
+            "Autre hébergementBaie-TrinitéVoir plus",
+            "Site thématiqueLes Galets de NatashquanVoir plus"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Facebook",
+            "Instagram",
+            "Pinterest",
+            "Spotify",
+            "Twitter",
+            "Youtube"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Fr - Canada",
+            "Fr - France",
+            "Français",
+            "En - Canada",
+            "En - USA",
+            "En - United Kingdom",
+            "English",
+            "Es - Mexico"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Nous joindre",
+            "Politique de confidentialité",
+            "Paramètres des témoins"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Médiathèque",
+            "Ministère du Tourisme",
+            "Brochures et guides touristiques"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "DécouvrirExpériences pharesAventures en natureSaveurs localesVilles vibrantes et festivitésVivre le Saint-LaurentCulture et histoire vivantePlaisirs d'hiverRoutes découverteChasse et pêcheSaisonsÉtéAutomneHiverPrintempsLes Québécois",
+            "Expériences pharesAventures en natureSaveurs localesVilles vibrantes et festivitésVivre le Saint-LaurentCulture et histoire vivantePlaisirs d'hiverRoutes découverteChasse et pêche",
+            "Aventures en nature",
+            "Saveurs locales",
+            "Villes vibrantes et festivités",
+            "Vivre le Saint-Laurent",
+            "Culture et histoire vivante",
+            "Plaisirs d'hiver",
+            "Routes découverte",
+            "Chasse et pêche",
+            "SaisonsÉtéAutomneHiverPrintemps",
+            "Été",
+            "Automne",
+            "Hiver",
+            "Printemps",
+            "Les Québécois",
+            "Où allerItinéraires et routes touristiquesRégions du QuébecMontréalQuébec, ville et régionAbitibi-TémiscamingueBas-Saint-LaurentCantons-de-l'EstCentre-du-QuébecCharlevoixChaudière-AppalachesCôte-NordEeyou Istchee Baie-JamesGaspésieÎles-de-la-MadeleineLanaudièreLaurentidesLavalMauricieMontérégieNunavikOutaouaisSaguenay-Lac-Saint-JeanParcs nationauxParcs nationaux et réserves fauniquesParcs régionaux et municipaux",
+            "Itinéraires et routes touristiques",
+            "Régions du QuébecMontréalQuébec, ville et régionAbitibi-TémiscamingueBas-Saint-LaurentCantons-de-l'EstCentre-du-QuébecCharlevoixChaudière-AppalachesCôte-NordEeyou Istchee Baie-JamesGaspésieÎles-de-la-MadeleineLanaudièreLaurentidesLavalMauricieMontérégieNunavikOutaouaisSaguenay-Lac-Saint-Jean",
+            "Montréal",
+            "Québec, ville et région",
+            "Abitibi-Témiscamingue",
+            "Bas-Saint-Laurent",
+            "Cantons-de-l'Est",
+            "Centre-du-Québec",
+            "Charlevoix",
+            "Chaudière-Appalaches",
+            "Côte-Nord",
+            "Eeyou Istchee Baie-James",
+            "Gaspésie",
+            "Îles-de-la-Madeleine",
+            "Lanaudière",
+            "Laurentides",
+            "Laval",
+            "Mauricie",
+            "Montérégie",
+            "Nunavik",
+            "Outaouais",
+            "Saguenay-Lac-Saint-Jean",
+            "Parcs nationauxParcs nationaux et réserves fauniquesParcs régionaux et municipaux",
+            "Parcs nationaux et réserves fauniques",
+            "Parcs régionaux et municipaux",
+            "Quoi faireFestivals et événementsFêtes et festivalsConcerts et musiqueÉvénements gourmandsÉvénements sportifsÉvénements artistiquesSalons et foiresActivités en plein airRandonnée pédestreObservation des baleines et mammifères marinsObservation de la fauneVéloChasse, pêche et pourvoiriesSports d’aventureÉquitationGolfActivités familiales estivales en plein airActivités nautiquesCroisièresCanot, kayak et raftingPlages et baignadePlanche et voilePlongéeCulture, art et patrimoineTraditions autochtonesMusées et sites historiquesSites reconnus par l’UNESCOPatrimoine religieuxPharesArchitecture et designGaleries d’artArt urbainIlluminationsPlaisirs gourmandsRestaurantsCabanes à sucreAgrotourisme et autocueilletteVignobles, microbrasseries et spiritueuxMarchés et produits locauxProduits de la merLoisirs et excursionsSpas et détenteMagasinageVie nocturne et casinosParcs thématiquesCentres d’amusement familiauxJardins zoologiques et botaniquesMototourisme et véhicules récréatifsVisites guidéesActivités hivernalesSki alpin et planche à neigeSki de fond et raquetteMotoneigeTraîneau à chiensPêche sur la glacePatin à glace et glissadeEscalade, vélo et autres activités d’hiver",
+            "Festivals et événementsFêtes et festivalsConcerts et musiqueÉvénements gourmandsÉvénements sportifsÉvénements artistiquesSalons et foires",
+            "Fêtes et festivals",
+            "Concerts et musique",
+            "Événements gourmands",
+            "Événements sportifs",
+            "Événements artistiques",
+            "Salons et foires",
+            "Activités en plein airRandonnée pédestreObservation des baleines et mammifères marinsObservation de la fauneVéloChasse, pêche et pourvoiriesSports d’aventureÉquitationGolfActivités familiales estivales en plein air",
+            "Randonnée pédestre",
+            "Observation des baleines et mammifères marins",
+            "Observation de la faune",
+            "Vélo",
+            "Chasse, pêche et pourvoiries",
+            "Sports d’aventure",
+            "Équitation",
+            "Golf",
+            "Activités familiales estivales en plein air",
+            "Activités nautiquesCroisièresCanot, kayak et raftingPlages et baignadePlanche et voilePlongée",
+            "Croisières",
+            "Canot, kayak et rafting",
+            "Plages et baignade",
+            "Planche et voile",
+            "Plongée",
+            "Culture, art et patrimoineTraditions autochtonesMusées et sites historiquesSites reconnus par l’UNESCOPatrimoine religieuxPharesArchitecture et designGaleries d’artArt urbainIlluminations",
+            "Traditions autochtones",
+            "Musées et sites historiques",
+            "Sites reconnus par l’UNESCO",
+            "Patrimoine religieux",
+            "Phares",
+            "Architecture et design",
+            "Galeries d’art",
+            "Art urbain",
+            "Illuminations",
+            "Plaisirs gourmandsRestaurantsCabanes à sucreAgrotourisme et autocueilletteVignobles, microbrasseries et spiritueuxMarchés et produits locauxProduits de la mer",
+            "Restaurants",
+            "Cabanes à sucre",
+            "Agrotourisme et autocueillette",
+            "Vignobles, microbrasseries et spiritueux",
+            "Marchés et produits locaux",
+            "Produits de la mer",
+            "Loisirs et excursionsSpas et détenteMagasinageVie nocturne et casinosParcs thématiquesCentres d’amusement familiauxJardins zoologiques et botaniquesMototourisme et véhicules récréatifsVisites guidées",
+            "Spas et détente",
+            "Magasinage",
+            "Vie nocturne et casinos",
+            "Parcs thématiques",
+            "Centres d’amusement familiaux",
+            "Jardins zoologiques et botaniques",
+            "Mototourisme et véhicules récréatifs",
+            "Visites guidées",
+            "Activités hivernalesSki alpin et planche à neigeSki de fond et raquetteMotoneigeTraîneau à chiensPêche sur la glacePatin à glace et glissadeEscalade, vélo et autres activités d’hiver",
+            "Ski alpin et planche à neige",
+            "Ski de fond et raquette",
+            "Motoneige",
+            "Traîneau à chiens",
+            "Pêche sur la glace",
+            "Patin à glace et glissade",
+            "Escalade, vélo et autres activités d’hiver",
+            "Se préparerInformations utilesMeilleur moment pour venirBon à savoir avant de partirLangues et coutumesTourisme accessibleVoyageurs LGBTQ+Brochures et guides touristiquesDirectives liées à la COVID-19TransportsVenir au QuébecSe déplacer au QuébecOù dormirHébergements insolitesHébergements en camping et prêt-à-camperHébergements en chaletsHébergements en hôtels, auberges et gîtesHébergements en villégiatureHébergements en pourvoiriesAuberges de jeunesse et résidences étudiantesNous joindre",
+            "Informations utilesMeilleur moment pour venirBon à savoir avant de partirLangues et coutumesTourisme accessibleVoyageurs LGBTQ+Brochures et guides touristiquesDirectives liées à la COVID-19",
+            "Meilleur moment pour venir",
+            "Bon à savoir avant de partir",
+            "Langues et coutumes",
+            "Tourisme accessible",
+            "Voyageurs LGBTQ+",
+            "Brochures et guides touristiques",
+            "Directives liées à la COVID-19",
+            "TransportsVenir au QuébecSe déplacer au Québec",
+            "Venir au Québec",
+            "Se déplacer au Québec",
+            "Où dormirHébergements insolitesHébergements en camping et prêt-à-camperHébergements en chaletsHébergements en hôtels, auberges et gîtesHébergements en villégiatureHébergements en pourvoiriesAuberges de jeunesse et résidences étudiantes",
+            "Hébergements insolites",
+            "Hébergements en camping et prêt-à-camper",
+            "Hébergements en chalets",
+            "Hébergements en hôtels, auberges et gîtes",
+            "Hébergements en villégiature",
+            "Hébergements en pourvoiries",
+            "Auberges de jeunesse et résidences étudiantes",
+            "Nous joindre",
+            "Blogue"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Expériences pharesAventures en natureSaveurs localesVilles vibrantes et festivitésVivre le Saint-LaurentCulture et histoire vivantePlaisirs d'hiverRoutes découverteChasse et pêche",
+            "Aventures en nature",
+            "Saveurs locales",
+            "Villes vibrantes et festivités",
+            "Vivre le Saint-Laurent",
+            "Culture et histoire vivante",
+            "Plaisirs d'hiver",
+            "Routes découverte",
+            "Chasse et pêche",
+            "SaisonsÉtéAutomneHiverPrintemps",
+            "Été",
+            "Automne",
+            "Hiver",
+            "Printemps",
+            "Les Québécois"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Aventures en nature",
+            "Saveurs locales",
+            "Villes vibrantes et festivités",
+            "Vivre le Saint-Laurent",
+            "Culture et histoire vivante",
+            "Plaisirs d'hiver",
+            "Routes découverte",
+            "Chasse et pêche"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Été",
+            "Automne",
+            "Hiver",
+            "Printemps"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Itinéraires et routes touristiques",
+            "Régions du QuébecMontréalQuébec, ville et régionAbitibi-TémiscamingueBas-Saint-LaurentCantons-de-l'EstCentre-du-QuébecCharlevoixChaudière-AppalachesCôte-NordEeyou Istchee Baie-JamesGaspésieÎles-de-la-MadeleineLanaudièreLaurentidesLavalMauricieMontérégieNunavikOutaouaisSaguenay-Lac-Saint-Jean",
+            "Montréal",
+            "Québec, ville et région",
+            "Abitibi-Témiscamingue",
+            "Bas-Saint-Laurent",
+            "Cantons-de-l'Est",
+            "Centre-du-Québec",
+            "Charlevoix",
+            "Chaudière-Appalaches",
+            "Côte-Nord",
+            "Eeyou Istchee Baie-James",
+            "Gaspésie",
+            "Îles-de-la-Madeleine",
+            "Lanaudière",
+            "Laurentides",
+            "Laval",
+            "Mauricie",
+            "Montérégie",
+            "Nunavik",
+            "Outaouais",
+            "Saguenay-Lac-Saint-Jean",
+            "Parcs nationauxParcs nationaux et réserves fauniquesParcs régionaux et municipaux",
+            "Parcs nationaux et réserves fauniques",
+            "Parcs régionaux et municipaux"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Montréal",
+            "Québec, ville et région",
+            "Abitibi-Témiscamingue",
+            "Bas-Saint-Laurent",
+            "Cantons-de-l'Est",
+            "Centre-du-Québec",
+            "Charlevoix",
+            "Chaudière-Appalaches",
+            "Côte-Nord",
+            "Eeyou Istchee Baie-James",
+            "Gaspésie",
+            "Îles-de-la-Madeleine",
+            "Lanaudière",
+            "Laurentides",
+            "Laval",
+            "Mauricie",
+            "Montérégie",
+            "Nunavik",
+            "Outaouais",
+            "Saguenay-Lac-Saint-Jean"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Parcs nationaux et réserves fauniques",
+            "Parcs régionaux et municipaux"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Festivals et événementsFêtes et festivalsConcerts et musiqueÉvénements gourmandsÉvénements sportifsÉvénements artistiquesSalons et foires",
+            "Fêtes et festivals",
+            "Concerts et musique",
+            "Événements gourmands",
+            "Événements sportifs",
+            "Événements artistiques",
+            "Salons et foires",
+            "Activités en plein airRandonnée pédestreObservation des baleines et mammifères marinsObservation de la fauneVéloChasse, pêche et pourvoiriesSports d’aventureÉquitationGolfActivités familiales estivales en plein air",
+            "Randonnée pédestre",
+            "Observation des baleines et mammifères marins",
+            "Observation de la faune",
+            "Vélo",
+            "Chasse, pêche et pourvoiries",
+            "Sports d’aventure",
+            "Équitation",
+            "Golf",
+            "Activités familiales estivales en plein air",
+            "Activités nautiquesCroisièresCanot, kayak et raftingPlages et baignadePlanche et voilePlongée",
+            "Croisières",
+            "Canot, kayak et rafting",
+            "Plages et baignade",
+            "Planche et voile",
+            "Plongée",
+            "Culture, art et patrimoineTraditions autochtonesMusées et sites historiquesSites reconnus par l’UNESCOPatrimoine religieuxPharesArchitecture et designGaleries d’artArt urbainIlluminations",
+            "Traditions autochtones",
+            "Musées et sites historiques",
+            "Sites reconnus par l’UNESCO",
+            "Patrimoine religieux",
+            "Phares",
+            "Architecture et design",
+            "Galeries d’art",
+            "Art urbain",
+            "Illuminations",
+            "Plaisirs gourmandsRestaurantsCabanes à sucreAgrotourisme et autocueilletteVignobles, microbrasseries et spiritueuxMarchés et produits locauxProduits de la mer",
+            "Restaurants",
+            "Cabanes à sucre",
+            "Agrotourisme et autocueillette",
+            "Vignobles, microbrasseries et spiritueux",
+            "Marchés et produits locaux",
+            "Produits de la mer",
+            "Loisirs et excursionsSpas et détenteMagasinageVie nocturne et casinosParcs thématiquesCentres d’amusement familiauxJardins zoologiques et botaniquesMototourisme et véhicules récréatifsVisites guidées",
+            "Spas et détente",
+            "Magasinage",
+            "Vie nocturne et casinos",
+            "Parcs thématiques",
+            "Centres d’amusement familiaux",
+            "Jardins zoologiques et botaniques",
+            "Mototourisme et véhicules récréatifs",
+            "Visites guidées",
+            "Activités hivernalesSki alpin et planche à neigeSki de fond et raquetteMotoneigeTraîneau à chiensPêche sur la glacePatin à glace et glissadeEscalade, vélo et autres activités d’hiver",
+            "Ski alpin et planche à neige",
+            "Ski de fond et raquette",
+            "Motoneige",
+            "Traîneau à chiens",
+            "Pêche sur la glace",
+            "Patin à glace et glissade",
+            "Escalade, vélo et autres activités d’hiver"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Fêtes et festivals",
+            "Concerts et musique",
+            "Événements gourmands",
+            "Événements sportifs",
+            "Événements artistiques",
+            "Salons et foires"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Randonnée pédestre",
+            "Observation des baleines et mammifères marins",
+            "Observation de la faune",
+            "Vélo",
+            "Chasse, pêche et pourvoiries",
+            "Sports d’aventure",
+            "Équitation",
+            "Golf",
+            "Activités familiales estivales en plein air"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Croisières",
+            "Canot, kayak et rafting",
+            "Plages et baignade",
+            "Planche et voile",
+            "Plongée"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Traditions autochtones",
+            "Musées et sites historiques",
+            "Sites reconnus par l’UNESCO",
+            "Patrimoine religieux",
+            "Phares",
+            "Architecture et design",
+            "Galeries d’art",
+            "Art urbain",
+            "Illuminations"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Restaurants",
+            "Cabanes à sucre",
+            "Agrotourisme et autocueillette",
+            "Vignobles, microbrasseries et spiritueux",
+            "Marchés et produits locaux",
+            "Produits de la mer"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Spas et détente",
+            "Magasinage",
+            "Vie nocturne et casinos",
+            "Parcs thématiques",
+            "Centres d’amusement familiaux",
+            "Jardins zoologiques et botaniques",
+            "Mototourisme et véhicules récréatifs",
+            "Visites guidées"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Ski alpin et planche à neige",
+            "Ski de fond et raquette",
+            "Motoneige",
+            "Traîneau à chiens",
+            "Pêche sur la glace",
+            "Patin à glace et glissade",
+            "Escalade, vélo et autres activités d’hiver"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Informations utilesMeilleur moment pour venirBon à savoir avant de partirLangues et coutumesTourisme accessibleVoyageurs LGBTQ+Brochures et guides touristiquesDirectives liées à la COVID-19",
+            "Meilleur moment pour venir",
+            "Bon à savoir avant de partir",
+            "Langues et coutumes",
+            "Tourisme accessible",
+            "Voyageurs LGBTQ+",
+            "Brochures et guides touristiques",
+            "Directives liées à la COVID-19",
+            "TransportsVenir au QuébecSe déplacer au Québec",
+            "Venir au Québec",
+            "Se déplacer au Québec",
+            "Où dormirHébergements insolitesHébergements en camping et prêt-à-camperHébergements en chaletsHébergements en hôtels, auberges et gîtesHébergements en villégiatureHébergements en pourvoiriesAuberges de jeunesse et résidences étudiantes",
+            "Hébergements insolites",
+            "Hébergements en camping et prêt-à-camper",
+            "Hébergements en chalets",
+            "Hébergements en hôtels, auberges et gîtes",
+            "Hébergements en villégiature",
+            "Hébergements en pourvoiries",
+            "Auberges de jeunesse et résidences étudiantes",
+            "Nous joindre"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Meilleur moment pour venir",
+            "Bon à savoir avant de partir",
+            "Langues et coutumes",
+            "Tourisme accessible",
+            "Voyageurs LGBTQ+",
+            "Brochures et guides touristiques",
+            "Directives liées à la COVID-19"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Venir au Québec",
+            "Se déplacer au Québec"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Hébergements insolites",
+            "Hébergements en camping et prêt-à-camper",
+            "Hébergements en chalets",
+            "Hébergements en hôtels, auberges et gîtes",
+            "Hébergements en villégiature",
+            "Hébergements en pourvoiries",
+            "Auberges de jeunesse et résidences étudiantes"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Fr - Canada",
+            "Fr - France",
+            "Français",
+            "En - Canada",
+            "En - USA",
+            "En - United Kingdom",
+            "English",
+            "Es - Mexico"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Facebook",
+            "Instagram",
+            "Pinterest",
+            "Spotify",
+            "Twitter",
+            "Youtube"
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Carte du Québec",
+            "Clavardage",
+            "Planificateur de voyage"
+          ]
+        },
+        {
+          "type": "ol",
+          "items": [
+            "Home",
+            "Où aller au Québec",
+            "Régions du Québec",
+            "Côte-Nord"
+          ]
+        }
+      ],
+      "quotes": [
+        "La baie de Tadoussac fait partie du Club des plus belles baies du monde.",
+        "La langue d’une baleine bleue pèse autant qu’une femelle éléphant, soit environ 3 629 kg (8 000 lb).",
+        "On peut dormir dans une auberge aménagée à l'ancienne station de phare de l’île aux Perroquets."
+      ],
+      "tables": [],
+      "structured_content": [
+        {
+          "class": "block block-system block-system-breadcrumb-block",
+          "text": "Fil d'ArianeHomeOù aller au QuébecRégions du QuébecCôte-Nord",
+          "html": "<div class=\"block block-system block-system-breadcrumb-block\" id=\"block-tq-glider-breadcrumbs\">\n<nav aria-labelledby=\"system-breadcrumb\" class=\"breadcrumb\" role=\"navigation\">\n<h2 class=\"visually-hidden\" id=\"system-breadcrumb\">Fil d'Ariane</h2>\n<ol>\n<li class=\"icon-fonctionnelles-home\">\n<a class=\"icon-fonctionnelles-home\" href=\"/fr-ca\">Home</a>\n</li>\n<li class=\"icon-chevron-small-right\">\n<a class=\"\" href=\"/fr-ca/ou-aller\">Où aller au Québec</a>\n</li>\n<li class=\"icon-chevron-small-right\">\n<a class..."
+        },
+        {
+          "class": "language-switcher-language-url block block-language block-language-blocklanguage-interface",
+          "text": "Changer la langue du site Internet. La langue actuelle estFR-CAFr - CanadaFr - FranceFrançaisEn - CanadaEn - USAEn - United KingdomEnglishEs - Mexico",
+          "html": "<div class=\"language-switcher-language-url block block-language block-language-blocklanguage-interface\" id=\"block-tq-glider-languageswitcher-2\" region=\"header_menu\" role=\"navigation\">\n<div class=\"dropdown dropdown-switch-lang dropdown-header-language\">\n<button aria-expanded=\"false\" aria-haspopup=\"true\" class=\"btn btn-secondary dropdown-toggle\" data-bs-toggle=\"dropdown\" id=\"dropdownMenuLangButtonHeader\" type=\"button\">\n<span class=\"visually-hidden\">Changer la langue du site Internet. La langue act..."
+        },
+        {
+          "class": "clearfix main-content",
+          "text": "×CloseCarte du QuébecPlanificateur de voyage0ClavardageFermerAjouter au planificateurLa Côte-Nord, c’est la démesure à perte de vue. Une escapade routière à faire au moins une fois dans notre vie.La Route des Baleines nous entraîne sur plus de 800 kilomètres le long du fleuve Saint-Laurent, de Tadoussac à Kegaska, au bout de la route 138. On peut pousser l’exploration vers le nord à partir de Baie-Comeau, à la rencontre des gigantesques installations hydroélectriques, nos pyramides des temps mod...",
+          "html": "<div class=\"clearfix main-content\" id=\"main\">\n<div class=\"cog--mq mq-main\">\n<!-- /sidebar-first -->\n<section id=\"content\">\n<!-- Modal popup-langue -->\n<div class=\"modal fade\" id=\"popupLangueModal\" role=\"dialog\">\n<div class=\"modal-dialog\">\n<!-- Modal content-->\n<div class=\"modal-content\">\n<div class=\"modal-header\">\n<button class=\"btn-close\" data-bs-dismiss=\"modal\" type=\"button\">×</button>\n</div>\n<div class=\"popup-langue-modal-body modal-body\">\n</div>\n<div class=\"modal-footer\">\n<button class=\"btn ..."
+        },
+        {
+          "class": "region region-content",
+          "text": "Carte du QuébecPlanificateur de voyage0ClavardageFermerAjouter au planificateurLa Côte-Nord, c’est la démesure à perte de vue. Une escapade routière à faire au moins une fois dans notre vie.La Route des Baleines nous entraîne sur plus de 800 kilomètres le long du fleuve Saint-Laurent, de Tadoussac à Kegaska, au bout de la route 138. On peut pousser l’exploration vers le nord à partir de Baie-Comeau, à la rencontre des gigantesques installations hydroélectriques, nos pyramides des temps modernes ...",
+          "html": "<div class=\"region region-content\">\n<div class=\"closed block block-tq-fonctions block-toolbox-block\" id=\"block-toolbox\">\n<ul class=\"clavardage-hide-if-inactidve\">\n<li class=\"toolbox--map\"><a class=\"btn-open-map\" href=\"/fr-ca/carte-du-quebec\">Carte du Québec</a></li>\n<li class=\"toolbox--planner\"><a class=\"planner\" href=\"/fr-ca/planificateur-de-voyage\"><span class=\"text\">Planificateur de voyage</span><span class=\"bubble\">0</span></a></li>\n<li class=\"toolbox--chat\"><a class=\"icon-chat chat clavarda..."
+        },
+        {
+          "class": "closed block block-tq-fonctions block-toolbox-block",
+          "text": "Carte du QuébecPlanificateur de voyage0ClavardageFermer",
+          "html": "<div class=\"closed block block-tq-fonctions block-toolbox-block\" id=\"block-toolbox\">\n<ul class=\"clavardage-hide-if-inactidve\">\n<li class=\"toolbox--map\"><a class=\"btn-open-map\" href=\"/fr-ca/carte-du-quebec\">Carte du Québec</a></li>\n<li class=\"toolbox--planner\"><a class=\"planner\" href=\"/fr-ca/planificateur-de-voyage\"><span class=\"text\">Planificateur de voyage</span><span class=\"bubble\">0</span></a></li>\n<li class=\"toolbox--chat\"><a class=\"icon-chat chat clavardage-2025-link link-clavardage-locked ..."
+        },
+        {
+          "class": "block block-system block-system-main-block",
+          "text": "Ajouter au planificateurLa Côte-Nord, c’est la démesure à perte de vue. Une escapade routière à faire au moins une fois dans notre vie.La Route des Baleines nous entraîne sur plus de 800 kilomètres le long du fleuve Saint-Laurent, de Tadoussac à Kegaska, au bout de la route 138. On peut pousser l’exploration vers le nord à partir de Baie-Comeau, à la rencontre des gigantesques installations hydroélectriques, nos pyramides des temps modernes à nous!Consulter le guide touristiqueComment s'y rendre...",
+          "html": "<div class=\"block block-system block-system-main-block\" id=\"block-tq-glider-content\">\n<article about=\"/fr/ou-aller/regions-du-quebec/cote-nord\" class=\"entity--type-node node node--type-region node--view-mode-full\" lang=\"fr\">\n<div class=\"node__content\">\n<div class=\"after-hero\">\n<div class=\"container\">\n<div class=\"row mb-5 flex-column-reverse flex-lg-row\">\n<div class=\"col-lg-7\">\n<div class=\"page-actions\">\n<a class=\"trip-planner-ajax trip-planner-item trip-planner-item-n22 trip-planner-item__add\" d..."
+        },
+        {
+          "class": "node__content",
+          "text": "Ajouter au planificateurLa Côte-Nord, c’est la démesure à perte de vue. Une escapade routière à faire au moins une fois dans notre vie.La Route des Baleines nous entraîne sur plus de 800 kilomètres le long du fleuve Saint-Laurent, de Tadoussac à Kegaska, au bout de la route 138. On peut pousser l’exploration vers le nord à partir de Baie-Comeau, à la rencontre des gigantesques installations hydroélectriques, nos pyramides des temps modernes à nous!Consulter le guide touristiqueComment s'y rendre...",
+          "html": "<div class=\"node__content\">\n<div class=\"after-hero\">\n<div class=\"container\">\n<div class=\"row mb-5 flex-column-reverse flex-lg-row\">\n<div class=\"col-lg-7\">\n<div class=\"page-actions\">\n<a class=\"trip-planner-ajax trip-planner-item trip-planner-item-n22 trip-planner-item__add\" data-tracking=\"Planificateur|Ajouter|[pagepath]\" href=\"/fr-ca/planificateur/ajouter/n22\" rel=\"nofollow\" title=\"Ajouter au planificateur\"><span class=\"trip-planner-item__title\">Ajouter au planificateur</span><i aria-hidden=\"tru..."
+        },
+        {
+          "class": "field field--name-field-presentation-title field--type-string field--label-hidden field__item",
+          "text": "La Côte-Nord, c’est la démesure à perte de vue. Une escapade routière à faire au moins une fois dans notre vie.",
+          "html": "<div class=\"field field--name-field-presentation-title field--type-string field--label-hidden field__item\">La Côte-Nord, c’est la démesure à perte de vue. Une escapade routière à faire au moins une fois dans notre vie.</div>"
+        },
+        {
+          "class": "clearfix text-formatted field field--name-field-presentation-subtitle field--type-text-long field--label-hidden field__item",
+          "text": "La Route des Baleines nous entraîne sur plus de 800 kilomètres le long du fleuve Saint-Laurent, de Tadoussac à Kegaska, au bout de la route 138. On peut pousser l’exploration vers le nord à partir de Baie-Comeau, à la rencontre des gigantesques installations hydroélectriques, nos pyramides des temps modernes à nous!",
+          "html": "<div class=\"clearfix text-formatted field field--name-field-presentation-subtitle field--type-text-long field--label-hidden field__item\"><p>La Route des Baleines nous entraîne sur plus de 800 kilomètres le long du fleuve Saint-Laurent, de Tadoussac à Kegaska, au bout de la route 138. On peut pousser l’exploration vers le nord à partir de Baie-Comeau, à la rencontre des gigantesques installations hydroélectriques, nos pyramides des temps modernes à nous!</p>\n</div>"
+        },
+        {
+          "class": "card--transport h-100 p-4 p-lg-5 bg-white text-primary",
+          "text": "Comment s'y rendreen avionen voiture/en motoen autocaren train",
+          "html": "<div class=\"card--transport h-100 p-4 p-lg-5 bg-white text-primary\">\n<h4>Comment s'y rendre</h4>\n<div class=\"field field--name-field-transport field--type-entity-reference-revisions field--label-hidden field__items\">\n<div class=\"field__item\">\n<div class=\"paragraph paragraph--type--transport-method paragraph--view-mode--default icon-transports-avion\">\n<div class=\"field field--name-field-link-onelink field--type-link field--label-hidden field__item\"><a href=\"/fr-ca/se-preparer/transports/se-deplac..."
+        }
+      ]
+    },
+    "media": {
+      "images": [
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/themes/custom/tq_glider/logo.svg",
+          "alt": "Home",
+          "title": "",
+          "width": "124",
+          "height": "70",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/hero_level_3_mobile_1x_avec_filtre/public/2021-04/HERO-Baie-Trinit%C3%A9_Phare%20de%20Pointe-des-Monts_%C2%A9_S%C3%A9bastien%20St-Jean%20_H_h.jpg.webp?itok=Ykvl6rES",
+          "alt": "",
+          "title": "",
+          "width": "",
+          "height": "",
+          "loading": "lazy"
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/image_process_webp/public/2023-04/carte-reg-CoteNord%403x_0.png.webp?itok=aPZ7n90e",
+          "alt": "",
+          "title": "",
+          "width": "360",
+          "height": "440",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/gallery_default_picture/public/2021-04/C_1_Tadoussac_%C2%A9_S_St-Jean%20.jpg.webp?itok=iV86uxQV",
+          "alt": "",
+          "title": "",
+          "width": "",
+          "height": "",
+          "loading": "lazy"
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/gallery_default_picture/public/2021-04/C_2_Tadoussac_Poste%20de%20Traite%20Chauvin_%C2%A9_S_St-Jean.jpg.webp?itok=FB-APxBE",
+          "alt": "",
+          "title": "",
+          "width": "",
+          "height": "",
+          "loading": "lazy"
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/gallery_default_picture/public/2019-12/Activite-Baleine-CoteNord-012020-C1-1.jpg.webp?itok=AY-t393D",
+          "alt": "",
+          "title": "",
+          "width": "",
+          "height": "",
+          "loading": "lazy"
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/gallery_default_picture/public/2019-12/Rorqual-a-bosse-CoteNord-012020-C1-2.jpg.webp?itok=dR6SajBJ",
+          "alt": "",
+          "title": "",
+          "width": "",
+          "height": "",
+          "loading": "lazy"
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/gallery_default_picture/public/2019-12/sentier%20monolithe-CoteNord-C2-1.jpg.webp?itok=8p7coNm0",
+          "alt": "",
+          "title": "",
+          "width": "",
+          "height": "",
+          "loading": "lazy"
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/gallery_default_picture/public/2019-12/Monolith-CoteNord-C2-2.jpg.webp?itok=RuwUsIx5",
+          "alt": "",
+          "title": "",
+          "width": "",
+          "height": "",
+          "loading": "lazy"
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/Tadoussac-CoteNord-Vv-1.jpg.webp?itok=Br_DL4LT",
+          "alt": "Tadoussac",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2020-05/Baie-comeau-CoteNord-Vv-2.jpg.webp?itok=lropDih7",
+          "alt": "Baie-Comeau",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2020-05/Sept-iles-CoteNord-Vv-3.jpg.webp?itok=a2nEvhhN",
+          "alt": "Sept-Îles",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/Port-Cartier-CoteNord-Vv-4.jpg.webp?itok=P4CfJenq",
+          "alt": "Port-Cartier",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/Natashquan-CoteNord-Vv-5.jpg.webp?itok=h2QttcNt",
+          "alt": "Natashquan",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/route%20des%20baleines-CoteNord-Vi-1.jpg.webp?itok=i42BSiD9",
+          "alt": "Route des Baleines",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/archipel-de-mingan-CoteNord-Vi-2.jpg.webp?itok=Z2Ny_j94",
+          "alt": "Archipel de Mingan",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2020-05/Manic5-CoteNord-Vi-4.jpg.webp?itok=S63o3njQ",
+          "alt": "Centrales hydroélectriques",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2020-05/expedition%2051-CoteNord-Vi-5.jpg.webp?itok=7rXskC1K",
+          "alt": "Route Trans-Québec–Labrador",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2020-05/relaisnordik-CoteNord-Vi-6.jpg.webp?itok=JcrkXsto",
+          "alt": "Navire depuis Sept-Îles",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/reserve-faunique-CoteNord-Vi-7.jpg.webp?itok=L7k3H6C0",
+          "alt": "Réserve faunique de Port-Cartier–Sept-Îles",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/Parc-national-anticosti-CoteNord-Vi-8.jpg.webp?itok=2-TNXGUw",
+          "alt": "Parc national d’Anticosti",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2020-05/Essipit%20et%20Les%20Escoumins-Cote-Nord-Vi-9.jpg.webp?itok=eW-I8j5J",
+          "alt": "Essipit et Les Escoumins",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/kegaska-CoteNord-Vi-10.jpg.webp?itok=sJUaPpFR",
+          "alt": "La fin de la route 138",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/bioluminescence-CoteNord-Vis-1.jpg.webp?itok=t90NIvQU",
+          "alt": "Bioluminescence sur la mer",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/Plage-riviere-au-tonnerre-CoteNord-Vis-2.jpg.webp?itok=GPqXKT-Z",
+          "alt": "Rivière-au-Tonnerre",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2020-05/Reservoir%20Manicouagan-Cote-Nord-Vis-3.jpg.webp?itok=SZH2kBAN",
+          "alt": "Réservoir Manicouagan",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/harrington-CoteNord-Vis-4.jpg.webp?itok=grY8TMka",
+          "alt": "Harrington Harbour",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/Nichoir-pointe-aux-outardes-CoteNord-Vis-5.jpg.webp?itok=AJKh5tB7",
+          "alt": "Pointe-aux-Outardes",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/Ragueneau-CoteNord-Vis-6.jpg.webp?itok=hiK74mcF",
+          "alt": "Ragueneau",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/Chute-manitou-CoteNord-Vis-7.jpg.webp?itok=uO39XJE3",
+          "alt": "Chute Manitou",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/Fermont-CoteNord-Vis-8.jpg.webp?itok=os4wFotB",
+          "alt": "Mur-écran de Fermont",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/Phare-pointe-des-monts-CoteNord-Vis-9.jpg.webp?itok=16nPXTRN",
+          "alt": "Baie-Trinité",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/sites/default/files/styles/point_marker/public/2019-12/Galets%20de%20Natashquan-CoteNord-Vis-10.jpg.webp?itok=Gpa7sjfj",
+          "alt": "Les Galets de Natashquan",
+          "title": "",
+          "width": "82",
+          "height": "98",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/themes/custom/tq_glider/images/infolettre/AjaxBlackLoader.gif",
+          "alt": "chargeur ajax",
+          "title": "",
+          "width": "",
+          "height": "",
+          "loading": ""
+        },
+        {
+          "src": "https://www.bonjourquebec.com/fr-ca/themes/custom/tq_glider/logo.svg",
+          "alt": "Home",
+          "title": "",
+          "width": "124",
+          "height": "70",
+          "loading": ""
+        }
+      ],
+      "videos": [
+        {
+          "src": "https://www.googletagmanager.com/ns.html?id=GTM-WD3GJCR",
+          "title": "",
+          "width": "0",
+          "height": "0"
+        }
+      ],
+      "embeds": [],
+      "downloads": []
+    },
+    "links": {
+      "internal": [
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca",
+          "text": "",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca",
+          "text": "Bonjour Québec",
+          "title": "Home"
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/cote-nord",
+          "text": "Fr - Canada",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-fr/ou-aller/regions-du-quebec/cote-nord",
+          "text": "Fr - France",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr/ou-aller/regions-du-quebec/cote-nord",
+          "text": "Français",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/en-ca/where-to-go/regions-of-quebec/cote-nord",
+          "text": "En - Canada",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/en-us/where-to-go/regions-of-quebec/cote-nord",
+          "text": "En - USA",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/en-gb/where-to-go/regions-of-quebec/cote-nord",
+          "text": "En - United Kingdom",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/en/where-to-go/regions-of-quebec/cote-nord",
+          "text": "English",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/es-mx/donde-ir/regiones-de-quebec/cote-nord",
+          "text": "Es - Mexico",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/carte-du-quebec",
+          "text": "Carte du Québec",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/planificateur-de-voyage",
+          "text": "Planificateur de voyage0",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/planificateur/ajouter/n22",
+          "text": "Ajouter au planificateur",
+          "title": "Ajouter au planificateur"
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/se-preparer/transports/se-deplacer-au-quebec#en-avion",
+          "text": "en avion",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/se-preparer/transports/se-deplacer-au-quebec#en-voiture-ou-en-moto",
+          "text": "en voiture/en moto",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/se-preparer/transports/se-deplacer-au-quebec#en-autocar",
+          "text": "en autocar",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/se-preparer/transports/se-deplacer-au-quebec#en-train",
+          "text": "en train",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/fiche/1053122",
+          "text": "Vers Tadoussac et sa baie",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/itineraires-et-routes/la-route-des-baleines",
+          "text": "Prendre la Route des Baleines",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/fiche/431634",
+          "text": "On se sent petit parmi les géants",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/itineraires-et-routes-touristiques",
+          "text": "Voir tous les itinéraires",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/itineraires-et-routes/a-la-decouverte-du-fjord-du-saguenay",
+          "text": "À la découverte du fjord du Saguenay",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/itineraires-et-routes-touristiques",
+          "text": "Voir tous les itinéraires",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/recherche/section/evenements/region/cote-nord",
+          "text": "Voir les événements",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/recherche/section/quoi-faire/region/cote-nord",
+          "text": "Trouver des activités",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/recherche/section/hebergement/region/cote-nord",
+          "text": "Trouver un hébergement",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr/se-preparer/nous-joindre",
+          "text": "Communiquez avec nos spécialistes de la destination ➔",
+          "title": "Chez Bonjour Québec, on planifie votre séjour… avec vous!"
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/cote-nord",
+          "text": "Fr - Canada",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-fr/ou-aller/regions-du-quebec/cote-nord",
+          "text": "Fr - France",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr/ou-aller/regions-du-quebec/cote-nord",
+          "text": "Français",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/en-ca/where-to-go/regions-of-quebec/cote-nord",
+          "text": "En - Canada",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/en-us/where-to-go/regions-of-quebec/cote-nord",
+          "text": "En - USA",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/en-gb/where-to-go/regions-of-quebec/cote-nord",
+          "text": "En - United Kingdom",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/en/where-to-go/regions-of-quebec/cote-nord",
+          "text": "English",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/es-mx/donde-ir/regiones-de-quebec/cote-nord",
+          "text": "Es - Mexico",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr/mentions-juridiques",
+          "text": "Mentions juridiques",
+          "title": "Mentions juridiques"
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca",
+          "text": "",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/cote-nord",
+          "text": "Fr - Canada",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-fr/ou-aller/regions-du-quebec/cote-nord",
+          "text": "Fr - France",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr/ou-aller/regions-du-quebec/cote-nord",
+          "text": "Français",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/en-ca/where-to-go/regions-of-quebec/cote-nord",
+          "text": "En - Canada",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/en-us/where-to-go/regions-of-quebec/cote-nord",
+          "text": "En - USA",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/en-gb/where-to-go/regions-of-quebec/cote-nord",
+          "text": "En - United Kingdom",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/en/where-to-go/regions-of-quebec/cote-nord",
+          "text": "English",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/es-mx/donde-ir/regiones-de-quebec/cote-nord",
+          "text": "Es - Mexico",
+          "title": ""
+        }
+      ],
+      "external": [
+        {
+          "url": "https://www.calameo.com/bonjourquebec/read/005553271943224de851f",
+          "text": "Consulter le guide touristique",
+          "title": ""
+        },
+        {
+          "url": "https://tourismecote-nord.com/",
+          "text": "Visiter le site de la région",
+          "title": ""
+        },
+        {
+          "url": "https://policies.google.com/privacy",
+          "text": "Politique de confidentialité",
+          "title": ""
+        },
+        {
+          "url": "https://policies.google.com/terms",
+          "text": "Conditions générales d'utilisation",
+          "title": ""
+        }
+      ],
+      "social": [],
+      "navigation": [
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir",
+          "text": "Découvrir",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller",
+          "text": "Où aller",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/quoi-faire",
+          "text": "Quoi faire",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/se-preparer",
+          "text": "Se préparer",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/blogue",
+          "text": "Blogue",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca",
+          "text": "Home",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller",
+          "text": "Où aller au Québec",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec",
+          "text": "Régions du Québec",
+          "title": ""
+        },
+        {
+          "url": "https://www.facebook.com/tourismequebec.ca.fr/?brand_redir=153795997995404",
+          "text": "Facebook",
+          "title": ""
+        },
+        {
+          "url": "https://www.instagram.com/tourismequebec/",
+          "text": "Instagram",
+          "title": ""
+        },
+        {
+          "url": "https://www.pinterest.com/tourismequebec/",
+          "text": "Pinterest",
+          "title": ""
+        },
+        {
+          "url": "https://open.spotify.com/user/f3tyawg5o62pfr8comk65yzpe",
+          "text": "Spotify",
+          "title": ""
+        },
+        {
+          "url": "https://twitter.com/tourismequebec",
+          "text": "Twitter",
+          "title": ""
+        },
+        {
+          "url": "https://www.youtube.com/c/TourismeQuebecTQ",
+          "text": "Youtube",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/se-preparer/nous-joindre",
+          "text": "Nous joindre",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/politique-de-confidentialite",
+          "text": "Politique de confidentialité",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/mediatheque",
+          "text": "Médiathèque",
+          "title": ""
+        },
+        {
+          "url": "https://www.quebec.ca/gouv/ministere/tourisme/",
+          "text": "Ministère du Tourisme",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/se-preparer/brochures-et-guides-touristiques",
+          "text": "Brochures et guides touristiques",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir",
+          "text": "Découvrir",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/experiences",
+          "text": "Expériences phares",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/experiences/aventures-en-nature",
+          "text": "Aventures en nature",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/experiences/saveurs-locales",
+          "text": "Saveurs locales",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/experiences/villes-vibrantes-et-festivites",
+          "text": "Villes vibrantes et festivités",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/experiences/vivre-le-saint-laurent",
+          "text": "Vivre le Saint-Laurent",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/experiences/culture-et-histoire-vivante",
+          "text": "Culture et histoire vivante",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/experiences/plaisirs-d-hiver",
+          "text": "Plaisirs d'hiver",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/experiences/routes-decouverte",
+          "text": "Routes découverte",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/experiences/chasse-et-peche",
+          "text": "Chasse et pêche",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/saisons",
+          "text": "Saisons",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/saisons/ete",
+          "text": "Été",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/saisons/automne",
+          "text": "Automne",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/saisons/hiver",
+          "text": "Hiver",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/saisons/printemps",
+          "text": "Printemps",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/decouvrir/les-quebecois",
+          "text": "Les Québécois",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller",
+          "text": "Où aller",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/itineraires-et-routes-touristiques",
+          "text": "Itinéraires et routes touristiques",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec",
+          "text": "Régions du Québec",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/montreal",
+          "text": "Montréal",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/quebec",
+          "text": "Québec, ville et région",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/abitibi-temiscamingue",
+          "text": "Abitibi-Témiscamingue",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/bas-saint-laurent",
+          "text": "Bas-Saint-Laurent",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/cantons-de-l-est",
+          "text": "Cantons-de-l'Est",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/centre-du-quebec",
+          "text": "Centre-du-Québec",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/charlevoix",
+          "text": "Charlevoix",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/chaudiere-appalaches",
+          "text": "Chaudière-Appalaches",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/cote-nord",
+          "text": "Côte-Nord",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/eeyou-istchee-baie-james",
+          "text": "Eeyou Istchee Baie-James",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/gaspesie",
+          "text": "Gaspésie",
+          "title": ""
+        },
+        {
+          "url": "https://www.bonjourquebec.com/fr-ca/fr-ca/ou-aller/regions-du-quebec/iles-de-la-madeleine",
+          "text": "Îles-de-la-Madeleine",
+          "title": ""
+        }
+      ],
+      "related": []
+    },
+    "region_info": {
+      "description_intro": "RÉGIONS DU QUÉBECCôte-Nord",
+      "highlights": [
+        "Si vous utilisez un lecteur d’écran, ce contenu n’est malheureusement pas adapté. On s’excuse d’avance! Cliquez ici pour accéder aux informations suivantes.Cacher la liste de résultatsAfficher la liste de résultatsFiltres(0)CatégorieVilles et villagesIncontournablesLieux inusitésListeCarteRetour à la carteRetour aux résultatsVilleTadoussacVoir plusVilleBaie-ComeauVoir plusVilleSept-ÎlesVoir plusVillePort-CartierVoir plusVilleNatashquanVoir plusRoute / circuit touristiqueRoute des BaleinesVoir plusAttraitsArchipel de MinganVoir plusAttraitsCentrales hydroélectriquesVoir plusRoute / circuit touristiqueRoute Trans-Québec–LabradorVoir plusCroisièreNavire depuis Sept-ÎlesVoir plusRéserve fauniqueRéserve faunique de Port-Cartier–Sept-ÎlesVoir plusParc national du QuébecParc national d’AnticostiVoir plusAttraitsEssipit et Les EscouminsVoir plusAttraitsLa fin de la route 138Voir plusAttraitsBioluminescence sur la merVoir plusPlageRivière-au-TonnerreVoir plusAttraitsRéservoir ManicouaganVoir plusAttraitsHarrington HarbourVoir plusAutre hébergementPointe-aux-OutardesVoir plusBureau d'accueil touristiqueRagueneauVoir plusParc régional / municipalChute ManitouVoir plusAttraitsMur-écran de FermontVoir plusAutre hébergementBaie-TrinitéVoir plusSite thématiqueLes Galets de NatashquanVoir plusAucun résultat a afficher. Veuillez sélectionner un filtre pour afficher les lieux correspondants.Résultats1à20sur24",
+        "ItinéraireÀ la découverte du fjord du Saguenay",
+        "Inscrivez-vous à notre infolettreInspirations de voyage, suggestions d'activités selon la saison et conseils utiles."
+      ],
+      "distances": {
+        "Montréal": "671 km",
+        "Québec": "413 km",
+        "Gatineau": "853 km"
+      },
+      "fun_facts": [
+        "Le saviez-vous?La Côte-Nord fait 236 665 km2 dont 1 300 kilomètres de côte. L’île de Montréal pourrait y entrer 79 fois!",
+        "La Côte-Nord fait 236 665 km2 dont 1 300 kilomètres de côte. L’île de Montréal pourrait y entrer 79 fois!",
+        "La Côte-Nord fait 236 665 km2 dont 1 300 kilomètres de côte. L’île de Montréal pourrait y entrer 79 fois!"
+      ],
+      "attractions": [],
+      "suggestions": []
+    },
+    "raw_html": "<!DOCTYPE html>\n<html lang=\"fr-ca\" dir=\"ltr\" prefix=\"content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# \">\n  <head>\n    <meta charset=\"utf-8\" />\n<script>\n\n  var _mtm = window._mtm = window._mtm || [];\n  _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});\n  (function() {\n    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];\n    g.async=true; g.src='https://matomo.tourisme.gouv.qc.ca/js/container_VlEd6uH2.js'; s.parentNode.insertBefore(g,s);\n  })();\n\n\n</script>\n<script type=\"text/javascript\">dataLayer=[{\"page\":{\"name\":\"cote-nord\",\"customUrl\":\"\\/ou-aller\\/regions-du-quebec\\/cote-nord\",\"siteSection\":\"ou aller\",\"type\":\"region\",\"experience\":\"\",\"season\":\"\",\"travelDuration\":\"\",\"language\":\"fr\",\"locale\":\"fr-ca\"}}];\n</script>\n<meta name=\"description\" content=\"En vacances ou en voyage sur la Côte-Nord, découvrez Tadoussac, baleines, gastronomie, kayak, motoneige, Anticosti, pêche, centrales hydroélectriques.\" />\n<meta name=\"keywords\" content=\"Côte-Nord, nature immense\" />\n<link rel=\"canonical\" href=\"https://www.bonjourquebec.com/fr-ca/ou-aller/regions-du-quebec/cote-nord\" />\n<meta property=\"og:site_name\" content=\"Bonjour Québec\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:url\" content=\"https://www.bonjourquebec.com/fr/ou-aller/regions-du-quebec/cote-nord\" />\n<meta property=\"og:title\" content=\"Tourisme et plein air sur la Côte-Nord | Régions du Québec | Bonjour Québec\" />\n<meta property=\"og:description\" content=\"En vacances ou en voyage sur la Côte-Nord, découvrez Tadoussac, baleines, gastronomie, kayak, motoneige, Anticosti, pêche, centrales hydroélectriques.\" />\n<meta property=\"og:image:url\" content=\"https://www.bonjourquebec.com/sites/default/files/styles/hero/public/2021-04/HERO-Baie-Trinit%C3%A9_Phare%20de%20Pointe-des-Monts_%C2%A9_S%C3%A9bastien%20St-Jean%20_H_h.jpg.webp?itok=VFzygD1s\" />\n<meta name=\"MobileOptimized\" content=\"width\" />\n<meta name=\"HandheldFriendly\" content=\"true\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n<script charset=\"UTF-8\" data-document-language=\"true\" data-domain-script=\"9e1c5e6f-2b43-431d-996a-2170d3b0939e\" src=\"https://cdn.cookielaw.org/scripttemplates/otSDKStub.js\"></script>\n<script type=\"application/ld+json\">{\n    \"@context\": \"https://schema.org\",\n    \"@graph\": [\n        {\n            \"@type\": \"WebPage\",\n            \"@id\": \"https://www.bonjourquebec.com/fr/ou-aller/regions-du-quebec/cote-nord\",\n            \"breadcrumb\": {\n                \"@type\": \"BreadcrumbList\",\n                \"itemListElement\": [\n                    {\n                        \"@type\": \"ListItem\",\n                        \"position\": 1,\n                        \"name\": \"Home\",\n                        \"item\": \"https://www.bonjourquebec.com/fr-ca\"\n                    },\n                    {\n                        \"@type\": \"ListItem\",\n                        \"position\": 2,\n                        \"name\": \"Où aller au Québec\",\n                        \"item\": \"https://www.bonjourquebec.com/fr-ca/ou-aller\"\n                    },\n                    {\n                        \"@type\": \"ListItem\",\n                        \"position\": 3,\n                        \"name\": \"Régions du Québec\",\n                        \"item\": \"https://www.bonjourquebec.com/fr-ca/ou-aller/regions-du-quebec\"\n                    },\n                    {\n                        \"@type\": \"ListItem\",\n                        \"position\": 4,\n                        \"name\": \"Côte-Nord\",\n                        \"item\": \"https://www.bonjourquebec.com/fr-ca/ou-aller/regions-du-quebec/cote-nord\"\n                    }\n                ]\n            },\n            \"description\": \"En vacances ou en voyage sur la Côte-Nord, découvrez Tadoussac, baleines, gastronomie, kayak, motoneige, Anticosti, pêche, centrales hydroélectriques.\",\n            \"author\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://www.bonjourquebec.com#organization\"\n            }\n        },\n        {\n            \"@type\": \"WebSite\",\n            \"@id\": \"https://www.bonjourquebec.com#website\",\n            \"name\": \"Bonjour Québec\",\n            \"url\": \"https://www.bonjourquebec.com\"\n        }\n    ]\n}</script>\n<link rel=\"shortcut icon\" href=\"/themes/custom/tq_glider/images/favicon/favicon.ico\" type=\"image/vnd.microsoft.icon\" />\n<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/themes/custom/tq_glider/images/favicon/apple-touch-icon.png\" />\n<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/themes/custom/tq_glider/images/favicon/favicon-16x16.png\" />\n<link rel=\"manifest\" href=\"/themes/custom/tq_glider/images/favicon/site.webmanifest\" />\n<link rel=\"mask-icon\" href=\"/themes/custom/tq_glider/images/favicon/safari-pinned-tab.svg\" color=\"#5bbad5\" />\n<meta name=\"msapplication-TileColor\" content=\"#da532c\" />\n<meta name=\"theme-color\" content=\"#ffffff\" />\n<link rel=\"alternate\" href=\"https://www.bonjourquebec.com/fr/ou-aller/regions-du-quebec/cote-nord\" hreflang=\"fr\" />\n<link rel=\"alternate\" href=\"https://www.bonjourquebec.com/en/where-to-go/regions-of-quebec/cote-nord\" hreflang=\"en\" />\n<link rel=\"alternate\" href=\"https://www.bonjourquebec.com/es-mx/donde-ir/regiones-de-quebec/cote-nord\" hreflang=\"es-mx\" />\n<link rel=\"alternate\" href=\"https://www.bonjourquebec.com/fr-ca/ou-aller/regions-du-quebec/cote-nord\" hreflang=\"fr-ca\" />\n<link rel=\"alternate\" href=\"https://www.bonjourquebec.com/fr-fr/ou-aller/regions-du-quebec/cote-nord\" hreflang=\"fr-fr\" />\n<link rel=\"alternate\" href=\"https://www.bonjourquebec.com/en-ca/where-to-go/regions-of-quebec/cote-nord\" hreflang=\"en-ca\" />\n<link rel=\"alternate\" href=\"https://www.bonjourquebec.com/en-us/where-to-go/regions-of-quebec/cote-nord\" hreflang=\"en-us\" />\n<link rel=\"alternate\" href=\"https://www.bonjourquebec.com/en-gb/where-to-go/regions-of-quebec/cote-nord\" hreflang=\"en-gb\" />\n\n    <title>Tourisme et plein air sur la Côte-Nord | Régions du Québec | Bonjour Québec</title>\n    <link rel=\"stylesheet\" media=\"all\" href=\"/core/assets/vendor/normalize-css/normalize.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/modules/contrib/sidr/sidr.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/libraries/jquery.sidr/dist/stylesheets/jquery.sidr.bare.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/libraries/sidr/dist/stylesheets/jquery.sidr.bare.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/assets/vendor/jquery.ui/themes/base/core.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/assets/vendor/jquery.ui/themes/base/autocomplete.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/assets/vendor/jquery.ui/themes/base/menu.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/misc/components/progress.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/misc/components/ajax-progress.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/misc/components/autocomplete-loading.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/align.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/fieldgroup.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/container-inline.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/clearfix.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/details.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/hidden.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/item-list.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/js.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/nowrap.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/position-container.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/reset-appearance.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/resize.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/system-status-counter.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/system-status-report-counters.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/system-status-report-general-info.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/modules/system/css/components/tablesort.module.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/modules/contrib/cookiepro_plus/css/cookiepro-plus.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/core/assets/vendor/jquery.ui/themes/base/theme.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/modules/contrib/extlink/css/extlink.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/modules/contrib/paragraphs/css/paragraphs.unpublished.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/libraries/leaflet/dist/leaflet.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/libraries/leaflet-gesture-handling/dist/leaflet-gesture-handling.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/libraries/leaflet.markercluster/dist/MarkerCluster.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/libraries/leaflet.markercluster/dist/MarkerCluster.Default.css?tkmuxl\" />\n<link rel=\"stylesheet\" media=\"all\" href=\"/libraries/rrose/dist/leaflet.rrose.css...",
+    "region_name": "Côte-Nord",
+    "region_slug": "cote-nord"
+  }
+]

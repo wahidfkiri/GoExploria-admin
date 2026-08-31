@@ -19,9 +19,35 @@ class LandingPageController extends Controller
      */
     public function index()
     {
-        $activities = Activity::where('is_active', true)->get();
-        
-        return view('activities::landing.home', compact('activities'));
+        // La landing « Espace Activités » : hero, carte, filtres, grille.
+        //
+        // `activeEtablissements` alimente le compteur de lieux de chaque carte :
+        // une activité n'a pas de coordonnées propres, ce sont les
+        // établissements qui la proposent qui la situent sur la carte.
+        $activities = Activity::query()
+            ->where('is_active', true)
+            ->with(['categoryRelation:id,name'])
+            ->withCount('activeEtablissements')
+            ->orderBy('name')
+            ->get();
+
+        // Catégories réellement représentées : proposer un filtre vide n'a
+        // aucun intérêt, et la liste se construit donc depuis les activités.
+        $categories = $activities
+            ->map(fn (Activity $a) => $a->categoryRelation)
+            ->filter()
+            ->unique('id')
+            ->sortBy('name')
+            ->values();
+
+        // Diaporama du hero : les activités illustrées, faute de média dédié.
+        // Sans image, un hero plein écran n'aurait rien à montrer.
+        $heroSlides = $activities
+            ->filter(fn (Activity $a) => filled($a->image))
+            ->take(6)
+            ->values();
+
+        return view('activities::landing.home', compact('activities', 'categories', 'heroSlides'));
     }
 
     /**

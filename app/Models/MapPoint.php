@@ -3,6 +3,7 @@
 
 namespace App\Models;
 
+use App\Support\SourceVideo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -197,5 +198,49 @@ class MapPoint extends Model
     public function incrementViews()
     {
         $this->increment('views');
+    }
+
+    /**
+     * Provenance de la vidéo : 'youtube' ou 'file'.
+     *
+     * ⚠ Doit répondre EXACTEMENT comme la copie de l'espace entreprise
+     * (admin.goexploriabusiness.com, même chemin) : l'admin enregistre
+     * `video_type`, le site le relit pour choisir entre une iframe et une
+     * balise <video>. Une divergence afficherait un lecteur vide.
+     *
+     * La colonne peut manquer sur une base qui n'a pas joué la migration, et
+     * vaut alors YouTube — ce qu'étaient tous les points avant elle.
+     */
+    public function getSourceVideoAttribute(): string
+    {
+        $type = $this->attributes['video_type'] ?? null;
+
+        if ($type === SourceVideo::FICHIER || $type === SourceVideo::YOUTUBE) {
+            return $type;
+        }
+
+        return SourceVideo::typeDe($this->youtube_url) ?? SourceVideo::YOUTUBE;
+    }
+
+    public function estVideoFichier(): bool
+    {
+        return $this->source_video === SourceVideo::FICHIER;
+    }
+
+    /**
+     * Adresse à donner au lecteur.
+     *
+     * Pour YouTube c'est l'URL d'intégration ; pour un fichier c'est
+     * l'adresse elle-même, que la page pose dans une balise <video>.
+     */
+    public function getEmbedUrlAttribute(): ?string
+    {
+        if ($this->estVideoFichier()) {
+            return $this->youtube_url ?: null;
+        }
+
+        return $this->youtube_id
+            ? "https://www.youtube.com/embed/{$this->youtube_id}"
+            : null;
     }
 }

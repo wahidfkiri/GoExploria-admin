@@ -236,6 +236,7 @@ class WebThemeController extends Controller
         $etablissementId = $this->etablissement->id ?? null;
         $content = \Vendor\Cms\Support\TemplateProducts::hydrate($content, $etablissementId);
         $content = \Vendor\Cms\Support\TemplateCategories::hydrate($content, $etablissementId);
+        $content = \Vendor\Cms\Support\TemplateActivities::hydrate($content, $etablissementId);
 
         $html = view('cms::web.fallback.cms-page', [
             'etablissement' => $this->etablissement,
@@ -1299,8 +1300,9 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $etablissementId = $this->etablissement->id ?? null;
 
         $content = \Vendor\Cms\Support\TemplateProducts::hydrate($content, $etablissementId);
+        $content = \Vendor\Cms\Support\TemplateCategories::hydrate($content, $etablissementId);
 
-        return \Vendor\Cms\Support\TemplateCategories::hydrate($content, $etablissementId);
+        return \Vendor\Cms\Support\TemplateActivities::hydrate($content, $etablissementId);
     }
 
     /**
