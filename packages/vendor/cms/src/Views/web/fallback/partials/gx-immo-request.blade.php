@@ -96,6 +96,65 @@
     }
     .gxir-error.is-visible { display: block; }
     .gxir-note { margin-top: 10px; font-size: 12px; opacity: .7; }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       BOUTON D'ENVOI ET MESSAGE DE SUCCÈS
+
+       ⚠ Le bouton fabriqué par ce greffon porte `im-btn im-btn--primary`,
+       des classes que SEULS les gabarits NadiImmo et Résidence définissent.
+       Sur tous les autres — Sylva, Bois Rond… — il s'affichait donc en bouton
+       brut du navigateur, gris et minuscule. Le message de succès, lui, ne
+       portait aucune classe du tout.
+
+       On les habille ici plutôt que dans chaque gabarit : cette feuille est
+       injectée en dernier, elle atteint donc aussi les sites déjà installés
+       sans avoir à les réinstaller.
+
+       L'accent est une VARIABLE : un gabarit qui pose `--gxir-accent` sur sa
+       fiche voit le bouton prendre sa couleur. Sans déclaration, un vert sobre
+       convenant aux fiches claires comme sombres. */
+    [data-gxir-section] button[type="submit"] {
+        display: block; width: 100%; margin-top: 16px;
+        padding: 14px 20px; border: 0; border-radius: 10px;
+        background: var(--gxir-accent, #3F7D62);
+        color: var(--gxir-accent-texte, #fff);
+        font: inherit; font-size: 13px; font-weight: 700;
+        letter-spacing: .09em; text-transform: uppercase;
+        cursor: pointer; text-align: center;
+        transition: filter .2s ease, transform .1s ease, box-shadow .2s ease;
+    }
+    [data-gxir-section] button[type="submit"]:hover {
+        filter: brightness(1.09);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, .22);
+    }
+    [data-gxir-section] button[type="submit"]:active { transform: translateY(1px); }
+    [data-gxir-section] button[type="submit"]:focus-visible {
+        outline: 2px solid var(--gxir-accent, #3F7D62); outline-offset: 3px;
+    }
+    [data-gxir-section] button[type="submit"][disabled] {
+        opacity: .55; cursor: default; filter: none; box-shadow: none;
+    }
+
+    /* Le succès remplace le formulaire : il doit se lire comme une réponse,
+       pas comme une ligne de texte oubliée. */
+    [data-gxir-section] [data-form-success] {
+        margin-top: 4px; padding: 20px 20px 20px 56px; position: relative;
+        border-radius: 12px;
+        border: 1px solid var(--gxir-accent, #3F7D62);
+        background: rgba(63, 125, 98, .10);
+        font-size: 15px; font-weight: 600; line-height: 1.55;
+    }
+    [data-gxir-section] [data-form-success]::before {
+        content: ""; position: absolute; left: 18px; top: 21px;
+        width: 22px; height: 22px; border-radius: 50%;
+        background: var(--gxir-accent, #3F7D62);
+    }
+    [data-gxir-section] [data-form-success]::after {
+        content: ""; position: absolute; left: 25px; top: 27px;
+        width: 7px; height: 12px; box-sizing: border-box;
+        border: solid var(--gxir-accent-texte, #fff);
+        border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
+    }
 </style>
 
 <script>
@@ -207,7 +266,7 @@
 
             var succes = document.createElement('div');
             succes.setAttribute('data-form-success', '');
-            succes.textContent = 'Le message a bien été envoyé !';
+            succes.textContent = 'Votre demande a bien été envoyée. Nous vous répondons sous 24 heures.';
 
             form.appendChild(champs);
             form.appendChild(succes);
