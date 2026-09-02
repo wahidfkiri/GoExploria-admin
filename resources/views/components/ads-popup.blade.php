@@ -6,7 +6,8 @@
      le popup s'affiche SANS dépendre d'un second serveur (admin) ni de CORS.
 
        • carrousel Swiper, rotation auto, durée PAR annonce (slide_duration) ;
-       • bouton fermeture haut-droite + mémorisation (localStorage) ;
+       • bouton fermeture haut-droite : le popup revient au rafraîchissement
+         suivant (ads.popup_dismiss_hours = 0) ;
        • image / vidéo / html / texte ;
        • tracking best-effort (impression pixel + clic beacon) vers l'admin ;
        • clic → destination directe (n'exige pas l'admin en ligne).
@@ -158,14 +159,25 @@
     var pop = document.getElementById('gx-ads-popup');
     if (!pop) return;
 
-    var dismissHours = parseInt(pop.getAttribute('data-dismiss-hours'), 10) || 12;
+    // 0 (defaut) = la fermeture ne vaut que pour la page affichee : le popup
+    // revient au rafraichissement. Une valeur > 0 le memorise ce nombre d'heures.
+    // `|| 12` ne convenait pas ici : il transformait 0 en 12 heures.
+    var dismissHours = parseFloat(pop.getAttribute('data-dismiss-hours'));
+    if (!isFinite(dismissHours) || dismissHours < 0) { dismissHours = 0; }
     var DISMISS_KEY = 'gx_ads_popup_dismissed_' + (pop.getAttribute('data-zone') || 'popup');
 
-    // Ne pas réafficher si fermé récemment.
-    try {
-        var until = parseInt(localStorage.getItem(DISMISS_KEY) || '0', 10);
-        if (until && Date.now() < until) { pop.remove(); return; }
-    } catch (e) {}
+    if (dismissHours > 0) {
+        // Ne pas réafficher si fermé récemment.
+        try {
+            var until = parseInt(localStorage.getItem(DISMISS_KEY) || '0', 10);
+            if (until && Date.now() < until) { pop.remove(); return; }
+        } catch (e) {}
+    } else {
+        // Efface une fermeture memorisee par la version precedente : sinon le
+        // visiteur qui avait ferme le popup en resterait prive jusqu'a 12 h
+        // apres la mise en ligne de ce correctif.
+        try { localStorage.removeItem(DISMISS_KEY); } catch (e) {}
+    }
 
     var slides = pop.querySelectorAll('.swiper-slide');
     var count  = slides.length;
@@ -194,10 +206,13 @@
         });
     });
 
-    // Fermeture + mémorisation.
+    // Fermeture. Rien n'est memorise tant que dismissHours vaut 0 : la fermeture
+    // ne concerne que la page en cours, le popup revient au rafraichissement.
     pop.querySelector('.gxad-close').addEventListener('click', function () {
         pop.classList.remove('is-open');
-        try { localStorage.setItem(DISMISS_KEY, String(Date.now() + dismissHours * 3600 * 1000)); } catch (e) {}
+        if (dismissHours > 0) {
+            try { localStorage.setItem(DISMISS_KEY, String(Date.now() + dismissHours * 3600 * 1000)); } catch (e) {}
+        }
         setTimeout(function () { pop.remove(); }, 400);
     });
 

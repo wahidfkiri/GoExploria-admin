@@ -786,5 +786,14 @@
             });
         </script>
     @endif
+
+    {{-- Popup publicitaire rotatif (Ads Manager), bas à droite.
+         Cette vue sert les chemins hiérarchiques de destination
+         (/amerique-du-nord/canada/quebec…) : le contexte est le NIVEAU
+         atteint (continent, country, province…), ce que le partial
+         compare aux cases « Où afficher » de l'annonce. Hors destination,
+         null = affichée partout. --}}
+    @include('components.ads-popup', ['adContext' => $destinationContext['type'] ?? null])
+
 </body>
 </html>

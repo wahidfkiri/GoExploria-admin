@@ -491,5 +491,10 @@
     });
 })();
 </script>
+
+{{-- Popup publicitaire rotatif (Ads Manager) : même zone bas-droite que
+     l'accueil et les pages destination. --}}
+@include('components.ads-popup', ['adContext' => 'activities'])
+
 </body>
 </html>

@@ -36,7 +36,9 @@ return [
     'home_slider_first'   => (bool) env('ADS_HOME_SLIDER_FIRST', true),
 
     // Durée (heures) de mémorisation de la fermeture du popup par le visiteur.
-    'popup_dismiss_hours' => (int) env('ADS_POPUP_DISMISS_HOURS', 12),
+    // 0 = rien n'est mémorisé : fermer le popup ne vaut que pour la page
+    // affichée, il réapparaît au rafraîchissement suivant.
+    'popup_dismiss_hours' => (int) env('ADS_POPUP_DISMISS_HOURS', 0),
 
     // Durée par défaut d'une annonce (secondes) si non définie côté admin.
     'popup_default_duration' => (int) env('ADS_POPUP_DEFAULT_DURATION', 5),
