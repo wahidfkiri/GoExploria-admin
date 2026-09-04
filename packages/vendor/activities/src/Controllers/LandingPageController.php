@@ -51,18 +51,50 @@ class LandingPageController extends Controller
     }
 
     /**
+     * Type réservé de la page de site d'une activité.
+     *
+     * Elle est composée dans l'éditeur VvvebJS côté administration
+     * (/activities/{id}/pages, entrée « Contenus Vvveb »), et sert de site à
+     * l'activité. Ce type ne figure pas au catalogue des contenus typés : il
+     * n'apparaît donc ni dans les onglets de l'admin, ni dans les sections de
+     * la page classique.
+     */
+    public const TYPE_PAGE_SITE = 'page';
+
+    /**
      * Afficher la landing page d'une activité par son slug
      */
-    public function showBySlug($slug)
+    public function showBySlug($slug, Request $request = null)
     {
         // Récupérer l'activité par son slug
         $activity = Activity::where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
 
-        // Récupérer tous les contenus de cette activité
+        // Si l'activité a une page composée dans l'éditeur, c'est ELLE le
+        // site : on la rend telle quelle. `?template=classic` ramène la page
+        // assemblée à partir des contenus typés — utile pour comparer, et
+        // pour ne pas enfermer une activité dont la page serait ratée.
+        $pageSite = PageContent::where('activity_id', $activity->id)
+            ->where('type', static::TYPE_PAGE_SITE)
+            ->where('is_active', true)
+            ->orderBy('id')
+            ->first();
+
+        $classique = $request && $request->query('template') === 'classic';
+
+        if ($pageSite && trim((string) $pageSite->content) !== '' && !$classique) {
+            return view('activities::landing.activity-page', [
+                'activity' => $activity,
+                'page'     => $pageSite,
+            ]);
+        }
+
+        // Récupérer tous les contenus de cette activité. La page de site est
+        // écartée : elle n'est pas une section de la page classique.
         $contents = $activity->pageContents()
             ->where('is_active', true)
+            ->where('type', '!=', static::TYPE_PAGE_SITE)
             ->orderBy('type')
             ->orderBy('order')
             ->get();

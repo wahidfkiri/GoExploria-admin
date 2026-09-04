@@ -1,0 +1,177 @@
+/* ===================================================================
+   Plexify — adaptation de la maquette à la page par défaut des activités.
+   Chargée APRÈS style.css et skin-8.css ; elle ne remplace rien du thème,
+   elle rattrape ce que les bibliothèques JS retirées faisaient.
+   Voir docs/TEMPLATES-CMS.md (§4 médias, §5 règle d'or du JavaScript).
+   =================================================================== */
+
+.actpage-tpl { overflow-x: clip; }
+
+/* --- Fonds d'image : des <img> plutôt que background-image, sinon ils ne
+   sont pas modifiables dans l'éditeur. Pile z-index à plat (§4). --- */
+.actpage-tpl .main-banner,
+.actpage-tpl .plx-fond-parent { position: relative; }
+.actpage-tpl .plx-fond {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; border-radius: 0;
+    z-index: 0;
+}
+.actpage-tpl .main-banner > *:not(.plx-fond),
+.actpage-tpl .plx-fond-parent > *:not(.plx-fond) { position: relative; z-index: 2; }
+.actpage-tpl .overlay-black-light:after { z-index: 1; pointer-events: none; }
+
+/* Les voiles dégradés du bandeau sont des pseudo-éléments du conteneur : ils
+   se posaient SUR l'image et la rendaient insélectionnable partout. Le bloc
+   de titre, lui, laisse passer le clic dans ses marges — mais son texte et
+   ses liens restent, eux, atteignables (sinon ils ne seraient plus
+   modifiables). */
+.actpage-tpl .main-banner::before,
+.actpage-tpl .main-banner::after,
+.actpage-tpl .plx-fond-parent::before,
+.actpage-tpl .plx-fond-parent::after { pointer-events: none; }
+.actpage-tpl .main-banner > .container-fluid,
+.actpage-tpl .main-banner .banner-content { pointer-events: none; }
+.actpage-tpl .main-banner .banner-content h1,
+.actpage-tpl .main-banner .banner-content a,
+.actpage-tpl .main-banner .banner-content .video-bx2,
+.actpage-tpl .main-banner .banner-content span { pointer-events: auto; }
+
+/* --- Calques décoratifs : ils ne doivent pas voler le clic aux images. --- */
+.actpage-tpl .bg-item,
+.actpage-tpl .bg-item1,
+.actpage-tpl .bg-title,
+.actpage-tpl .location-badge,
+.actpage-tpl .sale-badge,
+.actpage-tpl .scroll-indicator { pointer-events: none; }
+.actpage-tpl .bg-item img,
+.actpage-tpl .bg-item1 img { pointer-events: auto; }
+
+/* --- Cartes : les blocs d'information et les calques décoratifs posés
+   PAR-DESSUS le visuel captaient le clic — l'image n'était alors plus
+   modifiable dans l'éditeur (§4). Le clic est rendu aux seuls enfants
+   réellement interactifs. --- */
+.actpage-tpl .dz-card.style-10 .dz-info,
+.actpage-tpl .dz-card::before,
+.actpage-tpl .dz-card::after,
+.actpage-tpl .travel-card::before,
+.actpage-tpl .travel-card::after,
+.actpage-tpl .dz-media::before,
+.actpage-tpl .dz-media::after { pointer-events: none; }
+.actpage-tpl .dz-card.style-10 .dz-info a,
+.actpage-tpl .dz-card.style-10 .dz-info .btn { pointer-events: auto; }
+
+/* --- Le menu de la maquette tenait sur trois entrées de plus que le nôtre
+   n'en a de larges : sans resserrement il passe à la ligne. --- */
+@media only screen and (min-width: 992px) {
+    .actpage-tpl .header-nav.xmenu > .nav > li > a {
+        padding-left: 11px; padding-right: 11px; font-size: 14px;
+    }
+}
+
+/* --- Carrousels sans bibliothèque : ancrage CSS. Swiper écrivait largeurs,
+   transformations et classes d'état dans le DOM — donc en base (§5). --- */
+.actpage-tpl .swiper {
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+}
+.actpage-tpl .swiper::-webkit-scrollbar { height: 4px; }
+.actpage-tpl .swiper::-webkit-scrollbar-thumb { background: rgba(0,0,0,.2); border-radius: 4px; }
+.actpage-tpl .swiper-wrapper {
+    display: flex; flex-wrap: nowrap; gap: 24px;
+    transform: none !important;
+    /* max-content, pas auto : sinon la piste garde la largeur du cadre, les
+       cartes débordent d'un conteneur qui ne défile pas, et l'ancrage colle
+       le carrousel à sa dernière carte. */
+    width: max-content !important; min-width: 100%;
+}
+.actpage-tpl .swiper-slide {
+    flex: 0 0 auto; height: auto;
+    scroll-snap-align: start;
+    width: 320px; margin: 0 !important;
+}
+.actpage-tpl .travel-swiper .swiper-slide { width: min(300px, 78vw); }
+.actpage-tpl .myTestimonialSwiper .swiper-slide { width: min(720px, 88vw); }
+.actpage-tpl .footer-swiper .swiper-slide { width: min(220px, 55vw); }
+
+.actpage-tpl .plx-fleches { display: flex; gap: 12px; margin-top: 26px; }
+.actpage-tpl .plx-fleche {
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 1px solid var(--secondary, #111); background: transparent;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; color: inherit; transition: all .3s;
+}
+.actpage-tpl .plx-fleche:hover { background: var(--primary, #C8F31D); border-color: var(--primary, #C8F31D); }
+
+/* --- WOW retiré : rien ne doit rester masqué en attendant un script (§5). --- */
+.actpage-tpl .wow,
+.actpage-tpl .animated { visibility: visible !important; opacity: 1 !important; animation: none !important; }
+
+/* --- Lecteur vidéo modifiable (data-gx-video). --- */
+.actpage-tpl .plx-video {
+    position: relative; width: 100%; padding-top: 56.25%;
+    border-radius: 20px; overflow: hidden; background: #000;
+}
+.actpage-tpl .plx-video iframe,
+.actpage-tpl .plx-video video,
+.actpage-tpl .plx-video .plx-video-vide {
+    position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
+}
+.actpage-tpl .plx-video-vide {
+    display: flex; flex-direction: column; gap: 16px;
+    align-items: center; justify-content: center;
+    background: #10151a; color: #94a3b8;
+    font-size: 14px; font-weight: 600; line-height: 1.6; text-align: center;
+    padding: 24px;
+}
+.actpage-tpl .plx-video-icone {
+    width: 64px; height: 64px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--primary, #C8F31D); color: #111;
+}
+
+/* --- Logo textuel : la marque de la maquette n'a rien à faire ici. --- */
+.actpage-tpl .plx-logo-texte {
+    font-family: var(--font-family-title, 'Oswald', sans-serif);
+    font-size: 26px; font-weight: 700; line-height: 1.1;
+    text-transform: uppercase; letter-spacing: .02em;
+    color: var(--secondary, #111); text-decoration: none;
+    display: inline-block; max-width: 260px;
+}
+.actpage-tpl .header-transparent .plx-logo-texte,
+.actpage-tpl .header-nav .plx-logo-texte { color: inherit; }
+
+/* --- Menu mobile propre au gabarit : xmenu.js n'est pas chargé. Les noms
+   sont préfixés et l'état vit sur <html> (§7.2). --- */
+@media only screen and (min-width: 992px) {
+    .actpage-tpl .xmenu-toggler { display: none !important; }
+    .actpage-tpl .menu-close { display: none !important; }
+}
+@media only screen and (max-width: 991px) {
+    .actpage-tpl .header-nav {
+        position: fixed !important; top: 0 !important; bottom: 0 !important;
+        left: -300px !important; width: 280px !important;
+        max-width: 84vw !important;
+        background: #fff !important; z-index: 9999 !important;
+        padding: 24px 20px !important; overflow-y: auto !important;
+        display: block !important; transition: left .3s ease !important;
+    }
+    html.plx-menu-ouvert .actpage-tpl .header-nav { left: 0 !important; }
+    .actpage-tpl .header-nav .nav { display: block !important; }
+    .actpage-tpl .header-nav .nav > li { display: block !important; width: 100% !important; }
+    .actpage-tpl .header-nav .nav > li > a { padding: 12px 0 !important; }
+    .actpage-tpl .menu-close {
+        position: fixed !important; inset: 0 !important;
+        background: rgba(0,0,0,.55); z-index: 9998;
+        opacity: 0; visibility: hidden; transition: all .3s;
+    }
+    html.plx-menu-ouvert .actpage-tpl .menu-close { opacity: 1; visibility: visible; }
+    .actpage-tpl .main-banner { min-height: 520px; }
+}
+
+/* --- Le bandeau du thème compte sur un défilement piloté par GSAP, retiré. --- */
+.actpage-tpl .main-banner { padding-top: 120px; }
+.actpage-tpl .scroll-indicator { opacity: .85; }

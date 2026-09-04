@@ -1,0 +1,71 @@
+:root{
+	
+	/* Primary */
+	--primary: #C8F31D;
+	--primary-hover: #B3DD0D;
+	--primary-dark: #9DC20D;
+	--body-color:#666666;
+	--secondary: #111111;
+	--secondary-hover: #0C0C0C;
+	--secondary-light: #2A2828;
+	--title: #111111;
+
+	--bg-light: #F2EFEA;
+	--theme-text-color: #fff;
+	--dark: #002236;
+    --dark-light: #224960;
+	
+	/* Primary RGBA */
+	--rgba-primary-1: rgba(200, 243, 29, 0.1);
+	--rgba-primary-2: rgba(200, 243, 29, 0.2);
+	--rgba-primary-3: rgba(200, 243, 29, 0.3);
+	--rgba-primary-4: rgba(200, 243, 29, 0.4);
+	--rgba-primary-5: rgba(200, 243, 29, 0.5);
+	--rgba-primary-6: rgba(200, 243, 29, 0.6);
+	--rgba-primary-7: rgba(200, 243, 29, 0.7);
+	--rgba-primary-8: rgba(200, 243, 29, 0.8);
+	--rgba-primary-9: rgba(200, 243, 29, 0.9);
+		
+	/* Secondary RGBA */
+	--rgba-secondary-1: rgba(17, 17, 17, 0.1);
+	--rgba-secondary-2: rgba(17, 17, 17, 0.2);
+	--rgba-secondary-3: rgba(17, 17, 17, 0.3);
+	--rgba-secondary-4: rgba(17, 17, 17, 0.4);
+	--rgba-secondary-5: rgba(17, 17, 17, 0.5);
+	--rgba-secondary-6: rgba(17, 17, 17, 0.6);
+	--rgba-secondary-7: rgba(17, 17, 17, 0.7);
+	--rgba-secondary-8: rgba(17, 17, 17, 0.8);
+	--rgba-secondary-9: rgba(17, 17, 17, 0.9);
+
+	/* Gradient */
+	--gradient1: linear-gradient(180deg, #FFFFFF 26.76%, rgb(182 228 255) 109.73%);
+    --gradient2: linear-gradient(180deg, rgba(255, 193, 180, 0) 0%, rgb(171 255 239) 100%);
+
+
+	--font-family-base: 'Poppins', sans-serif;
+	--font-family-title: 'Oswald', sans-serif;
+
+	::selection {
+		color: #ffffff;          
+		background: var(--primary);
+	}
+	img{
+		border-radius: 10px;
+	}
+	.filter-tag{
+		.tag-btn{
+			border-radius: 20px;
+		}
+	}
+	.shop-tab{
+        .nav{
+          .nav-item{
+            .nav-link{
+              &.active{
+                border-radius: 10px;
+              }
+            }
+         }
+		}
+	}
+}
