@@ -7,9 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\Category;
 use App\Models\PageContent;
+use App\Models\Continent;
+use App\Models\MapCategory;
+use App\Models\MapPoint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class LandingPageController extends Controller
@@ -87,6 +91,9 @@ class LandingPageController extends Controller
             return view('activities::landing.activity-page', [
                 'activity' => $activity,
                 'page'     => $pageSite,
+                // La carte n'existe pas dans le contenu enregistré : celui-ci
+                // ne porte qu'une section d'attente, remplacée ici.
+                'contenu'  => $this->injecterCarteMonde((string) $pageSite->content, $activity),
             ]);
         }
 
@@ -313,6 +320,106 @@ class LandingPageController extends Controller
             ->get();
 
         return view('activities::landing.activity-testimonials', compact('activity', 'testimonials'));
+    }
+
+        /**
+     * Nombre maximal de points envoyés avec la page.
+     *
+     * Ils partent dans le HTML (pas en AJAX) pour que la carte s'affiche dès
+     * le premier rendu ; au-delà, la page deviendrait lourde.
+     */
+    protected const CARTE_LIMITE_POINTS = 500;
+
+    /**
+     * Remplace la section d'attente `data-gx-map` par la vraie carte.
+     *
+     * Même dispositif que WebThemeController::injectLandingMap pour les sites
+     * d'établissement : le contenu enregistré ne porte qu'un carton, sinon
+     * l'éditeur VvvebJS chargerait Leaflet dans son canvas et enregistrerait
+     * en base les tuiles, les marqueurs et les classes d'état à chaque
+     * sauvegarde (docs/TEMPLATES-CMS.md §5).
+     *
+     * Une page sans section d'attente est rendue telle quelle : les pages
+     * composées avant l'ajout de la carte continuent de fonctionner.
+     */
+    protected function injecterCarteMonde(string $html, Activity $activity): string
+    {
+        if ($html === '') {
+            return $html;
+        }
+
+        // La section d'attente n'est jamais imbriquée : le motif s'arrête au
+        // premier </section>, ce que le gabarit garantit.
+        $motif = '#<section[^>]*data-gx-map[^>]*>.*?</section>#is';
+
+        if (!preg_match($motif, $html)) {
+            return $html;
+        }
+
+        try {
+            $carte = view('activities::landing.partials.world-map',
+                $this->contexteCarteMonde($activity))->render();
+        } catch (\Throwable $e) {
+            // Une carte en panne ne doit pas emporter la page : le carton
+            // d'attente reste affiché.
+            Log::warning("Carte de la page d'activité : " . $e->getMessage());
+
+            return $html;
+        }
+
+        // preg_replace lirait les `$` du partial comme des références
+        // arrière : on passe par un rappel.
+        return preg_replace_callback($motif, fn () => $carte, $html, 1);
+    }
+
+    /**
+     * Contexte d'une carte MONDIALE, montrant TOUS les points.
+     *
+     * Le moteur est celui des pages de destination ; on lui présente le monde
+     * comme un « continent » sans coordonnées, ce qu'il rend en vue globale
+     * (centre [20, 0], zoom 2). Aucune restriction géographique n'est posée
+     * sur les points, et `visibleOn` n'est pas appliqué : une page d'activité
+     * n'est pas un niveau de destination, et la demande est bien d'afficher
+     * tous les points.
+     */
+    protected function contexteCarteMonde(Activity $activity): array
+    {
+        $points = MapPoint::with(['details', 'images', 'mainImage'])
+            ->active()
+            ->inDisplayPeriod()
+            ->orderBy('is_featured', 'desc')
+            ->orderBy('views', 'desc')
+            ->limit(static::CARTE_LIMITE_POINTS)
+            ->get();
+
+        // Le monde, vu par le moteur de carte. Sans latitude, il se cadre sur
+        // la vue globale — exactement ce qu'on veut ici.
+        $monde = (object) [
+            'id' => 0,
+            'name' => 'Le monde',
+            'latitude' => null,
+            'longitude' => null,
+        ];
+
+        // Adresse de rechargement des points. Les points partent déjà avec la
+        // page, donc elle n'est appelée que si la liste est vide ; au niveau
+        // « continent » la réponse n'est bornée par aucune géographie, quel
+        // que soit le continent visé.
+        $slug = (string) (Continent::query()->orderBy('id')->value('code') ?: 'monde');
+
+        return [
+            'activity' => $activity,
+            'entity' => $monde,
+            'normalizedType' => 'continent',
+            'slug' => $slug,
+            // Pas de niveau inférieur à proposer : le sélecteur de zoom du
+            // moteur reste masqué (il se garde sur childEntities.length).
+            'childEntities' => collect(),
+            'mapCategories' => MapCategory::where('is_active', true)
+                ->orderBy('sort_order')
+                ->get(['slug', 'name', 'icon_class', 'color', 'image']),
+            'mapPoints' => $points,
+        ];
     }
 
     /**

@@ -1,0 +1,192 @@
+/* ===================================================================
+   Carte mondiale des pages d'activité.
+
+   Habille le balisage de activities::landing.partials.world-map et les
+   fragments écrits par le moteur de carte (popup Leaflet, fiche détaillée),
+   dans le style du gabarit Plexify.
+
+   Tout est préfixé par `.actpage-tpl`, SAUF la fiche détaillée : le moteur
+   la pose en `position: fixed` par-dessus la page, et elle doit rester
+   lisible même si le gabarit change. Ses noms de classe (`map-modal…`) lui
+   sont propres, aucun risque de collision.
+   =================================================================== */
+
+/* ---------- Section ---------- */
+.actpage-tpl .plx-carte-chapeau {
+    margin: 16px auto 0;
+    max-width: 620px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #64748b;
+}
+
+.actpage-tpl .plx-carte-cadre {
+    position: relative;
+    height: clamp(420px, 62vh, 640px);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px -30px rgba(15, 23, 42, .5);
+    background: #e8eef4;
+}
+
+.actpage-tpl .plx-carte-cadre > .travel-map,
+.actpage-tpl #travel-map {
+    width: 100%;
+    height: 100%;
+}
+
+/* Le thème arrondit toutes les images ; les tuiles doivent rester carrées,
+   sinon la carte se couvre de coins clairs. */
+.actpage-tpl .plx-carte-cadre img {
+    border-radius: 0 !important;
+    max-width: none;
+}
+
+/* ---------- Filtres par catégorie ---------- */
+.actpage-tpl .plx-carte-filtres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.actpage-tpl .map-filter-btn {
+    padding: 9px 18px;
+    border: 1px solid #d5dde5;
+    border-radius: 999px;
+    background: #fff;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: all .25s;
+}
+
+.actpage-tpl .map-filter-btn:hover {
+    border-color: var(--primary, #C8F31D);
+}
+
+.actpage-tpl .map-filter-btn.active {
+    background: var(--primary, #C8F31D);
+    border-color: var(--primary, #C8F31D);
+    color: #111;
+}
+
+/* ---------- Bulle d'un marqueur ---------- */
+.leaflet-popup-content-wrapper { border-radius: 14px; padding: 0; overflow: hidden; }
+.leaflet-popup-content { margin: 0; width: 280px !important; }
+
+.map-popup { width: 280px; max-width: 78vw; font-family: 'Poppins', system-ui, sans-serif; }
+.map-popup__video { height: 158px; background: #000; }
+.map-popup__video iframe { width: 100%; height: 100%; border: 0; display: block; }
+.map-popup__body { padding: 14px 16px; }
+.map-popup__title { margin: 0 0 6px; font-size: 15px; font-weight: 700; color: #0f172a; }
+.map-popup__desc { margin: 0 0 12px; font-size: 12.5px; line-height: 1.55; color: #64748b; }
+.map-popup__detail-btn {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--primary, #C8F31D);
+    color: #111;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* ---------- Fiche détaillée ---------- */
+.map-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    overflow: auto;
+    padding: 6vh 5vw;
+    font-family: 'Poppins', system-ui, sans-serif;
+}
+
+.map-modal__backdrop { position: fixed; inset: 0; background: rgba(8, 12, 18, .88); }
+
+.map-modal__content {
+    position: relative;
+    max-width: 880px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 40px 120px -40px rgba(0, 0, 0, .8);
+}
+
+.map-modal__close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, .72);
+    color: #fff;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.map-modal__video { background: #000; }
+.map-modal__video:empty { display: none; }
+.map-modal__video iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; }
+
+.map-modal__gallery { display: flex; gap: 10px; overflow-x: auto; padding: 14px 24px 0; }
+.map-modal__gallery:empty { display: none; }
+.map-modal__gallery img {
+    flex: 0 0 auto;
+    width: 140px;
+    height: 96px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.map-modal__info { padding: 22px 24px 26px; }
+.map-modal__title { margin: 0 0 12px; font-size: 24px; font-weight: 800; color: #0f172a; }
+.map-modal__description { font-size: 14.5px; line-height: 1.75; color: #475569; }
+.map-modal__meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+.map-modal__tag,
+.map-modal__rating,
+.map-modal__meta-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.map-modal__rating { background: #fff7e0; color: #92620a; }
+.map-modal__services { flex-basis: 100%; font-size: 13px; color: #64748b; line-height: 1.6; }
+
+.map-modal__actions { margin-top: 20px; }
+.map-modal__actions .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 26px;
+    border-radius: 999px;
+    background: var(--primary, #C8F31D);
+    color: #111;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+@media (max-width: 767px) {
+    .map-modal { padding: 3vh 4vw; }
+    .map-modal__info { padding: 18px 18px 22px; }
+    .map-modal__title { font-size: 20px; }
+    .actpage-tpl .plx-carte-cadre { height: clamp(340px, 58vh, 480px); border-radius: 14px; }
+}

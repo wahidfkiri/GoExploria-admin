@@ -133,6 +133,27 @@
     background: var(--primary, #C8F31D); color: #111;
 }
 
+/* --- Carte : ce que l'éditeur montre à la place de la carte, que seul le
+   site rend (le front remplace la section d'attente au rendu). --- */
+.actpage-tpl .plx-carte-attente {
+    display: flex; flex-direction: column; gap: 14px;
+    align-items: center; justify-content: center; text-align: center;
+    min-height: 320px; padding: 40px 24px;
+    border: 2px dashed #cbd5e1; border-radius: 20px;
+    background: #f8fafc; color: #64748b;
+    font-size: 14px; line-height: 1.6; max-width: 780px; margin: 0 auto;
+}
+.actpage-tpl .plx-carte-titre {
+    font-family: var(--font-family-title, 'Oswald', sans-serif);
+    font-size: 20px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .04em; color: var(--secondary, #111);
+}
+.actpage-tpl .plx-carte-icone {
+    width: 64px; height: 64px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--primary, #C8F31D); color: #111; font-size: 24px;
+}
+
 /* --- Logo textuel : la marque de la maquette n'a rien à faire ici. --- */
 .actpage-tpl .plx-logo-texte {
     font-family: var(--font-family-title, 'Oswald', sans-serif);

@@ -34,7 +34,9 @@
 </head>
 <body>
 
-{!! $page->content !!}
+{{-- `$contenu` = le contenu enregistré, sa section d'attente `data-gx-map`
+     déjà remplacée par la vraie carte (LandingPageController). --}}
+{!! $contenu ?? $page->content !!}
 
 {{-- Popups publicitaires : même dispositif que la page d'activité classique. --}}
 @include('components.ads-popup', ['adContext' => 'activities'])
