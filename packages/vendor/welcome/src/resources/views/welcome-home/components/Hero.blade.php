@@ -318,16 +318,24 @@
                         </div>
                     </div>
 
-                    {{-- Bloc PLAN & GO (droite) --}}
-                    <div class="search-bar-v2-plango">
-                        <img src="{{ asset('plan-go.png') }}" alt="Plan & GO" class="search-bar-v2-plango-img" loading="lazy">
-                        <span class="search-bar-v2-plango-title">PLAN &amp; GO</span>
+                    {{-- Bloc ACTIVITÉS (droite) — ouvre le mega-menu des activités --}}
+                    <div class="search-bar-v2-plango" id="activitesMegaTrigger" role="button" tabindex="0"
+                         style="cursor:pointer;" title="{{ $tr('Activités') }}"
+                         aria-haspopup="dialog" aria-expanded="false" aria-controls="activitesMegaPanel">
+                        <img src="{{ asset('plan-go.png') }}" alt="{{ $tr('Activités') }}" class="search-bar-v2-plango-img" loading="lazy">
+                        <span class="search-bar-v2-plango-title">{{ $tr('Activités') }}</span>
                     </div>
                 </div>
             </div>
         </div>
     @endif
 </section>
+
+{{-- Mega-menu « Activités » (déclencheur : bloc de droite de la search-bar-v2).
+     Placé hors de la barre car le panneau est en position:fixed. --}}
+@if(!($hideSearchBarV2 ?? false))
+    @include('welcome-home.components.ActivitesMegaMenu')
+@endif
 
 {{-- Mega-menus des pictos retirés du Hero : ils restent disponibles via le menu vertical (vmenu-components-source) --}}
 
