@@ -1,10 +1,13 @@
 {{-- =================================================================
-     ACTIVITÉS MEGA MENU — déclenché par le bloc PLAN N GO / « Activités »
-     de la search-bar-v2 (Hero de la page d'accueil).
+     ACTIVITÉS MEGA MENU — déclenché par le bloc « Activités » de la
+     search-bar-v2 (Hero de la page d'accueil).
 
      Contenu 100 % dynamique : table `activities` (actives) regroupées
      par `categories` (actives) — nom + image + lien vers la landing
      page de l'activité (/activity/{slug}).
+
+     UI : thème clair, colonne de catégories à gauche, grille de tuiles
+     « image + libellé dessous » à droite.
      ================================================================= --}}
 
 @php(ob_start());@endphp
@@ -35,375 +38,236 @@
         }])
         ->orderBy('name')
         ->get();
-
-    $gxactTotal = $gxactCategories->sum(function ($cat) {
-        return $cat->activities->count();
-    });
 @endphp
 
 <div class="gxact-mega" id="activitesMegaPanel" role="dialog" aria-label="{{ $tr('Activités') }}" aria-hidden="true">
 
-    {{-- ── En-tête ── --}}
-    <div class="gxact-head">
-        <img src="{{ asset('plan-n-go.png') }}" alt="PLAN N GO" class="gxact-head-logo" loading="lazy">
-        <div class="gxact-head-text">
-            <span class="gxact-head-title">{{ $tr('Activités') }}</span>
-            @if($gxactTotal > 0)
-                <span class="gxact-head-sub">{{ $gxactTotal }} {{ $tr('activités') }} &middot; {{ $gxactCategories->count() }} {{ $tr('catégories') }}</span>
-            @endif
-        </div>
-        <a href="{{ route('categories.index') }}" class="gxact-head-link">
-            {{ $tr('Toutes les catégories') }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
-        </a>
-        <button type="button" class="gxact-close" aria-label="{{ $tr('Fermer') }}">
-            <i class="fas fa-xmark" aria-hidden="true"></i>
-        </button>
-    </div>
-
     @if($gxactCategories->isEmpty())
         <div class="gxact-empty">{{ $tr('Aucune activité disponible pour le moment.') }}</div>
     @else
-        {{-- ── Catégories (chips) ── --}}
-        <div class="gxact-chips" role="tablist">
-            @foreach($gxactCategories as $index => $gxactCat)
-                <button type="button"
-                        role="tab"
-                        class="gxact-chip {{ $index === 0 ? 'active' : '' }}"
-                        aria-selected="{{ $index === 0 ? 'true' : 'false' }}"
-                        aria-controls="gxact-pane-{{ $gxactCat->id }}"
-                        data-gxact-pane="gxact-pane-{{ $gxactCat->id }}">
-                    {{ $gxactCat->name }}
-                    <span class="gxact-chip-count">{{ $gxactCat->activities->count() }}</span>
-                </button>
-            @endforeach
-        </div>
+        <div class="gxact-body">
 
-        {{-- ── Activités de la catégorie sélectionnée ── --}}
-        <div class="gxact-panes">
-            @foreach($gxactCategories as $index => $gxactCat)
-                <div class="gxact-pane {{ $index === 0 ? 'visible' : '' }}"
-                     id="gxact-pane-{{ $gxactCat->id }}"
-                     role="tabpanel">
-                    <div class="gxact-grid">
-                        @foreach($gxactCat->activities as $gxactAct)
-                            <a class="gxact-card"
-                               href="{{ route('activity.show', $gxactAct->slug ?: $gxactAct->id) }}"
-                               title="{{ $gxactAct->name }}">
-                                <span class="gxact-card-media">
-                                    @if($gxactAct->image_url)
-                                        <img src="{{ $gxactAct->image_url }}" alt="{{ $gxactAct->name }}" loading="lazy">
-                                    @else
-                                        <span class="gxact-card-ph"><i class="fas fa-mountain-sun" aria-hidden="true"></i></span>
-                                    @endif
-                                </span>
-                                <span class="gxact-card-overlay"></span>
-                                <span class="gxact-card-info">
-                                    <span class="gxact-card-cat">{{ $gxactCat->name }}</span>
+            {{-- ── Colonne gauche : catégories ── --}}
+            <div class="gxact-cats" role="tablist" aria-label="{{ $tr('Catégories') }}">
+                @foreach($gxactCategories as $index => $gxactCat)
+                    <button type="button"
+                            role="tab"
+                            class="gxact-cat {{ $index === 0 ? 'active' : '' }}"
+                            aria-selected="{{ $index === 0 ? 'true' : 'false' }}"
+                            aria-controls="gxact-pane-{{ $gxactCat->id }}"
+                            data-gxact-pane="gxact-pane-{{ $gxactCat->id }}">
+                        <span class="gxact-cat-name">{{ $gxactCat->name }}</span>
+                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                @endforeach
+
+                <a href="{{ route('categories.index') }}" class="gxact-cats-all">
+                    {{ $tr('Toutes les catégories') }}
+                </a>
+            </div>
+
+            {{-- ── Colonne droite : activités de la catégorie sélectionnée ── --}}
+            <div class="gxact-panes">
+                @foreach($gxactCategories as $index => $gxactCat)
+                    <div class="gxact-pane {{ $index === 0 ? 'visible' : '' }}"
+                         id="gxact-pane-{{ $gxactCat->id }}"
+                         role="tabpanel">
+
+                        <h3 class="gxact-pane-title">{{ $tr('Explorer') }} {{ $gxactCat->name }}</h3>
+
+                        <div class="gxact-grid">
+                            @foreach($gxactCat->activities as $gxactAct)
+                                <a class="gxact-card"
+                                   href="{{ route('activity.show', $gxactAct->slug ?: $gxactAct->id) }}"
+                                   title="{{ $gxactAct->name }}">
+                                    <span class="gxact-card-media">
+                                        @if($gxactAct->image_url)
+                                            <img src="{{ $gxactAct->image_url }}" alt="{{ $gxactAct->name }}" loading="lazy">
+                                        @else
+                                            <span class="gxact-card-ph"><i class="fas fa-mountain-sun" aria-hidden="true"></i></span>
+                                        @endif
+                                    </span>
                                     <span class="gxact-card-name">{{ $gxactAct->name }}</span>
-                                </span>
-                                <span class="gxact-card-go"><i class="fas fa-arrow-right" aria-hidden="true"></i></span>
-                            </a>
-                        @endforeach
-                    </div>
+                                </a>
+                            @endforeach
+                        </div>
 
-                    <div class="gxact-pane-foot">
                         <a href="{{ route('category.show', $gxactCat->slug ?: $gxactCat->id) }}" class="gxact-pane-link">
-                            {{ $tr('Voir la catégorie') }} : {{ $gxactCat->name }}
-                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                            {{ $tr('Voir toutes les activités') }} <i class="fas fa-chevron-right" aria-hidden="true"></i>
                         </a>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
+
         </div>
     @endif
 </div>
 
 <style>
 /* =========================================================
-   ACTIVITÉS MEGA MENU — thème sombre « glass » aligné sur le
-   Hero (search-bar-v2) + accent orange du logo PLAN N GO.
+   ACTIVITÉS MEGA MENU — thème clair
    ========================================================= */
 .gxact-mega {
-    --gxact-accent: #f7941e;
-    --gxact-accent-soft: rgba(247, 148, 30, .16);
-    --gxact-line: rgba(255, 255, 255, .10);
-    --gxact-text: #f2f6fc;
-    --gxact-muted: #93a4bd;
+    --gxact-ink: #0f1111;
+    --gxact-muted: #565959;
+    --gxact-line: #e3e6e6;
+    --gxact-tile: #f1f3f4;
+    --gxact-link: #007185;
+    --gxact-hover: #f5f7f7;
 
     position: fixed;
-    width: 940px;
+    width: 900px;
     max-width: calc(100vw - 24px);
-    background: linear-gradient(180deg, rgba(9, 20, 40, .97) 0%, rgba(5, 13, 28, .98) 100%);
-    -webkit-backdrop-filter: blur(18px);
-    backdrop-filter: blur(18px);
-    border: 1px solid var(--gxact-line);
-    border-radius: 20px;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, .55);
+    background: #ffffff;
+    border: 1px solid #d5d9d9;
+    border-radius: 8px;
+    box-shadow: 0 14px 38px rgba(15, 17, 17, .22);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(10px) scale(.985);
-    transition: opacity .24s ease, transform .24s ease, visibility .24s;
+    transform: translateY(6px);
+    transition: opacity .18s ease, transform .18s ease, visibility .18s;
     z-index: 10500;
     overflow: hidden;
-    color: var(--gxact-text);
-    font-family: 'Montserrat', 'Arial', sans-serif;
+    color: var(--gxact-ink);
+    font-family: 'Montserrat', Arial, sans-serif;
     display: flex;
     flex-direction: column;
 }
-.gxact-mega.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+.gxact-mega.open { opacity: 1; visibility: visible; transform: translateY(0); }
 
-/* Liseré d'accent en haut du panneau */
-.gxact-mega::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--gxact-accent), #ffc46b 45%, transparent 100%);
+.gxact-empty { padding: 34px 20px; text-align: center; font-size: 14px; color: var(--gxact-muted); }
+
+.gxact-body { display: flex; flex-direction: row; align-items: stretch; min-height: 0; }
+
+/* ── Colonne gauche : catégories ── */
+.gxact-cats {
+    width: 246px;
+    flex: 0 0 246px;
+    border-right: 1px solid var(--gxact-line);
+    padding: 12px 0;
+    overflow-y: auto;
 }
-
-/* ── En-tête ── */
-.gxact-head {
+.gxact-cat {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 16px 20px 14px;
-    border-bottom: 1px solid var(--gxact-line);
-    flex: 0 0 auto;
-}
-.gxact-head-logo {
-    height: 30px;
-    width: auto;
-    display: block;
-    flex: 0 0 auto;
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .5));
-}
-.gxact-head-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; margin-right: auto; }
-.gxact-head-title {
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: #fff;
-}
-.gxact-head-sub { font-size: 11px; font-weight: 600; color: var(--gxact-muted); }
-.gxact-head-link {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: 1px solid rgba(247, 148, 30, .45);
-    background: var(--gxact-accent-soft);
-    font-size: 11.5px;
-    font-weight: 800;
-    letter-spacing: .04em;
-    color: #ffc46b;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: background .2s ease, color .2s ease, border-color .2s ease;
-}
-.gxact-head-link:hover { background: var(--gxact-accent); border-color: var(--gxact-accent); color: #0a1628; }
-.gxact-head-link i { font-size: 9px; }
-.gxact-close {
-    flex: 0 0 auto;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid var(--gxact-line);
-    background: rgba(255, 255, 255, .05);
-    color: var(--gxact-muted);
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 18px;
+    border: 0;
+    border-left: 3px solid transparent;
+    background: transparent;
     cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-    transition: background .2s ease, color .2s ease;
-}
-.gxact-close:hover { background: rgba(255, 255, 255, .13); color: #fff; }
-
-.gxact-empty { padding: 34px 20px; text-align: center; font-size: 13px; color: var(--gxact-muted); }
-
-/* ── Chips de catégories ── */
-.gxact-chips {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 8px;
-    padding: 14px 20px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    border-bottom: 1px solid var(--gxact-line);
-    flex: 0 0 auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, .18) transparent;
-}
-.gxact-chips::-webkit-scrollbar { height: 5px; }
-.gxact-chips::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .18); border-radius: 99px; }
-.gxact-chip {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: 1px solid var(--gxact-line);
-    background: rgba(255, 255, 255, .04);
-    color: #cbd6e6;
+    text-align: left;
     font-family: inherit;
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--gxact-ink);
+    transition: background .15s ease, border-color .15s ease;
+}
+.gxact-cat i { font-size: 10px; color: #9aa0a6; flex: 0 0 auto; }
+.gxact-cat:hover { background: var(--gxact-hover); }
+.gxact-cat.active {
+    background: var(--gxact-hover);
+    border-left-color: var(--gxact-link);
     font-weight: 700;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
 }
-.gxact-chip:hover { background: rgba(255, 255, 255, .09); color: #fff; transform: translateY(-1px); }
-.gxact-chip.active {
-    background: var(--gxact-accent);
-    border-color: var(--gxact-accent);
-    color: #0a1628;
-    box-shadow: 0 6px 18px rgba(247, 148, 30, .32);
-}
-.gxact-chip-count {
-    min-width: 20px;
-    padding: 1px 6px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, .12);
-    font-size: 10px;
-    font-weight: 800;
-    text-align: center;
-}
-.gxact-chip.active .gxact-chip-count { background: rgba(10, 22, 40, .22); }
+.gxact-cat.active i { color: var(--gxact-link); }
+.gxact-cat-name { flex: 1 1 auto; min-width: 0; }
 
-/* ── Panneaux ── */
+.gxact-cats-all {
+    display: block;
+    margin: 10px 18px 2px;
+    padding-top: 12px;
+    border-top: 1px solid var(--gxact-line);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gxact-link);
+    text-decoration: none;
+}
+.gxact-cats-all:hover { text-decoration: underline; }
+
+/* ── Colonne droite : activités ── */
 .gxact-panes {
     flex: 1 1 auto;
-    min-height: 0;
-    padding: 18px 20px 20px;
+    min-width: 0;
+    padding: 20px 24px 22px;
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, .18) transparent;
 }
-.gxact-panes::-webkit-scrollbar { width: 6px; }
-.gxact-panes::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .18); border-radius: 99px; }
 .gxact-pane { display: none; }
-.gxact-pane.visible { display: block; animation: gxactFade .28s ease both; }
-@keyframes gxactFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.gxact-pane.visible { display: block; }
 
-/* ── Grille des activités ── */
+.gxact-pane-title {
+    margin: 0 0 16px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--gxact-ink);
+}
+
 .gxact-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px 20px;
 }
-.gxact-card {
-    position: relative;
+.gxact-card { display: block; text-decoration: none; color: var(--gxact-ink); }
+.gxact-card-media {
     display: block;
-    aspect-ratio: 4 / 3;
-    border-radius: 14px;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    background: var(--gxact-tile);
     overflow: hidden;
-    text-decoration: none;
-    border: 1px solid var(--gxact-line);
-    background: #0f1d33;
-    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
 }
-.gxact-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(247, 148, 30, .6);
-    box-shadow: 0 16px 34px rgba(0, 0, 0, .5);
-}
-.gxact-card-media { position: absolute; inset: 0; display: block; }
 .gxact-card-media img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform .45s ease;
+    transition: transform .3s ease;
 }
-.gxact-card:hover .gxact-card-media img { transform: scale(1.08); }
+.gxact-card:hover .gxact-card-media img { transform: scale(1.04); }
 .gxact-card-ph {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #17304f 0%, #0a1628 100%);
-    color: rgba(247, 148, 30, .75);
-    font-size: 26px;
-}
-.gxact-card-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(5, 13, 28, 0) 34%, rgba(5, 13, 28, .88) 100%);
-    transition: background .22s ease;
-}
-.gxact-card:hover .gxact-card-overlay {
-    background: linear-gradient(180deg, rgba(5, 13, 28, .12) 0%, rgba(5, 13, 28, .93) 100%);
-}
-.gxact-card-info {
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    display: block;
-    padding: 10px 11px 11px;
-}
-.gxact-card-cat {
-    display: block;
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: #ffb648;
-    margin-bottom: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: #b6bcc0;
+    font-size: 30px;
 }
 .gxact-card-name {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    font-size: 12.5px;
-    font-weight: 700;
-    line-height: 1.32;
-    color: #fff;
+    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--gxact-ink);
 }
-.gxact-card-go {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--gxact-accent);
-    color: #0a1628;
-    font-size: 11px;
-    opacity: 0;
-    transform: translateY(-6px);
-    transition: opacity .22s ease, transform .22s ease;
-}
-.gxact-card:hover .gxact-card-go { opacity: 1; transform: translateY(0); }
+.gxact-card:hover .gxact-card-name { color: var(--gxact-link); text-decoration: underline; }
 
-/* ── Pied de panneau ── */
-.gxact-pane-foot { margin-top: 16px; padding-top: 13px; border-top: 1px solid var(--gxact-line); }
 .gxact-pane-link {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #ffb648;
+    gap: 6px;
+    margin-top: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gxact-link);
     text-decoration: none;
 }
-.gxact-pane-link:hover { color: #fff; }
+.gxact-pane-link:hover { text-decoration: underline; }
 .gxact-pane-link i { font-size: 9px; }
 
 /* ── Responsive ── */
-@media (max-width: 1100px) {
-    .gxact-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-@media (max-width: 820px) {
+@media (max-width: 900px) {
     .gxact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .gxact-cats { width: 200px; flex: 0 0 200px; }
 }
 @media (max-width: 768px) {
     .gxact-mega {
@@ -411,17 +275,33 @@
         right: 12px;
         width: auto;
         max-width: none;
-        border-radius: 16px;
     }
-    .gxact-head { padding: 12px 14px 11px; gap: 10px; flex-wrap: wrap; }
-    .gxact-head-logo { height: 24px; }
-    .gxact-head-title { font-size: 13px; }
-    .gxact-head-link { order: 3; width: 100%; justify-content: center; }
-    .gxact-chips { padding: 10px 14px; }
-    .gxact-panes { padding: 14px; }
-}
-@media (max-width: 420px) {
-    .gxact-grid { grid-template-columns: 1fr; }
+    .gxact-body { flex-direction: column; }
+    .gxact-cats {
+        width: 100%;
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: row;
+        gap: 4px;
+        border-right: 0;
+        border-bottom: 1px solid var(--gxact-line);
+        padding: 8px 10px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+    .gxact-cat {
+        width: auto;
+        flex: 0 0 auto;
+        white-space: nowrap;
+        border-left: 0;
+        border-bottom: 3px solid transparent;
+        padding: 8px 12px;
+    }
+    .gxact-cat i { display: none; }
+    .gxact-cat.active { border-left: 0; border-bottom-color: var(--gxact-link); }
+    .gxact-cats-all { flex: 0 0 auto; margin: 0; padding: 8px 12px; border-top: 0; white-space: nowrap; }
+    .gxact-panes { padding: 16px; }
+    .gxact-pane-title { font-size: 17px; margin-bottom: 12px; }
 }
 </style>
 
@@ -440,20 +320,20 @@
 
             if (window.innerWidth <= 768) {
                 panel.style.left = '';
-                panel.style.top  = (rect.bottom + 10) + 'px';
+                panel.style.top  = (rect.bottom + 8) + 'px';
                 panel.style.maxHeight = (viewH - rect.bottom - 24) + 'px';
                 return;
             }
 
             var viewW  = window.innerWidth;
-            var panelW = panel.offsetWidth || 940;
+            var panelW = panel.offsetWidth || 900;
             /* Le déclencheur est à droite de la barre : on aligne le panneau
                sur son bord droit, puis on le recadre dans le viewport. */
             var left = rect.right - panelW;
             if (left + panelW > viewW - 12) left = viewW - panelW - 12;
             if (left < 12) left = 12;
 
-            var top = rect.bottom + 12;
+            var top = rect.bottom + 8;
             if (top > viewH - 200) top = Math.max(80, viewH - 200);
 
             panel.style.left = left + 'px';
@@ -497,9 +377,6 @@
             }
         });
 
-        var closeBtn = panel.querySelector('.gxact-close');
-        if (closeBtn) closeBtn.addEventListener('click', closePanel);
-
         document.addEventListener('click', function (e) {
             if (!panel.classList.contains('open')) return;
             if (!panel.contains(e.target) && !trigger.contains(e.target)) closePanel();
@@ -513,20 +390,22 @@
             if (panel.classList.contains('open')) positionPanel();
         }, { passive: true });
 
-        /* Bascule de catégorie */
-        panel.querySelectorAll('.gxact-chip').forEach(function (chip) {
-            chip.addEventListener('click', function () {
-                var pane = document.getElementById(chip.dataset.gxactPane);
+        /* Bascule de catégorie — au survol comme au clic (façon mega-menu) */
+        panel.querySelectorAll('.gxact-cat').forEach(function (btn) {
+            function select() {
+                var pane = document.getElementById(btn.dataset.gxactPane);
                 if (!pane) return;
-                panel.querySelectorAll('.gxact-chip').forEach(function (c) {
-                    c.classList.remove('active');
-                    c.setAttribute('aria-selected', 'false');
+                panel.querySelectorAll('.gxact-cat').forEach(function (b) {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
                 });
                 panel.querySelectorAll('.gxact-pane').forEach(function (p) { p.classList.remove('visible'); });
-                chip.classList.add('active');
-                chip.setAttribute('aria-selected', 'true');
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
                 pane.classList.add('visible');
-            });
+            }
+            btn.addEventListener('click', select);
+            btn.addEventListener('mouseenter', select);
         });
     }
 

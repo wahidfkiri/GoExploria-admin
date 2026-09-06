@@ -318,15 +318,12 @@
                         </div>
                     </div>
 
-                    {{-- Bloc PLAN N GO / ACTIVITÉS (droite) — ouvre le mega-menu des activités --}}
-                    <div class="search-bar-v2-plango" id="activitesMegaTrigger" role="button" tabindex="0"
+                    {{-- Bloc ACTIVITÉS (droite) — ouvre le mega-menu des activités --}}
+                    <div class="search-bar-v2-activites" id="activitesMegaTrigger" role="button" tabindex="0"
                          title="{{ $tr('Activités') }}"
                          aria-haspopup="dialog" aria-expanded="false" aria-controls="activitesMegaPanel">
-                        <img src="{{ asset('plan-n-go.png') }}" alt="PLAN N GO" class="search-bar-v2-plango-img" loading="lazy">
-                        <span class="search-bar-v2-plango-title">
-                            {{ $tr('Activités') }}
-                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                        </span>
+                        <span class="search-bar-v2-activites-label">{{ $tr('Activités') }}</span>
+                        <i class="fas fa-chevron-down" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
@@ -666,72 +663,58 @@
         background: rgba(5,15,35,.85);
     }
 
-    /* ── Bloc PLAN N GO / Activités (droite de la barre de recherche) ── */
-    .search-bar-v2-plango {
+    /* ── Bloc Activités (droite de la barre de recherche) ── */
+    .search-bar-v2-activites {
         flex: 0 0 auto;
         margin-left: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-        text-decoration: none;
-        cursor: pointer;
-        padding: 7px 14px;
         margin-right: 4px;
-        border: 1px solid rgba(255,255,255,.14);
-        border-radius: 14px;
-        background: rgba(255,255,255,.05);
-        transition: background .2s ease, border-color .2s ease, transform .2s ease;
-    }
-    .search-bar-v2-plango:hover,
-    .search-bar-v2-plango[aria-expanded="true"] {
-        background: rgba(247,148,30,.14);
-        border-color: rgba(247,148,30,.55);
-        transform: translateY(-1px);
-    }
-    .search-bar-v2-plango-img {
-        height: 34px;
-        width: auto;
-        max-width: 130px;
-        display: block;
-        object-fit: contain;
-        filter: drop-shadow(0 4px 10px rgba(0,0,0,.45));
-    }
-    .search-bar-v2-plango-title {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: .12em;
-        color: #ffb648;
-        text-transform: uppercase;
+        gap: 8px;
+        cursor: pointer;
+        padding: 10px 16px;
+        border: 1px solid rgba(255,255,255,.16);
+        border-radius: 10px;
+        background: rgba(255,255,255,.06);
+        color: #ffffff;
         white-space: nowrap;
+        transition: background .2s ease, border-color .2s ease;
     }
-    .search-bar-v2-plango-title i {
+    .search-bar-v2-activites:hover,
+    .search-bar-v2-activites[aria-expanded="true"] {
+        background: rgba(255,255,255,.14);
+        border-color: rgba(255,255,255,.34);
+    }
+    .search-bar-v2-activites-label {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+    .search-bar-v2-activites i {
         font-size: 9px;
-        opacity: .85;
+        opacity: .8;
         transition: transform .22s ease;
     }
-    .search-bar-v2-plango[aria-expanded="true"] .search-bar-v2-plango-title i {
-        transform: rotate(180deg);
-    }
+    .search-bar-v2-activites[aria-expanded="true"] i { transform: rotate(180deg); }
 
     @media (max-width: 1024px) {
-        .search-bar-v2-plango {
+        .search-bar-v2-activites {
             order: 2 !important;
             margin-left: 6px;
-            padding: 5px 9px;
-            border-radius: 12px;
+            padding: 8px 11px;
         }
-        .search-bar-v2-plango-img { height: 24px; max-width: 84px; }
-        .search-bar-v2-plango-title { font-size: 10px; letter-spacing: .06em; }
+        .search-bar-v2-activites-label { font-size: 11px; letter-spacing: .04em; }
     }
     @media (max-width: 560px) {
-        .search-bar-v2-plango { padding: 4px 7px; gap: 2px; }
-        .search-bar-v2-plango-img { height: 20px; max-width: 66px; }
-        .search-bar-v2-plango-title { display: none; }
+        .search-bar-v2-activites { padding: 8px 10px; }
+        .search-bar-v2-activites-label { display: none; }
+        .search-bar-v2-activites::before {
+            content: "\f277";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 14px;
+        }
     }
 
     @media (max-width: 1024px) {
