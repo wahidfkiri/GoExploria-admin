@@ -48,6 +48,17 @@
         'css/welcome/search-bar.css',
         'css/welcome/videos-dropdown.css',
         'css/welcome/services-mega-menu-v2.css',
+        // En dernier : c'est lui qui rend l'en-tête transparent en haut de
+        // page et lui donne son verre sombre au défilement, comme sur `/`.
+        // Ses autres règles sont préfixées `.go-home-hero` / `.go-hero-*`,
+        // des classes propres au visuel d'ouverture de l'accueil : elles ne
+        // peuvent rien atteindre sur une page hôte.
+        //
+        // Son voisin `welcome-responsive.css` est volontairement ÉCARTÉ : il
+        // porte des règles génériques (`.container`, `.row`, `body`,
+        // `img, video`) qui déborderaient sur la page hôte — `.container` est
+        // celui de Bootstrap dans les gabarits.
+        'css/welcome/welcome-premium.css',
     ];
 
     // Ordre significatif : menu-api-service alimente mega-menu-service, dont

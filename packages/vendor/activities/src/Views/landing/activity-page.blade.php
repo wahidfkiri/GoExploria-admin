@@ -1,10 +1,10 @@
 {{-- Site d'une activité : sa PAGE (contenu de type « page »), composée dans
      l'éditeur VvvebJS côté administration.
 
-     La page apporte son propre pied de page, mais plus son en-tête : celui du
-     gabarit est retiré du contenu et remplacé par l'en-tête de la plateforme,
-     le même que sur `/`. C'est le seul moyen d'avoir UNE barre de navigation
-     et pas deux — les deux sont en `position: fixed` en haut de page.
+     La page garde l'en-tête ET le pied de page de son gabarit ; l'en-tête de
+     la plateforme (le même que sur `/`) vient se poser AU-DESSUS. Les deux
+     barres cohabitent : celle de la plateforme en haut, celle du gabarit
+     juste en dessous (voir la règle de calage plus bas).
 
      Ses feuilles de style et ses images sont servies depuis
      /templates/plexify, présent dans public/ des deux projets. Le contenu
@@ -34,17 +34,49 @@
 </head>
 <body>
 
-{{-- EN-TÊTE DE LA PLATEFORME — celui de la page d'accueil, à l'identique.
-     Il REMPLACE celui du gabarit, que LandingPageController::retirerEnteteGabarit
-     retire du contenu enregistré : les deux sont `position: fixed` en haut de
-     page et se seraient superposés. Transparent au repos, il se pose sur le
-     visuel d'ouverture exactement comme le faisait l'en-tête du gabarit
-     (`header-transparent`) : rien à décaler. --}}
+{{-- EN-TÊTE DE LA PLATEFORME — celui de la page d'accueil, à l'identique,
+     posé AU-DESSUS de celui du gabarit (les deux restent visibles). --}}
 @include('welcome-home.partials.platform-header')
 
+{{-- ── CALAGE DES DEUX BARRES ──────────────────────────────────────────
+     Les deux en-têtes se placent en haut de page : celui de la plateforme en
+     `position: fixed`, celui du gabarit en `absolute` (et en `fixed` dès que
+     le gabarit le rend collant au défilement). Sans rien faire, ils se
+     recouvrent — et le gabarit, en z-index 999 contre 10060, disparaît sous
+     l'autre.
+
+     La barre du gabarit descend donc de la hauteur de celle de la plateforme.
+     Cette hauteur n'est pas constante (elle change avec la largeur d'écran et
+     avec le passage à l'état « défilé ») : on la mesure et on la publie dans
+     une variable CSS, plutôt que d'inscrire un nombre qui serait faux la
+     moitié du temps.
+
+     `!important` : les gabarits posent `top: 0` sur leur en-tête, souvent
+     eux-mêmes en `!important` pour leur état collant. --}}
+<style>
+    .site-header { top: var(--gx-entete-plateforme, 96px) !important; }
+</style>
+<script>
+    (function () {
+        var mesurer = function () {
+            var entete = document.querySelector('.gx-platform-header .header-v2');
+            if (!entete) return;
+            document.documentElement.style.setProperty(
+                '--gx-entete-plateforme', entete.offsetHeight + 'px'
+            );
+        };
+
+        mesurer();
+        document.addEventListener('DOMContentLoaded', mesurer);
+        window.addEventListener('load', mesurer);
+        window.addEventListener('resize', mesurer, { passive: true });
+        // L'en-tête change de hauteur en passant à l'état « défilé ».
+        window.addEventListener('scroll', mesurer, { passive: true });
+    })();
+</script>
+
 {{-- `$contenu` = le contenu enregistré, sa section d'attente `data-gx-map`
-     déjà remplacée par la vraie carte et son en-tête de gabarit retiré
-     (LandingPageController). --}}
+     déjà remplacée par la vraie carte (LandingPageController). --}}
 {!! $contenu ?? $page->content !!}
 
 {{-- Popups publicitaires : même dispositif que la page d'activité classique. --}}

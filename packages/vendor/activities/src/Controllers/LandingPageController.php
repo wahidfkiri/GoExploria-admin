@@ -91,13 +91,9 @@ class LandingPageController extends Controller
             return view('activities::landing.activity-page', [
                 'activity' => $activity,
                 'page'     => $pageSite,
-                // Deux retouches au contenu enregistré : sa section d'attente
-                // devient la vraie carte, et l'en-tête du gabarit s'efface au
-                // profit de celui de la plateforme (cf. activity-page).
-                'contenu'  => $this->injecterCarteMonde(
-                    $this->retirerEnteteGabarit((string) $pageSite->content),
-                    $activity
-                ),
+                // La carte n'existe pas dans le contenu enregistré : celui-ci
+                // ne porte qu'une section d'attente, remplacée ici.
+                'contenu'  => $this->injecterCarteMonde((string) $pageSite->content, $activity),
             ]);
         }
 
@@ -374,30 +370,6 @@ class LandingPageController extends Controller
         // preg_replace lirait les `$` du partial comme des références
         // arrière : on passe par un rappel.
         return preg_replace_callback($motif, fn () => $carte, $html, 1);
-    }
-
-    /**
-     * Retire l'en-tête que le gabarit porte dans le contenu enregistré.
-     *
-     * La page d'une activité affiche désormais l'en-tête de la plateforme
-     * (welcome-home.partials.platform-header). Garder celui du gabarit
-     * donnerait deux barres de navigation superposées — les deux sont en
-     * `position: fixed` en haut de page.
-     *
-     * On ne retire que le PREMIER `<header>` : c'est l'en-tête du site dans
-     * tous les gabarits repris ici (le visuel d'ouverture est un `<div
-     * class="main-banner">`, pas un `<header>`). Une page composée sans
-     * en-tête est rendue telle quelle.
-     */
-    protected function retirerEnteteGabarit(string $html): string
-    {
-        if ($html === '') {
-            return $html;
-        }
-
-        // Les gabarits n'imbriquent pas de `<header>` : le motif peut
-        // s'arrêter au premier `</header>`.
-        return preg_replace('#<header[^>]*>.*?</header>#is', '', $html, 1) ?? $html;
     }
 
     /**
