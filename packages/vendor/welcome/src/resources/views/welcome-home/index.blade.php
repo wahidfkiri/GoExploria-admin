@@ -547,6 +547,34 @@
 
         {{-- Carrousel d'annonces (cards) sous la carte --}}
         @include('components.ads-cards', ['adContext' => 'home'])
+
+        @isset($cmsAccueilAbsent)
+            {{-- L'essai doit échouer bruyamment : sans ce message, la page
+                 paraîtrait normale et l'on croirait le CMS branché. --}}
+            <div style="max-width:900px;margin:24px auto;padding:16px 20px;border:1px solid #f0ad4e;border-radius:10px;background:#fff8ec;font:600 14px/1.5 Montserrat,system-ui,sans-serif;color:#7a5200">
+                Contenu CMS introuvable pour l'établissement
+                « {{ \Vendor\Welcome\Http\Controllers\WelcomeController::ACCUEIL_SLUG }} ».
+                Lancez côté admin :
+                <code>php artisan db:seed --class=Database\Seeders\CmsAccueilGoExploriaSeeder</code>.
+                Le rendu d'origine s'affiche ci-dessous.
+            </div>
+        @endisset
+
+        @isset($cmsAccueil)
+            {{-- ══════════════════════════════════════════════════════════════
+                 SECTIONS APRÈS LA CARTE — servies par le CMS.
+
+                 `cms_pages.content` de l'établissement « accueil-goexploria » :
+                 un bloc <style> puis le wrapper `.gx-tpl`. L'en-tête et le pied
+                 du gabarit n'y sont pas — l'installation les a basculés dans
+                 `cms_header_footers` (§6 de docs/TEMPLATES-CMS.md) — et c'est
+                 voulu : le site garde les siens.
+
+                 N'est défini que par la route d'essai /welcome-test. Sur « / »,
+                 la variable n'existe pas et le rendu ci-dessous est inchangé.
+                 ══════════════════════════════════════════════════════════════ --}}
+            {!! $cmsAccueil !!}
+        @else
         {{-- ══════════════════════════════════════════════════════════════════
              SECTIONS APRÈS LA CARTE — rendues DYNAMIQUEMENT depuis l'admin
              (Constructeur /welcome : tables welcome_zones / welcome_sections).
@@ -665,6 +693,7 @@
             @include('welcome-home.components.espace_go_exp_info.NewsSection')
             @include('welcome-home.components.espace_go_exp_info.bloc-nouvelles-regionales')
         @endforelse
+        @endisset
 
         <div id="section-nos-plans" class="snb-anchor"></div>
         </div>{{-- /#home-below-fold --}}
@@ -707,11 +736,17 @@
     <script defer src="{{ asset('js/welcome/viewing-carousel.js') }}"></script>
     <script defer src="{{ asset('js/welcome/videos-dropdown.js') }}"></script>
     <script defer src="{{ asset('js/welcome/espace-chat-section.js') }}"></script>
-    <script defer src="{{ asset('js/welcome/espace-mail-marketing-section.js') }}"></script>
-    <script defer src="{{ asset('js/welcome/espace-blog-section.js') }}"></script>
+    {{-- Ces quatre scripts pilotent des composants que le CMS fournit désormais
+         avec les siens : les charger en plus ferait câbler DEUX fois les mêmes
+         éléments (32 entrées de playlist, 451 cartes vedette), et un clic
+         déclencherait les deux comportements. Ils restent chargés sur « / ». --}}
+    @unless(isset($cmsAccueil))
+        <script defer src="{{ asset('js/welcome/espace-mail-marketing-section.js') }}"></script>
+        <script defer src="{{ asset('js/welcome/espace-blog-section.js') }}"></script>
+        <script defer src="{{ asset('js/welcome/video-player.js') }}"></script>
+        <script defer src="{{ asset('js/welcome/events-vedette.js') }}"></script>
+    @endunless
     <script defer src="{{ asset('js/welcome/slideshows.js') }}"></script>
-    <script defer src="{{ asset('js/welcome/video-player.js') }}"></script>
-    <script defer src="{{ asset('js/welcome/events-vedette.js') }}"></script>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script defer src="{{ asset('js/welcome/business-tourism.js') }}"></script>
     <script defer src="{{ asset('js/welcome/partners-master.js') }}"></script>

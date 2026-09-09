@@ -139,6 +139,88 @@
         --vm-text: #000000;
         --vm-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
+    /* ── FOND NOIR ─────────────────────────────────────────────────────
+       La barre reste noire, au repos comme au défilement.
+
+       Les sélecteurs reprennent MOT POUR MOT ceux de welcome-premium.css
+       (transparence en haut de page, verre sombre au défilement) : à
+       spécificité égale, c'est la déclaration la plus tardive qui gagne, et
+       ce bloc est écrit après les <link>. Les recopier est donc volontaire —
+       une version raccourcie perdrait l'arbitrage. */
+    .header-v2,
+    .header-v2 .header-nav,
+    .header-v2 .header-top,
+    body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2,
+    body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2 .header-nav,
+    body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2 .header-top,
+    body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2.scrolled,
+    body:not(.hdr-scrolled):not(.hdr-search-open) .header-v2.scrolled .header-nav,
+    body.hdr-scrolled .header-v2,
+    body.hdr-scrolled .header-v2 .header-nav,
+    body.hdr-scrolled .header-v2.scrolled .header-nav,
+    body.hdr-search-open .header-v2,
+    body.hdr-search-open .header-v2 .header-nav {
+        background: #000000 !important;
+        background-color: #000000 !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+
+    /* Liens et icônes : blanc franc. Le bleuté d'origine (#eaf0fb) était
+       calculé pour se poser sur une photo, pas sur du noir plein.
+
+       « Next Level » est écarté : c'est une pastille dorée à texte sombre,
+       lisible telle quelle — la repeindre en blanc la rendrait illisible. */
+    .gx-platform-header .header-v2 .nav-menu > li > a:not(.nav-nextlevel-link),
+    .gx-platform-header .header-v2 .nav-icon,
+    .gx-platform-header .header-v2 .hdr-search-toggle,
+    .gx-platform-header .header-v2 .lang-btn {
+        color: #ffffff !important;
+    }
+
+    .gx-platform-header .header-v2 .nav-menu > li > a:not(.nav-nextlevel-link):hover {
+        color: var(--accent-gold) !important;
+    }
+
+    /* « Next Level » : sa pastille dorée est prévue pour un texte sombre, mais
+       welcome-premium.css repeint TOUS les liens du menu avec un sélecteur
+       plus spécifique — le texte y ressortait bleu clair sur or. On lui rend
+       la couleur voulue par le composant. */
+    .gx-platform-header .header-v2 .nav-menu > li > a.nav-nextlevel-link,
+    .gx-platform-header .header-v2 .nav-menu > li > a.nav-nextlevel-link:hover {
+        color: #0a1628 !important;
+    }
+
+    .gx-platform-header .header-v2 .menu-toggle span {
+        background: #ffffff !important;
+    }
+
+    /* ── IMMUNITÉ CONTRE LE GABARIT HÔTE ───────────────────────────────
+       `.header-nav` n'est pas un nom réservé : les gabarits Plexify s'en
+       servent pour LEUR tiroir de menu mobile, et le déclarent ainsi sous
+       991 px —
+
+           .header-nav { position: fixed; top: 0; width: 60px;
+                         height: 100vh !important; background: #fff; }
+
+       Cette règle attrapait aussi le `<nav class="header-nav">` du header de
+       la plateforme : mesuré à 375 px, la barre devenait une colonne noire de
+       60 px de large sur toute la hauteur de l'écran, à gauche du contenu.
+
+       On lui rend donc son comportement de barre. Le tiroir du gabarit, lui,
+       n'est pas touché : le sélecteur est ancré sur `.gx-platform-header`. */
+    @media (max-width: 991px) {
+        .gx-platform-header .header-v2 .header-nav {
+            position: relative !important;
+            top: auto !important;
+            width: auto !important;
+            height: auto !important;
+            overflow: visible !important;
+            z-index: auto !important;
+            transition: none !important;
+        }
+    }
 </style>
 
 {{-- Le conteneur ne sert QU'à porter la palette : pas de transform ni de

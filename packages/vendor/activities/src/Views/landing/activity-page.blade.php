@@ -55,15 +55,60 @@
      eux-mêmes en `!important` pour leur état collant. --}}
 <style>
     .site-header { top: var(--gx-entete-plateforme, 96px) !important; }
+
+    /* ── FOND NOIR ──────────────────────────────────────────────────────
+       La barre du gabarit s'aligne sur celle de la plateforme, noire elle
+       aussi. Le gabarit la laisse transparente (`header-transparent`) pour
+       qu'elle se fonde dans le visuel d'ouverture : d'où `!important`. */
+    .site-header,
+    .site-header .main-bar-wraper,
+    .site-header .main-bar {
+        background: #000000 !important;
+    }
+
+    /* Le menu ne devient noir QUE sur grand écran. En dessous, `.header-nav`
+       n'est plus la barre mais le tiroir coulissant du menu mobile — blanc,
+       à liens sombres : le noircir le rendrait illisible. */
+    @media (min-width: 992px) {
+        .site-header .header-nav {
+            background: #000000 !important;
+        }
+    }
+
+    /* Les liens du gabarit sortent déjà en blanc sur cette barre, sauf
+       l'élément courant, qui porte une pastille blanche à texte sombre :
+       on ne touche donc qu'au survol, pour qu'il reste lisible sur le noir. */
+    .site-header .header-nav > ul > li:not(.active) > a:hover {
+        color: #C8F31D !important;
+    }
 </style>
 <script>
     (function () {
         var mesurer = function () {
             var entete = document.querySelector('.gx-platform-header .header-v2');
             if (!entete) return;
-            document.documentElement.style.setProperty(
-                '--gx-entete-plateforme', entete.offsetHeight + 'px'
-            );
+
+            // On ne peut PAS se fier à la hauteur de `.header-v2` : en mobile
+            // sa barre interne sort du flux et l'élément retombe à 0 px —
+            // mesuré à 375 px de large. Les deux en-têtes se retrouvaient
+            // alors l'un sur l'autre.
+            //
+            // L'en-tête étant `position: fixed; top: 0`, le bas de sa boîte
+            // vaut sa hauteur visible : on prend le plus bas des deux, celui
+            // de l'élément et celui de sa barre.
+            var barre = entete.querySelector('.header-nav');
+            var bas = entete.getBoundingClientRect().bottom;
+            if (barre) {
+                bas = Math.max(bas, barre.getBoundingClientRect().bottom);
+            }
+
+            // Avant la mise en page, tout vaut 0 : on garde la valeur de repli
+            // du CSS plutôt que de coller les deux barres.
+            if (bas > 0) {
+                document.documentElement.style.setProperty(
+                    '--gx-entete-plateforme', Math.round(bas) + 'px'
+                );
+            }
         };
 
         mesurer();

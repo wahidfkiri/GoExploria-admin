@@ -57,6 +57,13 @@ Route::get('/cdn-storage/{path}', [CDNController::class, 'getFile'])
 // Page d'accueil = page Welcome (remplace l'ancienne home-v2)
 Route::get('/', [\Vendor\Welcome\Http\Controllers\WelcomeController::class, 'index'])->name('home-v2');
 
+// Même page, mais tout ce qui suit la carte vient du CMS (établissement
+// « accueil-goexploria », modifiable dans VvvebJS). En-tête, héro et carte
+// restent rendus par le front. Page d'essai : « / » n'est pas touchée tant que
+// le rendu n'a pas été validé ici.
+Route::get('/welcome-test', [\Vendor\Welcome\Http\Controllers\WelcomeController::class, 'test'])
+    ->name('welcome.test');
+
 Route::get('/locale/{locale}', function (string $locale) {
     $supported = ['fr', 'en', 'es', 'de', 'it'];
 
