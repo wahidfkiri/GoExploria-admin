@@ -119,6 +119,43 @@ if (!function_exists('is_cms_footer_enabled')) {
     }
 }
 
+if (!function_exists('cms_region_refusee')) {
+    /**
+     * L'établissement a-t-il EXPLICITEMENT refusé cette région ?
+     *
+     * À distinguer de `is_cms_header_enabled()`, qui répond « non » aussi quand
+     * le réglage n'a jamais été posé. Ici seul un « 0 » compte, et il compte
+     * partout : c'est le cas d'un site déjà coiffé de son propre en-tête, qui
+     * n'en veut aucun du CMS — même sur les pages autonomes, qui demandent
+     * pourtant le rendu forcé.
+     *
+     * @param string $type 'header' ou 'footer'
+     */
+    function cms_region_refusee($etablissementId, string $type): bool
+    {
+        try {
+            $etablissement = $etablissementId
+                ? \App\Models\Etablissement::find($etablissementId)
+                : null;
+
+            if (!$etablissement || !method_exists($etablissement, 'getSetting')) {
+                return false;
+            }
+
+            $valeur = $etablissement->getSetting($type . '_enabled', null, 'general');
+
+            if ($valeur === null || $valeur === '') {
+                return false;   // jamais réglé : ce n'est pas un refus
+            }
+
+            return filter_var($valeur, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === false;
+        } catch (\Throwable $e) {
+            // Dans le doute, on n'escamote rien.
+            return false;
+        }
+    }
+}
+
 if (!function_exists('get_cms_header_footer_html')) {
     /**
      * Render the latest configured CMS header/footer content for an establishment.

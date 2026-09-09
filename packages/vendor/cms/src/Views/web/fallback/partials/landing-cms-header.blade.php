@@ -1,8 +1,14 @@
 @php
     // $forceCmsHeaderFooter (optionnel) : rend le header d'établissement même si le
-    // toggle header_enabled est désactivé (utilisé par les pages CMS autonomes).
+    // toggle header_enabled n'a jamais été activé — une page CMS autonome n'a
+    // aucun autre en-tête. Un refus EXPLICITE reste respecté : un établissement
+    // dont le site porte déjà son propre en-tête n'en veut aucun, ici non plus.
     $cmsHeaderHtml = '';
-    if (isset($etablissement)) {
+    $cmsHeaderRefuse = function_exists('cms_region_refusee')
+        && isset($etablissement)
+        && cms_region_refusee($etablissement->id, 'header');
+
+    if (isset($etablissement) && !$cmsHeaderRefuse) {
         if (($forceCmsHeaderFooter ?? false) && function_exists('get_cms_header_footer_html')) {
             $cmsHeaderHtml = trim((string) get_cms_header_footer_html($etablissement->id, \Vendor\Cms\Models\HeaderFooter::TYPE_HEADER));
         } elseif (function_exists('get_cms_header_html')) {
