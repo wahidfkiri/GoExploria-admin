@@ -57,6 +57,8 @@ class ContenuCmsIntegre
 
         $portee = '#' . $racine;
 
+        $contenu = self::retirerRegions($contenu);
+
         $contenu = preg_replace_callback(
             '/<style\b[^>]*>(.*?)<\/style>/is',
             fn ($m) => '<style>' . self::cloisonner($m[1], $portee) . '</style>',
@@ -64,6 +66,41 @@ class ContenuCmsIntegre
         );
 
         return '<div id="' . e($racine) . '">' . $contenu . '</div>';
+    }
+
+    /**
+     * Retire l'en-tête et le pied du gabarit s'ils sont restés dans le contenu.
+     *
+     * La page garde les siens : le site est déjà coiffé de son en-tête, de son
+     * héro et de sa carte quand ce contenu s'insère dessous. Normalement
+     * l'installation les a déjà déplacés vers `cms_header_footers` (§6 de
+     * docs/TEMPLATES-CMS.md) et il n'y a rien à retirer ; mais un contenu collé
+     * à la main ou importé autrement les emporte, et la page afficherait alors
+     * deux en-têtes.
+     *
+     * Ne vise que les régions marquées : l'en-tête `.gx-header-region` et le
+     * pied `.*-tpl-footer` du gabarit. Les vingt-et-une barres
+     * `<nav class="snb-bar">` sont des navigations de section : elles font
+     * partie du contenu et restent. Un conteneur `data-cms-region` resté autour
+     * se retrouve vide, ce qui ne se voit pas.
+     */
+    protected static function retirerRegions(string $contenu): string
+    {
+        $motifs = [
+            '/<nav\b[^>]*class="[^"]*gx-header-region[^"]*"[^>]*>.*?<\/nav>/is',
+            '/<footer\b[^>]*class="[^"]*-tpl-footer[^"]*"[^>]*>.*?<\/footer>/is',
+        ];
+
+        foreach ($motifs as $motif) {
+            $reduit = preg_replace($motif, '', $contenu);
+            // preg_replace renvoie null si le sujet épuise le moteur : dans ce
+            // cas on préfère le contenu intact à une page vide.
+            if ($reduit !== null) {
+                $contenu = $reduit;
+            }
+        }
+
+        return $contenu;
     }
 
     /** Préfixe tous les sélecteurs d'une feuille par `$portee`. */

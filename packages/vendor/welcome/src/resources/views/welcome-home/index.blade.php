@@ -550,12 +550,14 @@
 
         @isset($cmsAccueilAbsent)
             {{-- L'essai doit échouer bruyamment : sans ce message, la page
-                 paraîtrait normale et l'on croirait le CMS branché. --}}
+                 paraîtrait normale et l'on croirait le CMS branché. Le motif
+                 dit lequel des quatre écueils a été rencontré (établissement,
+                 page d'accueil, publication, contenu vide). --}}
             <div style="max-width:900px;margin:24px auto;padding:16px 20px;border:1px solid #f0ad4e;border-radius:10px;background:#fff8ec;font:600 14px/1.5 Montserrat,system-ui,sans-serif;color:#7a5200">
-                Contenu CMS introuvable pour l'établissement
-                « {{ \Vendor\Welcome\Http\Controllers\WelcomeController::ACCUEIL_SLUG }} ».
-                Lancez côté admin :
-                <code>php artisan db:seed --class=Database\Seeders\CmsAccueilGoExploriaSeeder</code>.
+                {{ $cmsAccueilAbsent }}<br>
+                L'établissement visé se règle dans <code>config/welcome.php</code>
+                (<code>accueil.etablissement_id</code>) ou par la variable
+                d'environnement <code>WELCOME_ACCUEIL_ETABLISSEMENT_ID</code>.
                 Le rendu d'origine s'affiche ci-dessous.
             </div>
         @endisset
