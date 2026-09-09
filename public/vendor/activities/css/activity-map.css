@@ -42,6 +42,176 @@
     max-width: none;
 }
 
+/* ---------- Filtre par destination ----------
+   Cascade continent → pays → province → … (map-filter.blade.php). Les noms de
+   classe viennent du filtre partagé avec les pages de destination : ils sont
+   repris tels quels, seule l'apparence change pour le gabarit Plexify.
+
+   La barre doit se dessiner AU-DESSUS de la carte, qui la suit dans le
+   document : d'où le contexte d'empilement ici et sur le cadre de la carte. */
+.actpage-tpl .plx-carte-destinations {
+    position: relative;
+    z-index: 5;
+    max-width: 860px;
+    margin: 0 auto 22px;
+}
+
+.actpage-tpl .plx-carte-cadre { z-index: 1; }
+
+.actpage-tpl .map-filterbar__head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.actpage-tpl .plx-carte-destinations__titre {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.actpage-tpl .map-filterbar__reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 16px;
+    border: 1px solid #d5dde5;
+    border-radius: 999px;
+    background: #fff;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .25s;
+}
+
+.actpage-tpl .map-filterbar__reset:hover {
+    border-color: var(--primary, #C8F31D);
+    color: #111;
+}
+
+.actpage-tpl .map-filterbar__reset svg { width: 13px; height: 13px; }
+
+/* `display` l'emporterait sur la règle par défaut de [hidden] : le bouton ne
+   doit apparaître qu'une fois une destination choisie. */
+.actpage-tpl .map-filterbar__reset[hidden] { display: none; }
+
+.actpage-tpl .map-filterbar__chain {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+/* Le temps d'une requête, la chaîne ne doit pas accepter de second choix. */
+.actpage-tpl .map-filterbar__chain.is-loading { opacity: .6; pointer-events: none; }
+
+.actpage-tpl .map-filterfield {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 0 1 230px;
+    min-width: 190px;
+    text-align: left;
+}
+
+/* Une liste ouverte doit passer devant les champs voisins de la ligne. */
+.actpage-tpl .map-filterfield:focus-within { z-index: 6; }
+
+.actpage-tpl .map-filterfield__label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.actpage-tpl .map-filterfield__input {
+    width: 100%;
+    padding: 11px 18px;
+    border: 1px solid #d5dde5;
+    border-radius: 999px;
+    background: #fff;
+    color: #0f172a;
+    font-size: 13.5px;
+    transition: border-color .25s, box-shadow .25s;
+}
+
+.actpage-tpl .map-filterfield__input:focus {
+    outline: none;
+    border-color: var(--primary, #C8F31D);
+    box-shadow: 0 0 0 3px rgba(200, 243, 29, .28);
+}
+
+.actpage-tpl .map-filterfield.is-active .map-filterfield__input {
+    border-color: var(--primary, #C8F31D);
+    background: rgba(200, 243, 29, .14);
+    font-weight: 600;
+}
+
+.actpage-tpl .map-filterfield__list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    display: none;
+    margin-top: 6px;
+    max-height: 300px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    box-shadow: 0 24px 50px -24px rgba(15, 23, 42, .55);
+}
+
+.actpage-tpl .map-filterfield__list.is-open { display: block; }
+
+.actpage-tpl .map-filterfield__option {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    border: 0;
+    border-bottom: 1px solid #f1f5f9;
+    background: transparent;
+    color: #334155;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.actpage-tpl .map-filterfield__option:last-child { border-bottom: 0; }
+.actpage-tpl .map-filterfield__option:hover { background: rgba(200, 243, 29, .22); color: #111; }
+
+.actpage-tpl .map-filterfield__option.is-all {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+/* Sans coordonnées, la carte ne peut pas s'y recentrer : on le signale. */
+.actpage-tpl .map-filterfield__option.is-nogeo { opacity: .6; font-style: italic; }
+
+.actpage-tpl .map-filterfield__empty {
+    padding: 12px 16px;
+    font-size: 12.5px;
+    font-style: italic;
+    color: #94a3b8;
+}
+
+@media (max-width: 640px) {
+    .actpage-tpl .map-filterfield { flex: 1 1 100%; min-width: 0; }
+}
+
 /* ---------- Filtres par catégorie ---------- */
 .actpage-tpl .plx-carte-filtres {
     display: flex;

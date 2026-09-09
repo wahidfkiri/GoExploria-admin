@@ -91,9 +91,13 @@ class LandingPageController extends Controller
             return view('activities::landing.activity-page', [
                 'activity' => $activity,
                 'page'     => $pageSite,
-                // La carte n'existe pas dans le contenu enregistré : celui-ci
-                // ne porte qu'une section d'attente, remplacée ici.
-                'contenu'  => $this->injecterCarteMonde((string) $pageSite->content, $activity),
+                // Deux retouches au contenu enregistré : sa section d'attente
+                // devient la vraie carte, et l'en-tête du gabarit s'efface au
+                // profit de celui de la plateforme (cf. activity-page).
+                'contenu'  => $this->injecterCarteMonde(
+                    $this->retirerEnteteGabarit((string) $pageSite->content),
+                    $activity
+                ),
             ]);
         }
 
@@ -373,6 +377,30 @@ class LandingPageController extends Controller
     }
 
     /**
+     * Retire l'en-tête que le gabarit porte dans le contenu enregistré.
+     *
+     * La page d'une activité affiche désormais l'en-tête de la plateforme
+     * (welcome-home.partials.platform-header). Garder celui du gabarit
+     * donnerait deux barres de navigation superposées — les deux sont en
+     * `position: fixed` en haut de page.
+     *
+     * On ne retire que le PREMIER `<header>` : c'est l'en-tête du site dans
+     * tous les gabarits repris ici (le visuel d'ouverture est un `<div
+     * class="main-banner">`, pas un `<header>`). Une page composée sans
+     * en-tête est rendue telle quelle.
+     */
+    protected function retirerEnteteGabarit(string $html): string
+    {
+        if ($html === '') {
+            return $html;
+        }
+
+        // Les gabarits n'imbriquent pas de `<header>` : le motif peut
+        // s'arrêter au premier `</header>`.
+        return preg_replace('#<header[^>]*>.*?</header>#is', '', $html, 1) ?? $html;
+    }
+
+    /**
      * Contexte d'une carte MONDIALE, montrant TOUS les points.
      *
      * Le moteur est celui des pages de destination ; on lui présente le monde
@@ -401,11 +429,15 @@ class LandingPageController extends Controller
             'longitude' => null,
         ];
 
-        // Adresse de rechargement des points. Les points partent déjà avec la
-        // page, donc elle n'est appelée que si la liste est vide ; au niveau
-        // « continent » la réponse n'est bornée par aucune géographie, quel
-        // que soit le continent visé.
-        $slug = (string) (Continent::query()->orderBy('id')->value('code') ?: 'monde');
+        // Adresse de rechargement des points, utilisée par le filtre par
+        // destination. Le continent porteur doit être ACTIF : l'endpoint
+        // `map-points` ne résout que les destinations actives et répondrait
+        // « Entity not found » sur un continent désactivé. Sans filtre, la
+        // réponse au niveau « continent » n'est bornée par aucune géographie,
+        // quel que soit le continent visé.
+        $slug = (string) (Continent::active()->orderBy('id')->value('code')
+            ?: Continent::active()->orderBy('id')->value('id')
+            ?: 'monde');
 
         return [
             'activity' => $activity,
@@ -419,7 +451,89 @@ class LandingPageController extends Controller
                 ->orderBy('sort_order')
                 ->get(['slug', 'name', 'icon_class', 'color', 'image']),
             'mapPoints' => $points,
+            // Filtre par destination : la page couvre le monde, la cascade
+            // part donc du continent (voir chaineFiltreDestinations).
+            'typeLabels' => static::LIBELLES_NIVEAUX,
+            'mapFilterChain' => $this->chaineFiltreDestinations(),
         ];
+    }
+
+    /**
+     * Libellés des niveaux de destination, repris du contrôleur des pages de
+     * destination : le filtre les affiche au-dessus de chaque champ.
+     */
+    protected const LIBELLES_NIVEAUX = [
+        'continent' => 'Continent',
+        'country' => 'Pays',
+        'province' => 'Province',
+        'region' => 'Région',
+        'city' => 'Ville',
+        'secteur' => 'Secteur',
+        'arrondissement' => 'Arrondissement',
+        'quartier' => 'Quartier',
+    ];
+
+    /**
+     * Premier niveau du filtre par destination de la carte mondiale.
+     *
+     * Sur une page de destination la chaîne commence sous la destination
+     * courante ; ici la carte couvre le monde, le premier champ interrogeable
+     * est donc celui des CONTINENTS. Les niveaux suivants (pays, province,
+     * région…) sont chargés en cascade par le filtre lui-même, via l'endpoint
+     * `travel-destination.children` — rien à préparer pour eux.
+     *
+     * La table `continents` ne porte pas de coordonnées : le centre d'un
+     * continent est calculé depuis ses pays, faute de quoi la carte ne saurait
+     * pas où se recentrer et l'option serait donnée pour « sans coordonnées ».
+     * Les pays INACTIFS comptent dans ce calcul — il s'agit de cadrer une vue,
+     * pas de publier une liste, et l'Amérique du Nord ne s'arrête pas à la
+     * frontière canadienne sous prétexte que seul le Canada est publié.
+     */
+    protected function chaineFiltreDestinations(): array
+    {
+        $continents = Continent::active()
+            ->with('countries')
+            ->orderBy('name')
+            ->get();
+
+        $options = $continents
+            ->map(function (Continent $continent) {
+                // `countries.latitude` est une colonne texte : on convertit
+                // avant toute comparaison, sans quoi le minimum se jouerait
+                // entre chaînes de caractères.
+                $reperes = $continent->countries
+                    ->filter(fn ($pays) => is_numeric($pays->latitude) && is_numeric($pays->longitude))
+                    ->map(fn ($pays) => ['lat' => (float) $pays->latitude, 'lng' => (float) $pays->longitude]);
+
+                // Centre de l'enveloppe des pays : plus stable qu'une moyenne,
+                // qu'un pays isolé (une île lointaine) suffirait à décentrer.
+                $lat = $reperes->count() ? (($reperes->min('lat') + $reperes->max('lat')) / 2) : null;
+                $lng = $reperes->count() ? (($reperes->min('lng') + $reperes->max('lng')) / 2) : null;
+
+                return [
+                    'name' => $continent->name,
+                    'slug' => (string) ($continent->slug ?? $continent->id),
+                    'type' => 'continent',
+                    'latitude' => $lat,
+                    'longitude' => $lng,
+                    // Même échelle que formatFilterOptions() côté destinations.
+                    'zoom' => 3,
+                ];
+            })
+            ->values()
+            ->all();
+
+        if (!$options) {
+            return [];
+        }
+
+        return [[
+            'type' => 'continent',
+            'label' => static::LIBELLES_NIVEAUX['continent'],
+            'fixed' => false,
+            'current' => null,
+            'options' => $options,
+        ]];
     }
 
     /**

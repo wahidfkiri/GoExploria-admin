@@ -406,13 +406,19 @@ class TravelDestinationController extends Controller
             return response()->json(['success' => false, 'message' => 'Entity not found'], 404);
         }
 
-        // Optional child-entity filter
+        // Filtre par destination (cascade de map-filter.blade.php).
+        //
+        // Continent et pays en font partie : la chaîne du filtre commence au
+        // continent sur la carte mondiale des pages d'activité, et au pays sur
+        // une page de continent. Les omettre laissait la carte zoomer sur la
+        // destination choisie tout en gardant les points du monde entier.
         $filterType = $request->query('filter_type');
         $filterSlug = $request->query('filter_slug');
         $filterEntity = null;
+        $normFilter = null;
 
         if ($filterType && $filterSlug) {
-            $filterMap = ['province' => 'province', 'region' => 'region', 'city' => 'city', 'ville' => 'city', 'secteur' => 'secteur', 'arrondissement' => 'arrondissement', 'quartier' => 'quartier'];
+            $filterMap = ['continent' => 'continent', 'country' => 'country', 'province' => 'province', 'region' => 'region', 'city' => 'city', 'ville' => 'city', 'secteur' => 'secteur', 'arrondissement' => 'arrondissement', 'quartier' => 'quartier'];
             $normFilter = $filterMap[$filterType] ?? null;
             if ($normFilter) {
                 $filterEntity = $this->loadEntity($normFilter, $filterSlug);
@@ -420,7 +426,7 @@ class TravelDestinationController extends Controller
         }
 
         $target = $filterEntity ?: $entity;
-        $targetType = $filterEntity ? ($filterType ?: $normalizedType) : $normalizedType;
+        $targetType = $filterEntity ? $normFilter : $normalizedType;
 
         $radius = match ($targetType) {
             'continent' => 45,
@@ -438,8 +444,38 @@ class TravelDestinationController extends Controller
             ->visibleOn($targetType)
             ->inDisplayPeriod();
 
-        // For continents, show all map points worldwide (no geo-restriction)
-        if ($targetType !== 'continent') {
+        // La PAGE d'un continent montre tous les points du monde (elle sert de
+        // vue d'ensemble) ; un continent CHOISI dans le filtre doit au
+        // contraire restreindre la carte à son enveloppe, comme les autres
+        // niveaux — sinon filtrer ne filtrerait rien.
+        $vueMondiale = $filterEntity === null && $targetType === 'continent';
+
+        // Enveloppe de la DESCENDANCE COMPLÈTE, réservée à une sélection du
+        // filtre. Les seuls enfants directs ne suffisent pas dès qu'on remonte
+        // la hiérarchie : le Canada n'a que quatre provinces référencées, dont
+        // les centres géométriques (Alberta, Ontario, Québec) dessinent une
+        // boîte qui n'atteint même pas la ville de Québec. En descendant
+        // jusqu'aux quartiers, l'enveloppe épouse le territoire réellement
+        // couvert par la base.
+        $bornes = $filterEntity ? $this->descendantBounds($targetType, $target) : null;
+
+        if ($bornes) {
+            // Marge autour de l'enveloppe : la base ne connaît pas tous les
+            // lieux d'un territoire, et un point d'intérêt se trouve souvent
+            // un peu au-delà de la dernière destination référencée.
+            $padding = match ($targetType) {
+                'continent' => 3,
+                'country' => 2,
+                'province' => 1,
+                'region' => 0.5,
+                'secteur' => 0.2,
+                'arrondissement' => 0.12,
+                'quartier' => 0.08,
+                default => 0.3,
+            };
+            $query->whereBetween('latitude', [$bornes['minLat'] - $padding, $bornes['maxLat'] + $padding])
+                  ->whereBetween('longitude', [$bornes['minLng'] - $padding, $bornes['maxLng'] + $padding]);
+        } elseif (! $vueMondiale) {
             // Try child entities first for accurate bounds (works even if entity lacks lat/lng)
             $childEntities = $this->getChildEntities($targetType, $target);
             $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
@@ -848,6 +884,119 @@ class TravelDestinationController extends Controller
     private function entitySlug($entity): string
     {
         return $entity->slug ?? Str::slug($entity->name ?? $entity->id);
+    }
+
+    /**
+     * Enveloppe géographique d'une destination : le rectangle qui contient
+     * TOUTE sa descendance connue (pays, provinces, régions, secteurs, villes,
+     * arrondissements, quartiers) et la destination elle-même.
+     *
+     * Les points d'intérêt ne portent pas de rattachement à une destination :
+     * seules leurs coordonnées permettent de les rapporter à un territoire.
+     * D'où cette enveloppe, qui suit la descendance niveau par niveau — une
+     * requête par niveau, jamais une par entité.
+     *
+     * Les destinations INACTIVES comptent ici : il s'agit d'une géométrie, pas
+     * d'une liste affichée. Les États-Unis et le Mexique ne sont pas publiés,
+     * mais l'Amérique du Nord ne s'arrête pas pour autant à la frontière
+     * canadienne.
+     *
+     * @return array{minLat: float, maxLat: float, minLng: float, maxLng: float}|null
+     */
+    protected function descendantBounds(string $type, $entity): ?array
+    {
+        $latitudes = [];
+        $longitudes = [];
+
+        $retenir = function ($rows) use (&$latitudes, &$longitudes) {
+            foreach ($rows as $row) {
+                if (is_numeric($row->latitude) && is_numeric($row->longitude)) {
+                    $latitudes[] = (float) $row->latitude;
+                    $longitudes[] = (float) $row->longitude;
+                }
+            }
+        };
+
+        $retenir([$entity]);
+
+        // Identifiants connus à chaque niveau, alimentés de proche en proche
+        // depuis le niveau de départ.
+        $ids = [
+            'continent' => [], 'country' => [], 'province' => [], 'region' => [],
+            'secteur' => [], 'city' => [], 'arrondissement' => [],
+        ];
+
+        if (array_key_exists($type, $ids)) {
+            $ids[$type] = [$entity->id];
+        } elseif ($type !== 'quartier') {
+            return null;
+        }
+
+        $descendre = function (string $modelClass, array $conditions) use ($retenir) {
+            // `$conditions` : colonne => identifiants du parent. Une ville peut
+            // pendre d'un secteur, d'une région, d'une province ou directement
+            // d'un pays : plusieurs colonnes sont donc interrogées en OU.
+            $conditions = array_filter($conditions, fn ($valeurs) => !empty($valeurs));
+
+            if (!$conditions) {
+                return collect();
+            }
+
+            $rows = $modelClass::query()
+                ->where(function ($q) use ($conditions) {
+                    foreach ($conditions as $colonne => $valeurs) {
+                        $q->orWhereIn($colonne, $valeurs);
+                    }
+                })
+                ->get(['id', 'latitude', 'longitude']);
+
+            $retenir($rows);
+
+            return $rows;
+        };
+
+        $ids['country'] = array_merge($ids['country'], $descendre(\App\Models\Country::class, [
+            'continent_id' => $ids['continent'],
+        ])->pluck('id')->all());
+
+        $ids['province'] = array_merge($ids['province'], $descendre(\App\Models\Province::class, [
+            'country_id' => $ids['country'],
+        ])->pluck('id')->all());
+
+        $ids['region'] = array_merge($ids['region'], $descendre(\App\Models\Region::class, [
+            'province_id' => $ids['province'],
+        ])->pluck('id')->all());
+
+        $ids['secteur'] = array_merge($ids['secteur'], $descendre(\App\Models\Secteur::class, [
+            'region_id' => $ids['region'],
+        ])->pluck('id')->all());
+
+        $ids['city'] = array_merge($ids['city'], $descendre(\App\Models\Ville::class, [
+            'secteur_id'  => $ids['secteur'],
+            'region_id'   => $ids['region'],
+            'province_id' => $ids['province'],
+            'country_id'  => $ids['country'],
+        ])->pluck('id')->all());
+
+        $ids['arrondissement'] = array_merge($ids['arrondissement'], $descendre(\App\Models\Arrondissement::class, [
+            'ville_id' => $ids['city'],
+        ])->pluck('id')->all());
+
+        $descendre(\App\Models\Quartier::class, [
+            'arrondissement_id' => $ids['arrondissement'],
+            'ville_id'          => $ids['city'],
+        ]);
+
+        if (!$latitudes) {
+            return null;
+        }
+
+        return [
+            'minLat' => min($latitudes),
+            'maxLat' => max($latitudes),
+            'minLng' => min($longitudes),
+            'maxLng' => max($longitudes),
+        ];
     }
 
     protected function getChildEntities($type, $entity)

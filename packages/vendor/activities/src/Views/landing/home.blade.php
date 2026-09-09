@@ -250,6 +250,13 @@
 </head>
 <body>
 
+{{-- ═══ 0. EN-TÊTE DE LA PLATEFORME ════════════════════════════════════
+     Celui de la page d'accueil, à l'identique (menu vertical, mega-menus,
+     langues, recherche, panier). Il est `position: fixed` et transparent en
+     haut de page : il se superpose au hero, comme sur `/`, et la page ne
+     réserve donc aucun espace pour lui. --}}
+@include('welcome-home.partials.platform-header')
+
 {{-- ═══ 1. HERO ════════════════════════════════════════════════════════ --}}
 <header class="ea-hero {{ $heroSlides->isEmpty() ? 'ea-hero--nu' : '' }}">
     @if($heroSlides->isNotEmpty())

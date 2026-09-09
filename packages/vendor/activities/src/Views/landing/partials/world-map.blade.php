@@ -15,7 +15,7 @@
 
      Variables (fournies par LandingPageController::contexteCarteMonde) :
      $entity, $normalizedType, $slug, $childEntities, $mapCategories,
-     $mapPoints, $activity.
+     $mapPoints, $activity, $mapFilterChain, $typeLabels.
      ========================================================================== --}}
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -39,6 +39,40 @@
       </div>
 
       <div class="col-12">
+        {{-- FILTRE PAR DESTINATION — même dispositif que les pages de
+             destination (travel-destination::landing.partials.map-filter).
+             La carte couvre le monde : la cascade part donc du continent, et
+             chaque choix recentre ET zoome la carte sur la destination avant
+             de recharger ses seuls points d'intérêt.
+
+             Les identifiants #mapFilterChain / #mapFilterReset sont ceux
+             qu'attend le filtre : les renommer le rendrait inerte. --}}
+        @if(!empty($mapFilterChain))
+          <div class="map-filterbar plx-carte-destinations" id="mapFilterBar">
+            <div class="map-filterbar__head">
+              <span class="plx-carte-destinations__titre">Filtrer par destination</span>
+              <button type="button" class="map-filterbar__reset" id="mapFilterReset" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+                Tout le monde
+              </button>
+            </div>
+
+            <div class="map-filterbar__chain" id="mapFilterChain">
+              @foreach($mapFilterChain as $level)
+                <div class="map-filterfield" data-level="{{ $level['type'] }}">
+                  <label class="map-filterfield__label" for="mapFilter-{{ $level['type'] }}">{{ $level['label'] }}</label>
+                  <input type="text" class="map-filterfield__input" id="mapFilter-{{ $level['type'] }}"
+                         placeholder="Tous — {{ mb_strtolower($level["label"]) }}s"
+                         autocomplete="off" role="combobox" aria-expanded="false"
+                         aria-label="Filtrer par {{ mb_strtolower($level["label"]) }}"
+                         data-options='@json($level['options'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_APOS)'>
+                  <div class="map-filterfield__list" role="listbox"></div>
+                </div>
+              @endforeach
+            </div>
+          </div>
+        @endif
+
         {{-- Filtres par catégorie : le moteur les reconstruit à partir des
              points réellement chargés (rebuildCategoryFilters). --}}
         <div class="plx-carte-filtres" id="mapFilters">
@@ -82,3 +116,29 @@
     'mapCategories' => $mapCategories,
     'mapPoints' => $mapPoints,
 ])
+
+@if(!empty($mapFilterChain))
+  {{-- « Tout le monde » : le filtre ne rappelle la vue d'ensemble que si la
+       destination de la page a des coordonnées, et « Le monde » n'en a pas.
+       On lui en donne (celles du centre de la vue globale du moteur) et on
+       redéfinit fitAll, qui sur une page de destination recadre sur l'entité :
+       ici, il doit rendre la vue mondiale.
+
+       L'écouteur est posé AVANT que le moteur ne s'initialise (il émet
+       gx:map-ready depuis son DOMContentLoaded), et le filtre relit
+       window.GX_DEST_MAP à chaque usage : la redéfinition est donc vue. --}}
+  <script>
+    document.addEventListener('gx:map-ready', function () {
+      var moteur = window.GX_DEST_MAP;
+      if (!moteur) return;
+      moteur.fitAll = function () { moteur.focus(20, 0, 2); };
+    });
+  </script>
+
+  @include('travel-destination::landing.partials.map-filter', [
+      'entity' => (object) ['latitude' => 20, 'longitude' => 0],
+      'normalizedType' => $normalizedType,
+      'slug' => $slug,
+      'typeLabels' => $typeLabels,
+  ])
+@endif

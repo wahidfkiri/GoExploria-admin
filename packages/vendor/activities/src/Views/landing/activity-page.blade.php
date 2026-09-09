@@ -1,10 +1,10 @@
 {{-- Site d'une activité : sa PAGE (contenu de type « page »), composée dans
      l'éditeur VvvebJS côté administration.
 
-     La page est rendue SEULE, sans le chrome de la plateforme : elle apporte
-     son propre en-tête et son propre pied de page. C'est la même décision que
-     pour les pages CMS d'établissement — un en-tête de repli par-dessus celui
-     du gabarit donnait deux menus superposés.
+     La page apporte son propre pied de page, mais plus son en-tête : celui du
+     gabarit est retiré du contenu et remplacé par l'en-tête de la plateforme,
+     le même que sur `/`. C'est le seul moyen d'avoir UNE barre de navigation
+     et pas deux — les deux sont en `position: fixed` en haut de page.
 
      Ses feuilles de style et ses images sont servies depuis
      /templates/plexify, présent dans public/ des deux projets. Le contenu
@@ -34,8 +34,17 @@
 </head>
 <body>
 
+{{-- EN-TÊTE DE LA PLATEFORME — celui de la page d'accueil, à l'identique.
+     Il REMPLACE celui du gabarit, que LandingPageController::retirerEnteteGabarit
+     retire du contenu enregistré : les deux sont `position: fixed` en haut de
+     page et se seraient superposés. Transparent au repos, il se pose sur le
+     visuel d'ouverture exactement comme le faisait l'en-tête du gabarit
+     (`header-transparent`) : rien à décaler. --}}
+@include('welcome-home.partials.platform-header')
+
 {{-- `$contenu` = le contenu enregistré, sa section d'attente `data-gx-map`
-     déjà remplacée par la vraie carte (LandingPageController). --}}
+     déjà remplacée par la vraie carte et son en-tête de gabarit retiré
+     (LandingPageController). --}}
 {!! $contenu ?? $page->content !!}
 
 {{-- Popups publicitaires : même dispositif que la page d'activité classique. --}}
