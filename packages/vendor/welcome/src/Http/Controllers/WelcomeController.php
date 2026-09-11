@@ -28,40 +28,6 @@ class WelcomeController extends Controller
 
 
     /**
-     * Page d'essai : même page, mais tout ce qui suit la carte vient du CMS.
-     *
-     * En-tête, héro et carte restent rendus par le front — ils dépendent de la
-     * base (mégamenus, encarts sponsorisés, points d'intérêt) et aucun HTML
-     * figé ne peut les remplacer. Le reste est servi par la page d'accueil de
-     * l'établissement désigné par `welcome.accueil.etablissement_id`,
-     * modifiable dans VvvebJS. Si ce contenu emporte encore l'en-tête ou le
-     * pied du gabarit, `ContenuCmsIntegre` les retire : la page garde les siens.
-     *
-     * `/` sert désormais la même structure, depuis le même établissement.
-     * Cette route reste utile pour une raison : elle est la seule à AFFICHER
-     * le motif quand le contenu manque (établissement, page, publication,
-     * contenu vide). L'accueil public, lui, retombe en silence sur le rendu
-     * d'origine — c'est ici qu'on vient comprendre pourquoi.
-     */
-    public function test()
-    {
-        $donnees = $this->donneesAccueil();
-
-        [$contenu, $motif] = $this->contenuAccueilCms();
-        $donnees['cmsAccueil'] = $contenu;
-
-        if ($contenu === null) {
-            // Mieux vaut le dire que d'afficher silencieusement l'ancien rendu :
-            // la page paraîtrait normale et l'essai n'aurait rien prouvé. Le
-            // motif exact évite d'avoir à deviner lequel des quatre écueils
-            // (établissement, page, publication, contenu) a été rencontré.
-            $donnees['cmsAccueilAbsent'] = $motif;
-        }
-
-        return view('welcome-home.index', $donnees);
-    }
-
-    /**
      * Contenu de page du CMS pour l'accueil du site public.
      *
      * Renvoie [null, motif] si l'établissement ou sa page manquent — la vue
@@ -159,20 +125,17 @@ class WelcomeController extends Controller
     }
 
     /**
-     * Page d'accueil publique.
+     * Page d'accueil : tout ce qui suit la carte vient du CMS.
      *
-     * Même structure que /welcome-test : l'en-tête, le héro et la carte sont
-     * rendus par le front, et tout ce qui suit la carte vient de la page
-     * d'accueil de l'établissement désigné par
-     * `welcome.accueil.etablissement_id` — le même pour les deux routes, ce
-     * qui compte pour la logique côté front.
+     * En-tête, héro et carte restent rendus par le front — ils dépendent de la
+     * base (mégamenus, encarts sponsorisés, points d'intérêt) et aucun HTML
+     * figé ne peut les remplacer. Le reste est servi par la page d'accueil de
+     * l'établissement désigné par `welcome.accueil.etablissement_id`,
+     * modifiable dans VvvebJS. Si ce contenu emporte encore l'en-tête ou le
+     * pied du gabarit, `ContenuCmsIntegre` les retire : la page garde les siens.
      *
-     * Une seule différence, volontaire : le motif d'échec n'est pas transmis
-     * à la vue. Sur la page d'essai, afficher la panne est tout l'intérêt ;
-     * sur l'accueil public, le bandeau exposerait un identifiant
-     * d'établissement et une clé de configuration aux visiteurs. La vue
-     * retombe donc silencieusement sur le rendu d'origine — et le motif part
-     * dans le journal, sans quoi la panne passerait inaperçue.
+     * Cette méthode était la route d'essai /welcome-test, devenue « / » telle
+     * quelle : même logique, bandeau de diagnostic compris.
      */
     public function index()
     {
@@ -182,15 +145,43 @@ class WelcomeController extends Controller
         $donnees['cmsAccueil'] = $contenu;
 
         if ($contenu === null) {
+            // Mieux vaut le dire que d'afficher silencieusement l'ancien rendu :
+            // la page paraîtrait normale et la panne passerait pour un choix.
+            // Le motif exact évite d'avoir à deviner lequel des quatre écueils
+            // (établissement, page, publication, contenu) a été rencontré.
+            $donnees['cmsAccueilAbsent'] = $motif;
+
+            // Et au journal, pour le voir sans attendre qu'un visiteur le
+            // signale.
             \Illuminate\Support\Facades\Log::warning(
-                "Accueil « / » : repli sur le rendu d'origine. " . $motif
+                "Accueil : repli sur le rendu d'origine. " . $motif
             );
         }
 
         return view('welcome-home.index', $donnees);
     }
 
-    /** Les données communes à l'accueil et à sa page d'essai. */
+    /**
+     * ANCIEN rendu de l'accueil, conservé sous /welcome-test.
+     *
+     * Ne transmet PAS `$cmsAccueil` : la vue prend alors sa branche d'origine
+     * — les sections pilotées depuis le constructeur (welcome_zones /
+     * welcome_sections), et à défaut les composants Blade historiques. Elle
+     * recharge aussi les quatre scripts que le contenu CMS apporte lui-même.
+     *
+     * C'est exactement ce que servait « / » avant que le CMS ne fournisse tout
+     * ce qui suit la carte. Garder les deux rendus côte à côte permet de les
+     * comparer, et donne où se replier si la page CMS pose problème.
+     *
+     * En-tête, héro et carte sont identiques sur les deux routes : ils sont
+     * rendus par le front dans les deux cas.
+     */
+    public function ancienneAccueil()
+    {
+        return view('welcome-home.index', $this->donneesAccueil());
+    }
+
+    /** Les données communes aux deux rendus de l'accueil. */
     protected function donneesAccueil(): array
     {
         $sliders = $this->safe(fn () => Slider::active()->ordered()->get(), collect());

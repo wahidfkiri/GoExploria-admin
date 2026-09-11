@@ -572,9 +572,10 @@
                  `cms_header_footers` (§6 de docs/TEMPLATES-CMS.md) — et c'est
                  voulu : le site garde les siens.
 
-                 Défini par « / » comme par la route d'essai /welcome-test,
-                 depuis le MÊME établissement. La branche ci-dessous ne sert
-                 plus que de repli, quand ce contenu manque.
+                 C'est le rendu normal de « / ». La branche ci-dessous sert
+                 dans deux cas : /welcome-test, qui montre volontairement
+                 l'ancien rendu, et le repli quand ce contenu manque — le
+                 bandeau au-dessus dit alors pourquoi.
                  ══════════════════════════════════════════════════════════════ --}}
             {!! $cmsAccueil !!}
         @else

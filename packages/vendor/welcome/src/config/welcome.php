@@ -13,7 +13,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Établissement qui porte les sections sous la carte (/ et /welcome-test)
+    | Établissement qui porte les sections sous la carte (page d'accueil)
     |--------------------------------------------------------------------------
     | La page d'accueil de cet établissement fournit tout ce qui suit la carte.
     | L'en-tête, le héro et la carte restent rendus par le front : ils dépendent

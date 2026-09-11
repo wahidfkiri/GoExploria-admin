@@ -54,18 +54,23 @@ Route::get('/cdn-storage/{path}', [CDNController::class, 'getFile'])
     ->where('path', '.*')
     ->name('cdn.public-file');
 
-// Page d'accueil = page Welcome (remplace l'ancienne home-v2)
+// Page d'accueil = page Welcome (remplace l'ancienne home-v2).
+//
+// En-tête, héro et carte sont rendus par le front ; tout ce qui suit la carte
+// vient du CMS, modifiable dans VvvebJS, et l'établissement qui le porte se
+// règle par `welcome.accueil.etablissement_id` (config/welcome.php du package).
+//
+// C'est le rendu qu'essayait /welcome-test : « / » a pris sa logique telle
+// quelle, et /welcome-test sert désormais l'ANCIEN rendu (ci-dessous).
 Route::get('/', [\Vendor\Welcome\Http\Controllers\WelcomeController::class, 'index'])->name('home-v2');
 
-// Jumelle de « / » : même structure, même établissement
-// (`welcome.accueil.etablissement_id`, config/welcome.php du package). En-tête,
-// héro et carte sont rendus par le front ; tout ce qui suit la carte vient du
-// CMS, modifiable dans VvvebJS.
+// Ancien rendu de l'accueil : les sections après la carte viennent du
+// constructeur (welcome_zones / welcome_sections), pas du CMS. Même en-tête,
+// même héro, même carte que « / » — seul ce qui suit la carte change.
 //
-// Elle survit à la bascule de « / » pour une raison : elle est la seule à
-// AFFICHER le motif quand le contenu CMS manque. L'accueil public retombe en
-// silence sur le rendu d'origine ; c'est ici qu'on vient voir pourquoi.
-Route::get('/welcome-test', [\Vendor\Welcome\Http\Controllers\WelcomeController::class, 'test'])
+// Conservé pour comparer les deux rendus, et pour avoir où se replier si la
+// page CMS pose problème.
+Route::get('/welcome-test', [\Vendor\Welcome\Http\Controllers\WelcomeController::class, 'ancienneAccueil'])
     ->name('welcome.test');
 
 Route::get('/locale/{locale}', function (string $locale) {
