@@ -572,8 +572,9 @@
                  `cms_header_footers` (§6 de docs/TEMPLATES-CMS.md) — et c'est
                  voulu : le site garde les siens.
 
-                 N'est défini que par la route d'essai /welcome-test. Sur « / »,
-                 la variable n'existe pas et le rendu ci-dessous est inchangé.
+                 Défini par « / » comme par la route d'essai /welcome-test,
+                 depuis le MÊME établissement. La branche ci-dessous ne sert
+                 plus que de repli, quand ce contenu manque.
                  ══════════════════════════════════════════════════════════════ --}}
             {!! $cmsAccueil !!}
         @else

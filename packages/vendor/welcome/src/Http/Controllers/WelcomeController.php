@@ -37,9 +37,11 @@ class WelcomeController extends Controller
      * modifiable dans VvvebJS. Si ce contenu emporte encore l'en-tête ou le
      * pied du gabarit, `ContenuCmsIntegre` les retire : la page garde les siens.
      *
-     * Route séparée volontairement : `/` n'est pas touchée tant que le rendu
-     * n'a pas été validé ici. Basculer se fera en passant `$cmsAccueil` depuis
-     * index() — la vue gère déjà les deux cas.
+     * `/` sert désormais la même structure, depuis le même établissement.
+     * Cette route reste utile pour une raison : elle est la seule à AFFICHER
+     * le motif quand le contenu manque (établissement, page, publication,
+     * contenu vide). L'accueil public, lui, retombe en silence sur le rendu
+     * d'origine — c'est ici qu'on vient comprendre pourquoi.
      */
     public function test()
     {
@@ -156,9 +158,36 @@ class WelcomeController extends Controller
         return (string) config('welcome.accueil.etablissement_slug', self::ACCUEIL_SLUG);
     }
 
+    /**
+     * Page d'accueil publique.
+     *
+     * Même structure que /welcome-test : l'en-tête, le héro et la carte sont
+     * rendus par le front, et tout ce qui suit la carte vient de la page
+     * d'accueil de l'établissement désigné par
+     * `welcome.accueil.etablissement_id` — le même pour les deux routes, ce
+     * qui compte pour la logique côté front.
+     *
+     * Une seule différence, volontaire : le motif d'échec n'est pas transmis
+     * à la vue. Sur la page d'essai, afficher la panne est tout l'intérêt ;
+     * sur l'accueil public, le bandeau exposerait un identifiant
+     * d'établissement et une clé de configuration aux visiteurs. La vue
+     * retombe donc silencieusement sur le rendu d'origine — et le motif part
+     * dans le journal, sans quoi la panne passerait inaperçue.
+     */
     public function index()
     {
-        return view('welcome-home.index', $this->donneesAccueil());
+        $donnees = $this->donneesAccueil();
+
+        [$contenu, $motif] = $this->contenuAccueilCms();
+        $donnees['cmsAccueil'] = $contenu;
+
+        if ($contenu === null) {
+            \Illuminate\Support\Facades\Log::warning(
+                "Accueil « / » : repli sur le rendu d'origine. " . $motif
+            );
+        }
+
+        return view('welcome-home.index', $donnees);
     }
 
     /** Les données communes à l'accueil et à sa page d'essai. */
