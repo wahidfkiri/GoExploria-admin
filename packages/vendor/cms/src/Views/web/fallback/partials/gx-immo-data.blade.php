@@ -36,7 +36,13 @@
     // démonstration — sans la moindre erreur pour le signaler. Les autres
     // greffes (formulaire de demande, calendrier, média de la fiche) se
     // branchent, elles, sur `data-im-detail` et n'ont rien à déclarer.
-    $gxEnveloppesImmo = ['immo-tpl', 'resid-tpl', 'voyago-tpl', 'sylva-tpl', 'boisrond-tpl'];
+    // ⚠ Un wrapper absent de cette liste ne reçoit RIEN : window.GX_IMMO
+    // n'est pas émis, le gabarit reste sur ses cartes de démonstration, et
+    // aucun message ne le signale. Tout gabarit qui sert des biens doit donc
+    // y figurer — `gx-default-tpl` pour sa section « Chalets à louer »,
+    // `mx-tpl` pour ses hébergements, forfaits et véhicules.
+    $gxEnveloppesImmo = ['immo-tpl', 'resid-tpl', 'voyago-tpl', 'sylva-tpl', 'boisrond-tpl',
+                         'gx-default-tpl', 'mx-tpl'];
 
     $gxEstTemplateImmo = \Illuminate\Support\Str::contains(
         collect($cmsPageSections ?? [])->map(fn ($p) => (string) data_get($p, 'content'))->implode(''),
