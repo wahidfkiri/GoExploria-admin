@@ -99,13 +99,27 @@
             @include('welcome-home.components.PlansMegaMenu')
             
             <div class="nav-right">
-                {{-- Ancienne icône de recherche (#mobileSearchTrigger) retirée : on garde uniquement celle après « AFFICHEZ VOUS » --}}
-                <a href="{{ route('devis') }}" class="nav-devis-btn" target="_blank" rel="noopener noreferrer" aria-label="Demander un devis">
+                {{-- Ancienne icône de recherche (#mobileSearchTrigger) retirée : on garde uniquement celle après « PLANS PARTENAIRES » --}}
+                <a href="{{ route('devis') }}" class="nav-devis-btn" target="_blank" rel="noopener noreferrer" aria-label="Plans partenaires" title="Plans partenaires">
                     <i class="fas fa-file-signature" aria-hidden="true"></i>
-                    <span>AFFICHEZ VOUS</span>
+                    <span>PLANS PARTENAIRES</span>
                 </a>
+                {{-- « PLANS PARTENAIRES » est plus long que l'ancien libellé : sans
+                     ces règles la barre débordait de l'écran entre 1201 et 1440 px
+                     (mesuré : +52 px à 1280 px). Sous 1280 px, icône seule comme
+                     sous 1200 px (styles.css). --}}
+                <style>
+                    @media (min-width: 1201px) and (max-width: 1440px) {
+                        .header-v2 .nav-devis-btn { padding: 10px 14px !important; font-size: 12px !important; letter-spacing: 0 !important; gap: 6px !important; }
+                        .header-v2 .nav-right { gap: 12px !important; }
+                    }
+                    @media (min-width: 1201px) and (max-width: 1279px) {
+                        .header-v2 .nav-devis-btn { width: 40px; min-width: 40px; padding: 0 !important; border-radius: 50% !important; }
+                        .header-v2 .nav-devis-btn span { display: none; }
+                    }
+                </style>
 
-                {{-- Icône de recherche (après « AFFICHEZ VOUS ») : ouvre la barre de recherche déroulante --}}
+                {{-- Icône de recherche (après « PLANS PARTENAIRES ») : ouvre la barre de recherche déroulante --}}
                 <button type="button" class="nav-icon hdr-search-toggle" id="hdrSearchToggle" aria-label="Rechercher" aria-expanded="false" aria-controls="hdrSearchPanel">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <circle cx="11" cy="11" r="8"></circle>

@@ -86,10 +86,23 @@
                         <path d="m21 21-4.35-4.35"></path>
                     </svg>
                 </a>
-                <a href="{{ route('devis') }}" class="nav-devis-btn" target="_blank" rel="noopener noreferrer" aria-label="Demander un devis">
+                <a href="{{ route('devis') }}" class="nav-devis-btn" target="_blank" rel="noopener noreferrer" aria-label="Plans partenaires" title="Plans partenaires">
                     <i class="fas fa-file-signature" aria-hidden="true"></i>
-                    <span>AFFICHEZ VOUS</span>
+                    <span>PLANS PARTENAIRES</span>
                 </a>
+                {{-- « PLANS PARTENAIRES » est plus long que l'ancien libellé : sans
+                     ces règles la barre débordait de l'écran entre 1201 et 1440 px.
+                     Sous 1280 px, icône seule comme sous 1200 px (styles.css). --}}
+                <style>
+                    @media (min-width: 1201px) and (max-width: 1440px) {
+                        .header-v2 .nav-devis-btn { padding: 10px 14px !important; font-size: 12px !important; letter-spacing: 0 !important; gap: 6px !important; }
+                        .header-v2 .nav-right { gap: 12px !important; }
+                    }
+                    @media (min-width: 1201px) and (max-width: 1279px) {
+                        .header-v2 .nav-devis-btn { width: 40px; min-width: 40px; padding: 0 !important; border-radius: 50% !important; }
+                        .header-v2 .nav-devis-btn span { display: none; }
+                    }
+                </style>
                 {{-- â€”â€” Language Switcher â€”â€” --}}
                 <div class="lang-switcher" id="langSwitcher">
                     <button class="lang-btn" id="langBtn" aria-label="{{ __('home-v2.language.select') }}" aria-expanded="false">

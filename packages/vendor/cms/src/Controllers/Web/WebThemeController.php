@@ -2328,6 +2328,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $html = $this->injectCartDrawer($html);
         $html = $this->injectProductModal($html);
         $html = $this->injectImmoRequestForm($html);
+        $html = $this->injectTemplateContactForm($html);
         $html = $this->injectLandingMap($html);
         $html = $this->injectSwiperAssets($html);
         $html = $this->injectEmbedBridge($html);
@@ -2547,6 +2548,59 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 . view('cms::web.fallback.partials.gx-immo-media')->render();
         } catch (\Throwable $e) {
             \Log::warning('Immo request form injection failed: ' . $e->getMessage());
+
+            return $html;
+        }
+
+        // preg_replace_callback et non preg_replace : le script contient des
+        // séquences que le remplacement prendrait pour des références.
+        return preg_replace_callback('/<\/body>/i', function () use ($bloc) {
+            return $bloc . '</body>';
+        }, $html, 1);
+    }
+
+    /**
+     * Branche les formulaires de gabarit sur la messagerie de l'établissement.
+     *
+     * ⚠ POURQUOI UNE INJECTION, ET PAS LE GESTIONNAIRE PARTAGÉ.
+     * Le site d'établissement est rendu dans une <iframe> ; landing-contact-ajax
+     * vit dans le shell PARENT, son écouteur ne voit donc aucun formulaire du
+     * gabarit. Il n'ajoute pas non plus de jeton CSRF, et un gabarit stocké en
+     * base ne peut écrire ni @csrf ni route(). Le pont est rendu ICI, dans le
+     * document du gabarit, avec l'URL et le jeton calculés par Blade — comme
+     * gx-immo-request pour les biens.
+     *
+     * N'agit que sur les pages qui portent un formulaire `data-gx-contact`.
+     * Injecté au rendu, il atteint aussi les sites déjà installés.
+     *
+     * La garde « déjà branché » vise `data-gx-contact-pont`, que seul le pont
+     * émet : un gabarit peut citer `__gxContactPont` dans son propre script
+     * (pour savoir si le pont est là) sans empêcher l'injection.
+     */
+    protected function injectTemplateContactForm($html)
+    {
+        if (! is_string($html) || $html === '') {
+            return $html;
+        }
+        if (stripos($html, '</body>') === false) {
+            return $html;
+        }
+        if (stripos($html, 'data-gx-contact') === false) {
+            return $html;   // aucun formulaire de gabarit sur cette page
+        }
+        if (stripos($html, 'data-gx-contact-pont') !== false) {
+            return $html;   // déjà branché
+        }
+        if (! $this->etablissement) {
+            return $html;   // sans établissement, pas d'adresse d'envoi
+        }
+
+        try {
+            $bloc = view('cms::web.fallback.partials.gx-contact-form', [
+                'etablissement' => $this->etablissement,
+            ])->render();
+        } catch (\Throwable $e) {
+            \Log::warning('Template contact form injection failed: ' . $e->getMessage());
 
             return $html;
         }

@@ -36,7 +36,9 @@
     .cgh-devis{ display:inline-flex; align-items:center; gap:7px; padding:8px 16px; border-radius:22px; background:linear-gradient(135deg,#1677ff,#7c3aed); color:#fff !important; font-size:12.5px; font-weight:700; }
     .cgh-devis:hover{ filter:brightness(1.08); color:#fff !important; }
     .cgh-burger{ display:none; background:none; border:0; color:#fff; font-size:22px; cursor:pointer; margin-left:auto; }
-    @media (max-width: 992px){
+    /* Menu burger jusqu'à 1199 px : les 7 liens demandent ≈ 1185 px de large,
+       ils débordaient de l'écran entre 993 et 1185 px. */
+    @media (max-width: 1199px){
         .cgh-nav{ position:fixed; top:var(--cgh-h); right:0; width:min(300px,86vw); height:calc(100vh - var(--cgh-h));
             flex-direction:column; align-items:flex-start; gap:4px; padding:18px; background:rgba(9,16,31,.98);
             transform:translateX(105%); transition:transform .3s ease; overflow-y:auto; margin-left:0; z-index:99991; }
@@ -59,7 +61,7 @@
             <a href="{{ $cghVideoUrl }}" target="_blank" rel="noopener"><i class="fas fa-video" style="font-size:11px"></i> Chaîne vidéos</a>
             <a href="{{ $cghLink('contact') }}">CONTACTEZ NOUS</a>
             <a href="{{ $cghLink('mon-compte') }}" class="cgh-account"><i class="fas fa-user-circle"></i> Mon Compte</a>
-            <a href="{{ $cghLink('devis') }}" target="_blank" rel="noopener" class="cgh-devis"><i class="fas fa-file-signature" style="font-size:12px"></i> AFFICHEZ VOUS</a>
+            <a href="{{ $cghLink('devis') }}" target="_blank" rel="noopener" class="cgh-devis"><i class="fas fa-file-signature" style="font-size:12px"></i> PLANS PARTENAIRES</a>
         </nav>
     </div>
 </header>
