@@ -26,6 +26,21 @@
         : 'Cliquez sur les marqueurs pour en savoir plus';
     $landingMapTitleColor = $landingMapCfg['title_color'] ?? '#000000';
     $landingMapSubtitleColor = $landingMapCfg['subtitle_color'] ?? '#000000';
+    // Bannière (variante « section ») sur fond noir : une couleur admin trop
+    // sombre y serait invisible → blanc. Couleur non lisible (nom, rgb…) : idem.
+    $landingMapOnDark = static function ($color, $fallback) {
+        $hex = ltrim(trim((string) $color), '#');
+        if (strlen($hex) === 3) {
+            $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+        }
+        if (!preg_match('/^[0-9a-f]{6}$/i', $hex)) {
+            return $fallback;
+        }
+        [$r, $g, $b] = array_map('hexdec', str_split($hex, 2));
+        return (0.2126 * $r + 0.7152 * $g + 0.0722 * $b) / 255 < 0.55 ? $fallback : '#'.$hex;
+    };
+    $landingMapBannerTitleColor = $landingMapOnDark($landingMapTitleColor, '#ffffff');
+    $landingMapBannerSubtitleColor = $landingMapOnDark($landingMapSubtitleColor, 'rgba(255,255,255,.78)');
     // Le titre configuré côté admin (config carte) est prioritaire — corrige le
     // cas où seul le sous-titre s'affichait (titre issu d'une autre clé/vide).
     if (trim((string) ($landingMapCfg['title'] ?? '')) !== '') {
@@ -382,24 +397,25 @@
             /* Bandeau vertical pleine largeur au-dessus de la carte (variante
                « section » seulement). Ses marges négatives annulent le padding
                de .map-section pour toucher les deux bords de la page. */
-            .map-banner{position:relative;isolation:isolate;margin:-64px -24px 44px;padding:clamp(60px,8vw,100px) 24px clamp(48px,6vw,72px);min-height:clamp(340px,46vh,500px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;background:radial-gradient(120% 85% at 50% 0%,rgba(245,166,35,.16) 0%,rgba(245,166,35,0) 58%),linear-gradient(180deg,#fdfbf7 0%,#f3ece0 100%);border-bottom:1px solid rgba(10,14,26,.08)}
-            .map-banner:before{content:'';position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(10,14,26,.16) 1px,transparent 1.5px);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse 55% 65% at 50% 50%,transparent 35%,#000 100%);mask-image:radial-gradient(ellipse 55% 65% at 50% 50%,transparent 35%,#000 100%);opacity:.6}
+            .map-banner{position:relative;isolation:isolate;margin:-64px -24px 40px;padding:clamp(40px,5vw,60px) 24px clamp(32px,4vw,48px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;background:radial-gradient(110% 80% at 50% 0%,rgba(245,166,35,.2) 0%,rgba(245,166,35,0) 60%),linear-gradient(180deg,#0c0c0e 0%,#000 100%);border-bottom:1px solid rgba(255,255,255,.08)}
+            .map-banner:before{content:'';position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(255,255,255,.16) 1px,transparent 1.5px);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse 55% 65% at 50% 50%,transparent 35%,#000 100%);mask-image:radial-gradient(ellipse 55% 65% at 50% 50%,transparent 35%,#000 100%);opacity:.5}
             .map-banner__inner{width:min(920px,100%);display:flex;flex-direction:column;align-items:center}
-            .map-banner__logo{display:inline-flex;align-items:center;justify-content:center;max-width:100%;margin-bottom:24px;padding:14px 24px;background:rgba(255,255,255,.88);border:1px solid rgba(10,14,26,.06);border-radius:20px;box-shadow:0 14px 36px rgba(10,14,26,.08)}
-            .map-banner__logo img{max-width:100%}
-            .map-banner__eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:16px;padding:7px 16px;border-radius:999px;background:rgba(245,166,35,.14);color:#9a5d05;font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
-            .map-banner .section-title{margin:0;font-size:clamp(32px,5.2vw,60px);line-height:1.08;letter-spacing:-.01em;text-wrap:balance}
-            .map-banner__divider{display:flex;align-items:center;gap:12px;margin:22px 0 16px;color:var(--td-amber);font-size:14px}
+            .map-banner__logo{display:inline-flex;align-items:center;justify-content:center;max-width:100%;margin-bottom:18px;padding:10px 20px;background:#fff;border-radius:18px;box-shadow:0 14px 36px rgba(0,0,0,.55)}
+            /* Le logo arrive avec height:96px en ligne (config admin) : on le plafonne ici. */
+            .map-banner__logo img{max-width:100%;max-height:72px;width:auto}
+            .map-banner__eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;padding:6px 15px;border-radius:999px;background:rgba(245,166,35,.16);border:1px solid rgba(245,166,35,.28);color:#f5b94a;font-size:.7rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+            .map-banner .section-title{margin:0;font-size:clamp(28px,4.4vw,50px);line-height:1.08;letter-spacing:-.01em;text-wrap:balance}
+            .map-banner__divider{display:flex;align-items:center;gap:12px;margin:16px 0 12px;color:var(--td-amber);font-size:13px}
             .map-banner__divider:before,.map-banner__divider:after{content:'';width:64px;height:1px;background:linear-gradient(90deg,transparent,currentColor)}
             .map-banner__divider:after{transform:scaleX(-1)}
             .map-banner .section-subtitle{margin:0;max-width:660px;font-size:clamp(.95rem,1.4vw,1.1rem);line-height:1.6;letter-spacing:.06em;text-wrap:balance}
-            .map-banner__cue{margin-top:32px;display:inline-flex;flex-direction:column;align-items:center;gap:10px;padding:0;background:none;border:0;cursor:pointer;font:inherit;color:rgba(10,14,26,.55);font-size:.7rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;transition:color var(--td-transition)}
-            .map-banner__cue:hover,.map-banner__cue:focus-visible{color:#9a5d05}
-            .map-banner__cue-dot{width:36px;height:36px;border-radius:50%;border:1px solid currentColor;display:grid;place-items:center}
+            .map-banner__cue{margin-top:20px;display:inline-flex;flex-direction:row;align-items:center;gap:10px;padding:0;background:none;border:0;cursor:pointer;font:inherit;color:rgba(255,255,255,.62);font-size:.7rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;transition:color var(--td-transition)}
+            .map-banner__cue:hover,.map-banner__cue:focus-visible{color:var(--td-amber)}
+            .map-banner__cue-dot{width:30px;height:30px;border-radius:50%;border:1px solid currentColor;display:grid;place-items:center;font-size:11px}
             .map-banner__cue-dot i{animation:mapBannerCue 1.8s ease-in-out infinite}
             @keyframes mapBannerCue{0%,100%{transform:translateY(-2px)}50%{transform:translateY(3px)}}
             @media(prefers-reduced-motion:reduce){.map-banner__cue-dot i{animation:none}}
-            @media(max-width:640px){.map-banner{margin-bottom:32px;min-height:0;padding:56px 20px 44px}.map-banner__logo{padding:10px 16px;margin-bottom:18px}.map-banner__divider:before,.map-banner__divider:after{width:40px}}
+            @media(max-width:640px){.map-banner{margin-bottom:28px;padding:40px 18px 32px}.map-banner__logo{padding:8px 14px;margin-bottom:14px}.map-banner__logo img{max-height:56px}.map-banner__divider:before,.map-banner__divider:after{width:40px}}
             .map-wrapper{border-radius:var(--td-radius-md);overflow:hidden;box-shadow:var(--td-shadow)}
             .travel-map{width:100%;height:500px;z-index:1}
             .travel-map .leaflet-container{font-family:'DM Sans',sans-serif;background:var(--td-navy)}
@@ -663,9 +679,9 @@
                         <div class="section-logo map-banner__logo">{!! $landingMapLogoHtml !!}</div>
                     @endif
                     <span class="map-banner__eyebrow"><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i> Carte interactive</span>
-                    <h2 class="section-title" id="map-heading" style="color:{{ $landingMapTitleColor }};">{{ $landingMapSectionTitle }}</h2>
+                    <h2 class="section-title" id="map-heading" style="color:{{ $landingMapBannerTitleColor }};">{{ $landingMapSectionTitle }}</h2>
                     <div class="map-banner__divider" aria-hidden="true"><i class="fa-solid fa-location-dot"></i></div>
-                    <p class="section-subtitle" style="color:{{ $landingMapSubtitleColor }};">{{ $landingMapSubtitle }}</p>
+                    <p class="section-subtitle" style="color:{{ $landingMapBannerSubtitleColor }};">{{ $landingMapSubtitle }}</p>
                     <button type="button" class="map-banner__cue" onclick="var m=document.getElementById(@js($landingMapId));if(m){m.scrollIntoView({behavior:'smooth',block:'center'});}">
                         <span class="map-banner__cue-dot"><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></span>
                         Explorer la carte
