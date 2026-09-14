@@ -2395,6 +2395,32 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     }
 
     /**
+     * Insère un bloc juste avant la DERNIÈRE balise </body> de la page.
+     *
+     * ⚠ La dernière, jamais la première. Chaque greffe s'ajoute derrière les
+     * précédentes ; si l'une d'elles cite la balise fermante du body — dans un
+     * commentaire CSS, une chaîne JS —, viser la PREMIÈRE occurrence posait la
+     * greffe suivante AU MILIEU de ce bloc. Constaté sur un site Mixte
+     * (établissement 10516) : le pont de contact s'est inséré dans un
+     * commentaire de la feuille gx-immo-request, sa balise de fin de feuille
+     * a refermé celle-ci, et le reste du CSS s'affichait en texte brut en bas
+     * du site.
+     *
+     * substr et non preg_replace : les blocs contiennent des `$` et des `${…}`
+     * qu'un remplacement prendrait pour des références de capture.
+     */
+    protected function insererAvantFinBody(string $html, string $bloc): string
+    {
+        $pos = strripos($html, '</body>');
+
+        if ($pos === false) {
+            return $html;
+        }
+
+        return substr($html, 0, $pos) . $bloc . substr($html, $pos);
+    }
+
+    /**
      * Charge et initialise Swiper côté front lorsque la page contient du markup
      * Swiper (hero vidéos, galerie). Les templates ne portent aucun <script>.
      */
@@ -2421,9 +2447,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             return $html;
         }
 
-        return preg_replace_callback('/<\/body>/i', function () use ($assets) {
-            return $assets . '</body>';
-        }, $html, 1);
+        return $this->insererAvantFinBody($html, $assets);
     }
 
     /**
@@ -2501,12 +2525,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             return $html;
         }
 
-        // Callback pour éviter l'interprétation des `$` (le drawer contient des
-        // template-literals ${...} et des symboles $ qui seraient traités comme
-        // des backreferences par preg_replace.
-        return preg_replace_callback('/<\/body>/i', function () use ($drawer) {
-            return $drawer . '</body>';
-        }, $html, 1);
+        return $this->insererAvantFinBody($html, $drawer);
     }
 
     /**
@@ -2552,11 +2571,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             return $html;
         }
 
-        // preg_replace_callback et non preg_replace : le script contient des
-        // séquences que le remplacement prendrait pour des références.
-        return preg_replace_callback('/<\/body>/i', function () use ($bloc) {
-            return $bloc . '</body>';
-        }, $html, 1);
+        return $this->insererAvantFinBody($html, $bloc);
     }
 
     /**
@@ -2605,11 +2620,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             return $html;
         }
 
-        // preg_replace_callback et non preg_replace : le script contient des
-        // séquences que le remplacement prendrait pour des références.
-        return preg_replace_callback('/<\/body>/i', function () use ($bloc) {
-            return $bloc . '</body>';
-        }, $html, 1);
+        return $this->insererAvantFinBody($html, $bloc);
     }
 
     /**
@@ -2640,11 +2651,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             return $html;
         }
 
-        // Même précaution que pour le tiroir : le script contient des `${...}`
-        // que preg_replace prendrait pour des références de capture.
-        return preg_replace_callback('/<\/body>/i', function () use ($modale) {
-            return $modale . '</body>';
-        }, $html, 1);
+        return $this->insererAvantFinBody($html, $modale);
     }
 
     protected function buildSeoContext($page = null, bool $isPreview = false): array

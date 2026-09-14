@@ -56,8 +56,15 @@
        trois copies de la feuille du gabarit (regions d'en-tete et de pied +
        contenu), qui se mettent a jour separement. Sur 9642 la copie du pied,
        rendue en dernier, imposait encore `fixed`. Cette feuille-ci est
-       injectee avant </body>, donc APRES toutes les regions : elle tranche,
-       et corrige les sites deja installes sans avoir a les reinstaller.
+       injectee juste avant la fermeture du body, donc APRES toutes les
+       regions : elle tranche, et corrige les sites deja installes sans avoir
+       a les reinstaller.
+
+       ⚠ Ne JAMAIS ecrire la balise fermante du body en toutes lettres dans
+       cette feuille (ni dans aucun bloc injecte) : l'injection suivante la
+       prenait pour la vraie fin de page, se posait AU MILIEU de ce commentaire,
+       et sa propre balise de fin de feuille fermait celle-ci — tout le reste
+       s'affichait en texte brut en bas du site (etablissement 10516).
 
        On ne touche QUE la position — le centrage, la largeur et le style de
        la fiche restent le choix de chaque gabarit (NadiImmo garde son tiroir).
