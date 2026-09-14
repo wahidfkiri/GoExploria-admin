@@ -28,6 +28,10 @@ return [
     // Défilement auto (secondes) entre deux glissements du carrousel de cards.
     'cards_autoplay' => (int) env('ADS_CARDS_AUTOPLAY', 4),
 
+    // Bannière 1920×200 avant la carte des sites d'établissements (paquet cms).
+    'map_banner_zone'    => env('ADS_MAP_BANNER_ZONE', 'banner_before_map'),
+    'map_banner_enabled' => (bool) env('ADS_MAP_BANNER_ENABLED', true),
+
     // Slider de la page d'accueil : les annonces s'intercalent comme vues du
     // carrousel « welcome », groupées par 5 (1 grande image + 4 tuiles).
     'home_slider_zone'    => env('ADS_HOME_SLIDER_ZONE', 'slider_home_welcome'),

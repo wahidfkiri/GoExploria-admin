@@ -648,6 +648,13 @@
         </style>
     @endonce
 
+    {{-- Bannière publicitaire 1920×200 (Ads Manager, zone banner_before_map).
+         Variante « section » seulement : la variante inline vit dans une
+         colonne de gabarit, où une bannière pleine largeur n'a pas sa place. --}}
+    @unless($landingMapIsInline)
+        @include('cms::web.fallback.partials.gx-ads-map-banner')
+    @endunless
+
     <section class="map-section section{{ $landingMapIsInline ? ' is-inline' : '' }}" id="map" aria-labelledby="map-heading">
         @unless($landingMapIsInline)
             <header class="section-header map-banner reveal-up">
