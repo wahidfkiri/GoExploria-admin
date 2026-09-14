@@ -85,7 +85,7 @@ body{font-family:'DM Sans',sans-serif;background:#f5f3ef;color:#1a1a1a}
 <nav class="site-nav">
   <div class="nav-inner">
     <a href="{{ url('/') }}" class="nav-logo">
-      <img src="{{ asset('logo.png') }}" alt="GoExploria Logo" style="width:150px;">
+      <img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme" style="display:block;height:50px;width:auto;padding:4px 10px;box-sizing:border-box;background:#0a1628;border-radius:10px;">
     </a>
     <ul class="nav-links">
       <li><a href="/business-tourisme" class="{{ request()->is('business-tourisme*') ? 'active' : '' }}">Business</a></li>

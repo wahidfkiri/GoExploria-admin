@@ -153,7 +153,9 @@ h4 { font-size: 1rem; font-weight: 600; }
 [data-theme="light"] .nav { background: #fff; }
 .nav__container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 32px; }
 .nav__logo { display: flex; align-items: center; flex-shrink: 0; }
-.nav__logo img { width: 150px; height: auto; display: block; }
+.nav__logo img { height: 54px; width: auto; display: block; }
+/* Logo à fond transparent pensé pour un fond sombre : pastille bleu nuit en thème clair. */
+[data-theme="light"] .nav__logo img { padding: 4px 10px; box-sizing: border-box; background: #0a1628; border-radius: 10px; }
 .nav__links { display: flex; align-items: center; gap: 4px; flex: 1; margin-left: 16px; }
 .nav__link {
   display: flex; align-items: center; gap: 4px;

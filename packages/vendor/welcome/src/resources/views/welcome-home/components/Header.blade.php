@@ -60,16 +60,12 @@
                 </button>
                 
                 <a href="/" class="logo">
-                    {{-- Logo dédié au mobile. <picture> plutôt que deux <img>
-                         masqués en CSS : le navigateur ne télécharge qu'un seul
-                         fichier. Le palier 992 px est celui où le header bascule
-                         déjà en mise en page mobile (cf. styles.css).
-                         display:block en ligne car la règle vit dans deux
-                         feuilles distinctes, dont un bundle généré. --}}
-                    <picture style="display:block;">
-                        <source media="(max-width: 992px)" srcset="{{ asset('Logo-mobile.png') }}">
-                        <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}">
-                    </picture>
+                    {{-- Logo « GoExploria Business-Tourisme » (fond transparent),
+                         même fichier sur desktop et mobile. Dimensions en ligne :
+                         styles.css force .logo img en carré 60×60 sous 992 px,
+                         ce qui écraserait ce logo horizontal. --}}
+                    <img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme"
+                         style="display:block;height:clamp(52px,6.5vw,84px);width:auto;max-width:none;max-height:none;object-fit:contain;">
                 </a>
                 <a href="#section-carte-amerique-nord" class="logo-map-link" title="Voir la carte interactive">
                     <img src="{{ asset('header_info/map2.png') }}" alt="Carte Interactive" class="logo-map-icon">

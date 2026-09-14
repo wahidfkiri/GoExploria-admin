@@ -157,14 +157,10 @@
      ========================================================================== --}}
 <header class="site-header">
   <div class="container">
-    {{-- Même logo et même bascule mobile que l'en-tête de la page d'accueil
-         (welcome-home/components/Header.blade.php) : <picture> plutôt que deux
-         <img> masqués en CSS, le navigateur ne télécharge qu'un fichier. --}}
+    {{-- Même logo que l'en-tête de la page d'accueil
+         (welcome-home/components/Header.blade.php), sur desktop et mobile. --}}
     <a href="{{ url('/') }}" class="logo" aria-label="{{ __('home-v2.brand.name_upper') }}">
-      <picture>
-        <source media="(max-width: 992px)" srcset="{{ asset('Logo-mobile.png') }}">
-        <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}">
-      </picture>
+      <img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme">
     </a>
 
     <nav class="main-nav" aria-label="Navigation principale">

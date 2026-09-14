@@ -6,7 +6,7 @@
                     <!--Logo-->
                     <div id="logo">
                         <a href="index.html">
-                            <img src="{{asset('logo.png')}}" class="d-block">
+                            <img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme" class="d-block" style="height: 56px; width: auto; padding: 4px 10px; box-sizing: border-box; background: #0a1628; border-radius: 10px;">
                         </a>
                     </div>
                     <!--End: Logo-->

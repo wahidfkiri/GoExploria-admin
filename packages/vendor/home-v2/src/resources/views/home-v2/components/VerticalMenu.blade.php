@@ -17,7 +17,7 @@ $tr = static function (string $text): string {
 
 <aside class="vertical-menu-v2" id="verticalMenuV2">
     <div class="vertical-menu-v2-header">
-        <h2 class="vertical-menu-v2-title"><img src="{{asset('logo.png')}}" alt="Go Exploria" class="vertical-menu-v2-logo"></h2>
+        <h2 class="vertical-menu-v2-title"><img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme" class="vertical-menu-v2-logo" style="height:46px;padding:4px 10px;box-sizing:border-box;background:#0a1628;border-radius:10px;"></h2>
         <button class="vertical-menu-v2-close" id="closeVerticalMenu" aria-label="Fermer le menu">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>

@@ -1135,8 +1135,7 @@ section{position:relative;}
    LOGO IMAGE — le même que l'en-tête de la page d'accueil
    (welcome-home/components/Header.blade.php). Il remplace le lockup texte
    « GoExploria » de la maquette, d'où la neutralisation des règles de texte.
-   Le <picture> bascule sur Logo-mobile.png à 992 px : cette variante est une
-   bannière large et basse, elle demande une hauteur plus faible.
+   Logo unique logo-business-tourisme.png (fond transparent), desktop et mobile.
    -------------------------------------------------------------------------- */
 .logo picture{display:block;}
 .site-header .logo img{
@@ -1147,8 +1146,9 @@ section{position:relative;}
   filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
   transition:height .35s var(--ease), filter .35s var(--ease);
 }
-/* En-tête devenu opaque : plus de photo derrière, plus besoin d'ombre. */
-.site-header.is-scrolled .logo img{height:clamp(34px,3.4vw,44px);filter:none;}
+/* En-tête devenu opaque (fond clair possible) : le logo transparent, pensé
+   pour un fond sombre, est posé sur une pastille bleu nuit. */
+.site-header.is-scrolled .logo img{height:clamp(40px,3.8vw,50px);filter:none;padding:4px 10px;box-sizing:border-box;background:#0a1628;border-radius:10px;}
 
 .site-footer .footer-brand .logo{display:inline-flex;}
 .site-footer .footer-brand .logo img{
@@ -1156,8 +1156,8 @@ section{position:relative;}
 }
 
 @media (max-width:992px){
-  .site-header .logo img{height:32px;max-width:60vw;}
-  .site-header.is-scrolled .logo img{height:28px;}
+  .site-header .logo img{height:42px;max-width:60vw;}
+  .site-header.is-scrolled .logo img{height:40px;}
 }
 
 /* Fil d'Ariane hors héros (destinations sans image de bannière) */

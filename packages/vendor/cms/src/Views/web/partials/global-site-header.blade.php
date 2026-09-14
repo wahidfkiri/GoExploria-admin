@@ -26,7 +26,7 @@
     }
     .cgh-inner{ width:100%; max-width:1440px; margin:0 auto; padding:0 clamp(14px,3vw,36px); display:flex; align-items:center; gap:18px; }
     .cgh-logo{ display:inline-flex; align-items:center; flex-shrink:0; }
-    .cgh-logo img{ height:40px; width:auto; display:block; }
+    .cgh-logo img{ height:52px; width:auto; display:block; }
     .cgh-nav{ display:flex; align-items:center; gap:26px; margin-left:auto; }
     .cgh-nav a{ color:#e8ecf4; text-decoration:none; font-size:13px; font-weight:600; letter-spacing:.4px; line-height:1; transition:color .2s ease; white-space:nowrap; }
     .cgh-nav a:hover{ color:#d4af37; }
@@ -49,7 +49,7 @@
 <header class="cgh-header" id="cghHeader">
     <div class="cgh-inner">
         <a href="{{ url('/') }}" class="cgh-logo" aria-label="Accueil GoExploria">
-            <img src="{{ asset('logo.png') }}" alt="GoExploria" loading="eager">
+            <img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme" loading="eager">
         </a>
         <button class="cgh-burger" id="cghBurger" aria-label="Menu" aria-expanded="false"><i class="fas fa-bars"></i></button>
         <nav class="cgh-nav" id="cghNav">

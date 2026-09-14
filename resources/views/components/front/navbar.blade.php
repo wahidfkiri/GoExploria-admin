@@ -353,7 +353,7 @@
             <!--Logo avec texte qui change et image map rotative-->
 <div id="logo" style="position: relative; display: flex; align-items: center; gap: 20px; top:10px; z-index: 100;">
     <a href="{{url('/')}}" style="position: relative; display: inline-block;">
-        <img src="logo.png" class="d-block" style="max-width: 200px; height: auto;">
+        <img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme" class="d-block" style="height: 56px; width: auto; max-width: none; padding: 4px 10px; box-sizing: border-box; background: #0a1628; border-radius: 10px;">
         <!-- Texte qui change en bas à droite -->
         <div id="logo-text" style="
             position: absolute;

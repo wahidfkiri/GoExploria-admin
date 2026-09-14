@@ -1129,7 +1129,7 @@
 <!-- NAV -->
 <nav id="navbar">
     <a href="{{ url('/') }}" class="nav-logo">
-        <img src="{{asset('logo.png')}}" alt="Logo" class="logo-img" width="160px;">
+        <img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme" class="logo-img" style="display:block;height:54px;width:auto;">
     </a>
     <ul class="nav-links">
         @if(isset($navCategories) && $navCategories->count() > 0)

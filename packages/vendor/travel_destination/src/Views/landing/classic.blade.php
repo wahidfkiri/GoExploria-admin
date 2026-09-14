@@ -21,7 +21,7 @@
 <header class="nav" id="navbar" role="banner">
   <div class="nav__container">
     <a href="{{ url('/') }}" class="nav__logo" aria-label="Accueil GoExploria">
-      <img src="{{ asset('logo.png') }}" alt="GoExploria" />
+      <img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme" />
     </a>
 
     <nav class="nav__links" aria-label="Navigation principale">
