@@ -478,6 +478,8 @@ h4 { font-size: 1rem; font-weight: 600; }
 .footer { background: var(--navy-2); border-top: 1px solid var(--border); padding: 60px 0 0; }
 .footer__grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
 .footer__brand { font-family: 'Italiana', serif; font-size: 1.6rem; color: var(--amber); margin-bottom: 12px; }
+.footer__logo { height: 70px; width: auto; max-width: 100%; display: block; }
+[data-theme="light"] .footer__logo { padding: 4px 10px; box-sizing: border-box; background: #0a1628; border-radius: 10px; }
 .footer__col p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; max-width: 320px; }
 .footer__col h4 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin-bottom: 16px; }
 .footer__col a { display: block; font-size: 0.88rem; color: var(--text-muted); padding: 5px 0; transition: color var(--transition); }

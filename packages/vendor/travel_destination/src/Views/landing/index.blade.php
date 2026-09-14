@@ -779,7 +779,7 @@
     <div class="footer-top">
       <div class="footer-brand">
         <a href="{{ url('/') }}" class="logo" aria-label="{{ __('home-v2.brand.name_upper') }}">
-          <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}">
+          <img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme">
         </a>
         <p>Le guide de référence pour explorer les plus belles destinations, une région à la fois.</p>
       </div>

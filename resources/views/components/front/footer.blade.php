@@ -8,7 +8,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 mb-4">
-                    <img src="https://www.goexploria.com/images/logo-go-exploria-qc-3.png" alt="GoExploria" class="footer-logo">
+                    <img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme" class="footer-logo" style="height:76px;width:auto;max-width:100%;">
                     <p>Votre guide touristique et d'affaires pour le Québec. Découvrez, explorez, vivez le Québec comme jamais auparavant.</p>
                     <div class="footer-social-icons">
                         <a href="https://www.youtube.com/user/explorezlemonde/videos?view_as=subscriber" target="_blank" aria-label="YouTube">

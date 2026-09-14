@@ -1152,7 +1152,7 @@ section{position:relative;}
 
 .site-footer .footer-brand .logo{display:inline-flex;}
 .site-footer .footer-brand .logo img{
-  height:54px;width:auto;max-width:240px;object-fit:contain;display:block;
+  height:70px;width:auto;max-width:100%;object-fit:contain;display:block;
 }
 
 @media (max-width:992px){

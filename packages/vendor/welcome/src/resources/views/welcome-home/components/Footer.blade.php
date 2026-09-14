@@ -35,9 +35,11 @@
                 {{-- Column 1: Logo & About --}}
                 <div class="footer-v2-column footer-v2-brand">
                     <a href="#" class="footer-v2-logo">
-                        <img src="{{ asset('logo.png') }}" alt="{{ __('home-v2.brand.name_upper') }}" class="footer-v2-logo-img" loading="lazy" decoding="async">
+                        {{-- Le logo porte déjà le nom : seul le lieu reste en texte.
+                             Taille en ligne car footer.css le force en carré 60×60. --}}
+                        <img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme" class="footer-v2-logo-img" loading="lazy" decoding="async"
+                             style="width:auto;height:76px;max-width:100%;">
                         <div class="footer-v2-logo-text">
-                            <div class="footer-v2-logo-name">{{ __('home-v2.brand.name_upper') }}</div>
                             <div class="footer-v2-logo-location">{{ __('home-v2.brand.location') }}</div>
                         </div>
                     </a>

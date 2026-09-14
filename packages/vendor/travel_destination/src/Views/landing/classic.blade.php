@@ -733,7 +733,7 @@
   <div class="container">
     <div class="footer__grid">
       <div class="footer__col">
-        <h4 class="footer__brand">GoExploria</h4>
+        <h4 class="footer__brand"><img class="footer__logo" src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme" loading="lazy" /></h4>
         <p>Des expériences de voyage sélectionnées à travers les destinations les plus extraordinaires du monde.</p>
       </div>
       <div class="footer__col">

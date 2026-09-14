@@ -322,8 +322,12 @@
                     <div class="search-bar-v2-activites" id="activitesMegaTrigger" role="button" tabindex="0"
                          title="{{ $tr('Activités') }}"
                          aria-haspopup="dialog" aria-expanded="false" aria-controls="activitesMegaPanel">
-                        <span class="search-bar-v2-activites-label">{{ $tr('Activités') }}</span>
-                        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                        {{-- Logo Plan-and-Go en haut, libellé « Activités » dessous --}}
+                        <img src="{{ asset('Plan-and-go.png') }}" alt="Plan and Go" class="search-bar-v2-activites-logo" width="199" height="65" decoding="async">
+                        <span class="search-bar-v2-activites-caption">
+                            <span class="search-bar-v2-activites-label">{{ $tr('Activités') }}</span>
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -663,18 +667,22 @@
         background: rgba(5,15,35,.85);
     }
 
-    /* ── Bloc Activités (droite de la barre de recherche) ── */
+    /* ── Bloc Activités (droite de la barre de recherche) ──
+       Empilement vertical : logo Plan-and-Go en haut, libellé dessous.
+       Hauteurs calculées pour ne pas agrandir la barre (≈ 42 px sous 1024 px). */
     .search-bar-v2-activites {
         flex: 0 0 auto;
         margin-left: auto;
         margin-right: 4px;
         display: inline-flex;
+        flex-direction: column;
         align-items: center;
-        gap: 8px;
+        justify-content: center;
+        gap: 3px;
         cursor: pointer;
-        padding: 10px 16px;
+        padding: 4px 14px 5px;
         border: 1px solid rgba(255,255,255,.16);
-        border-radius: 10px;
+        border-radius: 14px;
         background: rgba(255,255,255,.06);
         color: #ffffff;
         white-space: nowrap;
@@ -685,14 +693,35 @@
         background: rgba(255,255,255,.14);
         border-color: rgba(255,255,255,.34);
     }
+    .search-bar-v2-activites:focus-visible {
+        outline: 2px solid rgba(245,166,35,.8);
+        outline-offset: 2px;
+    }
+    .search-bar-v2-activites-logo {
+        display: block;
+        height: 26px;
+        width: auto;
+        filter: drop-shadow(0 1px 3px rgba(0,0,0,.45));
+        transition: transform .22s ease;
+    }
+    .search-bar-v2-activites:hover .search-bar-v2-activites-logo,
+    .search-bar-v2-activites[aria-expanded="true"] .search-bar-v2-activites-logo {
+        transform: scale(1.05);
+    }
+    .search-bar-v2-activites-caption {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        line-height: 1;
+    }
     .search-bar-v2-activites-label {
-        font-size: 13px;
+        font-size: 11px;
         font-weight: 700;
-        letter-spacing: .08em;
+        letter-spacing: .1em;
         text-transform: uppercase;
     }
     .search-bar-v2-activites i {
-        font-size: 9px;
+        font-size: 8px;
         opacity: .8;
         transition: transform .22s ease;
     }
@@ -702,19 +731,17 @@
         .search-bar-v2-activites {
             order: 2 !important;
             margin-left: 6px;
-            padding: 8px 11px;
+            padding: 3px 11px;
+            gap: 2px;
         }
-        .search-bar-v2-activites-label { font-size: 11px; letter-spacing: .04em; }
+        .search-bar-v2-activites-logo { height: 22px; }
+        .search-bar-v2-activites-label { font-size: 10px; letter-spacing: .06em; }
     }
     @media (max-width: 560px) {
-        .search-bar-v2-activites { padding: 8px 10px; }
-        .search-bar-v2-activites-label { display: none; }
-        .search-bar-v2-activites::before {
-            content: "\f277";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            font-size: 14px;
-        }
+        .search-bar-v2-activites { padding: 3px 8px 4px; border-radius: 12px; }
+        .search-bar-v2-activites-logo { height: 18px; }
+        .search-bar-v2-activites-label { font-size: 9px; letter-spacing: .04em; }
+        .search-bar-v2-activites i { display: none; }
     }
 
     @media (max-width: 1024px) {
