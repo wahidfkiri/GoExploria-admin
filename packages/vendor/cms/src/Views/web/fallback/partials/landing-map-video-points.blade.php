@@ -383,17 +383,39 @@
               --td-radius-sm: 8px; --td-radius-md: 16px;
               --td-transition: 0.35s cubic-bezier(0.4,0,0.2,1);
             }
-            .container{width:min(1280px,92vw);margin-inline:auto}
-            .section{padding:100px 0}
-            .section-header{text-align:center;margin-bottom:56px}
-            .eyebrow{display:inline-block;font-size:0.75rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--td-amber);margin-bottom:0.75rem}
-            .section-title{font-family:'Italiana',serif;color:black;font-size:clamp(28px,4vw,46px);line-height:1.05;font-weight:900}
-            .section-subtitle{margin-top:12px;font-size:1rem;color:black}
+            /* ⚠ PORTÉE : toutes ces règles visent la section de la carte, jamais
+               la page. Elles étaient globales, et cette feuille est injectée dans
+               des gabarits qui ont LEURS `.container`, `.section`, `.eyebrow`,
+               `.btn`… (le gabarit immobilier : 14 `.container`, 5 `.eyebrow`) :
+               elles s'appliquaient à tout le site hôte.
+               `:where()` garde la spécificité d'ORIGINE (une classe) : sans lui,
+               `.map-section.section` battait `.map-section{padding:64px 24px}`
+               déclaré plus bas, et les marges négatives du bandeau — calées sur
+               ces 64/24 px — ne touchaient plus les bords. */
+            :where(.map-section) .container{width:min(1280px,92vw);margin-inline:auto}
+            :where(.map-section).section{padding:100px 0}
+            :where(.map-section) .section-header{text-align:center;margin-bottom:56px}
+            :where(.map-section) .eyebrow{display:inline-block;font-size:0.75rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--td-amber);margin-bottom:0.75rem}
+            :where(.map-section) .section-title{font-family:'Italiana',serif;color:black;font-size:clamp(28px,4vw,46px);line-height:1.05;font-weight:900}
+            :where(.map-section) .section-subtitle{margin-top:12px;font-size:1rem;color:black}
             .map-section{position:relative;overflow:hidden;padding:64px 24px}
             .map-section.is-inline{padding:0;background:transparent;height:100%;min-height:420px}
             .map-section.is-inline:before{display:none}
             .map-section.is-inline .container{width:100%;max-width:none}
             .map-section:before{content:'';position:absolute;top:0;left:0;right:0;height:4px;z-index:3;background:linear-gradient(90deg,var(--td-amber),var(--td-amber-dark))}
+            /* ══ VARIANTE « GABARIT » — carte posée dans un gabarit CMS ═════════
+               Sous le bandeau noir, la carte repose sur le fond CLAIR du gabarit.
+               Or ses commandes suivent la palette sombre du site : le sélecteur de
+               région était en sable (#E8D5B0) sur blanc, illisible, et les filtres
+               gris pâle sans fond. On les passe en thème clair ICI SEULEMENT — les
+               pages de repli, sur fond sombre, gardent leur apparence.
+               ⚠ On ne redéfinit PAS les jetons --td-* sur la section : les popups
+               des marqueurs y vivent aussi et restent sombres. */
+            .map-section.is-gabarit .map-region-select{background:#fff;color:#1b1b18;border-color:rgba(27,27,24,.2);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+            .map-section.is-gabarit .map-region-select:hover,.map-section.is-gabarit .map-region-select:focus{border-color:var(--td-amber-dark)}
+            .map-section.is-gabarit .map-filter-btn:not(.active){background:#fff;color:#374151;border-color:rgba(27,27,24,.16)}
+            .map-section.is-gabarit .map-filter-btn:not(.active):hover{border-color:var(--td-amber-dark);color:#8a5a00}
+            .map-section.is-gabarit .map-wrapper{background:#e5e3df;box-shadow:0 18px 44px rgba(0,0,0,.14)}
             /* Bandeau vertical pleine largeur au-dessus de la carte (variante
                « section » seulement). Ses marges négatives annulent le padding
                de .map-section pour toucher les deux bords de la page. */
@@ -656,9 +678,9 @@
             .map-modal .gxcal__resume,
             .map-modal .gxcal__total{background:rgba(27,27,24,.05)}
             .map-modal .gxcal__jour:hover:not(:disabled){background:rgba(31,58,92,.1)}
-            .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:50px;font-size:0.9rem;font-weight:600;text-decoration:none;transition:all var(--td-transition)}
-            .btn--primary{background:var(--td-amber);color:#000;border:1px solid var(--td-amber)}
-            .btn--primary:hover{background:var(--td-amber-dark);border-color:var(--td-amber-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,166,35,0.4)}
+            :where(.map-modal) .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:50px;font-size:0.9rem;font-weight:600;text-decoration:none;transition:all var(--td-transition)}
+            :where(.map-modal) .btn--primary{background:var(--td-amber);color:#000;border:1px solid var(--td-amber)}
+            :where(.map-modal) .btn--primary:hover{background:var(--td-amber-dark);border-color:var(--td-amber-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,166,35,0.4)}
             @media(max-width:600px){.map-popup-wrapper .leaflet-popup-content{width:220px!important}.map-popup__video{height:120px}.map-popup__body{padding:10px 12px}.map-popup__title{font-size:0.85rem}.map-popup__desc{font-size:0.75rem}.map-popup__detail-btn{padding:8px 12px;font-size:0.78rem}}
             @media(max-width:640px){.travel-map{height:380px}}
         </style>
@@ -671,7 +693,7 @@
         @include('cms::web.fallback.partials.gx-ads-map-banner')
     @endunless
 
-    <section class="map-section section{{ $landingMapIsInline ? ' is-inline' : '' }}" id="map" aria-labelledby="map-heading">
+    <section class="map-section section{{ $landingMapIsInline ? ' is-inline' : '' }}{{ $landingMapVariant === 'gabarit' ? ' is-gabarit' : '' }}" id="map" aria-labelledby="map-heading">
         @unless($landingMapIsInline)
             <header class="section-header map-banner reveal-up">
                 <div class="map-banner__inner">

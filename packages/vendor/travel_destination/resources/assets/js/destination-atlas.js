@@ -406,8 +406,9 @@
 
 /* --------------------------------------------------------------------------
    HÉROS EN DIAPORAMA (section data-gx-destination-hero composée dans l'éditeur)
-   La première diapositive est la vidéo : elle passe une fois en entier, puis
-   les images défilent toutes les data-gx-hero-duree ms, en boucle.
+   La vidéo ouvre le diaporama ; chaque média reste affiché data-gx-hero-duree
+   ms (5 s par défaut) avant de passer au suivant, en boucle. Les flèches et
+   les points changent de média et relancent le compte.
    Sans script, la première diapositive reste affichée (classe is-active).
    -------------------------------------------------------------------------- */
 (function () {
@@ -417,7 +418,7 @@
     var slides = Array.prototype.slice.call(hero.querySelectorAll(".hero-slide"));
     if (slides.length < 2) { return; }
 
-    var duree = parseInt(hero.getAttribute("data-gx-hero-duree"), 10) || 6000;
+    var duree = parseInt(hero.getAttribute("data-gx-hero-duree"), 10) || 5000;
     var immobile = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var courant = 0;
     var minuteur = null;
@@ -433,6 +434,18 @@
       points.appendChild(point);
     });
     hero.appendChild(points);
+
+    function fleche(sens, libelle, trace) {
+      var bouton = document.createElement("button");
+      bouton.type = "button";
+      bouton.className = "hero-nav hero-nav--" + sens;
+      bouton.setAttribute("aria-label", libelle);
+      bouton.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + trace + '"/></svg>';
+      bouton.addEventListener("click", function () { afficher(courant + (sens === "prev" ? -1 : 1)); });
+      hero.appendChild(bouton);
+    }
+    fleche("prev", "Média précédent", "M15 18l-6-6 6-6");
+    fleche("next", "Média suivant", "M9 18l6-6-6-6");
 
     function lecteur(slide) { return slide.querySelector("video"); }
 
@@ -453,26 +466,18 @@
         point.classList.toggle("is-active", i === courant);
       });
 
-      var video = lecteur(slides[courant]);
-      if (!video) { programmer(duree); return; }
-
-      /* La vidéo passe en entier avant les images. Muette : sans cela le
+      /* Une vidéo reprend du début à chaque passage. Muette : sans cela le
          navigateur refuse la lecture automatique. */
-      video.muted = true;
-      try { video.currentTime = 0; } catch (e) {}
-      var lecture = video.play();
-      if (lecture && lecture.catch) { lecture.catch(function () {}); }
-
-      if (isFinite(video.duration) && video.duration > 0) {
-        programmer(Math.max(video.duration * 1000, 3000));
-      } else {
-        programmer(duree);
-        video.addEventListener("loadedmetadata", function () {
-          if (lecteur(slides[courant]) === video && isFinite(video.duration) && video.duration > 0) {
-            programmer(Math.max(video.duration * 1000, 3000));
-          }
-        }, { once: true });
+      var video = lecteur(slides[courant]);
+      if (video) {
+        video.muted = true;
+        try { video.currentTime = 0; } catch (e) {}
+        var lecture = video.play();
+        if (lecture && lecture.catch) { lecture.catch(function () {}); }
       }
+
+      // Même durée pour tous les médias ; un clic relance le compte.
+      programmer(duree);
     }
 
     afficher(0);

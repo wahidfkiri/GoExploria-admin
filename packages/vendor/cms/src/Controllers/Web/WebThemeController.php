@@ -2488,8 +2488,12 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
 
         try {
             $carte = view('cms::web.fallback.partials.landing-map-video-points', [
-                'etablissement' => $this->etablissement,
-                'siteName'      => $this->etablissement->name ?? null,
+                'etablissement'     => $this->etablissement,
+                'siteName'          => $this->etablissement->name ?? null,
+                // Posée dans un gabarit CMS, sur le fond CLAIR de celui-ci : la
+                // partial y retourne ses commandes en thème clair (sélecteur de
+                // région et filtres étaient en sable sur blanc, illisibles).
+                'landingMapVariant' => 'gabarit',
             ])->render();
         } catch (\Throwable $e) {
             \Log::warning('Landing map injection failed: ' . $e->getMessage());

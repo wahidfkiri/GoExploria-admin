@@ -977,6 +977,16 @@ section{position:relative;}
 /* object-fit est sans effet sur une iframe (YouTube, Vimeo) : on la
    surdimensionne en 16/9 et on la centre pour qu'elle couvre la bannière. */
 .hero-slides [data-gx-video] iframe{position:absolute !important;top:50% !important;left:50% !important;width:max(100%,177.78vh) !important;height:max(100%,56.25vw) !important;transform:translate(-50%,-50%) !important;border:0;pointer-events:none;}
+/* Flèches précédent / suivant, créées par le script (absentes de l'éditeur). */
+.hero-nav{position:absolute;top:50%;z-index:3;display:flex;align-items:center;justify-content:center;width:52px;height:52px;padding:0;border:1px solid rgba(255,255,255,.45);border-radius:50%;background:rgba(15,22,21,.35);color:#fff;cursor:pointer;transform:translateY(-50%);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);transition:background .3s var(--ease),border-color .3s var(--ease);}
+.hero-nav:hover,.hero-nav:focus-visible{background:var(--accent);border-color:var(--accent);}
+.hero-nav svg{width:22px;height:22px;}
+.hero-nav--prev{left:clamp(12px,2.5vw,32px);}
+.hero-nav--next{right:clamp(12px,2.5vw,32px);}
+@media (max-width:640px){
+  .hero-nav{top:38%;width:40px;height:40px;}
+  .hero-nav svg{width:18px;height:18px;}
+}
 .hero-dots{position:absolute;left:50%;bottom:26px;z-index:3;display:flex;gap:10px;transform:translateX(-50%);}
 .hero-dot{width:34px;height:3px;padding:0;border:0;border-radius:2px;background:rgba(255,255,255,.4);cursor:pointer;transition:background .3s var(--ease);}
 .hero-dot.is-active{background:var(--accent);}
