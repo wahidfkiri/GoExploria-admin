@@ -403,3 +403,82 @@
     });
   });
 })();
+
+/* --------------------------------------------------------------------------
+   HÉROS EN DIAPORAMA (section data-gx-destination-hero composée dans l'éditeur)
+   La première diapositive est la vidéo : elle passe une fois en entier, puis
+   les images défilent toutes les data-gx-hero-duree ms, en boucle.
+   Sans script, la première diapositive reste affichée (classe is-active).
+   -------------------------------------------------------------------------- */
+(function () {
+  "use strict";
+
+  function demarrerHero(hero) {
+    var slides = Array.prototype.slice.call(hero.querySelectorAll(".hero-slide"));
+    if (slides.length < 2) { return; }
+
+    var duree = parseInt(hero.getAttribute("data-gx-hero-duree"), 10) || 6000;
+    var immobile = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var courant = 0;
+    var minuteur = null;
+
+    var points = document.createElement("div");
+    points.className = "hero-dots";
+    slides.forEach(function (slide, i) {
+      var point = document.createElement("button");
+      point.type = "button";
+      point.className = "hero-dot";
+      point.setAttribute("aria-label", "Diapositive " + (i + 1));
+      point.addEventListener("click", function () { afficher(i); });
+      points.appendChild(point);
+    });
+    hero.appendChild(points);
+
+    function lecteur(slide) { return slide.querySelector("video"); }
+
+    function programmer(delai) {
+      clearTimeout(minuteur);
+      if (!immobile) {
+        minuteur = setTimeout(function () { afficher(courant + 1); }, delai);
+      }
+    }
+
+    function afficher(index) {
+      var precedent = lecteur(slides[courant]);
+      courant = (index + slides.length) % slides.length;
+      if (precedent && !slides[courant].contains(precedent)) { precedent.pause(); }
+
+      slides.forEach(function (slide, i) { slide.classList.toggle("is-active", i === courant); });
+      Array.prototype.forEach.call(points.children, function (point, i) {
+        point.classList.toggle("is-active", i === courant);
+      });
+
+      var video = lecteur(slides[courant]);
+      if (!video) { programmer(duree); return; }
+
+      /* La vidéo passe en entier avant les images. Muette : sans cela le
+         navigateur refuse la lecture automatique. */
+      video.muted = true;
+      try { video.currentTime = 0; } catch (e) {}
+      var lecture = video.play();
+      if (lecture && lecture.catch) { lecture.catch(function () {}); }
+
+      if (isFinite(video.duration) && video.duration > 0) {
+        programmer(Math.max(video.duration * 1000, 3000));
+      } else {
+        programmer(duree);
+        video.addEventListener("loadedmetadata", function () {
+          if (lecteur(slides[courant]) === video && isFinite(video.duration) && video.duration > 0) {
+            programmer(Math.max(video.duration * 1000, 3000));
+          }
+        }, { once: true });
+      }
+    }
+
+    afficher(0);
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("[data-gx-destination-hero]").forEach(demarrerHero);
+  });
+})();

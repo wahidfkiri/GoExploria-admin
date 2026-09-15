@@ -966,6 +966,24 @@ section{position:relative;}
 .destination-video .video-caption h3{font-size:1.5rem;}
 .destination-video .video-caption p{color:var(--fg-soft);margin-top:.4em;font-size:.95rem;}
 
+.hero-slides .hero-slide{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity 1.2s var(--ease);}
+.hero-slides .hero-slide.is-active{opacity:1;}
+.hero-slides .hero-slide img{width:100%;height:100%;object-fit:cover;display:block;}
+/* Le composant Vidéo de l'éditeur réécrit le style EN LIGNE de son bloc et de
+   son lecteur à chaque modification : toute la géométrie passe en !important,
+   sinon la vidéo retomberait dans un cadre 16/9 au premier réglage. */
+.hero-slides [data-gx-video]{position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;padding:0 !important;border-radius:0 !important;overflow:hidden !important;background:#0f1615 !important;}
+.hero-slides [data-gx-video] video{position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;object-fit:cover;}
+/* object-fit est sans effet sur une iframe (YouTube, Vimeo) : on la
+   surdimensionne en 16/9 et on la centre pour qu'elle couvre la bannière. */
+.hero-slides [data-gx-video] iframe{position:absolute !important;top:50% !important;left:50% !important;width:max(100%,177.78vh) !important;height:max(100%,56.25vw) !important;transform:translate(-50%,-50%) !important;border:0;pointer-events:none;}
+.hero-dots{position:absolute;left:50%;bottom:26px;z-index:3;display:flex;gap:10px;transform:translateX(-50%);}
+.hero-dot{width:34px;height:3px;padding:0;border:0;border-radius:2px;background:rgba(255,255,255,.4);cursor:pointer;transition:background .3s var(--ease);}
+.hero-dot.is-active{background:var(--accent);}
+@media (prefers-reduced-motion:reduce){
+  .hero-slides .hero-slide{transition:none;}
+}
+
 
 /* ==========================================================================
    COMPLÉMENTS GO EXPLORIA — carte réelle, contenus dynamiques

@@ -99,6 +99,46 @@
         ]);
     }
 
+    // Bannière composée dans l'éditeur visuel (section « héros en diaporama »,
+    // repère data-gx-destination-hero) : quand une page en porte une, elle
+    // REMPLACE la bannière statique ci-dessous et se rend à sa place, avant la
+    // carte. On la retire donc du bloc de la page, dont le CSS (scopé sur
+    // .gx-dest-tpl) est alors émis une seule fois, avec la bannière.
+    $vvvebHero = null;
+    $builderBlocks = $builderBlocks->map(function (array $block) use (&$vvvebHero) {
+        if ($vvvebHero !== null
+            || ! preg_match('/<section\b[^>]*data-gx-destination-hero\b[^>]*>.*?<\/section>/is', $block['html'], $m)) {
+            return $block;
+        }
+
+        $vvvebHero = ['html' => $m[0], 'css' => $block['css']];
+        $block['html'] = str_replace($m[0], '', $block['html']);
+        $block['css_emis'] = true;
+
+        return $block;
+    });
+
+    // Le fil d'Ariane de la bannière composée est un emplacement : on y pose le
+    // vrai, ou on le retire à la racine du guide.
+    if ($vvvebHero !== null) {
+        $filAriane = '';
+        if ($breadcrumb->count() > 1) {
+            $morceaux = [];
+            foreach ($breadcrumb as $crumb) {
+                $morceaux[] = ! empty($crumb['url'])
+                    ? '<a href="' . e($crumb['url']) . '">' . e($crumb['label']) . '</a>'
+                    : e($crumb['label']);
+            }
+            $filAriane = '<nav class="breadcrumb" aria-label="Fil d’Ariane">' . implode('<span>/</span>', $morceaux) . '</nav>';
+        }
+        $vvvebHero['html'] = preg_replace(
+            '/<div\b[^>]*data-gx-destination-breadcrumb\b[^>]*>.*?<\/div>/is',
+            $filAriane,
+            $vvvebHero['html'],
+            1
+        );
+    }
+
     // Ancres du menu : seules les sections réellement rendues y figurent.
     $navSections = [['id' => 'map', 'label' => 'Carte']];
     if ($aboutContents->count() > 0) $navSections[] = ['id' => 'a-propos', 'label' => 'À propos'];
@@ -256,6 +296,15 @@
 {{-- ==========================================================================
      BANNIÈRE
      ========================================================================== --}}
+@if($vvvebHero !== null)
+{{-- Bannière composée dans l'éditeur visuel : diaporama, vidéo d'abord. --}}
+@if(filled($vvvebHero['css']))
+  <style>{!! $vvvebHero['css'] !!}</style>
+@endif
+<div class="gx-dest-tpl builder-hero" data-theme="light">
+  {!! $vvvebHero['html'] !!}
+</div>
+@else
 <section class="hero destination-hero" id="hero">
   <div class="hero-media">
     <img src="{{ $heroBg }}" alt="{{ $entity->name }}" loading="eager">
@@ -311,6 +360,7 @@
   </div>
   <div class="hero-scroll"><span>Défiler</span><span class="line"></span></div>
 </section>
+@endif
 
 {{-- ==========================================================================
      CARTE — TOUJOURS EN PREMIÈRE POSITION
@@ -325,7 +375,8 @@
      Elles arrivent avec leur CSS, déjà scopé sur .gx-dest-tpl.
      ========================================================================== --}}
 @foreach($builderBlocks as $block)
-  @if(filled($block['css']))
+  {{-- CSS déjà émis avec la bannière composée : ne pas le répéter. --}}
+  @if(filled($block['css']) && empty($block['css_emis']))
     <style>{!! $block['css'] !!}</style>
   @endif
   <section class="builder-page-section" id="page-{{ $block['slug'] }}">

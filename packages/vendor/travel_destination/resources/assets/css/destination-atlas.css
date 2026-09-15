@@ -966,6 +966,24 @@ section{position:relative;}
 .destination-video .video-caption h3{font-size:1.5rem;}
 .destination-video .video-caption p{color:var(--fg-soft);margin-top:.4em;font-size:.95rem;}
 
+.hero-slides .hero-slide{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity 1.2s var(--ease);}
+.hero-slides .hero-slide.is-active{opacity:1;}
+.hero-slides .hero-slide img{width:100%;height:100%;object-fit:cover;display:block;}
+/* Le composant Vidéo de l'éditeur réécrit le style EN LIGNE de son bloc et de
+   son lecteur à chaque modification : toute la géométrie passe en !important,
+   sinon la vidéo retomberait dans un cadre 16/9 au premier réglage. */
+.hero-slides [data-gx-video]{position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;padding:0 !important;border-radius:0 !important;overflow:hidden !important;background:#0f1615 !important;}
+.hero-slides [data-gx-video] video{position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;object-fit:cover;}
+/* object-fit est sans effet sur une iframe (YouTube, Vimeo) : on la
+   surdimensionne en 16/9 et on la centre pour qu'elle couvre la bannière. */
+.hero-slides [data-gx-video] iframe{position:absolute !important;top:50% !important;left:50% !important;width:max(100%,177.78vh) !important;height:max(100%,56.25vw) !important;transform:translate(-50%,-50%) !important;border:0;pointer-events:none;}
+.hero-dots{position:absolute;left:50%;bottom:26px;z-index:3;display:flex;gap:10px;transform:translateX(-50%);}
+.hero-dot{width:34px;height:3px;padding:0;border:0;border-radius:2px;background:rgba(255,255,255,.4);cursor:pointer;transition:background .3s var(--ease);}
+.hero-dot.is-active{background:var(--accent);}
+@media (prefers-reduced-motion:reduce){
+  .hero-slides .hero-slide{transition:none;}
+}
+
 
 /* ==========================================================================
    COMPLÉMENTS GO EXPLORIA — carte réelle, contenus dynamiques
@@ -1135,8 +1153,7 @@ section{position:relative;}
    LOGO IMAGE — le même que l'en-tête de la page d'accueil
    (welcome-home/components/Header.blade.php). Il remplace le lockup texte
    « GoExploria » de la maquette, d'où la neutralisation des règles de texte.
-   Le <picture> bascule sur Logo-mobile.png à 992 px : cette variante est une
-   bannière large et basse, elle demande une hauteur plus faible.
+   Logo unique logo-business-tourisme.png (fond transparent), desktop et mobile.
    -------------------------------------------------------------------------- */
 .logo picture{display:block;}
 .site-header .logo img{
@@ -1147,17 +1164,18 @@ section{position:relative;}
   filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
   transition:height .35s var(--ease), filter .35s var(--ease);
 }
-/* En-tête devenu opaque : plus de photo derrière, plus besoin d'ombre. */
-.site-header.is-scrolled .logo img{height:clamp(34px,3.4vw,44px);filter:none;}
+/* En-tête devenu opaque (fond clair possible) : le logo transparent, pensé
+   pour un fond sombre, est posé sur une pastille bleu nuit. */
+.site-header.is-scrolled .logo img{height:clamp(40px,3.8vw,50px);filter:none;padding:4px 10px;box-sizing:border-box;background:#0a1628;border-radius:10px;}
 
 .site-footer .footer-brand .logo{display:inline-flex;}
 .site-footer .footer-brand .logo img{
-  height:54px;width:auto;max-width:240px;object-fit:contain;display:block;
+  height:70px;width:auto;max-width:100%;object-fit:contain;display:block;
 }
 
 @media (max-width:992px){
-  .site-header .logo img{height:32px;max-width:60vw;}
-  .site-header.is-scrolled .logo img{height:28px;}
+  .site-header .logo img{height:42px;max-width:60vw;}
+  .site-header.is-scrolled .logo img{height:40px;}
 }
 
 /* Fil d'Ariane hors héros (destinations sans image de bannière) */
@@ -1173,3 +1191,38 @@ section{position:relative;}
 /* Encarts publicitaires servis par Ads Manager */
 .ads-strip{padding:var(--section-pad) 0;}
 .ads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Méga-menu « Activités » du header destination (activités liées à la
+   destination courante). S'appuie sur les variables de thème → clair/sombre.
+   ══════════════════════════════════════════════════════════════════════════ */
+.main-nav .td-mega{position:relative;display:inline-flex}
+.td-mega-trigger{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.td-mega-caret{width:13px;height:13px;transition:transform .2s var(--ease,ease)}
+.td-mega:hover .td-mega-caret,.td-mega.is-open .td-mega-caret{transform:rotate(180deg)}
+.td-mega-panel{
+  position:absolute;top:calc(100% + 14px);left:50%;
+  transform:translateX(-50%) translateY(8px);
+  width:min(680px,92vw);max-height:min(70vh,520px);overflow:auto;
+  background:var(--bg-raised,#faf7ee);color:var(--fg,#182726);
+  border:1px solid var(--line-strong,rgba(27,43,44,.28));
+  border-radius:var(--radius-md,14px);box-shadow:var(--shadow-lg,0 24px 60px rgba(20,32,31,.16));
+  padding:16px;opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .2s var(--ease,ease),transform .2s var(--ease,ease);z-index:1200
+}
+.td-mega:hover .td-mega-panel,.td-mega.is-open .td-mega-panel{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.td-mega-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 4px 12px;padding-bottom:10px;border-bottom:1px solid var(--line,rgba(27,43,44,.14))}
+.td-mega-head span{font-family:var(--font-display,serif);font-weight:600;font-size:.95rem;color:#000}
+.td-mega-all{font-size:.78rem;color:var(--accent,#bd7a3c);font-weight:600;text-decoration:none;white-space:nowrap}
+.td-mega-all:hover{text-decoration:underline}
+.td-mega-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.td-mega-item{display:flex;align-items:center;gap:12px;padding:8px;border-radius:var(--radius-sm,6px);text-decoration:none;color:inherit;transition:background .15s var(--ease,ease)}
+.td-mega-item:hover{background:var(--line,rgba(27,43,44,.14))}
+.td-mega-thumb{flex:0 0 auto;width:52px;height:52px;border-radius:8px;overflow:hidden;background:var(--line,rgba(27,43,44,.14))}
+.td-mega-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.td-mega-txt{display:flex;flex-direction:column;min-width:0}
+.td-mega-name{font-weight:600;font-size:.86rem;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.td-mega-cat{font-size:.72rem;color:var(--fg-soft,#3d4c4a);margin-top:2px}
+@media (max-width:992px){
+  .main-nav .td-mega{display:none}
+}
