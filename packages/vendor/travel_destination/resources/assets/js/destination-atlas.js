@@ -416,12 +416,16 @@
 
   function demarrerHero(hero) {
     var slides = Array.prototype.slice.call(hero.querySelectorAll(".hero-slide"));
-    if (slides.length < 2) { return; }
+    if (!slides.length) { return; }
 
     var duree = parseInt(hero.getAttribute("data-gx-hero-duree"), 10) || 5000;
     var immobile = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var courant = 0;
     var minuteur = null;
+    var DUREE_LECTEUR = 15000;
+    // Une seule diapositive : ni flèches, ni points, ni minuterie — mais sa
+    // vidéo doit tout de même démarrer.
+    var seule = slides.length < 2;
 
     var points = document.createElement("div");
     points.className = "hero-dots";
@@ -433,7 +437,7 @@
       point.addEventListener("click", function () { afficher(i); });
       points.appendChild(point);
     });
-    hero.appendChild(points);
+    if (!seule) { hero.appendChild(points); }
 
     function fleche(sens, libelle, trace) {
       var bouton = document.createElement("button");
@@ -442,16 +446,37 @@
       bouton.setAttribute("aria-label", libelle);
       bouton.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + trace + '"/></svg>';
       bouton.addEventListener("click", function () { afficher(courant + (sens === "prev" ? -1 : 1)); });
-      hero.appendChild(bouton);
+      if (!seule) { hero.appendChild(bouton); }
     }
     fleche("prev", "Média précédent", "M15 18l-6-6 6-6");
     fleche("next", "Média suivant", "M9 18l6-6-6-6");
 
     function lecteur(slide) { return slide.querySelector("video"); }
 
+    /* Lecteurs YouTube / Vimeo : leur adresse enregistrée ne démarre pas seule
+       (sinon ils tourneraient aussi dans l'éditeur). On ajoute autoplay=1 à la
+       diapositive affichée — ce qui la relance du début, comme les .mp4 — et on
+       le retire des autres, ce qui recharge le lecteur et donc l'arrête. */
+    function sansLecture(src) {
+      return src.replace(/([?&])autoplay=1(&|$)/, function (m, avant, apres) {
+        return apres ? avant : "";
+      });
+    }
+
+    function piloterIframes(actif) {
+      slides.forEach(function (slide, i) {
+        var cadre = slide.querySelector("iframe");
+        if (!cadre) { return; }
+        var src = cadre.getAttribute("src") || "";
+        var base = sansLecture(src);
+        var voulu = i === actif ? base + (base.indexOf("?") === -1 ? "?" : "&") + "autoplay=1" : base;
+        if (voulu !== src) { cadre.setAttribute("src", voulu); }
+      });
+    }
+
     function programmer(delai) {
       clearTimeout(minuteur);
-      if (!immobile) {
+      if (!immobile && !seule) {
         minuteur = setTimeout(function () { afficher(courant + 1); }, delai);
       }
     }
@@ -475,9 +500,13 @@
         var lecture = video.play();
         if (lecture && lecture.catch) { lecture.catch(function () {}); }
       }
+      piloterIframes(courant);
 
-      // Même durée pour tous les médias ; un clic relance le compte.
-      programmer(duree);
+      /* Même durée pour tous les médias, sauf un lecteur YouTube / Vimeo : il
+         lui faut deux ou trois secondes pour se charger, 5 s n'en montreraient
+         presque rien. Il reste donc au moins DUREE_LECTEUR ms. Un clic
+         relance le compte. */
+      programmer(slides[courant].querySelector("iframe") ? Math.max(duree, DUREE_LECTEUR) : duree);
     }
 
     afficher(0);

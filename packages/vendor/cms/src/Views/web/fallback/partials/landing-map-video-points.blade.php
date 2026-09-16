@@ -989,7 +989,29 @@
                 .observe(document.body, { childList: true, subtree: true });
         }
 
+        var moteurGoogle = false;
+
         if (window.GX_MAPS && window.GX_MAPS.key && window.GxGoogleMap) {
+            moteurGoogle = true;
+
+            var basculerSurLeaflet = function (raison) {
+                if (map) { return; }   // repli déjà en place
+                console.warn('Carte : repli OpenStreetMap (' + raison + ')');
+                moteurGoogle = false;
+                demarrerLeaflet();
+            };
+
+            /* Google appelle CE nom global — et rien d'autre — quand il refuse
+               la clé : domaine non autorisé, facturation absente, API
+               désactivée. Sans lui, son message d'erreur restait seul à
+               l'écran. */
+            window.gm_authFailure = function () { basculerSurLeaflet('clé refusée par Google'); };
+
+            // Filet : script bloqué par un pare-feu, quota épuisé, rendu vide.
+            window.setTimeout(function () {
+                if (!mapEl.querySelector('.gm-style')) { basculerSurLeaflet('aucune carte dessinée'); }
+            }, 10000);
+
             var gLat0 = (Math.min.apply(null, lats) + Math.max.apply(null, lats)) / 2;
             var gLng0 = (Math.min.apply(null, lngs) + Math.max.apply(null, lngs)) / 2;
             window.GxGoogleMap.load(window.GX_MAPS.key, { mapId: window.GX_MAPS.mapId })
@@ -1027,18 +1049,56 @@
                         if (modaleOuverte(document.getElementById('mapDetailModal'))) closePlaceModal();
                     });
                 })
-                .catch(function (e) { console.warn('Google Maps indisponible :', e); });
-            return;
+                .catch(function (e) { basculerSurLeaflet(e && e.message ? e.message : 'chargement impossible'); });
         }
 
-        var map = L.map('{{ $landingMapId }}', {
-            center: [(Math.min.apply(null, lats) + Math.max.apply(null, lats)) / 2, (Math.min.apply(null, lngs) + Math.max.apply(null, lngs)) / 2],
-            zoom: 8, zoomControl: true, scrollWheelZoom: true
-        });
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>' }).addTo(map);
-        map.whenReady(function () { map.invalidateSize(); });
+        /* ══ DEUX MOTEURS, UN SEUL AFFICHAGE ═══════════════════════════════
+           Google Maps quand sa clé est acceptée, OpenStreetMap sinon.
 
-        var markersLayer = L.layerGroup().addTo(map);
+           ⚠ Google REFUSE une clé qui n'autorise pas le domaine servant la
+           page (RefererNotAllowedMapError), et aussi quand la facturation est
+           absente ou l'API désactivée. Il posait alors son propre message
+           d'erreur sur un fond gris : plus de carte du tout, et la seule trace
+           était dans la console. Le démarrage de Leaflet est donc DIFFÉRÉ et
+           sert de repli — voir `basculerSurLeaflet` dans la branche Google.
+
+           Les DÉCLARATIONS de fonctions restent au niveau du gestionnaire :
+           la branche Google les appelle (buildPopupHtml, showPlaceModal…), et
+           les enfermer ici les lui rendrait inaccessibles. Seules les
+           instructions de démarrage entrent dans cette fonction. */
+        var map = null, markersLayer = null;
+
+        function demarrerLeaflet() {
+            if (map) { return; }   // déjà en place
+
+            // Google a pu laisser son fond gris et son message : on repart d'un
+            // conteneur vide, sinon Leaflet dessine par-dessus.
+            mapEl.innerHTML = '';
+            try { delete mapEl._leaflet_id; } catch (e) { mapEl._leaflet_id = undefined; }
+
+            map = L.map(mapEl, {
+                center: [(Math.min.apply(null, lats) + Math.max.apply(null, lats)) / 2, (Math.min.apply(null, lngs) + Math.max.apply(null, lngs)) / 2],
+                zoom: 8, zoomControl: true, scrollWheelZoom: true
+            });
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>' }).addTo(map);
+            map.whenReady(function () { map.invalidateSize(); });
+
+            markersLayer = L.layerGroup().addTo(map);
+            renderFilteredPoints();
+
+            map.on('popupopen', function (e) {
+                var c = e.popup.getElement();
+                if (!c) return;
+                initSwipers(c);
+                c.querySelectorAll('.map-popup__detail-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var idx = parseInt(btn.getAttribute('data-index'));
+                        var pt = pointsData[idx];
+                        if (pt) showPlaceModal(pt);
+                    });
+                });
+            });
+        }
         var allPoints = points;
         var pointsData = [];
         var activeCategory = 'all';
@@ -1238,6 +1298,8 @@
         }
 
         function renderFilteredPoints() {
+            // Moteur Google, ou repli pas encore démarré : rien à redessiner.
+            if (!map || !markersLayer) { return; }
             var data = getFilteredPoints();
             markersLayer.clearLayers();
             pointsData = [];
@@ -1282,20 +1344,7 @@
             });
         }
 
-        renderFilteredPoints();
-
-        map.on('popupopen', function (e) {
-            var c = e.popup.getElement();
-            if (!c) return;
-            initSwipers(c);
-            c.querySelectorAll('.map-popup__detail-btn').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    var idx = parseInt(btn.getAttribute('data-index'));
-                    var pt = pointsData[idx];
-                    if (pt) showPlaceModal(pt);
-                });
-            });
-        });
+        /* Marqueurs et popups : posés par `demarrerLeaflet`. */
 
         /* Ouverte ou non : un seul test, parce que l'affichage vaut « flex »
            et non « block ». Trois endroits le demandaient, chacun avec sa
@@ -1431,6 +1480,9 @@
             modal.style.display = 'none';
             document.body.style.overflow = '';
         }
+
+        // Aucune clé Google : OpenStreetMap d'emblée.
+        if (!moteurGoogle) { demarrerLeaflet(); }
 
         document.getElementById('mapModalClose').addEventListener('click', closePlaceModal);
         document.getElementById('mapModalBackdrop').addEventListener('click', closePlaceModal);

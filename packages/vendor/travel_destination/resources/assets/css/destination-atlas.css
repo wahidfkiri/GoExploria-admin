@@ -975,8 +975,19 @@ section{position:relative;}
 .hero-slides [data-gx-video]{position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;padding:0 !important;border-radius:0 !important;overflow:hidden !important;background:#0f1615 !important;}
 .hero-slides [data-gx-video] video{position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;object-fit:cover;}
 /* object-fit est sans effet sur une iframe (YouTube, Vimeo) : on la
-   surdimensionne en 16/9 et on la centre pour qu'elle couvre la bannière. */
+   surdimensionne en 16/9 et on la centre pour qu'elle couvre la bannière.
+   Les dimensions se calculent sur la BOÎTE de la vidéo (unités cqw/cqh), pas
+   sur la fenêtre : l'ancien calcul en vh/vw n'était juste que pour un héros
+   haut exactement d'un écran — et faux dans le canvas de l'éditeur.
+   Sélecteur volontairement plus précis que l'ancien (.hero-slideshow
+   .hero-slide en plus) : les pages déjà enregistrées portent l'ancienne règle
+   dans leur propre feuille, émise APRÈS celle du site ; à !important égal,
+   seule la spécificité peut la battre sans réécrire leur CSS. */
 .hero-slides [data-gx-video] iframe{position:absolute !important;top:50% !important;left:50% !important;width:max(100%,177.78vh) !important;height:max(100%,56.25vw) !important;transform:translate(-50%,-50%) !important;border:0;pointer-events:none;}
+.hero-slideshow .hero-slides .hero-slide [data-gx-video]{container-type:size;}
+@supports (container-type:size){
+  .hero-slideshow .hero-slides .hero-slide [data-gx-video] iframe{width:max(100cqw,177.78cqh) !important;height:max(100cqh,56.25cqw) !important;max-width:none !important;max-height:none !important;}
+}
 /* Flèches précédent / suivant, créées par le script (absentes de l'éditeur). */
 .hero-nav{position:absolute;top:50%;z-index:3;display:flex;align-items:center;justify-content:center;width:52px;height:52px;padding:0;border:1px solid rgba(255,255,255,.45);border-radius:50%;background:rgba(15,22,21,.35);color:#fff;cursor:pointer;transform:translateY(-50%);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);transition:background .3s var(--ease),border-color .3s var(--ease);}
 .hero-nav:hover,.hero-nav:focus-visible{background:var(--accent);border-color:var(--accent);}
