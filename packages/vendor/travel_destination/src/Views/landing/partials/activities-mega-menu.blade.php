@@ -51,6 +51,9 @@
     .gx-platform-header .header-v2 .nav-account-icon { font-size: 0 !important; gap: 0 !important; }
     .gx-platform-header .header-v2 .nav-account-icon i { font-size: 18px; }
   }
+  @media (min-width: 993px) and (max-width: 1100px) {
+    .gx-platform-header .header-v2 .nav-menu { gap: 8px !important; }
+  }
 
   /* ── Panneau ────────────────────────────────────────────────────────── */
   .td-actmega {

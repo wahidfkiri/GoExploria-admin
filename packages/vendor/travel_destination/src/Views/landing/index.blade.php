@@ -86,7 +86,10 @@
         $builderBlocks->push([
             'slug' => $defaultPage['slug'],
             'css'  => $defaultPage['css'],
-            'html' => $stripMapPlaceholder($defaultPage['html']),
+            // Mur vidéo proposé aux pages enregistrées avant son arrivée.
+            'html' => $stripMapPlaceholder(
+                \Vendor\TravelDestination\Support\DestinationDefaultPage::avecMurVideo($defaultPage['html'])
+            ),
         ]);
     }
 

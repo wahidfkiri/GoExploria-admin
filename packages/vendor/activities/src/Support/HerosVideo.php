@@ -15,13 +15,49 @@ namespace Vendor\Activities\Support;
  */
 class HerosVideo
 {
-    /** Tout le nettoyage du bandeau. */
+    /** Tout le nettoyage du bandeau, puis le mur vidéo s'il manque. */
     public static function nettoyer(?string $html): string
     {
         $html = static::sansImage($html);
         $html = static::retirerBlocs($html, 'video-bx2');
+        $html = static::retirerBlocs($html, 'scroll-indicator');
 
-        return static::retirerBlocs($html, 'scroll-indicator');
+        return static::avecMurVideo($html);
+    }
+
+    /**
+     * Le mur vidéo (demande du 2026-09-17) sur une page enregistrée avant son
+     * arrivée : après la section vidéo, à défaut avant la section
+     * Destinations. Proposé UNE fois — la racine porte alors
+     * `data-gx-mur-video`, et un bloc supprimé par le client ne revient pas.
+     * Même logique que PageParDefaut::ajouterMurVideo() côté admin ; le
+     * fragment (stubs/mur-video.html) est déposé par
+     * admin/scripts/build_activity_default_page.py.
+     */
+    public static function avecMurVideo(string $html): string
+    {
+        if (str_contains($html, 'data-gx-mur-video') || str_contains($html, 'data-name="gx-video-wall"')) {
+            return $html;
+        }
+
+        $mur = trim((string) @file_get_contents(__DIR__ . '/stubs/mur-video.html'));
+
+        if ($mur === ''
+            || ! preg_match('/<div\b[^>]*class="[^"]*\bactpage-tpl\b[^"]*"[^>]*>/i', $html, $racine, PREG_OFFSET_CAPTURE)) {
+            return $html;
+        }
+
+        if (preg_match('/<section\b[^>]*\bid="plx-video"[^>]*>.*?<\/section>/is', $html, $ancre, PREG_OFFSET_CAPTURE)) {
+            $html = substr_replace($html, $mur . "\n", $ancre[0][1] + strlen($ancre[0][0]), 0);
+        } elseif (preg_match('/<section\b[^>]*\bid="plx-destinations"/i', $html, $ancre, PREG_OFFSET_CAPTURE)) {
+            $html = substr_replace($html, $mur . "\n", $ancre[0][1], 0);
+        } else {
+            return $html;
+        }
+
+        $finOuverture = $racine[0][1] + strlen($racine[0][0]) - 1;
+
+        return substr_replace($html, ' data-gx-mur-video="propose"', $finOuverture, 0);
     }
 
     /**

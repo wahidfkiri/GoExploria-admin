@@ -92,6 +92,41 @@ class DestinationDefaultPage
     }
 
     /**
+     * Mur vidéo (demande du 2026-09-17) sur une page par défaut enregistrée
+     * avant son arrivée : le bloc du gabarit, après la section vidéo (à
+     * défaut, avant les hébergements). Proposé UNE fois — la racine
+     * `.gx-dest-tpl` porte alors `data-gx-mur-video`, et un bloc supprimé par
+     * le client ne revient pas. Même logique que
+     * DestinationDefaultTemplate::addVideoWall() côté admin.
+     */
+    public static function avecMurVideo(string $html): string
+    {
+        if (str_contains($html, 'data-gx-mur-video') || str_contains($html, 'data-name="gx-video-wall"')) {
+            return $html;
+        }
+
+        $template = self::template();
+
+        if ($template === null
+            || ! preg_match('/<section\b[^>]*\bdata-name="gx-video-wall"[^>]*>.*?<\/section>/is', $template['html'], $mur)
+            || ! preg_match('/<div\b[^>]*class="[^"]*\bgx-dest-tpl\b[^"]*"[^>]*>/i', $html, $racine, PREG_OFFSET_CAPTURE)) {
+            return $html;
+        }
+
+        if (preg_match('/<section\b[^>]*\bid="video"[^>]*>.*?<\/section>/is', $html, $ancre, PREG_OFFSET_CAPTURE)) {
+            $html = substr_replace($html, "\n" . $mur[0], $ancre[0][1] + strlen($ancre[0][0]), 0);
+        } elseif (preg_match('/<section\b[^>]*\bid="hebergements"/i', $html, $ancre, PREG_OFFSET_CAPTURE)) {
+            $html = substr_replace($html, $mur[0] . "\n", $ancre[0][1], 0);
+        } else {
+            return $html;
+        }
+
+        $finOuverture = $racine[0][1] + strlen($racine[0][0]) - 1;
+
+        return substr_replace($html, ' data-gx-mur-video="propose"', $finOuverture, 0);
+    }
+
+    /**
      * Héros : des vidéos seulement (demande du 2026-09-16). Retire du héros
      * composé dans l'éditeur les diapositives qui ne portent qu'une image
      * (`<div class="hero-slide…"><img></div>`) ; les vidéos restent.
