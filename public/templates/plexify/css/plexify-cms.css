@@ -17,7 +17,7 @@
     object-fit: cover; border-radius: 0;
     z-index: 0;
 }
-.actpage-tpl .main-banner > *:not(.plx-fond),
+.actpage-tpl .main-banner > *:not(.plx-fond):not(.plx-diapos):not(.plx-hero-fleche):not(.plx-points),
 .actpage-tpl .plx-fond-parent > *:not(.plx-fond) { position: relative; z-index: 2; }
 .actpage-tpl .overlay-black-light:after { z-index: 1; pointer-events: none; }
 
@@ -196,3 +196,132 @@
 /* --- Le bandeau du thème compte sur un défilement piloté par GSAP, retiré. --- */
 .actpage-tpl .main-banner { padding-top: 120px; }
 .actpage-tpl .scroll-indicator { opacity: .85; }
+
+/* ===================================================================
+   HÉROS — diaporama de vidéos plein cadre (comme les pages de destination)
+   =================================================================== */
+
+/* Plein écran : le thème fixait 1000 / 700 / 650 / 480 px selon la largeur. */
+.actpage-tpl .main-banner.style-8 {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
+}
+
+/* Les diapositives couvrent le bandeau, au-dessus de l'image de l'activité
+   (visible le temps qu'une vidéo se charge). Le voile du thème (::before)
+   passe sous cette image : on en pose un sur les vidéos, pour le titre. */
+.actpage-tpl .plx-diapos {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1; overflow: hidden;
+}
+.actpage-tpl .plx-diapos::after {
+    content: ""; position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; z-index: 2; pointer-events: none;
+    background: linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.12) 45%, rgba(0,0,0,.5) 100%);
+}
+
+/* Une seule vidéo visible : celle que nomme data-plx-heros-vue sur <html>
+   (posé par le script, hors contenu enregistré). Les autres passent en
+   visibility:hidden — pas seulement opacity:0 — sinon la dernière, posée
+   au-dessus, capterait le clic dans l'éditeur. */
+.actpage-tpl .plx-diapo {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0; visibility: hidden;
+    transition: opacity 1.2s ease, visibility 1.2s ease;
+}
+html:not([data-plx-heros-vue]) .actpage-tpl .plx-diapo:first-child,
+html[data-plx-heros-vue="1"] .actpage-tpl .plx-diapo:nth-child(1),
+html[data-plx-heros-vue="2"] .actpage-tpl .plx-diapo:nth-child(2),
+html[data-plx-heros-vue="3"] .actpage-tpl .plx-diapo:nth-child(3),
+html[data-plx-heros-vue="4"] .actpage-tpl .plx-diapo:nth-child(4),
+html[data-plx-heros-vue="5"] .actpage-tpl .plx-diapo:nth-child(5),
+html[data-plx-heros-vue="6"] .actpage-tpl .plx-diapo:nth-child(6),
+html[data-plx-heros-vue="7"] .actpage-tpl .plx-diapo:nth-child(7),
+html[data-plx-heros-vue="8"] .actpage-tpl .plx-diapo:nth-child(8),
+html[data-plx-heros-vue="9"] .actpage-tpl .plx-diapo:nth-child(9),
+html[data-plx-heros-vue="10"] .actpage-tpl .plx-diapo:nth-child(10),
+html[data-plx-heros-vue="11"] .actpage-tpl .plx-diapo:nth-child(11),
+html[data-plx-heros-vue="12"] .actpage-tpl .plx-diapo:nth-child(12) {
+    opacity: 1; visibility: visible;
+}
+@media (prefers-reduced-motion: reduce) {
+    .actpage-tpl .plx-diapo { transition: none; }
+}
+
+/* Le composant vidéo de l'éditeur RÉÉCRIT le style en ligne de son bloc et
+   de son lecteur à chaque retouche : toute la géométrie est en !important,
+   sinon la vidéo retomberait dans un coin au premier réglage. */
+.actpage-tpl .plx-diapo [data-gx-video] {
+    position: absolute !important; top: 0 !important; left: 0 !important;
+    width: 100% !important; height: 100% !important;
+    padding: 0 !important; border-radius: 0 !important;
+    overflow: hidden !important; background: transparent !important;
+    container-type: size;
+}
+.actpage-tpl .plx-diapo [data-gx-video] video {
+    position: absolute !important; top: 0 !important; left: 0 !important;
+    width: 100% !important; height: 100% !important;
+    max-width: none !important; object-fit: cover !important;
+}
+/* object-fit est sans effet sur une iframe (YouTube, Vimeo) : on l'agrandit
+   jusqu'à couvrir la boîte, on la centre, le débord est rogné. Dimensions
+   calculées sur la BOÎTE (cqw/cqh) ; repli en vh/vw sans container-type. */
+.actpage-tpl .plx-diapo [data-gx-video] iframe {
+    position: absolute !important; top: 50% !important; left: 50% !important;
+    width: max(100%, 177.78vh) !important; height: max(100%, 56.25vw) !important;
+    max-width: none !important; max-height: none !important;
+    transform: translate(-50%, -50%) !important;
+    border: 0 !important; pointer-events: none;
+}
+@supports (container-type: size) {
+    .actpage-tpl .plx-diapo [data-gx-video] iframe {
+        width: max(100cqw, 177.78cqh) !important;
+        height: max(100cqh, 56.25cqw) !important;
+    }
+}
+
+/* Flèches gauche / droite, à mi-hauteur. */
+.actpage-tpl .plx-hero-fleche {
+    position: absolute; top: 50%; z-index: 5;
+    width: 56px; height: 56px; margin-top: -28px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; border: 1px solid rgba(255,255,255,.55);
+    background: rgba(0,0,0,.35); color: #fff; font-size: 18px;
+    text-decoration: none; cursor: pointer;
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    transition: background .3s, border-color .3s, color .3s;
+}
+.actpage-tpl .plx-hero-fleche:hover,
+.actpage-tpl .plx-hero-fleche:focus-visible {
+    background: var(--primary, #C8F31D); border-color: var(--primary, #C8F31D); color: #111;
+}
+.actpage-tpl .plx-hero-fleche-prec { left: clamp(12px, 2.5vw, 32px); }
+.actpage-tpl .plx-hero-fleche-suiv { right: clamp(12px, 2.5vw, 32px); }
+.actpage-tpl .plx-diapos:has(> .plx-diapo:only-child) ~ .plx-hero-fleche { display: none; }
+@media only screen and (max-width: 767px) {
+    .actpage-tpl .plx-hero-fleche { width: 42px; height: 42px; margin-top: -21px; font-size: 15px; }
+}
+
+/* Points : créés par le script, sur le site seulement. */
+.actpage-tpl .plx-points {
+    position: absolute; left: 50%; bottom: 28px; z-index: 5;
+    display: flex; gap: 10px; transform: translateX(-50%);
+}
+.actpage-tpl .plx-point {
+    width: 34px; height: 3px; padding: 0; border: 0; border-radius: 2px;
+    background: rgba(255,255,255,.45); cursor: pointer;
+}
+.actpage-tpl .plx-point.is-active { background: var(--primary, #C8F31D); }
+
+/* Dans l'éditeur : l'étiquette de la vidéo affichée. */
+html.plx-edition .actpage-tpl .plx-diapo::before {
+    content: attr(data-plx-label);
+    position: absolute; top: 110px; left: 50%; z-index: 4;
+    transform: translateX(-50%);
+    padding: 4px 10px; border-radius: 4px;
+    background: rgba(0,0,0,.75); color: #fff;
+    font: 600 12px/1.4 system-ui, sans-serif; pointer-events: none;
+}

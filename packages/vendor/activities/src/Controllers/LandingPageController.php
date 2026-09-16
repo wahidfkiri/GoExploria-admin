@@ -92,8 +92,13 @@ class LandingPageController extends Controller
                 'activity' => $activity,
                 'page'     => $pageSite,
                 // La carte n'existe pas dans le contenu enregistré : celui-ci
-                // ne porte qu'une section d'attente, remplacée ici.
-                'contenu'  => $this->injecterCarteMonde((string) $pageSite->content, $activity),
+                // ne porte qu'une section d'attente, remplacée ici. Les règles
+                // d'édition que l'éditeur y avait enregistrées par erreur sont
+                // retirées d'abord (cf. ReglesEdition).
+                'contenu'  => $this->injecterCarteMonde(
+                    \Vendor\Activities\Support\ReglesEdition::retirer($pageSite->content),
+                    $activity
+                ),
             ]);
         }
 
