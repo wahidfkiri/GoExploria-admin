@@ -111,7 +111,12 @@
             return $block;
         }
 
-        $vvvebHero = ['html' => $m[0], 'css' => $block['css']];
+        // Des vidéos seulement : les diapositives image d'une page pas encore
+        // ré-enregistrée ne sont pas affichées.
+        $vvvebHero = [
+            'html' => \Vendor\TravelDestination\Support\DestinationDefaultPage::sansDiapositivesImage($m[0]),
+            'css'  => $block['css'],
+        ];
         $block['html'] = str_replace($m[0], '', $block['html']);
         $block['css_emis'] = true;
 

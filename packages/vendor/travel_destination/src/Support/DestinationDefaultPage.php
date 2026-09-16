@@ -69,6 +69,34 @@ class DestinationDefaultPage
         ];
     }
 
+    /**
+     * Héros : des vidéos seulement (demande du 2026-09-16). Retire du héros
+     * composé dans l'éditeur les diapositives qui ne portent qu'une image
+     * (`<div class="hero-slide…"><img></div>`) ; les vidéos restent.
+     *
+     * Même geste que DestinationDefaultTemplate::removeImageSlides() côté
+     * admin, qui l'applique à l'ouverture de l'éditeur et par la commande
+     * destinations:hero-diaporama. Ici, au rendu : une page pas encore
+     * ré-enregistrée n'affiche déjà plus ses images.
+     *
+     * Si le héros ne contient QUE des images, il est laissé tel quel : mieux
+     * vaut des photos qu'une bannière vide.
+     */
+    public static function sansDiapositivesImage(string $html): string
+    {
+        $nouveau = preg_replace(
+            '/\s*<div\b[^>]*class="[^"]*\bhero-slide\b[^"]*"[^>]*>\s*<img\b[^>]*>\s*<\/div>/i',
+            '',
+            $html
+        ) ?? $html;
+
+        if ($nouveau === $html || ! preg_match('/class="[^"]*\bhero-slide\b/i', $nouveau)) {
+            return $html;
+        }
+
+        return $nouveau;
+    }
+
     // =====================================================================
     // Règles d'édition publiées par erreur
     //
