@@ -51,7 +51,7 @@ class DestinationDefaultPage
 
             return [
                 'slug' => $row->slug,
-                'css'  => (string) $row->css_content,
+                'css'  => self::stripEditorCss($row->css_content),
                 'html' => (string) $row->html_content,
             ];
         }
@@ -67,6 +67,67 @@ class DestinationDefaultPage
             'css'  => $template['css'],
             'html' => self::personalize($template['html'], $entity),
         ];
+    }
+
+    // =====================================================================
+    // Règles d'édition publiées par erreur
+    //
+    // Jusqu'au 2026-09-16, le canvas de l'éditeur (admin) portait ses règles
+    // d'édition dans un <style> en ligne, que la sauvegarde enregistrait avec
+    // la feuille de la page. Sur le site, elles DÉPLIENT le diaporama du héros
+    // en vignettes étiquetées (« Diapositive 1 · vidéo »…) et rendent les
+    // vidéos inertes au clic. L'admin ne les enregistre plus et sait les
+    // retirer (commande destinations:hero-diaporama) ; on les retire aussi ici,
+    // au rendu, pour qu'aucune page pas encore nettoyée ne les affiche.
+    //
+    // Même logique que Vendor\Destination\Support\DestinationDefaultTemplate
+    // ::stripEditorCss() côté admin — les deux projets sont déployés
+    // séparément. Le bloc est reconnu par sa première ligne, commune à toutes
+    // ses versions, et se termine sur la dernière ligne propre à sa version, de
+    // la plus récente à la plus ancienne (une version récente contient aussi
+    // les fins des précédentes).
+    // =====================================================================
+
+    private const EDITOR_CSS_START = 'html, body { margin: 0; padding: 0; min-height: 100%; }';
+
+    private const EDITOR_CSS_ENDS = [
+        'recouvrirait toute la page. */',
+        '.gx-dest-tpl [data-gx-map-canvas] { pointer-events: none; }',
+        'iframe, video { pointer-events: none !important; }',
+    ];
+
+    /** Retire d'une feuille de page les règles d'édition du canvas admin. */
+    public static function stripEditorCss(?string $css): string
+    {
+        $css = (string) $css;
+
+        if (! str_contains($css, self::EDITOR_CSS_START)) {
+            return $css;
+        }
+
+        while (($debut = strpos($css, self::EDITOR_CSS_START)) !== false) {
+            // Le bloc s'arrête au plus tard là où en commence un autre.
+            $suivant = strpos($css, self::EDITOR_CSS_START, $debut + 1);
+            $segment = substr($css, $debut, $suivant === false ? null : $suivant - $debut);
+
+            $fin = null;
+            foreach (self::EDITOR_CSS_ENDS as $marque) {
+                $pos = strpos($segment, $marque);
+                if ($pos !== false) {
+                    $fin = $pos + strlen($marque);
+                    break;
+                }
+            }
+
+            // Début reconnu sans fin connue : on ne devine pas, on s'arrête.
+            if ($fin === null) {
+                break;
+            }
+
+            $css = substr($css, 0, $debut) . substr($css, $debut + $fin);
+        }
+
+        return trim($css);
     }
 
     /**

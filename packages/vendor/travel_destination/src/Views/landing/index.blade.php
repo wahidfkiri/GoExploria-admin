@@ -94,7 +94,7 @@
     foreach ($builderPages ?? [] as $page) {
         $builderBlocks->push([
             'slug' => $page->slug,
-            'css'  => (string) $page->css_content,
+            'css'  => \Vendor\TravelDestination\Support\DestinationDefaultPage::stripEditorCss($page->css_content),
             'html' => $stripMapPlaceholder($page->html_content),
         ]);
     }

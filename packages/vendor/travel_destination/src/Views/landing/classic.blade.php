@@ -721,7 +721,7 @@
 @if(isset($builderPages) && $builderPages->count() > 0)
   @foreach($builderPages as $builderPage)
     @if(filled($builderPage->css_content))
-      <style>{!! $builderPage->css_content !!}</style>
+      <style>{!! \Vendor\TravelDestination\Support\DestinationDefaultPage::stripEditorCss($builderPage->css_content) !!}</style>
     @endif
     <section class="builder-page-section" id="page-{{ $builderPage->slug }}">
       {!! $builderPage->html_content !!}
