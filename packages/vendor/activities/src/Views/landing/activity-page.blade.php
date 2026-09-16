@@ -56,28 +56,24 @@
 <style>
     .site-header { top: var(--gx-entete-plateforme, 96px) !important; }
 
-    /* ── FOND NOIR ──────────────────────────────────────────────────────
-       La barre du gabarit s'aligne sur celle de la plateforme, noire elle
-       aussi. Le gabarit la laisse transparente (`header-transparent`) pour
-       qu'elle se fonde dans le visuel d'ouverture : d'où `!important`. */
+    /* ── FOND TRANSPARENT ────────────────────────────────────────────────
+       Demande du 2026-09-16 : la barre du gabarit (`.main-bar-wraper`) est
+       transparente — les vidéos du bandeau passent dessous, comme le prévoit
+       le gabarit (`header-transparent`). Elle était noire jusque-là, alignée
+       sur la barre de la plateforme. `!important` : le thème lui donne un
+       fond dans certains états (barre collante). Le menu garde le style du
+       thème (sur grand écran, sa pastille sombre ; en dessous, le tiroir
+       blanc du menu mobile). */
     .site-header,
     .site-header .main-bar-wraper,
     .site-header .main-bar {
-        background: #000000 !important;
+        background: transparent !important;
+        box-shadow: none !important;
     }
 
-    /* Le menu ne devient noir QUE sur grand écran. En dessous, `.header-nav`
-       n'est plus la barre mais le tiroir coulissant du menu mobile — blanc,
-       à liens sombres : le noircir le rendrait illisible. */
-    @media (min-width: 992px) {
-        .site-header .header-nav {
-            background: #000000 !important;
-        }
-    }
-
-    /* Les liens du gabarit sortent déjà en blanc sur cette barre, sauf
-       l'élément courant, qui porte une pastille blanche à texte sombre :
-       on ne touche donc qu'au survol, pour qu'il reste lisible sur le noir. */
+    /* Les liens du gabarit sortent en blanc sur le bandeau, sauf l'élément
+       courant, qui porte une pastille blanche à texte sombre : on ne touche
+       donc qu'au survol. */
     .site-header .header-nav > ul > li:not(.active) > a:hover {
         color: #C8F31D !important;
     }

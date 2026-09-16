@@ -13,7 +13,7 @@
    API publique
    ------------
    GxGoogleMap.load(apiKey, { mapId })      -> Promise (résolue quand prêt)
-   GxGoogleMap.create(elId, {center,zoom,mapId,mapTypeControl,streetView})
+   GxGoogleMap.create(elId, {center,zoom,mapId,mapTypeControl,streetView,zoomButtons})
    engine.addMarker(place, {
        position:{lat,lng},
        iconHtml,                         // HTML brut d'icône (prioritaire), ou
@@ -121,7 +121,7 @@
         this.markers = [];
         this._info = new gmaps.InfoWindow({ maxWidth: 320 });
         this._openInfo = null;
-        this.map = new gmaps.Map(el, {
+        var reglages = {
             center: options.center || { lat: 52.0, lng: -85.0 },
             zoom: options.zoom || 4,
             mapId: options.mapId || undefined,
@@ -130,7 +130,22 @@
             fullscreenControl: true,
             clickableIcons: false,
             gestureHandling: 'greedy'
-        });
+        };
+
+        // zoomButtons : de vrais boutons « + / − » toujours visibles. Par
+        // défaut, Google les range désormais dans une « commande de caméra »
+        // repliée (un seul bouton en bas à droite) — on ne les voit pas, et le
+        // popup publicitaire, lui aussi en bas à droite, la recouvre. Ils sont
+        // posés au milieu du bord droit, avec Street View.
+        if (options.zoomButtons) {
+            var positions = gmaps.ControlPosition;
+            reglages.cameraControl = false;
+            reglages.zoomControl = true;
+            reglages.zoomControlOptions = { position: positions.RIGHT_CENTER };
+            reglages.streetViewControlOptions = { position: positions.RIGHT_CENTER };
+        }
+
+        this.map = new gmaps.Map(el, reglages);
 
         // Clustering « +N » (optionnel) : recalcul à chaque déplacement/zoom.
         this._bubbles = [];

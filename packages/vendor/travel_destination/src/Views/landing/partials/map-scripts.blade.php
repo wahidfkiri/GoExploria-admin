@@ -112,7 +112,10 @@ document.addEventListener('DOMContentLoaded', function () {
           zoom: defaultZoom,
           mapId: window.GX_MAPS.mapId || undefined,
           streetView: true,
-          cluster: true
+          cluster: true,
+          // Boutons « + / − » visibles (la commande de caméra de Google les
+          // cachait, et le popup publicitaire la recouvrait).
+          zoomButtons: true
         });
         var gPoints = [];
 

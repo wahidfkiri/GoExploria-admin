@@ -70,6 +70,28 @@ class DestinationDefaultPage
     }
 
     /**
+     * Le héros en diaporama du gabarit, personnalisé pour la destination.
+     * `null` si le gabarit n'en porte pas.
+     *
+     * Sert de repli (2026-09-16) : une page de destination enregistrée AVANT
+     * l'arrivée du héros n'en contient pas, et la destination retombait sur
+     * l'ancienne bannière statique (constaté sur le Canada, niveau pays). Ses
+     * styles sont déjà dans destination-atlas.css, non scopé : aucune feuille
+     * à émettre avec lui.
+     */
+    public static function heroSection($entity): ?string
+    {
+        $template = self::template();
+
+        if ($template === null
+            || ! preg_match('/<section\b[^>]*data-gx-destination-hero\b[^>]*>.*?<\/section>/is', $template['html'], $m)) {
+            return null;
+        }
+
+        return self::personalize($m[0], $entity);
+    }
+
+    /**
      * Héros : des vidéos seulement (demande du 2026-09-16). Retire du héros
      * composé dans l'éditeur les diapositives qui ne portent qu'une image
      * (`<div class="hero-slide…"><img></div>`) ; les vidéos restent.

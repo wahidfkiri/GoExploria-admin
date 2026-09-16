@@ -123,6 +123,18 @@
         return $block;
     });
 
+    // Aucune page ne porte de héros — enregistrée avant son arrivée (cas du
+    // Canada, niveau pays) : on affiche celui du gabarit plutôt que l'ancienne
+    // bannière statique, pour que TOUTES les destinations, à tous les niveaux,
+    // ouvrent sur le même héros vidéo. Ses styles sont dans
+    // destination-atlas.css : pas de feuille à émettre.
+    if ($vvvebHero === null) {
+        $herosGabarit = \Vendor\TravelDestination\Support\DestinationDefaultPage::heroSection($entity);
+        if ($herosGabarit !== null) {
+            $vvvebHero = ['html' => $herosGabarit, 'css' => ''];
+        }
+    }
+
     // Le fil d'Ariane de la bannière composée est un emplacement : on y pose le
     // vrai, ou on le retire à la racine du guide.
     if ($vvvebHero !== null) {

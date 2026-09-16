@@ -824,11 +824,7 @@
         }
 
         .go-home-hero .search-bar-v2-results {
-            left: 50% !important;
-            top: calc(100% + 10px) !important;
-            width: min(92vw, 560px) !important;
             max-height: min(58vh, 420px);
-            transform: translateX(-50%) !important;
             overflow: hidden;
         }
 
@@ -981,6 +977,41 @@
         .go-hero-content {
             top: 56%;
         }
+    }
+
+    /* ── Résultats de recherche : centrés sous la barre ──
+       Le panneau était ancré sur le champ de saisie (.search-bar-v2-search),
+       donc décalé à droite en desktop et sorti de l'écran à gauche sur mobile.
+       On l'ancre sur la barre entière, elle-même centrée dans la page.
+       Les colonnes en minmax(0, 1fr) : un nom long (nowrap) élargissait sa
+       colonne jusqu'à 1440 px et coupait les résultats.
+       ⚠ Bloc en FIN de feuille : il doit primer sur les règles ci-dessus. */
+    .go-home-hero .search-bar-v2 { position: relative; }
+    .go-home-hero .search-bar-v2-search { position: static !important; }
+    .go-home-hero .search-bar-v2-results {
+        left: 50% !important;
+        right: auto !important;
+        top: calc(100% + 10px) !important;
+        transform: translateX(-50%) !important;
+        width: min(980px, calc(100vw - 32px)) !important;
+    }
+    .go-home-hero .search-bar-v2-results-list { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    .go-home-hero .search-bar-v2-result-item,
+    .go-home-hero .search-bar-v2-result-content { min-width: 0; }
+    .go-home-hero .search-bar-v2-result-name,
+    .go-home-hero .search-bar-v2-result-description,
+    .go-home-hero .search-bar-v2-result-type {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    @media (max-width: 1024px) {
+        .go-home-hero .search-bar-v2-results { width: min(720px, calc(100vw - 24px)) !important; }
+        .go-home-hero .search-bar-v2-results-list { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    }
+    @media (max-width: 640px) {
+        .go-home-hero .search-bar-v2-results { width: calc(100vw - 20px) !important; }
+        .go-home-hero .search-bar-v2-results-list { grid-template-columns: minmax(0, 1fr) !important; }
     }
 </style>
 

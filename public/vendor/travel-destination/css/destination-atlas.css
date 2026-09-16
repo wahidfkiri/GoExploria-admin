@@ -931,27 +931,35 @@ section{position:relative;}
   overflow:hidden;
 }
 .map-canvas > *{width:100%;height:100%;}
+/* Panneau d'informations : SOUS la carte, en bande pleine largeur
+   (demande du 2026-09-16 — il flottait sur la carte, en haut à gauche, et en
+   masquait une partie). Contenu aligné sur le conteneur de la page :
+   titre et coordonnées | texte | compteurs côte à côte | bouton.
+   La classe --floating est gardée : les pages déjà enregistrées la portent. */
 .map-info--floating{
-  position:absolute;top:28px;left:max(24px,calc((100% - var(--container)) / 2 + var(--gutter)));
-  width:min(360px,calc(100% - 48px));
-  max-height:calc(100% - 56px);overflow:auto;
+  position:static;width:100%;max-height:none;overflow:visible;
   background:var(--bg-raised);
-  border:1px solid var(--line);border-radius:var(--radius-lg);
-  box-shadow:var(--shadow-lg);
-  padding:24px;
-  z-index:5;
+  border:0;border-bottom:1px solid var(--line);border-radius:0;box-shadow:none;
+  padding:24px max(var(--gutter),calc((100% - var(--container)) / 2 + var(--gutter)));
+  display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr) auto auto;
+  column-gap:clamp(20px,3vw,48px);row-gap:4px;align-items:center;
+  z-index:auto;
 }
-.map-info--floating h3{font-size:1.35rem;}
-.map-info--floating .map-poi-list{margin-top:14px;}
-.map-info--floating .btn{margin-top:6px;}
+.map-info--floating > *{margin:0;}
+.map-info--floating h3{grid-column:1;grid-row:1;font-size:1.35rem;}
+.map-info--floating .coord{grid-column:1;grid-row:2;}
+.map-info--floating > p:not(.coord){grid-column:2;grid-row:1 / span 2;max-width:62ch;}
+.map-info--floating .map-poi-list{grid-column:3;grid-row:1 / span 2;flex-direction:row;flex-wrap:wrap;gap:10px 28px;margin:0;}
+.map-info--floating .map-poi-list li{flex-direction:column-reverse;align-items:flex-start;gap:2px;padding:0;border:0;}
+.map-info--floating .map-poi-list .dist{font-size:1.1rem;color:var(--fg);}
+.map-info--floating .btn{grid-column:4;grid-row:1 / span 2;margin:0;white-space:nowrap;}
 
-/* Sous 900 px la carte flottante mangerait la carte : on l'empile dessous. */
+/* Sous 900 px : la bande s'empile en une colonne. */
 @media (max-width:900px){
   .map-canvas{height:clamp(360px,52vh,520px);}
-  .map-info--floating{
-    position:static;width:auto;max-height:none;
-    margin:0 var(--gutter);margin-top:-40px;
-  }
+  .map-info--floating{grid-template-columns:minmax(0,1fr);row-gap:14px;}
+  .map-info--floating > *{grid-column:1 !important;grid-row:auto !important;}
+  .map-info--floating .btn{justify-self:start;}
 }
 
 .gx-map-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;height:100%;padding:32px;background:
