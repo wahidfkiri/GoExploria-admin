@@ -201,8 +201,10 @@
    HÉROS — diaporama de vidéos plein cadre (comme les pages de destination)
    =================================================================== */
 
-/* Plein écran : le thème fixait 1000 / 700 / 650 / 480 px selon la largeur. */
+/* Plein écran : le thème fixait 1000 / 700 / 650 / 480 px selon la largeur.
+   Fond noir : c'est lui qu'on voit le temps qu'une vidéo se charge. */
 .actpage-tpl .main-banner.style-8 {
+    background-color: #000;
     height: auto;
     min-height: 100vh;
     min-height: 100svh;
@@ -260,6 +262,21 @@ html[data-plx-heros-vue="12"] .actpage-tpl .plx-diapo:nth-child(12) {
     padding: 0 !important; border-radius: 0 !important;
     overflow: hidden !important; background: transparent !important;
     container-type: size;
+    --gx-utile-l: 1;
+    --gx-utile-h: 1;
+}
+/* Bandes noires INCRUSTÉES dans l'image de certaines vidéos : le cadre est en
+   16/9 mais la scène n'en occupe que le centre. --gx-utile-l / --gx-utile-h
+   disent quelle part de la largeur / hauteur du cadre elle occupe ; le lecteur
+   est agrandi d'autant pour que la SCÈNE couvre le bandeau. Réglage par
+   vidéo, repérée par son adresse : si le client en met une autre, la règle
+   cesse de s'appliquer. HBm_2RoZTOs : scène 960 x 642 dans 1280 x 720
+   (mesuré sur ses vignettes), pas tout à fait centrée (38 px de bande en
+   haut, 40 en bas) : 0,74 x 0,87 plutôt que 0,75 x 0,89, sinon un liseré
+   d'1 px restait visible sur mobile. */
+.actpage-tpl .plx-diapo [data-gx-video][data-url*="HBm_2RoZTOs"] {
+    --gx-utile-l: .74;
+    --gx-utile-h: .87;
 }
 .actpage-tpl .plx-diapo [data-gx-video] video {
     position: absolute !important; top: 0 !important; left: 0 !important;
@@ -278,8 +295,8 @@ html[data-plx-heros-vue="12"] .actpage-tpl .plx-diapo:nth-child(12) {
 }
 @supports (container-type: size) {
     .actpage-tpl .plx-diapo [data-gx-video] iframe {
-        width: max(100cqw, 177.78cqh) !important;
-        height: max(100cqh, 56.25cqw) !important;
+        width: max(calc(100cqw / var(--gx-utile-l)), calc(177.78cqh / var(--gx-utile-h))) !important;
+        height: max(calc(56.25cqw / var(--gx-utile-l)), calc(100cqh / var(--gx-utile-h))) !important;
     }
 }
 

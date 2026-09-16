@@ -984,9 +984,21 @@ section{position:relative;}
    dans leur propre feuille, émise APRÈS celle du site ; à !important égal,
    seule la spécificité peut la battre sans réécrire leur CSS. */
 .hero-slides [data-gx-video] iframe{position:absolute !important;top:50% !important;left:50% !important;width:max(100%,177.78vh) !important;height:max(100%,56.25vw) !important;transform:translate(-50%,-50%) !important;border:0;pointer-events:none;}
-.hero-slideshow .hero-slides .hero-slide [data-gx-video]{container-type:size;}
+.hero-slideshow .hero-slides .hero-slide [data-gx-video]{container-type:size;--gx-utile-l:1;--gx-utile-h:1;}
+/* BANDES NOIRES INCRUSTÉES. Certaines vidéos portent leurs bandes DANS
+   l'image : le cadre est en 16/9, mais la scène n'en occupe que le centre.
+   Couvrir le cadre ne suffit pas, il faut couvrir la SCÈNE. --gx-utile-l et
+   --gx-utile-h disent quelle part de la largeur et de la hauteur du cadre elle
+   occupe ; le lecteur est agrandi d'autant, et le débord est rogné.
+   Réglage par vidéo, repérée par son adresse : si le client en met une autre,
+   la règle cesse de s'appliquer d'elle-même.
+   HBm_2RoZTOs : scène 960 x 642 dans 1280 x 720 (mesuré sur ses vignettes),
+   soit 0,75 x 0,89 — mais pas tout à fait centrée (38 px de bande en haut,
+   40 en bas) : on prend 0,74 x 0,87, sinon un liseré d'1 px restait visible
+   sur mobile. */
+.hero-slideshow .hero-slides .hero-slide [data-gx-video][data-url*="HBm_2RoZTOs"]{--gx-utile-l:.74;--gx-utile-h:.87;}
 @supports (container-type:size){
-  .hero-slideshow .hero-slides .hero-slide [data-gx-video] iframe{width:max(100cqw,177.78cqh) !important;height:max(100cqh,56.25cqw) !important;max-width:none !important;max-height:none !important;}
+  .hero-slideshow .hero-slides .hero-slide [data-gx-video] iframe{width:max(calc(100cqw / var(--gx-utile-l)),calc(177.78cqh / var(--gx-utile-h))) !important;height:max(calc(56.25cqw / var(--gx-utile-l)),calc(100cqh / var(--gx-utile-h))) !important;max-width:none !important;max-height:none !important;}
 }
 /* Flèches précédent / suivant, créées par le script (absentes de l'éditeur). */
 .hero-nav{position:absolute;top:50%;z-index:3;display:flex;align-items:center;justify-content:center;width:52px;height:52px;padding:0;border:1px solid rgba(255,255,255,.45);border-radius:50%;background:rgba(15,22,21,.35);color:#fff;cursor:pointer;transform:translateY(-50%);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);transition:background .3s var(--ease),border-color .3s var(--ease);}
