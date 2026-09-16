@@ -139,7 +139,8 @@
         );
     }
 
-    // Ancres du menu : seules les sections réellement rendues y figurent.
+    // Ancres des sections réellement rendues — listées dans le pied de page
+    // (l'en-tête est désormais celui de la plateforme).
     $navSections = [['id' => 'map', 'label' => 'Carte']];
     if ($aboutContents->count() > 0) $navSections[] = ['id' => 'a-propos', 'label' => 'À propos'];
     if ($childEntities->count() > 0 || $destinations->count() > 0) $navSections[] = ['id' => 'destinations', 'label' => 'Destinations'];
@@ -193,103 +194,88 @@
 <body>
 
 {{-- ==========================================================================
-     EN-TÊTE
-     ========================================================================== --}}
-<header class="site-header">
-  <div class="container">
-    {{-- Même logo que l'en-tête de la page d'accueil
-         (welcome-home/components/Header.blade.php), sur desktop et mobile. --}}
-    <a href="{{ url('/') }}" class="logo" aria-label="{{ __('home-v2.brand.name_upper') }}">
-      <img src="{{ asset('logo-business-tourisme.png') }}" alt="GoExploria Business-Tourisme">
-    </a>
+     EN-TÊTE — celui de la page d'accueil (`/`), à l'identique
+     ==========================================================================
+     Demande du 2026-09-16 : l'en-tête propre au gabarit « Carnet d'Atlas »
+     (liens vers les sections, méga-menu Activités, bouton de thème, menu
+     mobile) est REMPLACÉ par celui de la plateforme. Le partiel apporte ses
+     feuilles, ses scripts et sa palette isolée ; c'est le même que sur les
+     pages d'activité.
 
-    <nav class="main-nav" aria-label="Navigation principale">
-      @foreach($navSections as $ns)
-        @if($ns['id'] === 'activites' && $destinationActivities->count() > 0)
-          {{-- Méga-menu « Activités » : liste des activités liées à cette
-               destination (jointure $entity->activities()). Survol = ouverture
-               (desktop) ; clic = ouverture (tactile) ou saut vers #activites. --}}
-          <div class="td-mega" data-td-mega>
-            <a href="#activites" class="td-mega-trigger" aria-haspopup="true" aria-expanded="false">
-              {{ $ns['label'] }}
-              <svg class="td-mega-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
-            </a>
-            <div class="td-mega-panel" role="menu">
-              <div class="td-mega-head">
-                <span>Activités à {{ $entity->name }}</span>
-                <a href="#activites" class="td-mega-all">Tout voir ({{ $destinationActivities->count() }})</a>
-              </div>
-              <div class="td-mega-grid">
-                @foreach($destinationActivities->take(12) as $activity)
-                  <a class="td-mega-item" role="menuitem" href="{{ route('activity.show', ['slug' => $activity->slug]) }}">
-                    <span class="td-mega-thumb">
-                      <img src="{{ $activity->image_url ?: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=200&auto=format&fit=crop' }}" alt="{{ $activity->name }}" loading="lazy">
-                    </span>
-                    <span class="td-mega-txt">
-                      <span class="td-mega-name">{{ $activity->name }}</span>
-                      @if($activity->category?->name ?? null)
-                        <span class="td-mega-cat">{{ $activity->category->name }}</span>
-                      @endif
-                    </span>
-                  </a>
-                @endforeach
-              </div>
-            </div>
-          </div>
-        @else
-          <a href="#{{ $ns['id'] }}">{{ $ns['label'] }}</a>
-        @endif
-      @endforeach
-    </nav>
+     destination-atlas.js cherche encore `.site-header`, `.hamburger` et
+     `.mobile-nav` : il sort sans rien faire quand ils sont absents. --}}
+@include('welcome-home.partials.platform-header')
 
-    <div class="header-actions">
-      <button class="theme-toggle" data-theme-toggle aria-label="Changer le thème clair / sombre">
-        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
-        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z"/></svg>
-      </button>
-      <a href="#contact" class="btn btn-primary btn-sm">
-        Planifier mon séjour
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
-      <button class="hamburger" aria-label="Ouvrir le menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-</header>
+{{-- ── COHABITATION AVEC LA FEUILLE DU GABARIT ──────────────────────────────
+     Les feuilles de l'en-tête arrivent APRÈS destination-atlas.css. Trois de
+     leurs règles globales débordent sur la page, on les corrige ici, APRÈS
+     elles :
 
+     1. `body` (styles.css) impose Montserrat, un texte gris et un fond blanc :
+        la page perdait sa typographie et son fond papier (et le thème
+        sombre). On rend au corps ses valeurs, et on donne à l'en-tête SA
+        police — sur `/`, il l'hérite du corps.
+     2. Les titres des menus (h2/h3) prenaient la police d'affichage des
+        titres du gabarit (`h1, h2, h3, h4`). Sélecteur de spécificité
+        (0,0,2) : juste au-dessus de celui du gabarit (0,0,1), en dessous des
+        classes des menus (0,1,0), qui gardent la main sur leurs propres
+        réglages.
+     3. L'en-tête est en z-index 10060 (l'ancien, 100) : les fenêtres de la
+        page — fiche d'un point de la carte, visionneuse, vidéo — passeraient
+        dessous, bouton de fermeture compris. Elles le repassent.
+
+     L'en-tête est `position: fixed` : les ancres (#map, #activites…)
+     s'arrêteraient sous lui. Sa hauteur varie avec la largeur et le
+     défilement, on la mesure (même méthode que les pages d'activité). --}}
+<style>
+  body {
+    font-family: var(--font-body);
+    color: var(--fg);
+    background: var(--bg);
+  }
+  /* height: 0 — Header.blade.php commence par un BOM (U+FEFF) : ce caractère
+     invisible ouvre une ligne de texte dans le conteneur, qui poussait toute
+     la page de 26 px (une ligne à l'interlignage du gabarit). Le conteneur ne
+     porte que la palette ; ses enfants visibles sont tous `fixed`. On ne
+     retire pas le BOM à la source : le composant sert à 17 pages. */
+  .gx-platform-header {
+    height: 0;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #333333;
+  }
+  :where(.gx-platform-header) :is(h1, h2, h3, h4):not(p) {
+    font-family: inherit;
+    font-weight: bold;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+  .map-modal,
+  .lightbox,
+  .video-modal { z-index: 10200; }
+
+  html { scroll-padding-top: var(--gx-entete-plateforme, 96px); }
+</style>
 <script>
-(function () {
-  // Méga-menu « Activités » : le survol l'ouvre (desktop, via CSS). Ici on gère
-  // le CLIC pour les écrans tactiles (pas de survol) + fermeture au clic
-  // extérieur / touche Échap. Sur desktop, le clic laisse filer l'ancre #activites.
-  var mega = document.querySelector('.main-nav .td-mega');
-  if (!mega) return;
-  var trigger = mega.querySelector('.td-mega-trigger');
-  var noHover = window.matchMedia && window.matchMedia('(hover: none)').matches;
-
-  trigger.addEventListener('click', function (e) {
-    if (noHover) {
-      e.preventDefault();
-      var open = mega.classList.toggle('is-open');
-      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-    }
-  });
-  document.addEventListener('click', function (e) {
-    if (!mega.contains(e.target)) { mega.classList.remove('is-open'); trigger.setAttribute('aria-expanded', 'false'); }
-  });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { mega.classList.remove('is-open'); trigger.setAttribute('aria-expanded', 'false'); }
-  });
-})();
+  (function () {
+    var mesurer = function () {
+      var entete = document.querySelector('.gx-platform-header .header-v2');
+      if (!entete) return;
+      // En mobile, la barre interne sort du flux et `.header-v2` retombe à
+      // 0 px : on prend le plus bas des deux (l'en-tête est fixé en haut).
+      var barre = entete.querySelector('.header-nav');
+      var bas = entete.getBoundingClientRect().bottom;
+      if (barre) { bas = Math.max(bas, barre.getBoundingClientRect().bottom); }
+      if (bas > 0) {
+        document.documentElement.style.setProperty('--gx-entete-plateforme', Math.round(bas) + 'px');
+      }
+    };
+    mesurer();
+    document.addEventListener('DOMContentLoaded', mesurer);
+    window.addEventListener('load', mesurer);
+    window.addEventListener('resize', mesurer, { passive: true });
+    window.addEventListener('scroll', mesurer, { passive: true });
+  })();
 </script>
-
-<nav class="mobile-nav" aria-label="Navigation mobile">
-  @foreach($navSections as $ns)
-    <a href="#{{ $ns['id'] }}">{{ $ns['label'] }}</a>
-  @endforeach
-  <a href="#contact" class="btn btn-primary">Planifier mon séjour</a>
-</nav>
 
 <main>
 
