@@ -208,6 +208,27 @@ class TravelDestinationController extends Controller
      * l'arborescence entière (551 destinations, et les villes vont croître),
      * chaque niveau est demandé au moment où l'utilisateur ouvre son champ.
      */
+    /**
+     * Contenu du méga-menu « Activités » de l'en-tête des pages destination.
+     *
+     * Chargé à la première ouverture du menu, pas avec la page : il liste
+     * TOUTES les activités actives (près d'un millier), soit plusieurs
+     * centaines de Ko de HTML que la plupart des visiteurs n'ouvrent jamais.
+     * Mis en cache 10 minutes ; la clé suit la date de la vue, pour qu'un
+     * changement de gabarit soit visible sans vider le cache.
+     */
+    public function activitiesMenu()
+    {
+        $vue = 'travel-destination::landing.partials.activities-mega-menu-content';
+        $cle = 'travel-destination.activities-menu.' . (@filemtime(view()->getFinder()->find($vue)) ?: '0');
+
+        $html = \Illuminate\Support\Facades\Cache::remember($cle, 600, fn () => view($vue)->render());
+
+        return response($html)
+            ->header('Content-Type', 'text/html; charset=UTF-8')
+            ->header('Cache-Control', 'public, max-age=600');
+    }
+
     public function children($type, $slug)
     {
         $normalizedType = $this->typeMap[$type] ?? null;

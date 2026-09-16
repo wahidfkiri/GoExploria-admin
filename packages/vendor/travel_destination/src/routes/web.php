@@ -4,6 +4,12 @@ use Illuminate\Support\Facades\Route;
 use Vendor\TravelDestination\Controllers\TravelDestinationController;
 
 Route::prefix('travel-destination')->group(function () {
+    // Contenu du méga-menu « Activités » de l'en-tête (chargé à l'ouverture).
+    // « menu » n'est pas un {type} autorisé : aucun conflit avec les routes
+    // de destination ci-dessous.
+    Route::get('/menu/activites', [TravelDestinationController::class, 'activitiesMenu'])
+        ->name('travel-destination.activities-menu');
+
     Route::get('/{type}/{slug}/map-points', [TravelDestinationController::class, 'mapPoints'])
         ->name('travel-destination.map-points')
         ->whereIn('type', ['continent', 'continents', 'country', 'countries', 'province', 'provinces', 'region', 'regions', 'city', 'cities', 'secteur', 'secteurs', 'arrondissement', 'arrondissements', 'quartier', 'quartiers']);

@@ -87,6 +87,16 @@
                             <span>Chaîne vidéos</span>
                         </a>
                     </li>
+                    {{-- « ACTIVITÉS » : seulement si la page l'active (pages destination,
+                         via platform-header). Le méga-menu est fourni par la page. --}}
+                    @if(!empty($gxHeaderActivitesMenu))
+                    <li class="nav-menu-v2-activites">
+                        <a href="#activites" id="gxHeaderActivitesTrigger" role="button" aria-haspopup="true" aria-expanded="false" aria-controls="tdActMega">
+                            <span>ACTIVITÉS</span>
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    @endif
                     <li class="nav-menu-v2-has-plans" style="display:none" id="plansMenuItem">
                         <a href="#section-nos-plans" id="plansMenuTrigger">{{ __('home-v2.header.menu.plans') }}</a>
                     </li>

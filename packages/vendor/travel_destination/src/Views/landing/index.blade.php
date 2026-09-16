@@ -221,7 +221,10 @@
 
      destination-atlas.js cherche encore `.site-header`, `.hamburger` et
      `.mobile-nav` : il sort sans rien faire quand ils sont absents. --}}
-@include('welcome-home.partials.platform-header')
+{{-- `gxHeaderActivitesMenu` : le Header affiche le lien « ACTIVITÉS », qui
+     ouvre le méga-menu pleine largeur inclus juste après. --}}
+@include('welcome-home.partials.platform-header', ['gxHeaderActivitesMenu' => true])
+@include('travel-destination::landing.partials.activities-mega-menu')
 
 {{-- ── COHABITATION AVEC LA FEUILLE DU GABARIT ──────────────────────────────
      Les feuilles de l'en-tête arrivent APRÈS destination-atlas.css. Trois de
