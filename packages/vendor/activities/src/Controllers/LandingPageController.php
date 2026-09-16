@@ -95,8 +95,12 @@ class LandingPageController extends Controller
                 // ne porte qu'une section d'attente, remplacée ici. Les règles
                 // d'édition que l'éditeur y avait enregistrées par erreur sont
                 // retirées d'abord (cf. ReglesEdition).
+                // Le bandeau ne montre que des vidéos : l'image de l'activité
+                // qu'une page enregistrée y porterait encore est retirée.
                 'contenu'  => $this->injecterCarteMonde(
-                    \Vendor\Activities\Support\ReglesEdition::retirer($pageSite->content),
+                    \Vendor\Activities\Support\HerosVideo::sansImage(
+                        \Vendor\Activities\Support\ReglesEdition::retirer($pageSite->content)
+                    ),
                     $activity
                 ),
             ]);
