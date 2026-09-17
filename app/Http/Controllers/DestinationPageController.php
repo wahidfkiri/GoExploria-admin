@@ -159,8 +159,10 @@ class DestinationPageController extends Controller
      */
     public function index()
     {
-        $continents = $this->destinationService->getAllContinents();
-        
+        // Avec leurs pays : la page les liste sous chaque continent, et le
+        // service les charge en une seule requête, déjà mise en cache.
+        $continents = $this->destinationService->getAllContinents(true);
+
         return view('destinations.index', compact('continents'));
     }
 
