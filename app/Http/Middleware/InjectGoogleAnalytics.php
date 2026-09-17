@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\SiteSetting;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +30,7 @@ class InjectGoogleAnalytics
     {
         $response = $next($request);
 
-        $id = (string) config('services.google_analytics.measurement_id');
+        $id = $this->measurementId();
 
         if ($id === '' || !$this->shouldInject($request, $response, $id)) {
             return $response;
@@ -47,6 +48,26 @@ class InjectGoogleAnalytics
         $response->setContent(substr($content, 0, $pos) . $this->snippet($request, $id) . substr($content, $pos));
 
         return $response;
+    }
+
+    /**
+     * ID saisi dans l'admin (Statistiques › Configuration, table partagée
+     * `site_settings`), sinon celui du .env. Lecture en cache 10 min via
+     * SiteSetting ; la base injoignable ne doit jamais casser une page.
+     */
+    private function measurementId(): string
+    {
+        $fallback = (string) config('services.google_analytics.measurement_id');
+
+        try {
+            $id = (string) SiteSetting::get('analytics_measurement_id', $fallback);
+        } catch (\Throwable) {
+            $id = $fallback;
+        }
+
+        $id = strtoupper(trim($id));
+
+        return preg_match('/^G-[A-Z0-9]{4,20}$/', $id) ? $id : '';
     }
 
     private function shouldInject(Request $request, Response $response, string $id): bool
