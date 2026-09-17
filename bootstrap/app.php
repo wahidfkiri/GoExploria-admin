@@ -32,6 +32,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'force.https' => \App\Http\Middleware\ForceHttps::class,
         ]);
 
+        // Balise Google Analytics 4 sur toutes les pages HTML. Global, car les
+        // routes du package activités ne sont pas dans le groupe « web ».
+        $middleware->append(\App\Http\Middleware\InjectGoogleAnalytics::class);
+
         $middleware->appendToGroup('web', \App\Http\Middleware\ForceHttps::class);
         $middleware->appendToGroup('web', \App\Http\Middleware\SetLocale::class);
         $middleware->appendToGroup('web', \App\Http\Middleware\TranslateHomeV2Components::class);

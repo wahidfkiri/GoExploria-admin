@@ -104,6 +104,13 @@
                     body: data
                 })
                     .then(function (response) {
+                        // Page restée ouverte trop longtemps : le jeton CSRF a
+                        // expiré, Laravel répondrait « CSRF token mismatch. ».
+                        if (response.status === 419) {
+                            var expire = new Error('Session expirée');
+                            expire.payload = { message: 'Votre session a expiré. Rechargez la page puis renvoyez votre message.' };
+                            throw expire;
+                        }
                         return response.json().then(function (payload) {
                             if (!response.ok) {
                                 var error = new Error(payload.message || 'Erreur de validation.');

@@ -207,9 +207,16 @@
          seulement son interface — l'état transite par localStorage, et
          l'événement `storage` met à jour l'exemplaire visible du parent. --}}
     @unless($embedInPlatform ?? false)
-        @include('cms::web.fallback.partials.landing-contact-ajax')
         @include('cms::web.fallback.partials.landing-back-to-top')
     @endunless
+
+    {{-- Envoi AJAX du formulaire #contact (message de succès / d'erreur sans
+         recharger la page). Ce n'est PAS un élément flottant : son écouteur
+         doit vivre dans le même document que le formulaire — donc aussi dans
+         l'iframe en mode « embed ». Rangé plus haut avec le bouton « retour en
+         haut », il en était exclu : le formulaire partait en envoi classique
+         et rechargeait la page. @once dans le partiel : pas de doublon. --}}
+    @include('cms::web.fallback.partials.landing-contact-ajax')
 
     @include('cms::web.fallback.partials.landing-cart-drawer')
 

@@ -83,6 +83,24 @@ return [
         'mode' => env('PAYPAL_MODE', 'sandbox'),
     ],
 
+    // Balise GA4 posée par App\Http\Middleware\InjectGoogleAnalytics.
+    // Vide = aucune balise (développement local).
+    'google_analytics' => [
+        'measurement_id' => env('GOOGLE_ANALYTICS_MEASUREMENT_ID'),
+        // granted | denied — état du consentement « analytics_storage » avant
+        // tout choix du visiteur. Un bandeau de cookies peut ensuite appeler
+        // gtag('consent', 'update', {analytics_storage: 'granted'}).
+        'consent_default' => env('GOOGLE_ANALYTICS_CONSENT_DEFAULT', 'granted'),
+        // Chemins jamais mesurés (espace connecté, API, outils, aperçus).
+        'excluded_paths' => [
+            '^/(dashboard|home|profile|login|logout|register|ajax|ajax-login|ajax-register|api|admin|cdn-storage|scrape|batch-scrape|gemini|chat|locale|welcome-test|test)(/|$)',
+            '^/company/\d+/(preview|clear-preview|themes)(/|$)',
+            '^/theme-iframe(/|$)',
+            '^/themes/',
+            '^/(ads|ads-widget)(/|$)',
+        ],
+    ],
+
     'bank' => [
         'account_holder' => env('BANK_ACCOUNT_HOLDER'),
         'bank_name' => env('BANK_NAME'),
