@@ -143,12 +143,19 @@ class InjectGoogleAnalytics
 
     private function pageType(string $path): string
     {
+        // Mêmes familles que config('analytics.sections') dans l'admin : les
+        // deux listes doivent rester alignées, sinon une page changerait de
+        // section entre la mesure et le rapport.
         return match (true) {
             $path === '/' => 'accueil',
-            (bool) preg_match('~^/destinations(/|$)~', $path) => 'destinations',
+            // Les fiches de destination sont servies par le paquet
+            // travel_destination ; /destinations n'en est que l'index.
+            (bool) preg_match('~^/(destinations|travel-destination)(/|$)~', $path) => 'destinations',
             (bool) preg_match('~^/activity(/|$)~', $path) => 'activites',
             (bool) preg_match('~^/company/\d+(/|$)~', $path) => 'etablissements',
             (bool) preg_match('~^/landing(/|$)~', $path) => 'landing',
+            (bool) preg_match('~^/achat(/|$)~', $path) => 'boutique',
+            (bool) preg_match('~^/chaine-videos(/|$)~', $path) => 'videos',
             default => 'autres',
         };
     }
