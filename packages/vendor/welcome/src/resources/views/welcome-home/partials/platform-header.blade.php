@@ -231,6 +231,11 @@
     @include('welcome-home.components.Header')
 </div>
 
+{{-- Barre de raccourcis (droite) : langue, recherche, favoris, activités,
+     destinations, panier, carte. Hors du conteneur de palette : ses panneaux
+     sont `fixed` et elle porte ses propres couleurs. --}}
+@include('welcome-home.partials.side-rail')
+
 @foreach($gxHeaderScripts as $gxScript)
     <script defer src="{{ $gxAsset($gxScript) }}"></script>
 @endforeach

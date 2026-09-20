@@ -10,6 +10,10 @@ Route::prefix('travel-destination')->group(function () {
     Route::get('/menu/activites', [TravelDestinationController::class, 'activitiesMenu'])
         ->name('travel-destination.activities-menu');
 
+    // Contenu du méga-menu « Destinations » de la barre latérale.
+    Route::get('/menu/destinations', [TravelDestinationController::class, 'destinationsMenu'])
+        ->name('travel-destination.destinations-menu');
+
     Route::get('/{type}/{slug}/map-points', [TravelDestinationController::class, 'mapPoints'])
         ->name('travel-destination.map-points')
         ->whereIn('type', ['continent', 'continents', 'country', 'countries', 'province', 'provinces', 'region', 'regions', 'city', 'cities', 'secteur', 'secteurs', 'arrondissement', 'arrondissements', 'quartier', 'quartiers']);

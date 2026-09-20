@@ -48,25 +48,25 @@
 @endphp
 
 @if($tdActAll->isEmpty())
-  <p class="td-actmega__empty">Aucune activité disponible pour le moment.</p>
+  <p class="gxmenu__empty">Aucune activité disponible pour le moment.</p>
 @else
-  <div class="td-actmega__tabs" role="tablist" aria-label="Catégories d'activités">
-    <button type="button" class="td-actmega__tab is-active" role="tab" aria-selected="true" data-td-pane="td-actpane-all">
+  <div class="gxmenu__tabs" role="tablist" aria-label="Catégories d'activités">
+    <button type="button" class="gxmenu__tab is-active" role="tab" aria-selected="true" data-gxmenu-pane="td-actpane-all">
       <span>Toutes les activités</span><em>{{ $tdActAll->count() }}</em>
     </button>
     @foreach($tdActGroups as $g)
-      <button type="button" class="td-actmega__tab" role="tab" aria-selected="false" data-td-pane="td-actpane-{{ $g['id'] }}">
+      <button type="button" class="gxmenu__tab" role="tab" aria-selected="false" data-gxmenu-pane="td-actpane-{{ $g['id'] }}">
         <span>{{ $g['name'] }}</span><em>{{ $g['items']->count() }}</em>
       </button>
     @endforeach
   </div>
 
-  <div class="td-actmega__panes">
-    <section class="td-actmega__pane" id="td-actpane-all" role="tabpanel">
-      <h3 class="td-actmega__title">Toutes les activités <small>de A à Z</small></h3>
-      <div class="td-actmega__az">
+  <div class="gxmenu__panes">
+    <section class="gxmenu__pane" id="td-actpane-all" role="tabpanel">
+      <h3 class="gxmenu__title">Toutes les activités <small>de A à Z</small></h3>
+      <div class="gxmenu__az">
         @foreach($tdActLetters as $lettre => $items)
-          <div class="td-actmega__letter">
+          <div class="gxmenu__letter">
             <h4>{{ $lettre }}</h4>
             <ul>
               @foreach($items as $a)
@@ -79,24 +79,24 @@
     </section>
 
     @foreach($tdActGroups as $g)
-      <section class="td-actmega__pane" id="td-actpane-{{ $g['id'] }}" role="tabpanel" hidden>
-        <div class="td-actmega__head">
-          <h3 class="td-actmega__title">{{ $g['name'] }}</h3>
+      <section class="gxmenu__pane" id="td-actpane-{{ $g['id'] }}" role="tabpanel" hidden>
+        <div class="gxmenu__head">
+          <h3 class="gxmenu__title">{{ $g['name'] }}</h3>
           @if($g['slug'] && $tdCategoryRoute)
-            <a class="td-actmega__more" href="{{ route('category.show', $g['slug']) }}">Voir la catégorie <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+            <a class="gxmenu__more" href="{{ route('category.show', $g['slug']) }}">Voir la catégorie <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
           @endif
         </div>
-        <div class="td-actmega__grid">
+        <div class="gxmenu__grid">
           @foreach($g['items'] as $a)
-            <a class="td-actmega__card" href="{{ $tdActUrl($a) }}">
-              <span class="td-actmega__media">
+            <a class="gxmenu__card" href="{{ $tdActUrl($a) }}">
+              <span class="gxmenu__media">
                 @if($a->image_url)
                   <img src="{{ $a->image_url }}" alt="" loading="lazy" decoding="async">
                 @else
-                  <span class="td-actmega__ph"><i class="fas fa-person-hiking" aria-hidden="true"></i></span>
+                  <span class="gxmenu__ph"><i class="fas fa-person-hiking" aria-hidden="true"></i></span>
                 @endif
               </span>
-              <span class="td-actmega__name">{{ $a->name }}</span>
+              <span class="gxmenu__name">{{ $a->name }}</span>
             </a>
           @endforeach
         </div>

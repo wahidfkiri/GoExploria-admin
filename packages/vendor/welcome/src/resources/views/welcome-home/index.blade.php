@@ -498,6 +498,9 @@
 
     @include('welcome-home.components.VerticalMenu')
     @include('welcome-home.components.Header')
+    {{-- Barre de raccourcis (droite). Ailleurs, elle vient de
+         partials/platform-header ; l'accueil inclut ses composants lui-même. --}}
+    @include('welcome-home.partials.side-rail')
     
     <main class="main-content">
         <div class="{{ $destinationContext ? 'destination-hero-wrapper' : '' }}">

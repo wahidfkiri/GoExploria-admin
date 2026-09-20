@@ -229,6 +229,28 @@ class TravelDestinationController extends Controller
             ->header('Cache-Control', 'public, max-age=600');
     }
 
+    /**
+     * Contenu du méga-menu « Destinations » de la barre latérale.
+     *
+     * Même principe que activitiesMenu : chargé à la première ouverture, mis
+     * en cache 10 minutes, clé indexée sur la date de la vue.
+     *
+     * Rendu côté serveur plutôt que via /api/v1/destinations : cette API
+     * répond par identifiant ET par slug selon les routes (provinces d'un
+     * pays : vide avec le slug), et ne donne pas les URL du gabarit.
+     */
+    public function destinationsMenu()
+    {
+        $vue = 'travel-destination::landing.partials.destinations-menu-content';
+        $cle = 'travel-destination.destinations-menu.' . (@filemtime(view()->getFinder()->find($vue)) ?: '0');
+
+        $html = \Illuminate\Support\Facades\Cache::remember($cle, 600, fn () => view($vue)->render());
+
+        return response($html)
+            ->header('Content-Type', 'text/html; charset=UTF-8')
+            ->header('Cache-Control', 'public, max-age=600');
+    }
+
     public function children($type, $slug)
     {
         $normalizedType = $this->typeMap[$type] ?? null;

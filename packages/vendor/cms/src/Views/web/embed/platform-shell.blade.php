@@ -216,6 +216,11 @@
     @include('cms::web.fallback.partials.landing-cart-drawer')
     @include('cms::web.fallback.partials.landing-back-to-top')
 
+    {{-- Barre de raccourcis (droite) : comme les autres éléments flottants,
+         elle vit dans ce document parent, où `fixed` se cale sur l'écran et
+         non sur la boîte de l'iframe du site client. --}}
+    @include('welcome-home.partials.side-rail')
+
     {{-- ── Assets JS de la plateforme (header/menu/footer) ────────────── --}}
     <script src="{{ asset('js/home-v2/navigation.js') }}"></script>
     <script src="{{ asset('js/home-v2/menu-api-service.js') }}"></script>
