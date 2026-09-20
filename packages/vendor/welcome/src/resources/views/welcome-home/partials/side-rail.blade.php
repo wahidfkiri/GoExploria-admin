@@ -35,7 +35,6 @@
         ? route($name, $params)
         : null;
 
-    $gxRailFavoris = $gxRailRoute('favoris');
     $gxRailPanier = $gxRailRoute('panier');
     $gxRailActivites = $gxRailRoute('travel-destination.activities-menu');
     $gxRailDestinations = $gxRailRoute('travel-destination.destinations-menu');
@@ -56,13 +55,6 @@
             <span class="gxrail__ico"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></span>
             <span class="gxrail__label">Rechercher</span>
         </button>
-
-        @if($gxRailFavoris)
-        <a class="gxrail__item" href="{{ $gxRailFavoris }}">
-            <span class="gxrail__ico"><i class="fas fa-heart" aria-hidden="true"></i></span>
-            <span class="gxrail__label">Favoris</span>
-        </a>
-        @endif
 
         @if($gxRailActivites)
         <button type="button" class="gxrail__item" data-gxrail-open="activites" data-gxrail-src="{{ $gxRailActivites }}"

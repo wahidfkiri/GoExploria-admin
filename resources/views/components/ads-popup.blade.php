@@ -75,7 +75,9 @@
 
 @if($gxAds->isNotEmpty())
 <style>
-    #gx-ads-popup{position:fixed;right:20px;bottom:20px;z-index:99990;width:320px;max-width:calc(100vw - 32px);background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(2,6,23,.30);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(18px);transition:opacity .35s ease,transform .35s ease}
+    /* right:120px — la barre de raccourcis (welcome-home/partials/side-rail)
+       occupe le bord droit : à 20px, la pop-up passait dessous. */
+    #gx-ads-popup{position:fixed;right:120px;bottom:20px;z-index:99990;width:320px;max-width:calc(100vw - 32px);background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(2,6,23,.30);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(18px);transition:opacity .35s ease,transform .35s ease}
     #gx-ads-popup.is-open{opacity:1;visibility:visible;transform:none}
     #gx-ads-popup .gxad-close{position:absolute;top:8px;right:8px;z-index:6;width:30px;height:30px;border:0;border-radius:50%;background:rgba(15,23,42,.55);color:#fff;font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
     #gx-ads-popup .gxad-close:hover{background:rgba(15,23,42,.85)}
@@ -99,7 +101,10 @@
     #gx-ads-popup .gxad-prev{left:8px}
     #gx-ads-popup .gxad-next{right:8px}
     #gx-ads-popup .gxad-nav.swiper-button-disabled{opacity:.35;cursor:default}
-    @media(max-width:420px){#gx-ads-popup{right:12px;left:12px;bottom:12px;width:auto}}
+    /* Sous 992px, la barre de raccourcis devient une barre horizontale EN BAS
+       (≈ 76px) : la pop-up remonte au-dessus d'elle, et retrouve le bord. */
+    @media(max-width:992px){#gx-ads-popup{right:12px;bottom:92px}}
+    @media(max-width:420px){#gx-ads-popup{left:12px;width:auto}}
 </style>
 
 <div id="gx-ads-popup" role="complementary" aria-label="Annonce"
