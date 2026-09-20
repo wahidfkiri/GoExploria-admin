@@ -221,6 +221,13 @@
          non sur la boîte de l'iframe du site client. --}}
     @include('welcome-home.partials.side-rail')
 
+    {{-- Pop-up publicitaire (bas à gauche). Rendue ICI, dans le document
+         parent, et JAMAIS dans l'iframe du site client : l'iframe n'a pas de
+         défilement propre et sa boîte sert de référence à `position: fixed` —
+         la pop-up resterait collée au bas du document, hors de l'écran.
+         Sans `adContext` : toutes les annonces actives de la zone. --}}
+    @include('components.ads-popup')
+
     {{-- ── Assets JS de la plateforme (header/menu/footer) ────────────── --}}
     <script src="{{ asset('js/home-v2/navigation.js') }}"></script>
     <script src="{{ asset('js/home-v2/menu-api-service.js') }}"></script>
