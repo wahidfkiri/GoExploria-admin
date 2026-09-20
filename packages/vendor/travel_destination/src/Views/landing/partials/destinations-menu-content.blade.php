@@ -16,8 +16,23 @@
         ->orderBy('name')
         ->get();
 
-    $gxDestUrl = static function (string $type, $slug) {
-        return $slug ? route('travel-destination.show', ['type' => $type, 'slug' => $slug]) : null;
+    /* ⚠ La colonne `slug` est VIDE pour les continents, pays et provinces :
+       sans repli, la condition tombait dans la branche « pas de lien » et le
+       menu n'affichait que du texte (mesuré en ligne : 0 lien).
+
+       `TravelDestinationController@loadEntity` résout une destination par
+       slug, puis par code, puis par nom normalisé : un slug dérivé du nom
+       (Str::slug) est donc une URL valide. */
+    $gxDestSlug = static function ($entite): string {
+        $slug = trim((string) ($entite->slug ?? ''));
+
+        return $slug !== '' ? $slug : \Illuminate\Support\Str::slug((string) $entite->name);
+    };
+
+    $gxDestUrl = static function (string $type, $entite) use ($gxDestSlug) {
+        $slug = $gxDestSlug($entite);
+
+        return $slug !== '' ? route('travel-destination.show', ['type' => $type, 'slug' => $slug]) : null;
     };
 @endphp
 
@@ -38,7 +53,7 @@
       <section class="gxmenu__pane" id="gxrail-dest-{{ $continent->id }}" role="tabpanel" @if($i !== 0) hidden @endif>
         <div class="gxmenu__head">
           <h3 class="gxmenu__title">{{ $continent->name }}</h3>
-          @if($url = $gxDestUrl('continent', $continent->slug))
+          @if($url = $gxDestUrl('continent', $continent))
             <a class="gxmenu__more" href="{{ $url }}">Voir le continent <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
           @endif
         </div>
@@ -50,7 +65,7 @@
             @foreach($continent->countries as $country)
               <div class="gxmenu-dest__country">
                 <h4>
-                  @if($url = $gxDestUrl('country', $country->slug))
+                  @if($url = $gxDestUrl('country', $country))
                     <a href="{{ $url }}">{{ $country->name }}</a>
                   @else
                     {{ $country->name }}
@@ -60,7 +75,7 @@
                   <ul class="gxmenu-dest__list">
                     @foreach($country->provinces as $province)
                       <li>
-                        @if($url = $gxDestUrl('province', $province->slug))
+                        @if($url = $gxDestUrl('province', $province))
                           <a href="{{ $url }}">{{ $province->name }}</a>
                         @else
                           {{ $province->name }}
