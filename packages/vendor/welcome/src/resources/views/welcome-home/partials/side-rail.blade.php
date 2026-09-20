@@ -35,19 +35,30 @@
         ? route($name, $params)
         : null;
 
-    $gxRailPanier = $gxRailRoute('panier');
     $gxRailActivites = $gxRailRoute('travel-destination.activities-menu');
     $gxRailDestinations = $gxRailRoute('travel-destination.destinations-menu');
     // La carte interactive vit sur l'accueil : ancre ici, lien absolu ailleurs.
     $gxRailCarte = url('/') . '#section-carte-amerique-nord';
 @endphp
 
+{{-- Drapeaux du sélecteur de langue. Le Header de l'accueil charge déjà cette
+     feuille, mais pas le shell des sites d'établissement : la barre l'apporte
+     donc elle-même (même URL, donc même fichier en cache). --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css"></noscript>
+
 <aside class="gxrail" id="gxRail" aria-label="Raccourcis GoExploria">
     <div class="gxrail__inner">
-        <button type="button" class="gxrail__item" data-gxrail-open="lang"
-                aria-haspopup="dialog" aria-expanded="false" aria-controls="gxRailLang">
-            <span class="gxrail__ico gxrail__ico--text">{{ $gxRailLocales[$gxRailLocale]['code'] }}</span>
-            <span class="gxrail__label">Langue</span>
+        <button type="button" class="gxrail__item gxrail__item--lang" data-gxrail-open="lang"
+                aria-haspopup="listbox" aria-expanded="false" aria-controls="gxRailLang"
+                title="Changer de langue">
+            <span class="gxrail__ico gxrail__ico--flag">
+                <span class="fi fi-{{ $gxRailLocales[$gxRailLocale]['flag'] }}" aria-hidden="true"></span>
+            </span>
+            <span class="gxrail__label">
+                {{ $gxRailLocales[$gxRailLocale]['code'] }}
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </span>
         </button>
 
         <button type="button" class="gxrail__item" data-gxrail-open="search"
@@ -72,12 +83,14 @@
         </button>
         @endif
 
-        @if($gxRailPanier)
-        <a class="gxrail__item" href="{{ $gxRailPanier }}">
+        {{-- Panier : STATIQUE pour le moment (demande du 2026-09-20). Ni lien
+             ni bouton : un simple repère visuel, ignoré au clavier et annoncé
+             comme indisponible. Pour le rebrancher : remettre un <a> vers
+             route('panier'). --}}
+        <span class="gxrail__item gxrail__item--static" aria-disabled="true" title="Panier — bientôt disponible">
             <span class="gxrail__ico"><i class="fas fa-cart-shopping" aria-hidden="true"></i></span>
             <span class="gxrail__label">Panier</span>
-        </a>
-        @endif
+        </span>
 
         <a class="gxrail__item" href="{{ $gxRailCarte }}">
             <span class="gxrail__ico"><i class="fas fa-map-location-dot" aria-hidden="true"></i></span>
@@ -175,6 +188,23 @@
   }
   .gxrail__label { color: inherit; }
 
+  /* Langue : drapeau + code + chevron */
+  .gxrail__ico--flag { display: block; line-height: 0; }
+  .gxrail__ico--flag .fi {
+    width: 28px; height: 21px; border-radius: 4px; background-size: cover;
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, .12);
+  }
+  .gxrail__item--lang .gxrail__label {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-weight: 800; letter-spacing: .06em;
+  }
+  .gxrail__item--lang .gxrail__label i { font-size: 8px; opacity: .65; transition: transform .2s ease; }
+  .gxrail__item--lang[aria-expanded="true"] .gxrail__label i { transform: rotate(180deg); }
+
+  /* Panier : repère statique, sans action pour le moment */
+  .gxrail__item--static { cursor: default; opacity: .55; }
+  .gxrail__item--static:hover { background: transparent; color: var(--gxr-ink); }
+
   /* ── Petits panneaux (langue, recherche) ── */
   .gxrail-pop {
     position: fixed; z-index: 10120; right: 112px; top: 50%; transform: translateY(-50%) translateX(8px);
@@ -191,6 +221,10 @@
   .gxrail-pop__lang {
     display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px;
     color: #0f172a; text-decoration: none; font-size: 13.5px; font-weight: 600;
+  }
+  .gxrail-pop__lang .fi {
+    width: 24px; height: 18px; border-radius: 3px; background-size: cover; flex: 0 0 24px;
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, .12);
   }
   .gxrail-pop__lang:hover { background: #f6f7f9; }
   .gxrail-pop__lang.is-active { background: #0a1628; color: #fff; }
