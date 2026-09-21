@@ -52,6 +52,8 @@ use Illuminate\Support\Facades\Log;
  */
 class TemplateDataBinder
 {
+    private const BOUCHE_TROUS = ['—', '-', 'n/a', 'na', 'adresse non fournie', 'destination importée'];
+
     /**
      * @param  object|null  $etablissement
      * @param  array{lat?:float|string|null,lng?:float|string|null,hours?:array}  $extra
@@ -99,7 +101,8 @@ class TemplateDataBinder
         $valeurs = [
             'name'    => self::premier($e, ['name', 'nom', 'title']),
             'phone'   => $telephone,
-            'email'   => self::premier($e, ['email', 'mail']),
+            // `email_contact` : colonne réelle d'Etablissement.
+            'email'   => self::premier($e, ['email_contact', 'email', 'mail']),
             'address' => $adresse,
             'city'    => $ville,
         ];
@@ -173,7 +176,10 @@ class TemplateDataBinder
                 continue;   // accesseur absent ou en erreur : on passe au suivant
             }
 
-            if (is_scalar($v) && trim((string) $v) !== '') {
+            // Valeurs de remplissage des imports (« — », « Adresse non
+            // fournie »…) : la démonstration vaut mieux qu'elles.
+            if (is_scalar($v) && trim((string) $v) !== ''
+                && ! in_array(mb_strtolower(trim((string) $v)), self::BOUCHE_TROUS, true)) {
                 return trim((string) $v);
             }
         }
