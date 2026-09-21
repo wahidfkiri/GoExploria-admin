@@ -220,9 +220,9 @@ class TravelDestinationController extends Controller
     public function activitiesMenu()
     {
         $vue = 'travel-destination::landing.partials.activities-mega-menu-content';
-        $cle = 'travel-destination.activities-menu.' . (@filemtime(view()->getFinder()->find($vue)) ?: '0');
+        $cle = 'travel-destination.activities-menu.v2.' . (@filemtime(view()->getFinder()->find($vue)) ?: '0');
 
-        $html = \Illuminate\Support\Facades\Cache::remember($cle, 600, fn () => view($vue)->render());
+        $html = \Illuminate\Support\Facades\Cache::remember($cle, 600, fn () => $this->compacterHtml(view($vue)->render()));
 
         return response($html)
             ->header('Content-Type', 'text/html; charset=UTF-8')
@@ -242,13 +242,26 @@ class TravelDestinationController extends Controller
     public function destinationsMenu()
     {
         $vue = 'travel-destination::landing.partials.destinations-menu-content';
-        $cle = 'travel-destination.destinations-menu.' . (@filemtime(view()->getFinder()->find($vue)) ?: '0');
+        $cle = 'travel-destination.destinations-menu.v2.' . (@filemtime(view()->getFinder()->find($vue)) ?: '0');
 
-        $html = \Illuminate\Support\Facades\Cache::remember($cle, 600, fn () => view($vue)->render());
+        $html = \Illuminate\Support\Facades\Cache::remember($cle, 600, fn () => $this->compacterHtml(view($vue)->render()));
 
         return response($html)
             ->header('Content-Type', 'text/html; charset=UTF-8')
             ->header('Cache-Control', 'public, max-age=600');
+    }
+
+    /**
+     * Retire l'indentation Blade ENTRE balises (« >   < » → « >< »).
+     *
+     * Le menu Activités pèse ~570 Ko, dont ~165 Ko d'espaces : autant de
+     * moins à transférer, à analyser et à garder en cache. Le texte n'est pas
+     * touché (seuls les blancs situés entre deux balises disparaissent) et les
+     * blocs concernés sont en flex/grille, où ces blancs ne s'affichent pas.
+     */
+    protected function compacterHtml(string $html): string
+    {
+        return preg_replace('/>\s+</', '><', $html) ?? $html;
     }
 
     public function children($type, $slug)

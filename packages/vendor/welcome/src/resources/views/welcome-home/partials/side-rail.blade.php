@@ -497,6 +497,35 @@
       });
     });
 
+    /* PRÉ-CHARGEMENT des méga-menus. Sans lui, le contenu ne partait qu'au
+       clic : la première ouverture attendait toute la requête (mesuré :
+       0,7 à 1,2 s pour les activités). Il part désormais :
+         - dès que le visiteur s'approche du bouton (survol, focus, toucher) ;
+         - au repos du navigateur, quelques secondes après l'affichage —
+           sauf en mode « économie de données » ou en 2G.
+       `charger` ne lance jamais deux fois la même requête. */
+    triggers.forEach(function (trigger) {
+      if (!trigger.hasAttribute('data-gxrail-src')) { return; }
+      var nom = trigger.getAttribute('data-gxrail-open');
+      var prechauffer = function () { charger(nom, trigger); };
+      trigger.addEventListener('pointerenter', prechauffer, { once: true });
+      trigger.addEventListener('focus', prechauffer, { once: true });
+      trigger.addEventListener('touchstart', prechauffer, { once: true, passive: true });
+    });
+
+    var connexion = navigator.connection || {};
+    var economie = connexion.saveData || /2g/.test(connexion.effectiveType || '');
+    if (!economie) {
+      var auRepos = window.requestIdleCallback || function (fn) { return setTimeout(fn, 1); };
+      setTimeout(function () {
+        auRepos(function () {
+          triggers.forEach(function (t) {
+            if (t.hasAttribute('data-gxrail-src')) { charger(t.getAttribute('data-gxrail-open'), t); }
+          });
+        }, { timeout: 4000 });
+      }, 3500);
+    }
+
     document.addEventListener('click', function (e) {
       if (!ouvert) { return; }
       if (e.target.closest('[data-gxrail-retry]')) {
@@ -532,12 +561,33 @@
 
       /* L'API rend les résultats GROUPÉS par type
          ({continents, countries, provinces, regions, villes, secteurs,
-         etablissements, activities}), pas une liste : on garde ses groupes,
-         et son champ `url`, déjà valide pour chaque type. */
+         etablissements, activities}), pas une liste : on garde ses groupes. */
       var GROUPES = {
         continents: 'Continents', countries: 'Pays', provinces: 'Provinces',
         regions: 'Régions', villes: 'Villes', secteurs: 'Secteurs',
         etablissements: 'Établissements', activities: 'Activités'
+      };
+
+      /* ⚠ Pour les DESTINATIONS, on n'utilise PAS le champ `url` de l'API :
+         il pointe vers l'ancienne arborescence (/amerique-du-nord/canada).
+         Les pages de destination sont /travel-destination/{type}/{slug}.
+         Établissements et activités gardent le `url` de l'API, correct
+         (/company/{id}/{slug}, /activity/{slug}). */
+      var BASE_DESTINATION = @json(url('/travel-destination'));
+      var TYPE_DESTINATION = {
+        continents: 'continent', countries: 'country', provinces: 'province',
+        regions: 'region', villes: 'city', secteurs: 'secteur'
+      };
+      var slugifier = function (texte) {
+        return String(texte || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
+          .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      };
+      var lienDe = function (groupe, it) {
+        var type = TYPE_DESTINATION[groupe];
+        if (!type) { return it.url || '#'; }
+        // Slug vide en base : même repli que le menu Destinations (nom normalisé).
+        var slug = it.slug || slugifier(it.name);
+        return slug ? BASE_DESTINATION + '/' + type + '/' + encodeURIComponent(slug) : '#';
       };
 
       var echapper = function (valeur) {
@@ -557,7 +607,7 @@
           html += '<p class="gxrail-search__group">' + GROUPES[cle] + '</p>';
           html += items.slice(0, 6).map(function (it) {
             var img = it.image_url || it.image || '';
-            return '<a href="' + echapper(it.url || '#') + '">'
+            return '<a href="' + echapper(lienDe(cle, it)) + '">'
               + (img ? '<img src="' + echapper(img) + '" alt="" loading="lazy">' : '')
               + '<span>' + echapper(it.name || '') + '</span></a>';
           }).join('');
@@ -566,7 +616,14 @@
         sortie.innerHTML = total ? html : '<p class="gxrail-search__msg">Aucun résultat.</p>';
       };
 
+      /* Réponses gardées par requête : revenir sur un mot déjà tapé (effacer
+         une lettre, la remettre) s'affiche sans nouvel appel. L'API met
+         300 à 550 ms à répondre (mesuré) : chaque appel évité compte. */
+      var memo = {};
+
       var chercher = function (q) {
+        var cle = q.toLowerCase();
+        if (memo[cle]) { rendre(memo[cle]); return; }
         if (enCours) { enCours.abort(); }
         enCours = new AbortController();
         sortie.innerHTML = '<p class="gxrail-search__msg">Recherche…</p>';
@@ -575,18 +632,24 @@
           signal: enCours.signal
         })
           .then(function (r) { return r.json(); })
-          .then(function (res) { rendre(res.data || {}); })
+          .then(function (res) {
+            memo[cle] = res.data || {};
+            // Une réponse plus ancienne ne doit pas écraser la saisie courante.
+            if (champ.value.trim().toLowerCase() === cle) { rendre(memo[cle]); }
+          })
           .catch(function (err) {
             if (err && err.name === 'AbortError') { return; }
             sortie.innerHTML = '<p class="gxrail-search__msg">Recherche indisponible pour le moment.</p>';
           });
       };
 
+      // 180 ms au lieu de 300 : assez pour ne pas appeler à chaque lettre,
+      // sans ajouter une attente sensible à celle du serveur.
       champ.addEventListener('input', function () {
         var q = champ.value.trim();
         clearTimeout(minuteur);
         if (q.length < 2) { sortie.innerHTML = ''; return; }
-        minuteur = setTimeout(function () { chercher(q); }, 300);
+        minuteur = setTimeout(function () { chercher(q); }, 180);
       });
     }
 

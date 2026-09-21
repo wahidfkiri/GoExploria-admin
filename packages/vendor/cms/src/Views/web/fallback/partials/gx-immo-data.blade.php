@@ -42,7 +42,7 @@
     // y figurer — `gx-default-tpl` pour sa section « Chalets à louer »,
     // `mx-tpl` pour ses hébergements, forfaits et véhicules.
     $gxEnveloppesImmo = ['immo-tpl', 'resid-tpl', 'voyago-tpl', 'sylva-tpl', 'boisrond-tpl',
-                         'gx-default-tpl', 'mx-tpl'];
+                         'gx-default-tpl', 'mx-tpl', 'hz-tpl'];
 
     $gxEstTemplateImmo = \Illuminate\Support\Str::contains(
         collect($cmsPageSections ?? [])->map(fn ($p) => (string) data_get($p, 'content'))->implode(''),
