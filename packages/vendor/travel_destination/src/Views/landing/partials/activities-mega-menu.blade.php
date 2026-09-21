@@ -91,7 +91,7 @@
   .td-actmega__close:hover { background: var(--ta-soft); }
   .td-actmega__body { display: flex; gap: 28px; min-height: 0; flex: 1 1 auto; }
 
-  .td-actmega__status, .gxmenu__empty {
+  .td-actmega__status, .td-actmega .gxmenu__empty {
     margin: 0; padding: 28px 0; width: 100%; text-align: center;
     font-size: 14px; color: var(--ta-muted);
     display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -104,91 +104,91 @@
   }
   @keyframes tdActSpin { to { transform: rotate(360deg); } }
 
-  .gxmenu__tabs {
+  .td-actmega .gxmenu__tabs {
     flex: 0 0 250px; display: flex; flex-direction: column; gap: 2px;
     padding-right: 18px; border-right: 1px solid var(--ta-line);
     overflow-y: auto; max-height: calc(100vh - var(--gx-entete-plateforme, 96px) - 90px);
   }
-  .gxmenu__tab {
+  .td-actmega .gxmenu__tab {
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
     width: 100%; padding: 10px 12px; border: 0; border-radius: 10px;
     background: transparent; color: var(--ta-ink); cursor: pointer;
     font-family: inherit; font-size: 13.5px; font-weight: 600; line-height: 1.3; text-align: left;
   }
-  .gxmenu__tab span { min-width: 0; }
-  .gxmenu__tab em {
+  .td-actmega .gxmenu__tab span { min-width: 0; }
+  .td-actmega .gxmenu__tab em {
     flex: 0 0 auto; font-style: normal; font-size: 11px; font-weight: 700;
     padding: 2px 8px; border-radius: 999px; background: var(--ta-soft); color: var(--ta-muted);
   }
-  .gxmenu__tab:hover { background: var(--ta-soft); }
-  .gxmenu__tab.is-active { background: #0a1628; color: #fff; }
-  .gxmenu__tab.is-active em { background: var(--ta-gold); color: #0a1628; }
+  .td-actmega .gxmenu__tab:hover { background: var(--ta-soft); }
+  .td-actmega .gxmenu__tab.is-active { background: #0a1628; color: #fff; }
+  .td-actmega .gxmenu__tab.is-active em { background: var(--ta-gold); color: #0a1628; }
 
-  .gxmenu__panes {
+  .td-actmega .gxmenu__panes {
     flex: 1 1 auto; min-width: 0; overflow-y: auto;
     max-height: calc(100vh - var(--gx-entete-plateforme, 96px) - 90px);
     padding-right: 4px;
   }
-  .gxmenu__pane[hidden] { display: none; }
-  .gxmenu__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
-  .gxmenu__title { margin: 2px 0 14px; font-size: 20px; font-weight: 800; color: var(--ta-ink); }
-  .gxmenu__title small { font-size: 12px; font-weight: 600; color: var(--ta-muted); margin-left: 6px; }
-  .gxmenu__more { font-size: 13px; font-weight: 700; color: var(--ta-gold-ink); text-decoration: none; white-space: nowrap; }
-  .gxmenu__more:hover { text-decoration: underline; }
+  .td-actmega .gxmenu__pane[hidden] { display: none; }
+  .td-actmega .gxmenu__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+  .td-actmega .gxmenu__title { margin: 2px 0 14px; font-size: 20px; font-weight: 800; color: var(--ta-ink); }
+  .td-actmega .gxmenu__title small { font-size: 12px; font-weight: 600; color: var(--ta-muted); margin-left: 6px; }
+  .td-actmega .gxmenu__more { font-size: 13px; font-weight: 700; color: var(--ta-gold-ink); text-decoration: none; white-space: nowrap; }
+  .td-actmega .gxmenu__more:hover { text-decoration: underline; }
 
   /* Index A→Z */
-  .gxmenu__az { columns: 4 210px; column-gap: 32px; }
-  .gxmenu__letter { break-inside: avoid; margin: 0 0 16px; }
-  .gxmenu__letter h4 {
+  .td-actmega .gxmenu__az { columns: 4 210px; column-gap: 32px; }
+  .td-actmega .gxmenu__letter { break-inside: avoid; margin: 0 0 16px; }
+  .td-actmega .gxmenu__letter h4 {
     margin: 0 0 6px; padding-bottom: 4px; border-bottom: 2px solid var(--ta-gold);
     font-size: 15px; font-weight: 800; color: var(--ta-gold-ink); line-height: 1.2;
   }
-  .gxmenu__letter ul { list-style: none; margin: 0; padding: 0; }
-  .gxmenu__letter li { margin: 0; }
-  .gxmenu__letter a {
+  .td-actmega .gxmenu__letter ul { list-style: none; margin: 0; padding: 0; }
+  .td-actmega .gxmenu__letter li { margin: 0; }
+  .td-actmega .gxmenu__letter a {
     display: block; padding: 3px 0; font-size: 13px; font-weight: 500; line-height: 1.35;
     color: var(--ta-ink); text-decoration: none;
   }
-  .gxmenu__letter a:hover { color: var(--ta-gold-ink); text-decoration: underline; }
+  .td-actmega .gxmenu__letter a:hover { color: var(--ta-gold-ink); text-decoration: underline; }
 
   /* Vignettes */
-  .gxmenu__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px 16px; }
-  .gxmenu__card { display: block; min-width: 0; color: var(--ta-ink); text-decoration: none; }
-  .gxmenu__media {
+  .td-actmega .gxmenu__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px 16px; }
+  .td-actmega .gxmenu__card { display: block; min-width: 0; color: var(--ta-ink); text-decoration: none; }
+  .td-actmega .gxmenu__media {
     display: block; position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: var(--ta-soft);
   }
-  .gxmenu__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
-  .gxmenu__card:hover .gxmenu__media img { transform: scale(1.05); }
-  .gxmenu__ph { position: absolute; inset: 0; display: grid; place-items: center; color: #b7bec8; font-size: 26px; }
-  .gxmenu__name {
+  .td-actmega .gxmenu__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
+  .td-actmega .gxmenu__card:hover .gxmenu__media img { transform: scale(1.05); }
+  .td-actmega .gxmenu__ph { position: absolute; inset: 0; display: grid; place-items: center; color: #b7bec8; font-size: 26px; }
+  .td-actmega .gxmenu__name {
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     margin-top: 8px; font-size: 13.5px; font-weight: 600; line-height: 1.3;
   }
-  .gxmenu__card:hover .gxmenu__name { color: var(--ta-gold-ink); }
+  .td-actmega .gxmenu__card:hover .gxmenu__name { color: var(--ta-gold-ink); }
 
-  @media (max-width: 1280px) { .gxmenu__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
-  @media (max-width: 1100px) { .gxmenu__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 1280px) { .td-actmega .gxmenu__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+  @media (max-width: 1100px) { .td-actmega .gxmenu__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
   /* Mobile : plein écran, catégories en ruban défilant */
   @media (max-width: 992px) {
     .td-actmega { top: 0; max-height: none; height: 100vh; height: 100dvh; z-index: 10400; border-top: 0; }
     .td-actmega__inner { padding: 14px 14px 0; }
     .td-actmega__body { flex-direction: column; gap: 12px; }
-    .gxmenu__tabs {
+    .td-actmega .gxmenu__tabs {
       flex: 0 0 auto; flex-direction: row; gap: 6px; overflow-x: auto; overflow-y: hidden;
       max-height: none; padding: 0 0 10px; border-right: 0; border-bottom: 1px solid var(--ta-line);
       -webkit-overflow-scrolling: touch;
     }
-    .gxmenu__tab { width: auto; flex: 0 0 auto; white-space: nowrap; padding: 8px 12px; background: var(--ta-soft); }
-    .gxmenu__panes { max-height: none; flex: 1 1 auto; padding-bottom: 24px; }
-    .gxmenu__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 12px; }
-    .gxmenu__az { columns: 2 150px; column-gap: 20px; }
-    .gxmenu__title { font-size: 17px; }
+    .td-actmega .gxmenu__tab { width: auto; flex: 0 0 auto; white-space: nowrap; padding: 8px 12px; background: var(--ta-soft); }
+    .td-actmega .gxmenu__panes { max-height: none; flex: 1 1 auto; padding-bottom: 24px; }
+    .td-actmega .gxmenu__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 12px; }
+    .td-actmega .gxmenu__az { columns: 2 150px; column-gap: 20px; }
+    .td-actmega .gxmenu__title { font-size: 17px; }
   }
-  @media (max-width: 560px) { .gxmenu__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .td-actmega .gxmenu__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (min-width: 993px) { .td-actmega__close { display: none; } }
   @media (prefers-reduced-motion: reduce) {
-    .td-actmega, .gxmenu__media img { transition: none; }
+    .td-actmega, .td-actmega .gxmenu__media img { transition: none; }
     .td-actmega__spinner { animation: none; }
   }
 </style>

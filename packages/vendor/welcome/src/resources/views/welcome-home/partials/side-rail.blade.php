@@ -248,24 +248,35 @@
   }
   .gxrail-search__group:first-child { margin-top: 2px; }
 
-  /* ── Méga-menus ── */
+  /* ── Méga-menus : panneaux DÉROULANTS à côté de la barre, comme la
+     recherche (et non plus un bandeau pleine largeur). Plein écran sur
+     mobile, voir plus bas.
+
+     ⚠ Toutes les règles de contenu sont limitées à `.gxrail-mega` : le même
+     contenu (classes gxmenu__*) est aussi affiché, en pleine largeur, par le
+     méga-menu du header des pages destination. Non limitées, les deux
+     feuilles se disputaient les mêmes éléments sur ces pages. ── */
   .gxrail-mega {
-    position: fixed; left: 0; right: 0; top: var(--gxrail-top, 96px); z-index: 10120;
-    max-height: calc(100vh - var(--gxrail-top, 96px)); overflow: hidden; display: flex;
-    background: #fff; color: #0f172a; border-top: 3px solid #d4af37;
+    position: fixed; z-index: 10120;
+    top: 50%; right: 112px; left: auto;
+    width: min(860px, calc(100vw - 150px));
+    height: min(620px, calc(100vh - 110px));
+    display: flex; overflow: hidden;
+    background: #fff; color: #0f172a;
+    border: 1px solid rgba(15, 23, 42, .08); border-radius: 18px;
     box-shadow: 0 24px 60px rgba(2, 6, 23, .28);
     font-family: 'Montserrat', -apple-system, sans-serif;
-    opacity: 0; visibility: hidden; transform: translateY(-8px);
+    opacity: 0; visibility: hidden; transform: translateY(-50%) translateX(8px);
     transition: opacity .2s ease, transform .2s ease, visibility .2s;
   }
-  .gxrail-mega.is-open { opacity: 1; visibility: visible; transform: none; }
-  .gxrail-mega__inner { width: min(1320px, 100%); margin: 0 auto; padding: 18px clamp(16px, 3vw, 36px) 22px; display: flex; flex-direction: column; min-height: 0; }
-  .gxrail-mega__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .gxrail-mega.is-open { opacity: 1; visibility: visible; transform: translateY(-50%); }
+  .gxrail-mega__inner { width: 100%; padding: 16px 18px; display: flex; flex-direction: column; min-height: 0; }
+  .gxrail-mega__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .gxrail-mega__kicker { margin: 0; display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #8a6d10; }
   .gxrail-mega__close { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #e5e7eb; background: #fff; color: #0f172a; cursor: pointer; display: grid; place-items: center; font-size: 16px; }
   .gxrail-mega__close:hover { background: #f6f7f9; }
-  .gxrail-mega__body { display: flex; gap: 28px; min-height: 0; flex: 1 1 auto; }
-  .gxrail-mega__status, .gxmenu__empty {
+  .gxrail-mega__body { display: flex; gap: 18px; min-height: 0; flex: 1 1 auto; }
+  .gxrail-mega__status, .gxrail-mega .gxmenu__empty {
     margin: 0; padding: 28px 0; width: 100%; text-align: center; font-size: 14px; color: #64748b;
     display: flex; align-items: center; justify-content: center; gap: 10px;
   }
@@ -273,54 +284,56 @@
   .gxrail-mega__spinner { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #e5e7eb; border-top-color: #d4af37; animation: gxrailSpin .8s linear infinite; }
   @keyframes gxrailSpin { to { transform: rotate(360deg); } }
 
-  .gxmenu__tabs {
-    flex: 0 0 250px; display: flex; flex-direction: column; gap: 2px; padding-right: 18px;
-    border-right: 1px solid #e5e7eb; overflow-y: auto; max-height: calc(100vh - var(--gxrail-top, 96px) - 90px);
+  .gxrail-mega .gxmenu__tabs {
+    flex: 0 0 210px; display: flex; flex-direction: column; gap: 2px; padding-right: 14px;
+    border-right: 1px solid #e5e7eb; overflow-y: auto; min-height: 0;
   }
-  .gxmenu__tab {
-    display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%;
-    padding: 10px 12px; border: 0; border-radius: 10px; background: transparent; color: #0f172a; cursor: pointer;
-    font-family: inherit; font-size: 13.5px; font-weight: 600; line-height: 1.3; text-align: left;
+  .gxrail-mega .gxmenu__tab {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;
+    padding: 9px 10px; border: 0; border-radius: 10px; background: transparent; color: #0f172a; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600; line-height: 1.3; text-align: left;
   }
-  .gxmenu__tab em { flex: 0 0 auto; font-style: normal; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #f6f7f9; color: #64748b; }
-  .gxmenu__tab:hover { background: #f6f7f9; }
-  .gxmenu__tab.is-active { background: #0a1628; color: #fff; }
-  .gxmenu__tab.is-active em { background: #d4af37; color: #0a1628; }
-  .gxmenu__panes { flex: 1 1 auto; min-width: 0; overflow-y: auto; max-height: calc(100vh - var(--gxrail-top, 96px) - 90px); padding-right: 4px; }
-  .gxmenu__pane[hidden] { display: none; }
-  .gxmenu__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
-  .gxmenu__title { margin: 2px 0 14px; font-size: 20px; font-weight: 800; }
-  .gxmenu__title small { font-size: 12px; font-weight: 600; color: #64748b; margin-left: 6px; }
-  .gxmenu__more { font-size: 13px; font-weight: 700; color: #8a6d10; text-decoration: none; white-space: nowrap; }
-  .gxmenu__more:hover { text-decoration: underline; }
+  .gxrail-mega .gxmenu__tab em { flex: 0 0 auto; font-style: normal; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #f6f7f9; color: #64748b; }
+  .gxrail-mega .gxmenu__tab:hover { background: #f6f7f9; }
+  .gxrail-mega .gxmenu__tab.is-active { background: #0a1628; color: #fff; }
+  .gxrail-mega .gxmenu__tab.is-active em { background: #d4af37; color: #0a1628; }
+  .gxrail-mega .gxmenu__panes { flex: 1 1 auto; min-width: 0; min-height: 0; overflow-y: auto; padding-right: 4px; }
+  .gxrail-mega .gxmenu__pane[hidden] { display: none; }
+  .gxrail-mega .gxmenu__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+  .gxrail-mega .gxmenu__title { margin: 2px 0 12px; font-size: 18px; font-weight: 800; }
+  .gxrail-mega .gxmenu__title small { font-size: 12px; font-weight: 600; color: #64748b; margin-left: 6px; }
+  .gxrail-mega .gxmenu__more { font-size: 13px; font-weight: 700; color: #8a6d10; text-decoration: none; white-space: nowrap; }
+  .gxrail-mega .gxmenu__more:hover { text-decoration: underline; }
 
   /* Activités : index A→Z + vignettes (classes servies par la route) */
-  .gxmenu__az { columns: 4 210px; column-gap: 32px; }
-  .gxmenu__letter { break-inside: avoid; margin: 0 0 16px; }
-  .gxmenu__letter h4 { margin: 0 0 6px; padding-bottom: 4px; border-bottom: 2px solid #d4af37; font-size: 15px; font-weight: 800; color: #8a6d10; }
-  .gxmenu__letter ul { list-style: none; margin: 0; padding: 0; }
-  .gxmenu__letter a { display: block; padding: 3px 0; font-size: 13px; font-weight: 500; color: #0f172a; text-decoration: none; }
-  .gxmenu__letter a:hover { color: #8a6d10; text-decoration: underline; }
-  .gxmenu__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px 16px; }
-  .gxmenu__card { display: block; min-width: 0; color: #0f172a; text-decoration: none; }
-  .gxmenu__media { display: block; position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: #f6f7f9; }
-  .gxmenu__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
-  .gxmenu__card:hover .gxmenu__media img { transform: scale(1.05); }
-  .gxmenu__ph { position: absolute; inset: 0; display: grid; place-items: center; color: #b7bec8; font-size: 26px; }
-  .gxmenu__name { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 8px; font-size: 13.5px; font-weight: 600; line-height: 1.3; }
+  .gxrail-mega .gxmenu__az { columns: 3 170px; column-gap: 24px; }
+  .gxrail-mega .gxmenu__letter { break-inside: avoid; margin: 0 0 14px; }
+  .gxrail-mega .gxmenu__letter h4 { margin: 0 0 6px; padding-bottom: 4px; border-bottom: 2px solid #d4af37; font-size: 15px; font-weight: 800; color: #8a6d10; }
+  .gxrail-mega .gxmenu__letter ul { list-style: none; margin: 0; padding: 0; }
+  .gxrail-mega .gxmenu__letter a { display: block; padding: 3px 0; font-size: 13px; font-weight: 500; color: #0f172a; text-decoration: none; }
+  .gxrail-mega .gxmenu__letter a:hover { color: #8a6d10; text-decoration: underline; }
+  .gxrail-mega .gxmenu__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 12px; }
+  .gxrail-mega .gxmenu__card { display: block; min-width: 0; color: #0f172a; text-decoration: none; }
+  .gxrail-mega .gxmenu__media { display: block; position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: #f6f7f9; }
+  .gxrail-mega .gxmenu__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
+  .gxrail-mega .gxmenu__card:hover .gxmenu__media img { transform: scale(1.05); }
+  .gxrail-mega .gxmenu__ph { position: absolute; inset: 0; display: grid; place-items: center; color: #b7bec8; font-size: 26px; }
+  .gxrail-mega .gxmenu__name { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 8px; font-size: 13px; font-weight: 600; line-height: 1.3; }
 
   /* Destinations : pays + provinces */
-  .gxmenu-dest__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 22px 26px; }
-  .gxmenu-dest__country { min-width: 0; }
-  .gxmenu-dest__country h4 { margin: 0 0 8px; padding-bottom: 6px; border-bottom: 2px solid #d4af37; font-size: 15px; font-weight: 800; }
-  .gxmenu-dest__country h4 a { color: #0f172a; text-decoration: none; }
-  .gxmenu-dest__country h4 a:hover { color: #8a6d10; }
-  .gxmenu-dest__list { list-style: none; margin: 0; padding: 0; }
-  .gxmenu-dest__list a { display: block; padding: 3px 0; font-size: 13px; font-weight: 500; color: #334155; text-decoration: none; }
-  .gxmenu-dest__list a:hover { color: #8a6d10; text-decoration: underline; }
+  .gxrail-mega .gxmenu-dest__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px 20px; }
+  .gxrail-mega .gxmenu-dest__country { min-width: 0; }
+  .gxrail-mega .gxmenu-dest__country h4 { margin: 0 0 8px; padding-bottom: 6px; border-bottom: 2px solid #d4af37; font-size: 15px; font-weight: 800; }
+  .gxrail-mega .gxmenu-dest__country h4 a { color: #0f172a; text-decoration: none; }
+  .gxrail-mega .gxmenu-dest__country h4 a:hover { color: #8a6d10; }
+  .gxrail-mega .gxmenu-dest__list { list-style: none; margin: 0; padding: 0; }
+  .gxrail-mega .gxmenu-dest__list a { display: block; padding: 3px 0; font-size: 13px; font-weight: 500; color: #334155; text-decoration: none; }
+  .gxrail-mega .gxmenu-dest__list a:hover { color: #8a6d10; text-decoration: underline; }
 
-  @media (max-width: 1280px) { .gxmenu__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
-  @media (max-width: 1100px) { .gxmenu__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 1100px) {
+    .gxrail-mega .gxmenu__tabs { flex-basis: 180px; }
+    .gxrail-mega .gxmenu__az { columns: 2 160px; }
+  }
 
   /* ── Mobile : barre horizontale en bas ── */
   @media (max-width: 992px) {
@@ -344,23 +357,28 @@
       max-height: 60vh; overflow-y: auto;
     }
     .gxrail-pop.is-open { transform: none; }
-    .gxrail-mega { top: 0; max-height: none; height: 100vh; height: 100dvh; padding-bottom: 76px; border-top: 0; z-index: 10400; }
+    /* Plein écran : on défait la position « à côté de la barre » du desktop. */
+    .gxrail-mega {
+      top: 0; right: 0; left: 0; width: auto; height: 100vh; height: 100dvh;
+      border: 0; border-radius: 0; padding-bottom: 76px; z-index: 10400;
+      transform: translateY(8px);
+    }
+    .gxrail-mega.is-open { transform: none; }
     .gxrail-mega__inner { padding: 14px 14px 0; }
     .gxrail-mega__body { flex-direction: column; gap: 12px; }
-    .gxmenu__tabs {
-      flex: 0 0 auto; flex-direction: row; gap: 6px; max-height: none; padding: 0 0 10px;
+    .gxrail-mega .gxmenu__tabs {
+      flex: 0 0 auto; flex-direction: row; gap: 6px; padding: 0 0 10px;
       border-right: 0; border-bottom: 1px solid #e5e7eb; overflow-x: auto; overflow-y: hidden;
     }
-    .gxmenu__tab { width: auto; flex: 0 0 auto; white-space: nowrap; padding: 8px 12px; background: #f6f7f9; }
-    .gxmenu__panes { max-height: none; flex: 1 1 auto; padding-bottom: 20px; }
-    .gxmenu__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 12px; }
-    .gxmenu__az { columns: 2 150px; column-gap: 20px; }
-    .gxmenu-dest__grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px 18px; }
-    .gxmenu__title { font-size: 17px; }
+    .gxrail-mega .gxmenu__tab { width: auto; flex: 0 0 auto; white-space: nowrap; padding: 8px 12px; background: #f6f7f9; }
+    .gxrail-mega .gxmenu__panes { flex: 1 1 auto; padding-bottom: 20px; }
+    .gxrail-mega .gxmenu__az { columns: 2 150px; column-gap: 20px; }
+    .gxrail-mega .gxmenu-dest__grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px 18px; }
+    .gxrail-mega .gxmenu__title { font-size: 17px; }
   }
-  @media (max-width: 560px) { .gxmenu__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .gxrail-mega .gxmenu__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (min-width: 993px) { .gxrail-mega__close { display: none; } }
-  @media (prefers-reduced-motion: reduce) { .gxrail-pop, .gxrail-mega, .gxmenu__media img { transition: none; } .gxrail-mega__spinner { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .gxrail-pop, .gxrail-mega, .gxrail-mega .gxmenu__media img { transition: none; } .gxrail-mega__spinner { animation: none; } }
   @media print { .gxrail, .gxrail-pop, .gxrail-mega { display: none !important; } }
 </style>
 
