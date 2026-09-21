@@ -237,6 +237,8 @@ class WebThemeController extends Controller
         $content = \Vendor\Cms\Support\TemplateProducts::hydrate($content, $etablissementId);
         $content = \Vendor\Cms\Support\TemplateCategories::hydrate($content, $etablissementId);
         $content = \Vendor\Cms\Support\TemplateActivities::hydrate($content, $etablissementId);
+        // Lieux de la carte GoExploria autour de l'établissement (`data-gx-nearby`).
+        $content = \Vendor\Cms\Support\TemplateNearby::hydrate($content, $etablissementId);
 
         $html = view('cms::web.fallback.cms-page', [
             'etablissement' => $this->etablissement,
@@ -1302,7 +1304,10 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $content = \Vendor\Cms\Support\TemplateProducts::hydrate($content, $etablissementId);
         $content = \Vendor\Cms\Support\TemplateCategories::hydrate($content, $etablissementId);
 
-        return \Vendor\Cms\Support\TemplateActivities::hydrate($content, $etablissementId);
+        $content = \Vendor\Cms\Support\TemplateActivities::hydrate($content, $etablissementId);
+
+        // Lieux de la carte GoExploria autour de l'établissement (`data-gx-nearby`).
+        return \Vendor\Cms\Support\TemplateNearby::hydrate($content, $etablissementId);
     }
 
     /**
