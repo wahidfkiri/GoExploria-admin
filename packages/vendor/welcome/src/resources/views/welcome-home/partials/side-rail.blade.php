@@ -35,6 +35,7 @@
         ? route($name, $params)
         : null;
 
+    $gxRailPanier = $gxRailRoute('panier');
     $gxRailActivites = $gxRailRoute('travel-destination.activities-menu');
     $gxRailDestinations = $gxRailRoute('travel-destination.destinations-menu');
     // La carte interactive vit sur l'accueil : ancre ici, lien absolu ailleurs.
@@ -83,14 +84,19 @@
         </button>
         @endif
 
-        {{-- Panier : STATIQUE pour le moment (demande du 2026-09-20). Ni lien
-             ni bouton : un simple repère visuel, ignoré au clavier et annoncé
-             comme indisponible. Pour le rebrancher : remettre un <a> vers
-             route('panier'). --}}
-        <span class="gxrail__item gxrail__item--static" aria-disabled="true" title="Panier — bientôt disponible">
-            <span class="gxrail__ico"><i class="fas fa-cart-shopping" aria-hidden="true"></i></span>
+        {{-- Panier : reprend le bouton flottant des sites d'établissement.
+             `data-cms-cart-open` suffit à ouvrir le tiroir — son script écoute
+             le document entier — et `data-cms-cart-count` est mis à jour par
+             ce même script, qui alimente TOUS les compteurs de la page.
+             Sans tiroir sur la page, le lien mène à la page Panier. --}}
+        <a class="gxrail__item gxrail__item--panier" id="gxRailPanier"
+           href="{{ $gxRailPanier ?: '#' }}" data-cms-cart-open>
+            <span class="gxrail__ico">
+                <i class="fas fa-cart-shopping" aria-hidden="true"></i>
+                <span class="gxrail__badge" data-cms-cart-count hidden>0</span>
+            </span>
             <span class="gxrail__label">Panier</span>
-        </span>
+        </a>
 
         <a class="gxrail__item" href="{{ $gxRailCarte }}">
             <span class="gxrail__ico"><i class="fas fa-map-location-dot" aria-hidden="true"></i></span>
@@ -201,9 +207,20 @@
   .gxrail__item--lang .gxrail__label i { font-size: 8px; opacity: .65; transition: transform .2s ease; }
   .gxrail__item--lang[aria-expanded="true"] .gxrail__label i { transform: rotate(180deg); }
 
-  /* Panier : repère statique, sans action pour le moment */
-  .gxrail__item--static { cursor: default; opacity: .55; }
-  .gxrail__item--static:hover { background: transparent; color: var(--gxr-ink); }
+  /* Panier : pastille du nombre d'articles, posée sur l'icône */
+  .gxrail__item--panier .gxrail__ico { position: relative; display: inline-block; }
+  .gxrail__badge {
+    position: absolute; top: -7px; right: -11px;
+    min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px;
+    background: #f5c542; color: #111827;
+    font-size: 10.5px; font-weight: 800; line-height: 18px; text-align: center;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, .3);
+  }
+
+  /* Le bouton flottant du panier (sites d'établissement) est REMPLACÉ par
+     l'entrée ci-dessus : cette règle ne vit que sur les pages qui portent la
+     barre, les sites servis hors plateforme gardent donc leur bouton. */
+  .cms-cart-fab { display: none !important; }
 
   /* ── Petits panneaux (langue, recherche) ── */
   .gxrail-pop {
@@ -551,6 +568,32 @@
       if (!ouvert || panels[ouvert] === sauf) { return; }
       fermer();
     });
+
+    /* ── Panier ──────────────────────────────────────────────────────────
+       Avec un tiroir sur la page (sites d'établissement), le clic l'ouvre et
+       ne doit PAS suivre le lien ; son script écoute déjà le document, il
+       suffit de retenir la navigation. Sans tiroir, le lien fait son travail.
+
+       La pastille est masquée tant que le panier est vide : le script du
+       tiroir écrit le nombre dans tous les [data-cms-cart-count], sans savoir
+       qu'il faut l'afficher. */
+    var panier = document.getElementById('gxRailPanier');
+    if (panier) {
+      var pastille = panier.querySelector('[data-cms-cart-count]');
+
+      panier.addEventListener('click', function (e) {
+        if (document.querySelector('[data-cms-cart-drawer]')) { e.preventDefault(); }
+      });
+
+      if (pastille) {
+        var majPastille = function () {
+          var n = parseInt((pastille.textContent || '').replace(/\D/g, ''), 10);
+          pastille.hidden = !(n > 0);
+        };
+        majPastille();
+        new MutationObserver(majPastille).observe(pastille, { childList: true, characterData: true, subtree: true });
+      }
+    }
 
     /* ── Recherche : même source que la barre du hero ── */
     var champ = document.getElementById('gxRailSearchInput');
