@@ -516,3 +516,46 @@
     document.querySelectorAll("[data-gx-destination-hero]").forEach(demarrerHero);
   });
 })();
+
+/* Filtres de la section « Établissements à proximité ».
+
+   Les boutons et les catégories des cartes viennent de la base : le site les
+   réécrit au rendu (TemplateEtablissements). Ce script ne fait que comparer
+   data-gx-filtre à data-categorie.
+
+   ⚠ Il vit dans l'asset du SITE, pas dans le gabarit : dans l'éditeur, masquer
+   des cartes écrirait l'état du filtre dans le contenu enregistré, et le
+   client ne verrait plus les cartes cachées. */
+(function () {
+  "use strict";
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var groupes = document.querySelectorAll('[data-gx-etablissements-filtres]');
+
+    Array.prototype.forEach.call(groupes, function (filtres) {
+      var section = filtres.closest('section') || document;
+      var grille = section.querySelector('[data-gx-etablissements]');
+      if (!grille) { return; }
+
+      filtres.addEventListener('click', function (e) {
+        var bouton = e.target && e.target.closest ? e.target.closest('[data-gx-filtre]') : null;
+        if (!bouton) { return; }
+        e.preventDefault();
+
+        var voulu = bouton.getAttribute('data-gx-filtre') || '*';
+
+        Array.prototype.forEach.call(filtres.querySelectorAll('[data-gx-filtre]'), function (b) {
+          b.classList.toggle('is-active', b === bouton);
+        });
+
+        Array.prototype.forEach.call(grille.children, function (carte) {
+          // Découpe sur l'espace simple — c'est ainsi que le site écrit
+          // `data-categorie`. Une expression régulière obligerait à échapper
+          // l'antislash dans ce fichier Python, pour rien.
+          var cles = (carte.getAttribute('data-categorie') || '').split(' ');
+          carte.style.display = (voulu === '*' || cles.indexOf(voulu) !== -1) ? '' : 'none';
+        });
+      });
+    });
+  });
+})();

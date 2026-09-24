@@ -1025,6 +1025,20 @@ section{position:relative;}
   .hero-slides .hero-slide{transition:none;}
 }
 
+/* Établissements à proximité : boutons de filtre et carte cliquable. Le
+   reste vient des classes de la maquette (.poi-card, .card-grid…). */
+.etab-filtres { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+.etab-filtre {
+    border: 1px solid var(--line, #e2d9cc); background: transparent; color: var(--ink, #2a2622);
+    border-radius: 999px; padding: 9px 20px; font-size: .9rem; font-weight: 500;
+    cursor: pointer; transition: background .2s, border-color .2s, color .2s;
+}
+.etab-filtre:hover { border-color: var(--accent, #c08a4a); }
+.etab-filtre.is-active { background: var(--accent, #c08a4a); border-color: var(--accent, #c08a4a); color: #fff; }
+a.poi-card { text-decoration: none; color: inherit; display: block; }
+a.poi-card .poi-lien { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.destination-etablissements .poi-desc { margin: 6px 0 12px; font-size: .92rem; line-height: 1.55; opacity: .85; }
+
 
 /* ==========================================================================
    COMPLÉMENTS GO EXPLORIA — carte réelle, contenus dynamiques

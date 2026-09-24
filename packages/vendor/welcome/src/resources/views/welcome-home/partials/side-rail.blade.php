@@ -585,13 +585,46 @@
         if (document.querySelector('[data-cms-cart-drawer]')) { e.preventDefault(); }
       });
 
+      /* ⚠ Le script du panier relève la liste des compteurs UNE SEULE FOIS, à
+         l'analyse de la page (`querySelectorAll('[data-cms-cart-count]')`), et
+         la barre est insérée APRÈS lui dans le document : il n'écrira jamais
+         dans cette pastille. Elle se tient donc à jour toute seule.
+
+         Source préférée : le compteur du bouton flottant, que ce script
+         actualise à chaque changement (ajout, retrait, quantité). À défaut de
+         bouton — pages sans tiroir — on lit le panier enregistré. */
       if (pastille) {
+        var lirePanierEnregistre = function () {
+          try {
+            var base = 'cms_landing_cart_v1';
+            var m = window.location.pathname.match(/\/company\/(\d+)/);
+            var cadre = document.getElementById('gxEmbedFrame');
+            if (!m && cadre && cadre.src) { m = cadre.src.match(/\/company\/(\d+)/); }
+            var brut = localStorage.getItem(m ? base + '_' + m[1] : base);
+            if (!brut) { return 0; }
+            var items = (JSON.parse(brut) || {}).items || [];
+            return items.reduce(function (somme, it) { return somme + (Number(it.quantity) || 0); }, 0);
+          } catch (e) { return 0; }
+        };
+
         var majPastille = function () {
-          var n = parseInt((pastille.textContent || '').replace(/\D/g, ''), 10);
+          var source = document.querySelector('.cms-cart-fab [data-cms-cart-count]');
+          var n = source
+            ? (parseInt((source.textContent || '').replace(/\D/g, ''), 10) || 0)
+            : lirePanierEnregistre();
+          pastille.textContent = n;
           pastille.hidden = !(n > 0);
         };
+
         majPastille();
-        new MutationObserver(majPastille).observe(pastille, { childList: true, characterData: true, subtree: true });
+        var source = document.querySelector('.cms-cart-fab [data-cms-cart-count]');
+        if (source) {
+          new MutationObserver(majPastille).observe(source, { childList: true, characterData: true, subtree: true });
+        }
+        window.addEventListener('cms-cart-updated', majPastille);
+        window.addEventListener('storage', function (e) {
+          if (!e.key || e.key.indexOf('cms_landing_cart_v1') === 0) { majPastille(); }
+        });
       }
     }
 

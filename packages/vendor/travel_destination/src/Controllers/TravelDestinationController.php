@@ -152,6 +152,19 @@ class TravelDestinationController extends Controller
         // s'il l'a masquée, on n'affiche rien.
         $defaultPage = DestinationDefaultPage::resolve($entity);
 
+        // Section « Établissements à proximité » : le gabarit ne porte que des
+        // cartes de démonstration, remplacées ici par les établissements
+        // situés dans cette destination — elle-même et tout ce qui pend en
+        // dessous — et ses filtres par les catégories réellement présentes.
+        // Sans établissement rattaché, la démonstration reste affichée.
+        if (! empty($defaultPage['html'])) {
+            $defaultPage['html'] = \Vendor\Cms\Support\TemplateEtablissements::hydrateDestination(
+                $defaultPage['html'],
+                $normalizedType,
+                (int) $entity->id
+            );
+        }
+
         // Chaîne de filtres de la carte, calquée sur le fil d'Ariane.
         $mapFilterChain = $this->buildMapFilterChain($normalizedType, $entity);
 

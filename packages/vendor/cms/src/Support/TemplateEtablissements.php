@@ -48,6 +48,83 @@ class TemplateEtablissements extends TemplateGrid
     protected array $categoriesVues = [];
 
     /**
+     * Contexte DESTINATION : ['type' => 'ville', 'id' => 12].
+     *
+     * Renseigné par hydrateDestination(). Quand il l'est, la grille liste les
+     * établissements situés dans cette destination au lieu de ceux qui
+     * proposent une activité.
+     */
+    protected ?array $destination = null;
+
+    /**
+     * Chaîne des destinations, telle que la porte
+     * App\Models\EtablissementDestination côté administration (elle n'existe
+     * pas dans ce projet).
+     *
+     * `parents` liste les colonnes menant à un niveau supérieur : ⚠ les
+     * niveaux intermédiaires sont SAUTABLES — une ville peut pendre de son
+     * secteur, de sa région, de sa province ou de son pays. Descendre par la
+     * seule colonne « officielle » manquerait les villes rattachées plus haut,
+     * et la section afficherait un « à proximité » incomplet.
+     */
+    protected const CHAINE = [
+        'continent'      => ['table' => 'continents',      'parents' => []],
+        'country'        => ['table' => 'countries',       'parents' => ['continent_id' => 'continent']],
+        'province'       => ['table' => 'provinces',       'parents' => ['country_id' => 'country']],
+        'region'         => ['table' => 'regions',         'parents' => ['province_id' => 'province']],
+        'secteur'        => ['table' => 'secteurs',        'parents' => ['region_id' => 'region']],
+        'ville'          => ['table' => 'villes',          'parents' => [
+            'secteur_id' => 'secteur', 'region_id' => 'region', 'province_id' => 'province', 'country_id' => 'country',
+        ]],
+        'arrondissement' => ['table' => 'arrondissements', 'parents' => ['ville_id' => 'ville']],
+        'quartier'       => ['table' => 'quartiers',       'parents' => [
+            'arrondissement_id' => 'arrondissement', 'ville_id' => 'ville',
+        ]],
+    ];
+
+    /** Le site public nomme les villes « city » ; la table de liaison, « ville ». */
+    protected const TYPES_SITE = [
+        'city' => 'ville', 'cities' => 'ville', 'villes' => 'ville',
+        'continents' => 'continent', 'countries' => 'country', 'provinces' => 'province',
+        'regions' => 'region', 'secteurs' => 'secteur',
+        'arrondissements' => 'arrondissement', 'quartiers' => 'quartier',
+    ];
+
+    /** Nombre d'identifiants retenus par niveau en descendant la chaîne. */
+    protected const PLAFOND_NIVEAU = 5000;
+
+    /**
+     * Hydrate la page d'une DESTINATION : les établissements situés dedans,
+     * du niveau lui-même jusqu'aux quartiers.
+     *
+     * @param string $type Niveau ('ville', 'city', 'region'…)
+     */
+    public static function hydrateDestination(string $html, string $type, ?int $destinationId): string
+    {
+        $instance = new static(0);
+        $type = self::TYPES_SITE[$type] ?? $type;
+
+        if ($destinationId === null
+            || ! isset(self::CHAINE[$type])
+            || strpos($html, $instance->marqueur()) === false) {
+            return $html;
+        }
+
+        try {
+            $instance = new static(0);
+            $instance->destination = ['type' => $type, 'id' => (int) $destinationId];
+
+            return $instance->poserFiltres($instance->parcourir($html));
+        } catch (\Throwable $e) {
+            Log::warning(static::class . ' : hydratation abandonnée — ' . $e->getMessage(), [
+                'destination' => $type . '#' . $destinationId,
+            ]);
+
+            return $html;
+        }
+    }
+
+    /**
      * Hydrate une page d'activité.
      *
      * `hydrate()` du socle prend un établissement : ce point d'entrée le
@@ -99,6 +176,107 @@ class TemplateEtablissements extends TemplateGrid
      */
     protected function elements(int $limite, array $options)
     {
+        return $this->destination === null
+            ? $this->elementsDeLActivite($limite, $options)
+            : $this->elementsDeLaDestination($limite, $options);
+    }
+
+    /**
+     * Établissements situés dans la destination — elle-même et tout ce qui
+     * pend en dessous : la page d'une région liste aussi les établissements de
+     * ses villes et de leurs quartiers, ce qu'on attend d'un « à proximité ».
+     *
+     * @return Collection<int, array<string, mixed>>
+     */
+    protected function elementsDeLaDestination(int $limite, array $options)
+    {
+        $paires = $this->pairesDescendantes($this->destination['type'], $this->destination['id']);
+
+        if ($paires === []) {
+            return collect();
+        }
+
+        $ids = \Illuminate\Support\Facades\DB::table('etablissement_destinations')
+            ->where(function ($q) use ($paires) {
+                foreach ($paires as $type => $valeurs) {
+                    $q->orWhere(fn ($sous) => $sous->where('destination_type', $type)->whereIn('destination_id', $valeurs));
+                }
+            })
+            ->distinct()
+            ->limit(500)
+            ->pluck('etablissement_id');
+
+        if ($ids->isEmpty()) {
+            return collect();
+        }
+
+        $etablissements = Etablissement::query()
+            ->whereIn('id', $ids)
+            ->where('is_active', true)
+            ->with(['activities' => fn ($q) => $q->select('activities.id', 'activities.name', 'activities.categorie_id')->with('categoryRelation:id,name')])
+            ->orderBy('name')
+            ->limit(120)
+            ->get();
+
+        return $this->lignes($etablissements, $limite, $options);
+    }
+
+    /**
+     * Identifiants de la destination et de toutes ses descendantes, par
+     * niveau : ['region' => [7], 'ville' => [12, 13], …].
+     *
+     * @return array<string, array<int, int>>
+     */
+    protected function pairesDescendantes(string $type, int $id): array
+    {
+        $paires = [$type => [$id]];
+        $depart = false;
+
+        foreach (self::CHAINE as $niveau => $definition) {
+            if ($niveau === $type) {
+                $depart = true;
+                continue;
+            }
+
+            if (! $depart || $definition['parents'] === []) {
+                continue;               // au-dessus du départ : hors sujet
+            }
+
+            $trouves = [];
+
+            foreach ($definition['parents'] as $colonne => $typeParent) {
+                if (empty($paires[$typeParent])) {
+                    continue;
+                }
+
+                try {
+                    if (! Schema::hasColumn($definition['table'], $colonne)) {
+                        continue;
+                    }
+
+                    $trouves = array_merge($trouves, \Illuminate\Support\Facades\DB::table($definition['table'])
+                        ->whereIn($colonne, $paires[$typeParent])
+                        ->limit(self::PLAFOND_NIVEAU)
+                        ->pluck('id')
+                        ->all());
+                } catch (\Throwable $e) {
+                    Log::warning(static::class . ' : niveau ignoré (' . $niveau . ') — ' . $e->getMessage());
+                }
+            }
+
+            $trouves = array_values(array_unique(array_map('intval', $trouves)));
+
+            if ($trouves !== []) {
+                $paires[$niveau] = array_slice($trouves, 0, self::PLAFOND_NIVEAU);
+            }
+        }
+
+        return $paires;
+    }
+
+    /** Établissements qui proposent l'activité. */
+    protected function elementsDeLActivite(int $limite, array $options)
+    {
         $activite = Activity::query()->find($this->activityId(), ['id', 'name', 'categorie_id']);
 
         if (! $activite) {
@@ -128,6 +306,19 @@ class TemplateEtablissements extends TemplateGrid
             ->limit(120)
             ->get();
 
+        return $this->lignes($etablissements, $limite, $options);
+    }
+
+    /**
+     * Met en forme les établissements trouvés — commun aux deux contextes
+     * (activité et destination) : visuels en deux requêtes groupées, filtre
+     * par catégorie, plafond, et mémorisation des catégories pour les boutons.
+     *
+     * @param  \Illuminate\Support\Collection<int, Etablissement>  $etablissements
+     * @return Collection<int, array<string, mixed>>
+     */
+    protected function lignes($etablissements, int $limite, array $options): Collection
+    {
         if ($etablissements->isEmpty()) {
             return collect();
         }
@@ -137,11 +328,9 @@ class TemplateEtablissements extends TemplateGrid
 
         $lignes = $etablissements
             ->map(function (Etablissement $etablissement) use ($visuels) {
-                $categories = $this->categories($etablissement);
-
                 return [
                     'etablissement' => $etablissement,
-                    'categories'    => $categories,
+                    'categories'    => $this->categories($etablissement),
                     'ville'         => trim((string) $etablissement->ville),
                     'image'         => $visuels[$etablissement->id] ?? null,
                     'lien'          => $this->lien($etablissement),
@@ -299,7 +488,13 @@ class TemplateEtablissements extends TemplateGrid
 
         foreach ($this->categoriesVues as $slug => $nom) {
             $clone = $modele->cloneNode(true);
+            // Deux attributs pour un seul rôle : les gabarits d'activité
+            // (Plexify) lisent `data-plx-filtre`, celui des destinations
+            // (Carnet d'Atlas) lit `data-gx-filtre`. Les poser tous les deux
+            // évite de renommer l'un des deux scripts — et donc de casser les
+            // pages déjà enregistrées qui portent l'ancien nom.
             $clone->setAttribute('data-plx-filtre', $slug);
+            $clone->setAttribute('data-gx-filtre', $slug);
             $this->poserTexte($doc, $clone, $nom);
             $modele->parentNode->insertBefore($clone, $modele);
         }
