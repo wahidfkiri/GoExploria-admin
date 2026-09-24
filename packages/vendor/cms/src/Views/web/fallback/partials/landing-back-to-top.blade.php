@@ -1,8 +1,19 @@
 @once
     <style>
+        /* Centré en bas : le coin bas-gauche est occupé par la pop-up
+           publicitaire, et le bord droit par la barre de raccourcis.
+
+           ⚠ Centrage par marges automatiques (left:0 + right:0 + margin auto),
+           PAS par `left:50%` + `translateX(-50%)` : le `transform` porte déjà
+           l'animation d'apparition (translateY), et les deux usages se
+           remplaçaient l'un l'autre — mesuré en ligne, le bouton restait
+           décalé d'une demi-largeur. */
         .cms-back-to-top {
             position: fixed;
-            left: 24px;
+            left: 0;
+            right: 0;
+            margin-left: auto;
+            margin-right: auto;
             bottom: calc(24px + env(safe-area-inset-bottom, 0px));
             z-index: 9998;
             width: 46px;
@@ -41,10 +52,16 @@
             display: block;
         }
 
+        /* Sous 992px, la barre de raccourcis devient une barre horizontale en
+           bas (≈ 76px) : le bouton passe au-dessus d'elle. */
+        @media (max-width: 992px) {
+            .cms-back-to-top {
+                bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+            }
+        }
+
         @media (max-width: 640px) {
             .cms-back-to-top {
-                left: 16px;
-                bottom: calc(84px + env(safe-area-inset-bottom, 0px));
                 width: 42px;
                 height: 42px;
             }

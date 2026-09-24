@@ -180,6 +180,41 @@
     }
   }
 
+  /* Filtres de la section « Établissements à proximité ».
+
+     Les boutons et les catégories des cartes viennent de la base (le site les
+     réécrit au rendu) : ce script ne fait que comparer data-plx-filtre à
+     data-categorie. Il ne tourne PAS dans l'éditeur — masquer des cartes y
+     écrirait l'état du filtre dans le contenu enregistré (§5), et le client
+     ne verrait plus les cartes cachées. */
+  if (!edition) {
+    Array.prototype.forEach.call(
+      document.querySelectorAll('.actpage-tpl [data-gx-etablissements-filtres]'),
+      function (filtres) {
+        var section = filtres.closest('section') || document;
+        var grille = section.querySelector('[data-gx-etablissements]');
+        if (!grille) return;
+
+        filtres.addEventListener('click', function (e) {
+          var bouton = e.target && e.target.closest ? e.target.closest('[data-plx-filtre]') : null;
+          if (!bouton) return;
+          e.preventDefault();
+
+          var voulu = bouton.getAttribute('data-plx-filtre') || '*';
+
+          Array.prototype.forEach.call(filtres.querySelectorAll('[data-plx-filtre]'), function (b) {
+            b.classList.toggle('is-active', b === bouton);
+          });
+
+          Array.prototype.forEach.call(grille.children, function (carte) {
+            var cles = (carte.getAttribute('data-categorie') || '').split(/\s+/);
+            carte.style.display = (voulu === '*' || cles.indexOf(voulu) !== -1) ? '' : 'none';
+          });
+        });
+      }
+    );
+  }
+
   /* Ménage des contenus enregistrés par une version antérieure du gabarit. */
   Array.prototype.forEach.call(
     document.querySelectorAll('.actpage-tpl [data-swiper-slide-index], .actpage-tpl .swiper-slide-duplicate'),

@@ -101,9 +101,10 @@
     #gx-ads-popup .gxad-prev{left:8px}
     #gx-ads-popup .gxad-next{right:8px}
     #gx-ads-popup .gxad-nav.swiper-button-disabled{opacity:.35;cursor:default}
-    /* Sous 992px, la barre de raccourcis devient une barre horizontale EN BAS
-       (≈ 76px) : la pop-up remonte au-dessus d'elle. */
-    @media(max-width:992px){#gx-ads-popup{left:12px;bottom:92px}}
+    /* Sous 992px, le bas de l'écran est occupé par la barre de raccourcis
+       (≈ 76px) PUIS par le bouton « retour en haut », centré juste au-dessus
+       (bas 92px, haut 134px) : la pop-up se place au-dessus des deux. */
+    @media(max-width:992px){#gx-ads-popup{left:12px;bottom:146px}}
     @media(max-width:420px){#gx-ads-popup{right:12px;width:auto}}
 </style>
 

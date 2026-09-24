@@ -133,6 +133,55 @@
     background: var(--primary, #C8F31D); color: #111;
 }
 
+/* --- Établissements à proximité : grille et filtres. Les cartes du gabarit
+   sont des exemples ; le site les remplace par les établissements rattachés
+   à l'activité (TemplateEtablissements). --- */
+.actpage-tpl .plx-etab-filtres {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    justify-content: center; margin-bottom: 34px;
+}
+.actpage-tpl .plx-etab-filtre {
+    border: 1px solid #e2e8f0; background: #fff; color: #0f172a;
+    border-radius: 999px; padding: 9px 20px;
+    font-size: .88rem; font-weight: 600; cursor: pointer;
+    transition: background .2s, border-color .2s, color .2s;
+}
+.actpage-tpl .plx-etab-filtre:hover { border-color: var(--primary, #C8F31D); }
+.actpage-tpl .plx-etab-filtre.is-active {
+    background: var(--primary, #C8F31D); border-color: var(--primary, #C8F31D); color: #111;
+}
+.actpage-tpl .plx-etab-grille {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;
+}
+.actpage-tpl .plx-etab-carte {
+    display: flex; flex-direction: column; overflow: hidden;
+    background: #fff; border: 1px solid #e8edf5; border-radius: 18px;
+    color: inherit; text-decoration: none;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, .06);
+    transition: transform .25s, box-shadow .25s;
+}
+.actpage-tpl .plx-etab-carte:hover {
+    transform: translateY(-4px); box-shadow: 0 14px 30px rgba(15, 23, 42, .12); color: inherit;
+}
+.actpage-tpl .plx-etab-media {
+    position: relative; display: block; aspect-ratio: 4 / 3; background: #eef2f7; overflow: hidden;
+}
+.actpage-tpl .plx-etab-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.actpage-tpl .plx-etab-cat {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(255, 255, 255, .94); border-radius: 999px; padding: 5px 13px;
+    font-size: .7rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: #0f172a;
+}
+.actpage-tpl .plx-etab-corps { display: flex; flex-direction: column; gap: 8px; padding: 18px 20px 22px; flex: 1; }
+.actpage-tpl .plx-etab-nom { font-size: 1.08rem; font-weight: 700; color: #0f172a; }
+.actpage-tpl .plx-etab-ville { display: flex; align-items: center; gap: 7px; font-size: .86rem; color: #64748b; }
+.actpage-tpl .plx-etab-ville i { color: var(--primary, #C8F31D); }
+.actpage-tpl .plx-etab-desc { font-size: .9rem; color: #64748b; line-height: 1.55; }
+.actpage-tpl .plx-etab-lien {
+    margin-top: auto; padding-top: 10px; display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 700; font-size: .9rem; color: #0f172a;
+}
+
 /* --- Carte : ce que l'éditeur montre à la place de la carte, que seul le
    site rend (le front remplace la section d'attente au rendu). --- */
 .actpage-tpl .plx-carte-attente {
@@ -298,6 +347,15 @@ html[data-plx-heros-vue="12"] .actpage-tpl .plx-diapo:nth-child(12) {
         width: max(calc(100cqw / var(--gx-utile-l)), calc(177.78cqh / var(--gx-utile-h))) !important;
         height: max(calc(56.25cqw / var(--gx-utile-l)), calc(100cqh / var(--gx-utile-h))) !important;
     }
+}
+
+/* Une seule vidéo au bandeau (cas livré depuis le 2026-09-23) : les flèches
+   n'ont nulle part où aller. Elles restent dans le balisage — le contrat du
+   bloc héros, que PageParDefaut::mettreAJourHeros() découpe des diapositives
+   à la seconde flèche, en dépend — mais ne s'affichent pas. Ajouter une
+   diapositive dans l'éditeur les ramène, sans rien à régler. */
+.actpage-tpl .plx-diapos:has(> .plx-diapo:only-child) ~ .plx-hero-fleche {
+    display: none;
 }
 
 /* Flèches gauche / droite, à mi-hauteur. */

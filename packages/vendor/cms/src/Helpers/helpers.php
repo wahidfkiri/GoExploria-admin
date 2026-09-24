@@ -1252,11 +1252,9 @@ if (!function_exists('get_slider_media')) {
                 ];
             })->values();
 
-            \Log::info('get_slider_media result', [
-                'etablissement_id' => $etablissementId,
-                'count' => $items->count(),
-            ]);
-
+            // Pas de trace ici : elle s'écrivait à CHAQUE page vue de chaque
+            // site, remplissait laravel.log (canal « single », niveau debug)
+            // et a contribué à saturer le disque du serveur (errno 28).
             return $items;
         } catch (\Throwable $e) {
             \Log::warning('Unable to load slider media from cms.cms_media: ' . $e->getMessage(), [

@@ -98,11 +98,19 @@ class LandingPageController extends Controller
                 // Le bandeau ne montre que des vidéos : l'image de l'activité,
                 // le bouton « Voir la vidéo » et la flèche « Défiler » qu'une
                 // page enregistrée y porterait encore sont retirés.
-                'contenu'  => $this->injecterCarteMonde(
-                    \Vendor\Activities\Support\HerosVideo::nettoyer(
-                        \Vendor\Activities\Support\ReglesEdition::retirer($pageSite->content)
+                // La section « Établissements » du gabarit ne porte que des
+                // cartes de démonstration : elles sont remplacées ici par les
+                // établissements qui proposent l'activité, et ses filtres par
+                // les catégories réellement présentes. Sans rattachement, la
+                // démonstration reste affichée (TemplateEtablissements).
+                'contenu'  => \Vendor\Cms\Support\TemplateEtablissements::hydrateActivite(
+                    $this->injecterCarteMonde(
+                        \Vendor\Activities\Support\HerosVideo::nettoyer(
+                            \Vendor\Activities\Support\ReglesEdition::retirer($pageSite->content)
+                        ),
+                        $activity
                     ),
-                    $activity
+                    (int) $activity->id
                 ),
             ]);
         }
