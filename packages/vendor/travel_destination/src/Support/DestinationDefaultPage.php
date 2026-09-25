@@ -127,6 +127,43 @@ class DestinationDefaultPage
     }
 
     /**
+     * Section « Établissements à proximité » (2026-09-24) sur une page
+     * enregistrée avant son arrivée : le bloc du gabarit, posé avant les
+     * activités (à défaut, avant les hébergements).
+     *
+     * Proposée UNE fois, comme le mur vidéo : repère `data-gx-etab-propose`
+     * sur la racine, donc une section supprimée par le client ne revient pas.
+     * Ses cartes sont ensuite remplies par TemplateEtablissements, comme
+     * celles du gabarit.
+     */
+    public static function avecEtablissements(string $html): string
+    {
+        if (str_contains($html, 'data-gx-etablissements') || str_contains($html, 'data-gx-etab-propose')) {
+            return $html;
+        }
+
+        $template = self::template();
+
+        if ($template === null
+            || ! preg_match('/<section\b[^>]*\bid="etablissements"[^>]*>.*?<\/section>/is', $template['html'], $section)
+            || ! preg_match('/<div\b[^>]*class="[^"]*\bgx-dest-tpl\b[^"]*"[^>]*>/i', $html, $racine, PREG_OFFSET_CAPTURE)) {
+            return $html;
+        }
+
+        if (preg_match('/<section\b[^>]*\bid="activites"/i', $html, $ancre, PREG_OFFSET_CAPTURE)) {
+            $html = substr_replace($html, $section[0] . "\n", $ancre[0][1], 0);
+        } elseif (preg_match('/<section\b[^>]*\bid="hebergements"/i', $html, $ancre, PREG_OFFSET_CAPTURE)) {
+            $html = substr_replace($html, $section[0] . "\n", $ancre[0][1], 0);
+        } else {
+            return $html;
+        }
+
+        $finOuverture = $racine[0][1] + strlen($racine[0][0]) - 1;
+
+        return substr_replace($html, ' data-gx-etab-propose="propose"', $finOuverture, 0);
+    }
+
+    /**
      * Héros : des vidéos seulement (demande du 2026-09-16). Retire du héros
      * composé dans l'éditeur les diapositives qui ne portent qu'une image
      * (`<div class="hero-slide…"><img></div>`) ; les vidéos restent.

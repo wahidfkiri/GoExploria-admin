@@ -158,8 +158,11 @@ class TravelDestinationController extends Controller
         // dessous — et ses filtres par les catégories réellement présentes.
         // Sans établissement rattaché, la démonstration reste affichée.
         if (! empty($defaultPage['html'])) {
+            // ⚠ L'ORDRE compte : la section est d'abord posée sur les pages
+            // enregistrées avant son arrivée, puis hydratée. L'inverse
+            // laisserait la section greffée avec ses cartes de démonstration.
             $defaultPage['html'] = \Vendor\Cms\Support\TemplateEtablissements::hydrateDestination(
-                $defaultPage['html'],
+                DestinationDefaultPage::avecEtablissements($defaultPage['html']),
                 $normalizedType,
                 (int) $entity->id
             );
