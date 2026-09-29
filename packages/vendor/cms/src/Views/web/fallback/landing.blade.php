@@ -161,8 +161,23 @@
     {{-- Sections : statiques via partials/sections, données via partials DB --}}
     @include('cms::web.fallback.partials.sections.hero')
 
+    {{-- Un gabarit qui place LUI-MÊME la carte (section `data-gx-map`) ou un
+         formulaire de contact (`form[data-gx-contact]`) : la page ne rend pas
+         en plus les siens. Sans cela la carte apparaissait deux fois — même
+         partial, mêmes identifiants, deux scripts qui se disputent `#map` —
+         et le visiteur voyait deux formulaires de contact. Détection sur les
+         BALISES, pas sur une simple mention (un script de gabarit peut citer
+         ces repères en sélecteur). --}}
+    @php
+        $gxContenuGabarit = collect($cmsPageSections ?? [])->map(fn ($p) => (string) data_get($p, 'content'))->implode("\n");
+        $gxGabaritACarte = (bool) preg_match('/<section\b[^>]*\bdata-gx-map\b/i', $gxContenuGabarit);
+        $gxGabaritAContact = (bool) preg_match('/<form\b[^>]*\bdata-gx-contact\b/i', $gxContenuGabarit);
+    @endphp
+
     <main>
-        @include('cms::web.fallback.partials.landing-map-video-points')
+        @unless($gxGabaritACarte)
+            @include('cms::web.fallback.partials.landing-map-video-points')
+        @endunless
 
         {{-- Biens immobiliers de l'établissement, remis au template AVANT son
              contenu : son script lit window.GX_IMMO au démarrage. Sans biens
@@ -178,7 +193,9 @@
         @include('cms::web.fallback.partials.sections.products')
         @include('cms::web.fallback.partials.sections.blog')
         @include('cms::web.fallback.partials.landing-working-hours')
-        @include('cms::web.fallback.partials.sections.contact')
+        @unless($gxGabaritAContact)
+            @include('cms::web.fallback.partials.sections.contact')
+        @endunless
     </main>
 
     @include('cms::web.fallback.partials.landing-media-slideshow')

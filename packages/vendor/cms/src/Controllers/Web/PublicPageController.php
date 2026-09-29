@@ -899,6 +899,121 @@ class PublicPageController extends Controller
     }
 
     /**
+     * Suggestions de la recherche des gabarits boutique (gx-shop-tools).
+     *
+     * Mêmes règles que la boutique : produits publics et en vente de CET
+     * établissement, jokers neutralisés. Renvoie aussi les rayons dont le nom
+     * correspond, pour proposer « voir tout le rayon ».
+     */
+    public function productsSuggest(Request $request, $etablissementId)
+    {
+        $etablissement = Etablissement::findOrFail($etablissementId);
+        $recherche = Str::limit(trim((string) $request->input('q')), 80, '');
+
+        if (mb_strlen($recherche) < 2) {
+            return response()->json(['produits' => [], 'rayons' => [], 'total' => 0]);
+        }
+
+        $terme = '%' . str_replace(['%', '_'], ['\%', '\_'], $recherche) . '%';
+
+        $requete = $this->produitsEnVente($etablissement->id)
+            ->where(function ($sous) use ($terme) {
+                $sous->where('name', 'like', $terme)
+                    ->orWhere('short_description', 'like', $terme)
+                    ->orWhere('reference', 'like', $terme);
+            });
+
+        $total = (clone $requete)->count();
+        $produits = $requete->orderByDesc('sales_count')->orderByDesc('created_at')->limit(6)->get();
+
+        $rayons = \App\Models\ProductCategory::pourEtablissement($etablissement->id)
+            ->where('is_active', true)
+            ->where('name', 'like', $terme)
+            ->whereHas('products', fn ($q) => $q->where('etablissement_id', $etablissement->id)
+                ->where('is_public', true)->where('is_available_for_sale', true))
+            ->orderBy('order')
+            ->limit(3)
+            ->get(['id', 'name']);
+
+        $boutique = url('/company/' . $etablissement->id . '/produits');
+
+        return response()->json([
+            'produits' => $produits->map(fn ($p) => $this->produitJson($p, $etablissement))->values(),
+            'rayons'   => $rayons->map(fn ($r) => [
+                'id'   => $r->id,
+                'name' => $r->name,
+                'url'  => $boutique . '?rayon=' . $r->id,
+            ])->values(),
+            'total'    => $total,
+            'url'      => $boutique . '?q=' . rawurlencode($recherche),
+        ]);
+    }
+
+    /**
+     * Fiches de plusieurs produits par identifiant — le panneau des favoris.
+     *
+     * Les favoris ne gardent que des identifiants dans le navigateur ; nom,
+     * prix, photo et disponibilité sont relus ici à chaque ouverture. Un
+     * produit retiré de la vente ou d'un autre établissement est simplement
+     * absent de la réponse, et le panneau l'oublie.
+     */
+    public function productsBatch(Request $request, $etablissementId)
+    {
+        $etablissement = Etablissement::findOrFail($etablissementId);
+
+        $ids = collect(explode(',', (string) $request->input('ids')))
+            ->map(fn ($id) => (int) $id)
+            ->filter(fn ($id) => $id > 0)
+            ->unique()
+            ->take(60)
+            ->values();
+
+        if ($ids->isEmpty()) {
+            return response()->json(['produits' => []]);
+        }
+
+        $produits = $this->produitsEnVente($etablissement->id)
+            ->whereIn('id', $ids->all())
+            ->get()
+            ->sortBy(fn ($p) => $ids->search($p->id));   // ordre d'ajout conservé
+
+        return response()->json([
+            'produits' => $produits->map(fn ($p) => $this->produitJson($p, $etablissement))->values(),
+        ]);
+    }
+
+    protected function produitsEnVente(int $etablissementId)
+    {
+        return Product::query()
+            ->with(['category:id,name'])
+            ->where('etablissement_id', $etablissementId)
+            ->where('is_public', true)
+            ->where('is_available_for_sale', true);
+    }
+
+    /**
+     * Une fiche produit au format des outils de boutique. Les règles
+     * d'affichage passent par ProductPresenter, comme les grilles et la fiche.
+     */
+    protected function produitJson($produit, $etablissement): array
+    {
+        $presenter = \Vendor\Cms\Support\ProductPresenter::class;
+        $prix = $presenter::prix($produit);
+
+        return [
+            'id'       => $produit->id,
+            'name'     => (string) $produit->name,
+            'desc'     => $presenter::description($produit, 90),
+            'category' => $produit->category->name ?? null,
+            'price'    => $prix,
+            'price_label' => $prix !== null ? $presenter::montant($prix) : 'Sur demande',
+            'image'    => $presenter::image($produit),
+            'url'      => url('/company/' . $etablissement->id . '/produits/' . $produit->id),
+            'epuise'   => $presenter::estEpuise($produit),
+        ];
+    }
+
+    /**
      * Fiche d'un produit.
      *
      * Le filtre par établissement n'est pas décoratif : sans lui, l'URL d'un
@@ -1333,23 +1448,87 @@ class PublicPageController extends Controller
         ];
     }
 
+    /**
+     * ⚠ Appelait \App\Models\MailSubscriber, classe qui n'existe PAS dans ce
+     * projet (elle vit dans l'admin) : chaque inscription finissait en erreur
+     * 500. Délègue désormais à l'implémentation commune.
+     */
     public function subscribeApi(Request $request, $etablissementId)
     {
-            $etablissement = \App\Models\Etablissement::findOrFail($etablissementId);
-            $this->etablissement = $etablissement;
+        return $this->subscribeTemplateNewsletter($request, $etablissementId);
+    }
 
-            // Valider les données
-            $request->validate([
-                'email' => 'required|email',
+    /**
+     * Inscription à l'infolettre d'un établissement (formulaires de gabarit
+     * `data-gx-newsletter`, via le pont gx-newsletter).
+     *
+     * Écrit dans `mail_subscribers`, la table que lit le Mail marketing de
+     * l'espace entreprise (CampaignAudienceResolver) : l'abonné est aussitôt
+     * joignable par les campagnes de l'établissement.
+     *
+     * ⚠ `mail_subscribers.email` est unique sur TOUTE la table. Une adresse
+     * déjà inscrite chez un autre établissement ne peut pas l'être une
+     * seconde fois : on ne la déplace pas (ce serait la retirer à l'autre) ;
+     * le visiteur reçoit la même réponse, la situation est journalisée.
+     */
+    public function subscribeTemplateNewsletter(Request $request, $etablissementId)
+    {
+        $etablissement = Etablissement::findOrFail($etablissementId);
+
+        $validation = Validator::make($request->all(), [
+            'email' => 'required|email:rfc|max:190',
+        ], [
+            'email.required' => 'Indiquez votre adresse courriel.',
+            'email.email'    => 'Cette adresse courriel ne semble pas valide.',
+        ]);
+
+        if ($validation->fails()) {
+            return response()->json(['ok' => false, 'message' => $validation->errors()->first('email')], 422);
+        }
+
+        $email = mb_strtolower(trim((string) $request->input('email')));
+        $merci = 'Merci ! Vous êtes inscrit à notre infolettre.';
+
+        try {
+            $existant = DB::table('mail_subscribers')->where('email', $email)->first();
+
+            if (! $existant) {
+                DB::table('mail_subscribers')->insert([
+                    'etablissement_id' => $etablissement->id,
+                    'email'            => $email,
+                    'nom'              => Str::before($email, '@'),
+                    'is_subscribed'    => true,
+                    'created_at'       => now(),
+                    'updated_at'       => now(),
+                ]);
+
+                return response()->json(['ok' => true, 'message' => $merci]);
+            }
+
+            if ((int) $existant->etablissement_id === (int) $etablissement->id) {
+                if (! $existant->is_subscribed) {
+                    DB::table('mail_subscribers')->where('id', $existant->id)
+                        ->update(['is_subscribed' => true, 'unsubscribed_at' => null, 'updated_at' => now()]);
+
+                    return response()->json(['ok' => true, 'message' => 'Bon retour ! Votre inscription est réactivée.']);
+                }
+
+                return response()->json(['ok' => true, 'message' => 'Vous êtes déjà inscrit à notre infolettre.']);
+            }
+
+            \Log::info('Infolettre : adresse déjà inscrite chez un autre établissement.', [
+                'etablissement_id' => $etablissement->id,
+                'abonne_id'        => $existant->id,
             ]);
 
-            \App\Models\MailSubscriber::create([
-                'etablissement_id' => $this->etablissement->id,
-                'email' => $request->email,
-                'nom' => substr($request->email, 0, strpos($request->email, '@')),
+            return response()->json(['ok' => true, 'message' => $merci]);
+        } catch (\Throwable $e) {
+            \Log::warning('Infolettre : inscription impossible — ' . $e->getMessage(), [
+                'etablissement_id' => $etablissement->id,
             ]);
-        // Logique d'abonnement à la newsletter
-        return response()->json(['message' => 'Abonnement réussi']);
+
+            return response()->json(['ok' => false, 'message' => 'Inscription momentanément impossible. Réessayez plus tard.'], 500);
+        }
     }
 
     public function contact(Request $request, $etablissementId)

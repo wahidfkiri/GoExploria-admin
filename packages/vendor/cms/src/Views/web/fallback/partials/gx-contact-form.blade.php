@@ -27,8 +27,37 @@
     quels — le contrôleur les range dans `metadata` — ET sont recopiés,
     lisibles, dans le corps du message : la fiche de l'espace entreprise
     affiche le message, pas les métadonnées.
+
+    data-gx-contact-config         (facultatif) le formulaire suit la
+                                   « Configuration du formulaire de contact »
+                                   de l'établissement : champs activés ajoutés
+                                   s'ils manquent (téléphone, entreprise,
+                                   consentement…), obligatoires marqués comme
+                                   tels, champs désactivés retirés. Sans cela,
+                                   un champ rendu obligatoire par le commerçant
+                                   et absent du gabarit faisait refuser TOUS les
+                                   envois (validation serveur).
 --}}
+@php
+    $gxContactChamps = [];
+    try {
+        foreach ((\Vendor\Cms\Support\ContactFormConfig::for($etablissement ?? null)['fields'] ?? []) as $cle => $champ) {
+            $gxContactChamps[] = [
+                'nom'         => $cle,
+                'type'        => $champ['type'] ?? 'text',
+                'libelle'     => (string) ($champ['label'] ?? $cle),
+                'actif'       => (bool) ($champ['enabled'] ?? false),
+                'requis'      => (bool) ($champ['required'] ?? false),
+                'placeholder' => (string) ($champ['placeholder'] ?? ''),
+            ];
+        }
+    } catch (\Throwable $e) {
+        $gxContactChamps = [];   // configuration illisible : le formulaire reste celui du gabarit
+    }
+@endphp
 <style>
+    [data-gx-contact] .gx-contact-case { display: flex; align-items: flex-start; gap: 9px; font-size: .9rem; cursor: pointer; }
+    [data-gx-contact] .gx-contact-case input { width: auto; margin-top: 3px; }
     [data-gx-contact] [data-gx-contact-statut] {
         display: none; margin-top: 4px; padding: 12px 16px; border-radius: 12px;
         font: 600 .9rem/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -54,6 +83,79 @@
 
     var URL_ENVOI = @json(route('cms.company.contact.send', ['etablissementId' => $etablissement->id ?? 0]));
     var JETON = @json(csrf_token());
+    var CHAMPS = @json($gxContactChamps);
+
+    /* ── Formulaire piloté par la configuration (data-gx-contact-config) ──
+       Ne touche QUE le document publié : ce pont n'est jamais injecté dans
+       l'éditeur, le gabarit enregistré reste tel quel. */
+    function adapterConfiguration(form) {
+        if (!CHAMPS.length || form.dataset.gxContactAdapte === '1') { return; }
+        form.dataset.gxContactAdapte = '1';
+
+        var modele = form.querySelector('input[type="text"], input[type="email"]');
+        var ancre = form.querySelector('[data-gx-contact-statut]') || form.querySelector('[type="submit"]');
+        var indispensables = ['email', 'message'];   // toujours exigés par le serveur
+
+        function creer(c) {
+            var el;
+            if (c.type === 'checkbox') {
+                var etiquette = document.createElement('label');
+                etiquette.className = 'gx-contact-case';
+                el = document.createElement('input');
+                el.type = 'checkbox';
+                el.value = '1';
+                el.name = c.nom;
+                etiquette.appendChild(el);
+                etiquette.appendChild(document.createTextNode(' ' + c.libelle));
+                return { noeud: etiquette, champ: el };
+            }
+            el = document.createElement(c.type === 'textarea' ? 'textarea' : 'input');
+            if (el.tagName === 'INPUT') { el.type = ['email', 'tel', 'number', 'date'].indexOf(c.type) !== -1 ? c.type : 'text'; }
+            if (modele && modele.className) { el.className = modele.className; }
+            el.name = c.nom;
+            return { noeud: el, champ: el };
+        }
+
+        CHAMPS.forEach(function (c, rang) {
+            var existant = form.elements[c.nom];
+
+            // Désactivé par le commerçant : retiré du formulaire publié.
+            if (!c.actif) {
+                if (existant && existant.tagName && indispensables.indexOf(c.nom) === -1) {
+                    var etiq = existant.closest('label');
+                    (etiq && form.contains(etiq) ? etiq : existant).remove();
+                }
+                return;
+            }
+
+            var el = existant && existant.tagName ? existant : null;
+            if (!el) {
+                var cree = creer(c);
+                el = cree.champ;
+                // Rangé dans l'ordre de la configuration : avant le premier
+                // champ configuré qui le suit et déjà présent.
+                var suivant = null;
+                for (var i = rang + 1; i < CHAMPS.length && !suivant; i++) {
+                    var s = form.elements[CHAMPS[i].nom];
+                    if (s && s.tagName) {
+                        suivant = s.closest('.mkt-form-ligne, .hz-form-ligne, .mx-form-ligne, label') || s;
+                        if (!form.contains(suivant)) { suivant = s; }
+                    }
+                }
+                var avant = suivant || ancre;
+                if (avant && avant.parentNode) { avant.parentNode.insertBefore(cree.noeud, avant); }
+                else { form.appendChild(cree.noeud); }
+            }
+
+            if (el.type !== 'checkbox') {
+                el.setAttribute('placeholder', (c.placeholder || c.libelle) + (c.requis ? ' *' : ''));
+                el.setAttribute('aria-label', c.libelle);
+            }
+            el.required = c.requis || indispensables.indexOf(c.nom) !== -1;
+        });
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('form[data-gx-contact][data-gx-contact-config]'), adapterConfiguration);
 
     function jeton() {
         var m = document.querySelector('meta[name="csrf-token"]');

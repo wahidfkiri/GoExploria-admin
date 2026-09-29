@@ -95,6 +95,9 @@ Route::middleware(['web'])->group(function () {
         // Newsletter
         Route::post('/newsletter/subscribe', [PublicPageController::class, 'subscribeNewsletter'])->name('newsletter.subscribe');
         Route::get('/newsletter/unsubscribe/{token}', [PublicPageController::class, 'unsubscribeNewsletter'])->name('newsletter.unsubscribe');
+        // Infolettre des gabarits (data-gx-newsletter) : abonné du Mail
+        // marketing de l'établissement. Appelé par le pont gx-newsletter.
+        Route::post('/infolettre', [PublicPageController::class, 'subscribeTemplateNewsletter'])->name('infolettre');
         
         // Mot de passe
         Route::post('/page/check-password', [PublicPageController::class, 'checkPassword'])->name('page.check-password');
@@ -105,6 +108,12 @@ Route::middleware(['web'])->group(function () {
         // Boutique. À déclarer AVANT la route fourre-tout `/{slug}` ci-dessous,
         // qui avalerait sinon « /produits ».
         Route::get('/produits', [PublicPageController::class, 'products'])->name('products');
+        // JSON des outils de boutique des gabarits (gx-shop-tools) :
+        // suggestions de la recherche et fiches des favoris.
+        Route::get('/produits/suggestions', [PublicPageController::class, 'productsSuggest'])
+            ->name('products.suggest');
+        Route::get('/produits/lot', [PublicPageController::class, 'productsBatch'])
+            ->name('products.batch');
         Route::get('/produits/{productId}', [PublicPageController::class, 'productShow'])
             ->where('productId', '[0-9]+')
             ->name('products.show');

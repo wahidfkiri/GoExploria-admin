@@ -181,7 +181,19 @@ if (!function_exists('get_cms_header_footer_html')) {
                 ->latest('updated_at')
                 ->first();
 
-            return $content ? $content->rendered_content : '';
+            $html = $content ? (string) $content->rendered_content : '';
+
+            // Méga-menus des gabarits : un panneau « Nos rayons » porte une
+            // grille data-gx-categories. Les régions ne passent pas par
+            // l'hydratation des pages — on la fait ici, sinon le menu
+            // garderait à jamais les rayons de démonstration. Grille absente
+            // ou catalogue vide : HTML rendu tel quel (hydrate() le garantit).
+            if ($html !== '' && strpos($html, 'data-gx-categories') !== false
+                && class_exists(\Vendor\Cms\Support\TemplateCategories::class)) {
+                $html = \Vendor\Cms\Support\TemplateCategories::hydrate($html, (int) $etablissementId);
+            }
+
+            return $html;
         } catch (\Throwable $e) {
             \Log::warning('get_cms_header_footer_html error: ' . $e->getMessage(), [
                 'etablissement_id' => $etablissementId,

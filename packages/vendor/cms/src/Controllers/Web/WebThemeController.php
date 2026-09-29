@@ -236,6 +236,8 @@ class WebThemeController extends Controller
         $etablissementId = $this->etablissement->id ?? null;
         $content = \Vendor\Cms\Support\TemplateProducts::hydrate($content, $etablissementId);
         $content = \Vendor\Cms\Support\TemplateCategories::hydrate($content, $etablissementId);
+        // Chiffres de la boutique (`data-gx-stat`) : produits, rayons, commandes, clients.
+        $content = \Vendor\Cms\Support\TemplateStats::hydrate($content, $etablissementId);
         $content = \Vendor\Cms\Support\TemplateActivities::hydrate($content, $etablissementId);
         // Lieux de la carte GoExploria autour de l'établissement (`data-gx-nearby`).
         $content = \Vendor\Cms\Support\TemplateNearby::hydrate($content, $etablissementId);
@@ -1303,6 +1305,8 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
 
         $content = \Vendor\Cms\Support\TemplateProducts::hydrate($content, $etablissementId);
         $content = \Vendor\Cms\Support\TemplateCategories::hydrate($content, $etablissementId);
+        // Chiffres de la boutique (`data-gx-stat`) : produits, rayons, commandes, clients.
+        $content = \Vendor\Cms\Support\TemplateStats::hydrate($content, $etablissementId);
 
         $content = \Vendor\Cms\Support\TemplateActivities::hydrate($content, $etablissementId);
 
@@ -2332,6 +2336,8 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $html = $this->injectSeoMeta($html, $seoContext);
         $html = $this->injectCartDrawer($html);
         $html = $this->injectProductModal($html);
+        $html = $this->injectShopTools($html);
+        $html = $this->injectNewsletter($html);
         $html = $this->injectImmoRequestForm($html);
         $html = $this->injectTemplateContactForm($html);
         $html = $this->injectLandingMap($html);
@@ -2485,11 +2491,17 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
 
         // Une section d'attente, jamais imbriquée : le motif s'arrête au
         // premier `</section>`, ce que le gabarit garantit.
-        $motif = '#<section[^>]*data-gx-map[^>]*>.*?</section>#is';
+        $motif = '#<section[^>]*\bdata-gx-map\b[^>]*>.*?</section>#is';
 
-        if (!preg_match($motif, $html)) {
+        if (!preg_match($motif, $html, $attente)) {
             return $html;
         }
+
+        // Le gabarit peut demander la carte à l'identique de celle du site
+        // (`data-gx-map-variante="section"`). Par défaut : variante claire.
+        $variante = preg_match('/\bdata-gx-map-variante="(section|gabarit)"/i', $attente[0], $v)
+            ? strtolower($v[1])
+            : 'gabarit';
 
         try {
             $carte = view('cms::web.fallback.partials.landing-map-video-points', [
@@ -2498,7 +2510,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 // Posée dans un gabarit CMS, sur le fond CLAIR de celui-ci : la
                 // partial y retourne ses commandes en thème clair (sélecteur de
                 // région et filtres étaient en sable sur blanc, illisibles).
-                'landingMapVariant' => 'gabarit',
+                'landingMapVariant' => $variante,
             ])->render();
         } catch (\Throwable $e) {
             \Log::warning('Landing map injection failed: ' . $e->getMessage());
@@ -2506,11 +2518,61 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             return $html;
         }
 
+        // Carte vide (ni point vidéo ni bien) et section marquée
+        // `data-gx-map-repli` : on GARDE la section d'attente du gabarit — un
+        // bloc « Nous situer » avec sa carte OpenStreetMap, déjà recentrée
+        // sur l'établissement par TemplateDataBinder (data-gx-bind="map") —
+        // et on complète le bouton d'itinéraire. Une boutique sans point
+        // sur la carte a tout de même une adresse à montrer.
+        if (trim($carte) === '') {
+            return preg_replace_callback($motif, function ($m) {
+                return stripos($m[0], 'data-gx-map-repli') !== false
+                    ? $this->completerRepliCarte($m[0])
+                    : '';
+            }, $html, 1);
+        }
+
+        // L'identifiant de la section d'attente est conservé autour de la
+        // carte : les ancres du gabarit (« Nous situer » → #mkt-carte…)
+        // continuent d'y mener. La carte, elle, porte `#map`.
+        if (preg_match('/^<section\b[^>]*\bid="([^"]+)"/i', $attente[0], $id) && $id[1] !== 'map') {
+            $carte = '<div id="' . e($id[1]) . '" class="gx-carte-gabarit">' . $carte . '</div>';
+        }
+
         // preg_replace interpréterait les `$` du partial comme des références
         // arrière : on passe par un rappel.
         return preg_replace_callback($motif, function () use ($carte) {
             return $carte;
         }, $html, 1);
+    }
+
+    /**
+     * Section de repli de la carte : pose l'itinéraire vers l'établissement
+     * sur les liens `data-gx-map-itineraire`. L'adresse fait foi quand elle
+     * existe (plus précise que les coordonnées de la ville) ; sinon les
+     * coordonnées résolues.
+     */
+    protected function completerRepliCarte(string $section): string
+    {
+        $adresse = trim(implode(', ', array_filter([
+            $this->etablissement->address ?? $this->etablissement->adresse ?? null,
+            $this->etablissement->villeRelation->name ?? null,
+        ])));
+
+        if ($adresse !== '') {
+            $destination = $adresse;
+        } else {
+            $c = $this->coordonneesPourTemplate();
+            $destination = ($c['lat'] ?? '') . ',' . ($c['lng'] ?? '');
+        }
+
+        $lien = 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode($destination);
+
+        return preg_replace_callback('/<a\b([^>]*data-gx-map-itineraire[^>]*)>/i', function ($m) use ($lien) {
+            $attributs = preg_replace('/\shref="[^"]*"/i', '', $m[1]);
+
+            return '<a href="' . e($lien) . '"' . $attributs . '>';
+        }, $section);
     }
 
     protected function injectCartDrawer($html)
@@ -2661,6 +2723,74 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         }
 
         return $this->insererAvantFinBody($html, $modale);
+    }
+
+    /**
+     * Outils de boutique des gabarits : recherche avec suggestions, favoris
+     * relus en base, badge du panier et liens vers la boutique.
+     *
+     * Un gabarit stocké en base ne connaît ni l'identifiant de son
+     * établissement ni les adresses de la boutique : ce bloc les apporte, au
+     * rendu, aux pages qui portent un des repères `data-gx-search`,
+     * `data-gx-wish*`, `data-gx-cart-count` ou `data-gx-shop-link`.
+     */
+    protected function injectShopTools($html)
+    {
+        if (! is_string($html) || $html === '' || stripos($html, '</body>') === false) {
+            return $html;
+        }
+        if (! preg_match('/data-gx-(search|wish|cart-count|shop-link)\b/i', $html)) {
+            return $html;
+        }
+        if (stripos($html, 'data-gx-wish-shell') !== false) {
+            return $html;   // déjà posé
+        }
+        if (! $this->etablissement) {
+            return $html;
+        }
+
+        try {
+            $bloc = view('cms::web.fallback.partials.gx-shop-tools', [
+                'etablissement' => $this->etablissement,
+            ])->render();
+        } catch (\Throwable $e) {
+            \Log::warning('Shop tools injection failed: ' . $e->getMessage());
+
+            return $html;
+        }
+
+        return $this->insererAvantFinBody($html, $bloc);
+    }
+
+    /**
+     * Branche les formulaires d'infolettre des gabarits (`data-gx-newsletter`)
+     * sur les abonnés du Mail marketing de l'établissement.
+     */
+    protected function injectNewsletter($html)
+    {
+        if (! is_string($html) || $html === '' || stripos($html, '</body>') === false) {
+            return $html;
+        }
+        // Un vrai formulaire, pas une simple mention : le script du gabarit
+        // cite le repère en sélecteur, sur toutes ses pages.
+        if (! preg_match('/<form\b[^>]*\bdata-gx-newsletter\b/i', $html) || stripos($html, 'data-gx-newsletter-pont') !== false) {
+            return $html;
+        }
+        if (! $this->etablissement) {
+            return $html;
+        }
+
+        try {
+            $bloc = view('cms::web.fallback.partials.gx-newsletter', [
+                'etablissement' => $this->etablissement,
+            ])->render();
+        } catch (\Throwable $e) {
+            \Log::warning('Newsletter bridge injection failed: ' . $e->getMessage());
+
+            return $html;
+        }
+
+        return $this->insererAvantFinBody($html, $bloc);
     }
 
     protected function buildSeoContext($page = null, bool $isPreview = false): array
