@@ -107,23 +107,33 @@
     .gxfil__bouton[aria-expanded="true"] i { transform: rotate(180deg); }
     .gxfil__bouton i { transition: transform .2s ease; }
 
+    /* Menu transparent, texte blanc : il se fond dans la bannière.
+       Le fond n'est pas VIDE mais très légèrement teinté et flouté — sur une
+       photo claire, du blanc sur du transparent pur serait illisible. */
     .gxfil__liste {
         position: absolute; top: calc(100% + 8px); left: 0; z-index: 60;
         min-width: 230px; max-width: min(360px, 80vw); max-height: 320px; overflow-y: auto;
         padding: 6px; border-radius: 12px;
-        background: #fff; border: 1px solid rgba(15, 23, 42, .1);
-        box-shadow: 0 18px 46px rgba(2, 6, 23, .26);
-        font-size: 14px; font-weight: 500; text-align: left;
+        background: rgba(10, 22, 40, .42);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+        backdrop-filter: blur(14px) saturate(140%);
+        border: 1px solid rgba(255, 255, 255, .22);
+        box-shadow: 0 18px 46px rgba(2, 6, 23, .34);
+        font-size: 14px; font-weight: 500; text-align: left; color: #fff;
     }
     .gxfil__option {
         display: flex; align-items: center; justify-content: space-between; gap: 10px;
         padding: 8px 10px; border-radius: 8px;
-        color: #0f172a; text-decoration: none; opacity: 1;
+        color: #fff; text-decoration: none; opacity: 1;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, .45);
     }
-    .gxfil__option:hover { background: #f6f7f9; color: #8a6d10; }
-    .gxfil__option.is-actuel { background: #0a1628; color: #fff; font-weight: 700; }
+    .gxfil__option:hover { background: rgba(255, 255, 255, .16); color: #fff; }
+    .gxfil__option.is-actuel {
+        background: var(--gxfil-actif, #d4af37); color: var(--gxfil-actif-texte, #0a1628);
+        font-weight: 700; text-shadow: none;
+    }
     .gxfil__option i { font-size: 11px; }
-    .gxfil__note { display: block; padding: 8px 10px; font-size: 12px; color: #64748b; }
+    .gxfil__note { display: block; padding: 8px 10px; font-size: 12px; color: rgba(255, 255, 255, .72); }
 
     @media (max-width: 640px) {
         .gxfil { font-size: 13px; gap: 3px 5px; margin-bottom: 14px; }
