@@ -622,19 +622,6 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-@php
-    // Bascule Google Maps : si une clé est configurée, la carte utilise Google
-    // (rues + satellite + Street View) ; sinon elle reste sur Leaflet (repli).
-    $gmKey = config('services.google.maps.key');
-    $gmMapId = config('services.google.maps.map_id');
-@endphp
-@if($gmKey)
-<script>
-    window.GX_MAPS = { key: @json($gmKey), mapId: @json($gmMapId ?: '') };
-</script>
-<script src="{{ asset('js/geo-map/gx-google-map.js') }}?v={{ @filemtime(public_path('js/geo-map/gx-google-map.js')) ?: '4' }}"></script>
-@endif
-
 <script>
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['Accept']            = 'application/json';
@@ -644,8 +631,6 @@ const DESTINATION_MAP_CONTEXT = @json($geoMapDestinationContext);
 class InteractiveMap {
     constructor() {
         this.map              = null;
-        this.engine           = 'leaflet'; // 'leaflet' | 'google'
-        this.gengine          = null;      // instance GxGoogleMap si 'google'
         this.markers          = {};
         this.currentLocation  = null;
         this.places           = [];
@@ -722,38 +707,7 @@ class InteractiveMap {
             : [52.0, -85.0];
         const zoom = destination?.zoom || 4;
 
-        // ── Backend Google Maps (si une clé est configurée) ──────────────
-        if (window.GX_MAPS && window.GX_MAPS.key && window.GxGoogleMap) {
-            try {
-                await window.GxGoogleMap.load(window.GX_MAPS.key, { mapId: window.GX_MAPS.mapId });
-                this.engine = 'google';
-                this.gengine = window.GxGoogleMap.create('map', {
-                    center: { lat: center[0], lng: center[1] },
-                    zoom: zoom,
-                    mapId: window.GX_MAPS.mapId || undefined,
-                    streetView: true
-                });
-                // Adaptateur « façon Leaflet » : le reste de la classe appelle
-                // this.map.setView / getZoom / closePopup sans savoir qu'on est
-                // sur Google. Les marqueurs sont gérés dans createMarker().
-                const eng = this.gengine;
-                this.map = {
-                    __google: true,
-                    setView(latlng, z) { eng.panTo(latlng[0], latlng[1], z); return this; },
-                    getZoom() { return eng.getZoom(); },
-                    closePopup() { eng.closePopup(); },
-                    hasLayer() { return false; },
-                    addLayer() {}, removeLayer() {}
-                };
-                this.clusterGroup = null;
-                return;
-            } catch (e) {
-                console.warn('Google Maps indisponible, repli sur Leaflet :', e);
-                this.engine = 'leaflet';
-            }
-        }
-
-        // ── Backend Leaflet (par défaut) ─────────────────────────────────
+        // ── Carte Leaflet + OpenStreetMap (gratuit, open source) ─────────
         this.map = L.map('map').setView(center, zoom);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributeurs',
@@ -882,10 +836,8 @@ class InteractiveMap {
     addMarkersToMap() {
         this.clearMarkers();
         this.places.forEach(p=>this.createMarker(p));
-        if (this.engine === 'google' && this.gengine) this.gengine.fitToMarkers(48);
     }
     clearMarkers() {
-        if (this.engine === 'google' && this.gengine) { this.gengine.clearMarkers(); this.markers = {}; return; }
         if (this.clusterGroup) {
             this.clusterGroup.clearLayers();
         } else {
@@ -896,24 +848,6 @@ class InteractiveMap {
     createMarker(place) {
         // Points « Mis en avant » : style doré + étoile + priorité d'affichage
         const featured = !!place.is_featured;
-
-        // ── Marqueur Google (même icône + même popup vidéo/iframe) ───────
-        if (this.engine === 'google' && this.gengine) {
-            const iconHtml = `<div class="marker-icon${featured ? ' marker-featured' : ''}" style="background:${this.getCategoryColor(place.category)};">${featured ? '<span class="marker-featured-star"><i class="fas fa-star"></i></span>' : ''}<i class="${this.getCategoryIcon(place.category)}"></i></div>`;
-            const handle = this.gengine.addMarker(place, {
-                position: { lat: Number(place.latitude), lng: Number(place.longitude) },
-                iconHtml,
-                color: this.getCategoryColor(place.category),
-                popupHtml: this.createPopupContent(place),
-                featured,
-                onClick: () => { document.querySelector(`.place-item[data-id="${place.id}"]`)?.classList.add('active'); }
-            });
-            // Shim « popup » pour rester compatible avec le survol de la liste
-            // et centerOnPlace (qui appellent md.popup.setLatLng().openOn()).
-            const popupShim = { setLatLng() { return this; }, openOn() { if (handle) handle.open(); return this; } };
-            this.markers[place.id] = { marker: handle ? handle.marker : null, popup: popupShim };
-            return;
-        }
 
         const icon = L.divIcon({
             className:'custom-marker',
@@ -1334,16 +1268,6 @@ class InteractiveMap {
         );
     }
     addUserMarker(lat,lng) {
-        if (this.engine === 'google' && this.gengine) {
-            if (this.userMarker && this.userMarker.setMap) this.userMarker.setMap(null);
-            this.userMarker = new google.maps.Marker({
-                position: { lat: Number(lat), lng: Number(lng) },
-                map: this.gengine.map,
-                title: 'Votre position',
-                zIndex: 2000
-            });
-            return;
-        }
         if (this.userMarker) this.userMarker.remove();
         const icon=L.divIcon({className:'custom-marker',html:'<div class="user-marker-icon"><i class="fas fa-user"></i></div>',iconSize:[34,34],iconAnchor:[17,34]});
         this.userMarker=L.marker([lat,lng],{icon,title:'Votre position'}).addTo(this.map);

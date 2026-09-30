@@ -3,8 +3,8 @@
      section d'attente `data-gx-map` (docs/TEMPLATES-CMS.md §4).
 
      Le MOTEUR n'est pas réécrit : c'est celui des pages de destination
-     (travel-destination::landing.partials.map-scripts, Leaflet + grappes, ou
-     Google Maps si une clé est configurée). Seul le balisage change, pour
+     (travel-destination::landing.partials.map-scripts, Leaflet + OpenStreetMap
+     + grappes). Seul le balisage change, pour
      épouser le gabarit de la page d'activité.
 
      ⚠ Les identifiants sont ceux qu'attend le moteur — #travel-map,

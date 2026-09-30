@@ -216,8 +216,30 @@
     $addrPostal   = $g('address_postal');
     $addrCountry  = $g('address_country');
     $mapQuery     = $g('map_query');
-    $mapsUrl      = $mapQuery ? 'https://maps.google.com/?q=' . urlencode($mapQuery) : null;
-    $mapEmbed     = $mapQuery ? 'https://www.google.com/maps?q=' . urlencode($mapQuery) . '&output=embed' : null;
+    // Carte OpenStreetMap (gratuite, open source) : l'adresse libre est
+    // géocodée une fois via Nominatim puis mise en cache (politique d'usage OSM).
+    $mapsUrl      = $mapQuery ? 'https://www.openstreetmap.org/search?query=' . urlencode($mapQuery) : null;
+    $mapEmbed     = null;
+    if ($mapQuery) {
+        $geo = \Illuminate\Support\Facades\Cache::remember('osm_geocode:' . md5($mapQuery), now()->addDays(30), function () use ($mapQuery) {
+            try {
+                $r = \Illuminate\Support\Facades\Http::timeout(4)
+                    ->withHeaders(['User-Agent' => 'GoExploria/1.0 (' . config('app.url') . ')'])
+                    ->get('https://nominatim.openstreetmap.org/search', ['q' => $mapQuery, 'format' => 'json', 'limit' => 1]);
+                $hit = $r->ok() ? ($r->json()[0] ?? null) : null;
+                return $hit ? ['lat' => (float) $hit['lat'], 'lon' => (float) $hit['lon']] : false;
+            } catch (\Throwable $e) {
+                return null; // erreur réseau : non mis en cache, on réessaiera
+            }
+        });
+        if ($geo) {
+            $d = 0.006;
+            $mapEmbed = 'https://www.openstreetmap.org/export/embed.html?layer=mapnik'
+                . '&bbox=' . ($geo['lon'] - $d) . ',' . ($geo['lat'] - $d) . ',' . ($geo['lon'] + $d) . ',' . ($geo['lat'] + $d)
+                . '&marker=' . $geo['lat'] . ',' . $geo['lon'];
+            $mapsUrl = 'https://www.openstreetmap.org/?mlat=' . $geo['lat'] . '&mlon=' . $geo['lon'] . '#map=17/' . $geo['lat'] . '/' . $geo['lon'];
+        }
+    }
 
     // City / postal line + full address lines (only present parts)
     if ($addrCity && $addrPostal)      $cityLine = $addrCity . ', ' . $addrPostal;

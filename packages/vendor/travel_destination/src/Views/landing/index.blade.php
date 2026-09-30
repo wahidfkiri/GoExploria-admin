@@ -882,7 +882,7 @@
 
 <script src="{{ asset('vendor/travel-destination/js/destination-atlas.js') }}?v={{ @filemtime($atlasJs) ?: '1' }}"></script>
 
-{{-- Moteur de la carte (Leaflet + grappes, ou Google Maps si une clé existe) --}}
+{{-- Moteur de la carte (Leaflet + OpenStreetMap + grappes) --}}
 @include('travel-destination::landing.partials.map-scripts')
 
 {{-- Filtre hiérarchique posé au-dessus de la carte. Chargé APRÈS le moteur :

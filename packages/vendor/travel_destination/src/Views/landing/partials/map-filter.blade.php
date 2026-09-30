@@ -6,11 +6,8 @@
      sélection recentre la carte sur l'entité et recharge ses points d'intérêt.
 
      Ce module ne connaît PAS le moteur de carte : il passe par le contrat
-     `window.GX_DEST_MAP` ({focus, render, fitAll}) que publient les deux
-     branches de map-scripts.blade.php (Google Maps et Leaflet). C'est ce qui
-     lui permet de fonctionner alors que l'ancien filtre géographique, écrit
-     dans la seule branche Leaflet, restait inerte dès qu'une clé Google était
-     configurée.
+     `window.GX_DEST_MAP` ({focus, render, fitAll}) que publie
+     map-scripts.blade.php (Leaflet + OpenStreetMap).
 
      Balisage attendu : landing/partials/map-filter — voir map-section.blade.php.
      ========================================================================== --}}

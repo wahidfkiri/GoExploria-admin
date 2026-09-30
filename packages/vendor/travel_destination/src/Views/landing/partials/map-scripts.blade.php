@@ -1,6 +1,6 @@
 {{-- ==========================================================================
-     CARTE DE LA DESTINATION — moteur (Leaflet + grappes, ou Google Maps si une
-     clé est configurée).
+     CARTE DE LA DESTINATION — moteur Leaflet + OpenStreetMap (gratuit, open
+     source, sans clé) avec grappes « +N ».
 
      Extrait tel quel de la vue historique (landing/classic.blade.php) pour être
      partagé avec le template « Carnet d'Atlas ». Le balisage attendu est celui
@@ -12,27 +12,6 @@
      ========================================================================== --}}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
-@php
-    // Bascule Google Maps (rues/satellite + Street View). Sans clé → Leaflet.
-    $gmKey = config('services.google.maps.key');
-    $gmMapId = config('services.google.maps.map_id');
-@endphp
-@if($gmKey)
-<script>
-    window.GX_MAPS = window.GX_MAPS || { key: @json($gmKey), mapId: @json($gmMapId ?: '') };
-</script>
-<script src="{{ asset('js/geo-map/gx-google-map.js') }}?v={{ @filemtime(public_path('js/geo-map/gx-google-map.js')) ?: '4' }}"></script>
-<style>
-    .gm-style .map-popup { width: 280px; max-width: 78vw; }
-    .gm-style .map-popup__video { height: 160px; background: #000; }
-    .gm-style .map-popup__video iframe { width: 100%; height: 100%; border: 0; display: block; }
-    .gm-style .map-popup__body { padding: 12px 14px; }
-    .gm-style .map-popup__title { font-size: 0.95rem; font-weight: 700; margin: 0 0 6px; color: #111827; }
-    .gm-style .map-popup__desc { font-size: 0.8rem; color: #4b5563; line-height: 1.5; margin: 0 0 10px; }
-    .gm-style .map-popup__detail-btn { display: block; width: 100%; padding: 9px 14px; background: #F5A623; color: #000; border: 0; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
-</style>
-@endif
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -100,92 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
   var isContinent = entityType === 'continent';
   var defaultZoom = entityLat && !isContinent ? (zoomByType[entityType] || 6) : 2;
   var center = entityLat ? [entityLat, entityLng] : [20, 0];
-
-  // ── Backend Google Maps (rues/satellite + Street View natif) ─────────
-  // Réutilise buildPopupHtml / showPlaceModal / getCategoryData / closePlaceModal
-  // (hoistées) → MÊME logique de marqueurs + popup vidéo + modale que Leaflet.
-  if (window.GX_MAPS && window.GX_MAPS.key && window.GxGoogleMap) {
-    window.GxGoogleMap.load(window.GX_MAPS.key, { mapId: window.GX_MAPS.mapId })
-      .then(function () {
-        var eng = window.GxGoogleMap.create('travel-map', {
-          center: { lat: center[0], lng: center[1] },
-          zoom: defaultZoom,
-          mapId: window.GX_MAPS.mapId || undefined,
-          streetView: true,
-          cluster: true,
-          // Boutons « + / − » visibles (la commande de caméra de Google les
-          // cachait, et le popup publicitaire la recouvrait).
-          zoomButtons: true
-        });
-        var gPoints = [];
-
-        if (entityLat) {
-          eng.addMarker({ name: entityName }, {
-            position: { lat: entityLat, lng: entityLng }, color: '#F5A623',
-            iconHtml: '<div style="width:30px;height:30px;border-radius:50%;background:#F5A623;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4);color:#000"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg></div>',
-            popupHtml: '<div class="map-popup"><div class="map-popup__body"><strong>' + escapeHtml(entityName) + '</strong></div></div>'
-          });
-        }
-
-        function gColor(cat) {
-          var cd = getCategoryData(cat);
-          if (cd && cd.color) return cd.color;
-          var m = { sightseeing:'#e74c3c', museum:'#3498db', restaurant:'#f39c12', hotel:'#2ecc71', adventure:'#9b59b6', shopping:'#1abc9c' };
-          return m[cat] || '#e74c3c';
-        }
-        function gRender(data) {
-          eng.clearMarkers();
-          gPoints = data.slice();
-          data.forEach(function (p, idx) {
-            if (p.latitude == null || p.longitude == null) return;
-            var cd = getCategoryData(p.category) || {};
-            eng.addMarker(p, {
-              position: { lat: Number(p.latitude), lng: Number(p.longitude) },
-              icon: { color: gColor(p.category), iconClass: cd.icon_class, image: cd.image },
-              popupHtml: buildPopupHtml(p, idx),
-              featured: !!p.is_featured
-            });
-          });
-          if (!isContinent) eng.fitToMarkers(40);
-        }
-
-        // Bouton « Voir détails » (délégation, robuste avec les InfoWindow).
-        document.addEventListener('click', function (e) {
-          var b = e.target.closest && e.target.closest('.map-popup__detail-btn');
-          if (!b) return;
-          var pt = gPoints[parseInt(b.getAttribute('data-index'), 10)];
-          if (pt) showPlaceModal(pt);
-        });
-
-        // Fermeture du modal (handlers d'origine après le return → rebranchés ici).
-        var mClose = document.getElementById('mapModalClose');
-        var mBackdrop = document.getElementById('mapModalBackdrop');
-        if (mClose) mClose.addEventListener('click', closePlaceModal);
-        if (mBackdrop) mBackdrop.addEventListener('click', closePlaceModal);
-        document.addEventListener('keydown', function (e) {
-          if (e.key !== 'Escape') return;
-          var m = document.getElementById('mapDetailModal');
-          if (m && m.style.display !== 'none') closePlaceModal();
-        });
-
-        // Adaptateur pour le filtre hiérarchique (map-filter.blade.php) :
-        // il ne connaît ni Google ni Leaflet, seulement ces deux verbes.
-        window.GX_DEST_MAP = {
-          focus: function (lat, lng, zoom) { eng.panTo(lat, lng, zoom); },
-          render: function (points) { gRender(points); },
-          fitAll: function () { eng.fitToMarkers(40); }
-        };
-        document.dispatchEvent(new CustomEvent('gx:map-ready'));
-
-        // Points : serverPoints pré-chargés, sinon AJAX (comme Leaflet).
-        if (serverPoints && serverPoints.length) gRender(serverPoints);
-        else fetch(mapPointsUrl).then(function (r) { return r.json(); })
-          .then(function (res) { if (res.success && res.data && res.data.length) gRender(res.data); })
-          .catch(function (err) { console.error('Travel map (google) load error:', err); });
-      })
-      .catch(function (e) { console.warn('Google Maps indisponible :', e); });
-    return;
-  }
 
   var map = L.map('travel-map', {
     center: center,
@@ -353,8 +246,8 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(function (err) { console.error('Map reload error:', err); var mapEl = document.getElementById('travel-map'); if (mapEl) mapEl.insertAdjacentHTML('afterend', '<div style="padding:12px;background:#fee;color:#c00;border-radius:8px">Map points failed to load: ' + err.message + '</div>'); });
   }
 
-  // Même contrat que la branche Google, pour que le filtre hiérarchique
-  // fonctionne à l'identique quel que soit le moteur de carte actif.
+  // Contrat publié pour que le filtre hiérarchique (map-filter) pilote
+  // la carte sans connaître Leaflet.
   window.GX_DEST_MAP = {
     focus: function (lat, lng, zoom) { map.flyTo([lat, lng], zoom || defaultZoom, { duration: 1 }); },
     render: function (points) { renderPointsOnMap(points); },

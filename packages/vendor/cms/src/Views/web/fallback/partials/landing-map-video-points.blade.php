@@ -777,25 +777,6 @@
     @once
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     @endonce
-    @once
-        @if(config('services.google.maps.key'))
-        {{-- Bascule Google Maps (rues/satellite + Street View). Sans clé → Leaflet. --}}
-        <script>
-            window.GX_MAPS = window.GX_MAPS || { key: @json(config('services.google.maps.key')), mapId: @json(config('services.google.maps.map_id') ?: '') };
-        </script>
-        <script src="{{ asset('js/geo-map/gx-google-map.js') }}?v={{ @filemtime(public_path('js/geo-map/gx-google-map.js')) ?: '4' }}"></script>
-        <style>
-            .gm-style .map-popup { width: 280px; max-width: 78vw; }
-            .gm-style .map-popup__video { height: 160px; background: #000; }
-            .gm-style .map-popup__video iframe,
-            .gm-style .map-popup__video video { width: 100%; height: 100%; border: 0; display: block; object-fit: cover; background: #000; }
-            .gm-style .map-popup__body { padding: 12px 14px; }
-            .gm-style .map-popup__title { font-size: 0.95rem; font-weight: 700; margin: 0 0 6px; color: #111827; }
-            .gm-style .map-popup__desc { font-size: 0.8rem; color: #4b5563; line-height: 1.5; margin: 0 0 10px; }
-            .gm-style .map-popup__detail-btn { display: block; width: 100%; padding: 9px 14px; background: #F5A623; color: #000; border: 0; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
-        </style>
-        @endif
-    @endonce
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         var mapEl = document.getElementById('{{ $landingMapId }}');
@@ -866,26 +847,11 @@
         var lats = points.map(function (p) { return p.latitude; });
         var lngs = points.map(function (p) { return p.longitude; });
 
-        // ── Backend Google Maps (rues/satellite + Street View natif) ─────
-        // Réutilise getCategoryStyle / buildPopupHtml / showPlaceModal /
-        // closePlaceModal (hoistées) → MÊME logique de marqueurs + popup vidéo
-        // + modale. Sans Map ID, marqueurs HTML via OverlayView (icône + couleur
-        // de la catégorie). Le filtre catégorie/région reste à câbler (Leaflet).
         /* ------------------------------------------------------------------
            CARROUSELS
 
-           Les deux moteurs de carte n'offrent pas le même crochet : Leaflet
-           émet « popupopen », Google insère son InfoWindow sans prévenir. On
-           n'initialise donc pas au moment de l'ouverture : un observateur
-           réveille tout carrousel dès qu'il entre dans le document, quel que
-           soit celui qui l'a posé.
-
-           ⚠ CE BLOC DOIT RESTER AVANT LA BRANCHE GOOGLE MAPS.
-           Celle-ci se termine par un `return` : tout ce qui suit n'est
-           jamais EXÉCUTÉ quand une clé Google est configurée — donc en
-           production. Les `function` sont hissées et survivent, mais pas
-           `var swipersVivants = []` (resté undefined → la modale plantait)
-           ni l'enregistrement de l'observateur (→ carrousels morts).
+           Plutôt que de s'accrocher à « popupopen », un observateur réveille
+           tout carrousel dès qu'il entre dans le document (popup ou modale).
         ------------------------------------------------------------------ */
         function imagesDe(p) {
             return (p.gallery || [])
@@ -982,97 +948,21 @@
             });
         }
 
-        // Popups Leaflet ET InfoWindows Google passent par le document : un seul
-        // observateur suffit à les couvrir tous les deux.
+        // Popups et modale passent par le document : un seul observateur.
         if (typeof MutationObserver !== 'undefined') {
             new MutationObserver(function () { initSwipers(document); })
                 .observe(document.body, { childList: true, subtree: true });
         }
 
-        var moteurGoogle = false;
-
-        if (window.GX_MAPS && window.GX_MAPS.key && window.GxGoogleMap) {
-            moteurGoogle = true;
-
-            var basculerSurLeaflet = function (raison) {
-                if (map) { return; }   // repli déjà en place
-                console.warn('Carte : repli OpenStreetMap (' + raison + ')');
-                moteurGoogle = false;
-                demarrerLeaflet();
-            };
-
-            /* Google appelle CE nom global — et rien d'autre — quand il refuse
-               la clé : domaine non autorisé, facturation absente, API
-               désactivée. Sans lui, son message d'erreur restait seul à
-               l'écran. */
-            window.gm_authFailure = function () { basculerSurLeaflet('clé refusée par Google'); };
-
-            // Filet : script bloqué par un pare-feu, quota épuisé, rendu vide.
-            window.setTimeout(function () {
-                if (!mapEl.querySelector('.gm-style')) { basculerSurLeaflet('aucune carte dessinée'); }
-            }, 10000);
-
-            var gLat0 = (Math.min.apply(null, lats) + Math.max.apply(null, lats)) / 2;
-            var gLng0 = (Math.min.apply(null, lngs) + Math.max.apply(null, lngs)) / 2;
-            window.GxGoogleMap.load(window.GX_MAPS.key, { mapId: window.GX_MAPS.mapId })
-                .then(function () {
-                    var eng = window.GxGoogleMap.create(mapEl, {
-                        center: { lat: gLat0, lng: gLng0 }, zoom: 8,
-                        mapId: window.GX_MAPS.mapId || undefined, streetView: true, cluster: true
-                    });
-                    var gPoints = points.slice();
-                    points.forEach(function (p, idx) {
-                        var s = getCategoryStyle(p.category);
-                        eng.addMarker(p, {
-                            position: { lat: Number(p.latitude), lng: Number(p.longitude) },
-                            icon: { color: s.color, iconClass: s.icon },
-                            popupHtml: buildPopupHtml(p, idx),
-                            featured: !!p.is_featured
-                        });
-                    });
-                    eng.fitToMarkers(40);
-
-                    // Bouton « Voir détails » (délégation, robuste InfoWindow).
-                    document.addEventListener('click', function (e) {
-                        var b = e.target.closest && e.target.closest('.map-popup__detail-btn');
-                        if (!b) return;
-                        var pt = gPoints[parseInt(b.getAttribute('data-index'), 10)];
-                        if (pt) showPlaceModal(pt);
-                    });
-                    // Fermeture du modal (handlers d'origine après le return).
-                    var mClose = document.getElementById('mapModalClose');
-                    var mBackdrop = document.getElementById('mapModalBackdrop');
-                    if (mClose) mClose.addEventListener('click', closePlaceModal);
-                    if (mBackdrop) mBackdrop.addEventListener('click', closePlaceModal);
-                    document.addEventListener('keydown', function (e) {
-                        if (e.key !== 'Escape') return;
-                        if (modaleOuverte(document.getElementById('mapDetailModal'))) closePlaceModal();
-                    });
-                })
-                .catch(function (e) { basculerSurLeaflet(e && e.message ? e.message : 'chargement impossible'); });
-        }
-
-        /* ══ DEUX MOTEURS, UN SEUL AFFICHAGE ═══════════════════════════════
-           Google Maps quand sa clé est acceptée, OpenStreetMap sinon.
-
-           ⚠ Google REFUSE une clé qui n'autorise pas le domaine servant la
-           page (RefererNotAllowedMapError), et aussi quand la facturation est
-           absente ou l'API désactivée. Il posait alors son propre message
-           d'erreur sur un fond gris : plus de carte du tout, et la seule trace
-           était dans la console. Le démarrage de Leaflet est donc DIFFÉRÉ et
-           sert de repli — voir `basculerSurLeaflet` dans la branche Google.
-
-           Les DÉCLARATIONS de fonctions restent au niveau du gestionnaire :
-           la branche Google les appelle (buildPopupHtml, showPlaceModal…), et
-           les enfermer ici les lui rendrait inaccessibles. Seules les
-           instructions de démarrage entrent dans cette fonction. */
+        /* Carte OpenStreetMap via Leaflet (gratuit, open source, sans clé).
+           Les DÉCLARATIONS de fonctions restent au niveau du gestionnaire ;
+           seules les instructions de démarrage entrent dans cette fonction. */
         var map = null, markersLayer = null;
 
         function demarrerLeaflet() {
             if (map) { return; }   // déjà en place
 
-            // Google a pu laisser son fond gris et son message : on repart d'un
-            // conteneur vide, sinon Leaflet dessine par-dessus.
+            // On repart d'un conteneur vide.
             mapEl.innerHTML = '';
             try { delete mapEl._leaflet_id; } catch (e) { mapEl._leaflet_id = undefined; }
 
@@ -1298,7 +1188,7 @@
         }
 
         function renderFilteredPoints() {
-            // Moteur Google, ou repli pas encore démarré : rien à redessiner.
+            // Carte pas encore démarrée : rien à redessiner.
             if (!map || !markersLayer) { return; }
             var data = getFilteredPoints();
             markersLayer.clearLayers();
@@ -1481,8 +1371,8 @@
             document.body.style.overflow = '';
         }
 
-        // Aucune clé Google : OpenStreetMap d'emblée.
-        if (!moteurGoogle) { demarrerLeaflet(); }
+        // Carte OpenStreetMap (Leaflet) d'emblée.
+        demarrerLeaflet();
 
         document.getElementById('mapModalClose').addEventListener('click', closePlaceModal);
         document.getElementById('mapModalBackdrop').addEventListener('click', closePlaceModal);
