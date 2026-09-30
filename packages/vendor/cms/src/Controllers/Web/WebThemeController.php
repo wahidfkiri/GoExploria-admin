@@ -47,10 +47,28 @@ class WebThemeController extends Controller
      */
     public function home(Request $request, $etablissementId)
     {
+        // Déjà DANS l'iframe du shell (lien du menu du template suivi sans le
+        // pont) : on rend le site brut, sinon le shell s'imbriquerait dans
+        // lui-même (double header GoExploria).
+        if ($this->requeteDansIframe($request)) {
+            return $this->embed($request, $etablissementId);
+        }
+
         // TOUS les sites d'établissement s'affichent DANS le shell GoExploria
         // Business (header + footer globaux). Le site réel est rendu isolé dans
         // une iframe same-origin (route cms.company.embed → renderSite()).
         return $this->platformSite($request, $etablissementId);
+    }
+
+    /**
+     * La requête charge-t-elle le document d'une iframe ? `Sec-Fetch-Dest`
+     * est posé par le navigateur lui-même (non falsifiable par une page).
+     * Navigateur trop ancien pour l'envoyer : le pont enfant (child-bridge)
+     * redirige de toute façon les liens du site vers la page entière.
+     */
+    protected function requeteDansIframe(Request $request): bool
+    {
+        return strtolower((string) $request->header('Sec-Fetch-Dest')) === 'iframe';
     }
 
     /**
@@ -142,11 +160,11 @@ class WebThemeController extends Controller
      * vis-à-vis de la plateforme. Hauteur pilotée par postMessage (voir la vue
      * cms::web.embed.platform-shell + le partial child-bridge).
      */
-    public function platformSite(Request $request, $etablissementId)
+    public function platformSite(Request $request, $etablissementId, ?string $embedSrc = null, ?string $shellTitle = null)
     {
         $etablissement = Etablissement::findOrFail($etablissementId);
 
-        return view('cms::web.embed.platform-shell', compact('etablissement'));
+        return view('cms::web.embed.platform-shell', compact('etablissement', 'embedSrc', 'shellTitle'));
     }
 
     /**
@@ -193,7 +211,51 @@ class WebThemeController extends Controller
     /**
      * Affiche une page avec le thème
      */
-    public function showPage(Request $request, $etablissementId, $slug)
+    public function showPage(Request $request, $etablissementId, $slug, $siteSlug = null)
+    {
+        // Déjà dans l'iframe du shell : contenu brut (pas de shell imbriqué).
+        if ($this->requeteDansIframe($request)) {
+            return $this->embedPage($request, $etablissementId, $slug);
+        }
+
+        $etablissement = Etablissement::findOrFail($etablissementId);
+
+        $page = Page::where('etablissement_id', $etablissement->id)
+            ->where('slug', $slug)
+            ->where('status', 'published')
+            ->first();
+
+        if (!$page) {
+            abort(404, 'Page non trouvée');
+        }
+
+        // Comme l'accueil : header + barre latérale + footer GoExploria
+        // globaux, la page personnalisée étant rendue isolée dans l'iframe.
+        $siteName = function_exists('get_site_name') ? get_site_name($etablissement->id) : $etablissement->name;
+
+        return $this->platformSite(
+            $request,
+            $etablissementId,
+            route('cms.company.page.embed', ['etablissementId' => $etablissement->id, 'slug' => $slug]),
+            trim(($page->title ?? '') . ' | ' . $siteName, ' |')
+        );
+    }
+
+    /**
+     * CONTENU DE L'IFRAME d'une page personnalisée : même rendu que la page
+     * publique, sans le chrome plateforme (fourni par le shell parent).
+     */
+    public function embedPage(Request $request, $etablissementId, $slug)
+    {
+        View::share('embedInPlatform', true);
+
+        return $this->renderPage($etablissementId, $slug);
+    }
+
+    /**
+     * Rendu BRUT d'une page personnalisée (thème classique ou page CMS).
+     */
+    protected function renderPage($etablissementId, $slug)
     {
         $etablissement = Etablissement::findOrFail($etablissementId);
         $this->etablissement = $etablissement;
@@ -2566,7 +2628,8 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             $destination = ($c['lat'] ?? '') . ',' . ($c['lng'] ?? '');
         }
 
-        $lien = 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode($destination);
+        // Itinéraire OpenStreetMap (gratuit) : « to » accepte une adresse ou « lat,lng ».
+        $lien = 'https://www.openstreetmap.org/directions?to=' . rawurlencode($destination);
 
         return preg_replace_callback('/<a\b([^>]*data-gx-map-itineraire[^>]*)>/i', function ($m) use ($lien) {
             $attributs = preg_replace('/\shref="[^"]*"/i', '', $m[1]);

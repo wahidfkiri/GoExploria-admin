@@ -345,7 +345,7 @@
             @if($hasAddress)<p>{!! implode('<br>', array_map(fn($l) => e($l), $addrLines)) !!}</p>@endif
             @if($mapsUrl)
             <a href="{{ $mapsUrl }}" target="_blank" rel="noopener" class="info-link">
-                Voir sur Google Maps <i class="fas fa-arrow-right"></i>
+                Voir sur OpenStreetMap <i class="fas fa-arrow-right"></i>
             </a>
             @endif
         </div>

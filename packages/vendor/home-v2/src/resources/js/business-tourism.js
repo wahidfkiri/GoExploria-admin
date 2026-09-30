@@ -162,7 +162,7 @@ class BusinessTourismApp {
                 </div>
                 
                 <div style="display:flex; gap:15px;">
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=${place.latitude},${place.longitude}" target="_blank" style="flex:1; background:#1a3a8f; color:#fff; text-align:center; padding:15px; border-radius:12px; font-weight:700; text-decoration:none;"><i class="fas fa-route"></i> ITINÉRAIRE</a>
+                    <a href="https://www.openstreetmap.org/directions?route=%3B${place.latitude}%2C${place.longitude}" target="_blank" style="flex:1; background:#1a3a8f; color:#fff; text-align:center; padding:15px; border-radius:12px; font-weight:700; text-decoration:none;"><i class="fas fa-route"></i> ITINÉRAIRE</a>
                     <button onclick="window.btApp.closeModal()" style="flex:1; background:#f5f5f5; border:none; padding:15px; border-radius:12px; font-weight:700; cursor:pointer;">FERMER</button>
                 </div>
             </div>

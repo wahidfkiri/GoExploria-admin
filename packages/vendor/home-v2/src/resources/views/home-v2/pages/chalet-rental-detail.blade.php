@@ -412,7 +412,7 @@
             <div>
                 <h4>Liens utiles</h4>
                 <p><a href="#contact-proprio">Contacter le proprietaire</a></p>
-                <p><a href="https://www.google.com/maps/search/?api=1&query=46.1502890837421,-73.80780458450319" target="_blank" rel="noopener noreferrer">Voir la localisation</a></p>
+                <p><a href="https://www.openstreetmap.org/?mlat=46.1502890837421&amp;mlon=-73.80780458450319#map=16/46.1502890837421/-73.80780458450319" target="_blank" rel="noopener noreferrer">Voir la localisation</a></p>
                 <p><a href="{{ route('home-v2') }}">Retour a l'accueil</a></p>
             </div>
         </div>

@@ -307,6 +307,37 @@
         if (data.type === 'viewport') ancrerModale(data.offset, data.height);
     });
 
+    /* 6) Liens du menu du site → navigation de la PAGE ENTIÈRE.
+       L'accueil et les pages personnalisées sont servis dans le shell
+       GoExploria (header + barre latérale globaux). Suivis dans l'iframe,
+       ils y chargeraient un shell imbriqué ; on ouvre donc la page en haut,
+       ce qui met aussi l'URL de la barre d'adresse à jour. Les autres routes
+       du site (boutique, panier, recherche…) restent dans l'iframe. */
+    var ROUTES_INTERNES = /^(produits|achat|contact|search|chaine-videos|videos|themes|preview|clear-preview|sitemap\.xml|robots\.txt|embed|infolettre|immobilier|newsletter|api|blog)$/;
+    function estPageShell(url) {
+        if (url.origin !== window.location.origin) return false;
+        // page/{slug} éventuellement suivi du slug de l'entreprise (sauf /embed).
+        var m = url.pathname.match(/^\/company\/\d+(?:\/(page\/[^\/]+(?:\/(?!embed\/?$)[^\/]+)?|[^\/]+))?\/?$/);
+        if (!m) return false;
+        if (!m[1]) return true;                       // accueil
+        if (m[1].indexOf('page/') === 0) return true; // page personnalisée
+        return !ROUTES_INTERNES.test(m[1]);           // URL SEO /company/{id}/{slug}
+    }
+    document.addEventListener('click', function (e) {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        var a = e.target.closest && e.target.closest('a[href]');
+        if (!a || a.hasAttribute('download')) return;
+        var cible = (a.getAttribute('target') || '').toLowerCase();
+        if (cible && cible !== '_self' && cible !== '_top' && cible !== '_parent') return;
+        var url;
+        try { url = new URL(a.getAttribute('href'), window.location.href); } catch (err) { return; }
+        // Ancre dans la page courante : défilement local, rien à faire.
+        if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return;
+        if (!estPageShell(url)) return;
+        e.preventDefault();
+        try { window.top.location.href = url.href; } catch (err) { window.location.href = url.href; }
+    });
+
     // Démarrage + pouls régulier léger pour les contenus qui grandissent
     // sans déclencher d'observer (widgets tiers, polices web…).
     function boot() {

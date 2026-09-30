@@ -47,6 +47,14 @@ Route::middleware(['web'])->group(function () {
 
         // Pages dynamiques - ACCEPTE LE PARAMETRE GET preview_theme
         Route::get('/page/{slug}', [WebThemeController::class, 'showPage'])->name('page');
+        // Contenu de l'iframe du shell pour une page personnalisée.
+        Route::get('/page/{slug}/embed', [WebThemeController::class, 'embedPage'])->name('page.embed');
+        // URL SEO d'une page : /company/{id}/page/{slug}/{slug-entreprise}.
+        // Le slug de l'entreprise est informatif (comme /company/{id}/{slug}) ;
+        // à déclarer APRÈS /embed, qui doit garder la priorité.
+        Route::get('/page/{slug}/{siteSlug}', [WebThemeController::class, 'showPage'])
+            ->where('siteSlug', '[A-Za-z0-9\-]+')
+            ->name('page.slug');
 
         // Details des articles de blog publics
         Route::get('/blog/{slug}', [WebThemeController::class, 'showBlogPost'])->name('blog.show');

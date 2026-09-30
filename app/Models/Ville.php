@@ -117,7 +117,7 @@ class Ville extends Model
     public function getGoogleMapsUrlAttribute(): ?string
     {
         if ($this->latitude && $this->longitude) {
-            return "https://www.google.com/maps?q={$this->latitude},{$this->longitude}";
+            return "https://www.openstreetmap.org/?mlat={$this->latitude}&mlon={$this->longitude}#map=15/{$this->latitude}/{$this->longitude}";
         }
         return null;
     }

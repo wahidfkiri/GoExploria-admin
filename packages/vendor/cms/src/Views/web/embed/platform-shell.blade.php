@@ -23,13 +23,15 @@
      l'iframe en conséquence. Fonctionne desktop ET mobile.
 
      Nécessite : $etablissement
+     Optionnel : $embedSrc (src de l'iframe, défaut = accueil embarqué),
+                 $shellTitle (titre de l'onglet, ex. page personnalisée)
      ═══════════════════════════════════════════════════════════════════════ --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ function_exists('get_site_name') ? get_site_name($etablissement->id) : $etablissement->name }} — GoExploria Business</title>
+    <title>{{ $shellTitle ?? (function_exists('get_site_name') ? get_site_name($etablissement->id) : $etablissement->name) }} — GoExploria Business</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -172,7 +174,7 @@
         <iframe
             id="gxEmbedFrame"
             class="gx-embed-frame"
-            src="{{ route('cms.company.embed', ['etablissementId' => $etablissement->id]) }}"
+            src="{{ $embedSrc ?? route('cms.company.embed', ['etablissementId' => $etablissement->id]) }}"
             title="Site de {{ $etablissement->name }}"
             scrolling="no"
             loading="eager"

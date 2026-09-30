@@ -284,7 +284,7 @@ class DestinationHelper
     }
 
     /**
-     * Obtenir l'URL Google Maps d'une destination
+     * Obtenir l'URL OpenStreetMap d'une destination
      */
     public static function googleMapsUrl($destination): ?string
     {
@@ -292,7 +292,7 @@ class DestinationHelper
             return null;
         }
 
-        return "https://www.google.com/maps?q={$destination->latitude},{$destination->longitude}";
+        return "https://www.openstreetmap.org/?mlat={$destination->latitude}&mlon={$destination->longitude}#map=15/{$destination->latitude}/{$destination->longitude}";
     }
 
     /**

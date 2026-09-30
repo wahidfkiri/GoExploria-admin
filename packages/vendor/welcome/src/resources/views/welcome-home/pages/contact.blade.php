@@ -130,7 +130,7 @@
             <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
             <h3>Notre Bureau</h3>
             <p>1500, rue University, Suite 1200<br>Montr&eacute;al, Qu&eacute;bec, H3A 3S7<br>Canada</p>
-            <a href="https://maps.google.com" target="_blank"><i class="fas fa-external-link-alt"></i> Voir sur Google Maps</a>
+            <a href="https://www.openstreetmap.org/search?query=1500%20rue%20University%2C%20Montr%C3%A9al%2C%20QC%20H3A%203S7%2C%20Canada" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Voir sur OpenStreetMap</a>
         </div>
         <div class="info-card card-phone">
             <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
@@ -213,7 +213,7 @@
                 <p class="map-address">1500, rue University, Suite 1200</p>
                 <p class="map-city">Montr&eacute;al, Qu&eacute;bec &mdash; H3A 3S7, Canada</p>
                 <div class="map-actions">
-                    <a href="https://maps.google.com" target="_blank" class="map-btn map-btn-primary">
+                    <a href="https://www.openstreetmap.org/directions?to=1500%20rue%20University%2C%20Montr%C3%A9al%2C%20QC%20H3A%203S7%2C%20Canada" target="_blank" rel="noopener" class="map-btn map-btn-primary">
                         <i class="fas fa-directions"></i> Itin&eacute;raire
                     </a>
                     <a href="tel:+15148001234" class="map-btn map-btn-secondary">

@@ -286,8 +286,10 @@ class TemplateNearby extends TemplateGrid
             return '/company/' . (int) $point->etablissement_id;
         }
 
-        return 'https://www.google.com/maps/search/?api=1&query='
-            . rawurlencode((float) $point->latitude . ',' . (float) $point->longitude);
+        $lat = (float) $point->latitude;
+        $lng = (float) $point->longitude;
+
+        return 'https://www.openstreetmap.org/?mlat=' . $lat . '&mlon=' . $lng . '#map=16/' . $lat . '/' . $lng;
     }
 
     /** Visuel du lieu : son image principale, sinon la vignette de sa vidéo. */

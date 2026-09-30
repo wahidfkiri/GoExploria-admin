@@ -465,7 +465,7 @@ class InteractiveMapV2 {
     
     openItinerary() {
         if (this.currentPlace) {
-            const url = `https://www.google.com/maps/dir/?api=1&destination=${this.currentPlace.lat},${this.currentPlace.lng}`;
+            const url = `https://www.openstreetmap.org/directions?route=%3B${this.currentPlace.lat}%2C${this.currentPlace.lng}`;
             window.open(url, '_blank');
         }
     }

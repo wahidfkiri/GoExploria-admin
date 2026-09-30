@@ -56,5 +56,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @include('cms::web.fallback.partials.gx-galleries')
     @include('cms::web.fallback.partials.gx-announcements')
+
+    @if($embedInPlatform ?? false)
+        {{-- Dans l'iframe du shell : l'interface du panier est celle du
+             parent (état partagé par localStorage), comme sur l'accueil. --}}
+        <style>
+            .cms-cart-fab,
+            .cms-cart-drawer,
+            .cms-cart-backdrop,
+            .cms-cart-toast { display: none !important; }
+        </style>
+    @endif
 </body>
 </html>

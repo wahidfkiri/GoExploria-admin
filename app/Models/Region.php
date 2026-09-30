@@ -82,11 +82,11 @@ class Region extends Model
         return 'Non disponible';
     }
 
-    // Accessor pour Google Maps URL
+    // Accessor : URL OpenStreetMap du point
     public function getGoogleMapsUrlAttribute(): ?string
     {
         if ($this->latitude && $this->longitude) {
-            return "https://www.google.com/maps?q={$this->latitude},{$this->longitude}";
+            return "https://www.openstreetmap.org/?mlat={$this->latitude}&mlon={$this->longitude}#map=15/{$this->latitude}/{$this->longitude}";
         }
         return null;
     }
