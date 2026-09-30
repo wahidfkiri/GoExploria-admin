@@ -43,7 +43,11 @@
         })
         ->sortKeys();
 
-    $tdActUrl = static fn ($a) => url('/activity/' . $a->slug);
+    /* Chemins RELATIFS, jamais url()/route() absolus : ceux-ci reprennent
+       l'adresse configurée du serveur (APP_URL), qui vaut prod.goexploriabusiness.com
+       en production — les liens sortaient donc du domaine public. Un chemin
+       relatif suit toujours le domaine servant la page. */
+    $tdActUrl = static fn ($a) => '/activity/' . $a->slug;
     $tdCategoryRoute = \Illuminate\Support\Facades\Route::has('category.show');
 @endphp
 
@@ -83,7 +87,7 @@
         <div class="gxmenu__head">
           <h3 class="gxmenu__title">{{ $g['name'] }}</h3>
           @if($g['slug'] && $tdCategoryRoute)
-            <a class="gxmenu__more" href="{{ route('category.show', $g['slug']) }}">Voir la catégorie <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+            <a class="gxmenu__more" href="{{ route('category.show', $g['slug'], false) }}">Voir la catégorie <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
           @endif
         </div>
         <div class="gxmenu__grid">

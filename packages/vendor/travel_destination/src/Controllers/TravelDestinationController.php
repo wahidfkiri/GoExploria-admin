@@ -67,6 +67,8 @@ class TravelDestinationController extends Controller
         }
 
         $breadcrumb = $this->buildBreadcrumb($normalizedType, $entity);
+        // Fil d'Ariane à menus déroulants (frères de chaque niveau).
+        $filArianeNiveaux = $this->buildBreadcrumbLevels($entity);
         $hierarchy = DestinationHelper::hierarchy(get_class($entity), $entity->id) ?? collect();
         $stats = $this->buildStats($normalizedType, $entity);
 
@@ -195,6 +197,7 @@ class TravelDestinationController extends Controller
             'mapFilterChain',
             'builderPages',
             'breadcrumb',
+            'filArianeNiveaux',
             'hierarchy',
             'stats',
             'heroContents',
@@ -648,6 +651,149 @@ class TravelDestinationController extends Controller
             'quartier' => $service->getQuartierBySlug($slug),
             default => null,
         };
+    }
+
+    /**
+     * Fil d'Ariane « à niveaux » : chaque maillon porte la liste de ses FRÈRES,
+     * pour un menu déroulant — les autres continents, les autres pays du
+     * continent, les autres provinces du pays, etc.
+     *
+     * Rendu par landing/partials/destination-breadcrumb.blade.php.
+     * Les listes sont plafonnées : une région peut compter des centaines de
+     * villes, qu'on ne met pas dans la bannière.
+     */
+    protected function buildBreadcrumbLevels($entity): array
+    {
+        $PARENT = [
+            'Country' => 'continent', 'Province' => 'country', 'Region' => 'province',
+            'Secteur' => 'region', 'Ville' => 'region', 'Arrondissement' => 'ville',
+            'Quartier' => 'arrondissement',
+        ];
+        $TYPE = [
+            'Continent' => 'continent', 'Country' => 'country', 'Province' => 'province',
+            'Region' => 'region', 'Secteur' => 'secteur', 'Ville' => 'city',
+            'Arrondissement' => 'arrondissement', 'Quartier' => 'quartier',
+        ];
+        $FRERES = [
+            'Country' => 'countries', 'Province' => 'provinces', 'Region' => 'regions',
+            'Secteur' => 'secteurs', 'Ville' => 'villes',
+            'Arrondissement' => 'arrondissements', 'Quartier' => 'quartiers',
+        ];
+        $PLAFOND = 80;
+
+        // Chaîne racine → entité courante, en remontant les parents.
+        $chaine = [];
+        $courant = $entity;
+        $garde = 0;
+        while ($courant && $garde++ < 10) {
+            array_unshift($chaine, $courant);
+            $relation = $PARENT[class_basename($courant)] ?? null;
+            $courant = ($relation && method_exists($courant, $relation)) ? $courant->{$relation} : null;
+        }
+
+        $lien = fn ($type, $e) => route('travel-destination.show', [
+            'type' => $type, 'slug' => $this->entitySlug($e),
+        ], false);
+
+        $niveaux = [];
+        foreach ($chaine as $i => $maillon) {
+            $classe = class_basename($maillon);
+            $type = $TYPE[$classe] ?? null;
+            if (! $type) {
+                continue;
+            }
+
+            // Frères = enfants du parent ; à la racine, tous les continents.
+            $freres = collect();
+            try {
+                if ($i === 0) {
+                    $freres = \App\Models\Continent::query()->where('is_active', true)->orderBy('name')->get();
+                } else {
+                    $relation = $FRERES[$classe] ?? null;
+                    $parent = $chaine[$i - 1];
+                    if ($relation && method_exists($parent, $relation)) {
+                        $requete = $parent->{$relation}();
+                        try {
+                            $requete = $requete->active();
+                        } catch (\Throwable $e) {
+                            $requete = $parent->{$relation}()->where('is_active', true);
+                        }
+                        $freres = $requete->orderBy('name')->limit($PLAFOND + 1)->get();
+                    }
+                }
+            } catch (\Throwable $e) {
+                $freres = collect();   // un niveau sans liste reste un simple lien
+            }
+
+            $tronque = $freres->count() > $PLAFOND;
+
+            $niveaux[] = [
+                'type'       => $type,
+                'label'      => $maillon->name,
+                'url'        => $lien($type, $maillon),
+                'courant'    => $i === count($chaine) - 1,
+                'suivant'    => false,
+                'verrouille' => false,
+                'tronque'    => $tronque,
+                'options'    => $freres->take($PLAFOND)->map(fn ($f) => [
+                    'label'  => $f->name,
+                    'url'    => $lien($type, $f),
+                    'actuel' => (int) $f->id === (int) $maillon->id,
+                ])->values()->all(),
+            ];
+        }
+
+        /* Niveaux INFÉRIEURS : sur la page d'un pays, on montre aussi la suite
+           du fil (Province, Région, Ville…). Le premier porte ses vrais choix
+           — les enfants de la destination affichée ; les suivants attendent
+           qu'un choix soit fait, et s'ouvriront sur la page ainsi atteinte. */
+        $ECHELLE = [
+            'continent' => 'country', 'country' => 'province', 'province' => 'region',
+            'region' => 'city', 'city' => 'arrondissement', 'arrondissement' => 'quartier',
+        ];
+        $LIBELLES = [
+            'country' => 'Pays', 'province' => 'Province', 'region' => 'Région',
+            'city' => 'Ville', 'arrondissement' => 'Arrondissement', 'quartier' => 'Quartier',
+        ];
+
+        $typeCourant = $TYPE[class_basename($entity)] ?? null;
+        $suivant = $ECHELLE[$typeCourant] ?? null;
+        $premier = true;
+
+        while ($suivant) {
+            $options = [];
+            $tronqueSuivant = false;
+
+            if ($premier) {
+                try {
+                    $enfants = $this->getChildEntities($typeCourant, $entity);
+                } catch (\Throwable $e) {
+                    $enfants = collect();
+                }
+                $tronqueSuivant = $enfants->count() > $PLAFOND;
+                $options = $enfants->sortBy('name')->take($PLAFOND)->map(fn ($e) => [
+                    'label'  => $e->name,
+                    'url'    => $lien($suivant, $e),
+                    'actuel' => false,
+                ])->values()->all();
+                $premier = false;
+            }
+
+            $niveaux[] = [
+                'type'       => $suivant,
+                'label'      => $LIBELLES[$suivant] ?? ucfirst($suivant),
+                'url'        => null,
+                'courant'    => false,
+                'suivant'    => true,
+                'verrouille' => empty($options),
+                'tronque'    => $tronqueSuivant,
+                'options'    => $options,
+            ];
+
+            $suivant = $ECHELLE[$suivant] ?? null;
+        }
+
+        return $niveaux;
     }
 
     protected function buildBreadcrumb($type, $entity)

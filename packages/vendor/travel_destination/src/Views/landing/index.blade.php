@@ -141,16 +141,11 @@
     // Le fil d'Ariane de la bannière composée est un emplacement : on y pose le
     // vrai, ou on le retire à la racine du guide.
     if ($vvvebHero !== null) {
-        $filAriane = '';
-        if ($breadcrumb->count() > 1) {
-            $morceaux = [];
-            foreach ($breadcrumb as $crumb) {
-                $morceaux[] = ! empty($crumb['url'])
-                    ? '<a href="' . e($crumb['url']) . '">' . e($crumb['label']) . '</a>'
-                    : e($crumb['label']);
-            }
-            $filAriane = '<nav class="breadcrumb" aria-label="Fil d’Ariane">' . implode('<span>/</span>', $morceaux) . '</nav>';
-        }
+        // Fil d'Ariane agrandi, avec un menu déroulant par niveau (frères).
+        $filAriane = view('travel-destination::landing.partials.destination-breadcrumb', [
+            'breadcrumb'       => $breadcrumb,
+            'filArianeNiveaux' => $filArianeNiveaux ?? [],
+        ])->render();
         $vvvebHero['html'] = preg_replace(
             '/<div\b[^>]*data-gx-destination-breadcrumb\b[^>]*>.*?<\/div>/is',
             $filAriane,
@@ -323,18 +318,10 @@
     <path d="M0 75 C 220 35, 420 90, 660 55 S 1020 85, 1220 45 S 1440 70, 1440 70" fill="none" stroke="currentColor" stroke-width="1" opacity=".6"/>
   </svg>
   <div class="hero-inner">
-    @if($breadcrumb->count() > 1)
-      <nav class="breadcrumb" aria-label="Fil d'Ariane">
-        @foreach($breadcrumb as $crumb)
-          @if(! $loop->first)<span>/</span>@endif
-          @if($crumb['url'])
-            <a href="{{ $crumb['url'] }}">{{ $crumb['label'] }}</a>
-          @else
-            {{ $crumb['label'] }}
-          @endif
-        @endforeach
-      </nav>
-    @endif
+    @include('travel-destination::landing.partials.destination-breadcrumb', [
+        'breadcrumb'       => $breadcrumb,
+        'filArianeNiveaux' => $filArianeNiveaux ?? [],
+    ])
     <div class="hero-grid">
       <div>
         <h1 class="hero-title">{{ $heroTitle }}</h1>

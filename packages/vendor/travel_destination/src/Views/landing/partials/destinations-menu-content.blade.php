@@ -32,7 +32,10 @@
     $gxDestUrl = static function (string $type, $entite) use ($gxDestSlug) {
         $slug = $gxDestSlug($entite);
 
-        return $slug !== '' ? route('travel-destination.show', ['type' => $type, 'slug' => $slug]) : null;
+        /* `false` = chemin RELATIF. En absolu, route() reprend l'adresse
+           configurée du serveur (prod.goexploriabusiness.com en production) et
+           les liens sortaient du domaine public. */
+        return $slug !== '' ? route('travel-destination.show', ['type' => $type, 'slug' => $slug], false) : null;
     };
 @endphp
 

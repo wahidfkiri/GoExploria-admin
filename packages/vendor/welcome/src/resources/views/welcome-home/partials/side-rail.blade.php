@@ -649,7 +649,9 @@
          Les pages de destination sont /travel-destination/{type}/{slug}.
          Établissements et activités gardent le `url` de l'API, correct
          (/company/{id}/{slug}, /activity/{slug}). */
-      var BASE_DESTINATION = @json(url('/travel-destination'));
+      // Chemin relatif : en absolu, url() reprend l'adresse configurée du
+      // serveur (prod.goexploriabusiness.com en production).
+      var BASE_DESTINATION = '/travel-destination';
       var TYPE_DESTINATION = {
         continents: 'continent', countries: 'country', provinces: 'province',
         regions: 'region', villes: 'city', secteurs: 'secteur'
