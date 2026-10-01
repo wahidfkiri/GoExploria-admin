@@ -75,6 +75,15 @@
         margin: 0 0 18px; font-size: 15px; font-weight: 600; line-height: 1.5;
         font-family: inherit;
     }
+    /* Épinglé en HAUT de la bannière, sous l'en-tête fixe. Sans cela, il
+       suivait le titre : la bannière aligne son contenu en bas
+       (align-items: flex-end), et le fil se retrouvait au milieu de l'image.
+       Le calage horizontal sur le titre est fait par le script. */
+    .gxfil--epingle {
+        position: absolute;
+        top: calc(var(--gx-entete-plateforme, 96px) + 18px);
+        z-index: 6; margin: 0;
+    }
     .gxfil__sep { opacity: .45; font-weight: 400; }
     .gxfil__lien {
         color: inherit; text-decoration: none; opacity: .82;
@@ -146,7 +155,43 @@
 
 <script>
 (function () {
+    /* Remonte le fil en haut de la bannière : il est rendu dans `.hero-inner`,
+       bloc aligné en BAS de la section. On le déplace donc au niveau de la
+       section elle-même (déjà `position: relative`) et on l'aligne sur la
+       colonne du titre, largeur d'écran comprise. */
+    function epingler() {
+        var fil = document.querySelector('.gxfil');
+        if (!fil || fil.classList.contains('gxfil--epingle')) { return; }
+
+        var banniere = fil.closest('section');
+        var colonne = fil.parentElement;
+        if (!banniere || !colonne || colonne === banniere) { return; }
+
+        banniere.insertBefore(fil, banniere.firstChild);
+        fil.classList.add('gxfil--epingle');
+
+        /* Le calage reprend AUSSI le padding de la colonne : celle-ci occupe
+           toute la largeur de la bannière, et c'est son padding qui met le
+           titre en retrait. Sans lui, le fil se collait au bord gauche. */
+        var caler = function () {
+            var b = banniere.getBoundingClientRect();
+            var c = colonne.getBoundingClientRect();
+            var style = window.getComputedStyle(colonne);
+            var gauche = (c.left - b.left) + (parseFloat(style.paddingLeft) || 0);
+            var droite = (b.right - c.right) + (parseFloat(style.paddingRight) || 0);
+            fil.style.left = Math.max(0, Math.round(gauche)) + 'px';
+            fil.style.right = Math.max(0, Math.round(droite)) + 'px';
+        };
+
+        caler();
+        window.addEventListener('resize', caler, { passive: true });
+        // L'en-tête change de hauteur au défilement : la position suit.
+        window.addEventListener('scroll', caler, { passive: true });
+    }
+
     function init() {
+        epingler();
+
         var boutons = document.querySelectorAll('.gxfil__bouton');
         if (!boutons.length) { return; }
 
