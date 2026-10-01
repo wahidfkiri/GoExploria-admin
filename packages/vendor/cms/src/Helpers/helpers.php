@@ -344,7 +344,7 @@ if (!function_exists('theme_menu')) {
             $menu[] = [
                 'id' => $page->id,
                 'label' => $page->title,
-                'url' => '/company/' . $etablissement->id . '/page/' . $page->slug,
+                'url' => \Vendor\Cms\Support\SiteSlug::cheminPage($etablissement, $page->slug),
                 'slug' => $page->slug,
                 'active' => request()->route('slug') == $page->slug,
                 'is_home' => $page->is_home,

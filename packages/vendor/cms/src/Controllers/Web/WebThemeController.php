@@ -229,6 +229,17 @@ class WebThemeController extends Controller
             abort(404, 'Page non trouvée');
         }
 
+        // Adresse canonique : /company/{id}/page/{page}/{slug-entreprise}.
+        // L'ancienne forme (sans slug) ou un ancien slug redirige (301) vers
+        // elle, en gardant la query string (preview_theme…).
+        $slugEntreprise = \Vendor\Cms\Support\SiteSlug::pourEtablissement($etablissement);
+        if ($siteSlug !== $slugEntreprise) {
+            $cible = \Vendor\Cms\Support\SiteSlug::cheminPage($etablissement, $slug);
+            $query = $request->getQueryString();
+
+            return redirect()->to($cible . ($query ? '?' . $query : ''), 301);
+        }
+
         // Comme l'accueil : header + barre latérale + footer GoExploria
         // globaux, la page personnalisée étant rendue isolée dans l'iframe.
         $siteName = function_exists('get_site_name') ? get_site_name($etablissement->id) : $etablissement->name;
@@ -563,7 +574,7 @@ public function asset($etablissementId, $themeId, $path)
         
         foreach ($pages as $page) {
             $sitemap .= '  <url>' . "\n";
-            $sitemap .= '    <loc>' . e(url('/company/' . $etablissement->id . '/page/' . $page->slug)) . '</loc>' . "\n";
+            $sitemap .= '    <loc>' . e(url(\Vendor\Cms\Support\SiteSlug::cheminPage($etablissement, $page->slug))) . '</loc>' . "\n";
             $sitemap .= '    <lastmod>' . $page->updated_at->format('Y-m-d') . '</lastmod>' . "\n";
             $sitemap .= '    <priority>0.8</priority>' . "\n";
             $sitemap .= '  </url>' . "\n";
@@ -3196,7 +3207,7 @@ protected function getThemePath($theme)
                 $menu[] = [
                     'id' => $page->id,
                     'label' => $page->title,
-                    'url' => '/company/' . $this->etablissement->id . '/page/' . $page->slug,
+                    'url' => \Vendor\Cms\Support\SiteSlug::cheminPage($this->etablissement, $page->slug),
                     'slug' => $page->slug,
                     'active' => request()->route('slug') == $page->slug,
                     'is_home' => $page->is_home,
