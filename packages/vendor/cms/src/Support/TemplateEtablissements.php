@@ -57,6 +57,15 @@ class TemplateEtablissements extends TemplateGrid
     protected ?array $destination = null;
 
     /**
+     * Contexte CATÉGORIE : identifiant de la catégorie d'activités.
+     *
+     * Renseigné par hydrateCategorie(). Quand il l'est, la grille liste les
+     * établissements qui proposent AU MOINS UNE activité de la catégorie —
+     * une catégorie n'est jamais rattachée à un établissement elle-même.
+     */
+    protected ?int $categorieId = null;
+
+    /**
      * Chaîne des destinations, telle que la porte
      * App\Models\EtablissementDestination côté administration (elle n'existe
      * pas dans ce projet).
@@ -152,6 +161,35 @@ class TemplateEtablissements extends TemplateGrid
         }
     }
 
+    /**
+     * Hydrate la page d'une CATÉGORIE d'activités.
+     *
+     * Les établissements affichés sont ceux qui proposent au moins une
+     * activité ACTIVE de la catégorie : c'est le « où en profiter » attendu
+     * sur la page d'une catégorie.
+     */
+    public static function hydrateCategorie(string $html, ?int $categorieId): string
+    {
+        $instance = new static(0);
+
+        if ($categorieId === null || strpos($html, $instance->marqueur()) === false) {
+            return $html;
+        }
+
+        try {
+            $instance = new static(0);
+            $instance->categorieId = (int) $categorieId;
+
+            return $instance->poserFiltres($instance->parcourir($html));
+        } catch (\Throwable $e) {
+            Log::warning(static::class . ' : hydratation abandonnée — ' . $e->getMessage(), [
+                'categorie_id' => $categorieId,
+            ]);
+
+            return $html;
+        }
+    }
+
     /** L'identifiant porté par le socle est celui de l'activité. */
     protected function activityId(): int
     {
@@ -176,9 +214,55 @@ class TemplateEtablissements extends TemplateGrid
      */
     protected function elements(int $limite, array $options)
     {
+        if ($this->categorieId !== null) {
+            return $this->elementsDeLaCategorie($limite, $options);
+        }
+
         return $this->destination === null
             ? $this->elementsDeLActivite($limite, $options)
             : $this->elementsDeLaDestination($limite, $options);
+    }
+
+    /**
+     * Établissements qui proposent au moins une activité ACTIVE de la
+     * catégorie.
+     *
+     * ⚠ Deux conditions d'activité distinctes se superposent ici, et les
+     * confondre donnerait une liste fausse :
+     *   · `activities.is_active` — l'activité est publiée ;
+     *   · `activity_etablissement.is_active` — l'établissement l'affiche sur
+     *     SON site. Cette colonne a été ajoutée après coup : sans la garde de
+     *     pivotComplet(), une base qui n'a pas reçu la migration ferait
+     *     échouer la requête, et la section retomberait sur sa démonstration.
+     *
+     * @return Collection<int, array<string, mixed>>
+     */
+    protected function elementsDeLaCategorie(int $limite, array $options)
+    {
+        $requete = \Illuminate\Support\Facades\DB::table('activity_etablissement')
+            ->join('activities', 'activities.id', '=', 'activity_etablissement.activity_id')
+            ->where('activities.categorie_id', $this->categorieId)
+            ->where('activities.is_active', true);
+
+        if ($this->pivotComplet()) {
+            $requete->where('activity_etablissement.is_active', true);
+        }
+
+        $ids = $requete->distinct()->limit(500)->pluck('activity_etablissement.etablissement_id');
+
+        if ($ids->isEmpty()) {
+            return collect();
+        }
+
+        $etablissements = Etablissement::query()
+            ->whereIn('id', $ids)
+            ->where('is_active', true)
+            ->with(['activities' => fn ($q) => $q->select('activities.id', 'activities.name', 'activities.categorie_id')->with('categoryRelation:id,name')])
+            ->orderBy('name')
+            ->limit(120)
+            ->get();
+
+        return $this->lignes($etablissements, $limite, $options);
     }
 
     /**
@@ -326,6 +410,17 @@ class TemplateEtablissements extends TemplateGrid
         $visuels = $this->visuels($etablissements->pluck('id')->all());
         $voulue = Str::slug(trim((string) ($options['category'] ?? '')));
 
+        // TYPE DE PRESTATION : `data-gx-etablissements-type="hebergement"`.
+        //
+        // ⚠ À ne pas confondre avec `-category` juste au-dessus. `-category`
+        // garde les établissements qui proposent AU MOINS UNE activité de
+        // cette catégorie ; `-type` les range par ce qu'ils SONT, c'est-à-dire
+        // la catégorie de leur activité PRINCIPALE (`primary_activity_id`).
+        // C'est ce qui permet « Où dormir » / « Où manger » / « Où pratiquer »
+        // sur la même page, chacun sa grille.
+        $type = Str::slug(trim((string) ($options['type'] ?? '')));
+        $principales = $type === '' ? [] : $this->categoriesPrincipales($etablissements);
+
         $lignes = $etablissements
             ->map(function (Etablissement $etablissement) use ($visuels) {
                 return [
@@ -337,6 +432,8 @@ class TemplateEtablissements extends TemplateGrid
                 ];
             })
             ->filter(fn (array $l) => $voulue === '' || in_array($voulue, array_column($l['categories'], 'slug'), true))
+            ->filter(fn (array $l) => $type === ''
+                || ($principales[$l['etablissement']->id] ?? null) === $type)
             ->take($limite)
             ->values();
 
@@ -514,6 +611,71 @@ class TemplateEtablissements extends TemplateGrid
     }
 
     // =====================================================================
+
+    /**
+     * Options propres à cette grille, en plus de celles du socle.
+     *
+     * `data-gx-etablissements-type` : voir lignes(), qui explique en quoi il
+     * diffère de `-category`.
+     */
+    protected function options(string $balise): array
+    {
+        $options = parent::options($balise);
+        $options['type'] = '';
+
+        if (preg_match('/\s' . preg_quote($this->marqueur() . '-type', '/')
+            . '\s*=\s*("([^"]*)"|\'([^\']*)\')/i', $balise, $m)) {
+            $options['type'] = trim($m[2] ?? $m[3] ?? '');
+        }
+
+        return $options;
+    }
+
+    /**
+     * Slug de la catégorie de l'activité PRINCIPALE de chaque établissement,
+     * indexé par identifiant d'établissement.
+     *
+     * Une seule requête pour toute la grille : résoudre la catégorie
+     * principale carte par carte multiplierait les allers-retours.
+     *
+     * @param  \Illuminate\Support\Collection<int, Etablissement>  $etablissements
+     * @return array<int, string>
+     */
+    protected function categoriesPrincipales($etablissements): array
+    {
+        $parActivite = $etablissements
+            ->filter(fn (Etablissement $e) => (int) ($e->primary_activity_id ?? 0) > 0)
+            ->pluck('id', 'primary_activity_id');
+
+        if ($parActivite->isEmpty()) {
+            return [];
+        }
+
+        try {
+            $categories = Activity::query()
+                ->whereIn('activities.id', $parActivite->keys()->all())
+                ->with('categoryRelation:id,name')
+                ->get(['activities.id', 'activities.categorie_id']);
+        } catch (\Throwable $e) {
+            Log::warning(static::class . ' : catégories principales indisponibles — ' . $e->getMessage());
+
+            return [];
+        }
+
+        $slugs = [];
+
+        foreach ($categories as $activite) {
+            $nom = trim((string) ($activite->categoryRelation->name ?? ''));
+
+            if ($nom === '') {
+                continue;
+            }
+
+            $slugs[(int) $parActivite->get($activite->id)] = Str::slug($nom);
+        }
+
+        return $slugs;
+    }
 
     /**
      * Catégories d'un établissement : celles des activités qu'il propose.

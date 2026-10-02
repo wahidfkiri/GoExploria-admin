@@ -7,9 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\Category;
 use App\Models\PageContent;
-use App\Models\Continent;
-use App\Models\MapCategory;
-use App\Models\MapPoint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -340,190 +337,18 @@ class LandingPageController extends Controller
         return view('activities::landing.activity-testimonials', compact('activity', 'testimonials'));
     }
 
-        /**
-     * Nombre maximal de points envoyés avec la page.
-     *
-     * Ils partent dans le HTML (pas en AJAX) pour que la carte s'affiche dès
-     * le premier rendu ; au-delà, la page deviendrait lourde.
-     */
-    protected const CARTE_LIMITE_POINTS = 500;
-
     /**
      * Remplace la section d'attente `data-gx-map` par la vraie carte.
      *
-     * Même dispositif que WebThemeController::injectLandingMap pour les sites
-     * d'établissement : le contenu enregistré ne porte qu'un carton, sinon
-     * l'éditeur VvvebJS chargerait Leaflet dans son canvas et enregistrerait
-     * en base les tuiles, les marqueurs et les classes d'état à chaque
-     * sauvegarde (docs/TEMPLATES-CMS.md §5).
-     *
-     * Une page sans section d'attente est rendue telle quelle : les pages
-     * composées avant l'ajout de la carte continuent de fonctionner.
+     * Le dispositif vit désormais dans [[Vendor\Activities\Support\CarteMonde]] :
+     * la page d'une CATÉGORIE d'activités porte la même section d'attente et
+     * doit recevoir la même carte. Rien n'y dépend de l'activité — la carte
+     * montre tous les points, et le partiel ne lisait pas la variable qu'on
+     * lui passait.
      */
     protected function injecterCarteMonde(string $html, Activity $activity): string
     {
-        if ($html === '') {
-            return $html;
-        }
-
-        // La section d'attente n'est jamais imbriquée : le motif s'arrête au
-        // premier </section>, ce que le gabarit garantit.
-        $motif = '#<section[^>]*data-gx-map[^>]*>.*?</section>#is';
-
-        if (!preg_match($motif, $html)) {
-            return $html;
-        }
-
-        try {
-            $carte = view('activities::landing.partials.world-map',
-                $this->contexteCarteMonde($activity))->render();
-        } catch (\Throwable $e) {
-            // Une carte en panne ne doit pas emporter la page : le carton
-            // d'attente reste affiché.
-            Log::warning("Carte de la page d'activité : " . $e->getMessage());
-
-            return $html;
-        }
-
-        // preg_replace lirait les `$` du partial comme des références
-        // arrière : on passe par un rappel.
-        return preg_replace_callback($motif, fn () => $carte, $html, 1);
-    }
-
-    /**
-     * Contexte d'une carte MONDIALE, montrant TOUS les points.
-     *
-     * Le moteur est celui des pages de destination ; on lui présente le monde
-     * comme un « continent » sans coordonnées, ce qu'il rend en vue globale
-     * (centre [20, 0], zoom 2). Aucune restriction géographique n'est posée
-     * sur les points, et `visibleOn` n'est pas appliqué : une page d'activité
-     * n'est pas un niveau de destination, et la demande est bien d'afficher
-     * tous les points.
-     */
-    protected function contexteCarteMonde(Activity $activity): array
-    {
-        $points = MapPoint::with(['details', 'images', 'mainImage'])
-            ->active()
-            ->inDisplayPeriod()
-            ->orderBy('is_featured', 'desc')
-            ->orderBy('views', 'desc')
-            ->limit(static::CARTE_LIMITE_POINTS)
-            ->get();
-
-        // Le monde, vu par le moteur de carte. Sans latitude, il se cadre sur
-        // la vue globale — exactement ce qu'on veut ici.
-        $monde = (object) [
-            'id' => 0,
-            'name' => 'Le monde',
-            'latitude' => null,
-            'longitude' => null,
-        ];
-
-        // Adresse de rechargement des points, utilisée par le filtre par
-        // destination. Le continent porteur doit être ACTIF : l'endpoint
-        // `map-points` ne résout que les destinations actives et répondrait
-        // « Entity not found » sur un continent désactivé. Sans filtre, la
-        // réponse au niveau « continent » n'est bornée par aucune géographie,
-        // quel que soit le continent visé.
-        $slug = (string) (Continent::active()->orderBy('id')->value('code')
-            ?: Continent::active()->orderBy('id')->value('id')
-            ?: 'monde');
-
-        return [
-            'activity' => $activity,
-            'entity' => $monde,
-            'normalizedType' => 'continent',
-            'slug' => $slug,
-            // Pas de niveau inférieur à proposer : le sélecteur de zoom du
-            // moteur reste masqué (il se garde sur childEntities.length).
-            'childEntities' => collect(),
-            'mapCategories' => MapCategory::where('is_active', true)
-                ->orderBy('sort_order')
-                ->get(['slug', 'name', 'icon_class', 'color', 'image']),
-            'mapPoints' => $points,
-            // Filtre par destination : la page couvre le monde, la cascade
-            // part donc du continent (voir chaineFiltreDestinations).
-            'typeLabels' => static::LIBELLES_NIVEAUX,
-            'mapFilterChain' => $this->chaineFiltreDestinations(),
-        ];
-    }
-
-    /**
-     * Libellés des niveaux de destination, repris du contrôleur des pages de
-     * destination : le filtre les affiche au-dessus de chaque champ.
-     */
-    protected const LIBELLES_NIVEAUX = [
-        'continent' => 'Continent',
-        'country' => 'Pays',
-        'province' => 'Province',
-        'region' => 'Région',
-        'city' => 'Ville',
-        'secteur' => 'Secteur',
-        'arrondissement' => 'Arrondissement',
-        'quartier' => 'Quartier',
-    ];
-
-    /**
-     * Premier niveau du filtre par destination de la carte mondiale.
-     *
-     * Sur une page de destination la chaîne commence sous la destination
-     * courante ; ici la carte couvre le monde, le premier champ interrogeable
-     * est donc celui des CONTINENTS. Les niveaux suivants (pays, province,
-     * région…) sont chargés en cascade par le filtre lui-même, via l'endpoint
-     * `travel-destination.children` — rien à préparer pour eux.
-     *
-     * La table `continents` ne porte pas de coordonnées : le centre d'un
-     * continent est calculé depuis ses pays, faute de quoi la carte ne saurait
-     * pas où se recentrer et l'option serait donnée pour « sans coordonnées ».
-     * Les pays INACTIFS comptent dans ce calcul — il s'agit de cadrer une vue,
-     * pas de publier une liste, et l'Amérique du Nord ne s'arrête pas à la
-     * frontière canadienne sous prétexte que seul le Canada est publié.
-     */
-    protected function chaineFiltreDestinations(): array
-    {
-        $continents = Continent::active()
-            ->with('countries')
-            ->orderBy('name')
-            ->get();
-
-        $options = $continents
-            ->map(function (Continent $continent) {
-                // `countries.latitude` est une colonne texte : on convertit
-                // avant toute comparaison, sans quoi le minimum se jouerait
-                // entre chaînes de caractères.
-                $reperes = $continent->countries
-                    ->filter(fn ($pays) => is_numeric($pays->latitude) && is_numeric($pays->longitude))
-                    ->map(fn ($pays) => ['lat' => (float) $pays->latitude, 'lng' => (float) $pays->longitude]);
-
-                // Centre de l'enveloppe des pays : plus stable qu'une moyenne,
-                // qu'un pays isolé (une île lointaine) suffirait à décentrer.
-                $lat = $reperes->count() ? (($reperes->min('lat') + $reperes->max('lat')) / 2) : null;
-                $lng = $reperes->count() ? (($reperes->min('lng') + $reperes->max('lng')) / 2) : null;
-
-                return [
-                    'name' => $continent->name,
-                    'slug' => (string) ($continent->slug ?? $continent->id),
-                    'type' => 'continent',
-                    'latitude' => $lat,
-                    'longitude' => $lng,
-                    // Même échelle que formatFilterOptions() côté destinations.
-                    'zoom' => 3,
-                ];
-            })
-            ->values()
-            ->all();
-
-        if (!$options) {
-            return [];
-        }
-
-        return [[
-            'type' => 'continent',
-            'label' => static::LIBELLES_NIVEAUX['continent'],
-            'fixed' => false,
-            'current' => null,
-            'options' => $options,
-        ]];
+        return \Vendor\Activities\Support\CarteMonde::injecter($html);
     }
 
     /**

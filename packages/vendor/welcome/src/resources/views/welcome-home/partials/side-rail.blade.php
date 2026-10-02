@@ -322,6 +322,27 @@
   .gxrail-mega .gxmenu__more { font-size: 13px; font-weight: 700; color: #8a6d10; text-decoration: none; white-space: nowrap; }
   .gxrail-mega .gxmenu__more:hover { text-decoration: underline; }
 
+  /* Catégories d'un type, et leurs activités dessous */
+  .gxrail-mega .gxmenu-cat__grille { columns: 2 210px; column-gap: 24px; }
+  .gxrail-mega .gxmenu-cat__bloc { break-inside: avoid; margin: 0 0 18px; }
+  .gxrail-mega .gxmenu-cat__titre {
+    display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px;
+    padding-bottom: 5px; border-bottom: 2px solid #d4af37;
+    font-size: 14.5px; font-weight: 800; line-height: 1.25;
+  }
+  .gxrail-mega .gxmenu-cat__titre a { color: #0f172a; text-decoration: none; }
+  .gxrail-mega .gxmenu-cat__titre a:hover { color: #8a6d10; text-decoration: underline; }
+  .gxrail-mega .gxmenu-cat__titre em {
+    flex: 0 0 auto; margin-left: auto; font-style: normal; font-size: 11px; font-weight: 700;
+    padding: 1px 7px; border-radius: 999px; background: #f6f7f9; color: #64748b;
+  }
+  .gxrail-mega .gxmenu-cat__liste { list-style: none; margin: 0; padding: 0; }
+  .gxrail-mega .gxmenu-cat__liste a {
+    display: block; padding: 3px 0; font-size: 13px; font-weight: 500; line-height: 1.35;
+    color: #334155; text-decoration: none;
+  }
+  .gxrail-mega .gxmenu-cat__liste a:hover { color: #8a6d10; text-decoration: underline; }
+
   /* Activités : index A→Z + vignettes (classes servies par la route) */
   .gxrail-mega .gxmenu__az { columns: 3 170px; column-gap: 24px; }
   .gxrail-mega .gxmenu__letter { break-inside: avoid; margin: 0 0 14px; }

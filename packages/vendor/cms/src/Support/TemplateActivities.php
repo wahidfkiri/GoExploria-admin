@@ -3,6 +3,7 @@
 namespace Vendor\Cms\Support;
 
 use App\Models\Activity;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -18,9 +19,59 @@ use Illuminate\Support\Str;
  * Le lien d'une carte pointe vers la fiche publique de l'activité
  * (`/activity/{slug}`), qui existe déjà côté front : on ne crée pas une
  * seconde page détail par établissement.
+ *
+ * ─────────────────────────────────────────────────────────────────────────
+ * DEUX CONTEXTES
+ * ─────────────────────────────────────────────────────────────────────────
+ * 1. ÉTABLISSEMENT (hydrate(), du socle) : les activités que l'établissement
+ *    propose, via le pivot `activity_etablissement`.
+ * 2. CATÉGORIE (hydrateCategorie()) : les activités CLASSÉES dans la
+ *    catégorie, via `activities.categorie_id`. C'est le cœur de la page d'une
+ *    catégorie — voir le gabarit page-categorie.html, section
+ *    « Les activités de cette catégorie ».
  */
 class TemplateActivities extends TemplateGrid
 {
+    /**
+     * Contexte CATÉGORIE : identifiant de la catégorie dont on liste les
+     * activités. Renseigné par hydrateCategorie() ; null en contexte
+     * établissement.
+     */
+    protected ?int $categorieId = null;
+
+    /**
+     * Hydrate la page d'une CATÉGORIE d'activités.
+     *
+     * `hydrate()` du socle prend un établissement : ce point d'entrée le
+     * remplace pour ne pas laisser croire qu'on peut appeler l'un pour
+     * l'autre — même procédé que [[TemplateEtablissements]].
+     */
+    public static function hydrateCategorie(string $html, ?int $categorieId): string
+    {
+        $instance = new static(0);
+
+        // Sortie immédiate : la plupart des pages n'ont pas la grille,
+        // inutile de payer un scan pour elles.
+        if ($categorieId === null || strpos($html, $instance->marqueur()) === false) {
+            return $html;
+        }
+
+        try {
+            $instance = new static(0);
+            $instance->categorieId = (int) $categorieId;
+
+            return $instance->parcourir($html);
+        } catch (\Throwable $e) {
+            // Une page affichée avec ses données de démonstration vaut mieux
+            // qu'une page cassée.
+            Log::warning(static::class . ' : hydratation abandonnée — ' . $e->getMessage(), [
+                'categorie_id' => $categorieId,
+            ]);
+
+            return $html;
+        }
+    }
+
     protected function marqueur(): string
     {
         return 'data-gx-activities';
@@ -44,8 +95,19 @@ class TemplateActivities extends TemplateGrid
     {
         $query = Activity::query()
             ->where('activities.is_active', true)
-            ->with('categoryRelation:id,name')
-            ->whereHas('etablissements', fn ($q) => $q->where('etablissements.id', $this->etablissementId));
+            ->with('categoryRelation:id,name');
+
+        if ($this->categorieId !== null) {
+            // Contexte CATÉGORIE : `activities.categorie_id` est une colonne
+            // obligatoire, pas un pivot — une activité appartient à UNE
+            // catégorie. Le filtre `data-gx-activities-category` n'a donc rien
+            // à restreindre ici, la grille l'est déjà.
+            $query->where('activities.categorie_id', $this->categorieId);
+
+            return $query->orderBy('activities.name')->limit($limite)->get();
+        }
+
+        $query->whereHas('etablissements', fn ($q) => $q->where('etablissements.id', $this->etablissementId));
 
         // Section restreinte à une catégorie : `data-gx-activities-category`
         // porte son nom, ce qui permet plusieurs grilles thématiques sur la

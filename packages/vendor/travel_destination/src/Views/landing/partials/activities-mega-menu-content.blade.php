@@ -1,110 +1,190 @@
 {{-- ==========================================================================
      CONTENU du méga-menu « Activités » (onglets + volets).
-     Servi par TravelDestinationController@activitiesMenu, inséré dans
-     `.td-actmega__body` à la première ouverture (voir activities-mega-menu).
+     Servi par TravelDestinationController@activitiesMenu ; inséré dans le
+     panneau du header des pages destination ET dans la barre de raccourcis.
 
-     - « Toutes les activités » : liste A→Z en texte (pas d'images : c'est
-       l'onglet ouvert par défaut, il doit rester léger).
-     - un onglet par catégorie active, en vignettes (image + nom) ;
-     - « Autres » pour les activités sans catégorie active.
+     HIÉRARCHIE (demande du 2026-10-02) :
+       onglet = TYPE de catégorie → dans le volet, chaque CATÉGORIE (titre
+       cliquable vers sa page, qui liste ses sites web) → sous elle, ses
+       ACTIVITÉS.
+
+       - « Autres » regroupe les catégories sans type actif ;
+       - « Sans catégorie » les activités orphelines ;
+       - « Toutes les activités » (A→Z) reste en dernier onglet, pour chercher
+         une activité sans connaître sa catégorie.
+
+     Chemins RELATIFS partout : le HTML est mis en cache et partagé, une URL
+     absolue y figerait le domaine de la requête qui a rempli le cache.
      ========================================================================== --}}
 @php
     use Illuminate\Support\Str;
 
-    $tdActAll = \App\Models\Activity::query()
+    $actifs = fn ($q) => $q->where('is_active', true);
+
+    // Types actifs → catégories actives → activités actives.
+    $gxTypes = \App\Models\CategorieType::query()
         ->where('is_active', true)
-        ->whereNotNull('slug')
-        ->where('slug', '!=', '')
-        ->with('categoryRelation')
+        ->with(['categories' => function ($q) {
+            $q->where('is_active', true)->orderBy('name')
+              ->with(['activities' => function ($a) {
+                  $a->where('is_active', true)
+                    ->whereNotNull('slug')->where('slug', '!=', '')
+                    ->orderBy('name');
+              }]);
+        }])
         ->orderBy('name')
         ->get();
 
-    $tdActGroups = $tdActAll
-        ->groupBy(fn ($a) => ($a->categoryRelation && $a->categoryRelation->is_active) ? $a->categoryRelation->id : 0)
-        ->map(function ($items, $catId) {
-            $cat = $catId ? $items->first()->categoryRelation : null;
+    $idsTypes = $gxTypes->pluck('id')->all();
 
-            return [
-                'id'    => $catId ?: 'autres',
-                'name'  => $cat?->name ?? 'Autres',
-                'slug'  => $cat?->slug,
-                'items' => $items,
-            ];
-        })
-        // Catégories par nom, « Autres » en dernier.
-        ->sortBy(fn ($g) => ($g['id'] === 'autres' ? '~' : '') . mb_strtolower($g['name']))
-        ->values();
+    // Catégories sans type actif, mais qui portent des activités.
+    $gxAutres = \App\Models\Category::query()
+        ->where('is_active', true)
+        ->where(fn ($q) => $q->whereNull('categorie_type_id')->orWhereNotIn('categorie_type_id', $idsTypes ?: [0]))
+        ->whereHas('activities', fn ($a) => $a->where('is_active', true))
+        ->with(['activities' => function ($a) {
+            $a->where('is_active', true)
+              ->whereNotNull('slug')->where('slug', '!=', '')
+              ->orderBy('name');
+        }])
+        ->orderBy('name')
+        ->get();
 
-    // Index alphabétique : É, À… rangés avec E, A ; chiffres et signes sous « # ».
-    $tdActLetters = $tdActAll
-        ->groupBy(function ($a) {
-            $l = strtoupper(substr(Str::ascii(trim((string) $a->name)), 0, 1));
-            return ctype_alpha($l) ? $l : '#';
-        })
-        ->sortKeys();
+    // Activités sans catégorie active.
+    $idsCategories = $gxTypes->flatMap->categories->pluck('id')
+        ->merge($gxAutres->pluck('id'))->unique()->all();
 
-    /* Chemins RELATIFS, jamais url()/route() absolus : ceux-ci reprennent
-       l'adresse configurée du serveur (APP_URL), qui vaut prod.goexploriabusiness.com
-       en production — les liens sortaient donc du domaine public. Un chemin
-       relatif suit toujours le domaine servant la page. */
-    $tdActUrl = static fn ($a) => '/activity/' . $a->slug;
-    $tdCategoryRoute = \Illuminate\Support\Facades\Route::has('category.show');
+    $gxOrphelines = \App\Models\Activity::query()
+        ->where('is_active', true)
+        ->whereNotNull('slug')->where('slug', '!=', '')
+        ->where(fn ($q) => $q->whereNull('categorie_id')->orWhereNotIn('categorie_id', $idsCategories ?: [0]))
+        ->orderBy('name')
+        ->get();
+
+    // Index A→Z : É, À… rangés avec E, A ; chiffres et signes sous « # ».
+    $gxToutes = $gxTypes->flatMap->categories->flatMap->activities
+        ->merge($gxAutres->flatMap->activities)
+        ->merge($gxOrphelines)
+        ->unique('id')
+        ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE);
+
+    $gxLettres = $gxToutes->groupBy(function ($a) {
+        $l = strtoupper(substr(Str::ascii(trim((string) $a->name)), 0, 1));
+        return ctype_alpha($l) ? $l : '#';
+    })->sortKeys();
+
+    $gxActivite = static fn ($a) => '/activity/' . $a->slug;
+    $gxCategorieLien = static function ($c) {
+        if (! \Illuminate\Support\Facades\Route::has('category.show')) {
+            return null;
+        }
+        $slug = trim((string) ($c->slug ?? ''));
+        return route('category.show', $slug !== '' ? $slug : $c->id, false);
+    };
+
+    // Volets : un par type, puis « Autres », puis « Sans catégorie ».
+    $gxVolets = collect();
+    foreach ($gxTypes as $type) {
+        $categories = $type->categories->filter(fn ($c) => $c->activities->isNotEmpty())->values();
+        if ($categories->isEmpty()) {
+            continue;
+        }
+        $gxVolets->push([
+            'id'          => 'type-' . $type->id,
+            'titre'       => $type->name,
+            'categories'  => $categories,
+            'activites'   => collect(),
+            'nombre'      => $categories->sum(fn ($c) => $c->activities->count()),
+        ]);
+    }
+    if ($gxAutres->isNotEmpty()) {
+        $gxVolets->push([
+            'id'         => 'type-autres',
+            'titre'      => 'Autres catégories',
+            'categories' => $gxAutres,
+            'activites'  => collect(),
+            'nombre'     => $gxAutres->sum(fn ($c) => $c->activities->count()),
+        ]);
+    }
+    if ($gxOrphelines->isNotEmpty()) {
+        $gxVolets->push([
+            'id'         => 'type-sans-categorie',
+            'titre'      => 'Sans catégorie',
+            'categories' => collect(),
+            'activites'  => $gxOrphelines,
+            'nombre'     => $gxOrphelines->count(),
+        ]);
+    }
 @endphp
 
-@if($tdActAll->isEmpty())
+@if($gxToutes->isEmpty())
   <p class="gxmenu__empty">Aucune activité disponible pour le moment.</p>
 @else
-  <div class="gxmenu__tabs" role="tablist" aria-label="Catégories d'activités">
-    <button type="button" class="gxmenu__tab is-active" role="tab" aria-selected="true" data-gxmenu-pane="td-actpane-all">
-      <span>Toutes les activités</span><em>{{ $tdActAll->count() }}</em>
-    </button>
-    @foreach($tdActGroups as $g)
-      <button type="button" class="gxmenu__tab" role="tab" aria-selected="false" data-gxmenu-pane="td-actpane-{{ $g['id'] }}">
-        <span>{{ $g['name'] }}</span><em>{{ $g['items']->count() }}</em>
+  <div class="gxmenu__tabs" role="tablist" aria-label="Types de catégories">
+    @foreach($gxVolets as $i => $volet)
+      <button type="button" class="gxmenu__tab {{ $i === 0 ? 'is-active' : '' }}" role="tab"
+              aria-selected="{{ $i === 0 ? 'true' : 'false' }}" data-gxmenu-pane="gxact-{{ $volet['id'] }}">
+        <span>{{ $volet['titre'] }}</span><em>{{ $volet['nombre'] }}</em>
       </button>
     @endforeach
+    <button type="button" class="gxmenu__tab" role="tab" aria-selected="false" data-gxmenu-pane="gxact-toutes">
+      <span>Toutes les activités</span><em>{{ $gxToutes->count() }}</em>
+    </button>
   </div>
 
   <div class="gxmenu__panes">
-    <section class="gxmenu__pane" id="td-actpane-all" role="tabpanel">
+    @foreach($gxVolets as $i => $volet)
+      <section class="gxmenu__pane" id="gxact-{{ $volet['id'] }}" role="tabpanel" @if($i !== 0) hidden @endif>
+        <h3 class="gxmenu__title">{{ $volet['titre'] }}</h3>
+
+        @if($volet['categories']->isNotEmpty())
+          <div class="gxmenu-cat__grille">
+            @foreach($volet['categories'] as $categorie)
+              <div class="gxmenu-cat__bloc">
+                <h4 class="gxmenu-cat__titre">
+                  @if($lien = $gxCategorieLien($categorie))
+                    <a href="{{ $lien }}">{{ $categorie->name }}</a>
+                  @else
+                    {{ $categorie->name }}
+                  @endif
+                  <em>{{ $categorie->activities->count() }}</em>
+                </h4>
+                <ul class="gxmenu-cat__liste">
+                  @foreach($categorie->activities as $activite)
+                    <li><a href="{{ $gxActivite($activite) }}">{{ $activite->name }}</a></li>
+                  @endforeach
+                </ul>
+              </div>
+            @endforeach
+          </div>
+        @else
+          <div class="gxmenu-cat__grille">
+            <div class="gxmenu-cat__bloc">
+              <ul class="gxmenu-cat__liste">
+                @foreach($volet['activites'] as $activite)
+                  <li><a href="{{ $gxActivite($activite) }}">{{ $activite->name }}</a></li>
+                @endforeach
+              </ul>
+            </div>
+          </div>
+        @endif
+      </section>
+    @endforeach
+
+    <section class="gxmenu__pane" id="gxact-toutes" role="tabpanel" hidden>
       <h3 class="gxmenu__title">Toutes les activités <small>de A à Z</small></h3>
       <div class="gxmenu__az">
-        @foreach($tdActLetters as $lettre => $items)
+        @foreach($gxLettres as $lettre => $activites)
           <div class="gxmenu__letter">
             <h4>{{ $lettre }}</h4>
             <ul>
-              @foreach($items as $a)
-                <li><a href="{{ $tdActUrl($a) }}">{{ $a->name }}</a></li>
+              @foreach($activites as $activite)
+                <li><a href="{{ $gxActivite($activite) }}">{{ $activite->name }}</a></li>
               @endforeach
             </ul>
           </div>
         @endforeach
       </div>
     </section>
-
-    @foreach($tdActGroups as $g)
-      <section class="gxmenu__pane" id="td-actpane-{{ $g['id'] }}" role="tabpanel" hidden>
-        <div class="gxmenu__head">
-          <h3 class="gxmenu__title">{{ $g['name'] }}</h3>
-          @if($g['slug'] && $tdCategoryRoute)
-            <a class="gxmenu__more" href="{{ route('category.show', $g['slug'], false) }}">Voir la catégorie <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
-          @endif
-        </div>
-        <div class="gxmenu__grid">
-          @foreach($g['items'] as $a)
-            <a class="gxmenu__card" href="{{ $tdActUrl($a) }}">
-              <span class="gxmenu__media">
-                @if($a->image_url)
-                  <img src="{{ $a->image_url }}" alt="" loading="lazy" decoding="async">
-                @else
-                  <span class="gxmenu__ph"><i class="fas fa-person-hiking" aria-hidden="true"></i></span>
-                @endif
-              </span>
-              <span class="gxmenu__name">{{ $a->name }}</span>
-            </a>
-          @endforeach
-        </div>
-      </section>
-    @endforeach
   </div>
 @endif

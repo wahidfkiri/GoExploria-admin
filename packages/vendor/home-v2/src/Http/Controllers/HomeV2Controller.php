@@ -80,13 +80,61 @@ class HomeV2Controller extends Controller
     /**
      * Page d'une catégorie avec ses activités
      */
-    public function showCategory($slug)
+    public function showCategory($slug, \Illuminate\Http\Request $request = null)
     {
         $category = Category::where('slug', $slug)
             ->where('is_active', true)
             ->firstOr(function () use ($slug) {
                 return Category::where('id', $slug)->where('is_active', true)->firstOrFail();
             });
+
+        // Si la catégorie a une page composée dans l'éditeur, c'est ELLE le
+        // site : on la rend telle quelle. `?template=classic` ramène la liste
+        // des activités — utile pour comparer, et pour ne pas enfermer une
+        // catégorie dont la page serait ratée. Même dispositif que la page
+        // d'une activité (Vendor\Activities\Controllers\LandingPageController).
+        //
+        // ⚠ La page vit dans `page_contents` sous les colonnes POLYMORPHIQUES
+        // (pageable_type + pageable_id) : le type réservé « page » est le même
+        // que celui des activités, c'est le propriétaire qui les distingue.
+        $pageSite = \App\Models\PageContent::where('pageable_type', Category::class)
+            ->where('pageable_id', $category->id)
+            ->where('type', 'page')
+            ->where('is_active', true)
+            ->orderBy('id')
+            ->first();
+
+        $classique = $request && $request->query('template') === 'classic';
+
+        if ($pageSite && trim((string) $pageSite->content) !== '' && ! $classique) {
+            // Chaîne de rendu, dans cet ordre :
+            //   1. les règles d'édition que l'éditeur aurait enregistrées par
+            //      erreur sont retirées ;
+            //   2. le bandeau ne montre que des vidéos (image de fond, bouton
+            //      « Voir la vidéo » et flèche de défilement retirés) ;
+            //   3. la section d'attente `data-gx-map` devient la vraie carte ;
+            //   4. « Quoi faire » reçoit les activités de la catégorie ;
+            //   5. « Où aller » reçoit les villes et régions où elles se
+            //      pratiquent ;
+            //   6. « Où en profiter » reçoit les établissements qui les
+            //      proposent — la grille d'ensemble comme les sous-grilles
+            //      par type de prestation (dormir / manger / pratiquer) —, et
+            //      ses filtres les catégories réellement là.
+            // Sans donnée, chaque grille garde sa démonstration plutôt que
+            // d'afficher un trou.
+            $contenu = \Vendor\Activities\Support\ReglesEdition::retirer($pageSite->content);
+            $contenu = \Vendor\Activities\Support\HerosVideo::nettoyer($contenu);
+            $contenu = \Vendor\Activities\Support\CarteMonde::injecter($contenu);
+            $contenu = \Vendor\Cms\Support\TemplateActivities::hydrateCategorie($contenu, (int) $category->id);
+            $contenu = \Vendor\Cms\Support\TemplateDestinations::hydrateCategorie($contenu, (int) $category->id);
+            $contenu = \Vendor\Cms\Support\TemplateEtablissements::hydrateCategorie($contenu, (int) $category->id);
+
+            return view('home-v2.pages.category-page', [
+                'category' => $category,
+                'page'     => $pageSite,
+                'contenu'  => $contenu,
+            ]);
+        }
 
         $activities = $category->activities()->where('is_active', true)->orderBy('name')->get();
 

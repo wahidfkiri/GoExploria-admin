@@ -136,6 +136,27 @@
   .td-actmega .gxmenu__more { font-size: 13px; font-weight: 700; color: var(--ta-gold-ink); text-decoration: none; white-space: nowrap; }
   .td-actmega .gxmenu__more:hover { text-decoration: underline; }
 
+  /* Catégories d'un type, et leurs activités dessous */
+  .td-actmega .gxmenu-cat__grille { columns: 3 260px; column-gap: 30px; }
+  .td-actmega .gxmenu-cat__bloc { break-inside: avoid; margin: 0 0 20px; }
+  .td-actmega .gxmenu-cat__titre {
+    display: flex; align-items: baseline; gap: 8px; margin: 0 0 6px;
+    padding-bottom: 5px; border-bottom: 2px solid var(--ta-gold);
+    font-size: 15px; font-weight: 800; line-height: 1.25;
+  }
+  .td-actmega .gxmenu-cat__titre a { color: var(--ta-ink); text-decoration: none; }
+  .td-actmega .gxmenu-cat__titre a:hover { color: var(--ta-gold-ink); text-decoration: underline; }
+  .td-actmega .gxmenu-cat__titre em {
+    flex: 0 0 auto; margin-left: auto; font-style: normal; font-size: 11px; font-weight: 700;
+    padding: 1px 7px; border-radius: 999px; background: var(--ta-soft); color: var(--ta-muted);
+  }
+  .td-actmega .gxmenu-cat__liste { list-style: none; margin: 0; padding: 0; }
+  .td-actmega .gxmenu-cat__liste a {
+    display: block; padding: 3px 0; font-size: 13px; font-weight: 500; line-height: 1.35;
+    color: #334155; text-decoration: none;
+  }
+  .td-actmega .gxmenu-cat__liste a:hover { color: var(--ta-gold-ink); text-decoration: underline; }
+
   /* Index A→Z */
   .td-actmega .gxmenu__az { columns: 4 210px; column-gap: 32px; }
   .td-actmega .gxmenu__letter { break-inside: avoid; margin: 0 0 16px; }
