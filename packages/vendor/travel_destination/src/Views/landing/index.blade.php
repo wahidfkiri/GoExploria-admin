@@ -883,6 +883,15 @@
 <script src="{{ asset('vendor/travel-destination/js/destination-atlas.js') }}?v={{ @filemtime($atlasJs) ?: '1' }}"></script>
 
 {{-- Moteur de la carte (Leaflet + OpenStreetMap + grappes) --}}
+{{-- Méga-menu des activités de CETTE destination, ouvert par le bouton
+     « Voir les activités » de la bannière. Rendu après le contenu : ses
+     éléments sont `fixed`. --}}
+@include('travel-destination::landing.partials.destination-activities-menu', [
+    'entity'                => $entity,
+    'destinationActivities' => $destinationActivities,
+    'filArianeNiveaux'      => $filArianeNiveaux ?? [],
+])
+
 @include('travel-destination::landing.partials.map-scripts')
 
 {{-- Filtre hiérarchique posé au-dessus de la carte. Chargé APRÈS le moteur :
