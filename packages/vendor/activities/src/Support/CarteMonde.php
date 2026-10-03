@@ -57,8 +57,7 @@ class CarteMonde
         }
 
         try {
-            $carte = view('activities::landing.partials.world-map',
-                self::contexte())->render();
+            $carte = view(self::partiel($html), self::contexte())->render();
         } catch (\Throwable $e) {
             // Une carte en panne ne doit pas emporter la page : le carton
             // d'attente reste affiché.
@@ -70,6 +69,27 @@ class CarteMonde
         // preg_replace lirait les `$` du partial comme des références
         // arrière : on passe par un rappel.
         return preg_replace_callback($motif, fn () => $carte, $html, 1);
+    }
+
+    /**
+     * L'habillage à poser, choisi d'après le gabarit de la page d'accueil.
+     *
+     * Un seul MOTEUR, deux balisages : celui de `world-map` épouse le gabarit
+     * PLEXIFY (classes `content-inner`, `container`, `section-head style-10`,
+     * fournies par sa feuille). Une page BOUSSOLE ne charge pas ces classes —
+     * la section sortait alors sans mise en page : boutons de filtre bruts et
+     * `#travel-map` sans hauteur, donc aucune carte visible.
+     *
+     * ⚠ La feuille vendor/activities/css/activity-map.css habille les DEUX
+     * racines (`:is(.actpage-tpl, .boussole-tpl)`) : c'est elle qui donne sa
+     * hauteur au conteneur de la carte. La re-scoper au seul Plexify
+     * reproduirait exactement ce défaut.
+     */
+    protected static function partiel(string $html): string
+    {
+        return str_contains($html, 'boussole-tpl')
+            ? 'activities::landing.partials.world-map-boussole'
+            : 'activities::landing.partials.world-map';
     }
 
     /**

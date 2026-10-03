@@ -1,18 +1,26 @@
 /* ===================================================================
-   Carte mondiale des pages d'activité.
+   Carte mondiale des pages d'activité ET de catégorie.
 
-   Habille le balisage de activities::landing.partials.world-map et les
-   fragments écrits par le moteur de carte (popup Leaflet, fiche détaillée),
-   dans le style du gabarit Plexify.
+   Habille le balisage de activities::landing.partials.world-map (gabarit
+   Plexify) et world-map-boussole (gabarit Boussole), plus les fragments
+   écrits par le moteur de carte (popup Leaflet, fiche détaillée).
 
-   Tout est préfixé par `.actpage-tpl`, SAUF la fiche détaillée : le moteur
-   la pose en `position: fixed` par-dessus la page, et elle doit rester
-   lisible même si le gabarit change. Ses noms de classe (`map-modal…`) lui
-   sont propres, aucun risque de collision.
+   ⚠ Chaque règle porte sur les DEUX racines via `:is(.actpage-tpl,
+   .boussole-tpl)`. Scopée au seul `.actpage-tpl`, elle laissait les pages
+   Boussole avec des filtres bruts et un `#travel-map` sans hauteur — donc
+   sans carte visible.
+
+   ⚠ Les noms `plx-carte-*` sont CONSERVÉS dans les deux balisages : les
+   renommer obligerait à dupliquer la feuille. Ils n'impliquent aucune
+   dépendance à Plexify.
+
+   Seule la fiche détaillée n'est pas scopée : le moteur la pose en
+   `position: fixed` par-dessus la page, et elle doit rester lisible quel que
+   soit le gabarit. Ses noms de classe (`map-modal…`) lui sont propres.
    =================================================================== */
 
 /* ---------- Section ---------- */
-.actpage-tpl .plx-carte-chapeau {
+:is(.actpage-tpl, .boussole-tpl) .plx-carte-chapeau {
     margin: 16px auto 0;
     max-width: 620px;
     font-size: 15px;
@@ -20,7 +28,7 @@
     color: #64748b;
 }
 
-.actpage-tpl .plx-carte-cadre {
+:is(.actpage-tpl, .boussole-tpl) .plx-carte-cadre {
     position: relative;
     height: clamp(420px, 62vh, 640px);
     border-radius: 20px;
@@ -29,15 +37,15 @@
     background: #e8eef4;
 }
 
-.actpage-tpl .plx-carte-cadre > .travel-map,
-.actpage-tpl #travel-map {
+:is(.actpage-tpl, .boussole-tpl) .plx-carte-cadre > .travel-map,
+:is(.actpage-tpl, .boussole-tpl) #travel-map {
     width: 100%;
     height: 100%;
 }
 
 /* Le thème arrondit toutes les images ; les tuiles doivent rester carrées,
    sinon la carte se couvre de coins clairs. */
-.actpage-tpl .plx-carte-cadre img {
+:is(.actpage-tpl, .boussole-tpl) .plx-carte-cadre img {
     border-radius: 0 !important;
     max-width: none;
 }
@@ -49,16 +57,16 @@
 
    La barre doit se dessiner AU-DESSUS de la carte, qui la suit dans le
    document : d'où le contexte d'empilement ici et sur le cadre de la carte. */
-.actpage-tpl .plx-carte-destinations {
+:is(.actpage-tpl, .boussole-tpl) .plx-carte-destinations {
     position: relative;
     z-index: 5;
     max-width: 860px;
     margin: 0 auto 22px;
 }
 
-.actpage-tpl .plx-carte-cadre { z-index: 1; }
+:is(.actpage-tpl, .boussole-tpl) .plx-carte-cadre { z-index: 1; }
 
-.actpage-tpl .map-filterbar__head {
+:is(.actpage-tpl, .boussole-tpl) .map-filterbar__head {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -67,7 +75,7 @@
     margin-bottom: 12px;
 }
 
-.actpage-tpl .plx-carte-destinations__titre {
+:is(.actpage-tpl, .boussole-tpl) .plx-carte-destinations__titre {
     font-size: 12px;
     font-weight: 700;
     letter-spacing: .12em;
@@ -75,7 +83,7 @@
     color: #94a3b8;
 }
 
-.actpage-tpl .map-filterbar__reset {
+:is(.actpage-tpl, .boussole-tpl) .map-filterbar__reset {
     display: inline-flex;
     align-items: center;
     gap: 7px;
@@ -90,18 +98,18 @@
     transition: all .25s;
 }
 
-.actpage-tpl .map-filterbar__reset:hover {
+:is(.actpage-tpl, .boussole-tpl) .map-filterbar__reset:hover {
     border-color: var(--primary, #C8F31D);
     color: #111;
 }
 
-.actpage-tpl .map-filterbar__reset svg { width: 13px; height: 13px; }
+:is(.actpage-tpl, .boussole-tpl) .map-filterbar__reset svg { width: 13px; height: 13px; }
 
 /* `display` l'emporterait sur la règle par défaut de [hidden] : le bouton ne
    doit apparaître qu'une fois une destination choisie. */
-.actpage-tpl .map-filterbar__reset[hidden] { display: none; }
+:is(.actpage-tpl, .boussole-tpl) .map-filterbar__reset[hidden] { display: none; }
 
-.actpage-tpl .map-filterbar__chain {
+:is(.actpage-tpl, .boussole-tpl) .map-filterbar__chain {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
@@ -110,9 +118,9 @@
 }
 
 /* Le temps d'une requête, la chaîne ne doit pas accepter de second choix. */
-.actpage-tpl .map-filterbar__chain.is-loading { opacity: .6; pointer-events: none; }
+:is(.actpage-tpl, .boussole-tpl) .map-filterbar__chain.is-loading { opacity: .6; pointer-events: none; }
 
-.actpage-tpl .map-filterfield {
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -123,9 +131,9 @@
 }
 
 /* Une liste ouverte doit passer devant les champs voisins de la ligne. */
-.actpage-tpl .map-filterfield:focus-within { z-index: 6; }
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield:focus-within { z-index: 6; }
 
-.actpage-tpl .map-filterfield__label {
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield__label {
     font-size: 11px;
     font-weight: 700;
     letter-spacing: .1em;
@@ -133,7 +141,7 @@
     color: #94a3b8;
 }
 
-.actpage-tpl .map-filterfield__input {
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield__input {
     width: 100%;
     padding: 11px 18px;
     border: 1px solid #d5dde5;
@@ -144,19 +152,19 @@
     transition: border-color .25s, box-shadow .25s;
 }
 
-.actpage-tpl .map-filterfield__input:focus {
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield__input:focus {
     outline: none;
     border-color: var(--primary, #C8F31D);
     box-shadow: 0 0 0 3px rgba(200, 243, 29, .28);
 }
 
-.actpage-tpl .map-filterfield.is-active .map-filterfield__input {
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield.is-active .map-filterfield__input {
     border-color: var(--primary, #C8F31D);
     background: rgba(200, 243, 29, .14);
     font-weight: 600;
 }
 
-.actpage-tpl .map-filterfield__list {
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield__list {
     position: absolute;
     top: 100%;
     left: 0;
@@ -172,9 +180,9 @@
     box-shadow: 0 24px 50px -24px rgba(15, 23, 42, .55);
 }
 
-.actpage-tpl .map-filterfield__list.is-open { display: block; }
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield__list.is-open { display: block; }
 
-.actpage-tpl .map-filterfield__option {
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield__option {
     display: block;
     width: 100%;
     padding: 10px 16px;
@@ -187,10 +195,10 @@
     cursor: pointer;
 }
 
-.actpage-tpl .map-filterfield__option:last-child { border-bottom: 0; }
-.actpage-tpl .map-filterfield__option:hover { background: rgba(200, 243, 29, .22); color: #111; }
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield__option:last-child { border-bottom: 0; }
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield__option:hover { background: rgba(200, 243, 29, .22); color: #111; }
 
-.actpage-tpl .map-filterfield__option.is-all {
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield__option.is-all {
     font-size: 11.5px;
     font-weight: 700;
     letter-spacing: .08em;
@@ -199,9 +207,9 @@
 }
 
 /* Sans coordonnées, la carte ne peut pas s'y recentrer : on le signale. */
-.actpage-tpl .map-filterfield__option.is-nogeo { opacity: .6; font-style: italic; }
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield__option.is-nogeo { opacity: .6; font-style: italic; }
 
-.actpage-tpl .map-filterfield__empty {
+:is(.actpage-tpl, .boussole-tpl) .map-filterfield__empty {
     padding: 12px 16px;
     font-size: 12.5px;
     font-style: italic;
@@ -209,11 +217,11 @@
 }
 
 @media (max-width: 640px) {
-    .actpage-tpl .map-filterfield { flex: 1 1 100%; min-width: 0; }
+    :is(.actpage-tpl, .boussole-tpl) .map-filterfield { flex: 1 1 100%; min-width: 0; }
 }
 
 /* ---------- Filtres par catégorie ---------- */
-.actpage-tpl .plx-carte-filtres {
+:is(.actpage-tpl, .boussole-tpl) .plx-carte-filtres {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -221,7 +229,7 @@
     margin-bottom: 24px;
 }
 
-.actpage-tpl .map-filter-btn {
+:is(.actpage-tpl, .boussole-tpl) .map-filter-btn {
     padding: 9px 18px;
     border: 1px solid #d5dde5;
     border-radius: 999px;
@@ -234,11 +242,11 @@
     transition: all .25s;
 }
 
-.actpage-tpl .map-filter-btn:hover {
+:is(.actpage-tpl, .boussole-tpl) .map-filter-btn:hover {
     border-color: var(--primary, #C8F31D);
 }
 
-.actpage-tpl .map-filter-btn.active {
+:is(.actpage-tpl, .boussole-tpl) .map-filter-btn.active {
     background: var(--primary, #C8F31D);
     border-color: var(--primary, #C8F31D);
     color: #111;
@@ -358,5 +366,5 @@
     .map-modal { padding: 3vh 4vw; }
     .map-modal__info { padding: 18px 18px 22px; }
     .map-modal__title { font-size: 20px; }
-    .actpage-tpl .plx-carte-cadre { height: clamp(340px, 58vh, 480px); border-radius: 14px; }
+    :is(.actpage-tpl, .boussole-tpl) .plx-carte-cadre { height: clamp(340px, 58vh, 480px); border-radius: 14px; }
 }

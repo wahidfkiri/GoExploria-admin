@@ -664,10 +664,16 @@ class TravelDestinationController extends Controller
      */
     protected function buildBreadcrumbLevels($entity): array
     {
+        /* Plusieurs parents possibles : une ville dépend d'un secteur, sinon
+           d'une région, sinon d'une province. On prend le premier renseigné. */
         $PARENT = [
-            'Country' => 'continent', 'Province' => 'country', 'Region' => 'province',
-            'Secteur' => 'region', 'Ville' => 'region', 'Arrondissement' => 'ville',
-            'Quartier' => 'arrondissement',
+            'Country' => ['continent'],
+            'Province' => ['country'],
+            'Region' => ['province'],
+            'Secteur' => ['region'],
+            'Ville' => ['secteur', 'region', 'province', 'country'],
+            'Arrondissement' => ['ville'],
+            'Quartier' => ['arrondissement', 'ville'],
         ];
         $TYPE = [
             'Continent' => 'continent', 'Country' => 'country', 'Province' => 'province',
@@ -687,8 +693,14 @@ class TravelDestinationController extends Controller
         $garde = 0;
         while ($courant && $garde++ < 10) {
             array_unshift($chaine, $courant);
-            $relation = $PARENT[class_basename($courant)] ?? null;
-            $courant = ($relation && method_exists($courant, $relation)) ? $courant->{$relation} : null;
+            $suivantParent = null;
+            foreach ($PARENT[class_basename($courant)] ?? [] as $relation) {
+                if (method_exists($courant, $relation) && $courant->{$relation}) {
+                    $suivantParent = $courant->{$relation};
+                    break;
+                }
+            }
+            $courant = $suivantParent;
         }
 
         $lien = fn ($type, $e) => route('travel-destination.show', [
@@ -747,36 +759,54 @@ class TravelDestinationController extends Controller
            du fil (Province, Région, Ville…). Le premier porte ses vrais choix
            — les enfants de la destination affichée ; les suivants attendent
            qu'un choix soit fait, et s'ouvriront sur la page ainsi atteinte. */
+        /* ⚠ Le SECTEUR fait partie de l'échelle, entre la région et la ville :
+           il manquait, et le fil sautait de « Région » à « Ville ». */
         $ECHELLE = [
             'continent' => 'country', 'country' => 'province', 'province' => 'region',
-            'region' => 'city', 'city' => 'arrondissement', 'arrondissement' => 'quartier',
+            'region' => 'secteur', 'secteur' => 'city',
+            'city' => 'arrondissement', 'arrondissement' => 'quartier',
         ];
         $LIBELLES = [
             'country' => 'Pays', 'province' => 'Province', 'region' => 'Région',
-            'city' => 'Ville', 'arrondissement' => 'Arrondissement', 'quartier' => 'Quartier',
+            'secteur' => 'Secteur', 'city' => 'Ville',
+            'arrondissement' => 'Arrondissement', 'quartier' => 'Quartier',
+        ];
+        /* Un niveau inférieur est rempli dès que la destination affichée a une
+           relation DIRECTE vers lui — une région donne ses secteurs ET ses
+           villes, une province ses régions et ses villes. Les niveaux sans
+           relation directe restent verrouillés jusqu'à la page suivante. */
+        $ENFANTS = [
+            'country' => 'countries', 'province' => 'provinces', 'region' => 'regions',
+            'secteur' => 'secteurs', 'city' => 'villes',
+            'arrondissement' => 'arrondissements', 'quartier' => 'quartiers',
         ];
 
         $typeCourant = $TYPE[class_basename($entity)] ?? null;
         $suivant = $ECHELLE[$typeCourant] ?? null;
-        $premier = true;
 
         while ($suivant) {
             $options = [];
             $tronqueSuivant = false;
+            $relation = $ENFANTS[$suivant] ?? null;
 
-            if ($premier) {
+            if ($relation && method_exists($entity, $relation)) {
                 try {
-                    $enfants = $this->getChildEntities($typeCourant, $entity);
+                    $requete = $entity->{$relation}();
+                    try {
+                        $requete = $requete->active();
+                    } catch (\Throwable $e) {
+                        $requete = $entity->{$relation}()->where('is_active', true);
+                    }
+                    $enfants = $requete->orderBy('name')->limit($PLAFOND + 1)->get();
+                    $tronqueSuivant = $enfants->count() > $PLAFOND;
+                    $options = $enfants->take($PLAFOND)->map(fn ($e) => [
+                        'label'  => $e->name,
+                        'url'    => $lien($suivant, $e),
+                        'actuel' => false,
+                    ])->values()->all();
                 } catch (\Throwable $e) {
-                    $enfants = collect();
+                    $options = [];
                 }
-                $tronqueSuivant = $enfants->count() > $PLAFOND;
-                $options = $enfants->sortBy('name')->take($PLAFOND)->map(fn ($e) => [
-                    'label'  => $e->name,
-                    'url'    => $lien($suivant, $e),
-                    'actuel' => false,
-                ])->values()->all();
-                $premier = false;
             }
 
             $niveaux[] = [
