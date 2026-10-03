@@ -88,27 +88,7 @@ class LandingPageController extends Controller
             return view('activities::landing.activity-page', [
                 'activity' => $activity,
                 'page'     => $pageSite,
-                // La carte n'existe pas dans le contenu enregistré : celui-ci
-                // ne porte qu'une section d'attente, remplacée ici. Les règles
-                // d'édition que l'éditeur y avait enregistrées par erreur sont
-                // retirées d'abord (cf. ReglesEdition).
-                // Le bandeau ne montre que des vidéos : l'image de l'activité,
-                // le bouton « Voir la vidéo » et la flèche « Défiler » qu'une
-                // page enregistrée y porterait encore sont retirés.
-                // La section « Établissements » du gabarit ne porte que des
-                // cartes de démonstration : elles sont remplacées ici par les
-                // établissements qui proposent l'activité, et ses filtres par
-                // les catégories réellement présentes. Sans rattachement, la
-                // démonstration reste affichée (TemplateEtablissements).
-                'contenu'  => \Vendor\Cms\Support\TemplateEtablissements::hydrateActivite(
-                    $this->injecterCarteMonde(
-                        \Vendor\Activities\Support\HerosVideo::nettoyer(
-                            \Vendor\Activities\Support\ReglesEdition::retirer($pageSite->content)
-                        ),
-                        $activity
-                    ),
-                    (int) $activity->id
-                ),
+                'contenu'  => $this->hydrater($pageSite->content, $activity),
             ]);
         }
 
@@ -335,6 +315,42 @@ class LandingPageController extends Controller
             ->get();
 
         return view('activities::landing.activity-testimonials', compact('activity', 'testimonials'));
+    }
+
+    /**
+     * Prépare le contenu enregistré pour l'affichage public.
+     *
+     * Dans cet ordre :
+     *   1. les règles d'édition que l'éditeur aurait enregistrées par erreur
+     *      sont retirées (cf. ReglesEdition) ;
+     *   2. le bandeau ne garde que ses vidéos — l'image de l'activité, le
+     *      bouton « Voir la vidéo » et la flèche « Défiler » qu'une page
+     *      enregistrée porterait encore sont retirés (gabarit Plexify) ;
+     *   3. la section d'attente `data-gx-map` devient la vraie carte : le
+     *      contenu enregistré n'en porte qu'un carton ;
+     *   4. « Où aller » reçoit les villes et régions où l'activité est
+     *      réellement proposée ;
+     *   5. « Quoi faire aussi » reçoit les autres activités de sa catégorie ;
+     *   6. « Où en profiter » reçoit les établissements qui la proposent — la
+     *      grille d'ensemble comme les volets par type de prestation —, et ses
+     *      filtres les catégories réellement présentes.
+     *
+     * ⚠ Les étapes 4 et 5 ne trouvent leur grille que dans le gabarit
+     * « Boussole » ; sur une page Plexify elles rendent le contenu tel quel.
+     * Les étapes 2 et 3, à l'inverse, ne trouvent leurs ancres que dans
+     * Plexify. Les deux gabarits traversent donc la même chaîne sans se
+     * gêner, et chaque grille sans donnée garde sa démonstration plutôt que
+     * d'afficher un trou.
+     */
+    protected function hydrater(?string $contenu, Activity $activity): string
+    {
+        $html = \Vendor\Activities\Support\ReglesEdition::retirer($contenu);
+        $html = \Vendor\Activities\Support\HerosVideo::nettoyer($html);
+        $html = $this->injecterCarteMonde($html, $activity);
+        $html = \Vendor\Cms\Support\TemplateDestinations::hydrateActivite($html, (int) $activity->id);
+        $html = \Vendor\Cms\Support\TemplateActivities::hydrateVoisines($html, (int) $activity->id);
+
+        return \Vendor\Cms\Support\TemplateEtablissements::hydrateActivite($html, (int) $activity->id);
     }
 
     /**

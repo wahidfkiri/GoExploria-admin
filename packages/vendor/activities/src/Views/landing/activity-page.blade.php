@@ -54,6 +54,18 @@
      `!important` : les gabarits posent `top: 0` sur leur en-tête, souvent
      eux-mêmes en `!important` pour leur état collant. --}}
 <style>
+    /* ── Gabarit « Boussole » ────────────────────────────────────────────
+       Son en-tête est `position: sticky` et vaut z-index 40 : posé sous
+       l'en-tête FIXE de la plateforme (z-index 10060), il disparaîtrait
+       dessous en haut de page. Il descend donc de la même hauteur mesurée,
+       et le contenu lui laisse la place.
+
+       Une page ne porte jamais les deux en-têtes : c'est l'un OU l'autre
+       gabarit. Les règles de Plexify ci-dessous ne la concernent pas. */
+    .boussole-tpl { padding-top: var(--gx-entete-plateforme, 96px); }
+    .boussole-tpl .bsl-entete { top: var(--gx-entete-plateforme, 96px) !important; }
+
+    /* ── Gabarit Plexify (celui livré par défaut) ───────────────────────── */
     .site-header { top: var(--gx-entete-plateforme, 96px) !important; }
 
     /* ── FOND TRANSPARENT ────────────────────────────────────────────────

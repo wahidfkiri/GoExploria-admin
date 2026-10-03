@@ -69,8 +69,8 @@
 
        `!important` : la feuille du gabarit vit dans le contenu enregistré,
        donc APRÈS celle-ci dans le document. */
-    .catpage-tpl { padding-top: var(--gx-entete-plateforme, 96px); }
-    .catpage-tpl .cat-entete { top: var(--gx-entete-plateforme, 96px) !important; }
+    .boussole-tpl { padding-top: var(--gx-entete-plateforme, 96px); }
+    .boussole-tpl .bsl-entete { top: var(--gx-entete-plateforme, 96px) !important; }
 
     /* ── Gabarits bâtis sur Plexify ──────────────────────────────────────
        Les pages créées avant « Boussole » portent l'en-tête du thème

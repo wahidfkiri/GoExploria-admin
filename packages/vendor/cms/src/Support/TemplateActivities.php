@@ -40,6 +40,14 @@ class TemplateActivities extends TemplateGrid
     protected ?int $categorieId = null;
 
     /**
+     * Contexte ACTIVITÉ VOISINE : identifiant de l'activité AFFICHÉE.
+     *
+     * Renseigné par hydrateVoisines(). La grille liste alors les autres
+     * activités de sa catégorie — celle-ci exclue, elle occupe déjà la page.
+     */
+    protected ?int $activiteCouranteId = null;
+
+    /**
      * Hydrate la page d'une CATÉGORIE d'activités.
      *
      * `hydrate()` du socle prend un établissement : ce point d'entrée le
@@ -72,6 +80,35 @@ class TemplateActivities extends TemplateGrid
         }
     }
 
+    /**
+     * Hydrate la rubrique « Quoi faire aussi » de la page d'une ACTIVITÉ.
+     *
+     * Sur une page d'activité, « quoi faire » ne peut pas désigner l'activité
+     * elle-même : elle occupe déjà toute la page. La grille sert donc le
+     * rebond vers les AUTRES activités de sa catégorie.
+     */
+    public static function hydrateVoisines(string $html, ?int $activiteId): string
+    {
+        $instance = new static(0);
+
+        if ($activiteId === null || strpos($html, $instance->marqueur()) === false) {
+            return $html;
+        }
+
+        try {
+            $instance = new static(0);
+            $instance->activiteCouranteId = (int) $activiteId;
+
+            return $instance->parcourir($html);
+        } catch (\Throwable $e) {
+            Log::warning(static::class . ' : hydratation abandonnée — ' . $e->getMessage(), [
+                'activity_id' => $activiteId,
+            ]);
+
+            return $html;
+        }
+    }
+
     protected function marqueur(): string
     {
         return 'data-gx-activities';
@@ -96,6 +133,26 @@ class TemplateActivities extends TemplateGrid
         $query = Activity::query()
             ->where('activities.is_active', true)
             ->with('categoryRelation:id,name');
+
+        if ($this->activiteCouranteId !== null) {
+            // Les voisines : même catégorie, l'activité affichée exclue. La
+            // catégorie est lue depuis l'activité plutôt que passée en
+            // paramètre — un seul identifiant à faire circuler.
+            $categorie = Activity::query()
+                ->whereKey($this->activiteCouranteId)
+                ->value('categorie_id');
+
+            if (! $categorie) {
+                return collect();
+            }
+
+            return $query
+                ->where('activities.categorie_id', $categorie)
+                ->whereKeyNot($this->activiteCouranteId)
+                ->orderBy('activities.name')
+                ->limit($limite)
+                ->get();
+        }
 
         if ($this->categorieId !== null) {
             // Contexte CATÉGORIE : `activities.categorie_id` est une colonne

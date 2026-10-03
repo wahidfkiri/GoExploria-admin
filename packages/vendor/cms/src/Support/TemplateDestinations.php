@@ -49,6 +49,14 @@ class TemplateDestinations extends TemplateGrid
     /** Contexte CATÉGORIE : identifiant de la catégorie d'activités. */
     protected ?int $categorieId = null;
 
+    /**
+     * Contexte ACTIVITÉ : identifiant de l'activité.
+     *
+     * Renseigné par hydrateActivite(). La grille liste alors les destinations
+     * où CETTE activité est proposée, et non celles de toute une catégorie.
+     */
+    protected ?int $activiteId = null;
+
     /** Nombre d'établissements retenus avant regroupement. */
     protected const PLAFOND_ETABLISSEMENTS = 2000;
 
@@ -74,6 +82,31 @@ class TemplateDestinations extends TemplateGrid
             // cassée.
             Log::warning(static::class . ' : hydratation abandonnée — ' . $e->getMessage(), [
                 'categorie_id' => $categorieId,
+            ]);
+
+            return $html;
+        }
+    }
+
+    /**
+     * Hydrate la rubrique « Où aller » de la page d'une ACTIVITÉ.
+     */
+    public static function hydrateActivite(string $html, ?int $activiteId): string
+    {
+        $instance = new static(0);
+
+        if ($activiteId === null || strpos($html, $instance->marqueur()) === false) {
+            return $html;
+        }
+
+        try {
+            $instance = new static(0);
+            $instance->activiteId = (int) $activiteId;
+
+            return $instance->parcourir($html);
+        } catch (\Throwable $e) {
+            Log::warning(static::class . ' : hydratation abandonnée — ' . $e->getMessage(), [
+                'activity_id' => $activiteId,
             ]);
 
             return $html;
@@ -117,11 +150,11 @@ class TemplateDestinations extends TemplateGrid
      */
     protected function elements(int $limite, array $options)
     {
-        if ($this->categorieId === null) {
+        if ($this->categorieId === null && $this->activiteId === null) {
             return collect();
         }
 
-        $etablissements = $this->etablissementsDeLaCategorie();
+        $etablissements = $this->etablissementsPorteurs();
 
         if ($etablissements->isEmpty()) {
             return collect();
@@ -155,16 +188,24 @@ class TemplateDestinations extends TemplateGrid
     }
 
     /**
-     * Établissements actifs proposant une activité ACTIVE de la catégorie.
+     * Établissements actifs qui portent ce qu'on affiche : une activité ACTIVE
+     * de la catégorie, ou l'activité elle-même.
      *
      * @return Collection<int, Etablissement>
      */
-    protected function etablissementsDeLaCategorie(): Collection
+    protected function etablissementsPorteurs(): Collection
     {
-        $ids = DB::table('activity_etablissement')
+        $requete = DB::table('activity_etablissement')
             ->join('activities', 'activities.id', '=', 'activity_etablissement.activity_id')
-            ->where('activities.categorie_id', $this->categorieId)
-            ->where('activities.is_active', true)
+            ->where('activities.is_active', true);
+
+        if ($this->activiteId !== null) {
+            $requete->where('activities.id', $this->activiteId);
+        } else {
+            $requete->where('activities.categorie_id', $this->categorieId);
+        }
+
+        $ids = $requete
             ->distinct()
             ->limit(self::PLAFOND_ETABLISSEMENTS)
             ->pluck('activity_etablissement.etablissement_id');
@@ -289,14 +330,20 @@ class TemplateDestinations extends TemplateGrid
         return '/travel-destination/' . $type . '/' . rawurlencode($identifiant);
     }
 
-    /** « 7 établissements » : le volume dit plus que le nom seul. */
+    /**
+     * « 7 établissements proposent… » : le volume dit plus que le nom seul.
+     *
+     * Le libellé suit le contexte : sur la page d'une activité on parle d'ELLE,
+     * sur celle d'une catégorie on parle de ses activités.
+     */
     protected function resume(array $ligne): string
     {
         $nombre = (int) $ligne['nombre'];
+        $quoi = $this->activiteId !== null ? 'cette activité' : 'ces activités';
 
         return $nombre > 1
-            ? $nombre . ' établissements proposent ces activités.'
-            : 'Un établissement propose ces activités.';
+            ? $nombre . ' établissements proposent ' . $quoi . '.'
+            : 'Un établissement propose ' . $quoi . '.';
     }
 
     /** Visuel de la destination, ou null pour garder celui de la démonstration. */
