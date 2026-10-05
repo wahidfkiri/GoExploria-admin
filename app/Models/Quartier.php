@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Traits\HasPage;
 
 class Quartier extends Model
@@ -47,6 +48,22 @@ class Quartier extends Model
     ];
 
     // Relation avec l'arrondissement
+
+    /**
+     * Activités rattachées à ce niveau.
+     *
+     * ⚠ Le pivot n'existe que depuis la migration du 2026-09-30 ; il est
+     * alimenté par l'onglet « Catégories & Activités » de l'espace
+     * destination. Sans cette relation, TravelDestinationController
+     * retombait sur une collection vide (garde `method_exists`) et le
+     * méga-menu des activités ne s'affichait jamais à ce niveau.
+     */
+    public function activities(): BelongsToMany
+    {
+        return $this->belongsToMany(Activity::class, 'activity_quartier')
+                    ->withTimestamps();
+    }
+
     public function arrondissement(): BelongsTo
     {
         return $this->belongsTo(Arrondissement::class);

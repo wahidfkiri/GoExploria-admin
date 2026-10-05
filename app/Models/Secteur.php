@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Traits\HasPage;
 
@@ -44,6 +45,22 @@ class Secteur extends Model
     ];
 
     // Relation avec la région
+
+    /**
+     * Activités rattachées à ce niveau.
+     *
+     * ⚠ Le pivot n'existe que depuis la migration du 2026-09-30 ; il est
+     * alimenté par l'onglet « Catégories & Activités » de l'espace
+     * destination. Sans cette relation, TravelDestinationController
+     * retombait sur une collection vide (garde `method_exists`) et le
+     * méga-menu des activités ne s'affichait jamais à ce niveau.
+     */
+    public function activities(): BelongsToMany
+    {
+        return $this->belongsToMany(Activity::class, 'activity_secteur')
+                    ->withTimestamps();
+    }
+
     public function region()
     {
         return $this->belongsTo(Region::class);

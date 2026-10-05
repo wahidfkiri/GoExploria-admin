@@ -97,6 +97,15 @@ class TravelDestinationController extends Controller
         $mapCategories = MapCategory::where('is_active', true)->orderBy('sort_order')->get(['slug', 'name', 'icon_class', 'color', 'image']);
         $destinationActivities = method_exists($entity, 'activities') ? $entity->activities()->where('is_active', true)->get() : collect();
 
+        // Méga-menu « Voir les activités » de la bannière : les activités de
+        // CETTE destination, puis celles de TOUTES ses destinations
+        // descendantes — un pays montre ses provinces, leurs régions, leurs
+        // villes et jusqu'aux quartiers —, rangées par catégorie dans chaque
+        // groupe, avec leurs visuels (voir ActivitesParDestination).
+        $activitesParDestination = \Vendor\TravelDestination\Support\ActivitesParDestination::pour(
+            $entity, $normalizedType
+        );
+
         $mapPoints = collect();
         if (in_array($normalizedType, ['continent', 'country', 'province', 'region', 'city', 'secteur', 'arrondissement', 'quartier'])) {
             $radius = match ($normalizedType) {
@@ -215,6 +224,7 @@ class TravelDestinationController extends Controller
             'childEntities',
             'mapCategories',
             'destinationActivities',
+            'activitesParDestination',
             'mapPoints',
             'ads'
         ));
