@@ -115,7 +115,7 @@ class MapPoint extends Model
      * Points visibles sur un emplacement donné (home, continent, … quartier).
      * NULL ou liste vide = visible partout (rétro-compatibilité).
      */
-    public function scopeVisibleOn($query, ?string $location)
+    public function scopeVisibleOn($query, ?string $location, $destinationId = null)
     {
         if (!$location) {
             return $query;
@@ -126,10 +126,17 @@ class MapPoint extends Model
             $location = 'ville';
         }
 
-        return $query->where(function ($q) use ($location) {
+        // Deux sortes de jetons : un NIVEAU (`ville` = toutes les pages Ville)
+        // ou une DESTINATION précise (`ville:12` = la seule page de cette
+        // ville), choisie dans l'espace entreprise. ⚠ Même règle côté admin.
+        return $query->where(function ($q) use ($location, $destinationId) {
             $q->whereNull('display_locations')
               ->orWhereRaw("JSON_LENGTH(display_locations) = 0")
               ->orWhereJsonContains('display_locations', $location);
+
+            if ($destinationId !== null && $destinationId !== '' && ctype_digit((string) $destinationId)) {
+                $q->orWhereJsonContains('display_locations', $location . ':' . (int) $destinationId);
+            }
         });
     }
 

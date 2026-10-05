@@ -804,6 +804,8 @@ class InteractiveMap {
         try {
             // Contexte d'emplacement : type de la page destination courante, sinon accueil
             const params = {per_page:200, context: DESTINATION_MAP_CONTEXT?.destination?.type || 'home'};
+            // Destination précise : un point peut ne viser que CETTE page (jeton `ville:12`).
+            if (DESTINATION_MAP_CONTEXT?.destination?.id) params.context_id = DESTINATION_MAP_CONTEXT.destination.id;
             const r = await axios.get(`${API_BASE_URL}/points`, {params});
             if (r.data.success) {
                 const allPlaces = Array.isArray(r.data.data) ? r.data.data : [];

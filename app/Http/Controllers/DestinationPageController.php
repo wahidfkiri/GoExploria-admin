@@ -483,6 +483,7 @@ class DestinationPageController extends Controller
 
         return [
             'destination' => [
+                'id' => $current->id ?? null,
                 'name' => $this->modelName($current),
                 'type' => $currentType,
                 'latitude' => $center['lat'],
@@ -590,7 +591,7 @@ class DestinationPageController extends Controller
                 ], $videos->get(($index + 1) % max($videos->count(), 1)));
             });
 
-        $mapPoints = $this->mapPointsNear($center, $resolved['current_type'])->map(function (MapPoint $point) {
+        $mapPoints = $this->mapPointsNear($center, $resolved['current_type'], $resolved['current']->id ?? null)->map(function (MapPoint $point) {
             return [
                 'id' => 'map-point-' . $point->id,
                 'name' => $point->title,
@@ -631,14 +632,14 @@ class DestinationPageController extends Controller
         ];
     }
 
-    private function mapPointsNear(array $center, ?string $pageType = null): Collection
+    private function mapPointsNear(array $center, ?string $pageType = null, $destinationId = null): Collection
     {
         if (!Schema::hasTable('map_points')) {
             return collect();
         }
 
         return MapPoint::active()
-            ->visibleOn($pageType)
+            ->visibleOn($pageType, $destinationId)
             ->inDisplayPeriod()
             ->whereNotNull('latitude')
             ->whereNotNull('longitude')

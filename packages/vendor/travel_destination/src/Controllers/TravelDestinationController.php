@@ -120,7 +120,7 @@ class TravelDestinationController extends Controller
                 default => 5,
             };
             $q = MapPoint::with(['details', 'images', 'mainImage'])->active()
-                ->visibleOn($normalizedType)
+                ->visibleOn($normalizedType, $entity->id ?? null)
                 ->inDisplayPeriod();
             if ($normalizedType !== 'continent') {
                 $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
@@ -526,7 +526,7 @@ class TravelDestinationController extends Controller
         };
 
         $query = MapPoint::with(['details', 'images', 'mainImage'])->active()
-            ->visibleOn($targetType)
+            ->visibleOn($targetType, $target->id ?? null)
             ->inDisplayPeriod();
 
         // La PAGE d'un continent montre tous les points du monde (elle sert de

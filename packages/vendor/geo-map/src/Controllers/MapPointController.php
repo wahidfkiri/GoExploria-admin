@@ -30,7 +30,7 @@ class MapPointController extends Controller
                 ->active()
                 // Emplacement de la page appelante (home, continent, … quartier)
                 // + période d'affichage paramétrés dans l'espace entreprise.
-                ->visibleOn($request->query('context'))
+                ->visibleOn($request->query('context'), $request->query('context_id'))
                 ->inDisplayPeriod();
 
             // Filtre par catégorie
