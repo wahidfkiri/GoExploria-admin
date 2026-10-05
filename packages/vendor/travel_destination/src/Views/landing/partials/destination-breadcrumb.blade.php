@@ -194,7 +194,10 @@
             var droite = (b.right - c.right) + (parseFloat(style.paddingRight) || 0);
             fil.style.left = Math.max(0, Math.round(gauche)) + 'px';
             fil.style.right = Math.max(0, Math.round(droite)) + 'px';
-            fil.style.top = (hauteurEntete() + 18) + 'px';
+            // Écart réglable par la page hôte (--gxfil-ecart) : l'accueil le
+            // réduit, sa bannière étant plus chargée en haut.
+            var ecart = parseInt(getComputedStyle(fil).getPropertyValue('--gxfil-ecart'), 10);
+            fil.style.top = (hauteurEntete() + (isNaN(ecart) ? 18 : ecart)) + 'px';
         };
 
         caler();

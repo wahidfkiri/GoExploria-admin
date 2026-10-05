@@ -293,7 +293,10 @@
                 /* Pleine largeur et calé à gauche, avec le même retrait que la
                    barre de recherche (18 px) pour aligner les deux. */
                 .go-home-hero .gxfil-hote { width: 100%; max-width: none; margin: 0; padding: 0 18px; }
-                .go-home-hero .gxfil { justify-content: flex-start; color: #fff; z-index: 37; }
+                /* --gxfil-ecart : le fil se colle sous l'en-tête (8 px au lieu
+                   des 18 px des pages de destination), pour laisser la place à
+                   la barre de recherche juste dessous. */
+                .go-home-hero .gxfil { --gxfil-ecart: 8px; justify-content: flex-start; color: #fff; z-index: 37; }
                 @media (max-width: 640px) { .go-home-hero .gxfil-hote { padding: 0 12px; } }
             </style>
             <script>
@@ -302,6 +305,9 @@
                    se serait superposé à elle. Elle descend donc juste sous le
                    fil, dont la hauteur change avec la largeur de l'écran. */
                 (function () {
+                    var cible = null;
+                    var enCours = false;
+
                     function caler() {
                         var hero = document.querySelector('.go-home-hero');
                         var fil = hero && hero.querySelector('.gxfil');
@@ -312,14 +318,34 @@
                         var f = fil.getBoundingClientRect();
                         if (!f.height) { return; }
 
-                        var bas = Math.round(f.bottom - h.top + 14);
-                        if (bas > 0) { couche.style.top = bas + 'px'; }
+                        cible = Math.round(f.bottom - h.top + 12) + 'px';
+                        if (couche.style.top === cible) { return; }
+
+                        enCours = true;
+                        couche.style.top = cible;
+                        enCours = false;
                     }
 
+                    function surveiller() {
+                        var couche = document.querySelector('.go-home-hero .go-hero-search-layer');
+                        if (!couche || typeof MutationObserver === 'undefined') { return; }
+
+                        /* La hauteur de la barre est posée en style en ligne et
+                           recalculée ailleurs : sans cette surveillance, elle
+                           reprenait sa place sous l'en-tête et recouvrait le
+                           fil. On repose notre valeur dès qu'elle change. */
+                        new MutationObserver(function () {
+                            if (enCours || !cible) { return; }
+                            if (couche.style.top !== cible) { couche.style.top = cible; }
+                        }).observe(couche, { attributes: true, attributeFilter: ['style'] });
+                    }
+
+                    function demarrer() { caler(); surveiller(); }
+
                     if (document.readyState === 'loading') {
-                        document.addEventListener('DOMContentLoaded', caler);
+                        document.addEventListener('DOMContentLoaded', demarrer);
                     } else {
-                        caler();
+                        demarrer();
                     }
                     window.addEventListener('load', caler);
                     window.addEventListener('resize', caler, { passive: true });
