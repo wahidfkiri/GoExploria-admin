@@ -21,7 +21,7 @@ class SearchBarV2 {
         this.minQueryLength = 2;
         this.endpoint = '/api/v1/destinations/search';
 
-        this.typeOrder = ['continent', 'country', 'province', 'region', 'ville', 'etablissement', 'secteur', 'activity'];
+        this.typeOrder = ['continent', 'country', 'province', 'region', 'ville', 'etablissement', 'secteur', 'activity', 'category'];
         this.typeLabel = {
             continent: 'Continent',
             country: 'Pays',
@@ -30,7 +30,8 @@ class SearchBarV2 {
             ville: 'Ville',
             etablissement: 'Établissement',
             secteur: 'Secteur',
-            activity: 'Activité'
+            activity: 'Activité',
+            category: 'Catégorie'
         };
 
         this.init();
@@ -97,7 +98,8 @@ class SearchBarV2 {
             villes: 'ville',
             etablissements: 'etablissement',
             secteurs: 'secteur',
-            activities: 'activity'
+            activities: 'activity',
+            categories: 'category'
         };
 
         var results = [];
@@ -174,7 +176,7 @@ class SearchBarV2 {
         }
 
         var maxResults = 21;
-        var displayed = results.slice(0, maxResults);
+        var displayed = this.repartirParType(results, maxResults);
 
         displayed.forEach((dest, index) => {
             var li = document.createElement('li');
@@ -211,6 +213,55 @@ class SearchBarV2 {
         this.showResults();
     }
 
+    /**
+     * Les resultats arrivent groupes par type, dans l'ordre de `typeOrder` :
+     * sans garde-fou, une requete large (beaucoup de villes) remplirait les
+     * 21 places avant d'atteindre les derniers groupes — les activites et les
+     * categories ne s'afficheraient jamais. Chaque type presente garde donc
+     * une part minimale, et les places restantes sont redistribuees a ceux qui
+     * ont encore des resultats. L'ordre des groupes est conserve.
+     */
+    repartirParType(results, max) {
+        var parType = {};
+        results.forEach(function (item) {
+            (parType[item.type] = parType[item.type] || []).push(item);
+        });
+
+        var ordre = this.typeOrder.filter(function (type) {
+            return parType[type] && parType[type].length;
+        });
+        if (ordre.length <= 1) return results.slice(0, max);
+
+        var part = {};
+        var restant = max;
+        var quota = Math.max(1, Math.floor(max / ordre.length));
+
+        ordre.forEach(function (type) {
+            part[type] = Math.min(quota, parType[type].length);
+            restant -= part[type];
+        });
+
+        var distribue = true;
+        while (restant > 0 && distribue) {
+            distribue = false;
+            for (var i = 0; i < ordre.length && restant > 0; i++) {
+                var type = ordre[i];
+                if (part[type] < parType[type].length) {
+                    part[type]++;
+                    restant--;
+                    distribue = true;
+                }
+            }
+        }
+
+        var sortie = [];
+        ordre.forEach(function (type) {
+            sortie = sortie.concat(parType[type].slice(0, part[type]));
+        });
+
+        return sortie;
+    }
+
     showNoResults(query) {
         this.searchBarResultsList.innerHTML =
             '<div class="search-bar-v2-no-results">' +
@@ -233,6 +284,7 @@ class SearchBarV2 {
             case 'etablissement': return 'fas fa-store';
             case 'secteur': return 'fas fa-location-dot';
             case 'activity': return 'fas fa-running';
+            case 'category': return 'fas fa-tags';
             default: return 'fas fa-location-dot';
         }
     }
@@ -248,6 +300,8 @@ class SearchBarV2 {
             case 'etablissement': return '/company/' + dest.id + '/' + (slug || ('etablissement-' + dest.id));
             case 'secteur': return '/travel-destination/secteur/' + slug;
             case 'activity': return '/activity/' + slug;
+            // Page d'une categorie (route `category.show`).
+            case 'category': return '/categories/' + slug;
             default: return '#';
         }
     }

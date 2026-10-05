@@ -135,5 +135,8 @@
 {{-- Popups publicitaires : même dispositif que la page d'activité classique. --}}
 @include('components.ads-popup', ['adContext' => 'activities'])
 
+{{-- Liens vers les destinations : ouverture dans un nouvel onglet. --}}
+@include('activities::landing.partials.destinations-nouvel-onglet')
+
 </body>
 </html>

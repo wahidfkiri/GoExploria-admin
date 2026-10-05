@@ -41,9 +41,14 @@ class Navigation {
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', (e) => {
                 const href = anchor.getAttribute('href');
-                if (!href || href === '#') return;
+                // L'adresse a pu changer depuis la mise en place de l'ecouteur
+                // (liens reconstruits en JS) : si ce n'est plus une ancre, on
+                // laisse le navigateur suivre le lien. Sinon querySelector
+                // levait « is not a valid selector » sur une URL complete.
+                if (!href || href === '#' || href.charAt(0) !== '#') return;
                 e.preventDefault();
-                const target = document.querySelector(href);
+                let target = null;
+                try { target = document.querySelector(href); } catch (err) { return; }
                 if (target) {
                     this.smoothScrollTo(target);
                     if (this.isMenuOpen) {

@@ -160,7 +160,7 @@ class DestinationController extends Controller
     {
         $request->validate([
             'query' => 'required|string|min:2',
-            'type' => 'nullable|in:continent,country,province,region,ville,secteur,etablissement,activity',
+            'type' => 'nullable|in:continent,country,province,region,ville,secteur,etablissement,activity,category',
         ]);
 
         $results = $this->destinationService->search(
@@ -276,6 +276,9 @@ class DestinationController extends Controller
             'secteurs' => $this->enrichCollection($results['secteurs'] ?? collect(), 'secteur'),
             'etablissements' => collect($results['etablissements'] ?? [])->map(fn ($item) => $this->establishmentPayload($item))->values(),
             'activities' => $this->enrichCollection($results['activities'] ?? collect(), 'activity'),
+            'categories' => collect($results['categories'] ?? [])
+                ->map(fn ($item) => $this->categoryPayload($item))
+                ->values(),
         ];
     }
 
@@ -306,6 +309,34 @@ class DestinationController extends Controller
             'longitude' => $this->numericValue($item->longitude ?? null),
             'image_url' => $this->imageUrl($item),
         ]);
+    }
+
+    /**
+     * Une categorie n'est pas une destination : elle n'a ni coordonnees ni
+     * hierarchie geographique, et sa page vit sous /categories/{slug}
+     * (route `category.show`). D'ou une charge utile a part.
+     */
+    private function categoryPayload($item): array
+    {
+        $name = trim((string) ($item->name ?? ''));
+        $slug = trim((string) ($item->slug ?? '')) !== '' ? $item->slug : Str::slug($name);
+        $typeName = $item->type->name ?? null;
+
+        return [
+            'id'         => $item->id ?? null,
+            'name'       => $name,
+            'slug'       => $slug,
+            'type'       => 'category',
+            // Chemin relatif : l'URL absolue reprendrait l'hote configure du
+            // serveur, pas celui de la requete.
+            'url'        => $slug !== '' ? route('category.show', ['slug' => $slug], false) : '#',
+            'path'       => $slug !== '' ? ltrim(route('category.show', ['slug' => $slug], false), '/') : '',
+            'is_active'  => (bool) ($item->is_active ?? true),
+            // Le type sert de sous-titre dans les listes de resultats.
+            'type_label'  => $typeName,
+            'description' => $typeName ?: ($item->description ?? null),
+            'image_url'   => null,
+        ];
     }
 
     private function establishmentPayload($item): array

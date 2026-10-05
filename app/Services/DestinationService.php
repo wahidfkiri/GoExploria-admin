@@ -12,6 +12,7 @@ use App\Models\Arrondissement;
 use App\Models\Quartier;
 use App\Models\Etablissement;
 use App\Models\Activity;
+use App\Models\Category;
 use Vendor\Cms\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
@@ -546,6 +547,30 @@ class DestinationService
             }
         } catch (\Exception $e) {
             $results['etablissements'] = collect([]);
+        }
+
+        try {
+            if (!$type || $type === 'category') {
+                // Les categories sont cherchees par leur nom, leur slug ET le
+                // nom de leur type : « hebergement » doit ramener les
+                // categories du type « Hebergement » meme si aucune ne porte
+                // ce mot dans son nom.
+                $results['categories'] = Category::query()
+                    ->where('is_active', true)
+                    ->where(function ($builder) use ($query) {
+                        $builder->where('name', 'like', "%{$query}%")
+                            ->orWhere('slug', 'like', "%{$query}%")
+                            ->orWhereHas('type', function ($typeBuilder) use ($query) {
+                                $typeBuilder->where('name', 'like', "%{$query}%");
+                            });
+                    })
+                    ->with(['type:id,name,slug'])
+                    ->orderBy('name')
+                    ->limit(10)
+                    ->get(['id', 'name', 'slug', 'description', 'is_active', 'categorie_type_id']);
+            }
+        } catch (\Exception $e) {
+            $results['categories'] = collect([]);
         }
 
         try {

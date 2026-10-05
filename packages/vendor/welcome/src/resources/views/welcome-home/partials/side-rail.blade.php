@@ -127,7 +127,7 @@
     <p class="gxrail-pop__title">Rechercher</p>
     <div class="gxrail-search__field">
         <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-        <input type="search" id="gxRailSearchInput" placeholder="Une destination, une ville…" autocomplete="off" aria-controls="gxRailSearchResults">
+        <input type="search" id="gxRailSearchInput" placeholder="Une destination, une catégorie…" autocomplete="off" aria-controls="gxRailSearchResults">
     </div>
     <div class="gxrail-search__results" id="gxRailSearchResults" aria-live="polite"></div>
 </div>
@@ -658,11 +658,13 @@
 
       /* L'API rend les résultats GROUPÉS par type
          ({continents, countries, provinces, regions, villes, secteurs,
-         etablissements, activities}), pas une liste : on garde ses groupes. */
+         etablissements, activities, categories}), pas une liste : on garde
+         ses groupes. */
       var GROUPES = {
         continents: 'Continents', countries: 'Pays', provinces: 'Provinces',
         regions: 'Régions', villes: 'Villes', secteurs: 'Secteurs',
-        etablissements: 'Établissements', activities: 'Activités'
+        etablissements: 'Établissements', activities: 'Activités',
+        categories: 'Catégories'
       };
 
       /* ⚠ Pour les DESTINATIONS, on n'utilise PAS le champ `url` de l'API :
@@ -706,9 +708,13 @@
           html += '<p class="gxrail-search__group">' + GROUPES[cle] + '</p>';
           html += items.slice(0, 6).map(function (it) {
             var img = it.image_url || it.image || '';
+            // Les catégories n'ont pas d'image : leur type sert de sous-titre.
+            var sous = cle === 'categories' ? (it.type_label || '') : '';
             return '<a href="' + echapper(lienDe(cle, it)) + '">'
               + (img ? '<img src="' + echapper(img) + '" alt="" loading="lazy">' : '')
-              + '<span>' + echapper(it.name || '') + '</span></a>';
+              + '<span>' + echapper(it.name || '')
+              + (sous ? '<small>' + echapper(sous) + '</small>' : '')
+              + '</span></a>';
           }).join('');
         });
 

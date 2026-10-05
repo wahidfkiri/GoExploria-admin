@@ -1848,5 +1848,8 @@
      l'accueil et les pages destination. --}}
 @include('components.ads-popup', ['adContext' => 'activities'])
 
+{{-- Liens vers les destinations : ouverture dans un nouvel onglet. --}}
+@include('activities::landing.partials.destinations-nouvel-onglet')
+
 </body>
 </html>
