@@ -150,6 +150,26 @@
 @endonce
 
 <section class="hero-v2 go-home-hero {{ $hasHeroSlides ? '' : 'go-home-hero--empty' }}" id="{{ $heroId }}" @if(!$hasHeroSlides && ($hideSearchBarV2 ?? false)) style="display:none" @endif>
+    {{-- Fil d'Ariane des destinations, en haut de la bannière (même composant
+         que les pages de destination). Ici aucune destination n'est choisie :
+         chaque niveau actif liste les siennes.
+         Le conteneur sert de repère d'alignement au script d'épinglage, qui
+         exige un parent distinct de la section. --}}
+    @if(class_exists(\Vendor\TravelDestination\Support\FilArianeDestinations::class))
+        <div class="gxfil-hote">
+            @include('travel-destination::landing.partials.destination-breadcrumb', [
+                'breadcrumb'       => collect([['label' => 'Accueil', 'url' => '/']]),
+                'filArianeNiveaux' => \Vendor\TravelDestination\Support\FilArianeDestinations::racine(),
+            ])
+        </div>
+        <style>
+            .go-home-hero .gxfil-hote { width: min(1320px, 100%); margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px); }
+            /* La bannière de l'accueil superpose ses couches : le fil doit
+               rester au-dessus du diaporama et sous les menus. */
+            .go-home-hero .gxfil { position: relative; z-index: 12; color: #fff; }
+        </style>
+    @endif
+
     @if($hasHeroSlides)
         <div class="hero-swiper swiper">
             <div class="swiper-wrapper">

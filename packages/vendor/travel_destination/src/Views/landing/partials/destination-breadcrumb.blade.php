@@ -173,6 +173,19 @@
         /* Le calage reprend AUSSI le padding de la colonne : celle-ci occupe
            toute la largeur de la bannière, et c'est son padding qui met le
            titre en retrait. Sans lui, le fil se collait au bord gauche. */
+        /* Hauteur de l'en-tête : les pages de destination la publient dans
+           --gx-entete-plateforme ; ailleurs (accueil) on la mesure. */
+        var hauteurEntete = function () {
+            var publiee = parseInt(getComputedStyle(document.documentElement)
+                .getPropertyValue('--gx-entete-plateforme'), 10);
+            if (publiee) { return publiee; }
+
+            var barre = document.querySelector('.header-v2 .header-nav')
+                || document.querySelector('.header-v2')
+                || document.querySelector('header');
+            return barre ? Math.max(0, Math.round(barre.getBoundingClientRect().bottom)) : 96;
+        };
+
         var caler = function () {
             var b = banniere.getBoundingClientRect();
             var c = colonne.getBoundingClientRect();
@@ -181,6 +194,7 @@
             var droite = (b.right - c.right) + (parseFloat(style.paddingRight) || 0);
             fil.style.left = Math.max(0, Math.round(gauche)) + 'px';
             fil.style.right = Math.max(0, Math.round(droite)) + 'px';
+            fil.style.top = (hauteurEntete() + 18) + 'px';
         };
 
         caler();
