@@ -150,26 +150,6 @@
 @endonce
 
 <section class="hero-v2 go-home-hero {{ $hasHeroSlides ? '' : 'go-home-hero--empty' }}" id="{{ $heroId }}" @if(!$hasHeroSlides && ($hideSearchBarV2 ?? false)) style="display:none" @endif>
-    {{-- Fil d'Ariane des destinations, en haut de la bannière (même composant
-         que les pages de destination). Ici aucune destination n'est choisie :
-         chaque niveau actif liste les siennes.
-         Le conteneur sert de repère d'alignement au script d'épinglage, qui
-         exige un parent distinct de la section. --}}
-    @if(class_exists(\Vendor\TravelDestination\Support\FilArianeDestinations::class))
-        <div class="gxfil-hote">
-            @include('travel-destination::landing.partials.destination-breadcrumb', [
-                'breadcrumb'       => collect([['label' => 'Accueil', 'url' => '/']]),
-                'filArianeNiveaux' => \Vendor\TravelDestination\Support\FilArianeDestinations::racine(),
-            ])
-        </div>
-        <style>
-            .go-home-hero .gxfil-hote { width: min(1320px, 100%); margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px); }
-            /* La bannière de l'accueil superpose ses couches : le fil doit
-               rester au-dessus du diaporama et sous les menus. */
-            .go-home-hero .gxfil { position: relative; z-index: 12; color: #fff; }
-        </style>
-    @endif
-
     @if($hasHeroSlides)
         <div class="hero-swiper swiper">
             <div class="swiper-wrapper">
@@ -296,6 +276,58 @@
             });
         </script>
         @endonce
+        {{-- Fil d'Ariane des destinations, JUSTE AU-DESSUS de la barre de
+             recherche et calé à gauche. Aucune destination n'est choisie ici :
+             chaque niveau actif liste les siennes.
+
+             Le conteneur sert de repère d'alignement au script d'épinglage du
+             composant, qui exige un parent distinct de la section. --}}
+        @if(class_exists(\Vendor\TravelDestination\Support\FilArianeDestinations::class))
+            <div class="gxfil-hote">
+                @include('travel-destination::landing.partials.destination-breadcrumb', [
+                    'breadcrumb'       => collect([['label' => 'Accueil', 'url' => '/']]),
+                    'filArianeNiveaux' => \Vendor\TravelDestination\Support\FilArianeDestinations::racine(),
+                ])
+            </div>
+            <style>
+                /* Pleine largeur et calé à gauche, avec le même retrait que la
+                   barre de recherche (18 px) pour aligner les deux. */
+                .go-home-hero .gxfil-hote { width: 100%; max-width: none; margin: 0; padding: 0 18px; }
+                .go-home-hero .gxfil { justify-content: flex-start; color: #fff; z-index: 37; }
+                @media (max-width: 640px) { .go-home-hero .gxfil-hote { padding: 0 12px; } }
+            </style>
+            <script>
+                /* La barre de recherche est posée en absolu à une hauteur fixe
+                   (126 px) : sans ce calage, le fil — épinglé sous l'en-tête —
+                   se serait superposé à elle. Elle descend donc juste sous le
+                   fil, dont la hauteur change avec la largeur de l'écran. */
+                (function () {
+                    function caler() {
+                        var hero = document.querySelector('.go-home-hero');
+                        var fil = hero && hero.querySelector('.gxfil');
+                        var couche = hero && hero.querySelector('.go-hero-search-layer');
+                        if (!hero || !fil || !couche) { return; }
+
+                        var h = hero.getBoundingClientRect();
+                        var f = fil.getBoundingClientRect();
+                        if (!f.height) { return; }
+
+                        var bas = Math.round(f.bottom - h.top + 14);
+                        if (bas > 0) { couche.style.top = bas + 'px'; }
+                    }
+
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', caler);
+                    } else {
+                        caler();
+                    }
+                    window.addEventListener('load', caler);
+                    window.addEventListener('resize', caler, { passive: true });
+                    window.addEventListener('scroll', caler, { passive: true });
+                })();
+            </script>
+        @endif
+
         <div class="go-hero-search-layer">
             <div class="search-bar-v2">
                 <div class="search-bar-v2-container">
