@@ -49,6 +49,18 @@
    ne serait plus sélectionnable. PageParDefaut::mettreAJourHeros() le lui
    pose — c'est ce que fait `php artisan activites:page-par-defaut --heros`. */
 .actpage-tpl .main-banner .banner-content h1 { pointer-events: none; }
+
+/* Taille du titre : la maquette montait à 150 px (100 px sous 1200, 45 px sous
+   768), ce qui noyait le bandeau dès qu'une activité porte un nom long. Une
+   seule règle FLUIDE remplace les trois paliers — elle est plus spécifique
+   qu'eux (`.actpage-tpl` en plus), y compris dans leurs media queries.
+   ⚠ Elle vit dans plexify-cms.css, un FICHIER : la nouvelle taille atteint
+   les pages déjà enregistrées sans rien réappliquer. */
+.actpage-tpl .main-banner .banner-content h1.title {
+    font-size: clamp(30px, 5vw, 76px);
+    line-height: 1.08;
+    max-width: 18ch;
+}
 .actpage-tpl .main-banner .banner-content h1 .plx-titre-texte,
 .actpage-tpl .main-banner .banner-content h1 > a,
 .actpage-tpl .main-banner .banner-content h1 > span { pointer-events: auto; }
