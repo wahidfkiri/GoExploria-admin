@@ -101,6 +101,10 @@
         ];
     }
 
+    /* Chaque catégorie replie sa liste : le bouton doit désigner la liste
+       qu'il ouvre (aria-controls), d'où un identifiant par bloc. */
+    $gxBlocNo = 0;
+
     $gxGroupes = collect($gxDonnees['groupes'] ?? []);
     $gxTotal = (int) ($gxDonnees['total'] ?? 0);
 
@@ -160,6 +164,7 @@
                         </h3>
 
                         @foreach($groupe['categories'] as $categorie)
+                            @php($gxListeId = 'gxactdest-liste-' . (++$gxBlocNo))
                             <div class="gxactdest__bloc">
                                 <h4 class="gxactdest__titre">
                                     <span class="gxactdest__vignette gxactdest__vignette--cat" aria-hidden="true">
@@ -177,8 +182,18 @@
                                         {{ $categorie['nom'] }}
                                     @endif
                                     <em>{{ count($categorie['activites']) }}</em>
+                                    {{-- Ouvre/ferme la liste. `hidden` est retiré par le
+                                         script : sans JS le bouton ne servirait à rien et
+                                         les listes restent dépliées. --}}
+                                    <button type="button" class="gxactdest__bascule"
+                                            data-gxactdest-bascule
+                                            aria-expanded="true" aria-controls="{{ $gxListeId }}"
+                                            aria-label="Afficher les activités : {{ $categorie['nom'] }}"
+                                            hidden>
+                                        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                                    </button>
                                 </h4>
-                                <ul class="gxactdest__liste">
+                                <ul class="gxactdest__liste" id="{{ $gxListeId }}">
                                     @foreach($categorie['activites'] as $activite)
                                         <li>
                                             <a href="{{ $activite['url'] }}">
@@ -279,7 +294,22 @@
         flex: 0 0 auto; margin-left: auto; font-style: normal; font-size: 11px; font-weight: 700;
         padding: 1px 7px; border-radius: 999px; background: var(--gxa-soft); color: var(--gxa-muted);
     }
+    /* Bouton de repli d'une catégorie : il suit la pastille de comptage,
+       à l'extrémité droite du titre. Le chevron pivote à l'ouverture. */
+    .gxactdest__bascule {
+        flex: 0 0 auto; width: 24px; height: 24px; padding: 0; margin-left: 4px;
+        display: grid; place-items: center; cursor: pointer;
+        border: 1px solid var(--gxa-line); border-radius: 8px; background: #fff;
+        color: var(--gxa-muted); font-size: 10px; line-height: 1;
+        transition: background .18s ease, color .18s ease, border-color .18s ease;
+    }
+    .gxactdest__bascule:hover { background: var(--gxa-soft); color: var(--gxa-gold-ink); border-color: var(--gxa-gold); }
+    .gxactdest__bascule:focus-visible { outline: 2px solid var(--gxa-gold); outline-offset: 2px; }
+    .gxactdest__bascule i { display: block; transition: transform .18s ease; }
+    .gxactdest__bascule[aria-expanded="true"] i { transform: rotate(180deg); }
+
     .gxactdest__liste { list-style: none; margin: 0; padding: 0; }
+    .gxactdest__liste[hidden] { display: none; }
     .gxactdest__liste a {
         display: block; padding: 3px 0; font-size: 13px; font-weight: 500; line-height: 1.35;
         color: #334155; text-decoration: none;
@@ -393,6 +423,31 @@
             e.stopPropagation();
             panneau.classList.contains('is-open') ? fermer() : ouvrir();
         }, true);
+
+        /* ── Catégories repliées par défaut ──────────────────────────────
+           Le panneau peut aligner des dizaines d'activités : on n'affiche
+           d'abord que les titres de catégorie, chacun dépliable. Le repli se
+           fait ICI et non dans le HTML pour que la page reste lisible sans
+           JS — et il ne se voit pas, le panneau étant masqué jusqu'au clic. */
+        panneau.querySelectorAll('[data-gxactdest-bascule]').forEach(function (bouton) {
+            var liste = document.getElementById(bouton.getAttribute('aria-controls'));
+            if (! liste) { return; }
+
+            bouton.hidden = false;
+            liste.hidden = true;
+            bouton.setAttribute('aria-expanded', 'false');
+
+            bouton.addEventListener('click', function (e) {
+                // Le titre porte le lien vers la page de la catégorie : le
+                // clic sur le chevron ne doit pas le suivre.
+                e.preventDefault();
+                e.stopPropagation();
+
+                var ouvert = bouton.getAttribute('aria-expanded') === 'true';
+                bouton.setAttribute('aria-expanded', ouvert ? 'false' : 'true');
+                liste.hidden = ouvert;
+            });
+        });
 
         panneau.querySelectorAll('[data-gxactdest-close]').forEach(function (b) {
             b.addEventListener('click', fermer);
