@@ -37,6 +37,22 @@
 .actpage-tpl .main-banner .banner-content .video-bx2,
 .actpage-tpl .main-banner .banner-content span { pointer-events: auto; }
 
+/* ⚠ Le titre est un BLOC : sa boîte mesurait 1000 x 330 px au milieu d'un
+   bandeau de 1350 x 900 (mesuré le 2026-10-06) et captait le clic À LA PLACE
+   de la vidéo de fond — dans l'éditeur, cliquer le bandeau sélectionnait le
+   titre, jamais la vidéo, qui semblait donc impossible à changer.
+   Le clic n'est rendu qu'au <span> EN LIGNE qui porte le texte : une boîte en
+   ligne épouse ses lignes, le vide autour d'elles revient à la vidéo.
+   ⚠ `width: fit-content` sur le <h1> ne règle rien : dès que le texte se
+   replie, elle vaut la largeur DISPONIBLE, pas celle de la plus longue ligne.
+   ⚠ Une page enregistrée AVANT ce <span> a un titre en texte nu : son titre
+   ne serait plus sélectionnable. PageParDefaut::mettreAJourHeros() le lui
+   pose — c'est ce que fait `php artisan activites:page-par-defaut --heros`. */
+.actpage-tpl .main-banner .banner-content h1 { pointer-events: none; }
+.actpage-tpl .main-banner .banner-content h1 .plx-titre-texte,
+.actpage-tpl .main-banner .banner-content h1 > a,
+.actpage-tpl .main-banner .banner-content h1 > span { pointer-events: auto; }
+
 /* --- Calques décoratifs : ils ne doivent pas voler le clic aux images. --- */
 .actpage-tpl .bg-item,
 .actpage-tpl .bg-item1,
@@ -327,10 +343,16 @@ html[data-plx-heros-vue="12"] .actpage-tpl .plx-diapo:nth-child(12) {
     --gx-utile-l: .74;
     --gx-utile-h: .87;
 }
+/* ⚠ `pointer-events: none` comme sur l'iframe : un fichier local déposé dans
+   le bandeau devient un <video>, qui CAPTE le clic. Sans cette ligne, une
+   fois la vidéo remplacée par un .mp4, on ne pouvait plus la resélectionner
+   pour en changer — le bandeau est un FOND, ses commandes sont masquées de
+   toute façon (data-hidecontrols). */
 .actpage-tpl .plx-diapo [data-gx-video] video {
     position: absolute !important; top: 0 !important; left: 0 !important;
     width: 100% !important; height: 100% !important;
     max-width: none !important; object-fit: cover !important;
+    pointer-events: none !important;
 }
 /* object-fit est sans effet sur une iframe (YouTube, Vimeo) : on l'agrandit
    jusqu'à couvrir la boîte, on la centre, le débord est rogné. Dimensions
