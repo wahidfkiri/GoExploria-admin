@@ -160,7 +160,6 @@
                                     @endif
                                 </span>
                             </span>
-                            <em>{{ $groupe['nombre'] }}</em>
                         </h3>
 
                         @foreach($groupe['categories'] as $categorie)
@@ -181,7 +180,6 @@
                                     @else
                                         {{ $categorie['nom'] }}
                                     @endif
-                                    <em>{{ count($categorie['activites']) }}</em>
                                     {{-- Ouvre/ferme la liste. `hidden` est retiré par le
                                          script : sans JS le bouton ne servirait à rien et
                                          les listes restent dépliées. --}}
@@ -290,14 +288,10 @@
     }
     .gxactdest__titre a { color: var(--gxa-ink); text-decoration: none; }
     .gxactdest__titre a:hover { color: var(--gxa-gold-ink); text-decoration: underline; }
-    .gxactdest__titre em {
-        flex: 0 0 auto; margin-left: auto; font-style: normal; font-size: 11px; font-weight: 700;
-        padding: 1px 7px; border-radius: 999px; background: var(--gxa-soft); color: var(--gxa-muted);
-    }
     /* Bouton de repli d'une catégorie : il suit la pastille de comptage,
        à l'extrémité droite du titre. Le chevron pivote à l'ouverture. */
     .gxactdest__bascule {
-        flex: 0 0 auto; width: 24px; height: 24px; padding: 0; margin-left: 4px;
+        flex: 0 0 auto; width: 24px; height: 24px; padding: 0; margin-left: auto;
         display: grid; place-items: center; cursor: pointer;
         border: 1px solid var(--gxa-line); border-radius: 8px; background: #fff;
         color: var(--gxa-muted); font-size: 10px; line-height: 1;
@@ -365,10 +359,6 @@
     .gxactdest__ici {
         font-size: 9.5px; font-weight: 800; letter-spacing: .08em;
         padding: 2px 7px; border-radius: 999px; background: var(--gxa-gold); color: #0a1628;
-    }
-    .gxactdest__dtitre em {
-        flex: 0 0 auto; margin-left: auto; font-style: normal; font-size: 11px; font-weight: 700;
-        padding: 1px 7px; border-radius: 999px; background: var(--gxa-soft); color: var(--gxa-muted);
     }
     .gxactdest__dgroupe .gxactdest__bloc { margin-left: 2px; }
 
