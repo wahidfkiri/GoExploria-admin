@@ -16,57 +16,11 @@
     $gxFilNiveaux = collect($filArianeNiveaux ?? []);
 @endphp
 
+
 @if($gxFilNiveaux->isNotEmpty() || $gxFilFixes->count() > 1)
-<nav class="gxfil" aria-label="Fil d’Ariane">
-    @foreach($gxFilFixes as $gxCrumb)
-        @if(! empty($gxCrumb['url']))
-            <a class="gxfil__lien" href="{{ $gxCrumb['url'] }}">{{ $gxCrumb['label'] }}</a>
-        @else
-            <span class="gxfil__lien">{{ $gxCrumb['label'] }}</span>
-        @endif
-        <span class="gxfil__sep" aria-hidden="true">/</span>
-    @endforeach
-
-    @foreach($gxFilNiveaux as $gxNiveau)
-        @if(! $loop->first)<span class="gxfil__sep" aria-hidden="true">/</span>@endif
-
-        <span class="gxfil__niveau {{ $gxNiveau['suivant'] ? 'gxfil__niveau--suivant' : '' }}">
-            @if($gxNiveau['courant'])
-                <span class="gxfil__lien gxfil__lien--courant" aria-current="page">{{ $gxNiveau['label'] }}</span>
-            @elseif($gxNiveau['suivant'])
-                {{-- Niveau inférieur : un libellé de rubrique, pas une destination.
-                     Verrouillé tant qu'aucun choix n'est possible à ce niveau. --}}
-                <span class="gxfil__lien gxfil__lien--suivant {{ $gxNiveau['verrouille'] ? 'is-verrouille' : '' }}"
-                      @if($gxNiveau['verrouille']) title="Choisissez d’abord le niveau précédent" aria-disabled="true" @endif>
-                    {{ $gxNiveau['label'] }}
-                </span>
-            @else
-                <a class="gxfil__lien" href="{{ $gxNiveau['url'] }}">{{ $gxNiveau['label'] }}</a>
-            @endif
-
-            @if(count($gxNiveau['options']) > ($gxNiveau['suivant'] ? 0 : 1))
-                <button type="button" class="gxfil__bouton" aria-expanded="false" aria-haspopup="listbox"
-                        aria-label="Changer de {{ $gxNiveau['type'] === 'city' ? 'ville' : $gxNiveau['type'] }}">
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                </button>
-                <div class="gxfil__liste" role="listbox" hidden>
-                    @foreach($gxNiveau['options'] as $gxOption)
-                        <a class="gxfil__option {{ $gxOption['actuel'] ? 'is-actuel' : '' }}"
-                           href="{{ $gxOption['url'] }}" role="option"
-                           aria-selected="{{ $gxOption['actuel'] ? 'true' : 'false' }}">
-                            {{ $gxOption['label'] }}
-                            @if($gxOption['actuel'])<i class="fas fa-check" aria-hidden="true"></i>@endif
-                        </a>
-                    @endforeach
-                    @if($gxNiveau['tronque'])
-                        <span class="gxfil__note">Liste partielle — ouvrez le niveau parent pour tout voir.</span>
-                    @endif
-                </div>
-            @endif
-        </span>
-    @endforeach
-</nav>
-
+{{-- Styles AVANT le balisage : le navigateur peint la page au fil de sa lecture.
+     Plus bas, ces règles n'arrivaient qu'après des centaines de Ko de HTML, et
+     le bloc s'affichait en texte brut le temps du chargement. --}}
 @once
 <style>
     /* Agrandi : l'ancien fil était en 11 px, à peine lisible sur la photo. */
@@ -152,6 +106,59 @@
         .gxfil__bouton, .gxfil__bouton i { transition: none; }
     }
 </style>
+@endonce
+
+<nav class="gxfil" aria-label="Fil d’Ariane">
+    @foreach($gxFilFixes as $gxCrumb)
+        @if(! empty($gxCrumb['url']))
+            <a class="gxfil__lien" href="{{ $gxCrumb['url'] }}">{{ $gxCrumb['label'] }}</a>
+        @else
+            <span class="gxfil__lien">{{ $gxCrumb['label'] }}</span>
+        @endif
+        <span class="gxfil__sep" aria-hidden="true">/</span>
+    @endforeach
+
+    @foreach($gxFilNiveaux as $gxNiveau)
+        @if(! $loop->first)<span class="gxfil__sep" aria-hidden="true">/</span>@endif
+
+        <span class="gxfil__niveau {{ $gxNiveau['suivant'] ? 'gxfil__niveau--suivant' : '' }}">
+            @if($gxNiveau['courant'])
+                <span class="gxfil__lien gxfil__lien--courant" aria-current="page">{{ $gxNiveau['label'] }}</span>
+            @elseif($gxNiveau['suivant'])
+                {{-- Niveau inférieur : un libellé de rubrique, pas une destination.
+                     Verrouillé tant qu'aucun choix n'est possible à ce niveau. --}}
+                <span class="gxfil__lien gxfil__lien--suivant {{ $gxNiveau['verrouille'] ? 'is-verrouille' : '' }}"
+                      @if($gxNiveau['verrouille']) title="Choisissez d’abord le niveau précédent" aria-disabled="true" @endif>
+                    {{ $gxNiveau['label'] }}
+                </span>
+            @else
+                <a class="gxfil__lien" href="{{ $gxNiveau['url'] }}">{{ $gxNiveau['label'] }}</a>
+            @endif
+
+            @if(count($gxNiveau['options']) > ($gxNiveau['suivant'] ? 0 : 1))
+                <button type="button" class="gxfil__bouton" aria-expanded="false" aria-haspopup="listbox"
+                        aria-label="Changer de {{ $gxNiveau['type'] === 'city' ? 'ville' : $gxNiveau['type'] }}">
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="gxfil__liste" role="listbox" hidden>
+                    @foreach($gxNiveau['options'] as $gxOption)
+                        <a class="gxfil__option {{ $gxOption['actuel'] ? 'is-actuel' : '' }}"
+                           href="{{ $gxOption['url'] }}" role="option"
+                           aria-selected="{{ $gxOption['actuel'] ? 'true' : 'false' }}">
+                            {{ $gxOption['label'] }}
+                            @if($gxOption['actuel'])<i class="fas fa-check" aria-hidden="true"></i>@endif
+                        </a>
+                    @endforeach
+                    @if($gxNiveau['tronque'])
+                        <span class="gxfil__note">Liste partielle — ouvrez le niveau parent pour tout voir.</span>
+                    @endif
+                </div>
+            @endif
+        </span>
+    @endforeach
+</nav>
+
+@once
 
 <script>
 (function () {

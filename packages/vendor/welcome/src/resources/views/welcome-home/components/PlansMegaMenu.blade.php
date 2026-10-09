@@ -90,75 +90,9 @@
     ];
 @endphp
 
-<div class="plans-mega-v2-overlay" id="plansMegaOverlay"></div>
-<div class="plans-mega-v2" id="plansMegaMenu" aria-hidden="true">
-    <button class="plans-mega-v2-close" id="plansMegaClose" aria-label="Fermer">
-        <i class="fas fa-times"></i>
-    </button>
-    <div class="plans-mega-v2-head">
-        <div class="plans-mega-v2-kicker">PASSEZ AU NIVEAU SUPÉRIEURE</div>
-        <h3>PLANS GO EXPLORIA - NEXT LEVEL</h3>
-        <!-- <p class="plans-mega-v2-intro">
-            GO EXPLORIA BUSINESS - NEXT LEVEL, c'est :
-        </p>
-        <ul class="plans-mega-v2-points">
-            <li>✔ Un investissement marketing massif</li>
-            <li>✔ Une plateforme technologique complète</li>
-            <li>✔ Une visibilité internationale immédiate</li>
-            <li>✔ Des performances mesurables et rentables</li>
-            <li>✔ Une solution conçue pour propulser les entreprises vers une croissance rapide et durable à l'échelle mondiale.</li>
-        </ul> -->
-        <!-- <p class="plans-mega-v2-cta-main">PASSEZ AU NIVEAU SUPÉRIEURE</p>
-        <p class="plans-mega-v2-cta-title">GO EXPLORIA BUSINESS - NEXT LEVEL</p>
-        <p>Plateforme marketing régional, national et internationale, votre croissance au cœur de nos offres!</p> -->
-        <p class="plans-mega-v2-cta-end"> OBTENEZ DES RÉSULTATS CONCRET.</p>
-        <a href="{{ url('espace-next-level/plans') }}" class="plans-mega-v2-cta-link" target="_blank" rel="noopener noreferrer">
-            <span class="plans-mega-v2-cta-button">
-                <i class="fas fa-external-link-alt"></i> En savoir plus 
-            </span>
-        </a>
-    </div>
-
-    <div class="plans-mega-v2-grid">
-        @if ($plansForMegaMenu->isNotEmpty())
-            @foreach ($plansForMegaMenu as $index => $plan)
-                @php
-                    $cardColor = $plansMegaColors[$index % count($plansMegaColors)];
-                    $cardUrl = ($plan->slug ?? '') !== ''
-                        ? url('/plan-detail/' . $plan->slug)
-                        : ($canOpenPlanDetail ? route('plan.detail', ['id' => $plan->id]) : $plansPresentationUrl);
-                    $cardTitle = (string) ($plan->name ?? 'Plan GoExploria');
-                    $cardDescription = $cleanPlanText($plan->description, 95) ?: 'Activez votre espace plan ici.';
-                    $cardIcon = $planIconClass($plan->icon ?? null);
-                    $priceRaw = $plan->getAttributes()['price'] ?? $plan->price;
-                    $priceNum = $priceRaw === null || $priceRaw === '' ? null : (float) $priceRaw;
-                    $hasPublishedPrice = $priceNum !== null && $priceNum > 0;
-                    $billingSuffix = $plan->billing_cycle === 'yearly' ? '/an' : '/mois';
-                    $cardPrice = $hasPublishedPrice
-                        ? (number_format($priceNum, 0, ',', ' ') . ' ' . ($plan->currency ?: 'CAD') . ' ' . $billingSuffix)
-                        : 'Sur demande';
-                @endphp
-                <a href="{{ $cardUrl }}" class="plans-mega-v2-card {{ $cardColor }}">
-                    <div class="plans-mega-v2-card-icon"><i class="{{ $cardIcon }}"></i></div>
-                    <div class="plans-mega-v2-card-title">{{ $cardTitle }}</div>
-                    <div class="plans-mega-v2-card-desc">{{ $cardDescription }}</div>
-                    <div class="plans-mega-v2-card-price">{{ $cardPrice }}</div>
-                    <div class="plans-mega-v2-card-plan">{{ $plan->name }}</div>
-                </a>
-            @endforeach
-        @else
-            @foreach ($plansMegaCards as $card)
-                <a href="{{ $card['fallback'] }}" class="plans-mega-v2-card {{ $card['color'] }}">
-                    <div class="plans-mega-v2-card-icon"><i class="{{ $card['icon'] }}"></i></div>
-                    <div class="plans-mega-v2-card-title">{{ $card['title'] }}</div>
-                    <div class="plans-mega-v2-card-desc">{{ $card['description'] }}</div>
-                    <div class="plans-mega-v2-card-price">{{ $card['price'] }}</div>
-                </a>
-            @endforeach
-        @endif
-    </div>
-</div>
-
+{{-- Styles AVANT le balisage : le navigateur peint la page au fil de sa lecture.
+     Plus bas, ces règles n'arrivaient qu'après des centaines de Ko de HTML, et
+     le bloc s'affichait en texte brut le temps du chargement. --}}
 <style>
     .plans-mega-v2-overlay {
         position: fixed;
@@ -407,6 +341,76 @@
         }
     }
 </style>
+
+<div class="plans-mega-v2-overlay" id="plansMegaOverlay"></div>
+<div class="plans-mega-v2" id="plansMegaMenu" aria-hidden="true">
+    <button class="plans-mega-v2-close" id="plansMegaClose" aria-label="Fermer">
+        <i class="fas fa-times"></i>
+    </button>
+    <div class="plans-mega-v2-head">
+        <div class="plans-mega-v2-kicker">PASSEZ AU NIVEAU SUPÉRIEURE</div>
+        <h3>PLANS GO EXPLORIA - NEXT LEVEL</h3>
+        <!-- <p class="plans-mega-v2-intro">
+            GO EXPLORIA BUSINESS - NEXT LEVEL, c'est :
+        </p>
+        <ul class="plans-mega-v2-points">
+            <li>✔ Un investissement marketing massif</li>
+            <li>✔ Une plateforme technologique complète</li>
+            <li>✔ Une visibilité internationale immédiate</li>
+            <li>✔ Des performances mesurables et rentables</li>
+            <li>✔ Une solution conçue pour propulser les entreprises vers une croissance rapide et durable à l'échelle mondiale.</li>
+        </ul> -->
+        <!-- <p class="plans-mega-v2-cta-main">PASSEZ AU NIVEAU SUPÉRIEURE</p>
+        <p class="plans-mega-v2-cta-title">GO EXPLORIA BUSINESS - NEXT LEVEL</p>
+        <p>Plateforme marketing régional, national et internationale, votre croissance au cœur de nos offres!</p> -->
+        <p class="plans-mega-v2-cta-end"> OBTENEZ DES RÉSULTATS CONCRET.</p>
+        <a href="{{ url('espace-next-level/plans') }}" class="plans-mega-v2-cta-link" target="_blank" rel="noopener noreferrer">
+            <span class="plans-mega-v2-cta-button">
+                <i class="fas fa-external-link-alt"></i> En savoir plus 
+            </span>
+        </a>
+    </div>
+
+    <div class="plans-mega-v2-grid">
+        @if ($plansForMegaMenu->isNotEmpty())
+            @foreach ($plansForMegaMenu as $index => $plan)
+                @php
+                    $cardColor = $plansMegaColors[$index % count($plansMegaColors)];
+                    $cardUrl = ($plan->slug ?? '') !== ''
+                        ? url('/plan-detail/' . $plan->slug)
+                        : ($canOpenPlanDetail ? route('plan.detail', ['id' => $plan->id]) : $plansPresentationUrl);
+                    $cardTitle = (string) ($plan->name ?? 'Plan GoExploria');
+                    $cardDescription = $cleanPlanText($plan->description, 95) ?: 'Activez votre espace plan ici.';
+                    $cardIcon = $planIconClass($plan->icon ?? null);
+                    $priceRaw = $plan->getAttributes()['price'] ?? $plan->price;
+                    $priceNum = $priceRaw === null || $priceRaw === '' ? null : (float) $priceRaw;
+                    $hasPublishedPrice = $priceNum !== null && $priceNum > 0;
+                    $billingSuffix = $plan->billing_cycle === 'yearly' ? '/an' : '/mois';
+                    $cardPrice = $hasPublishedPrice
+                        ? (number_format($priceNum, 0, ',', ' ') . ' ' . ($plan->currency ?: 'CAD') . ' ' . $billingSuffix)
+                        : 'Sur demande';
+                @endphp
+                <a href="{{ $cardUrl }}" class="plans-mega-v2-card {{ $cardColor }}">
+                    <div class="plans-mega-v2-card-icon"><i class="{{ $cardIcon }}"></i></div>
+                    <div class="plans-mega-v2-card-title">{{ $cardTitle }}</div>
+                    <div class="plans-mega-v2-card-desc">{{ $cardDescription }}</div>
+                    <div class="plans-mega-v2-card-price">{{ $cardPrice }}</div>
+                    <div class="plans-mega-v2-card-plan">{{ $plan->name }}</div>
+                </a>
+            @endforeach
+        @else
+            @foreach ($plansMegaCards as $card)
+                <a href="{{ $card['fallback'] }}" class="plans-mega-v2-card {{ $card['color'] }}">
+                    <div class="plans-mega-v2-card-icon"><i class="{{ $card['icon'] }}"></i></div>
+                    <div class="plans-mega-v2-card-title">{{ $card['title'] }}</div>
+                    <div class="plans-mega-v2-card-desc">{{ $card['description'] }}</div>
+                    <div class="plans-mega-v2-card-price">{{ $card['price'] }}</div>
+                </a>
+            @endforeach
+        @endif
+    </div>
+</div>
+
 
 <script>
     (function() {

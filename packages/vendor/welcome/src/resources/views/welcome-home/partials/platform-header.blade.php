@@ -228,7 +228,7 @@
      header et le décrocheraient de la fenêtre. --}}
 <div class="gx-platform-header">
     @include('welcome-home.components.VerticalMenu')
-    @include('welcome-home.components.Header')
+    @include('welcome-home.components.Header', ['gxHeaderSearchBar' => true])
 </div>
 
 {{-- Barre de raccourcis (droite) : langue, recherche, favoris, activités,

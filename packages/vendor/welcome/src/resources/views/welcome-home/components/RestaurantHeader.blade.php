@@ -1,4 +1,4 @@
-﻿@php(ob_start());@endphp
+﻿@php ob_start(); @endphp
 
 {{-- ============================================================
      RESTAURANT SERVICE BLOCK — Standard Template

@@ -42,125 +42,9 @@
     $gxRailCarte = url('/') . '#section-carte-amerique-nord';
 @endphp
 
-{{-- Drapeaux du sélecteur de langue. Le Header de l'accueil charge déjà cette
-     feuille, mais pas le shell des sites d'établissement : la barre l'apporte
-     donc elle-même (même URL, donc même fichier en cache). --}}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css"></noscript>
-
-<aside class="gxrail" id="gxRail" aria-label="Raccourcis GoExploria">
-    <div class="gxrail__inner">
-        <button type="button" class="gxrail__item gxrail__item--lang" data-gxrail-open="lang"
-                aria-haspopup="listbox" aria-expanded="false" aria-controls="gxRailLang"
-                title="Changer de langue">
-            <span class="gxrail__ico gxrail__ico--flag">
-                <span class="fi fi-{{ $gxRailLocales[$gxRailLocale]['flag'] }}" aria-hidden="true"></span>
-            </span>
-            <span class="gxrail__label">
-                {{ $gxRailLocales[$gxRailLocale]['code'] }}
-                <i class="fas fa-chevron-down" aria-hidden="true"></i>
-            </span>
-        </button>
-
-        <button type="button" class="gxrail__item" data-gxrail-open="search"
-                aria-haspopup="dialog" aria-expanded="false" aria-controls="gxRailSearch">
-            <span class="gxrail__ico"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></span>
-            <span class="gxrail__label">Rechercher</span>
-        </button>
-
-        @if($gxRailActivites)
-        <button type="button" class="gxrail__item" data-gxrail-open="activites" data-gxrail-src="{{ $gxRailActivites }}"
-                aria-haspopup="dialog" aria-expanded="false" aria-controls="gxRailActivites">
-            <span class="gxrail__ico"><i class="fas fa-person-hiking" aria-hidden="true"></i></span>
-            <span class="gxrail__label">Activités</span>
-        </button>
-        @endif
-
-        @if($gxRailDestinations)
-        <button type="button" class="gxrail__item" data-gxrail-open="destinations" data-gxrail-src="{{ $gxRailDestinations }}"
-                aria-haspopup="dialog" aria-expanded="false" aria-controls="gxRailDestinations">
-            <span class="gxrail__ico"><i class="fas fa-earth-americas" aria-hidden="true"></i></span>
-            <span class="gxrail__label">Destinations</span>
-        </button>
-        @endif
-
-        {{-- Panier : reprend le bouton flottant des sites d'établissement.
-             `data-cms-cart-open` suffit à ouvrir le tiroir — son script écoute
-             le document entier — et `data-cms-cart-count` est mis à jour par
-             ce même script, qui alimente TOUS les compteurs de la page.
-             Sans tiroir sur la page, le lien mène à la page Panier. --}}
-        <a class="gxrail__item gxrail__item--panier" id="gxRailPanier"
-           href="{{ $gxRailPanier ?: '#' }}" data-cms-cart-open>
-            <span class="gxrail__ico">
-                <i class="fas fa-cart-shopping" aria-hidden="true"></i>
-                <span class="gxrail__badge" data-cms-cart-count hidden>0</span>
-            </span>
-            <span class="gxrail__label">Panier</span>
-        </a>
-
-        <a class="gxrail__item" href="{{ $gxRailCarte }}">
-            <span class="gxrail__ico"><i class="fas fa-map-location-dot" aria-hidden="true"></i></span>
-            <span class="gxrail__label">Carte<br>interactive</span>
-        </a>
-    </div>
-</aside>
-
-{{-- ── Panneau : langue ─────────────────────────────────────────────── --}}
-<div class="gxrail-pop" id="gxRailLang" data-gxmenu-panel="lang" role="dialog" aria-label="Choisir la langue" aria-hidden="true">
-    <p class="gxrail-pop__title">Langue</p>
-    <ul class="gxrail-pop__list">
-        @foreach($gxRailLocales as $code => $data)
-            <li>
-                <a class="gxrail-pop__lang {{ $code === $gxRailLocale ? 'is-active' : '' }}"
-                   href="{{ $gxRailRoute('locale.switch', ['locale' => $code]) ? $gxRailRoute('locale.switch', ['locale' => $code]) . '?redirect=' . urlencode(request()->fullUrl()) : '#' }}">
-                    <span class="fi fi-{{ $data['flag'] }}" aria-hidden="true"></span>
-                    <span>{{ $data['label'] }}</span>
-                    <em>{{ $data['code'] }}</em>
-                </a>
-            </li>
-        @endforeach
-    </ul>
-</div>
-
-{{-- ── Panneau : recherche ──────────────────────────────────────────── --}}
-<div class="gxrail-pop gxrail-pop--search" id="gxRailSearch" data-gxmenu-panel="search" role="dialog" aria-label="Rechercher une destination" aria-hidden="true">
-    <p class="gxrail-pop__title">Rechercher</p>
-    <div class="gxrail-search__field">
-        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-        <input type="search" id="gxRailSearchInput" placeholder="Une destination, une catégorie…" autocomplete="off" aria-controls="gxRailSearchResults">
-    </div>
-    <div class="gxrail-search__results" id="gxRailSearchResults" aria-live="polite"></div>
-</div>
-
-{{-- ── Méga-menus (contenu chargé à l'ouverture) ────────────────────── --}}
-@if($gxRailActivites)
-<div class="gxrail-mega" id="gxRailActivites" data-gxmenu-panel="activites" role="dialog" aria-label="Activités" aria-hidden="true">
-    <div class="gxrail-mega__inner">
-        <div class="gxrail-mega__top">
-            <p class="gxrail-mega__kicker"><i class="fas fa-person-hiking" aria-hidden="true"></i> Activités</p>
-            <button type="button" class="gxrail-mega__close" data-gxrail-close aria-label="Fermer"><i class="fas fa-xmark" aria-hidden="true"></i></button>
-        </div>
-        <div class="gxrail-mega__body" data-gxrail-body aria-live="polite">
-            <p class="gxrail-mega__status"><span class="gxrail-mega__spinner" aria-hidden="true"></span> Chargement…</p>
-        </div>
-    </div>
-</div>
-@endif
-
-@if($gxRailDestinations)
-<div class="gxrail-mega" id="gxRailDestinations" data-gxmenu-panel="destinations" role="dialog" aria-label="Destinations" aria-hidden="true">
-    <div class="gxrail-mega__inner">
-        <div class="gxrail-mega__top">
-            <p class="gxrail-mega__kicker"><i class="fas fa-earth-americas" aria-hidden="true"></i> Destinations</p>
-            <button type="button" class="gxrail-mega__close" data-gxrail-close aria-label="Fermer"><i class="fas fa-xmark" aria-hidden="true"></i></button>
-        </div>
-        <div class="gxrail-mega__body" data-gxrail-body aria-live="polite">
-            <p class="gxrail-mega__status"><span class="gxrail-mega__spinner" aria-hidden="true"></span> Chargement…</p>
-        </div>
-    </div>
-</div>
-@endif
-
+{{-- Styles AVANT le balisage : le navigateur peint la page au fil de sa lecture.
+     Plus bas, ces règles n'arrivaient qu'après des centaines de Ko de HTML, et
+     le bloc s'affichait en texte brut le temps du chargement. --}}
 <style>
   .gxrail {
     --gxr-ink: #0f172a; --gxr-muted: #64748b; --gxr-line: #e5e7eb;
@@ -419,6 +303,126 @@
   @media (prefers-reduced-motion: reduce) { .gxrail-pop, .gxrail-mega, .gxrail-mega .gxmenu__media img { transition: none; } .gxrail-mega__spinner { animation: none; } }
   @media print { .gxrail, .gxrail-pop, .gxrail-mega { display: none !important; } }
 </style>
+
+{{-- Drapeaux du sélecteur de langue. Le Header de l'accueil charge déjà cette
+     feuille, mais pas le shell des sites d'établissement : la barre l'apporte
+     donc elle-même (même URL, donc même fichier en cache). --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css"></noscript>
+
+<aside class="gxrail" id="gxRail" aria-label="Raccourcis GoExploria">
+    <div class="gxrail__inner">
+        <button type="button" class="gxrail__item gxrail__item--lang" data-gxrail-open="lang"
+                aria-haspopup="listbox" aria-expanded="false" aria-controls="gxRailLang"
+                title="Changer de langue">
+            <span class="gxrail__ico gxrail__ico--flag">
+                <span class="fi fi-{{ $gxRailLocales[$gxRailLocale]['flag'] }}" aria-hidden="true"></span>
+            </span>
+            <span class="gxrail__label">
+                {{ $gxRailLocales[$gxRailLocale]['code'] }}
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </span>
+        </button>
+
+        <button type="button" class="gxrail__item" data-gxrail-open="search"
+                aria-haspopup="dialog" aria-expanded="false" aria-controls="gxRailSearch">
+            <span class="gxrail__ico"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></span>
+            <span class="gxrail__label">Rechercher</span>
+        </button>
+
+        @if($gxRailActivites)
+        <button type="button" class="gxrail__item" data-gxrail-open="activites" data-gxrail-src="{{ $gxRailActivites }}"
+                aria-haspopup="dialog" aria-expanded="false" aria-controls="gxRailActivites">
+            <span class="gxrail__ico"><i class="fas fa-person-hiking" aria-hidden="true"></i></span>
+            <span class="gxrail__label">Activités</span>
+        </button>
+        @endif
+
+        @if($gxRailDestinations)
+        <button type="button" class="gxrail__item" data-gxrail-open="destinations" data-gxrail-src="{{ $gxRailDestinations }}"
+                aria-haspopup="dialog" aria-expanded="false" aria-controls="gxRailDestinations">
+            <span class="gxrail__ico"><i class="fas fa-earth-americas" aria-hidden="true"></i></span>
+            <span class="gxrail__label">Destinations</span>
+        </button>
+        @endif
+
+        {{-- Panier : reprend le bouton flottant des sites d'établissement.
+             `data-cms-cart-open` suffit à ouvrir le tiroir — son script écoute
+             le document entier — et `data-cms-cart-count` est mis à jour par
+             ce même script, qui alimente TOUS les compteurs de la page.
+             Sans tiroir sur la page, le lien mène à la page Panier. --}}
+        <a class="gxrail__item gxrail__item--panier" id="gxRailPanier"
+           href="{{ $gxRailPanier ?: '#' }}" data-cms-cart-open>
+            <span class="gxrail__ico">
+                <i class="fas fa-cart-shopping" aria-hidden="true"></i>
+                <span class="gxrail__badge" data-cms-cart-count hidden>0</span>
+            </span>
+            <span class="gxrail__label">Panier</span>
+        </a>
+
+        <a class="gxrail__item" href="{{ $gxRailCarte }}">
+            <span class="gxrail__ico"><i class="fas fa-map-location-dot" aria-hidden="true"></i></span>
+            <span class="gxrail__label">Carte<br>interactive</span>
+        </a>
+    </div>
+</aside>
+
+{{-- ── Panneau : langue ─────────────────────────────────────────────── --}}
+<div class="gxrail-pop" id="gxRailLang" data-gxmenu-panel="lang" role="dialog" aria-label="Choisir la langue" aria-hidden="true">
+    <p class="gxrail-pop__title">Langue</p>
+    <ul class="gxrail-pop__list">
+        @foreach($gxRailLocales as $code => $data)
+            <li>
+                <a class="gxrail-pop__lang {{ $code === $gxRailLocale ? 'is-active' : '' }}"
+                   href="{{ $gxRailRoute('locale.switch', ['locale' => $code]) ? $gxRailRoute('locale.switch', ['locale' => $code]) . '?redirect=' . urlencode(request()->fullUrl()) : '#' }}">
+                    <span class="fi fi-{{ $data['flag'] }}" aria-hidden="true"></span>
+                    <span>{{ $data['label'] }}</span>
+                    <em>{{ $data['code'] }}</em>
+                </a>
+            </li>
+        @endforeach
+    </ul>
+</div>
+
+{{-- ── Panneau : recherche ──────────────────────────────────────────── --}}
+<div class="gxrail-pop gxrail-pop--search" id="gxRailSearch" data-gxmenu-panel="search" role="dialog" aria-label="Rechercher une destination" aria-hidden="true">
+    <p class="gxrail-pop__title">Rechercher</p>
+    <div class="gxrail-search__field">
+        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+        <input type="search" id="gxRailSearchInput" placeholder="Une destination, une catégorie…" autocomplete="off" aria-controls="gxRailSearchResults">
+    </div>
+    <div class="gxrail-search__results" id="gxRailSearchResults" aria-live="polite"></div>
+</div>
+
+{{-- ── Méga-menus (contenu chargé à l'ouverture) ────────────────────── --}}
+@if($gxRailActivites)
+<div class="gxrail-mega" id="gxRailActivites" data-gxmenu-panel="activites" role="dialog" aria-label="Activités" aria-hidden="true">
+    <div class="gxrail-mega__inner">
+        <div class="gxrail-mega__top">
+            <p class="gxrail-mega__kicker"><i class="fas fa-person-hiking" aria-hidden="true"></i> Activités</p>
+            <button type="button" class="gxrail-mega__close" data-gxrail-close aria-label="Fermer"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <div class="gxrail-mega__body" data-gxrail-body aria-live="polite">
+            <p class="gxrail-mega__status"><span class="gxrail-mega__spinner" aria-hidden="true"></span> Chargement…</p>
+        </div>
+    </div>
+</div>
+@endif
+
+@if($gxRailDestinations)
+<div class="gxrail-mega" id="gxRailDestinations" data-gxmenu-panel="destinations" role="dialog" aria-label="Destinations" aria-hidden="true">
+    <div class="gxrail-mega__inner">
+        <div class="gxrail-mega__top">
+            <p class="gxrail-mega__kicker"><i class="fas fa-earth-americas" aria-hidden="true"></i> Destinations</p>
+            <button type="button" class="gxrail-mega__close" data-gxrail-close aria-label="Fermer"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <div class="gxrail-mega__body" data-gxrail-body aria-live="polite">
+            <p class="gxrail-mega__status"><span class="gxrail-mega__spinner" aria-hidden="true"></span> Chargement…</p>
+        </div>
+    </div>
+</div>
+@endif
+
 
 <script>
 (function () {

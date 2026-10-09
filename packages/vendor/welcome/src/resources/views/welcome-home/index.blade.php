@@ -31,12 +31,23 @@
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
 
-    {{-- Font Awesome chargé sans bloquer le rendu (bascule en feuille de style au chargement) --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    {{-- Font Awesome, sans bloquer le rendu. `preload` plutôt que l'astuce
+         `media="print"` : celle-ci fait bien télécharger la feuille sans
+         bloquer, mais en PRIORITÉ BASSE — les icônes du haut de page
+         n'arrivaient que bien après le texte. --}}
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     
     {{-- ⚡ OPTIMISATION : 42 feuilles CSS combinées en 1 seule requête (cache-busting auto via filemtime) --}}
     <link rel="stylesheet" href="{{ asset('css/welcome/welcome.bundle.css') }}?v={{ @filemtime(public_path('css/welcome/welcome.bundle.css')) ?: '1' }}">
+    {{-- Feuille du contenu CMS (les sections après la carte). Elle vivait
+         dans un <style> au milieu du corps : 460 Ko relus à chaque visite et
+         appliqués seulement après un mégaoctet de HTML. Ici elle est mise en
+         cache par le navigateur et vaut avant le premier affichage. --}}
+    @isset($cmsAccueilCss)
+        <link rel="stylesheet" href="{{ $cmsAccueilCss }}">
+    @endisset
+
     {{-- Assets non critiques (modal vidéo + carte) chargés sans bloquer le rendu --}}
     <link rel="stylesheet" href="{{ asset('css/video-modal.css') }}" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'">

@@ -1,4 +1,4 @@
-﻿@php(ob_start());@endphp
+﻿@php ob_start(); @endphp
 
 {{-- ============================================================
      Chasse et Peche - Meme structure/design que ProductsVedette

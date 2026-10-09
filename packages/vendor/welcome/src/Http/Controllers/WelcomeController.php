@@ -142,6 +142,23 @@ class WelcomeController extends Controller
         $donnees = $this->donneesAccueil();
 
         [$contenu, $motif] = $this->contenuAccueilCms();
+
+        /* Le CSS du gabarit (460 Ko) partait dans le corps de la page, au
+           milieu du contenu : lu après un mégaoctet de HTML, rejoué à chaque
+           visite. Servi à part, il est posé dans le <head> — donc appliqué
+           avant le premier affichage — et le navigateur le garde en cache.
+           L'empreinte dans l'adresse suffit à le renouveler quand la page
+           change dans l'éditeur. */
+        if ($contenu !== null) {
+            [$feuille, $corps] = $this->stylesAccueilCms($contenu);
+
+            if ($feuille !== '' && \Illuminate\Support\Facades\Route::has('welcome.accueil-css')) {
+                $donnees['cmsAccueilCss'] = route('welcome.accueil-css', [], false)
+                    . '?v=' . substr(md5($feuille), 0, 12);
+                $contenu = $corps;
+            }
+        }
+
         $donnees['cmsAccueil'] = $contenu;
 
         if ($contenu === null) {
@@ -159,6 +176,96 @@ class WelcomeController extends Controller
         }
 
         return view('welcome-home.index', $donnees);
+    }
+
+    /**
+     * Le CSS du contenu CMS, séparé de son HTML.
+     *
+     * Le découpage parcourt deux mégaoctets : une fois par version de la page,
+     * comme la préparation du contenu. La clé porte l'empreinte du contenu —
+     * il change, le découpage se refait, et l'adresse du fichier CSS change
+     * avec lui.
+     *
+     * @return array{0:string,1:string} [css, html]
+     */
+    protected function stylesAccueilCms(string $contenu): array
+    {
+        return $this->safe(
+            fn () => \Illuminate\Support\Facades\Cache::remember(
+                'welcome:accueil-cms-styles:' . md5($contenu),
+                now()->addDay(),
+                fn () => \Vendor\Welcome\Support\ContenuCmsIntegre::separerStyles($contenu)
+            ),
+            // Cache indisponible : la page garde son CSS en ligne, comme avant.
+            ['', $contenu]
+        );
+    }
+
+    /**
+     * Contenu du méga-menu « Activités ».
+     *
+     * Mille activités rangées par catégorie : 760 Ko de HTML, un tiers de la
+     * page d'accueil, pour un menu que la plupart des visiteurs n'ouvrent
+     * jamais. Il est donc servi à part et demandé au premier besoin.
+     *
+     * Mise en cache dix minutes : la liste bouge peu, et la construire
+     * suppose de parcourir les catégories et toutes leurs activités.
+     */
+    public function menuActivites()
+    {
+        $html = $this->safe(
+            fn () => \Illuminate\Support\Facades\Cache::remember(
+                'welcome:menu-activites:' . app()->getLocale(),
+                600,
+                fn () => $this->compacterHtml(
+                    \App\Support\HomeV2HtmlTranslator::translate(
+                        view('welcome-home.components.ActivitesMegaMenuContent')->render(),
+                        app()->getLocale()
+                    )
+                )
+            ),
+            '<div class="gxact-empty">Liste indisponible pour le moment.</div>'
+        );
+
+        return response($html, 200, [
+            'Content-Type'  => 'text/html; charset=UTF-8',
+            'Cache-Control' => 'public, max-age=600',
+        ]);
+    }
+
+    /**
+     * Les espaces entre balises ne portent rien ici — que des retours à la
+     * ligne d'indentation Blade — et pèsent près d'un tiers de la réponse.
+     */
+    protected function compacterHtml(string $html): string
+    {
+        return trim(preg_replace('/>\s+</', '><', $html) ?? $html);
+    }
+
+    /**
+     * La feuille de style du contenu CMS, servie comme un fichier.
+     *
+     * L'adresse porte l'empreinte du contenu : une version donnée ne change
+     * jamais, d'où le cache d'un an. Un contenu modifié dans l'éditeur donne
+     * une autre adresse, demandée à neuf.
+     */
+    public function cssAccueil(\Illuminate\Http\Request $requete)
+    {
+        [$contenu] = $this->contenuAccueilCms();
+        [$feuille] = $contenu === null ? ['', ''] : $this->stylesAccueilCms($contenu);
+
+        $etiquette = '"' . md5($feuille) . '"';
+
+        // Rien n'a changé depuis la dernière fois : on épargne le transfert.
+        if (trim((string) $requete->headers->get('If-None-Match')) === $etiquette) {
+            return response('', 304, ['ETag' => $etiquette]);
+        }
+
+        return response($feuille, 200, [
+            'Content-Type'  => 'text/css; charset=UTF-8',
+            'Cache-Control' => 'public, max-age=31536000, immutable',
+            'ETag'          => $etiquette,
+        ]);
     }
 
     /**

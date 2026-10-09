@@ -1,4 +1,4 @@
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 @php
     $sectionId = $sectionId ?? 'property-specialized-section';
     $eyebrow = $eyebrow ?? 'Espaces spécialisés';

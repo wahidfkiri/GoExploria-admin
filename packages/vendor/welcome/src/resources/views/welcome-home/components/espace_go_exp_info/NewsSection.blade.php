@@ -1,4 +1,4 @@
-﻿@php(ob_start());@endphp
+﻿@php ob_start(); @endphp
 
 {{-- Dernières Nouvelles Component --}}
 <section class="news-v2-section" id="news-section">

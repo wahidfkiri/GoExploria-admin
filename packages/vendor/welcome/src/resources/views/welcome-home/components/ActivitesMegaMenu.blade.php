@@ -8,9 +8,14 @@
 
      UI : thème clair, colonne de catégories à gauche, grille de tuiles
      « image + libellé dessous » à droite.
+
+     Ce fichier ne porte que l'ENVELOPPE, ses styles et son script : le
+     contenu (760 Ko, un tiers de la page d'accueil) vit dans
+     ActivitesMegaMenuContent et arrive au premier besoin, par
+     `welcome.menu.activites`.
      ================================================================= --}}
 
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 @php
     $tr = static function (string $text): string {
         $locale = app()->getLocale();
@@ -27,80 +32,13 @@
         return $maps[$locale][$text] ?? $text;
     };
 
-    // Catégories actives ayant au moins une activité active
-    $gxactCategories = \App\Models\Category::query()
-        ->where('is_active', true)
-        ->whereHas('activities', function ($q) {
-            $q->where('is_active', true);
-        })
-        ->with(['activities' => function ($q) {
-            $q->where('is_active', true)->orderBy('name');
-        }])
-        ->orderBy('name')
-        ->get();
 @endphp
 
-<div class="gxact-mega" id="activitesMegaPanel" role="dialog" aria-label="{{ $tr('Activités') }}" aria-hidden="true">
-
-    @if($gxactCategories->isEmpty())
-        <div class="gxact-empty">{{ $tr('Aucune activité disponible pour le moment.') }}</div>
-    @else
-        <div class="gxact-body">
-
-            {{-- ── Colonne gauche : catégories ── --}}
-            <div class="gxact-cats" role="tablist" aria-label="{{ $tr('Catégories') }}">
-                @foreach($gxactCategories as $index => $gxactCat)
-                    <button type="button"
-                            role="tab"
-                            class="gxact-cat {{ $index === 0 ? 'active' : '' }}"
-                            aria-selected="{{ $index === 0 ? 'true' : 'false' }}"
-                            aria-controls="gxact-pane-{{ $gxactCat->id }}"
-                            data-gxact-pane="gxact-pane-{{ $gxactCat->id }}">
-                        <span class="gxact-cat-name">{{ $gxactCat->name }}</span>
-                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
-                    </button>
-                @endforeach
-
-                <a href="{{ route('categories.index') }}" class="gxact-cats-all">
-                    {{ $tr('Toutes les catégories') }}
-                </a>
-            </div>
-
-            {{-- ── Colonne droite : activités de la catégorie sélectionnée ── --}}
-            <div class="gxact-panes">
-                @foreach($gxactCategories as $index => $gxactCat)
-                    <div class="gxact-pane {{ $index === 0 ? 'visible' : '' }}"
-                         id="gxact-pane-{{ $gxactCat->id }}"
-                         role="tabpanel">
-
-                        <h3 class="gxact-pane-title">{{ $tr('Explorer') }} {{ $gxactCat->name }}</h3>
-
-                        <div class="gxact-grid">
-                            @foreach($gxactCat->activities as $gxactAct)
-                                <a class="gxact-card"
-                                   href="{{ route('activity.show', $gxactAct->slug ?: $gxactAct->id) }}"
-                                   title="{{ $gxactAct->name }}">
-                                    <span class="gxact-card-media">
-                                        @if($gxactAct->image_url)
-                                            <img src="{{ $gxactAct->image_url }}" alt="{{ $gxactAct->name }}" loading="lazy">
-                                        @else
-                                            <span class="gxact-card-ph"><i class="fas fa-mountain-sun" aria-hidden="true"></i></span>
-                                        @endif
-                                    </span>
-                                    <span class="gxact-card-name">{{ $gxactAct->name }}</span>
-                                </a>
-                            @endforeach
-                        </div>
-
-                        <a href="{{ route('category.show', $gxactCat->slug ?: $gxactCat->id) }}" class="gxact-pane-link">
-                            {{ $tr('Voir toutes les activités') }} <i class="fas fa-chevron-right" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                @endforeach
-            </div>
-
-        </div>
-    @endif
+<div class="gxact-mega" id="activitesMegaPanel" role="dialog"
+     aria-label="{{ $tr('Activités') }}" aria-hidden="true"
+     data-gxact-src="{{ route('welcome.menu.activites', [], false) }}">
+    {{-- Rempli au premier besoin — voir le script plus bas. --}}
+    <div class="gxact-attente" role="status">{{ $tr('Chargement…') }}</div>
 </div>
 
 <style>
@@ -303,6 +241,16 @@
     .gxact-panes { padding: 16px; }
     .gxact-pane-title { font-size: 17px; margin-bottom: 12px; }
 }
+/* Le panneau arrive vide : il garde sa taille le temps du chargement
+   plutôt que de s'ouvrir sur une boîte plate. */
+.gxact-attente {
+    padding: 28px 24px;
+    min-height: 180px;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    color: var(--gxact-muted);
+}
 </style>
 
 <script>
@@ -341,6 +289,54 @@
             panel.style.maxHeight = (viewH - top - 16) + 'px';
         }
 
+        /* ── Chargement du contenu ───────────────────────────────────────
+           Le menu liste un millier d'activités : 760 Ko de HTML que la
+           plupart des visiteurs n'ouvrent jamais. Il part donc vide et se
+           remplit au premier besoin — survol du déclencheur, clic, ou temps
+           mort du navigateur. La promesse est gardée : une seule requête. */
+        var chargement = null;
+
+        function charger() {
+            if (chargement) return chargement;
+
+            var src = panel.getAttribute('data-gxact-src');
+            if (!src) return Promise.resolve();
+
+            panel.setAttribute('aria-busy', 'true');
+
+            chargement = fetch(src, { headers: { 'Accept': 'text/html' }, credentials: 'same-origin' })
+                .then(function (r) {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.text();
+                })
+                .then(function (html) {
+                    panel.innerHTML = html;
+                    panel.removeAttribute('aria-busy');
+                    if (panel.classList.contains('open')) positionPanel();
+                })
+                .catch(function () {
+                    // Une panne de réseau ne doit pas figer le menu sur
+                    // « Chargement… » : on réessaiera au prochain clic.
+                    chargement = null;
+                    panel.removeAttribute('aria-busy');
+                    panel.innerHTML = '<div class="gxact-empty">Liste indisponible pour le moment.</div>';
+                });
+
+            return chargement;
+        }
+
+        ['pointerenter', 'focus', 'touchstart'].forEach(function (evt) {
+            trigger.addEventListener(evt, charger, { passive: true });
+        });
+
+        /* Temps mort : le menu est prêt avant même d'être demandé. Écarté sur
+           connexion lente ou en mode économie de données. */
+        var reseau = navigator.connection || {};
+        if (!reseau.saveData && !/2g/.test(reseau.effectiveType || '')) {
+            var repos = window.requestIdleCallback || function (f) { return setTimeout(f, 1); };
+            setTimeout(function () { repos(charger); }, 3500);
+        }
+
         function closePanel() {
             panel.classList.remove('open');
             panel.setAttribute('aria-hidden', 'true');
@@ -352,6 +348,7 @@
             if (typeof window.goCloseOtherMega === 'function') {
                 window.goCloseOtherMega(panel);
             }
+            charger();
             positionPanel();
             panel.classList.add('open');
             panel.setAttribute('aria-hidden', 'false');
@@ -390,22 +387,31 @@
             if (panel.classList.contains('open')) positionPanel();
         }, { passive: true });
 
-        /* Bascule de catégorie — au survol comme au clic (façon mega-menu) */
-        panel.querySelectorAll('.gxact-cat').forEach(function (btn) {
-            function select() {
-                var pane = document.getElementById(btn.dataset.gxactPane);
-                if (!pane) return;
-                panel.querySelectorAll('.gxact-cat').forEach(function (b) {
-                    b.classList.remove('active');
-                    b.setAttribute('aria-selected', 'false');
-                });
-                panel.querySelectorAll('.gxact-pane').forEach(function (p) { p.classList.remove('visible'); });
-                btn.classList.add('active');
-                btn.setAttribute('aria-selected', 'true');
-                pane.classList.add('visible');
-            }
-            btn.addEventListener('click', select);
-            btn.addEventListener('mouseenter', select);
+        /* Bascule de catégorie — au survol comme au clic (façon mega-menu).
+           Par DÉLÉGATION : les boutons n'existent pas encore au chargement de
+           la page, ils arrivent avec le contenu. */
+        function selectionner(btn) {
+            var pane = document.getElementById(btn.dataset.gxactPane);
+            if (!pane) return;
+            panel.querySelectorAll('.gxact-cat').forEach(function (b) {
+                b.classList.remove('active');
+                b.setAttribute('aria-selected', 'false');
+            });
+            panel.querySelectorAll('.gxact-pane').forEach(function (p) { p.classList.remove('visible'); });
+            btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
+            pane.classList.add('visible');
+        }
+
+        panel.addEventListener('click', function (e) {
+            var btn = e.target.closest ? e.target.closest('.gxact-cat') : null;
+            if (btn) selectionner(btn);
+        });
+
+        /* `mouseenter` ne remonte pas : on écoute `mouseover`, qui remonte. */
+        panel.addEventListener('mouseover', function (e) {
+            var btn = e.target.closest ? e.target.closest('.gxact-cat') : null;
+            if (btn && !btn.classList.contains('active')) selectionner(btn);
         });
     }
 

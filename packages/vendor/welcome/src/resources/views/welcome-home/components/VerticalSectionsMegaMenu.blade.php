@@ -1,4 +1,4 @@
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 <div class="vmenu-destinations-mega" id="verticalSectionsMega">
     <div class="vmenu-destinations-mega-header">
         <h3 class="vmenu-destinations-mega-title">

@@ -69,6 +69,44 @@ class ContenuCmsIntegre
     }
 
     /**
+     * Sépare les feuilles de style du contenu.
+     *
+     * Le gabarit enregistre son CSS en tête du contenu, dans un <style>. Ici,
+     * il pèse 460 Ko et se retrouve au milieu du corps de la page : le
+     * navigateur le lit après un bon mégaoctet de HTML, recalcule tous les
+     * styles, et le même CSS repart à chaque visite puisqu'il est dans la page.
+     *
+     * Servi à part, il est mis en cache par le navigateur, posé dans le <head>
+     * — donc appliqué avant le premier affichage — et la réponse HTML maigrit
+     * d'autant.
+     *
+     * @return array{0:string,1:string} [css, html]
+     */
+    public static function separerStyles(string $contenu): array
+    {
+        $feuilles = [];
+
+        $html = preg_replace_callback(
+            '/<style\b[^>]*>(.*?)<\/style>/is',
+            function ($m) use (&$feuilles) {
+                $feuilles[] = trim($m[1]);
+
+                return '';
+            },
+            $contenu
+        );
+
+        // `preg_replace_callback` rend null si la chaîne déborde ses limites
+        // (pcre.backtrack_limit) : on garde alors le contenu intact plutôt que
+        // de servir une page sans style.
+        if ($html === null) {
+            return ['', $contenu];
+        }
+
+        return [trim(implode("\n", $feuilles)), $html];
+    }
+
+    /**
      * Retire l'en-tête et le pied du gabarit s'ils sont restés dans le contenu.
      *
      * La page garde les siens : le site est déjà coiffé de son en-tête, de son

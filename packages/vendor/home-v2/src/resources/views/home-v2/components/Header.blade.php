@@ -137,6 +137,11 @@
             </div>
         </div>
     </nav>
+
+    {{-- Seconde ligne : la zone de recherche de la bannière d'accueil, pour
+         les pages qui n'ont pas cette bannière (le partial vit dans le
+         paquet welcome, comme la barre de widgets déjà incluse par le shell). --}}
+    @includeWhen($gxHeaderSearchBar ?? false, 'welcome-home.partials.header-search-bar')
 </header>
 
 <script>

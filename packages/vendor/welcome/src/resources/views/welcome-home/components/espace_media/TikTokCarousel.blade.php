@@ -1,5 +1,5 @@
 ﻿{{-- GoExploria Chaîne Vidéos TIK-TOK --}}
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 @php
 $tiktokVideos = [
     [

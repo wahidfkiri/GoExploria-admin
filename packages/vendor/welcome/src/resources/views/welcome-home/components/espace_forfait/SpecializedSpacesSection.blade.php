@@ -1,5 +1,5 @@
 ﻿{{-- SpecializedSpacesSection — GoExploria Espaces spécialisés --}}
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 <section class="immo-v2-section" id="specialized-spaces-section">
 
     <div class="resto-header-block">

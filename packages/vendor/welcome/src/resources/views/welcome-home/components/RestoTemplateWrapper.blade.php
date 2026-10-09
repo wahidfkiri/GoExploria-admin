@@ -2,7 +2,7 @@
      TEMPLATE DÉMO — BLOC ACCORD METS & VINS
      Wrapper : topbar · mini-header · contenu · mini-footer · CTA
      ============================================================ --}}
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 <div class="goexp-tpl-frame" id="goexpRestoTemplate">
 
     {{-- Barre indicateur template --}}

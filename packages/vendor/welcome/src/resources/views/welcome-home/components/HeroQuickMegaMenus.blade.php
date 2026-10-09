@@ -5,7 +5,7 @@
        → categories() actives → activities() actives.
      ================================================================= --}}
 
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 @php
     use App\Models\CategorieType;
 

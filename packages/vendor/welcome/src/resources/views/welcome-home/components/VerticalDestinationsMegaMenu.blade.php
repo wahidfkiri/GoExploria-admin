@@ -1,4 +1,4 @@
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 @php
     use App\Models\Continent;
     use Illuminate\Support\Str;

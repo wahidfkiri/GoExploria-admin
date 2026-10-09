@@ -170,6 +170,11 @@
             </div>
         </div>
     </nav>
+
+    {{-- Seconde ligne : la zone de recherche de la bannière d'accueil, pour
+         les pages qui n'ont pas cette bannière. Posée DANS l'en-tête pour
+         entrer dans la hauteur que les pages hôtes mesurent. --}}
+    @includeWhen($gxHeaderSearchBar ?? false, 'welcome-home.partials.header-search-bar')
 </header>
 
 <script>

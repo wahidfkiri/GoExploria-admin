@@ -11,7 +11,7 @@
         return \Illuminate\Support\Str::limit($raw, $limit);
     };
 @endphp
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 
 <section class="nos-plans-section" id="nos-plans">
     <div class="nos-plans-container">

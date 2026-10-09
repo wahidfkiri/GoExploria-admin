@@ -149,278 +149,9 @@
     <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"></noscript>
 @endonce
 
-<section class="hero-v2 go-home-hero {{ $hasHeroSlides ? '' : 'go-home-hero--empty' }}" id="{{ $heroId }}" @if(!$hasHeroSlides && ($hideSearchBarV2 ?? false)) style="display:none" @endif>
-    @if($hasHeroSlides)
-        <div class="hero-swiper swiper">
-            <div class="swiper-wrapper">
-                @foreach($heroSlides as $slide)
-                    @php
-                        $isVideo = ($slide['type'] ?? 'image') === 'video';
-                        $youtubeId = $slide['youtube_id'] ?? null;
-                        $vimeoId = $slide['vimeo_id'] ?? null;
-                        $youtubeSrc = $youtubeId
-                            ? 'https://www.youtube.com/embed/' . $youtubeId . '?' . http_build_query([
-                                'autoplay' => 1,
-                                'mute' => 1,
-                                'muted' => 1,
-                                'loop' => 1,
-                                'playlist' => $youtubeId,
-                                'controls' => 0,
-                                'showinfo' => 0,
-                                'rel' => 0,
-                                'modestbranding' => 1,
-                                'iv_load_policy' => 3,
-                                'playsinline' => 1,
-                                'vq' => 'hd1080',
-                                'hd' => 1,
-                            ], '', '&', PHP_QUERY_RFC3986)
-                            : null;
-                        $vimeoSrc = $vimeoId
-                            ? 'https://player.vimeo.com/video/' . $vimeoId . '?autoplay=1&muted=1&loop=1&background=1'
-                            : null;
-                        $ctaUrl = trim((string) ($slide['button_url'] ?? ''));
-                        $ctaText = trim((string) ($slide['button_text'] ?? ''));
-                        // Slides publicitaires : suivi des impressions et des clics.
-                        $estPub = ! empty($slide['sponsored']);
-                        $pubImpression = $estPub ? (string) ($slide['ad_impression'] ?? '') : '';
-                        $pubClic = $estPub ? (string) ($slide['ad_click'] ?? '') : '';
-                    @endphp
-                    <div class="swiper-slide @if($estPub) go-hero-sponsored @endif"
-                         @if($pubImpression !== '') data-gxads-imp="{{ $pubImpression }}" @endif>
-                        <div class="go-hero-media" @if(!empty($slide['poster'])) style="background-image:url('{{ $slide['poster'] }}')" @endif>
-                            @if($isVideo && $youtubeSrc)
-                                <iframe class="go-hero-youtube go-hero-deferred-frame" @if($loop->first) src="{{ $youtubeSrc }}" @endif data-src="{{ $youtubeSrc }}" data-youtube-id="{{ $youtubeId }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="{{ $loop->first ? 'eager' : 'lazy' }}"></iframe>
-                            @elseif($isVideo && $vimeoSrc)
-                                <iframe class="go-hero-youtube go-hero-deferred-frame" @if($loop->first) src="{{ $vimeoSrc }}" @endif data-src="{{ $vimeoSrc }}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="{{ $loop->first ? 'eager' : 'lazy' }}"></iframe>
-                            @elseif($isVideo && !empty($slide['media']))
-                                <video class="go-hero-local-video" autoplay muted loop playsinline preload="{{ $loop->first ? 'auto' : 'metadata' }}" @if(!empty($slide['poster'])) poster="{{ $slide['poster'] }}" @endif>
-                                    <source src="{{ $slide['media'] }}" type="video/mp4">
-                                </video>
-                            @elseif(!empty($slide['media']))
-                                <img class="go-hero-image" src="{{ $slide['media'] }}" alt="{{ $slide['title'] }}" loading="{{ $loop->first ? 'eager' : 'lazy' }}">
-                            @endif
-                        </div>
-                        <div class="go-hero-content">
-                            @if($estPub)
-                                {{-- Mention explicite : un visiteur doit pouvoir
-                                     distinguer une annonce du contenu éditorial.
-                                     Clé accentuée : $tr rend la clé telle quelle en français. --}}
-                                <span class="go-hero-sponsor-tag">{{ $tr('Sponsorisé') }}</span>
-                            @endif
-                            <h1 class="go-hero-title">{{ $slide['title'] }}</h1>
-                            @if(!empty($slide['description']))
-                                <p class="go-hero-description">{{ $slide['description'] }}</p>
-                            @endif
-                            @if($ctaUrl !== '' && $ctaText !== '')
-                                <a class="go-hero-cta" href="{{ $ctaUrl }}" target="_blank"
-                                   rel="noopener noreferrer @if($estPub) sponsored @endif"
-                                   @if($pubClic !== '') data-gxads-click="{{ $pubClic }}" @endif>
-                                    {{ $ctaText }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            @if($heroSlides->count() > 1)
-                <button class="swiper-button-prev" type="button" aria-label="{{ $tr('Precedent') }}">
-                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
-                </button>
-                <button class="swiper-button-next" type="button" aria-label="{{ $tr('Suivant') }}">
-                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
-                </button>
-            @endif
-        </div>
-    @endif
-
-    @if($heroSlides->count() > 1)
-        <div class="go-hero-thumbs-shell" aria-label="{{ $tr('Selection videos') }}">
-            <button class="go-hero-thumb-nav go-hero-thumb-prev" type="button" aria-label="{{ $tr('Videos precedentes') }}">
-                <i class="fas fa-chevron-left" aria-hidden="true"></i>
-            </button>
-            <div class="go-hero-thumbnails swiper">
-                <div class="swiper-wrapper">
-                    @foreach($heroSlides as $slide)
-                        <button class="go-hero-thumbnail swiper-slide {{ $loop->first ? 'active' : '' }}" type="button" data-index="{{ $loop->index }}">
-                            <span class="go-hero-thumbnail-img">
-                                <i class="fas fa-play-circle" aria-hidden="true"></i>
-                                @if(!empty($slide['poster']))
-                                    <img src="{{ $slide['poster'] }}" alt="{{ $slide['title'] }}" loading="lazy">
-                                @endif
-                            </span>
-                            <span class="go-hero-thumbnail-info">
-                                <strong>{{ $slide['title'] }}</strong>
-                                <small>{{ $slide['badge'] ?? 'Video' }}</small>
-                            </span>
-                        </button>
-                    @endforeach
-                </div>
-            </div>
-            <button class="go-hero-thumb-nav go-hero-thumb-next" type="button" aria-label="{{ $tr('Videos suivantes') }}">
-                <i class="fas fa-chevron-right" aria-hidden="true"></i>
-            </button>
-        </div>
-    @endif
-
-    @if(!($hideSearchBarV2 ?? false))
-        @once
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Révèle la search-bar-v2 (overlay masqué par défaut) 3 s après
-                // l'affichage de l'accueil, via la classe OFFICIELLE du site
-                // `hero-search-visible` : elle gère opacity + visibility +
-                // pointer-events + transform (indispensable pour que le clic sur
-                // « Destinations » ouvre bien le mega-menu).
-                setTimeout(function () { document.body.classList.add('hero-search-visible'); }, 3000);
-            });
-        </script>
-        @endonce
-        {{-- Fil d'Ariane des destinations, JUSTE AU-DESSUS de la barre de
-             recherche et calé à gauche. Aucune destination n'est choisie ici :
-             chaque niveau actif liste les siennes.
-
-             Le conteneur sert de repère d'alignement au script d'épinglage du
-             composant, qui exige un parent distinct de la section. --}}
-        @if(class_exists(\Vendor\TravelDestination\Support\FilArianeDestinations::class))
-            <div class="gxfil-hote">
-                @include('travel-destination::landing.partials.destination-breadcrumb', [
-                    'breadcrumb'       => collect([['label' => 'Accueil', 'url' => '/']]),
-                    'filArianeNiveaux' => \Vendor\TravelDestination\Support\FilArianeDestinations::racine(),
-                ])
-            </div>
-            <style>
-                /* Pleine largeur et calé à gauche, avec le même retrait que la
-                   barre de recherche (18 px) pour aligner les deux. */
-                .go-home-hero .gxfil-hote { width: 100%; max-width: none; margin: 0; padding: 0 18px; }
-                /* --gxfil-ecart : le fil se colle sous l'en-tête (8 px au lieu
-                   des 18 px des pages de destination), pour laisser la place à
-                   la barre de recherche juste dessous. */
-                .go-home-hero .gxfil { --gxfil-ecart: 8px; justify-content: flex-start; color: #fff; z-index: 37; }
-                @media (max-width: 640px) { .go-home-hero .gxfil-hote { padding: 0 12px; } }
-            </style>
-            <script>
-                /* La barre de recherche est posée en absolu à une hauteur fixe
-                   (126 px) : sans ce calage, le fil — épinglé sous l'en-tête —
-                   se serait superposé à elle. Elle descend donc juste sous le
-                   fil, dont la hauteur change avec la largeur de l'écran. */
-                (function () {
-                    var cible = null;
-                    var enCours = false;
-
-                    function caler() {
-                        var hero = document.querySelector('.go-home-hero');
-                        var fil = hero && hero.querySelector('.gxfil');
-                        var couche = hero && hero.querySelector('.go-hero-search-layer');
-                        if (!hero || !fil || !couche) { return; }
-
-                        var h = hero.getBoundingClientRect();
-                        var f = fil.getBoundingClientRect();
-                        if (!f.height) { return; }
-
-                        cible = Math.round(f.bottom - h.top + 12) + 'px';
-                        if (couche.style.top === cible) { return; }
-
-                        enCours = true;
-                        couche.style.top = cible;
-                        enCours = false;
-                    }
-
-                    function surveiller() {
-                        var couche = document.querySelector('.go-home-hero .go-hero-search-layer');
-                        if (!couche || typeof MutationObserver === 'undefined') { return; }
-
-                        /* La hauteur de la barre est posée en style en ligne et
-                           recalculée ailleurs : sans cette surveillance, elle
-                           reprenait sa place sous l'en-tête et recouvrait le
-                           fil. On repose notre valeur dès qu'elle change. */
-                        new MutationObserver(function () {
-                            if (enCours || !cible) { return; }
-                            if (couche.style.top !== cible) { couche.style.top = cible; }
-                        }).observe(couche, { attributes: true, attributeFilter: ['style'] });
-                    }
-
-                    function demarrer() { caler(); surveiller(); }
-
-                    if (document.readyState === 'loading') {
-                        document.addEventListener('DOMContentLoaded', demarrer);
-                    } else {
-                        demarrer();
-                    }
-                    window.addEventListener('load', caler);
-                    window.addEventListener('resize', caler, { passive: true });
-                    window.addEventListener('scroll', caler, { passive: true });
-                })();
-            </script>
-        @endif
-
-        <div class="go-hero-search-layer">
-            <div class="search-bar-v2">
-                <div class="search-bar-v2-container">
-                    <div class="search-bar-v2-destinations">
-                        @if($destinationBreadcrumbItems->isNotEmpty())
-                            <nav class="search-bar-v2-destination-breadcrumb" aria-label="{{ $tr('Fil d Ariane destination') }}">
-                                @foreach($destinationBreadcrumbItems as $breadcrumbItem)
-                                    <a href="{{ $breadcrumbItem['url'] }}">{{ $breadcrumbItem['name'] }}</a>
-                                    @if(! $loop->last)
-                                        <span>/</span>
-                                    @endif
-                                @endforeach
-                            </nav>
-                        @endif
-                        <img src="{{ asset('REDI.png') }}" alt="Destinations" class="search-bar-v2-globe-icon" id="destinationsMainTrigger" style="cursor:pointer;">
-                        <span class="search-bar-v2-destinations-title" id="destinationsBreadcrumb">{{ $tr('Destinations') }}</span>
-                        @include('welcome-home.components.DestinationsMegaMenu')
-                    </div>
-
-                    {{-- Pictos retirés (déjà présents dans le menu vertical) — on garde uniquement destination + recherche --}}
-                    <div class="search-bar-v2-search">
-                        <div class="search-bar-v2-input-wrapper">
-                            <svg class="search-bar-v2-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <path d="m21 21-4.35-4.35"></path>
-                            </svg>
-                            <input type="text" class="search-bar-v2-input" id="searchBarInput" placeholder="{{ $tr('Rechercher une destination, activite, hebergement...') }}" aria-label="{{ $tr('Rechercher une destination') }}" autocomplete="off">
-                            <button class="search-bar-v2-clear-btn" id="searchBarClearBtn" aria-label="{{ $tr('Effacer') }}">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="search-bar-v2-results" id="searchBarResults">
-                            <div class="search-bar-v2-results-header">
-                                <h4 class="search-bar-v2-results-title">{{ $tr('Resultats de la recherche') }}</h4>
-                            </div>
-                            <ul class="search-bar-v2-results-list" id="searchBarResultsList"></ul>
-                        </div>
-                    </div>
-
-                    {{-- Bloc ACTIVITÉS (droite) — ouvre le mega-menu des activités --}}
-                    <div class="search-bar-v2-activites" id="activitesMegaTrigger" role="button" tabindex="0"
-                         title="{{ $tr('Activités') }}"
-                         aria-haspopup="dialog" aria-expanded="false" aria-controls="activitesMegaPanel">
-                        {{-- Logo Plan-and-Go en haut, libellé « Activités » dessous --}}
-                        <img src="{{ asset('Plan-and-go.png') }}" alt="Plan and Go" class="search-bar-v2-activites-logo" width="199" height="65" decoding="async">
-                        <span class="search-bar-v2-activites-caption">
-                            <span class="search-bar-v2-activites-label">{{ $tr('Activités') }}</span>
-                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-</section>
-
-{{-- Mega-menu « Activités » (déclencheur : bloc de droite de la search-bar-v2).
-     Placé hors de la barre car le panneau est en position:fixed. --}}
-@if(!($hideSearchBarV2 ?? false))
-    @include('welcome-home.components.ActivitesMegaMenu')
-@endif
-
-{{-- Mega-menus des pictos retirés du Hero : ils restent disponibles via le menu vertical (vmenu-components-source) --}}
-
+{{-- Styles AVANT le balisage : le navigateur peint la page au fil de sa lecture.
+     Plus bas, ces règles n'arrivaient qu'après des centaines de Ko de HTML, et
+     le bloc s'affichait en texte brut le temps du chargement. --}}
 <style>
     .go-home-hero {
         position: relative;
@@ -1092,6 +823,279 @@
         .go-home-hero .search-bar-v2-results-list { grid-template-columns: minmax(0, 1fr) !important; }
     }
 </style>
+
+<section class="hero-v2 go-home-hero {{ $hasHeroSlides ? '' : 'go-home-hero--empty' }}" id="{{ $heroId }}" @if(!$hasHeroSlides && ($hideSearchBarV2 ?? false)) style="display:none" @endif>
+    @if($hasHeroSlides)
+        <div class="hero-swiper swiper">
+            <div class="swiper-wrapper">
+                @foreach($heroSlides as $slide)
+                    @php
+                        $isVideo = ($slide['type'] ?? 'image') === 'video';
+                        $youtubeId = $slide['youtube_id'] ?? null;
+                        $vimeoId = $slide['vimeo_id'] ?? null;
+                        $youtubeSrc = $youtubeId
+                            ? 'https://www.youtube.com/embed/' . $youtubeId . '?' . http_build_query([
+                                'autoplay' => 1,
+                                'mute' => 1,
+                                'muted' => 1,
+                                'loop' => 1,
+                                'playlist' => $youtubeId,
+                                'controls' => 0,
+                                'showinfo' => 0,
+                                'rel' => 0,
+                                'modestbranding' => 1,
+                                'iv_load_policy' => 3,
+                                'playsinline' => 1,
+                                'vq' => 'hd1080',
+                                'hd' => 1,
+                            ], '', '&', PHP_QUERY_RFC3986)
+                            : null;
+                        $vimeoSrc = $vimeoId
+                            ? 'https://player.vimeo.com/video/' . $vimeoId . '?autoplay=1&muted=1&loop=1&background=1'
+                            : null;
+                        $ctaUrl = trim((string) ($slide['button_url'] ?? ''));
+                        $ctaText = trim((string) ($slide['button_text'] ?? ''));
+                        // Slides publicitaires : suivi des impressions et des clics.
+                        $estPub = ! empty($slide['sponsored']);
+                        $pubImpression = $estPub ? (string) ($slide['ad_impression'] ?? '') : '';
+                        $pubClic = $estPub ? (string) ($slide['ad_click'] ?? '') : '';
+                    @endphp
+                    <div class="swiper-slide @if($estPub) go-hero-sponsored @endif"
+                         @if($pubImpression !== '') data-gxads-imp="{{ $pubImpression }}" @endif>
+                        <div class="go-hero-media" @if(!empty($slide['poster'])) style="background-image:url('{{ $slide['poster'] }}')" @endif>
+                            @if($isVideo && $youtubeSrc)
+                                <iframe class="go-hero-youtube go-hero-deferred-frame" @if($loop->first) src="{{ $youtubeSrc }}" @endif data-src="{{ $youtubeSrc }}" data-youtube-id="{{ $youtubeId }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="{{ $loop->first ? 'eager' : 'lazy' }}"></iframe>
+                            @elseif($isVideo && $vimeoSrc)
+                                <iframe class="go-hero-youtube go-hero-deferred-frame" @if($loop->first) src="{{ $vimeoSrc }}" @endif data-src="{{ $vimeoSrc }}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="{{ $loop->first ? 'eager' : 'lazy' }}"></iframe>
+                            @elseif($isVideo && !empty($slide['media']))
+                                <video class="go-hero-local-video" autoplay muted loop playsinline preload="{{ $loop->first ? 'auto' : 'metadata' }}" @if(!empty($slide['poster'])) poster="{{ $slide['poster'] }}" @endif>
+                                    <source src="{{ $slide['media'] }}" type="video/mp4">
+                                </video>
+                            @elseif(!empty($slide['media']))
+                                <img class="go-hero-image" src="{{ $slide['media'] }}" alt="{{ $slide['title'] }}" loading="{{ $loop->first ? 'eager' : 'lazy' }}">
+                            @endif
+                        </div>
+                        <div class="go-hero-content">
+                            @if($estPub)
+                                {{-- Mention explicite : un visiteur doit pouvoir
+                                     distinguer une annonce du contenu éditorial.
+                                     Clé accentuée : $tr rend la clé telle quelle en français. --}}
+                                <span class="go-hero-sponsor-tag">{{ $tr('Sponsorisé') }}</span>
+                            @endif
+                            <h1 class="go-hero-title">{{ $slide['title'] }}</h1>
+                            @if(!empty($slide['description']))
+                                <p class="go-hero-description">{{ $slide['description'] }}</p>
+                            @endif
+                            @if($ctaUrl !== '' && $ctaText !== '')
+                                <a class="go-hero-cta" href="{{ $ctaUrl }}" target="_blank"
+                                   rel="noopener noreferrer @if($estPub) sponsored @endif"
+                                   @if($pubClic !== '') data-gxads-click="{{ $pubClic }}" @endif>
+                                    {{ $ctaText }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            @if($heroSlides->count() > 1)
+                <button class="swiper-button-prev" type="button" aria-label="{{ $tr('Precedent') }}">
+                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                </button>
+                <button class="swiper-button-next" type="button" aria-label="{{ $tr('Suivant') }}">
+                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                </button>
+            @endif
+        </div>
+    @endif
+
+    @if($heroSlides->count() > 1)
+        <div class="go-hero-thumbs-shell" aria-label="{{ $tr('Selection videos') }}">
+            <button class="go-hero-thumb-nav go-hero-thumb-prev" type="button" aria-label="{{ $tr('Videos precedentes') }}">
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <div class="go-hero-thumbnails swiper">
+                <div class="swiper-wrapper">
+                    @foreach($heroSlides as $slide)
+                        <button class="go-hero-thumbnail swiper-slide {{ $loop->first ? 'active' : '' }}" type="button" data-index="{{ $loop->index }}">
+                            <span class="go-hero-thumbnail-img">
+                                <i class="fas fa-play-circle" aria-hidden="true"></i>
+                                @if(!empty($slide['poster']))
+                                    <img src="{{ $slide['poster'] }}" alt="{{ $slide['title'] }}" loading="lazy">
+                                @endif
+                            </span>
+                            <span class="go-hero-thumbnail-info">
+                                <strong>{{ $slide['title'] }}</strong>
+                                <small>{{ $slide['badge'] ?? 'Video' }}</small>
+                            </span>
+                        </button>
+                    @endforeach
+                </div>
+            </div>
+            <button class="go-hero-thumb-nav go-hero-thumb-next" type="button" aria-label="{{ $tr('Videos suivantes') }}">
+                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            </button>
+        </div>
+    @endif
+
+    @if(!($hideSearchBarV2 ?? false))
+        @once
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Révèle la search-bar-v2 (overlay masqué par défaut) 3 s après
+                // l'affichage de l'accueil, via la classe OFFICIELLE du site
+                // `hero-search-visible` : elle gère opacity + visibility +
+                // pointer-events + transform (indispensable pour que le clic sur
+                // « Destinations » ouvre bien le mega-menu).
+                setTimeout(function () { document.body.classList.add('hero-search-visible'); }, 3000);
+            });
+        </script>
+        @endonce
+        {{-- Fil d'Ariane des destinations, JUSTE AU-DESSUS de la barre de
+             recherche et calé à gauche. Aucune destination n'est choisie ici :
+             chaque niveau actif liste les siennes.
+
+             Le conteneur sert de repère d'alignement au script d'épinglage du
+             composant, qui exige un parent distinct de la section. --}}
+        @if(class_exists(\Vendor\TravelDestination\Support\FilArianeDestinations::class))
+            <div class="gxfil-hote">
+                @include('travel-destination::landing.partials.destination-breadcrumb', [
+                    'breadcrumb'       => collect([['label' => 'Accueil', 'url' => '/']]),
+                    'filArianeNiveaux' => \Vendor\TravelDestination\Support\FilArianeDestinations::racine(),
+                ])
+            </div>
+            <style>
+                /* Pleine largeur et calé à gauche, avec le même retrait que la
+                   barre de recherche (18 px) pour aligner les deux. */
+                .go-home-hero .gxfil-hote { width: 100%; max-width: none; margin: 0; padding: 0 18px; }
+                /* --gxfil-ecart : le fil se colle sous l'en-tête (8 px au lieu
+                   des 18 px des pages de destination), pour laisser la place à
+                   la barre de recherche juste dessous. */
+                .go-home-hero .gxfil { --gxfil-ecart: 8px; justify-content: flex-start; color: #fff; z-index: 37; }
+                @media (max-width: 640px) { .go-home-hero .gxfil-hote { padding: 0 12px; } }
+            </style>
+            <script>
+                /* La barre de recherche est posée en absolu à une hauteur fixe
+                   (126 px) : sans ce calage, le fil — épinglé sous l'en-tête —
+                   se serait superposé à elle. Elle descend donc juste sous le
+                   fil, dont la hauteur change avec la largeur de l'écran. */
+                (function () {
+                    var cible = null;
+                    var enCours = false;
+
+                    function caler() {
+                        var hero = document.querySelector('.go-home-hero');
+                        var fil = hero && hero.querySelector('.gxfil');
+                        var couche = hero && hero.querySelector('.go-hero-search-layer');
+                        if (!hero || !fil || !couche) { return; }
+
+                        var h = hero.getBoundingClientRect();
+                        var f = fil.getBoundingClientRect();
+                        if (!f.height) { return; }
+
+                        cible = Math.round(f.bottom - h.top + 12) + 'px';
+                        if (couche.style.top === cible) { return; }
+
+                        enCours = true;
+                        couche.style.top = cible;
+                        enCours = false;
+                    }
+
+                    function surveiller() {
+                        var couche = document.querySelector('.go-home-hero .go-hero-search-layer');
+                        if (!couche || typeof MutationObserver === 'undefined') { return; }
+
+                        /* La hauteur de la barre est posée en style en ligne et
+                           recalculée ailleurs : sans cette surveillance, elle
+                           reprenait sa place sous l'en-tête et recouvrait le
+                           fil. On repose notre valeur dès qu'elle change. */
+                        new MutationObserver(function () {
+                            if (enCours || !cible) { return; }
+                            if (couche.style.top !== cible) { couche.style.top = cible; }
+                        }).observe(couche, { attributes: true, attributeFilter: ['style'] });
+                    }
+
+                    function demarrer() { caler(); surveiller(); }
+
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', demarrer);
+                    } else {
+                        demarrer();
+                    }
+                    window.addEventListener('load', caler);
+                    window.addEventListener('resize', caler, { passive: true });
+                    window.addEventListener('scroll', caler, { passive: true });
+                })();
+            </script>
+        @endif
+
+        <div class="go-hero-search-layer">
+            <div class="search-bar-v2">
+                <div class="search-bar-v2-container">
+                    <div class="search-bar-v2-destinations">
+                        @if($destinationBreadcrumbItems->isNotEmpty())
+                            <nav class="search-bar-v2-destination-breadcrumb" aria-label="{{ $tr('Fil d Ariane destination') }}">
+                                @foreach($destinationBreadcrumbItems as $breadcrumbItem)
+                                    <a href="{{ $breadcrumbItem['url'] }}">{{ $breadcrumbItem['name'] }}</a>
+                                    @if(! $loop->last)
+                                        <span>/</span>
+                                    @endif
+                                @endforeach
+                            </nav>
+                        @endif
+                        <img src="{{ asset('REDI.png') }}" alt="Destinations" class="search-bar-v2-globe-icon" id="destinationsMainTrigger" style="cursor:pointer;">
+                        <span class="search-bar-v2-destinations-title" id="destinationsBreadcrumb">{{ $tr('Destinations') }}</span>
+                        @include('welcome-home.components.DestinationsMegaMenu')
+                    </div>
+
+                    {{-- Pictos retirés (déjà présents dans le menu vertical) — on garde uniquement destination + recherche --}}
+                    <div class="search-bar-v2-search">
+                        <div class="search-bar-v2-input-wrapper">
+                            <svg class="search-bar-v2-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            <input type="text" class="search-bar-v2-input" id="searchBarInput" placeholder="{{ $tr('Rechercher une destination, activite, hebergement...') }}" aria-label="{{ $tr('Rechercher une destination') }}" autocomplete="off">
+                            <button class="search-bar-v2-clear-btn" id="searchBarClearBtn" aria-label="{{ $tr('Effacer') }}">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="search-bar-v2-results" id="searchBarResults">
+                            <div class="search-bar-v2-results-header">
+                                <h4 class="search-bar-v2-results-title">{{ $tr('Resultats de la recherche') }}</h4>
+                            </div>
+                            <ul class="search-bar-v2-results-list" id="searchBarResultsList"></ul>
+                        </div>
+                    </div>
+
+                    {{-- Bloc ACTIVITÉS (droite) — ouvre le mega-menu des activités --}}
+                    <div class="search-bar-v2-activites" id="activitesMegaTrigger" role="button" tabindex="0"
+                         title="{{ $tr('Activités') }}"
+                         aria-haspopup="dialog" aria-expanded="false" aria-controls="activitesMegaPanel">
+                        {{-- Logo Plan-and-Go en haut, libellé « Activités » dessous --}}
+                        <img src="{{ asset('Plan-and-go.png') }}" alt="Plan and Go" class="search-bar-v2-activites-logo" width="199" height="65" decoding="async">
+                        <span class="search-bar-v2-activites-caption">
+                            <span class="search-bar-v2-activites-label">{{ $tr('Activités') }}</span>
+                            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+</section>
+
+{{-- Mega-menu « Activités » (déclencheur : bloc de droite de la search-bar-v2).
+     Placé hors de la barre car le panneau est en position:fixed. --}}
+@if(!($hideSearchBarV2 ?? false))
+    @include('welcome-home.components.ActivitesMegaMenu')
+@endif
+
+{{-- Mega-menus des pictos retirés du Hero : ils restent disponibles via le menu vertical (vmenu-components-source) --}}
+
 
 @once
     <script defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
