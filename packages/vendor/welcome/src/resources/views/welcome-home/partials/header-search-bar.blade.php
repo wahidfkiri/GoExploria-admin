@@ -76,14 +76,25 @@
 <div class="gxhsearch" data-gx-header-search>
     <div class="search-bar-v2">
         <div class="search-bar-v2-container">
-            {{-- DESTINATIONS : ouvre le panneau « destinations » de la barre de
-                 widgets, dont le contenu est chargé à la demande. --}}
-            <button type="button" class="gxhsearch__bloc"
-                    data-gxhsearch-relais="destinations" aria-haspopup="dialog"
-                    aria-label="Ouvrir les destinations">
+            {{-- DESTINATIONS : le méga-menu des destinations, celui de la
+                 bannière d'accueil. `js/welcome/destinations-mega-menu.js`
+                 (déjà chargé par l'en-tête de la plateforme) cherche son
+                 déclencheur par `.search-bar-v2-destinations` et attend que le
+                 panneau soit imbriqué dedans — d'où ces deux classes et
+                 l'include. Son contenu vient de l'API : rien dans la page.
+
+                 `<div role="button">` et non `<button>` : le panneau contient
+                 des liens, et un lien dans un bouton n'est pas du HTML valide.
+
+                 Sans ce script (ou sans son service d'API), le clic retombe
+                 sur le panneau de la barre de widgets — voir plus bas. --}}
+            <div class="gxhsearch__bloc search-bar-v2-destinations" role="button" tabindex="0"
+                 data-gxhsearch-relais="destinations" aria-haspopup="dialog"
+                 aria-label="Ouvrir les destinations">
                 <img src="{{ asset('REDI.png') }}" alt="" class="search-bar-v2-globe-icon" width="30" height="30" decoding="async">
-                <span class="search-bar-v2-destinations-title">Destinations</span>
-            </button>
+                <span class="search-bar-v2-destinations-title" id="destinationsBreadcrumb">Destinations</span>
+                @include('welcome-home.components.DestinationsMegaMenu')
+            </div>
 
             <div class="search-bar-v2-search">
                 <div class="search-bar-v2-input-wrapper">
@@ -109,7 +120,11 @@
                 </div>
             </div>
 
-            {{-- ACTIVITÉS : même relais, vers le panneau « activités ». --}}
+            {{-- ACTIVITÉS : sur une page de destination, ouvre le MÊME menu que
+                 le bouton « Voir les activités » de la bannière (les activités
+                 de cette destination, rangées par catégorie). Ailleurs, le
+                 panneau « activités » de la barre de widgets. Le choix se fait
+                 au chargement, selon ce que la page porte. --}}
             <button type="button" class="gxhsearch__bloc"
                     data-gxhsearch-relais="activites" aria-haspopup="dialog"
                     aria-label="Ouvrir les activités">
@@ -137,17 +152,56 @@
             return;
         }
 
-        /* Les deux blocs latéraux rouvrent les panneaux de la barre de widgets
-           plutôt que d'embarquer leurs propres méga-menus : ceux-ci pèsent
-           plusieurs centaines de Ko de HTML, alors que les panneaux de la
-           barre chargent leur contenu au premier clic. */
+        /* ── Ce que fait chaque bloc latéral ─────────────────────────────
+           Chacun ouvre le MEILLEUR menu que la page porte, et retombe sinon
+           sur le panneau correspondant de la barre de widgets :
+
+             DESTINATIONS → le méga-menu des destinations (il est imbriqué
+               dans le bloc, et destinations-mega-menu.js s'y accroche seul) ;
+             ACTIVITÉS    → sur une page de destination, le menu de « Voir les
+               activités » (#gxActDest, les activités de CETTE destination) ;
+
+           Le repli couvre les pages qui n'ont ni l'un ni l'autre — fiche
+           d'activité, catégorie, site d'établissement. */
+
+        var menuActivitesDestination = document.getElementById('gxActDest');
+
         barre.querySelectorAll('[data-gxhsearch-relais]').forEach(function (bouton) {
+            var nom = bouton.getAttribute('data-gxhsearch-relais');
+
+            /* #gxActDest écoute les clics sur [data-gx-activites-menu] au
+               niveau du document : on marque le bouton et on le laisse faire,
+               sans relais — sinon les deux menus s'ouvriraient. */
+            if (nom === 'activites' && menuActivitesDestination) {
+                bouton.setAttribute('data-gx-activites-menu', '');
+                return;
+            }
+
             bouton.addEventListener('click', function (e) {
+                /* Clic sur un lien du méga-menu imbriqué : on le laisse
+                   partir. */
+                if (e.target.closest && e.target.closest('a[href]')) { return; }
+
+                /* Le méga-menu des destinations s'est accroché à ce bloc : il
+                   gère déjà le clic, un relais ouvrirait un second panneau. */
+                if (window.destinationsMegaMenu && window.destinationsMegaMenu.trigger === bouton) {
+                    return;
+                }
+
                 e.preventDefault();
-                var nom = bouton.getAttribute('data-gxhsearch-relais');
                 var cible = document.querySelector('.gxrail [data-gxrail-open="' + nom + '"]');
                 if (cible) { cible.click(); }
             });
+
+            /* `role="button"` ne donne pas le clavier : on le rend. */
+            if (bouton.tagName !== 'BUTTON') {
+                bouton.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        bouton.click();
+                    }
+                });
+            }
         });
     }
 
