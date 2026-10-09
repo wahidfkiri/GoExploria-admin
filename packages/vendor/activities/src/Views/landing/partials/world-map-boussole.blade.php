@@ -39,12 +39,11 @@
   <div class="bsl-large">
     <div class="bsl-tete bsl-tete--centre">
       <p class="bsl-surtitre">S’orienter</p>
-      <h2 class="bsl-titre" id="bsl-carte-titre">La carte des points d’intérêt</h2>
-      <p class="bsl-chapeau">
-        {{ $mapPoints->count() }} {{ $mapPoints->count() > 1 ? 'lieux référencés' : 'lieu référencé' }}
-        dans le monde. Cliquez sur un marqueur pour ouvrir sa fiche : photos,
-        vidéo, horaires et coordonnées.
-      </p>
+      @include('activities::landing.partials.world-map-entete', [
+          'classeTitre' => 'bsl-titre',
+          'idTitre' => 'bsl-carte-titre',
+          'classeChapeau' => 'bsl-chapeau',
+      ])
     </div>
 
     {{-- FILTRE PAR DESTINATION — même dispositif que les pages de
@@ -118,6 +117,8 @@
     'childEntities' => $childEntities,
     'mapCategories' => $mapCategories,
     'mapPoints' => $mapPoints,
+    // Carte restreinte aux points d'une activité / catégorie : cadrée dessus.
+    'fitToPoints' => $fitToPoints ?? false,
 ])
 
 @if(!empty($mapFilterChain))

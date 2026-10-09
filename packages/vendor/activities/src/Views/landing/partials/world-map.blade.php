@@ -29,12 +29,11 @@
       <div class="col-lg-8 text-center m-b30">
         <div class="section-head style-10">
           <div class="sub-title">S’orienter</div>
-          <h2 class="title" id="plx-carte-titre">La carte des points d’intérêt</h2>
-          <p class="plx-carte-chapeau">
-            {{ $mapPoints->count() }} {{ $mapPoints->count() > 1 ? 'lieux référencés' : 'lieu référencé' }}
-            dans le monde. Cliquez sur un marqueur pour ouvrir sa fiche : photos,
-            vidéo, horaires et coordonnées.
-          </p>
+          @include('activities::landing.partials.world-map-entete', [
+              'classeTitre' => 'title',
+              'idTitre' => 'plx-carte-titre',
+              'classeChapeau' => 'plx-carte-chapeau',
+          ])
         </div>
       </div>
 
@@ -115,6 +114,8 @@
     'childEntities' => $childEntities,
     'mapCategories' => $mapCategories,
     'mapPoints' => $mapPoints,
+    // Carte restreinte aux points d'une activité / catégorie : cadrée dessus.
+    'fitToPoints' => $fitToPoints ?? false,
 ])
 
 @if(!empty($mapFilterChain))

@@ -124,7 +124,7 @@ class HomeV2Controller extends Controller
             // d'afficher un trou.
             $contenu = \Vendor\Activities\Support\ReglesEdition::retirer($pageSite->content);
             $contenu = \Vendor\Activities\Support\HerosVideo::nettoyer($contenu);
-            $contenu = \Vendor\Activities\Support\CarteMonde::injecter($contenu);
+            $contenu = \Vendor\Activities\Support\CarteMonde::injecter($contenu, 'category', (int) $category->id);
             $contenu = \Vendor\Cms\Support\TemplateActivities::hydrateCategorie($contenu, (int) $category->id);
             $contenu = \Vendor\Cms\Support\TemplateDestinations::hydrateCategorie($contenu, (int) $category->id);
             $contenu = \Vendor\Cms\Support\TemplateEtablissements::hydrateCategorie($contenu, (int) $category->id);

@@ -358,13 +358,14 @@ class LandingPageController extends Controller
      *
      * Le dispositif vit désormais dans [[Vendor\Activities\Support\CarteMonde]] :
      * la page d'une CATÉGORIE d'activités porte la même section d'attente et
-     * doit recevoir la même carte. Rien n'y dépend de l'activité — la carte
-     * montre tous les points, et le partiel ne lisait pas la variable qu'on
-     * lui passait.
+     * doit recevoir la même carte. L'activité ne sert qu'à lire les réglages
+     * et les points de son onglet « Géo Maps Vidéos » (admin) ; sans eux, la
+     * carte montre tous les points, comme avant.
      */
     protected function injecterCarteMonde(string $html, Activity $activity): string
     {
-        return \Vendor\Activities\Support\CarteMonde::injecter($html);
+        // Réglages et points de l'onglet « Géo Maps Vidéos » de l'activité.
+        return \Vendor\Activities\Support\CarteMonde::injecter($html, 'activity', (int) $activity->id);
     }
 
     /**

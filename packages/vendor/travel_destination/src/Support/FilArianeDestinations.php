@@ -18,13 +18,15 @@ use Illuminate\Support\Facades\Route;
  *
  * Sur une page de destination, les niveaux viennent de
  * TravelDestinationController@buildBreadcrumbLevels : ils suivent la chaîne de
- * la destination affichée. À l'accueil, aucune destination n'est choisie : on
- * propose donc TOUS les niveaux qui comptent au moins une destination active,
- * chacun listant les siennes.
+ * la destination affichée. À l'accueil, aucune destination n'est choisie : la
+ * navigation part donc du niveau le plus large — SEUL le premier niveau qui
+ * compte des destinations actives (le continent, en pratique) ouvre sa liste.
+ * Les niveaux suivants restent affichés, verrouillés : proposer les milliers de
+ * villes avant d'avoir choisi un continent n'aiderait personne, et l'ordre de
+ * lecture du fil le dit déjà — on descend un niveau après l'autre.
  *
- * Les listes sont plafonnées (un pays peut compter des milliers de villes) et
- * le résultat est mis en cache : ces requêtes seraient refaites à chaque
- * affichage de l'accueil.
+ * La liste du premier niveau est plafonnée et le résultat est mis en cache :
+ * ces requêtes seraient refaites à chaque affichage de l'accueil.
  */
 class FilArianeDestinations
 {
@@ -56,22 +58,37 @@ class FilArianeDestinations
 
     private static function calculer(int $plafond, int $minutes): array
     {
-        return Cache::remember('travel-destination.fil-racine.v1.' . $plafond, $minutes * 60, function () use ($plafond) {
+        return Cache::remember('travel-destination.fil-racine.v2.' . $plafond, $minutes * 60, function () use ($plafond) {
             if (! Route::has('travel-destination.show')) {
                 return [];
             }
 
             $niveaux = [];
+            $ouvert = false;   // le premier niveau peuplé est le seul à s'ouvrir
 
             foreach (self::NIVEAUX as $type => [$modele, $libelle]) {
                 try {
-                    $requete = $modele::query();
+                    $requete = self::requeteActive($modele);
 
-                    // `active()` quand le modèle l'expose, sinon la colonne.
-                    try {
-                        $requete = $modele::query()->active();
-                    } catch (\Throwable $e) {
-                        $requete = $modele::query()->where('is_active', true);
+                    /* Les niveaux verrouillés n'affichent aucune liste : inutile
+                       d'en charger les lignes, savoir qu'ils existent suffit. */
+                    if ($ouvert) {
+                        if (! $requete->exists()) {
+                            continue;
+                        }
+
+                        $niveaux[] = [
+                            'type'       => $type,
+                            'label'      => $libelle,
+                            'url'        => null,
+                            'courant'    => false,
+                            'suivant'    => true,
+                            'verrouille' => true,
+                            'tronque'    => false,
+                            'options'    => [],
+                        ];
+
+                        continue;
                     }
 
                     $entites = $requete->orderBy('name')->limit($plafond + 1)->get();
@@ -82,6 +99,8 @@ class FilArianeDestinations
                 if ($entites->isEmpty()) {
                     continue;   // niveau sans destination active : rien à proposer
                 }
+
+                $ouvert = true;
 
                 $niveaux[] = [
                     'type'       => $type,
@@ -108,5 +127,15 @@ class FilArianeDestinations
 
             return $niveaux;
         });
+    }
+
+    /** `active()` quand le modèle l'expose, sinon la colonne. */
+    private static function requeteActive(string $modele)
+    {
+        try {
+            return $modele::query()->active();
+        } catch (\Throwable $e) {
+            return $modele::query()->where('is_active', true);
+        }
     }
 }

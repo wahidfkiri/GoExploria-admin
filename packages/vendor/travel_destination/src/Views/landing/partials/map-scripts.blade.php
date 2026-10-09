@@ -77,6 +77,9 @@ document.addEventListener('DOMContentLoaded', function () {
       })->values(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var zoomByType = { continent: 3, country: 5, province: 7, region: 9, ville: 11, city: 11, secteur: 13 };
   var isContinent = entityType === 'continent';
+  // Cadrer sur les points même sur une vue « continent » : carte d'une page
+  // d'activité ou de catégorie restreinte à ses propres points (CarteMonde).
+  var fitToPoints = {{ !empty($fitToPoints) ? 'true' : 'false' }};
   var defaultZoom = entityLat && !isContinent ? (zoomByType[entityType] || 6) : 2;
   var center = entityLat ? [entityLat, entityLng] : [20, 0];
 
@@ -203,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
       markerIndex++;
       bounds.push([p.latitude, p.longitude]);
     });
-    if (bounds.length && !isContinent) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+    if (bounds.length && (!isContinent || fitToPoints)) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
     rebuildCategoryFilters(categories, data);
   }
 
