@@ -2,7 +2,7 @@
      MODAL RÉSERVATION GLOBAL — Table & Vin
      Déclenché par openGoExpResaModal(type, itemName)
      ================================================================ --}}
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 <div class="goexp-resa-overlay" id="goexpResaModal" role="dialog" aria-modal="true" aria-labelledby="resaModalTitle">
     <div class="goexp-resa-box">
         <div class="goexp-resa-header">

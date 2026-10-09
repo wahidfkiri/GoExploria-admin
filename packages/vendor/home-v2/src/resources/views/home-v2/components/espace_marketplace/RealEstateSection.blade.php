@@ -1,5 +1,5 @@
 ﻿{{-- RealEstateSection — GoExploria Immobilier --}}
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 <section class="immo-v2-section" id="real-estate-section">
 
     {{-- ============================================================

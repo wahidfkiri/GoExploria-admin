@@ -1,5 +1,5 @@
 ﻿{{-- GoExploria MyTUBE - Lecteur vidéo style YouTube --}}
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 @php
 $gxtVideos = [
     [

@@ -1,5 +1,5 @@
 ﻿{{-- Partners Master Component — GoExploria --}}
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 <section class="pm-section" id="partners-master">
 
     {{-- ============================================================

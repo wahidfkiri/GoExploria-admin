@@ -1,4 +1,4 @@
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 
 {{-- Mega Menu Component pour "Nos Services" --}}
 <div class="mega-menu-v2" id="megaMenuServices">

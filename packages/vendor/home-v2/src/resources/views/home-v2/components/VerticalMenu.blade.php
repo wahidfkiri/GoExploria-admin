@@ -1,4 +1,4 @@
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 {{-- Menu Vertical Principal Component --}}
 @php
 $tr = static function (string $text): string {

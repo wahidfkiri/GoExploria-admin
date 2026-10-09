@@ -3,7 +3,7 @@
      Sections : Entrées · Salades · Pâtes · Tartares · Classiques · Desserts
      ============================================================ --}}
 
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 @php
 $menuSections = [
     [

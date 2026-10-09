@@ -1,4 +1,4 @@
-﻿@php(ob_start());@endphp
+﻿@php ob_start(); @endphp
 
 {{-- ============================================================
      Location Auto, Bus, Vehicules Recreatifs 4 Saisons

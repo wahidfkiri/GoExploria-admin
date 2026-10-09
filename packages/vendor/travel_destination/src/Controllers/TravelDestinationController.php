@@ -781,10 +781,18 @@ class TravelDestinationController extends Controller
             'secteur' => 'Secteur', 'city' => 'Ville',
             'arrondissement' => 'Arrondissement', 'quartier' => 'Quartier',
         ];
-        /* Un niveau inférieur est rempli dès que la destination affichée a une
-           relation DIRECTE vers lui — une région donne ses secteurs ET ses
-           villes, une province ses régions et ses villes. Les niveaux sans
-           relation directe restent verrouillés jusqu'à la page suivante. */
+        /* SEUL le niveau immédiatement inférieur s'ouvre ; les autres restent
+           verrouillés jusqu'à ce qu'on les atteigne.
+
+           Le fil descend d'un cran à la fois : sur un pays on choisit une
+           province, sur un secteur une ville. Plusieurs modèles portent
+           pourtant des relations DIRECTES qui sautent des échelons — un pays
+           expose ses villes — et la page d'un pays ouvrait donc « Ville » en
+           même temps que « Province », deux crans d'un coup.
+
+           Conséquence voulue : si le niveau immédiat ne compte aucune
+           destination active, la suite du fil reste fermée. Mieux vaut un fil
+           qui s'arrête qu'un fil qui saute des niveaux. */
         $ENFANTS = [
             'country' => 'countries', 'province' => 'provinces', 'region' => 'regions',
             'secteur' => 'secteurs', 'city' => 'villes',
@@ -793,13 +801,16 @@ class TravelDestinationController extends Controller
 
         $typeCourant = $TYPE[class_basename($entity)] ?? null;
         $suivant = $ECHELLE[$typeCourant] ?? null;
+        $premierInferieur = true;
 
         while ($suivant) {
             $options = [];
             $tronqueSuivant = false;
             $relation = $ENFANTS[$suivant] ?? null;
 
-            if ($relation && method_exists($entity, $relation)) {
+            // Un niveau verrouillé n'affiche aucune liste : inutile
+            // d'interroger la base pour lui.
+            if ($premierInferieur && $relation && method_exists($entity, $relation)) {
                 try {
                     $requete = $entity->{$relation}();
                     try {
@@ -830,6 +841,7 @@ class TravelDestinationController extends Controller
                 'options'    => $options,
             ];
 
+            $premierInferieur = false;
             $suivant = $ECHELLE[$suivant] ?? null;
         }
 

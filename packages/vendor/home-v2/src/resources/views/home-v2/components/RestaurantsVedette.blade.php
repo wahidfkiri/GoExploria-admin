@@ -1,4 +1,4 @@
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 
 {{-- Restaurants Vedette Component - Restaurants vedette --}}
 <section class="restaurants-vedette-v2-section">

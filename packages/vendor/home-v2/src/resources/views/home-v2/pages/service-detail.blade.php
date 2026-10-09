@@ -1,4 +1,4 @@
-@php(ob_start());@endphp
+@php ob_start(); @endphp
 @php
     $supportedLocales = [
         'fr' => ['flag' => 'fr', 'code' => 'FR', 'label' => 'Français'],
