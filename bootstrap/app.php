@@ -36,6 +36,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // routes du package activités ne sont pas dans le groupe « web ».
         $middleware->append(\App\Http\Middleware\InjectGoogleAnalytics::class);
 
+        // Bannière publicitaire pleine largeur en bas de toutes les pages HTML
+        // (zone « banner_bottom_full »). Globale pour la même raison.
+        $middleware->append(\App\Http\Middleware\InjectAdsBottomBanner::class);
+
         $middleware->appendToGroup('web', \App\Http\Middleware\ForceHttps::class);
         $middleware->appendToGroup('web', \App\Http\Middleware\SetLocale::class);
         $middleware->appendToGroup('web', \App\Http\Middleware\TranslateHomeV2Components::class);

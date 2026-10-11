@@ -32,6 +32,16 @@ return [
     'map_banner_zone'    => env('ADS_MAP_BANNER_ZONE', 'banner_before_map'),
     'map_banner_enabled' => (bool) env('ADS_MAP_BANNER_ENABLED', true),
 
+    // Bannière 1920×200 en bas de TOUTES les pages du site public, posée par
+    // le middleware InjectAdsBottomBanner (aucune mise en page à retoucher).
+    'bottom_banner_zone'    => env('ADS_BOTTOM_BANNER_ZONE', 'banner_bottom_full'),
+    'bottom_banner_enabled' => (bool) env('ADS_BOTTOM_BANNER_ENABLED', true),
+    // Chemins (expressions régulières) où la bannière ne doit pas paraître.
+    'bottom_banner_excluded_paths' => [
+        '^/company/\d+/embed',   // le site d'un établissement affiché en iframe
+        '^/admin(/|$)',
+    ],
+
     // Slider de la page d'accueil : les annonces s'intercalent comme vues du
     // carrousel « welcome », groupées par 5 (1 grande image + 4 tuiles).
     'home_slider_zone'    => env('ADS_HOME_SLIDER_ZONE', 'slider_home_welcome'),

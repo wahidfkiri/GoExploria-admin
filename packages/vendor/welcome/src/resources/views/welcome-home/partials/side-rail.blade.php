@@ -16,7 +16,7 @@
      mises en cache 10 min côté serveur) : ~950 activités et l'arbre des
      destinations ne sont pas embarqués dans chaque page.
 
-     Desktop : colonne flottante à droite, centrée verticalement.
+     Desktop : colonne flottante à droite, à 60 % de la hauteur.
      Mobile (≤ 992 px) : barre horizontale en bas de l'écran, panneaux en
      plein écran.
      ══════════════════════════════════════════════════════════════════════ --}}
@@ -49,7 +49,7 @@
   .gxrail {
     --gxr-ink: #0f172a; --gxr-muted: #64748b; --gxr-line: #e5e7eb;
     --gxr-navy: #0a1628; --gxr-gold: #d4af37; --gxr-gold-ink: #8a6d10;
-    position: fixed; right: 14px; top: 50%; transform: translateY(-50%);
+    position: fixed; right: 14px; top: 60%; transform: translateY(-50%);
     z-index: 10040;
     font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
@@ -108,7 +108,7 @@
 
   /* ── Petits panneaux (langue, recherche) ── */
   .gxrail-pop {
-    position: fixed; z-index: 10120; right: 112px; top: 50%; transform: translateY(-50%) translateX(8px);
+    position: fixed; z-index: 10120; right: 112px; top: 60%; transform: translateY(-50%) translateX(8px);
     width: 268px; padding: 14px; border-radius: 16px;
     background: #fff; border: 1px solid rgba(15, 23, 42, .08);
     box-shadow: 0 18px 46px rgba(2, 6, 23, .24);
@@ -157,6 +157,9 @@
      contenu (classes gxmenu__*) est aussi affiché, en pleine largeur, par le
      méga-menu du header des pages destination. Non limitées, les deux
      feuilles se disputaient les mêmes éléments sur ces pages. ── */
+  /* La barre est posée à 60 % de la hauteur ; ce panneau reste CENTRÉ.
+     Il mesure jusqu'à `100vh - 110px` : descendu à 60 %, son bas tomberait
+     sous la fenêtre (0,6 H + h/2 dépasse H dès 550 px de haut). */
   .gxrail-mega {
     position: fixed; z-index: 10120;
     top: 50%; right: 112px; left: auto;
