@@ -25,6 +25,17 @@ class SlideshowsV2 {
     }
     
     loadSlides() {
+        /* Diapositives écrites dans la page (éditables dans l'éditeur Vvveb de
+           l'admin) : elles font foi. La liste ci-dessous ne sert plus que de
+           repli pour une page dont la piste est encore vide. */
+        const enPage = Array.from(this.track.children)
+            .filter((el) => el.classList.contains('slideshows-v2-slide'));
+        if (enPage.length) {
+            this.depuisPage = true;
+            this.slides = enPage.map((element) => ({ element }));
+            return;
+        }
+
         this.slides = [
             {
                 largeImage: {
@@ -238,6 +249,18 @@ class SlideshowsV2 {
     }
     
     renderSlides() {
+        // Diapositives de la page : on les garde telles quelles et on ajoute
+        // une copie de la série pour le défilement infini (comme la liste).
+        if (this.depuisPage) {
+            this.slides.forEach(({ element }) => {
+                const copie = element.cloneNode(true);
+                copie.setAttribute('aria-hidden', 'true');
+                this.track.appendChild(copie);
+            });
+            this.track.style.transition = `transform ${this.transitionDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+            return;
+        }
+
         const slidesToShow = this.slides.concat(this.slides);
         
         slidesToShow.forEach((slide) => {
@@ -310,7 +333,7 @@ class SlideshowsV2 {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const item = btn.closest('.slideshows-v2-item');
-                const videoId = item.dataset.videoId;
+                const videoId = this.idVideo(item);
                 const title = item.dataset.title;
                 this.openVideoModal(videoId, title);
             });
@@ -318,7 +341,7 @@ class SlideshowsV2 {
         
         document.querySelectorAll('.slideshows-v2-item').forEach(item => {
             item.addEventListener('click', () => {
-                const videoId = item.dataset.videoId;
+                const videoId = this.idVideo(item);
                 const title = item.dataset.title;
                 this.openVideoModal(videoId, title);
             });
@@ -434,6 +457,14 @@ class SlideshowsV2 {
         if (!this.track) return;
         const translateX = -this.currentSlide * 100;
         this.track.style.transform = `translateX(${translateX}%)`;
+    }
+    
+    /* L'éditeur Vvveb écrit l'adresse choisie dans data-gx-thumb (URL ou
+       identifiant YouTube) ; data-video-id reste le repli des anciennes pages. */
+    idVideo(item) {
+        const source = item.dataset.gxThumb || item.dataset.videoId || '';
+        const m = source.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+        return m ? m[1] : source;
     }
     
     openVideoModal(videoId, title) {
