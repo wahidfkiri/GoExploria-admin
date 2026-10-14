@@ -38,24 +38,56 @@
                 ->where(fn ($q) => $q->whereNull('ads.start_date')->orWhere('ads.start_date', '<=', $gxmbToday))
                 ->where(fn ($q) => $q->whereNull('ads.end_date')->orWhere('ads.end_date', '>=', $gxmbToday))
                 ->where(fn ($q) => $q->whereNull('ads.budget_total')->orWhereRaw('ads.budget_total > ads.budget_spent'))
-                // Pages où l'annonce peut paraître : aucune case = partout.
-                ->where(fn ($q) => $q->whereNull('ads.display_locations')
-                    ->orWhereIn('ads.display_locations', ['[]', ''])
-                    ->orWhereJsonContains('ads.display_locations', 'etablissements'))
-                // Établissements ciblés : le formulaire enregistre les ids en
-                // chaînes (« ["12"] »), d'anciens enregistrements en entiers.
-                ->where(fn ($q) => $q->whereNull('ads.target_etablissements')
-                    ->orWhereIn('ads.target_etablissements', ['[]', ''])
-                    ->orWhereJsonContains('ads.target_etablissements', (string) $gxmbEtab)
-                    ->orWhereJsonContains('ads.target_etablissements', $gxmbEtab))
+                // ⚠ display_locations et target_etablissements sont des colonnes
+                // JSON (MySQL) : les comparer à '' lève « Invalid JSON text »,
+                // et l'erreur, avalée par le catch ci-dessous, vidait la
+                // bannière sans rien dire. Le ciblage est appliqué en PHP, plus
+                // bas — invisible sur un banc SQLite, où ces colonnes sont du texte.
                 ->select('ads.*')
                 ->orderBy('ads.priority')
                 ->orderByDesc('ads.id')
-                ->limit(max(1, (int) ($gxmbPlacement->max_ads ?: 10)))
+                // Garde-fou avant le tri en PHP ; la limite de la zone s'applique après.
+                ->limit(50)
                 ->get();
         }
     } catch (\Throwable $e) {
         $gxmbAds = collect();
+    }
+
+    // Une valeur JSON de ciblage, rendue en tableau. NULL, « [] » ou une chaîne
+    // vide valent « aucune restriction ».
+    $gxmbListe = function ($valeur): array {
+        if (is_array($valeur)) {
+            return $valeur;
+        }
+
+        $valeur = trim((string) $valeur);
+
+        if ($valeur === '' || $valeur === '[]' || $valeur === 'null') {
+            return [];
+        }
+
+        $decode = json_decode($valeur, true);
+
+        return is_array($decode) ? $decode : [];
+    };
+
+    // Ciblage : pages d'affichage (cette bannière vit sur un site
+    // d'établissement) et établissements visés. Aucune case = partout.
+    $gxmbAds = $gxmbAds->filter(function ($ad) use ($gxmbEtab, $gxmbListe) {
+        $lieux = $gxmbListe($ad->display_locations ?? null);
+
+        if ($lieux !== [] && ! in_array('etablissements', $lieux, true)) {
+            return false;
+        }
+
+        $cibles = array_map('strval', $gxmbListe($ad->target_etablissements ?? null));
+
+        return $cibles === [] || in_array((string) $gxmbEtab, $cibles, true);
+    });
+
+    if ($gxmbPlacement ?? null) {
+        $gxmbAds = $gxmbAds->take(max(1, (int) ($gxmbPlacement->max_ads ?: 10)));
     }
 
     // Images stockées côté admin (storage séparé) => URL absolue vers l'admin.

@@ -9,8 +9,8 @@
        • pleine largeur, ratio 1920/200 (hauteur plancher sur mobile) ;
        • plusieurs annonces → rotation en fondu, durée = slide_duration ;
        • image / vidéo / html / texte ;
-       • ciblage respecté : display_locations (contexte de la page courante) et
-         target_etablissements sur /company/{id}/… (vide = tous) ;
+       • ciblage respecté : display_locations (contexte de la page courante) ;
+         target_etablissements ne s'applique que sur /company/{id}/… ;
        • impression comptée à la PREMIÈRE apparition de chaque annonce à
          l'écran, clic compté par l'admin qui redirige vers la destination.
 
@@ -45,32 +45,58 @@
                 ->where(fn ($q) => $q->whereNull('ads.start_date')->orWhere('ads.start_date', '<=', $gxbbToday))
                 ->where(fn ($q) => $q->whereNull('ads.end_date')->orWhere('ads.end_date', '>=', $gxbbToday))
                 ->where(fn ($q) => $q->whereNull('ads.budget_total')->orWhereRaw('ads.budget_total > ads.budget_spent'))
-                // Pages où l'annonce peut paraître : aucune case cochée = partout.
-                ->where(function ($q) use ($gxbbLocation) {
-                    $q->whereNull('ads.display_locations')->orWhereIn('ads.display_locations', ['[]', '']);
-
-                    if ($gxbbLocation) {
-                        $q->orWhereJsonContains('ads.display_locations', $gxbbLocation);
-                    }
-                })
-                // Établissements ciblés : le formulaire enregistre les ids en
-                // chaînes (« ["12"] »), d'anciens enregistrements en entiers.
-                ->where(function ($q) use ($gxbbEtab) {
-                    $q->whereNull('ads.target_etablissements')->orWhereIn('ads.target_etablissements', ['[]', '']);
-
-                    if ($gxbbEtab) {
-                        $q->orWhereJsonContains('ads.target_etablissements', (string) $gxbbEtab)
-                          ->orWhereJsonContains('ads.target_etablissements', $gxbbEtab);
-                    }
-                })
+                // ⚠ display_locations et target_etablissements sont des colonnes
+                // JSON (MySQL). Les comparer à '' lève « Invalid JSON text » et
+                // l'erreur, avalée par le catch, vidait la bannière sur tout le
+                // site — invisible en SQLite, où ces colonnes sont du texte.
+                // Le tri par ciblage se fait donc en PHP, juste après.
                 ->select('ads.*')
                 ->orderBy('ads.priority')
                 ->orderByDesc('ads.id')
-                ->limit(max(1, (int) ($gxbbPlacement->max_ads ?: 10)))
+                // Garde-fou avant le tri en PHP ; la limite de la zone s'applique après.
+                ->limit(50)
                 ->get();
         }
     } catch (\Throwable $e) {
         $gxbbAds = collect();
+    }
+
+    // Une valeur JSON de ciblage, rendue en tableau. Null, « [] » ou une
+    // chaîne vide valent « aucune restriction ».
+    $gxbbListe = function ($valeur): array {
+        if (is_array($valeur)) {
+            return $valeur;
+        }
+
+        $valeur = trim((string) $valeur);
+
+        if ($valeur === '' || $valeur === '[]' || $valeur === 'null') {
+            return [];
+        }
+
+        $decode = json_decode($valeur, true);
+
+        return is_array($decode) ? $decode : [];
+    };
+
+    // Ciblage, appliqué ici plutôt qu'en SQL (voir ci-dessus) :
+    //   • pages d'affichage : aucune case cochée = partout ;
+    //   • établissements visés : ne filtre que SUR le site d'un établissement,
+    //     sinon une annonce de commerce serait invisible sur tout le reste.
+    $gxbbAds = $gxbbAds->filter(function ($ad) use ($gxbbLocation, $gxbbEtab, $gxbbListe) {
+        $lieux = $gxbbListe($ad->display_locations ?? null);
+
+        if ($lieux !== [] && (! $gxbbLocation || ! in_array($gxbbLocation, $lieux, true))) {
+            return false;
+        }
+
+        $cibles = array_map('strval', $gxbbListe($ad->target_etablissements ?? null));
+
+        return ! ($gxbbEtab && $cibles !== [] && ! in_array((string) $gxbbEtab, $cibles, true));
+    });
+
+    if ($gxbbPlacement ?? null) {
+        $gxbbAds = $gxbbAds->take(max(1, (int) ($gxbbPlacement->max_ads ?: 10)));
     }
 
     // Images stockées côté admin (storage séparé) => URL absolue vers l'admin.
