@@ -14,4 +14,9 @@
      par construction : aucun sélecteur / JS partagé possible.
      ═══════════════════════════════════════════════════════════════════════ --}}
 @include('home-v2.components.VerticalMenu')
-@include('home-v2.components.Header', ['gxHeaderSearchBar' => true]) 
+{{-- Pas de barre de recherche ici : sur un site d'établissement, l'en-tête
+     de la plateforme coiffe le site d'un commerçant, et une recherche de
+     destinations au-dessus de SON contenu brouille la lecture. Elle reste
+     sur les pages destination, activité et catégorie
+     (welcome-home.partials.platform-header). --}}
+@include('home-v2.components.Header') 
