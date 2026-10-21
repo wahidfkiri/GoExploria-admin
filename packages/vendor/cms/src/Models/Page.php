@@ -4,6 +4,7 @@ namespace Vendor\Cms\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Vendor\Cms\Models\Traits\StockeEnFichiers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
 use App\Models\Etablissement;
@@ -11,7 +12,7 @@ use Illuminate\Support\Str;
 
 class Page extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, StockeEnFichiers;
 
     protected $connection = 'cms';
     protected $table = 'cms_pages';

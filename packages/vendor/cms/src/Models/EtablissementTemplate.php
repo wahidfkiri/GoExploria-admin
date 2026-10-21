@@ -6,10 +6,11 @@ use App\Models\Etablissement;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Vendor\Cms\Models\Traits\StockeEnFichiers;
 
 class EtablissementTemplate extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, StockeEnFichiers;
 
     protected $connection = 'cms';
     protected $table = 'etablissement_templates';

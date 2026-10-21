@@ -22,6 +22,12 @@ class CmsServiceProvider extends ServiceProvider
             return new \Vendor\Cms\Models\Theme();
         });
         
+        // Stockage des contenus (base ou fichiers) : caches par requête.
+        // Le front lit seulement (cms.contenus.ecriture = false par défaut ici).
+        $this->app->scoped(\Vendor\Cms\Contenus\StockageContenus::class, function () {
+            return new \Vendor\Cms\Contenus\StockageContenus(\Vendor\Cms\Contenus\DepotContenus::depuisConfig());
+        });
+
         // Register view namespace
         $this->loadViewsFrom(__DIR__ . '/Views', 'cms');
     }

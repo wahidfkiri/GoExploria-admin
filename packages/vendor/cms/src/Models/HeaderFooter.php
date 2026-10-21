@@ -6,10 +6,11 @@ use App\Models\Etablissement;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Vendor\Cms\Models\Traits\StockeEnFichiers;
 
 class HeaderFooter extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, StockeEnFichiers;
 
     public const TYPE_HEADER = 'header';
     public const TYPE_FOOTER = 'footer';

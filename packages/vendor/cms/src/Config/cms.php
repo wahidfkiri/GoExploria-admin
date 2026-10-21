@@ -61,4 +61,23 @@ return [
     |
     */
     'allowed_theme_extensions' => ['blade.php', 'css', 'js', 'json', 'png', 'jpg', 'jpeg', 'svg', 'woff', 'woff2', 'ttf'],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Stockage des contenus en fichiers (pilote)
+    |--------------------------------------------------------------------------
+    |
+    | Même dépôt que l'admin (CONTENUS_RACINE identique dans les deux .env).
+    | Le front LIT seulement : c'est l'admin qui choisit le mode d'un
+    | établissement et qui écrit. Cf. docs/CONCEPTION-STOCKAGE-CONTENUS.md
+    | du projet admin.
+    |
+    */
+    'contenus' => [
+        // « CONTENUS_RACINE= » vide : repli sur storage/, jamais la racine du disque.
+        'racine' => env('CONTENUS_RACINE') ?: storage_path('app/contenus'),
+        'ecriture' => env('CONTENUS_ECRITURE', false),
+        'taille_max' => (int) env('CONTENUS_TAILLE_MAX', 8 * 1024 * 1024),
+        'revisions' => (int) env('CONTENUS_REVISIONS', 20),
+    ],
 ];
