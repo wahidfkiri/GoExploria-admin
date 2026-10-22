@@ -4,6 +4,7 @@ namespace Vendor\Cms\Models\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Vendor\Cms\Contenus\StockageContenus;
+use Vendor\Cms\Contenus\Proprietaires;
 
 /**
  * Rend le stockage des contenus transparent pour le reste du code.
@@ -49,6 +50,27 @@ trait StockeEnFichiers
     public function champsStockes(): array
     {
         return StockageContenus::RESSOURCES[static::class] ?? [];
+    }
+
+    /**
+     * À qui appartient ce contenu : [classe, id], ou null (aucun propriétaire
+     * = toujours en base). Par défaut l'établissement ; les modèles rangés
+     * par `pageable_type` / `activity_id` redéfinissent cette méthode ET
+     * filtrerParProprietaireContenus().
+     *
+     * @return array{0: string, 1: int}|null
+     */
+    public function proprietaireContenus(): ?array
+    {
+        $id = (int) $this->getAttribute('etablissement_id');
+
+        return $id > 0 ? [Proprietaires::ETABLISSEMENT, $id] : null;
+    }
+
+    /** Lignes d'un propriétaire, ou null si ce modèle ne le concerne pas. */
+    public static function filtrerParProprietaireContenus($requete, string $type, int $id)
+    {
+        return $type === Proprietaires::ETABLISSEMENT ? $requete->where('etablissement_id', $id) : null;
     }
 
     public function getContentAttribute($valeur)
@@ -122,7 +144,7 @@ trait StockeEnFichiers
 
         $stockage = StockageContenus::instance();
 
-        if (! $stockage->enFichiers((int) $this->getAttribute('etablissement_id'))) {
+        if (! $stockage->enFichiers(...($this->proprietaireContenus() ?? [null, null]))) {
             return; // mode « base » : la colonne est écrite comme avant
         }
 

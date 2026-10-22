@@ -3,6 +3,7 @@
 namespace Vendor\Cms\Contenus;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
@@ -15,11 +16,11 @@ use Vendor\Cms\Models\HeaderFooter;
 use Vendor\Cms\Models\Page;
 
 /**
- * Où vivent les contenus d'un établissement : en base (historique) ou dans
+ * Où vivent les contenus d'un PROPRIÉTAIRE — établissement, activité,
+ * catégorie, destination (cf. Proprietaires) : en base (historique) ou dans
  * le dépôt de fichiers. Source unique, utilisée par le trait StockeEnFichiers
  * (lecture/écriture transparentes sur les modèles), par la commande
- * `contenus:basculer` et par la carte « Stockage des contenus » de l'onglet
- * Configuration.
+ * `contenus:basculer` et par les cartes « Stockage des contenus ».
  *
  * Règles :
  *  - pas de ligne contenu_stockages = mode « base » : rien ne change ;
@@ -28,6 +29,11 @@ use Vendor\Cms\Models\Page;
  *    que la base n'a pas été « libérée » ;
  *  - revenir en base réécrit d'abord les colonnes depuis les fichiers : on
  *    peut changer d'avis à tout moment sans rien perdre.
+ *
+ * ⚠ Les lignes de contenu ne sont pas toutes sur la même connexion : les
+ * tables du CMS sont sur « cms », `pages` (destinations) et `page_contents`
+ * (activités, catégories) sur la connexion principale. Chaque écriture
+ * passe par la connexion du modèle ; les révisions, elles, sont sur « cms ».
  *
  * Enregistré en `scoped` : ses caches vivent le temps d'une requête (Octane
  * compris), jamais d'une requête à l'autre.
@@ -39,14 +45,18 @@ class StockageContenus
         Page::class => ['content'],
         HeaderFooter::class => ['content', 'html_content', 'css_content'],
         EtablissementTemplate::class => ['page_contents'],
+        // Destinations (8 niveaux) : la page du site et les pages libres.
+        'App\\Models\\Page' => ['html_content', 'css_content'],
+        // Activités et catégories : la page composée et les contenus typés.
+        'App\\Models\\PageContent' => ['content'],
     ];
 
     protected ?bool $tablesPresentes = null;
 
-    /** @var array<int, string> */
+    /** @var array<string, string> mode par « classe#id » */
     protected array $modes = [];
 
-    /** @var array<int, array<string, ContenuRevision>> révision courante par clé */
+    /** @var array<string, array<string, ContenuRevision>> révision courante par clé, par propriétaire */
     protected array $revisions = [];
 
     /** @var array<int, ?string> valeur recomposée par identifiant de révision */
@@ -72,7 +82,9 @@ class StockageContenus
         if ($this->tablesPresentes === null) {
             try {
                 $schema = Schema::connection('cms');
-                $this->tablesPresentes = $schema->hasTable('contenu_stockages') && $schema->hasTable('contenu_revisions');
+                $this->tablesPresentes = $schema->hasTable('contenu_stockages')
+                    && $schema->hasTable('contenu_revisions')
+                    && $schema->hasColumn('contenu_stockages', 'proprietaire_type');
             } catch (Throwable) {
                 $this->tablesPresentes = false;
             }
@@ -81,19 +93,31 @@ class StockageContenus
         return $this->tablesPresentes;
     }
 
-    public function mode(?int $etablissementId): string
+    public function mode(?string $type, ?int $id): string
     {
-        if (! $etablissementId || ! $this->tablesPresentes()) {
+        if (! $type || ! $id || ! $this->tablesPresentes()) {
             return ContenuStockage::BASE;
         }
 
-        return $this->modes[$etablissementId] ??=
-            (ContenuStockage::where('etablissement_id', $etablissementId)->value('mode') ?: ContenuStockage::BASE);
+        return $this->modes[$this->cleProprietaire($type, $id)] ??=
+            (ContenuStockage::where('proprietaire_type', $type)->where('proprietaire_id', $id)->value('mode')
+                ?: ContenuStockage::BASE);
     }
 
-    public function enFichiers(?int $etablissementId): bool
+    public function enFichiers(?string $type, ?int $id): bool
     {
-        return $this->mode($etablissementId) === ContenuStockage::FICHIERS;
+        return $this->mode($type, $id) === ContenuStockage::FICHIERS;
+    }
+
+    public function etablissementEnFichiers(int $etablissementId): bool
+    {
+        return $this->enFichiers(Proprietaires::ETABLISSEMENT, $etablissementId);
+    }
+
+    /** Les classes de RESSOURCES réellement chargées dans ce projet. */
+    public static function ressources(): array
+    {
+        return array_filter(self::RESSOURCES, fn ($champs, $classe) => class_exists($classe), ARRAY_FILTER_USE_BOTH);
     }
 
     /* ------------------------------------------------------------------
@@ -105,13 +129,13 @@ class StockageContenus
      */
     public function lireChamp(Model $modele, string $champ): array
     {
-        $etablissementId = (int) $modele->getAttribute('etablissement_id');
+        [$type, $id] = $modele->proprietaireContenus() ?? [null, null];
 
-        if (! $modele->exists || ! $this->enFichiers($etablissementId)) {
+        if (! $modele->exists || ! $this->enFichiers($type, $id)) {
             return [false, null];
         }
 
-        $revision = $this->revisionsDe($etablissementId)[$this->cle($modele->getTable(), $modele->getKey(), $champ)] ?? null;
+        $revision = $this->revisionsDe($type, $id)[$this->cle($modele->getTable(), $modele->getKey(), $champ)] ?? null;
 
         if ($revision === null) {
             return [false, null];
@@ -176,11 +200,17 @@ class StockageContenus
     }
 
     /** Crée la révision (sauf si la valeur n'a pas changé) et élague l'historique. */
-    public function enregistrer(Model $modele, string $champ, array $prepare, string $origine, ?int $auteurId = null): ContenuRevision
+    public function enregistrer(Model $modele, string $champ, array $prepare, string $origine, ?int $auteurId = null): ?ContenuRevision
     {
-        $etablissementId = (int) $modele->getAttribute('etablissement_id');
+        $proprietaire = $modele->proprietaireContenus();
+
+        if ($proprietaire === null) {
+            return null;
+        }
+
+        [$type, $id] = $proprietaire;
         $cle = $this->cle($modele->getTable(), $modele->getKey(), $champ);
-        $actuelle = $this->revisionsDe($etablissementId)[$cle] ?? null;
+        $actuelle = $this->revisionsDe($type, $id)[$cle] ?? null;
 
         if ($actuelle !== null
             && $actuelle->empreinte === $prepare['empreinte']
@@ -189,7 +219,9 @@ class StockageContenus
         }
 
         $revision = ContenuRevision::create([
-            'etablissement_id' => $etablissementId,
+            'proprietaire_type' => $type,
+            'proprietaire_id' => $id,
+            'etablissement_id' => $type === Proprietaires::ETABLISSEMENT ? $id : null,
             'ressource_type' => $modele->getTable(),
             'ressource_id' => $modele->getKey(),
             'champ' => $champ,
@@ -200,7 +232,7 @@ class StockageContenus
             'auteur_id' => $auteurId,
         ]);
 
-        $this->revisions[$etablissementId][$cle] = $revision;
+        $this->revisions[$this->cleProprietaire($type, $id)][$cle] = $revision;
         $this->elaguer($revision);
 
         return $revision;
@@ -210,63 +242,68 @@ class StockageContenus
      | Changements de mode
      * ------------------------------------------------------------------ */
 
-    /** Copie tous les contenus de l'établissement dans le dépôt, vérifie, puis bascule. */
-    public function basculerVersFichiers(int $etablissementId, bool $simulation = false, ?int $auteurId = null): array
+    /** Copie tous les contenus du propriétaire dans le dépôt, vérifie, puis bascule. */
+    public function basculerVersFichiers(string $type, int $id, bool $simulation = false, ?int $auteurId = null): array
     {
         $this->exigerTables();
 
-        $rapport = ['mode_avant' => $this->mode($etablissementId), 'lignes' => 0, 'champs' => 0,
-            'octets_base' => 0, 'objets' => [], 'simulation' => $simulation];
+        $rapport = ['proprietaire' => Proprietaires::reference($type, $id), 'mode_avant' => $this->mode($type, $id),
+            'lignes' => 0, 'champs' => 0, 'octets_base' => 0, 'objets' => [], 'simulation' => $simulation];
 
-        $traiter = function () use ($etablissementId, $simulation, $auteurId, &$rapport) {
-            foreach (self::RESSOURCES as $classe => $champs) {
-                $classe::withTrashed()->where('etablissement_id', $etablissementId)
-                    ->chunkById(50, function ($lignes) use ($champs, $simulation, $auteurId, &$rapport) {
-                        foreach ($lignes as $ligne) {
-                            $rapport['lignes']++;
+        $traiter = function () use ($type, $id, $simulation, $auteurId, &$rapport) {
+            foreach (self::ressources() as $classe => $champs) {
+                $requete = $this->requete($classe, $type, $id);
+                if ($requete === null) {
+                    continue;
+                }
 
-                            foreach ($champs as $champ) {
-                                if (! array_key_exists($champ, $ligne->getAttributes())) {
-                                    continue;
-                                }
+                $requete->chunkById(50, function ($lignes) use ($champs, $simulation, $auteurId, &$rapport) {
+                    foreach ($lignes as $ligne) {
+                        $rapport['lignes']++;
 
-                                $brut = $ligne->getRawOriginal($champ);
-                                if ($brut === null) {
-                                    continue;
-                                }
-
-                                $brut = (string) $brut;
-                                $rapport['champs']++;
-                                $rapport['octets_base'] += strlen($brut);
-
-                                foreach (Decoupeur::decouper($brut) as $segment) {
-                                    $rapport['objets'][$segment['t'] . ':' . DepotContenus::empreinte($segment['contenu'])] = strlen($segment['contenu']);
-                                }
-
-                                if ($simulation) {
-                                    continue;
-                                }
-
-                                $prepare = $this->preparer($brut);
-
-                                // Relecture depuis le disque : on ne bascule que ce
-                                // qu'on sait rendre à l'octet près.
-                                if ($this->recomposer($prepare['manifeste']) !== $brut) {
-                                    throw new RuntimeException("Relecture différente : {$ligne->getTable()} #{$ligne->getKey()} ({$champ}).");
-                                }
-
-                                $this->enregistrer($ligne, $champ, $prepare, 'bascule', $auteurId);
+                        foreach ($champs as $champ) {
+                            if (! array_key_exists($champ, $ligne->getAttributes())) {
+                                continue;
                             }
+
+                            $brut = $ligne->getRawOriginal($champ);
+                            if ($brut === null) {
+                                continue;
+                            }
+
+                            $brut = (string) $brut;
+                            $rapport['champs']++;
+                            $rapport['octets_base'] += strlen($brut);
+
+                            foreach (Decoupeur::decouper($brut) as $segment) {
+                                $rapport['objets'][$segment['t'] . ':' . DepotContenus::empreinte($segment['contenu'])] = strlen($segment['contenu']);
+                            }
+
+                            if ($simulation) {
+                                continue;
+                            }
+
+                            $prepare = $this->preparer($brut);
+
+                            // Relecture depuis le disque : on ne bascule que ce
+                            // qu'on sait rendre à l'octet près.
+                            if ($this->recomposer($prepare['manifeste']) !== $brut) {
+                                throw new RuntimeException("Relecture différente : {$ligne->getTable()} #{$ligne->getKey()} ({$champ}).");
+                            }
+
+                            $this->enregistrer($ligne, $champ, $prepare, 'bascule', $auteurId);
                         }
-                    });
+                    }
+                });
             }
 
             if (! $simulation) {
                 ContenuStockage::updateOrCreate(
-                    ['etablissement_id' => $etablissementId],
-                    ['mode' => ContenuStockage::FICHIERS, 'bascule_le' => now(), 'base_liberee_le' => null, 'modifie_par' => $auteurId]
+                    ['proprietaire_type' => $type, 'proprietaire_id' => $id],
+                    ['etablissement_id' => $type === Proprietaires::ETABLISSEMENT ? $id : null,
+                        'mode' => ContenuStockage::FICHIERS, 'bascule_le' => now(), 'base_liberee_le' => null, 'modifie_par' => $auteurId]
                 );
-                $this->modes[$etablissementId] = ContenuStockage::FICHIERS;
+                $this->modes[$this->cleProprietaire($type, $id)] = ContenuStockage::FICHIERS;
             }
         };
 
@@ -276,17 +313,18 @@ class StockageContenus
     }
 
     /** Réécrit les colonnes depuis les fichiers, puis repasse en mode « base ». */
-    public function revenirEnBase(int $etablissementId, bool $simulation = false, ?int $auteurId = null): array
+    public function revenirEnBase(string $type, int $id, bool $simulation = false, ?int $auteurId = null): array
     {
         $this->exigerTables();
 
-        $rapport = ['mode_avant' => $this->mode($etablissementId), 'champs' => 0, 'simulation' => $simulation];
+        $rapport = ['proprietaire' => Proprietaires::reference($type, $id), 'mode_avant' => $this->mode($type, $id),
+            'champs' => 0, 'simulation' => $simulation];
 
         if ($rapport['mode_avant'] !== ContenuStockage::FICHIERS) {
-            return $rapport + ['message' => "L'établissement est déjà en mode « base »."];
+            return $rapport + ['message' => 'Déjà en mode « base ».'];
         }
 
-        $revisions = $this->revisionsDe($etablissementId);
+        $revisions = $this->revisionsDe($type, $id);
         // Tout relire AVANT d'écrire : un objet manquant arrête tout, rien n'est écrit.
         $valeurs = array_map(fn (ContenuRevision $r) => $this->valeurRevision($r), $revisions);
 
@@ -294,18 +332,18 @@ class StockageContenus
             return ['champs' => count($valeurs)] + $rapport;
         }
 
-        DB::connection('cms')->transaction(function () use ($etablissementId, $revisions, $valeurs, $auteurId, &$rapport) {
+        DB::connection('cms')->transaction(function () use ($type, $id, $revisions, $valeurs, $auteurId, &$rapport) {
             foreach ($revisions as $cle => $revision) {
-                $rapport['champs'] += DB::connection('cms')->table($this->tableAutorisee($revision->ressource_type))
+                $rapport['champs'] += $this->tableDe($revision->ressource_type)
                     ->where('id', $revision->ressource_id)
                     ->update([$revision->champ => $valeurs[$cle]]);
             }
 
             ContenuStockage::updateOrCreate(
-                ['etablissement_id' => $etablissementId],
+                ['proprietaire_type' => $type, 'proprietaire_id' => $id],
                 ['mode' => ContenuStockage::BASE, 'base_liberee_le' => null, 'modifie_par' => $auteurId]
             );
-            $this->modes[$etablissementId] = ContenuStockage::BASE;
+            $this->modes[$this->cleProprietaire($type, $id)] = ContenuStockage::BASE;
         });
 
         return $rapport;
@@ -316,49 +354,51 @@ class StockageContenus
      * vérifié que chaque révision se relit. C'est ce qui libère réellement
      * l'espace en base ; « revenir en base » les réécrit.
      */
-    public function libererBase(int $etablissementId, bool $simulation = false): array
+    public function libererBase(string $type, int $id, bool $simulation = false): array
     {
         $this->exigerTables();
 
-        if (! $this->enFichiers($etablissementId)) {
+        if (! $this->enFichiers($type, $id)) {
             throw new RuntimeException("Libérer la base n'est possible qu'en mode « fichiers ».");
         }
 
-        $revisions = $this->revisionsDe($etablissementId);
+        $revisions = $this->revisionsDe($type, $id);
         foreach ($revisions as $revision) {
             $this->valeurRevision($revision); // lève une exception si un objet manque
         }
 
-        $rapport = ['octets_liberes' => $this->octetsEnBase($etablissementId), 'champs' => count($revisions), 'simulation' => $simulation];
+        $rapport = ['proprietaire' => Proprietaires::reference($type, $id), 'octets_liberes' => $this->octetsEnBase($type, $id),
+            'champs' => count($revisions), 'simulation' => $simulation];
 
         if ($simulation) {
             return $rapport;
         }
 
-        DB::connection('cms')->transaction(function () use ($etablissementId, $revisions) {
+        DB::connection('cms')->transaction(function () use ($type, $id, $revisions) {
             foreach ($revisions as $revision) {
-                DB::connection('cms')->table($this->tableAutorisee($revision->ressource_type))
+                $this->tableDe($revision->ressource_type)
                     ->where('id', $revision->ressource_id)
                     ->update([$revision->champ => null]);
             }
 
-            ContenuStockage::where('etablissement_id', $etablissementId)->update(['base_liberee_le' => now()]);
+            ContenuStockage::where('proprietaire_type', $type)->where('proprietaire_id', $id)
+                ->update(['base_liberee_le' => now()]);
         });
 
         return $rapport;
     }
 
-    /** Résumé affiché par la carte de l'onglet Configuration et par la commande. */
-    public function etat(int $etablissementId): array
+    /** Résumé affiché par les cartes « Stockage des contenus » et par la commande. */
+    public function etat(string $type, int $id): array
     {
         if (! $this->tablesPresentes()) {
             return ['disponible' => false, 'mode' => ContenuStockage::BASE];
         }
 
-        $ligne = ContenuStockage::where('etablissement_id', $etablissementId)->first();
+        $ligne = ContenuStockage::where('proprietaire_type', $type)->where('proprietaire_id', $id)->first();
         $objets = [];
 
-        foreach ($this->revisionsDe($etablissementId) as $revision) {
+        foreach ($this->revisionsDe($type, $id) as $revision) {
             foreach ((array) $revision->manifeste as $segment) {
                 $chemin = $this->depot->chemin($segment['h'], $segment['t']);
                 $objets[$chemin] = is_file($chemin) ? filesize($chemin) : 0;
@@ -367,24 +407,30 @@ class StockageContenus
 
         return [
             'disponible' => true,
+            'proprietaire' => Proprietaires::reference($type, $id),
             'mode' => $ligne->mode ?? ContenuStockage::BASE,
             'bascule_le' => $ligne?->bascule_le,
             'base_liberee_le' => $ligne?->base_liberee_le,
-            'octets_base' => $this->octetsEnBase($etablissementId),
+            'octets_base' => $this->octetsEnBase($type, $id),
             'octets_fichiers' => array_sum($objets),
             'objets' => count($objets),
-            'revisions' => count($this->revisionsDe($etablissementId)),
+            'revisions' => count($this->revisionsDe($type, $id)),
             'depot' => $this->depot->etat(),
         ];
     }
 
-    public function octetsEnBase(int $etablissementId): int
+    public function octetsEnBase(string $type, int $id): int
     {
         $total = 0;
 
-        foreach (self::RESSOURCES as $classe => $champs) {
-            $modele = new $classe;
-            $schema = Schema::connection('cms');
+        foreach (self::ressources() as $classe => $champs) {
+            $requete = $this->requete($classe, $type, $id);
+            if ($requete === null) {
+                continue;
+            }
+
+            $modele = $requete->getModel();
+            $schema = Schema::connection($modele->getConnectionName());
             $champs = array_values(array_filter($champs, fn ($c) => $schema->hasColumn($modele->getTable(), $c)));
 
             if ($champs === []) {
@@ -392,10 +438,7 @@ class StockageContenus
             }
 
             $somme = implode(' + ', array_map(fn ($c) => "COALESCE(LENGTH({$c}), 0)", $champs));
-            $total += (int) DB::connection('cms')->table($modele->getTable())
-                ->where('etablissement_id', $etablissementId)
-                ->selectRaw("SUM({$somme}) AS total")
-                ->value('total');
+            $total += (int) $requete->toBase()->selectRaw("SUM({$somme}) AS total")->value('total');
         }
 
         return $total;
@@ -403,19 +446,59 @@ class StockageContenus
 
     /* ------------------------------------------------------------------ */
 
-    /** @return array<string, ContenuRevision> */
-    protected function revisionsDe(int $etablissementId): array
+    /**
+     * Requête des lignes d'une classe pour un propriétaire (suppressions
+     * douces comprises : elles occupent de la place), ou null si la classe
+     * ne concerne pas ce type de propriétaire.
+     */
+    protected function requete(string $classe, string $type, int $id)
     {
-        if (! $this->tablesPresentes()) {
+        if (! $this->tableExiste($classe)) {
+            return null; // table absente de cette installation : rien à y ranger
+        }
+
+        $requete = $classe::query();
+
+        if (in_array(SoftDeletes::class, class_uses_recursive($classe), true)) {
+            $requete->withTrashed();
+        }
+
+        return $classe::filtrerParProprietaireContenus($requete, $type, $id);
+    }
+
+    /** @var array<string, bool> */
+    protected array $tables = [];
+
+    protected function tableExiste(string $classe): bool
+    {
+        if (! array_key_exists($classe, $this->tables)) {
+            $modele = new $classe;
+
+            try {
+                $this->tables[$classe] = Schema::connection($modele->getConnectionName())->hasTable($modele->getTable());
+            } catch (Throwable) {
+                $this->tables[$classe] = false;
+            }
+        }
+
+        return $this->tables[$classe];
+    }
+
+    /** @return array<string, ContenuRevision> */
+    protected function revisionsDe(?string $type, ?int $id): array
+    {
+        if (! $type || ! $id || ! $this->tablesPresentes()) {
             return [];
         }
 
-        return $this->revisions[$etablissementId] ??= ContenuRevision::query()
-            ->where('etablissement_id', $etablissementId)
-            ->whereIn('id', function ($requete) use ($etablissementId) {
+        return $this->revisions[$this->cleProprietaire($type, $id)] ??= ContenuRevision::query()
+            ->where('proprietaire_type', $type)
+            ->where('proprietaire_id', $id)
+            ->whereIn('id', function ($requete) use ($type, $id) {
                 $requete->from('contenu_revisions')
                     ->selectRaw('MAX(id)')
-                    ->where('etablissement_id', $etablissementId)
+                    ->where('proprietaire_type', $type)
+                    ->where('proprietaire_id', $id)
                     ->groupBy('ressource_type', 'ressource_id', 'champ');
             })
             ->get()
@@ -433,7 +516,8 @@ class StockageContenus
 
     protected function elaguer(ContenuRevision $revision): void
     {
-        $anciennes = ContenuRevision::where('etablissement_id', $revision->etablissement_id)
+        $anciennes = ContenuRevision::where('proprietaire_type', $revision->proprietaire_type)
+            ->where('proprietaire_id', $revision->proprietaire_id)
             ->where('ressource_type', $revision->ressource_type)
             ->where('ressource_id', $revision->ressource_id)
             ->where('champ', $revision->champ)
@@ -452,21 +536,29 @@ class StockageContenus
         return $table . ':' . $id . ':' . $champ;
     }
 
-    protected function tableAutorisee(string $table): string
+    protected function cleProprietaire(string $type, int $id): string
     {
-        $tables = array_map(fn ($classe) => (new $classe)->getTable(), array_keys(self::RESSOURCES));
+        return $type . '#' . $id;
+    }
 
-        if (! in_array($table, $tables, true)) {
-            throw new RuntimeException("Table de contenu inattendue : {$table}");
+    /** Écriture brute sur une table de contenu, par la connexion de SON modèle. */
+    protected function tableDe(string $table)
+    {
+        foreach (array_keys(self::ressources()) as $classe) {
+            $modele = new $classe;
+
+            if ($modele->getTable() === $table) {
+                return DB::connection($modele->getConnectionName())->table($table);
+            }
         }
 
-        return $table;
+        throw new RuntimeException("Table de contenu inattendue : {$table}");
     }
 
     protected function exigerTables(): void
     {
         if (! $this->tablesPresentes()) {
-            throw new RuntimeException('Tables contenu_stockages / contenu_revisions absentes : lancer la migration du paquet CMS.');
+            throw new RuntimeException('Tables contenu_stockages / contenu_revisions absentes ou anciennes : lancer les migrations du paquet CMS (2026_10_21_000001 puis 2026_10_22_000001).');
         }
     }
 

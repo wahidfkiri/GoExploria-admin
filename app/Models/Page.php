@@ -5,9 +5,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Vendor\Cms\Models\Traits\StockeEnFichiers;
 
 class Page extends Model
 {
+    use StockeEnFichiers;
+
+    /*
+     * Stockage des contenus (base | fichiers) : une page de destination
+     * appartient à sa destination, désignée par pageable_type + pageable_id.
+     * Cf. Vendor\Cms\Contenus\StockageContenus.
+     */
+    public function proprietaireContenus(): ?array
+    {
+        $type = (string) $this->getAttribute('pageable_type');
+        $id = (int) $this->getAttribute('pageable_id');
+
+        return $type !== '' && $id > 0 ? [$type, $id] : null;
+    }
+
+    public static function filtrerParProprietaireContenus($requete, string $type, int $id)
+    {
+        return $requete->where('pageable_type', $type)->where('pageable_id', $id);
+    }
+
     protected $fillable = [
         'name',
         'slug',

@@ -8,10 +8,43 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Vendor\Cms\Contenus\Proprietaires;
+use Vendor\Cms\Models\Traits\StockeEnFichiers;
 
 class PageContent extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, StockeEnFichiers;
+
+    /*
+     * Stockage des contenus (base | fichiers) : une catégorie (ou une
+     * destination) range ses contenus par pageable_type + pageable_id, une
+     * activité par activity_id. Cf. Vendor\Cms\Contenus\StockageContenus.
+     */
+    public function proprietaireContenus(): ?array
+    {
+        $type = (string) $this->getAttribute('pageable_type');
+        $id = (int) $this->getAttribute('pageable_id');
+
+        if ($type !== '' && $id > 0) {
+            return [$type, $id];
+        }
+
+        $activite = (int) $this->getAttribute('activity_id');
+
+        return $activite > 0 ? [Proprietaires::ACTIVITE, $activite] : null;
+    }
+
+    public static function filtrerParProprietaireContenus($requete, string $type, int $id)
+    {
+        return $requete->where(function ($q) use ($type, $id) {
+            $q->where(fn ($p) => $p->where('pageable_type', $type)->where('pageable_id', $id));
+
+            if ($type === Proprietaires::ACTIVITE) {
+                $q->orWhere(fn ($a) => $a->where('activity_id', $id)
+                    ->where(fn ($v) => $v->whereNull('pageable_type')->orWhere('pageable_type', '')));
+            }
+        });
+    }
 
     protected $table = 'page_contents';
 

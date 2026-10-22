@@ -16,7 +16,7 @@ class ContenuRevision extends Model
     protected $table = 'contenu_revisions';
 
     protected $fillable = [
-        'etablissement_id', 'ressource_type', 'ressource_id', 'champ',
+        'proprietaire_type', 'proprietaire_id', 'etablissement_id', 'ressource_type', 'ressource_id', 'champ',
         'manifeste', 'empreinte', 'taille', 'origine', 'auteur_id',
     ];
 
