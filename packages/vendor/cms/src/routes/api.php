@@ -7,7 +7,9 @@ use Vendor\Cms\Controllers\Web\PublicPageController;
 // Routes API
 Route::prefix('cms')->middleware(['web'])->group(function () {
     
-    Route::prefix('company/{etablissementId}')->name('cms.api.')->group(function () {
+    Route::prefix('company/{etablissementId}')->name('cms.api.')
+        ->middleware(\Vendor\Cms\Middleware\SiteEtablissementActif::class)
+        ->group(function () {
         Route::get('/pages', [PublicPageController::class, 'getPagesApi'])->name('pages');
         Route::get('/pages/{slug}', [PublicPageController::class, 'getPageApi'])->name('page');
         Route::get('/search', [PublicPageController::class, 'searchApi'])->name('search');

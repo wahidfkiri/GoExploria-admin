@@ -33,8 +33,11 @@ Route::middleware(['web'])->group(function () {
     // ============================================
     // Routes avec préfixe /company/{etablissementId}
     // ============================================
-    Route::prefix('/company/{etablissementId}')->name('cms.company.')->group(function () {
-        
+    // SiteEtablissementActif : site désactivé dans l'admin ⇒ « indisponible ».
+    Route::prefix('/company/{etablissementId}')->name('cms.company.')
+        ->middleware(\Vendor\Cms\Middleware\SiteEtablissementActif::class)
+        ->group(function () {
+
         // Page d'accueil - ACCEPTE LE PARAMETRE GET preview_theme
         Route::get('/', [WebThemeController::class, 'home'])->name('home');
 
@@ -147,8 +150,10 @@ Route::middleware(['web'])->group(function () {
 
 // Routes API
 Route::prefix('api/cms')->middleware(['web'])->group(function () {
-    
-    Route::prefix('company/{etablissementId}')->name('cms.api.')->group(function () {
+
+    Route::prefix('company/{etablissementId}')->name('cms.api.')
+        ->middleware(\Vendor\Cms\Middleware\SiteEtablissementActif::class)
+        ->group(function () {
         Route::get('/pages', [PublicPageController::class, 'getPagesApi'])->name('pages');
         Route::get('/pages/{slug}', [PublicPageController::class, 'getPageApi'])->name('page');
         Route::get('/search', [PublicPageController::class, 'searchApi'])->name('search');
