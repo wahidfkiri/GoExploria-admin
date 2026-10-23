@@ -134,6 +134,25 @@ trait StockeEnFichiers
         }
     }
 
+    /**
+     * replicate() d'Eloquent recopie les COLONNES brutes : en mode « fichiers »,
+     * la copie (bouton « Dupliquer » des pages) aurait reçu l'ancienne version
+     * de la colonne, ou rien une fois la base libérée. On lui pose le contenu
+     * réellement affiché, comme une édition : il part au dépôt à son save().
+     */
+    public function replicate(?array $except = null)
+    {
+        $copie = parent::replicate($except);
+
+        foreach ($this->champsStockes() as $champ) {
+            if (array_key_exists($champ, $copie->getAttributes())) {
+                $copie->poserContenu($champ, $this->getAttribute($champ));
+            }
+        }
+
+        return $copie;
+    }
+
     public function preparerContenusStockes(): void
     {
         $this->contenusPrepares = [];

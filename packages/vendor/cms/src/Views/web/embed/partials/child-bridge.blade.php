@@ -23,6 +23,104 @@
     var parentOrigin = window.location.origin; // same-origin par conception
     var lastHeight = 0;
 
+    /* ═══════════════════════════════════════════════════════════════════
+       ⚠ DANS CETTE IFRAME, `1vh` VAUT TOUTE LA PAGE — ET C'EST UNE BOUCLE
+
+       L'iframe n'a pas de défilement : le parent lui donne la hauteur de son
+       contenu. Sa « fenêtre » vaut donc le document entier, et une hauteur
+       écrite en `vh` se résout contre cette valeur. Un simple
+       `min-height: 88vh` sur un héros s'emballe alors :
+
+           contenu 13 500 px → iframe 13 500 → héros 88 % = 11 900
+           → contenu 24 000 → iframe 24 000 → héros 21 000 → …
+
+       Constaté sur /company/9646 (gabarit Graffiti) : page annoncée à
+       86 525 px, dont un héros vide de plusieurs dizaines de milliers de
+       pixels sous l'en-tête. Le gabarit n'y est pour rien : c'est le mode
+       embarqué qui change le sens de l'unité.
+
+       On convertit donc, À L'INTÉRIEUR DE L'IFRAME SEULEMENT, les longueurs
+       de fenêtre en pixels d'ÉCRAN réel. `88vh` redevient ce que l'auteur
+       voulait : 88 % de la hauteur visible. Rien n'est écrit dans le
+       document hors de l'iframe, et les gabarits restent inchangés.
+       ═══════════════════════════════════════════════════════════════════ */
+    var UNITES_ECRAN = /(-?\d+(?:\.\d+)?)(svh|lvh|dvh|vh|vmax)\b/gi;
+    var PROPRIETES_BORNEES = [
+        'height', 'min-height', 'max-height',
+        'width', 'min-width', 'max-width',
+        'top', 'bottom', 'padding-top', 'padding-bottom', 'margin-top', 'margin-bottom'
+    ];
+
+    /** Hauteur de l'écran du visiteur, jamais celle de l'iframe. */
+    function hauteurEcranReelle() {
+        var h = 0;
+        try {
+            h = window.parent.innerHeight
+                || (window.parent.document.documentElement || {}).clientHeight || 0;
+        } catch (e) { h = 0; }               // parent d'une autre origine
+        if (!h) { h = (window.screen && window.screen.availHeight) || 0; }
+        if (!h) { h = 800; }
+
+        return Math.max(360, Math.min(1400, Math.round(h)));
+    }
+
+    function remplacerUnites(valeur, ecran) {
+        return valeur.replace(UNITES_ECRAN, function (_, nombre) {
+            return Math.round(parseFloat(nombre) / 100 * ecran) + 'px';
+        });
+    }
+
+    /** Parcourt une feuille (et ses @media) et borne ce qui dépend de `vh`. */
+    function bornerRegles(regles, ecran) {
+        for (var i = 0; i < regles.length; i++) {
+            var regle = regles[i];
+
+            if (regle.cssRules && regle.cssRules.length) {
+                bornerRegles(regle.cssRules, ecran);   // @media, @supports…
+            }
+            if (!regle.style) { continue; }
+
+            for (var p = 0; p < PROPRIETES_BORNEES.length; p++) {
+                var nom = PROPRIETES_BORNEES[p];
+                var valeur = regle.style.getPropertyValue(nom);
+                if (!valeur || valeur.indexOf('v') === -1) { continue; }
+                UNITES_ECRAN.lastIndex = 0;
+                if (!UNITES_ECRAN.test(valeur)) { continue; }
+
+                try {
+                    regle.style.setProperty(nom, remplacerUnites(valeur, ecran), regle.style.getPropertyPriority(nom));
+                } catch (e) { /* règle en lecture seule : on passe */ }
+            }
+        }
+    }
+
+    var dernierEcran = 0;
+
+    function bornerHauteursEcran() {
+        var ecran = hauteurEcranReelle();
+        if (ecran === dernierEcran) { return; }   // rien de neuf : on ne retouche rien
+        dernierEcran = ecran;
+
+        var feuilles = document.styleSheets || [];
+        for (var i = 0; i < feuilles.length; i++) {
+            var regles = null;
+            try {
+                regles = feuilles[i].cssRules;    // feuille d'une autre origine : lève
+            } catch (e) { continue; }
+            if (regles) { bornerRegles(regles, ecran); }
+        }
+
+        // Styles en ligne posés par le gabarit (data-gx-video, héros…).
+        var enLigne = document.querySelectorAll('[style*="vh"]');
+        for (var j = 0; j < enLigne.length; j++) {
+            var style = enLigne[j].getAttribute('style') || '';
+            UNITES_ECRAN.lastIndex = 0;
+            if (UNITES_ECRAN.test(style)) {
+                enLigne[j].setAttribute('style', remplacerUnites(style, ecran));
+            }
+        }
+    }
+
     /* ⚠ NE JAMAIS MESURER SUR documentElement — C'EST UN CLIQUET
 
        Le parent donne à l'iframe la hauteur que nous annonçons ; cette
@@ -61,6 +159,11 @@
     var hauteurGelee = null;
 
     function postHeight(force) {
+        // Avant toute mesure : sans cela, on annoncerait une hauteur déjà
+        // gonflée par les `vh`, que le parent appliquerait… ce qui les
+        // gonflerait encore (voir l'avertissement en tête de fichier).
+        bornerHauteursEcran();
+
         var h = hauteurGelee !== null ? hauteurGelee : currentHeight();
         if (!force && Math.abs(h - lastHeight) < 2) return; // anti-bruit
         lastHeight = h;
@@ -68,6 +171,10 @@
             window.parent.postMessage({ channel: CHANNEL, type: 'height', height: h }, parentOrigin);
         } catch (e) { /* silencieux */ }
     }
+
+    // Au plus tôt : les feuilles du gabarit sont déjà là (le pont est injecté
+    // en fin de corps), donc la toute première mesure est déjà saine.
+    bornerHauteursEcran();
 
     // 1) ResizeObserver = source principale (contenu dynamique, images, menus…)
     if (typeof ResizeObserver !== 'undefined') {
