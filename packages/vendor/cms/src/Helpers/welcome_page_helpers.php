@@ -842,8 +842,11 @@ if ($item->type === 'video') {
         
         // JavaScript pour initialiser Swiper et gérer les vidéos
         $html .= '<script>
-            if (typeof Swiper !== "undefined") {
-                document.addEventListener("DOMContentLoaded", function() {
+            (function() {
+                // Le script de Swiper peut etre charge APRES ce bloc (fin de
+                // page, ou page embarquee dans le shell du site) : on attend sa
+                // presence au lieu d abandonner sans rien afficher.
+                function demarrer() {
                     const sliderRoot = document.querySelector(".' . $sliderId . '");
                     const outerSlider = sliderRoot ? sliderRoot.closest(".hero-slider") : null;
                     const updateRenderableSlides = function() {
@@ -901,15 +904,50 @@ if ($item->type === 'video') {
                             }
                         }
                     });
-                });
-            }
+                }
+
+                var essais = 0;
+                function attendre() {
+                    if (typeof Swiper === "undefined") {
+                        // ~5 s dattente, puis on laisse la premiere diapositive
+                        // affichee par la feuille de style (repli sans script).
+                        if (++essais > 50) { return; }
+                        setTimeout(attendre, 100);
+                        return;
+                    }
+                    demarrer();
+                }
+
+                if (document.readyState === "loading") {
+                    document.addEventListener("DOMContentLoaded", attendre);
+                } else {
+                    attendre();
+                }
+            })();
         </script>';
         
         // Styles CSS pour les vidéos
         $html .= '<style>
+            /* Les diapositives nont que des enfants en position absolue : sans
+               ces hauteurs, le diaporama se replie et ne laisse quune bande
+               noire a la place du heros. */
+            .hero-slider .swiper,
+            .hero-slider .swiper-wrapper {
+                height: 100%;
+            }
+            /* Repli tant que le diaporama nest pas demarre : la premiere
+               diapositive occupe tout le cadre, les suivantes attendent. */
+            .hero-slider .swiper:not(.swiper-initialized) .swiper-slide {
+                flex: 0 0 100%;
+                width: 100%;
+            }
+            .hero-slider .swiper:not(.swiper-initialized) .swiper-slide ~ .swiper-slide {
+                display: none;
+            }
             .hero-slider .swiper-slide {
                 position: relative;
                 overflow: hidden;
+                height: 100%;
             }
             .hero-slider .slide-media,
             .hero-slider .slide-video,
