@@ -525,8 +525,14 @@ class TravelDestinationController extends Controller
             default => 5,
         };
 
+        // La carte de la page d'accueil globale partage cette route avec les
+        // cartes de destination. Elle précise son emplacement pour respecter
+        // la sélection « Page accueil » enregistrée dans l'espace entreprise.
+        $displayLocation = $request->query('location') ?: $targetType;
+        $displayDestinationId = $displayLocation === $targetType ? ($target->id ?? null) : null;
+
         $query = MapPoint::with(['details', 'images', 'mainImage'])->active()
-            ->visibleOn($targetType, $target->id ?? null)
+            ->visibleOn($displayLocation, $displayDestinationId)
             ->inDisplayPeriod();
 
         // La PAGE d'un continent montre tous les points du monde (elle sert de

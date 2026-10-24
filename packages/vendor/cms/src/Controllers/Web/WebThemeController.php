@@ -2413,7 +2413,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $html = $this->injectNewsletter($html);
         $html = $this->injectImmoRequestForm($html);
         $html = $this->injectTemplateContactForm($html);
-        $html = $this->injectLandingMap($html);
+        $html = $this->injectLandingMap($html, $seoContext);
         $html = $this->injectSwiperAssets($html);
         $html = $this->injectEmbedBridge($html);
 
@@ -2556,7 +2556,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
      * saisi, il ne rend rien. On retire alors la section d'attente plutôt que
      * de laisser un titre au-dessus du vide.
      */
-    protected function injectLandingMap($html)
+    protected function injectLandingMap($html, array $seoContext = [])
     {
         if (!is_string($html) || $html === '') {
             return $html;
@@ -2584,6 +2584,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 // partial y retourne ses commandes en thème clair (sélecteur de
                 // région et filtres étaient en sable sur blanc, illisibles).
                 'landingMapVariant' => $variante,
+                'landingMapLocation' => !empty($seoContext['is_home']) ? 'home' : 'etablissement',
             ])->render();
         } catch (\Throwable $e) {
             \Log::warning('Landing map injection failed: ' . $e->getMessage());
@@ -2923,6 +2924,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'canonical' => $canonical,
             'image' => $image,
             'site_name' => $siteName,
+            'is_home' => $page ? (bool) $page->is_home : true,
             'robots' => $isPreview ? 'noindex, nofollow' : 'index, follow',
         ];
     }

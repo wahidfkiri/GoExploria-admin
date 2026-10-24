@@ -1576,7 +1576,7 @@ if (!function_exists('has_map_points')) {
      * @param int|null $etablissementId
      * @return bool
      */
-    function has_map_points($etablissementId = null)
+    function has_map_points($etablissementId = null, ?string $location = 'home', $destinationId = null)
     {
         $etablissement = $etablissementId
             ? \App\Models\Etablissement::find($etablissementId)
@@ -1589,6 +1589,7 @@ if (!function_exists('has_map_points')) {
         try {
             return \App\Models\MapPoint::active()
                 ->inDisplayPeriod()
+                ->visibleOn($location, $destinationId)
                 ->where('etablissement_id', $etablissement->id)
                 ->exists();
         } catch (\Exception $e) {
@@ -1603,7 +1604,7 @@ if (!function_exists('get_map_points')) {
      * Get all active map points for the current establishment.
      *
      * @param int|null  $etablissementId
-     * @param array     $options  ['limit' => 50, 'category' => null, 'with_details' => false]
+     * @param array     $options  ['limit' => 50, 'category' => null, 'with_details' => false, 'location' => 'home', 'destination_id' => null]
      * @return \Illuminate\Database\Eloquent\Collection
      */
     function get_map_points($etablissementId = null, array $options = [])
@@ -1620,6 +1621,8 @@ if (!function_exists('get_map_points')) {
             'limit'        => 50,
             'category'     => null,
             'with_details' => false,
+            'location'     => 'home',
+            'destination_id' => null,
         ];
         $options = array_merge($defaults, $options);
 
@@ -1632,6 +1635,7 @@ if (!function_exists('get_map_points')) {
             $query = \App\Models\MapPoint::with($with)
                 ->active()
                 ->inDisplayPeriod()
+                ->visibleOn($options['location'], $options['destination_id'])
                 ->where('etablissement_id', $etablissement->id)
                 ->orderBy('is_featured', 'desc')
                 ->orderBy('views', 'desc');
@@ -1703,7 +1707,7 @@ if (!function_exists('get_map_video_points')) {
      * Get active map points with a YouTube video.
      *
      * @param int|null $etablissementId
-     * @param array $options ['limit' => 50]
+     * @param array $options ['limit' => 50, 'location' => 'home', 'destination_id' => null]
      * @return \Illuminate\Support\Collection
      */
     function get_map_video_points($etablissementId = null, array $options = [])
@@ -1716,7 +1720,7 @@ if (!function_exists('get_map_video_points')) {
             return collect();
         }
 
-        $options = array_merge(['limit' => 50], $options);
+        $options = array_merge(['limit' => 50, 'location' => 'home', 'destination_id' => null], $options);
 
         try {
             if (!\Illuminate\Support\Facades\Schema::hasTable('map_points')) {
@@ -1743,6 +1747,7 @@ if (!function_exists('get_map_video_points')) {
             $query = \App\Models\MapPoint::with($relations)
                 ->active()
                 ->inDisplayPeriod()
+                ->visibleOn($options['location'], $options['destination_id'])
                 ->where('etablissement_id', $etablissement->id)
                 ->whereNotNull('latitude')
                 ->whereNotNull('longitude')
@@ -1990,7 +1995,7 @@ if (!function_exists('get_map_center')) {
      * @param array    $default  ['lat' => 46.8, 'lng' => -71.2]  (Québec default)
      * @return array   ['lat' => float, 'lng' => float]
      */
-    function get_map_center($etablissementId = null, array $default = ['lat' => 46.8, 'lng' => -71.2])
+    function get_map_center($etablissementId = null, array $default = ['lat' => 46.8, 'lng' => -71.2], ?string $location = 'home', $destinationId = null)
     {
         $etablissement = $etablissementId
             ? \App\Models\Etablissement::find($etablissementId)
@@ -2003,6 +2008,7 @@ if (!function_exists('get_map_center')) {
         try {
             $result = \App\Models\MapPoint::active()
                 ->inDisplayPeriod()
+                ->visibleOn($location, $destinationId)
                 ->where('etablissement_id', $etablissement->id)
                 ->selectRaw('AVG(latitude) as avg_lat, AVG(longitude) as avg_lng')
                 ->first();
@@ -2028,15 +2034,11 @@ if (!function_exists('get_map_section_html')) {
      * rich modal with video / gallery / social / contact. No filters, no sidebar.
      *
      * @param int|null $etablissementId
-     * @param array    $options  height, zoom, title, show_title, tile_url, limit
+     * @param array    $options  height, zoom, title, show_title, tile_url, limit, location, destination_id
      * @return string
      */
     function get_map_section_html($etablissementId = null, array $options = [])
     {
-        if (!has_map_points($etablissementId)) {
-            return '';
-        }
-
         $defaults = [
             'height'     => '560px',
             'zoom'       => 12,
@@ -2044,11 +2046,22 @@ if (!function_exists('get_map_section_html')) {
             'show_title' => true,
             'tile_url'   => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             'limit'      => 50,
+            'location'   => 'home',
+            'destination_id' => null,
         ];
         $options = array_merge($defaults, $options);
 
-        $center     = get_map_center($etablissementId);
-        $pointsJson = get_map_points_json($etablissementId, ['limit' => $options['limit'], 'with_details' => true]);
+        if (!has_map_points($etablissementId, $options['location'], $options['destination_id'])) {
+            return '';
+        }
+
+        $center     = get_map_center($etablissementId, ['lat' => 46.8, 'lng' => -71.2], $options['location'], $options['destination_id']);
+        $pointsJson = get_map_points_json($etablissementId, [
+            'limit' => $options['limit'],
+            'with_details' => true,
+            'location' => $options['location'],
+            'destination_id' => $options['destination_id'],
+        ]);
         $mapId      = 'emap-' . uniqid();
         $height     = htmlspecialchars($options['height']);
         $zoom       = (int) $options['zoom'];

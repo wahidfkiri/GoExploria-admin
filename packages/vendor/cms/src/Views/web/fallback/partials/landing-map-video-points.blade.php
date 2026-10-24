@@ -1,6 +1,6 @@
 @php
     $landingMapPoints = is_maps_enabled($etablissement->id)
-        ? get_map_video_points($etablissement->id)
+        ? get_map_video_points($etablissement->id, ['location' => $landingMapLocation ?? 'home'])
         : collect();
 
     $landingMapVariant = $landingMapVariant ?? 'section';

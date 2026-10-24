@@ -249,7 +249,7 @@ function taNaInitMap() {
     var entityLng  = {{ $centerLng ?? 0 }};
     var entityName = {!! json_encode($naEntity->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
     var entityType = {!! json_encode($naType, JSON_UNESCAPED_UNICODE) !!};
-    var mapPointsUrl = '{{ route("travel-destination.map-points", ["type" => $naType, "slug" => $naSlug], false) }}';
+    var mapPointsUrl = '{{ route("travel-destination.map-points", ["type" => $naType, "slug" => $naSlug], false) }}?location=home';
     var childEntities = {!! json_encode($naChildEntities->map(function ($ce) {
             $typeName = strtolower(class_basename($ce));
             $zMap = ['continent' => 3, 'country' => 5, 'province' => 7, 'region' => 9, 'secteur' => 10, 'ville' => 11, 'city' => 11, 'arrondissement' => 13, 'quartier' => 14];

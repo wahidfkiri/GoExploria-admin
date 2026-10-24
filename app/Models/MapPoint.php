@@ -54,11 +54,12 @@ class MapPoint extends Model
     ];
 
     /**
-     * Emplacements d'affichage possibles d'un point map :
-     * page d'accueil + pages de destination (continent → quartier).
+     * Emplacements d'affichage possibles d'un point map : page d'accueil,
+     * page établissement et pages de destination (continent → quartier).
      */
     public const DISPLAY_LOCATIONS = [
         'home' => 'Page accueil',
+        'etablissement' => 'Page établissement',
         'continent' => 'Pages Continent',
         'country' => 'Pages Pays',
         'province' => 'Pages Province',

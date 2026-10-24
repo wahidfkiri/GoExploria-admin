@@ -1,7 +1,7 @@
 <section class="pc-map-cta" id="carte">
-    @if(is_maps_enabled($etablissement->id) && get_map_video_points($etablissement->id)->isNotEmpty())
+    @if(is_maps_enabled($etablissement->id) && get_map_video_points($etablissement->id, ['location' => 'etablissement'])->isNotEmpty())
         <div class="pc-map-wrap">
-            @include('cms::web.fallback.partials.landing-map-video-points', ['landingMapVariant' => 'inline'])
+            @include('cms::web.fallback.partials.landing-map-video-points', ['landingMapVariant' => 'inline', 'landingMapLocation' => 'etablissement'])
         </div>
     @endif
 </section>

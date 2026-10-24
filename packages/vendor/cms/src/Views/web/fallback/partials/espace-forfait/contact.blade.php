@@ -17,9 +17,9 @@
           <div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-clock"></i></div><div><div class="contact-label">Horaire</div><div class="contact-value">@foreach($workingHours as $row){{ !empty($row['day']) ? $row['day'] . ' : ' : '' }}{{ $row['hours'] ?? '' }}@if(!$loop->last)<br>@endif @endforeach</div></div></div>
           <div class="contact-item"><div class="contact-icon"><i class="fa-solid fa-snowflake"></i></div><div><div class="contact-label">Saisons</div><div class="contact-value">Motoneige · Quad · Côte-à-côte · Forfaits</div></div></div>
         </div>
-        @if(is_maps_enabled($etablissement->id) && get_map_video_points($etablissement->id)->isNotEmpty())
+        @if(is_maps_enabled($etablissement->id) && get_map_video_points($etablissement->id, ['location' => 'etablissement'])->isNotEmpty())
           <div class="map-wrap">
-            @include('cms::web.fallback.partials.landing-map-video-points', ['landingMapVariant' => 'inline'])
+            @include('cms::web.fallback.partials.landing-map-video-points', ['landingMapVariant' => 'inline', 'landingMapLocation' => 'etablissement'])
           </div>
         @endif
       </div>
