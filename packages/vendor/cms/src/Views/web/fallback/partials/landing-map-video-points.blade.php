@@ -1,6 +1,11 @@
 @php
+    $landingMapLocations = $landingMapLocations ?? [$landingMapLocation ?? 'home'];
+    $landingMapLocations = array_values(array_unique(array_filter((array) $landingMapLocations)));
     $landingMapPoints = is_maps_enabled($etablissement->id)
-        ? get_map_video_points($etablissement->id, ['location' => $landingMapLocation ?? 'home'])
+        ? collect($landingMapLocations)
+            ->flatMap(fn ($location) => get_map_video_points($etablissement->id, ['location' => $location]))
+            ->unique('id')
+            ->values()
         : collect();
 
     $landingMapVariant = $landingMapVariant ?? 'section';

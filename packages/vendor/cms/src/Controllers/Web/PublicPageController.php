@@ -1142,6 +1142,9 @@ class PublicPageController extends Controller
                 'siteName' => $this->etablissement->name ?? null,
                 'landingMapVariant' => $variante,
                 'landingMapLocation' => !empty($seoContext['is_home']) ? 'home' : 'etablissement',
+                'landingMapLocations' => !empty($seoContext['is_home'])
+                    ? ['home', 'etablissement']
+                    : ['etablissement'],
             ])->render();
         } catch (\Throwable $e) {
             \Log::warning('Landing map injection failed: ' . $e->getMessage());

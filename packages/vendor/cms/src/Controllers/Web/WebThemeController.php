@@ -2585,6 +2585,11 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 // région et filtres étaient en sable sur blanc, illisibles).
                 'landingMapVariant' => $variante,
                 'landingMapLocation' => !empty($seoContext['is_home']) ? 'home' : 'etablissement',
+                // L'accueil du site est aussi la page publique de l'établissement :
+                // accepter les points ciblés sur l'un ou l'autre emplacement.
+                'landingMapLocations' => !empty($seoContext['is_home'])
+                    ? ['home', 'etablissement']
+                    : ['etablissement'],
             ])->render();
         } catch (\Throwable $e) {
             \Log::warning('Landing map injection failed: ' . $e->getMessage());
@@ -2607,7 +2612,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
 
                     return '<section' . $attributs . '><div role="status" style="max-width:760px;margin:0 auto;padding:28px 24px;border:1px solid #cbd5e1;border-radius:14px;background:#f8fafc;color:#334155;text-align:center;font:500 15px/1.6 system-ui,sans-serif;">'
                         . '<strong style="display:block;margin-bottom:6px;color:#0f172a;font-size:17px;">Aucun point Maps Vidéos à afficher</strong>'
-                        . 'Vérifiez qu’au moins un point est activé, qu’il contient une vidéo et que son emplacement correspond à cette page.'
+                        . '<span>Vérifiez qu’au moins un point est activé, qu’il contient une vidéo et que son emplacement correspond à cette page.</span>'
                         . '</div></section>';
                 }
 
@@ -2935,7 +2940,12 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'canonical' => $canonical,
             'image' => $image,
             'site_name' => $siteName,
-            'is_home' => $page ? (bool) $page->is_home : true,
+            // getHomePage() peut retomber sur le slug `home` quand aucun
+            // is_home n'est défini ; ce cas doit quand même charger les
+            // points cochés « Page accueil » dans Maps Vidéos.
+            'is_home' => $page
+                ? ((bool) ($page->is_home ?? false) || strtolower((string) ($page->slug ?? '')) === 'home')
+                : true,
             'robots' => $isPreview ? 'noindex, nofollow' : 'index, follow',
         ];
     }

@@ -1767,8 +1767,15 @@ if (!function_exists('get_map_video_points')) {
 
                     if ($hasVideosTable) {
                         $query->orWhereHas('videos', function ($videoQuery) {
-                            $videoQuery->whereNotNull('youtube_id')
-                                ->where('youtube_id', '<>', '');
+                            $videoQuery->where(function ($sourceQuery) {
+                                $sourceQuery->where(function ($youtubeQuery) {
+                                    $youtubeQuery->whereNotNull('youtube_id')
+                                        ->where('youtube_id', '<>', '');
+                                })->orWhere(function ($fileQuery) {
+                                    $fileQuery->whereNotNull('youtube_url')
+                                        ->where('youtube_url', '<>', '');
+                                });
+                            });
                         });
                     }
                 })
@@ -1780,10 +1787,18 @@ if (!function_exists('get_map_video_points')) {
                 ->map(function ($point) use ($hasVideosTable) {
                     $video = ($point->youtube_id || !$hasVideosTable)
                         ? null
-                        : $point->videos->firstWhere('youtube_id');
+                        : $point->videos->first(function ($candidate) {
+                            return trim((string) ($candidate->youtube_id ?? '')) !== ''
+                                || trim((string) ($candidate->youtube_url ?? '')) !== '';
+                        });
                     $videoUrl = trim((string) ($point->youtube_url ?: ($video->youtube_url ?? '')));
-                    $sourceVideo = $point->source_video ?? \App\Support\SourceVideo::typeDe($videoUrl);
                     $youtubeId = trim((string) ($point->youtube_id ?: ($video->youtube_id ?? \App\Support\SourceVideo::identifiantYoutube($videoUrl) ?? '')));
+                    // L'accesseur MapPoint::source_video retombe sur YouTube
+                    // quand l'URL du point parent est vide. Pour les anciennes
+                    // lignes dont le fichier n'existe que dans map_point_videos,
+                    // déterminer le type depuis l'URL relationnelle avant ce repli.
+                    $sourceVideo = \App\Support\SourceVideo::typeDe($point->youtube_url ?: $videoUrl)
+                        ?? (($youtubeId !== '' || $point->youtube_id) ? \App\Support\SourceVideo::YOUTUBE : null);
 
                     if ($sourceVideo === \App\Support\SourceVideo::FICHIER) {
                         if ($videoUrl === '') {
