@@ -2600,6 +2600,17 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         // sur la carte a tout de même une adresse à montrer.
         if (trim($carte) === '') {
             return preg_replace_callback($motif, function ($m) {
+                if (stripos($m[0], 'data-gx-map-videos') !== false) {
+                    $attributs = preg_match('/^<section\b([^>]*)>/i', $m[0], $ouverture)
+                        ? $ouverture[1]
+                        : '';
+
+                    return '<section' . $attributs . '><div role="status" style="max-width:760px;margin:0 auto;padding:28px 24px;border:1px solid #cbd5e1;border-radius:14px;background:#f8fafc;color:#334155;text-align:center;font:500 15px/1.6 system-ui,sans-serif;">'
+                        . '<strong style="display:block;margin-bottom:6px;color:#0f172a;font-size:17px;">Aucun point Maps Vidéos à afficher</strong>'
+                        . 'Vérifiez qu’au moins un point est activé, qu’il contient une vidéo et que son emplacement correspond à cette page.'
+                        . '</div></section>';
+                }
+
                 return stripos($m[0], 'data-gx-map-repli') !== false
                     ? $this->completerRepliCarte($m[0])
                     : '';
