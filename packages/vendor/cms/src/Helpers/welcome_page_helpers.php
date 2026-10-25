@@ -1704,7 +1704,7 @@ if (!function_exists('is_maps_enabled')) {
 
 if (!function_exists('get_map_video_points')) {
     /**
-     * Get active map points with a YouTube video.
+     * Get active map points with a YouTube video or a direct video file.
      *
      * @param int|null $etablissementId
      * @param array $options ['limit' => 50, 'location' => 'home', 'destination_id' => null]
@@ -1752,8 +1752,18 @@ if (!function_exists('get_map_video_points')) {
                 ->whereNotNull('latitude')
                 ->whereNotNull('longitude')
                 ->where(function ($query) use ($hasVideosTable) {
-                    $query->whereNotNull('youtube_id')
-                        ->where('youtube_id', '<>', '');
+                    $query->where(function ($sourceQuery) {
+                        $sourceQuery->whereNotNull('youtube_id')
+                            ->where('youtube_id', '<>', '')
+                            ->orWhere(function ($urlQuery) {
+                                // Les vidéos fichier sont enregistrées dans youtube_url
+                                // (colonne conservée pour compatibilité). Elles n'ont
+                                // pas d'identifiant YouTube, mais doivent tout de même
+                                // faire apparaître le point sur la carte publique.
+                                $urlQuery->whereNotNull('youtube_url')
+                                    ->where('youtube_url', '<>', '');
+                            });
+                    });
 
                     if ($hasVideosTable) {
                         $query->orWhereHas('videos', function ($videoQuery) {
@@ -1767,9 +1777,25 @@ if (!function_exists('get_map_video_points')) {
                 ->limit((int) $options['limit']);
 
             return $query->get()
-                ->map(function ($point) {
-                    $video = $point->youtube_id ? null : $point->videos->firstWhere('youtube_id');
-                    $youtubeId = trim((string) ($point->youtube_id ?: ($video->youtube_id ?? '')));
+                ->map(function ($point) use ($hasVideosTable) {
+                    $video = ($point->youtube_id || !$hasVideosTable)
+                        ? null
+                        : $point->videos->firstWhere('youtube_id');
+                    $videoUrl = trim((string) ($point->youtube_url ?: ($video->youtube_url ?? '')));
+                    $sourceVideo = $point->source_video ?? \App\Support\SourceVideo::typeDe($videoUrl);
+                    $youtubeId = trim((string) ($point->youtube_id ?: ($video->youtube_id ?? \App\Support\SourceVideo::identifiantYoutube($videoUrl) ?? '')));
+
+                    if ($sourceVideo === \App\Support\SourceVideo::FICHIER) {
+                        if ($videoUrl === '') {
+                            return null;
+                        }
+
+                        $point->youtube_url = $videoUrl;
+                        $point->video_title = $point->title;
+                        $point->embed_url = $videoUrl;
+
+                        return $point;
+                    }
 
                     if ($youtubeId === '') {
                         return null;
