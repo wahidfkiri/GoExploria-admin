@@ -1107,12 +1107,58 @@ class PublicPageController extends Controller
     protected function buildResponse($html, array $seoContext = [])
     {
         $html = $this->injectSeoMeta($html, $seoContext);
+        $html = $this->injectLandingMap($html, $seoContext);
         $html = $this->injectGlobalHeader($html);
 
         return response($html, 200, [
             'Content-Type' => 'text/html; charset=utf-8',
             'X-Content-Type-Options' => 'nosniff',
         ]);
+    }
+
+    /**
+     * Remplace le bloc Maps Vidéos placé depuis Vvveb par la carte dynamique
+     * de l'établissement courant. Le même repère fonctionne dans tous les
+     * thèmes/pages CMS rendus par ce contrôleur.
+     */
+    protected function injectLandingMap($html, array $seoContext = [])
+    {
+        if (!is_string($html) || $html === '') {
+            return $html;
+        }
+
+        $motif = '#<section\b(?=[^>]*\bdata-gx-map\b)[^>]*>.*?</section>#is';
+        if (!preg_match($motif, $html, $attente)) {
+            return $html;
+        }
+
+        $variante = preg_match('/\bdata-gx-map-variante="(section|gabarit)"/i', $attente[0], $v)
+            ? strtolower($v[1])
+            : 'section';
+
+        try {
+            $carte = view('cms::web.fallback.partials.landing-map-video-points', [
+                'etablissement' => $this->etablissement,
+                'siteName' => $this->etablissement->name ?? null,
+                'landingMapVariant' => $variante,
+                'landingMapLocation' => !empty($seoContext['is_home']) ? 'home' : 'etablissement',
+            ])->render();
+        } catch (\Throwable $e) {
+            \Log::warning('Landing map injection failed: ' . $e->getMessage());
+            return $html;
+        }
+
+        if (trim($carte) === '') {
+            return preg_replace($motif, '', $html, 1);
+        }
+
+        if (preg_match('/^<section\b[^>]*\bid="([^"]+)"/i', $attente[0], $id) && $id[1] !== 'map') {
+            $carte = '<div id="' . e($id[1]) . '" class="gx-carte-gabarit">' . $carte . '</div>';
+        }
+
+        return preg_replace_callback($motif, function () use ($carte) {
+            return $carte;
+        }, $html, 1);
     }
 
     /**
@@ -1203,6 +1249,7 @@ class PublicPageController extends Controller
             'canonical' => $canonical,
             'image' => $image,
             'site_name' => $siteName,
+            'is_home' => (bool) ($page->is_home ?? false) || (($page->slug ?? null) === 'home'),
             'robots' => $this->previewMode ? 'noindex, nofollow' : 'index, follow',
         ];
     }
