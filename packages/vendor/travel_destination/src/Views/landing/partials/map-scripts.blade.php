@@ -436,11 +436,16 @@ document.addEventListener('DOMContentLoaded', function () {
     var container = e.popup.getElement();
     if (!container) return;
     container.querySelectorAll('.map-popup__detail-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
+      // Leaflet coupe la propagation des clics à l'intérieur du popup.
+      // Écouter en capture garantit que le bouton ouvre la fiche avant cette
+      // interception, même pour les popups ouverts au survol.
+      btn.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
         var idx = parseInt(btn.getAttribute('data-index'));
         var point = pointsData[idx];
         if (point) showPlaceModal(point);
-      });
+      }, true);
     });
   });
 
