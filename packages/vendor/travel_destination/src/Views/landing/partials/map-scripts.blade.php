@@ -239,7 +239,10 @@ document.addEventListener('DOMContentLoaded', function () {
       var popupHtml = buildPopupHtml(p, markerIndex);
       var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
         .addTo(markersLayer)
-        .bindPopup(popupHtml, { maxWidth: 320, className: 'map-popup-wrapper' });
+        .bindPopup(popupHtml, { maxWidth: 320, className: 'map-popup-wrapper',
+           /* Un clic qui rate le bouton atterrit sur la carte : avec le
+              réglage d'origine, Leaflet refermait la fiche aussitôt. */
+           closeOnClick: false });
       ouvrirPopupAuSurvol(marker);
       marker._pointIndex = markerIndex;
       markerIndex++;
@@ -334,7 +337,10 @@ document.addEventListener('DOMContentLoaded', function () {
           if (filter === 'all' || resolveCategorySlug(p.category) === filter) {
             var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
               .addTo(markersLayer)
-              .bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper' });
+              .bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper',
+           /* Un clic qui rate le bouton atterrit sur la carte : avec le
+              réglage d'origine, Leaflet refermait la fiche aussitôt. */
+           closeOnClick: false });
             ouvrirPopupAuSurvol(marker);
             marker._pointIndex = idx;
           }
@@ -386,7 +392,11 @@ document.addEventListener('DOMContentLoaded', function () {
         className: 'map-marker',
         html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background-size:cover;background-image:url(' + catData.image + ');' + ring + ';position:relative">' + star + '</div>',
         iconSize: [size + 4, size + 4],
-        iconAnchor: [(size + 4) / 2, size + 4]
+        iconAnchor: [(size + 4) / 2, size + 4],
+        // La fiche s'ouvre AU-DESSUS du marqueur. Sans ce décalage, Leaflet
+        // la pose sur le point d'ancrage — donc sous le curseur, qui vient
+        // justement de survoler le marqueur pour l'ouvrir.
+        popupAnchor: [0, -(size + 14)]
       });
     } else if (catData && catData.icon_class) {
       var color = catData.color || '#e74c3c';
@@ -394,7 +404,11 @@ document.addEventListener('DOMContentLoaded', function () {
         className: 'map-marker',
         html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;' + ring + ';position:relative"><span class="' + catData.icon_class + '" style="font-size:' + Math.round(size * 0.55) + 'px;color:#fff"></span>' + star + '</div>',
         iconSize: [size + 4, size + 4],
-        iconAnchor: [(size + 4) / 2, size + 4]
+        iconAnchor: [(size + 4) / 2, size + 4],
+        // La fiche s'ouvre AU-DESSUS du marqueur. Sans ce décalage, Leaflet
+        // la pose sur le point d'ancrage — donc sous le curseur, qui vient
+        // justement de survoler le marqueur pour l'ouvrir.
+        popupAnchor: [0, -(size + 14)]
       });
     }
     var colors = { sightseeing: '#e74c3c', museum: '#3498db', restaurant: '#f39c12', hotel: '#2ecc71', adventure: '#9b59b6', shopping: '#1abc9c', default: '#e74c3c' };
@@ -403,7 +417,8 @@ document.addEventListener('DOMContentLoaded', function () {
       className: 'map-marker',
       html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;' + ring + ';position:relative"><svg viewBox="0 0 24 24" width="' + Math.round(size * 0.6) + '" height="' + Math.round(size * 0.6) + '" fill="#fff"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>' + star + '</div>',
       iconSize: [size + 4, size + 4],
-      iconAnchor: [(size + 4) / 2, size + 4]
+      iconAnchor: [(size + 4) / 2, size + 4],
+      popupAnchor: [0, -(size + 14)]
     });
   }
 
@@ -432,22 +447,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
   reloadMapPoints();
 
-  map.on('popupopen', function (e) {
-    var container = e.popup.getElement();
-    if (!container) return;
-    container.querySelectorAll('.map-popup__detail-btn').forEach(function (btn) {
-      // Leaflet coupe la propagation des clics à l'intérieur du popup.
-      // Écouter en capture garantit que le bouton ouvre la fiche avant cette
-      // interception, même pour les popups ouverts au survol.
-      btn.addEventListener('click', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        var idx = parseInt(btn.getAttribute('data-index'));
-        var point = pointsData[idx];
-        if (point) showPlaceModal(point);
-      }, true);
-    });
-  });
+  /* ── « Voir détails » ────────────────────────────────────────────────
+     Un SEUL écouteur, posé sur le document en capture, plutôt qu'un
+     écouteur par bouton à l'ouverture de chaque fiche.
+
+     Pourquoi : la fiche d'un marqueur est reconstruite par Leaflet à chaque
+     réouverture, et son contenu est réécrit (innerHTML) après l'événement
+     `popupopen` dans plusieurs cas — recadrage automatique, réouverture au
+     survol d'un marqueur déjà visité. Le bouton reçu par l'écouteur n'était
+     alors plus celui affiché : mesuré en production, le clic traversait tout
+     le document sans que rien ne l'intercepte.
+
+     La délégation ne dépend plus du cycle de vie de la fiche : le bouton
+     affiché est forcément celui qui est cliqué. */
+  document.addEventListener('click', function (event) {
+    var btn = event.target.closest ? event.target.closest('.map-popup__detail-btn') : null;
+    if (!btn) return;
+
+    // Leaflet coupe la propagation des clics dans la fiche : on écoute en
+    // capture pour passer avant cette interception.
+    event.preventDefault();
+    event.stopPropagation();
+
+    var idx = parseInt(btn.getAttribute('data-index'), 10);
+    var point = pointsData[idx];
+    if (point) showPlaceModal(point);
+  }, true);
 
   function showPlaceModal(point) {
     var modal = document.getElementById('mapDetailModal');
