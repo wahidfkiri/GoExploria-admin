@@ -172,38 +172,22 @@
     $landingMapRenderCount++;
     $landingMapId = 'landingVideoMap' . substr(md5((string) ($etablissement->id ?? 'global')), 0, 8) . '-' . $landingMapRenderCount;
 
-    $landingMapCategories = [
-        'Tourisme',
-        'Culture',
-        'Histoire',
-        'Nature',
-        'Aventure',
-        'Shopping',
-        'Science',
-        'Plage',
-        'Famille',
-        'Restaurant',
-        'Hôtel',
-        'Commerce',
-        'Santé',
-        'Éducation',
-        'Sport',
-        'Loisirs',
-        'Transport',
-        'Immobilier',
-        'Chalet',
-        'Commercial',
-        'Domaine',
-        'Résidence',
-        'Condo',
-        'Maison',
-        'Terrain',
-        'Service',
-        'Autre',
-    ];
+    // Les catégories de marqueur viennent de la même table que le formulaire
+    // admin. La relation map_category_id reste prioritaire; le nom/slug couvre
+    // aussi les anciens points qui n'ont pas encore de clé étrangère.
+    $landingMapCategoryStyles = collect();
+    try {
+        if (\Illuminate\Support\Facades\Schema::hasTable('map_categories')) {
+            $landingMapCategoryStyles = \App\Models\MapCategory::query()
+                ->orderBy('sort_order')->orderBy('name')
+                ->get(['id', 'name', 'slug', 'icon_class', 'color', 'image']);
+        }
+    } catch (\Throwable $e) {
+        \Illuminate\Support\Facades\Log::warning('Catégories d’icônes Maps indisponibles', ['message' => $e->getMessage()]);
+    }
 
     $landingMapEstablishmentWebsite = $etablissement->website ?? ($etablissement->site_web ?? null);
-    $landingMapPayload = $landingMapPoints->map(function ($point) use ($landingMapMediaUrl, $landingMapFallbackGallery, $landingMapSocialLinks, $landingMapNormalizeSocialUrl, $landingMapEstablishmentWebsite) {
+    $landingMapPayload = $landingMapPoints->map(function ($point) use ($landingMapMediaUrl, $landingMapFallbackGallery, $landingMapSocialLinks, $landingMapNormalizeSocialUrl, $landingMapEstablishmentWebsite, $landingMapCategoryStyles) {
         $region = trim((string) ($point->ville ?: $point->adresse ?: 'Autre region'));
         $details = $point->relationLoaded('details') ? $point->details : null;
         $pointImages = collect();
@@ -268,11 +252,27 @@
             ->filter()
             ->values();
 
+        $mapCategory = $point->relationLoaded('mapCategory') ? $point->mapCategory : null;
+        if (!$mapCategory && $landingMapCategoryStyles->isNotEmpty()) {
+            $categoryName = \Illuminate\Support\Str::slug((string) $point->category);
+            $mapCategory = $landingMapCategoryStyles->first(function ($category) use ($point, $categoryName) {
+                return ($point->map_category_id && (int) $category->id === (int) $point->map_category_id)
+                    || ($categoryName !== '' && in_array($categoryName, [
+                        \Illuminate\Support\Str::slug((string) $category->name),
+                        \Illuminate\Support\Str::slug((string) $category->slug),
+                    ], true));
+            });
+        }
+
         return [
             'id' => $point->id,
             'title' => $point->title ?: ($point->video_title ?? 'Point video'),
             'description' => $details?->long_description ?: $point->description,
             'category' => $point->category ?: 'Autre',
+            'map_category_id' => $point->map_category_id,
+            'category_icon_class' => $mapCategory?->icon_class,
+            'category_color' => $mapCategory?->color,
+            'category_image' => $landingMapMediaUrl($mapCategory?->image),
             'region' => $region !== '' ? $region : 'Autre region',
             'latitude' => (float) $point->latitude,
             'longitude' => (float) $point->longitude,
@@ -831,6 +831,10 @@
                 latitude: Number(p.latitude),
                 longitude: Number(p.longitude),
                 category: cat || 'Autre',
+                map_category_id: p.map_category_id || null,
+                category_icon_class: p.category_icon_class || '',
+                category_color: p.category_color || '',
+                category_image: p.category_image || '',
                 region: p.region || 'Autre region',
                 adresse: p.adresse || '',
                 youtube_id: estFichier ? '' : (p.youtube_id || ''),
@@ -868,10 +872,19 @@
         };
         var defaultStyle = { icon: 'fas fa-map-marker-alt', color: '#f2b705' };
 
-        function getCategoryStyle(cat) {
+        function getCategoryStyle(cat, point) {
             var cl = (cat || '').toLowerCase();
-            for (var k in categoryStyle) { if (k.toLowerCase() === cl) return categoryStyle[k]; }
-            return defaultStyle;
+            var fallback = defaultStyle;
+            for (var k in categoryStyle) { if (k.toLowerCase() === cl) { fallback = categoryStyle[k]; break; } }
+            if (!point) return fallback;
+
+            var dbColor = String(point.category_color || '').trim();
+            if (!/^#[0-9a-f]{3,8}$/i.test(dbColor)) dbColor = fallback.color;
+            return {
+                icon: point.category_icon_class || fallback.icon,
+                color: dbColor,
+                image: point.category_image || null
+            };
         }
 
         var lats = points.map(function (p) { return p.latitude; });
@@ -1204,15 +1217,18 @@
             return h;
         }
 
-        function getMarkerIcon(cat, featured) {
-            var s = getCategoryStyle(cat);
+        function getMarkerIcon(cat, featured, point) {
+            var s = getCategoryStyle(cat, point);
             // Points « Mis en avant » : plus grands, anneau doré + étoile
             var size = featured ? 40 : 32;
             var ring = featured ? 'box-shadow:0 0 0 4px rgba(255,193,7,0.45),0 3px 12px rgba(0,0,0,0.5);border:3px solid #FFC107' : 'box-shadow:0 2px 8px rgba(0,0,0,0.4);border:2px solid #fff';
             var star = featured ? '<span style="position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;background:#FFC107;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.4);z-index:2"><i class="fas fa-star" style="font-size:9px;color:#fff"></i></span>' : '';
+            var categoryIcon = s.image
+                ? '<img src="' + escapeHtml(s.image) + '" alt="" style="width:' + Math.round(size * 0.58) + 'px;height:' + Math.round(size * 0.58) + 'px;object-fit:contain">'
+                : '<i class="' + escapeHtml(s.icon) + '" style="font-size:' + Math.round(size * 0.44) + 'px;color:#fff"></i>';
             return L.divIcon({
                 className: 'map-marker',
-                html: '<div style="position:relative;width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + s.color + ';display:flex;align-items:center;justify-content:center;' + ring + '">' + star + '<i class="' + s.icon + '" style="font-size:' + Math.round(size * 0.44) + 'px;color:#fff"></i></div>',
+                html: '<div style="position:relative;width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + s.color + ';display:flex;align-items:center;justify-content:center;' + ring + '">' + star + categoryIcon + '</div>',
                 iconSize: [size + 4, size + 4], iconAnchor: [(size + 4) / 2, size + 4]
             });
         }
@@ -1226,7 +1242,7 @@
             var bounds = [];
             data.forEach(function (p, idx) {
                 pointsData.push(p);
-                var m = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 }).addTo(markersLayer).bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper' });
+                var m = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured, p), zIndexOffset: p.is_featured ? 1000 : 0 }).addTo(markersLayer).bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper' });
                 m._pointIndex = idx;
                 bounds.push([p.latitude, p.longitude]);
             });
@@ -1243,8 +1259,11 @@
                 var c = p.category || 'Autre';
                 if (seen[c]) return;
                 seen[c] = true;
-                var s = getCategoryStyle(c);
-                h += '<button class="map-filter-btn' + (activeCategory === c ? ' active' : '') + '" data-filter="' + escapeHtml(c) + '"><span class="map-filter-btn__icon"><i class="' + s.icon + '" style="color:' + s.color + '"></i></span><span class="map-filter-btn__label">' + escapeHtml(c) + '</span></button>';
+                var s = getCategoryStyle(c, p);
+                var symbol = s.image
+                    ? '<img src="' + escapeHtml(s.image) + '" alt="" style="width:18px;height:18px;object-fit:contain">'
+                    : '<i class="' + escapeHtml(s.icon) + '" style="color:' + s.color + '"></i>';
+                h += '<button class="map-filter-btn' + (activeCategory === c ? ' active' : '') + '" data-filter="' + escapeHtml(c) + '"><span class="map-filter-btn__icon">' + symbol + '</span><span class="map-filter-btn__label">' + escapeHtml(c) + '</span></button>';
             });
             el.innerHTML = h;
             el.querySelectorAll('.map-filter-btn').forEach(function (btn) {

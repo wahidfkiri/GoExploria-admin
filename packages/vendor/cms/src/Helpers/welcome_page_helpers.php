@@ -1730,7 +1730,13 @@ if (!function_exists('get_map_video_points')) {
             $hasVideosTable = \Illuminate\Support\Facades\Schema::hasTable('map_point_videos');
             $hasImagesTable = \Illuminate\Support\Facades\Schema::hasTable('map_point_images');
             $hasDetailsTable = \Illuminate\Support\Facades\Schema::hasTable('map_point_details');
+            $hasMapCategories = \Illuminate\Support\Facades\Schema::hasTable('map_categories')
+                && \Illuminate\Support\Facades\Schema::hasColumn('map_points', 'map_category_id');
             $relations = ['mainImage'];
+
+            if ($hasMapCategories) {
+                $relations[] = 'mapCategory';
+            }
 
             if ($hasVideosTable) {
                 $relations[] = 'videos';
