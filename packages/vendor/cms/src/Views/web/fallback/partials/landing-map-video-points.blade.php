@@ -52,7 +52,28 @@
         $landingMapSectionTitle = $landingMapCfg['title'];
     }
 
-    $landingMapMediaUrl = static function ($path) {
+    /*
+     | ⚠ LES MÉDIAS DES POINTS SONT STOCKÉS PAR L'ADMIN, PAS PAR LE FRONT.
+     |
+     | `MapVideoController` / `MapPointController` enregistrent le fichier avec
+     | ->store('map-points/'.date('Y/m/d'), 'public') : la base ne garde qu'un
+     | chemin RELATIF (« map-points/2026/07/14/xxx.png ») et le fichier vit dans
+     | le storage de l'ADMIN, servi par admin.goexploriabusiness.com.
+     |
+     | Le front résolvait ce chemin avec son propre asset() — donc
+     | goexploriabusiness.com/storage/… — où le fichier n'existe pas : 404, et
+     | une image cassée dans la fiche d'un point. Le logo de la section, lui,
+     | s'affichait : il est enregistré en URL ABSOLUE, ce qui masquait le
+     | défaut. Vérifié sur /company/9659 : même fichier, 404 sur le front,
+     | 475 × 421 sur l'admin.
+     |
+     | On résout donc les chemins relatifs contre la base de l'admin (clé déjà
+     | en place pour le JSON des publicités), en retombant sur asset() si elle
+     | n'est pas configurée.
+     */
+    $landingMapBaseAdmin = rtrim((string) config('ads.admin_url', ''), '/');
+
+    $landingMapMediaUrl = static function ($path) use ($landingMapBaseAdmin) {
         if (empty($path)) {
             return null;
         }
@@ -70,19 +91,23 @@
             return $path;
         }
 
-        if (\Illuminate\Support\Str::startsWith($path, ['/storage/'])) {
-            return asset(ltrim($path, '/'));
-        }
+        // Chemin déjà préfixé « storage/ » : il désigne le disque public de
+        // l'admin, qui a téléversé le fichier.
+        if (\Illuminate\Support\Str::startsWith($path, ['/storage/', 'storage/'])) {
+            $relatif = ltrim($path, '/');
 
-        if (\Illuminate\Support\Str::startsWith($path, ['storage/'])) {
-            return asset($path);
+            return $landingMapBaseAdmin !== ''
+                ? $landingMapBaseAdmin . '/' . $relatif
+                : asset($relatif);
         }
 
         if (\Illuminate\Support\Str::startsWith($path, ['/'])) {
             return asset(ltrim($path, '/'));
         }
 
-        return asset('storage/' . ltrim($path, '/'));
+        return $landingMapBaseAdmin !== ''
+            ? $landingMapBaseAdmin . '/storage/' . ltrim($path, '/')
+            : asset('storage/' . ltrim($path, '/'));
     };
 
     $landingMapGallerySource = collect($allGalleryMedia ?? []);
