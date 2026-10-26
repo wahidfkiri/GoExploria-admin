@@ -98,6 +98,22 @@ document.addEventListener('DOMContentLoaded', function () {
   }).addTo(map);
   map.whenReady(function () { map.invalidateSize(); });
 
+  function ouvrirPopupAuSurvol(marker) {
+    var ouvrir = function () { marker.openPopup(); };
+    marker.on('mouseover', ouvrir);
+    // L'événement DOM couvre aussi les icônes Leaflet personnalisées et les
+    // marqueurs ajoutés après le rendu initial (cluster / filtres).
+    function brancherElement() {
+      var element = marker.getElement();
+      if (!element || element.dataset.gxHoverPopup === '1') return;
+      element.dataset.gxHoverPopup = '1';
+      element.addEventListener('mouseenter', ouvrir);
+      element.addEventListener('pointerenter', ouvrir);
+    }
+    marker.on('add', brancherElement);
+    brancherElement();
+  }
+
   if (entityHasCoordinates) {
     var entityMarker = L.marker([entityLat, entityLng], {
       icon: L.divIcon({
@@ -107,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         iconAnchor: [12, 24]
       })
     }).addTo(map).bindPopup('<strong>' + entityName + '</strong>');
-    entityMarker.on('mouseover', function () { this.openPopup(); });
+    ouvrirPopupAuSurvol(entityMarker);
   }
 
   // Regroupement des markers en grappes « +N » : le clic sur une grappe
@@ -224,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
         .addTo(markersLayer)
         .bindPopup(popupHtml, { maxWidth: 320, className: 'map-popup-wrapper' });
-      marker.on('mouseover', function () { this.openPopup(); });
+      ouvrirPopupAuSurvol(marker);
       marker._pointIndex = markerIndex;
       markerIndex++;
       bounds.push([p.latitude, p.longitude]);
@@ -253,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
       }).addTo(markersLayer);
       marker.bindPopup('<strong>' + ce.name + '</strong><br><a href="/travel-destination/' + (childType || 'country') + '/' + ce.slug + '" style="color:var(--amber,#f5a623)">Voir les d\u00e9tails</a>');
-      marker.on('mouseover', function () { this.openPopup(); });
+      ouvrirPopupAuSurvol(marker);
       bounds.push([ce.latitude, ce.longitude]);
     });
     if (bounds.length && !isContinent) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 5 });
@@ -319,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
               .addTo(markersLayer)
               .bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper' });
-            marker.on('mouseover', function () { this.openPopup(); });
+            ouvrirPopupAuSurvol(marker);
             marker._pointIndex = idx;
           }
         });

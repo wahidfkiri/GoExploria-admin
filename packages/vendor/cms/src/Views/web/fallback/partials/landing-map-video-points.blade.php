@@ -1010,6 +1010,20 @@
            seules les instructions de démarrage entrent dans cette fonction. */
         var map = null, markersLayer = null;
 
+        function ouvrirPopupAuSurvol(marker) {
+            var ouvrir = function () { marker.openPopup(); };
+            marker.on('mouseover', ouvrir);
+            function brancherElement() {
+                var element = marker.getElement();
+                if (!element || element.dataset.gxHoverPopup === '1') return;
+                element.dataset.gxHoverPopup = '1';
+                element.addEventListener('mouseenter', ouvrir);
+                element.addEventListener('pointerenter', ouvrir);
+            }
+            marker.on('add', brancherElement);
+            brancherElement();
+        }
+
         function demarrerLeaflet() {
             if (map) { return; }   // déjà en place
 
@@ -1251,7 +1265,7 @@
             data.forEach(function (p, idx) {
                 pointsData.push(p);
                 var m = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured, p), zIndexOffset: p.is_featured ? 1000 : 0 }).addTo(markersLayer).bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper' });
-                m.on('mouseover', function () { this.openPopup(); });
+                ouvrirPopupAuSurvol(m);
                 m._pointIndex = idx;
                 bounds.push([p.latitude, p.longitude]);
             });
