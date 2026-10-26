@@ -269,6 +269,9 @@
             'title' => $point->title ?: ($point->video_title ?? 'Point video'),
             'description' => $details?->long_description ?: $point->description,
             'category' => $point->category ?: 'Autre',
+            'contact_phone' => trim((string) ($details?->phone ?? '')),
+            'contact_email' => trim((string) ($details?->email ?? '')),
+            'contact_person' => trim((string) ($details?->contact_person ?? '')),
             'map_category_id' => $point->map_category_id,
             'category_icon_class' => $mapCategory?->icon_class,
             'category_color' => $mapCategory?->color,
@@ -594,6 +597,8 @@
             .map-modal__meta{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:20px}
             .map-modal__tag{padding:4px 12px;background:rgba(245,166,35,0.12);color:var(--td-amber);border-radius:50px;font-size:0.75rem;font-weight:600}
             .map-modal__meta-item{font-size:0.82rem;color:var(--td-text-muted)}
+            .map-modal a.map-modal__meta-item{color:var(--td-text-muted);text-decoration:underline;text-decoration-color:rgba(148,163,184,.45);text-underline-offset:3px}
+            .map-modal a.map-modal__meta-item:hover{color:var(--td-amber,#d4af37)}
             .map-modal__actions{margin-top:24px}
             .map-modal__immo{margin-bottom:20px}
             .map-modal__immo-titre{font-size:0.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--td-amber,#d4af37);margin:18px 0 10px}
@@ -831,6 +836,9 @@
                 latitude: Number(p.latitude),
                 longitude: Number(p.longitude),
                 category: cat || 'Autre',
+                contact_phone: p.contact_phone || '',
+                contact_email: p.contact_email || '',
+                contact_person: p.contact_person || '',
                 map_category_id: p.map_category_id || null,
                 category_icon_class: p.category_icon_class || '',
                 category_color: p.category_color || '',
@@ -1243,6 +1251,7 @@
             data.forEach(function (p, idx) {
                 pointsData.push(p);
                 var m = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured, p), zIndexOffset: p.is_featured ? 1000 : 0 }).addTo(markersLayer).bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper' });
+                m.on('mouseover', function () { this.openPopup(); });
                 m._pointIndex = idx;
                 bounds.push([p.latitude, p.longitude]);
             });
@@ -1359,6 +1368,12 @@
             if (point.category) mh += '<span class="map-modal__tag">' + escapeHtml(point.category) + '</span>';
             if (point.adresse) mh += '<span class="map-modal__tag">' + escapeHtml(point.adresse) + '</span>';
             if (point.region) mh += '<span class="map-modal__meta-item">&#9906; ' + escapeHtml(point.region) + '</span>';
+            if (point.contact_person) mh += '<span class="map-modal__meta-item"><i class="fas fa-user me-1" aria-hidden="true"></i>' + escapeHtml(point.contact_person) + '</span>';
+            if (point.contact_phone) {
+                var phoneHref = point.contact_phone.replace(/[^0-9+().,;*#]/g, '');
+                mh += '<a class="map-modal__meta-item" href="tel:' + escapeHtml(phoneHref) + '"><i class="fas fa-phone me-1" aria-hidden="true"></i>' + escapeHtml(point.contact_phone) + '</a>';
+            }
+            if (point.contact_email) mh += '<a class="map-modal__meta-item" href="mailto:' + encodeURIComponent(point.contact_email) + '"><i class="fas fa-envelope me-1" aria-hidden="true"></i>' + escapeHtml(point.contact_email) + '</a>';
             mc.innerHTML = mh;
             var ie = document.getElementById('mapModalImmo');
             if (ie) { ie.innerHTML = immoDetailsHtml(point); }

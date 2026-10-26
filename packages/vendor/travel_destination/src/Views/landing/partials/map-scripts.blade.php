@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
   @endphp
   var entityLat = {{ $centerLat ?? 0 }};
   var entityLng = {{ $centerLng ?? 0 }};
+  var entityHasCoordinates = {{ $centerLat !== null && $centerLng !== null ? 'true' : 'false' }};
   var entityName = {!! json_encode($entity->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var entityType = {!! json_encode($normalizedType, JSON_UNESCAPED_UNICODE) !!};
   var mapPointsUrl = '{{ route("travel-destination.map-points", ["type" => $normalizedType, "slug" => $slug], false) }}';
@@ -81,8 +82,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // Cadrer sur les points même sur une vue « continent » : carte d'une page
   // d'activité ou de catégorie restreinte à ses propres points (CarteMonde).
   var fitToPoints = {{ !empty($fitToPoints) ? 'true' : 'false' }};
-  var defaultZoom = entityLat && !isContinent ? (zoomByType[entityType] || 6) : 2;
-  var center = entityLat ? [entityLat, entityLng] : [20, 0];
+  var defaultZoom = entityHasCoordinates && !isContinent ? (zoomByType[entityType] || 6) : 2;
+  var center = entityHasCoordinates ? [entityLat, entityLng] : [20, 0];
 
   var map = L.map('travel-map', {
     center: center,
@@ -97,8 +98,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }).addTo(map);
   map.whenReady(function () { map.invalidateSize(); });
 
-  if (entityLat) {
-    L.marker([entityLat, entityLng], {
+  if (entityHasCoordinates) {
+    var entityMarker = L.marker([entityLat, entityLng], {
       icon: L.divIcon({
         className: 'map-marker map-marker--main',
         html: '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>',
@@ -106,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
         iconAnchor: [12, 24]
       })
     }).addTo(map).bindPopup('<strong>' + entityName + '</strong>');
+    entityMarker.on('mouseover', function () { this.openPopup(); });
   }
 
   // Regroupement des markers en grappes « +N » : le clic sur une grappe
@@ -222,12 +224,15 @@ document.addEventListener('DOMContentLoaded', function () {
       var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
         .addTo(markersLayer)
         .bindPopup(popupHtml, { maxWidth: 320, className: 'map-popup-wrapper' });
+      marker.on('mouseover', function () { this.openPopup(); });
       marker._pointIndex = markerIndex;
       markerIndex++;
       bounds.push([p.latitude, p.longitude]);
     });
+    // Le cadrage initial reste ancré sur les coordonnées de la destination.
+    // Les limites des points ne doivent pas remplacer le zoom de la page.
     var cadreDestination = boundsOverride === undefined ? destinationBounds : boundsOverride;
-    if (cadreDestination || (!isContinent || fitToPoints)) {
+    if (!entityHasCoordinates && (cadreDestination || (!isContinent || fitToPoints))) {
       if (!cadrerCarte(data, cadreDestination) && bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
     }
     rebuildCategoryFilters(categories, data);
@@ -248,6 +253,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
       }).addTo(markersLayer);
       marker.bindPopup('<strong>' + ce.name + '</strong><br><a href="/travel-destination/' + (childType || 'country') + '/' + ce.slug + '" style="color:var(--amber,#f5a623)">Voir les d\u00e9tails</a>');
+      marker.on('mouseover', function () { this.openPopup(); });
       bounds.push([ce.latitude, ce.longitude]);
     });
     if (bounds.length && !isContinent) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 5 });
@@ -278,7 +284,8 @@ document.addEventListener('DOMContentLoaded', function () {
     focus: function (lat, lng, zoom) { map.flyTo([lat, lng], zoom || defaultZoom, { duration: 1 }); },
     render: function (points, bounds) { renderPointsOnMap(points, bounds); },
     fitAll: function () {
-      if (!cadrerCarte(serverPoints, destinationBounds)) zoomToEntity(entityLat, entityLng, defaultZoom);
+      if (entityHasCoordinates) zoomToEntity(entityLat, entityLng, defaultZoom);
+      else if (!cadrerCarte(serverPoints, destinationBounds)) map.setView([20, 0], 2);
     }
   };
   document.dispatchEvent(new CustomEvent('gx:map-ready'));
@@ -312,6 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
               .addTo(markersLayer)
               .bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper' });
+            marker.on('mouseover', function () { this.openPopup(); });
             marker._pointIndex = idx;
           }
         });

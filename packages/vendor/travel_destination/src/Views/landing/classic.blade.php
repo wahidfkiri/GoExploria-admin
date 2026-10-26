@@ -920,7 +920,7 @@ document.addEventListener('DOMContentLoaded', function () {
   map.whenReady(function () { map.invalidateSize(); });
 
   if (entityLat) {
-    L.marker([entityLat, entityLng], {
+    var entityMarker = L.marker([entityLat, entityLng], {
       icon: L.divIcon({
         className: 'map-marker map-marker--main',
         html: '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>',
@@ -928,6 +928,7 @@ document.addEventListener('DOMContentLoaded', function () {
         iconAnchor: [12, 24]
       })
     }).addTo(map).bindPopup('<strong>' + entityName + '</strong>');
+    entityMarker.on('mouseover', function () { this.openPopup(); });
   }
 
   // Regroupement des markers en grappes « +N » : le clic sur une grappe
@@ -1025,6 +1026,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
         .addTo(markersLayer)
         .bindPopup(popupHtml, { maxWidth: 320, className: 'map-popup-wrapper' });
+      marker.on('mouseover', function () { this.openPopup(); });
       marker._pointIndex = markerIndex;
       markerIndex++;
       bounds.push([p.latitude, p.longitude]);
@@ -1048,6 +1050,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
       }).addTo(markersLayer);
       marker.bindPopup('<strong>' + ce.name + '</strong><br><a href="/travel-destination/' + (childType || 'country') + '/' + ce.slug + '" style="color:var(--amber,#f5a623)">Voir les d\u00e9tails</a>');
+      marker.on('mouseover', function () { this.openPopup(); });
       bounds.push([ce.latitude, ce.longitude]);
     });
     if (bounds.length && !isContinent) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 5 });
@@ -1101,6 +1104,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
               .addTo(markersLayer)
               .bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'map-popup-wrapper' });
+            marker.on('mouseover', function () { this.openPopup(); });
             marker._pointIndex = idx;
           }
         });
