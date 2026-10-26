@@ -270,12 +270,46 @@
             if (data.type === 'scroll-top') {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
+            // Ancre interne au site de l'établissement : l'iframe est haute
+            // comme son contenu et ne défile pas, c'est donc CETTE page qui
+            // doit se déplacer. `offset` est la position de la cible dans le
+            // repère de l'iframe.
+            if (data.type === 'scroll-to') {
+                allerAOffsetDansCadre(data.offset, data.smooth !== false);
+            }
             if (data.type === 'request-viewport') envoyerBandeVisible();
             // Une modale s'ouvre dans l'iframe : elle doit suivre le
             // défilement de CETTE page, seule à en avoir un.
             if (data.type === 'overlay-open') suivreBandeVisible(true);
             if (data.type === 'overlay-close') suivreBandeVisible(false);
         });
+
+        /* ── Ancres du site d'établissement ───────────────────────────────
+           L'en-tête de la plateforme est fixe : viser la position brute
+           cacherait le début de la section dessous. On retranche donc la
+           hauteur des barres réellement collées en haut de l'écran. */
+        function hauteurBarresFixes() {
+            var haut = 0;
+            var noeuds = document.querySelectorAll('header, .header-v2, [data-gx-sticky]');
+            for (var i = 0; i < noeuds.length; i++) {
+                var cs;
+                try { cs = window.getComputedStyle(noeuds[i]); } catch (err) { continue; }
+                if (cs.position !== 'fixed' && cs.position !== 'sticky') continue;
+                var r = noeuds[i].getBoundingClientRect();
+                // Uniquement ce qui est posé en haut, et d'une taille plausible.
+                if (r.top <= 4 && r.height > haut && r.height < 240) { haut = r.height; }
+            }
+            return haut;
+        }
+
+        function allerAOffsetDansCadre(offset, doux) {
+            var dans = Number(offset);
+            if (!isFinite(dans) || dans < 0) return;
+            var boite = frame.getBoundingClientRect();
+            var depart = (window.pageYOffset || document.documentElement.scrollTop || 0);
+            var cible = depart + boite.top + dans - hauteurBarresFixes();
+            window.scrollTo({ top: Math.max(0, Math.round(cible)), behavior: doux ? 'smooth' : 'auto' });
+        }
 
         /* ── Bande visible de l'iframe ────────────────────────────────────
            L'iframe est haute comme son contenu et ne défile pas : son enfant

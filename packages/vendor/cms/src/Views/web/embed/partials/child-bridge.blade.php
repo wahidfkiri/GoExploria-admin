@@ -438,12 +438,84 @@
         if (cible && cible !== '_self' && cible !== '_top' && cible !== '_parent') return;
         var url;
         try { url = new URL(a.getAttribute('href'), window.location.href); } catch (err) { return; }
-        // Ancre dans la page courante : défilement local, rien à faire.
+        // Ancre dans la page courante : traitée en capture (voir plus bas).
         if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return;
         if (!estPageShell(url)) return;
         e.preventDefault();
         try { window.top.location.href = url.href; } catch (err) { window.location.href = url.href; }
     });
+
+    /* ── ANCRES DE LA PAGE — le défilement appartient au parent ───────────
+       ⚠ L'iframe est haute comme son contenu : elle NE DÉFILE PAS
+       (`scrollHeight === clientHeight`). Un lien « #services » n'allait donc
+       nulle part, et aucun gabarit ne pouvait y remédier seul : un
+       `scrollIntoView` dans un document sans défilement ne fait rien.
+       Constaté sur /company/9659 — cible à 14 299 px dans l'iframe, parent
+       resté à 0.
+
+       ⚠ En phase de CAPTURE, et c'est essentiel : les gabarits posent leur
+       propre défilement doux et appellent `preventDefault()`. L'écouteur de
+       navigation ci-dessus sort sur `e.defaultPrevented` et ne voyait jamais
+       ces clics. En capture, on passe avant eux ; on ne coupe PAS la
+       propagation, pour que leurs autres effets — fermeture du menu mobile,
+       état actif — continuent de jouer.                                     */
+    function hauteurEnTeteCollant() {
+        var haut = 0;
+        var noeuds = document.querySelectorAll('header, nav, .ae-nav, [data-gx-sticky]');
+        for (var i = 0; i < noeuds.length; i++) {
+            var cs;
+            try { cs = window.getComputedStyle(noeuds[i]); } catch (err) { continue; }
+            if (cs.position !== 'sticky' && cs.position !== 'fixed') continue;
+            var r = noeuds[i].getBoundingClientRect();
+            if (r.height > haut && r.height < 240) { haut = r.height; }
+        }
+        return haut;
+    }
+
+    function cibleDeLAncre(hash) {
+        if (!hash || hash === '#') return null;
+        var nom = hash.slice(1);
+        try { nom = decodeURIComponent(nom); } catch (err) { /* tel quel */ }
+        return document.getElementById(nom)
+            || (document.getElementsByName(nom)[0] || null);
+    }
+
+    function defilerVers(el, doux) {
+        var r = el.getBoundingClientRect();
+        var haut = r.top + (window.pageYOffset || document.documentElement.scrollTop || 0);
+        haut -= hauteurEnTeteCollant() + 12;
+        try {
+            window.parent.postMessage({
+                channel: CHANNEL,
+                type: 'scroll-to',
+                offset: Math.max(0, Math.round(haut)),
+                smooth: doux !== false
+            }, parentOrigin);
+        } catch (err) { /* pas de shell à l'écoute : rien de plus à faire */ }
+    }
+
+    document.addEventListener('click', function (e) {
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        var a = e.target.closest && e.target.closest('a[href]');
+        if (!a || a.hasAttribute('download')) return;
+        var cible = (a.getAttribute('target') || '').toLowerCase();
+        if (cible && cible !== '_self') return;
+        var brut = a.getAttribute('href') || '';
+        var url;
+        try { url = new URL(brut, window.location.href); } catch (err) { return; }
+        if (url.pathname !== window.location.pathname || url.search !== window.location.search) return;
+        if (!url.hash) return;
+        var el = cibleDeLAncre(url.hash);
+        if (!el) return;                 // ancre morte : on laisse faire
+        e.preventDefault();              // sans stopPropagation (voir ci-dessus)
+        defilerVers(el, true);
+    }, true);
+
+    // Une adresse ouverte avec une ancre (#contact) doit s'y rendre aussi.
+    function ancreInitiale() {
+        var el = cibleDeLAncre(window.location.hash);
+        if (el) { defilerVers(el, false); }
+    }
 
     // Démarrage + pouls régulier léger pour les contenus qui grandissent
     // sans déclencher d'observer (widgets tiers, polices web…).
@@ -459,6 +531,11 @@
 
     if (document.readyState === 'complete' || document.readyState === 'interactive') boot();
     else document.addEventListener('DOMContentLoaded', boot);
-    window.addEventListener('load', function () { watchImages(); postHeight(true); });
+    window.addEventListener('load', function () {
+        watchImages();
+        postHeight(true);
+        // Après la mise en page finale, sinon l'offset viserait à côté.
+        setTimeout(ancreInitiale, 450);
+    });
 })();
 </script>
