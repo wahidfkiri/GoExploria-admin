@@ -80,7 +80,7 @@
       .then(function (res) {
         // Une réponse plus ancienne ne doit pas écraser une sélection récente.
         if (ticket !== pending) return;
-        m.render((res && res.success && res.data) ? res.data : []);
+        m.render((res && res.success && res.data) ? res.data : [], (res && res.success) ? res.bounds : null);
       })
       .catch(function (err) { console.error('Filtre carte — points :', err); })
       .finally(function () {

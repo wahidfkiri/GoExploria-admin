@@ -107,6 +107,9 @@ class TravelDestinationController extends Controller
         );
 
         $mapPoints = collect();
+        $destinationMapBounds = $normalizedType !== 'continent'
+            ? $this->descendantBounds($normalizedType, $entity)
+            : null;
         if (in_array($normalizedType, ['continent', 'country', 'province', 'region', 'city', 'secteur', 'arrondissement', 'quartier'])) {
             $radius = match ($normalizedType) {
                 'continent' => 45,
@@ -127,7 +130,7 @@ class TravelDestinationController extends Controller
                 // seuls enfants directs ne couvrent pas les grands pays (ex. Canada).
                 // L'API applique déjà cette même enveloppe; sans cela, le jeu
                 // préchargé pouvait manquer des points et empêcher le repli AJAX.
-                $bornes = $this->descendantBounds($normalizedType, $entity);
+                $bornes = $destinationMapBounds;
                 if ($bornes) {
                     $padding = match ($normalizedType) {
                         'country' => 2,
@@ -143,6 +146,12 @@ class TravelDestinationController extends Controller
                 } else {
                     $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
                     if ($childrenWithLat->count() > 0) {
+                        $destinationMapBounds = [
+                            'minLat' => (float) $childrenWithLat->min('latitude'),
+                            'maxLat' => (float) $childrenWithLat->max('latitude'),
+                            'minLng' => (float) $childrenWithLat->min('longitude'),
+                            'maxLng' => (float) $childrenWithLat->max('longitude'),
+                        ];
                         $padding = match ($normalizedType) {
                             'country' => 1.5,
                             'province' => 1,
@@ -158,6 +167,9 @@ class TravelDestinationController extends Controller
                 }
             }
             $mapPoints = $q->orderBy('is_featured', 'desc')->orderBy('views', 'desc')->limit(500)->get();
+        }
+        if ($destinationMapBounds) {
+            $destinationMapBounds['type'] = $normalizedType;
         }
 
         $ads = DB::table('ads')
@@ -244,6 +256,7 @@ class TravelDestinationController extends Controller
             'destinationActivities',
             'activitesParDestination',
             'mapPoints',
+            'destinationMapBounds',
             'ads'
         ));
     }
@@ -567,8 +580,10 @@ class TravelDestinationController extends Controller
         // jusqu'aux quartiers, l'enveloppe épouse le territoire réellement
         // couvert par la base.
         $bornes = $filterEntity ? $this->descendantBounds($targetType, $target) : null;
+        $mapBounds = $bornes;
 
         if ($bornes) {
+            $mapBounds['type'] = $targetType;
             // Marge autour de l'enveloppe : la base ne connaît pas tous les
             // lieux d'un territoire, et un point d'intérêt se trouve souvent
             // un peu au-delà de la dernière destination référencée.
@@ -589,6 +604,13 @@ class TravelDestinationController extends Controller
             $childEntities = $this->getChildEntities($targetType, $target);
             $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
             if ($childrenWithLat->count() > 0) {
+                $mapBounds = [
+                    'minLat' => (float) $childrenWithLat->min('latitude'),
+                    'maxLat' => (float) $childrenWithLat->max('latitude'),
+                    'minLng' => (float) $childrenWithLat->min('longitude'),
+                    'maxLng' => (float) $childrenWithLat->max('longitude'),
+                    'type' => $targetType,
+                ];
                 $padding = match ($targetType) {
                     'continent' => 2,
                     'country' => 1.5,
@@ -648,6 +670,7 @@ class TravelDestinationController extends Controller
         return response()->json([
             'success' => true,
             'data' => $formatted,
+            'bounds' => $mapBounds,
             'entity' => ['id' => $entity->id, 'name' => $entity->name, 'type' => $normalizedType, 'latitude' => (float) ($entity->latitude ?? 0), 'longitude' => (float) ($entity->longitude ?? 0)],
         ]);
     }

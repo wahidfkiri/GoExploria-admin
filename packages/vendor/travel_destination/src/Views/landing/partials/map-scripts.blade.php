@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var entityName = {!! json_encode($entity->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var entityType = {!! json_encode($normalizedType, JSON_UNESCAPED_UNICODE) !!};
   var mapPointsUrl = '{{ route("travel-destination.map-points", ["type" => $normalizedType, "slug" => $slug], false) }}';
+  var destinationBounds = {!! json_encode($destinationMapBounds ?? null, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var childEntities = {!! json_encode($childEntities->map(function($ce) {
         $typeName = strtolower(class_basename($ce));
         $zMap = ['continent' => 3, 'country' => 5, 'province' => 7, 'region' => 9, 'ville' => 11, 'city' => 11, 'secteur' => 13];
@@ -187,7 +188,26 @@ document.addEventListener('DOMContentLoaded', function () {
     geoSearch.value = geoOptions[0].label;
   }
 
-  function renderPointsOnMap(data) {
+  function cadrerCarte(points, bounds) {
+    var limites = null;
+    if (bounds && Number.isFinite(Number(bounds.minLat)) && Number.isFinite(Number(bounds.maxLat))
+        && Number.isFinite(Number(bounds.minLng)) && Number.isFinite(Number(bounds.maxLng))) {
+      limites = L.latLngBounds([[Number(bounds.minLat), Number(bounds.minLng)], [Number(bounds.maxLat), Number(bounds.maxLng)]]);
+    }
+    (points || []).forEach(function (p) {
+      if (!Number.isFinite(Number(p.latitude)) || !Number.isFinite(Number(p.longitude))) return;
+      if (!limites) limites = L.latLngBounds([[Number(p.latitude), Number(p.longitude)], [Number(p.latitude), Number(p.longitude)]]);
+      else limites.extend([Number(p.latitude), Number(p.longitude)]);
+    });
+    if (limites && limites.isValid()) {
+      var maxZoom = zoomByType[bounds && bounds.type] || zoomByType[entityType] || 12;
+      map.fitBounds(limites, { padding: [40, 40], maxZoom: maxZoom });
+      return true;
+    }
+    return false;
+  }
+
+  function renderPointsOnMap(data, boundsOverride) {
     markersLayer.clearLayers();
     pointsData = [];
     currentPointsData = data;
@@ -206,7 +226,10 @@ document.addEventListener('DOMContentLoaded', function () {
       markerIndex++;
       bounds.push([p.latitude, p.longitude]);
     });
-    if (bounds.length && (!isContinent || fitToPoints)) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+    var cadreDestination = boundsOverride === undefined ? destinationBounds : boundsOverride;
+    if (cadreDestination || (!isContinent || fitToPoints)) {
+      if (!cadrerCarte(data, cadreDestination) && bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+    }
     rebuildCategoryFilters(categories, data);
   }
 
@@ -253,8 +276,10 @@ document.addEventListener('DOMContentLoaded', function () {
   // la carte sans connaître Leaflet.
   window.GX_DEST_MAP = {
     focus: function (lat, lng, zoom) { map.flyTo([lat, lng], zoom || defaultZoom, { duration: 1 }); },
-    render: function (points) { renderPointsOnMap(points); },
-    fitAll: function () { zoomToEntity(entityLat, entityLng, defaultZoom); }
+    render: function (points, bounds) { renderPointsOnMap(points, bounds); },
+    fitAll: function () {
+      if (!cadrerCarte(serverPoints, destinationBounds)) zoomToEntity(entityLat, entityLng, defaultZoom);
+    }
   };
   document.dispatchEvent(new CustomEvent('gx:map-ready'));
 
