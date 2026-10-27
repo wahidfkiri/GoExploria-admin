@@ -51,7 +51,11 @@
     // relatif (ancienne écriture) est rattaché au storage de l'admin, comme
     // les médias des points ci-dessous. Voile sombre réglable : le titre du
     // bandeau est clair, il doit rester lisible sur une photo claire.
-    $landingMapBgStyle = '';
+    // Deux calques derrière le contenu (opacity ne s'applique pas à un seul
+    // background-image) : l'image, dont l'opacité laisse voir le fond noir
+    // d'origine du bandeau, puis le voile sombre.
+    $landingMapBgImageStyle = '';
+    $landingMapBgVoileStyle = '';
     $landingMapBg = trim((string) ($landingMapCfg['bg_image'] ?? ''));
     if ($landingMapBg !== '') {
         if (! preg_match('#^(https?:)?//#i', $landingMapBg)) {
@@ -60,12 +64,13 @@
         // Caractères qui fermeraient url("…") ou l'attribute style.
         $landingMapBg = str_replace(['"', "'", '(', ')', ' ', '<', '>'], ['%22', '%27', '%28', '%29', '%20', '%3C', '%3E'], $landingMapBg);
         $landingMapVoile = max(0, min(90, (int) ($landingMapCfg['bg_overlay'] ?? 55))) / 100;
+        $landingMapOpacite = max(10, min(100, (int) ($landingMapCfg['bg_opacity'] ?? 100))) / 100;
         $landingMapCadrage = $landingMapCfg['bg_position'] ?? 'center';
         if (! in_array($landingMapCadrage, ['top', 'center', 'bottom'], true)) {
             $landingMapCadrage = 'center';
         }
-        $landingMapBgStyle = "background-image:linear-gradient(rgba(0,0,0,{$landingMapVoile}),rgba(0,0,0,{$landingMapVoile})),url(\"{$landingMapBg}\");"
-            . "background-size:cover;background-position:center {$landingMapCadrage};background-repeat:no-repeat;";
+        $landingMapBgImageStyle = "background-image:url(\"{$landingMapBg}\");background-position:center {$landingMapCadrage};opacity:{$landingMapOpacite};";
+        $landingMapBgVoileStyle = "background:rgba(0,0,0,{$landingMapVoile});";
     }
 
     // Le titre configuré côté admin (config carte) est prioritaire — corrige le
@@ -481,6 +486,12 @@
                (posée en style en ligne) ; la trame de points s'efface presque
                pour ne pas brouiller la photo. */
             .map-banner.has-bg:before{opacity:.12}
+            /* Ordre dans le bandeau (isolation:isolate) : fond noir d'origine,
+               image (-3, son opacité laisse voir ce noir), voile (-2), trame
+               de points (-1), contenu. */
+            .map-banner__bg,.map-banner__voile{position:absolute;inset:0;pointer-events:none}
+            .map-banner__bg{z-index:-3;background-size:cover;background-repeat:no-repeat}
+            .map-banner__voile{z-index:-2}
             .map-banner.has-bg .section-title,.map-banner.has-bg .section-subtitle{text-shadow:0 2px 14px rgba(0,0,0,.45)}
             .map-banner__logo{display:inline-flex;align-items:center;justify-content:center;max-width:100%;margin-bottom:18px;padding:10px 20px;background:#fff;border-radius:18px;box-shadow:0 14px 36px rgba(0,0,0,.55)}
             /* Le logo arrive avec height:96px en ligne (config admin) : on le plafonne ici. */
@@ -757,8 +768,11 @@
 
     <section class="map-section section{{ $landingMapIsInline ? ' is-inline' : '' }}{{ $landingMapVariant === 'gabarit' ? ' is-gabarit' : '' }}" id="map" aria-labelledby="map-heading">
         @unless($landingMapIsInline)
-            <header class="section-header map-banner reveal-up{{ $landingMapBgStyle !== '' ? ' has-bg' : '' }}"
-                    @if($landingMapBgStyle !== '') style="{{ $landingMapBgStyle }}" @endif>
+            <header class="section-header map-banner reveal-up{{ $landingMapBgImageStyle !== '' ? ' has-bg' : '' }}">
+                @if($landingMapBgImageStyle !== '')
+                    <span class="map-banner__bg" style="{{ $landingMapBgImageStyle }}" aria-hidden="true"></span>
+                    <span class="map-banner__voile" style="{{ $landingMapBgVoileStyle }}" aria-hidden="true"></span>
+                @endif
                 <div class="map-banner__inner">
                     @if($landingMapLogoHtml !== '')
                         <div class="section-logo map-banner__logo">{!! $landingMapLogoHtml !!}</div>

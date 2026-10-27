@@ -22,6 +22,8 @@ class MapSectionConfig
     /** Image de fond du bandeau — même règle que la copie de l'admin. */
     public const BG_POSITIONS = ['top', 'center', 'bottom'];
     public const OVERLAY_MAX = 90;
+    public const OPACITY_MIN = 10;
+    public const OPACITY_MAX = 100;
 
     public static function defaults(): array
     {
@@ -37,6 +39,7 @@ class MapSectionConfig
             'bg_image'       => '',
             'bg_overlay'     => 55,
             'bg_position'    => 'center',
+            'bg_opacity'     => 100,
         ];
     }
 
@@ -117,6 +120,7 @@ class MapSectionConfig
         }
 
         $overlay = max(0, min(self::OVERLAY_MAX, (int) ($raw['bg_overlay'] ?? $defaults['bg_overlay'])));
+        $opacity = max(self::OPACITY_MIN, min(self::OPACITY_MAX, (int) ($raw['bg_opacity'] ?? $defaults['bg_opacity'])));
 
         return [
             'title'          => $cut($raw['title'] ?? null, 191, $defaults['title']),
@@ -130,6 +134,7 @@ class MapSectionConfig
             'bg_image'       => $cut($raw['bg_image'] ?? null, 500, ''),
             'bg_overlay'     => $overlay,
             'bg_position'    => $bgPosition,
+            'bg_opacity'     => $opacity,
         ];
     }
 }
