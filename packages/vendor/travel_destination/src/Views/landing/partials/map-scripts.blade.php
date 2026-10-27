@@ -19,13 +19,19 @@ document.addEventListener('DOMContentLoaded', function () {
   if (!mapEl) return;
 
   @php
-    $centerLat = is_numeric($entity->latitude) ? (float)$entity->latitude : null;
-    $centerLng = is_numeric($entity->longitude) ? (float)$entity->longitude : null;
-    if (is_null($centerLat) && isset($childEntities) && $childEntities->count() > 0) {
-      $withLat = $childEntities->filter(fn($ce) => is_numeric($ce->latitude));
-      if ($withLat->count() > 0) {
-        $centerLat = ((float)$withLat->min('latitude') + (float)$withLat->max('latitude')) / 2;
-        $centerLng = ((float)$withLat->min('longitude') + (float)$withLat->max('longitude')) / 2;
+    $centerLat = is_numeric($entity->latitude) && is_numeric($entity->longitude) ? (float)$entity->latitude : null;
+    $centerLng = is_numeric($entity->latitude) && is_numeric($entity->longitude) ? (float)$entity->longitude : null;
+    if (($centerLat === null || $centerLng === null) && isset($destinationMapBounds)
+        && is_numeric($destinationMapBounds['minLat'] ?? null) && is_numeric($destinationMapBounds['maxLat'] ?? null)
+        && is_numeric($destinationMapBounds['minLng'] ?? null) && is_numeric($destinationMapBounds['maxLng'] ?? null)) {
+      $centerLat = ((float)$destinationMapBounds['minLat'] + (float)$destinationMapBounds['maxLat']) / 2;
+      $centerLng = ((float)$destinationMapBounds['minLng'] + (float)$destinationMapBounds['maxLng']) / 2;
+    }
+    if (($centerLat === null || $centerLng === null) && isset($childEntities) && $childEntities->count() > 0) {
+      $withCoords = $childEntities->filter(fn($ce) => is_numeric($ce->latitude) && is_numeric($ce->longitude));
+      if ($withCoords->count() > 0) {
+        $centerLat = ((float)$withCoords->min('latitude') + (float)$withCoords->max('latitude')) / 2;
+        $centerLng = ((float)$withCoords->min('longitude') + (float)$withCoords->max('longitude')) / 2;
       }
     }
   @endphp
@@ -251,7 +257,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Le cadrage initial reste ancré sur les coordonnées de la destination.
     // Les limites des points ne doivent pas remplacer le zoom de la page.
     var cadreDestination = boundsOverride === undefined ? destinationBounds : boundsOverride;
-    if (!entityHasCoordinates && (cadreDestination || (!isContinent || fitToPoints))) {
+    // Un cadrage renvoyé après sélection concerne l'enfant choisi : l'appliquer
+    // même si la destination parente possède déjà des coordonnées.
+    if (boundsOverride && !cadrerCarte(data, boundsOverride)
+        && bounds.length) {
+      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+    } else if (!boundsOverride && !entityHasCoordinates && (cadreDestination || (!isContinent || fitToPoints))) {
       if (!cadrerCarte(data, cadreDestination) && bounds.length) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
     }
     rebuildCategoryFilters(categories, data);

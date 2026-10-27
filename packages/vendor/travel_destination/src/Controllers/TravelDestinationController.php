@@ -123,9 +123,14 @@ class TravelDestinationController extends Controller
                 default => 5,
             };
             $q = MapPoint::with(['details', 'images', 'mainImage'])->active()
-                ->visibleOn($normalizedType, $entity->id ?? null)
                 ->inDisplayPeriod();
-            if ($normalizedType !== 'continent') {
+            $destinationPreciseUniquement = !in_array($normalizedType, ['continent', 'country'], true);
+            if ($destinationPreciseUniquement) {
+                $this->ciblerDestinationPrecise($q, $normalizedType, $entity->id);
+            } else {
+                $q->visibleOn($normalizedType, $entity->id ?? null);
+            }
+            if ($normalizedType !== 'continent' && !$destinationPreciseUniquement) {
                 // Utilise l'enveloppe de toute la descendance : les centres des
                 // seuls enfants directs ne couvrent pas les grands pays (ex. Canada).
                 // L'API applique déjà cette même enveloppe; sans cela, le jeu
@@ -563,8 +568,14 @@ class TravelDestinationController extends Controller
         $displayDestinationId = $displayLocation === $targetType ? ($target->id ?? null) : null;
 
         $query = MapPoint::with(['details', 'images', 'mainImage'])->active()
-            ->visibleOn($displayLocation, $displayDestinationId)
             ->inDisplayPeriod();
+        $destinationPreciseUniquement = $displayLocation === $targetType
+            && !in_array($targetType, ['continent', 'country'], true);
+        if ($destinationPreciseUniquement) {
+            $this->ciblerDestinationPrecise($query, $targetType, $target->id);
+        } else {
+            $query->visibleOn($displayLocation, $displayDestinationId);
+        }
 
         // La PAGE d'un continent montre tous les points du monde (elle sert de
         // vue d'ensemble) ; un continent CHOISI dans le filtre doit au
@@ -597,8 +608,10 @@ class TravelDestinationController extends Controller
                 'quartier' => 0.08,
                 default => 0.3,
             };
-            $this->appliquerEmpriseOuDestinationPrecise($query, $bornes, $padding, $targetType, $target->id);
-        } elseif (! $vueMondiale) {
+            if (!$destinationPreciseUniquement) {
+                $this->appliquerEmpriseOuDestinationPrecise($query, $bornes, $padding, $targetType, $target->id);
+            }
+        } elseif (! $vueMondiale && !$destinationPreciseUniquement) {
             // Try child entities first for accurate bounds (works even if entity lacks lat/lng)
             $childEntities = $this->getChildEntities($targetType, $target);
             $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
@@ -678,9 +691,16 @@ class TravelDestinationController extends Controller
         ]);
     }
 
+    /** Une destination sous le niveau pays/continent ne reçoit que ses points ciblés. */
+    protected function ciblerDestinationPrecise($query, string $type, $destinationId): void
+    {
+        $niveau = $type === 'city' ? 'ville' : $type;
+        $query->whereJsonContains('display_locations', $niveau . ':' . (int) $destinationId);
+    }
+
     /**
-     * Les points explicitement affectés à une destination précise restent
-     * visibles même si l'emprise approximative de ses coordonnées les exclut.
+     * Pour les vues géographiques générales, les points explicitement affectés
+     * restent visibles même si l'emprise approximative les exclut.
      */
     protected function appliquerEmpriseOuDestinationPrecise($query, array $bornes, float $marge, string $type, $destinationId): void
     {

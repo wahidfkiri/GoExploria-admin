@@ -845,18 +845,25 @@ document.addEventListener('DOMContentLoaded', function () {
   if (!mapEl) return;
 
   @php
-    $centerLat = is_numeric($entity->latitude) ? (float)$entity->latitude : null;
-    $centerLng = is_numeric($entity->longitude) ? (float)$entity->longitude : null;
-    if (is_null($centerLat) && isset($childEntities) && $childEntities->count() > 0) {
-      $withLat = $childEntities->filter(fn($ce) => is_numeric($ce->latitude));
-      if ($withLat->count() > 0) {
-        $centerLat = ((float)$withLat->min('latitude') + (float)$withLat->max('latitude')) / 2;
-        $centerLng = ((float)$withLat->min('longitude') + (float)$withLat->max('longitude')) / 2;
+    $centerLat = is_numeric($entity->latitude) && is_numeric($entity->longitude) ? (float)$entity->latitude : null;
+    $centerLng = is_numeric($entity->latitude) && is_numeric($entity->longitude) ? (float)$entity->longitude : null;
+    if (($centerLat === null || $centerLng === null) && isset($destinationMapBounds)
+        && is_numeric($destinationMapBounds['minLat'] ?? null) && is_numeric($destinationMapBounds['maxLat'] ?? null)
+        && is_numeric($destinationMapBounds['minLng'] ?? null) && is_numeric($destinationMapBounds['maxLng'] ?? null)) {
+      $centerLat = ((float)$destinationMapBounds['minLat'] + (float)$destinationMapBounds['maxLat']) / 2;
+      $centerLng = ((float)$destinationMapBounds['minLng'] + (float)$destinationMapBounds['maxLng']) / 2;
+    }
+    if (($centerLat === null || $centerLng === null) && isset($childEntities) && $childEntities->count() > 0) {
+      $withCoords = $childEntities->filter(fn($ce) => is_numeric($ce->latitude) && is_numeric($ce->longitude));
+      if ($withCoords->count() > 0) {
+        $centerLat = ((float)$withCoords->min('latitude') + (float)$withCoords->max('latitude')) / 2;
+        $centerLng = ((float)$withCoords->min('longitude') + (float)$withCoords->max('longitude')) / 2;
       }
     }
   @endphp
   var entityLat = {{ $centerLat ?? 0 }};
   var entityLng = {{ $centerLng ?? 0 }};
+  var entityHasCoordinates = {{ $centerLat !== null && $centerLng !== null ? 'true' : 'false' }};
   var entityName = {!! json_encode($entity->name ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var entityType = {!! json_encode($normalizedType, JSON_UNESCAPED_UNICODE) !!};
   var mapPointsUrl = '{{ route("travel-destination.map-points", ["type" => $normalizedType, "slug" => $slug], false) }}';
@@ -903,8 +910,8 @@ document.addEventListener('DOMContentLoaded', function () {
       })->values(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var zoomByType = { continent: 3, country: 5, province: 7, region: 9, ville: 11, city: 11, secteur: 13 };
   var isContinent = entityType === 'continent';
-  var defaultZoom = entityLat && !isContinent ? (zoomByType[entityType] || 6) : 2;
-  var center = entityLat ? [entityLat, entityLng] : [20, 0];
+  var defaultZoom = entityHasCoordinates && !isContinent ? (zoomByType[entityType] || 6) : 2;
+  var center = entityHasCoordinates ? [entityLat, entityLng] : [20, 0];
 
   var map = L.map('travel-map', {
     center: center,
@@ -933,7 +940,7 @@ document.addEventListener('DOMContentLoaded', function () {
     brancherElement();
   }
 
-  if (entityLat) {
+  if (entityHasCoordinates) {
     var entityMarker = L.marker([entityLat, entityLng], {
       icon: L.divIcon({
         className: 'map-marker map-marker--main',
@@ -1045,7 +1052,9 @@ document.addEventListener('DOMContentLoaded', function () {
       markerIndex++;
       bounds.push([p.latitude, p.longitude]);
     });
-    if (bounds.length && !isContinent) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+    // Conserver le cadrage de la destination et son zoom par niveau ; les
+    // points précis ne doivent pas déplacer la carte hors de la destination.
+    if (bounds.length && !isContinent && !entityHasCoordinates) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
     rebuildCategoryFilters(categories, data);
   }
 
