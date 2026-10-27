@@ -684,7 +684,10 @@ class TravelDestinationController extends Controller
      */
     protected function appliquerEmpriseOuDestinationPrecise($query, array $bornes, float $marge, string $type, $destinationId): void
     {
-        $jeton = MapPoint::jetonDestination($type, $destinationId);
+        // Le modèle public du site n'expose pas le helper présent dans le
+        // module admin. Reprendre ici la même normalisation d'alias.
+        $niveau = $type === 'city' ? 'ville' : $type;
+        $jeton = $niveau . ':' . (int) $destinationId;
 
         $query->where(function ($scope) use ($bornes, $marge, $jeton) {
             $scope->where(function ($coords) use ($bornes, $marge) {

@@ -60,8 +60,10 @@
         // Caractères qui fermeraient url("…") ou l'attribute style.
         $landingMapBg = str_replace(['"', "'", '(', ')', ' ', '<', '>'], ['%22', '%27', '%28', '%29', '%20', '%3C', '%3E'], $landingMapBg);
         $landingMapVoile = max(0, min(90, (int) ($landingMapCfg['bg_overlay'] ?? 55))) / 100;
-        $landingMapCadrage = in_array($landingMapCfg['bg_position'] ?? 'center', ['top', 'center', 'bottom'], true)
-            ? $landingMapCfg['bg_position'] : 'center';
+        $landingMapCadrage = $landingMapCfg['bg_position'] ?? 'center';
+        if (! in_array($landingMapCadrage, ['top', 'center', 'bottom'], true)) {
+            $landingMapCadrage = 'center';
+        }
         $landingMapBgStyle = "background-image:linear-gradient(rgba(0,0,0,{$landingMapVoile}),rgba(0,0,0,{$landingMapVoile})),url(\"{$landingMapBg}\");"
             . "background-size:cover;background-position:center {$landingMapCadrage};background-repeat:no-repeat;";
     }
