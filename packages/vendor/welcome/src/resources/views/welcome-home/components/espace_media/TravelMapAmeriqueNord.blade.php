@@ -274,6 +274,24 @@ function taNaInitMap() {
     }).addTo(map);
     map.whenReady(function () { map.invalidateSize(); });
 
+    // Ouvrir aussi les fiches au survol des points, y compris les marqueurs
+    // reconstruits après un changement de filtre.
+    function taNaOuvrirPopupAuSurvol(marker) {
+        var ouvrir = function () {
+            if (!marker.isPopupOpen()) marker.openPopup();
+        };
+        marker.on('mouseover', ouvrir);
+        function brancherElement() {
+            var element = marker.getElement();
+            if (!element || element.dataset.gxHoverPopup === '1') return;
+            element.dataset.gxHoverPopup = '1';
+            element.addEventListener('mouseenter', ouvrir);
+            element.addEventListener('pointerenter', ouvrir);
+        }
+        marker.on('add', brancherElement);
+        brancherElement();
+    }
+
     if (entityLat) {
         L.marker([entityLat, entityLng], {
             icon: L.divIcon({
@@ -370,6 +388,7 @@ function taNaInitMap() {
             var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
                 .addTo(markersLayer)
                 .bindPopup(buildPopupHtml(p, markerIndex), { maxWidth: 320, className: 'ta-map-popup' });
+            taNaOuvrirPopupAuSurvol(marker);
             marker._pointIndex = markerIndex;
             markerIndex++;
             bounds.push([p.latitude, p.longitude]);
@@ -392,6 +411,7 @@ function taNaInitMap() {
                 })
             }).addTo(markersLayer);
             marker.bindPopup('<strong>' + ce.name + '</strong><br><a href="/travel-destination/' + (childType || 'country') + '/' + ce.slug + '" style="color:#F5A623">Voir les détails</a>', { className: 'ta-map-popup' });
+            taNaOuvrirPopupAuSurvol(marker);
             bounds.push([ce.latitude, ce.longitude]);
         });
         if (bounds.length && !isContinent) map.fitBounds(bounds, { padding: [40, 40], maxZoom: 5 });
@@ -438,6 +458,7 @@ function taNaInitMap() {
                         var marker = L.marker([p.latitude, p.longitude], { icon: getMarkerIcon(p.category, p.is_featured), zIndexOffset: p.is_featured ? 1000 : 0 })
                             .addTo(markersLayer)
                             .bindPopup(buildPopupHtml(p, idx), { maxWidth: 320, className: 'ta-map-popup' });
+                        taNaOuvrirPopupAuSurvol(marker);
                         marker._pointIndex = idx;
                     }
                 });
