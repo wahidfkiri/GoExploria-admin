@@ -46,6 +46,26 @@
     };
     $landingMapBannerTitleColor = $landingMapOnDark($landingMapTitleColor, '#ffffff');
     $landingMapBannerSubtitleColor = $landingMapOnDark($landingMapSubtitleColor, 'rgba(255,255,255,.78)');
+    // Image de fond du bandeau (admin → Géo Vidéos maps → configuration de la
+    // section). Stockée par l'ADMIN : URL absolue vers son domaine ; un chemin
+    // relatif (ancienne écriture) est rattaché au storage de l'admin, comme
+    // les médias des points ci-dessous. Voile sombre réglable : le titre du
+    // bandeau est clair, il doit rester lisible sur une photo claire.
+    $landingMapBgStyle = '';
+    $landingMapBg = trim((string) ($landingMapCfg['bg_image'] ?? ''));
+    if ($landingMapBg !== '') {
+        if (! preg_match('#^(https?:)?//#i', $landingMapBg)) {
+            $landingMapBg = rtrim((string) config('ads.admin_url', ''), '/') . '/storage/' . ltrim(preg_replace('#^/?storage/#', '', $landingMapBg), '/');
+        }
+        // Caractères qui fermeraient url("…") ou l'attribute style.
+        $landingMapBg = str_replace(['"', "'", '(', ')', ' ', '<', '>'], ['%22', '%27', '%28', '%29', '%20', '%3C', '%3E'], $landingMapBg);
+        $landingMapVoile = max(0, min(90, (int) ($landingMapCfg['bg_overlay'] ?? 55))) / 100;
+        $landingMapCadrage = in_array($landingMapCfg['bg_position'] ?? 'center', ['top', 'center', 'bottom'], true)
+            ? $landingMapCfg['bg_position'] : 'center';
+        $landingMapBgStyle = "background-image:linear-gradient(rgba(0,0,0,{$landingMapVoile}),rgba(0,0,0,{$landingMapVoile})),url(\"{$landingMapBg}\");"
+            . "background-size:cover;background-position:center {$landingMapCadrage};background-repeat:no-repeat;";
+    }
+
     // Le titre configuré côté admin (config carte) est prioritaire — corrige le
     // cas où seul le sous-titre s'affichait (titre issu d'une autre clé/vide).
     if (trim((string) ($landingMapCfg['title'] ?? '')) !== '') {
@@ -455,6 +475,11 @@
             .map-banner{position:relative;isolation:isolate;margin:-64px -24px 40px;padding:clamp(40px,5vw,60px) 24px clamp(32px,4vw,48px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;background:radial-gradient(110% 80% at 50% 0%,rgba(245,166,35,.2) 0%,rgba(245,166,35,0) 60%),linear-gradient(180deg,#0c0c0e 0%,#000 100%);border-bottom:1px solid rgba(255,255,255,.08)}
             .map-banner:before{content:'';position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(255,255,255,.16) 1px,transparent 1.5px);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse 55% 65% at 50% 50%,transparent 35%,#000 100%);mask-image:radial-gradient(ellipse 55% 65% at 50% 50%,transparent 35%,#000 100%);opacity:.5}
             .map-banner__inner{width:min(920px,100%);display:flex;flex-direction:column;align-items:center}
+            /* Image de fond choisie dans l'admin : elle remplace le dégradé
+               (posée en style en ligne) ; la trame de points s'efface presque
+               pour ne pas brouiller la photo. */
+            .map-banner.has-bg:before{opacity:.12}
+            .map-banner.has-bg .section-title,.map-banner.has-bg .section-subtitle{text-shadow:0 2px 14px rgba(0,0,0,.45)}
             .map-banner__logo{display:inline-flex;align-items:center;justify-content:center;max-width:100%;margin-bottom:18px;padding:10px 20px;background:#fff;border-radius:18px;box-shadow:0 14px 36px rgba(0,0,0,.55)}
             /* Le logo arrive avec height:96px en ligne (config admin) : on le plafonne ici. */
             .map-banner__logo img{max-width:100%;max-height:72px;width:auto}
@@ -730,7 +755,8 @@
 
     <section class="map-section section{{ $landingMapIsInline ? ' is-inline' : '' }}{{ $landingMapVariant === 'gabarit' ? ' is-gabarit' : '' }}" id="map" aria-labelledby="map-heading">
         @unless($landingMapIsInline)
-            <header class="section-header map-banner reveal-up">
+            <header class="section-header map-banner reveal-up{{ $landingMapBgStyle !== '' ? ' has-bg' : '' }}"
+                    @if($landingMapBgStyle !== '') style="{{ $landingMapBgStyle }}" @endif>
                 <div class="map-banner__inner">
                     @if($landingMapLogoHtml !== '')
                         <div class="section-logo map-banner__logo">{!! $landingMapLogoHtml !!}</div>

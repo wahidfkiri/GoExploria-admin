@@ -19,6 +19,10 @@ class MapSectionConfig
     public const SIZE_MIN = 32;
     public const SIZE_MAX = 320;
 
+    /** Image de fond du bandeau — même règle que la copie de l'admin. */
+    public const BG_POSITIONS = ['top', 'center', 'bottom'];
+    public const OVERLAY_MAX = 90;
+
     public static function defaults(): array
     {
         return [
@@ -30,6 +34,9 @@ class MapSectionConfig
             'logo_path'      => '',
             'logo_position'  => 'left',
             'logo_size'      => 96,
+            'bg_image'       => '',
+            'bg_overlay'     => 55,
+            'bg_position'    => 'center',
         ];
     }
 
@@ -104,6 +111,13 @@ class MapSectionConfig
         $size = (int) ($raw['logo_size'] ?? $defaults['logo_size']);
         $size = max(self::SIZE_MIN, min(self::SIZE_MAX, $size));
 
+        $bgPosition = strtolower(trim((string) ($raw['bg_position'] ?? $defaults['bg_position'])));
+        if (! in_array($bgPosition, self::BG_POSITIONS, true)) {
+            $bgPosition = $defaults['bg_position'];
+        }
+
+        $overlay = max(0, min(self::OVERLAY_MAX, (int) ($raw['bg_overlay'] ?? $defaults['bg_overlay'])));
+
         return [
             'title'          => $cut($raw['title'] ?? null, 191, $defaults['title']),
             'subtitle'       => $cut($raw['subtitle'] ?? null, 255, ''),
@@ -113,6 +127,9 @@ class MapSectionConfig
             'logo_path'      => $cut($raw['logo_path'] ?? null, 500, ''),
             'logo_position'  => $position,
             'logo_size'      => $size,
+            'bg_image'       => $cut($raw['bg_image'] ?? null, 500, ''),
+            'bg_overlay'     => $overlay,
+            'bg_position'    => $bgPosition,
         ];
     }
 }

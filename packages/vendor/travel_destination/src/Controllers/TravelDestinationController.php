@@ -141,8 +141,7 @@ class TravelDestinationController extends Controller
                         'quartier' => 0.08,
                         default => 0.3,
                     };
-                    $q->whereBetween('latitude', [$bornes['minLat'] - $padding, $bornes['maxLat'] + $padding])
-                      ->whereBetween('longitude', [$bornes['minLng'] - $padding, $bornes['maxLng'] + $padding]);
+                    $this->appliquerEmpriseOuDestinationPrecise($q, $bornes, $padding, $normalizedType, $entity->id);
                 } else {
                     $childrenWithLat = $childEntities ? $childEntities->whereNotNull('latitude') : collect();
                     if ($childrenWithLat->count() > 0) {
@@ -158,11 +157,12 @@ class TravelDestinationController extends Controller
                             'region' => 0.5,
                             default => 0.3,
                         };
-                        $q->whereBetween('latitude', [$childrenWithLat->min('latitude') - $padding, $childrenWithLat->max('latitude') + $padding])
-                          ->whereBetween('longitude', [$childrenWithLat->min('longitude') - $padding, $childrenWithLat->max('longitude') + $padding]);
+                        $this->appliquerEmpriseOuDestinationPrecise($q, $destinationMapBounds, $padding, $normalizedType, $entity->id);
                     } elseif ($entity->latitude && $entity->longitude) {
-                        $q->whereBetween('latitude', [$entity->latitude - $radius, $entity->latitude + $radius])
-                          ->whereBetween('longitude', [$entity->longitude - $radius, $entity->longitude + $radius]);
+                        $this->appliquerEmpriseOuDestinationPrecise($q, [
+                            'minLat' => (float) $entity->latitude, 'maxLat' => (float) $entity->latitude,
+                            'minLng' => (float) $entity->longitude, 'maxLng' => (float) $entity->longitude,
+                        ], $radius, $normalizedType, $entity->id);
                     }
                 }
             }
@@ -597,8 +597,7 @@ class TravelDestinationController extends Controller
                 'quartier' => 0.08,
                 default => 0.3,
             };
-            $query->whereBetween('latitude', [$bornes['minLat'] - $padding, $bornes['maxLat'] + $padding])
-                  ->whereBetween('longitude', [$bornes['minLng'] - $padding, $bornes['maxLng'] + $padding]);
+            $this->appliquerEmpriseOuDestinationPrecise($query, $bornes, $padding, $targetType, $target->id);
         } elseif (! $vueMondiale) {
             // Try child entities first for accurate bounds (works even if entity lacks lat/lng)
             $childEntities = $this->getChildEntities($targetType, $target);
@@ -618,12 +617,16 @@ class TravelDestinationController extends Controller
                     'region' => 0.5,
                     default => 0.3,
                 };
-                $query->whereBetween('latitude', [$childrenWithLat->min('latitude') - $padding, $childrenWithLat->max('latitude') + $padding])
-                      ->whereBetween('longitude', [$childrenWithLat->min('longitude') - $padding, $childrenWithLat->max('longitude') + $padding]);
+                $this->appliquerEmpriseOuDestinationPrecise($query, [
+                    'minLat' => (float) $childrenWithLat->min('latitude'), 'maxLat' => (float) $childrenWithLat->max('latitude'),
+                    'minLng' => (float) $childrenWithLat->min('longitude'), 'maxLng' => (float) $childrenWithLat->max('longitude'),
+                ], $padding, $targetType, $target->id);
             } elseif ($target->latitude && $target->longitude) {
                 // Fallback to fixed radius around entity center
-                $query->whereBetween('latitude', [$target->latitude - $radius, $target->latitude + $radius])
-                      ->whereBetween('longitude', [$target->longitude - $radius, $target->longitude + $radius]);
+                $this->appliquerEmpriseOuDestinationPrecise($query, [
+                    'minLat' => (float) $target->latitude, 'maxLat' => (float) $target->latitude,
+                    'minLng' => (float) $target->longitude, 'maxLng' => (float) $target->longitude,
+                ], $radius, $targetType, $target->id);
             }
         }
 
@@ -673,6 +676,22 @@ class TravelDestinationController extends Controller
             'bounds' => $mapBounds,
             'entity' => ['id' => $entity->id, 'name' => $entity->name, 'type' => $normalizedType, 'latitude' => (float) ($entity->latitude ?? 0), 'longitude' => (float) ($entity->longitude ?? 0)],
         ]);
+    }
+
+    /**
+     * Les points explicitement affectés à une destination précise restent
+     * visibles même si l'emprise approximative de ses coordonnées les exclut.
+     */
+    protected function appliquerEmpriseOuDestinationPrecise($query, array $bornes, float $marge, string $type, $destinationId): void
+    {
+        $jeton = MapPoint::jetonDestination($type, $destinationId);
+
+        $query->where(function ($scope) use ($bornes, $marge, $jeton) {
+            $scope->where(function ($coords) use ($bornes, $marge) {
+                $coords->whereBetween('latitude', [$bornes['minLat'] - $marge, $bornes['maxLat'] + $marge])
+                    ->whereBetween('longitude', [$bornes['minLng'] - $marge, $bornes['maxLng'] + $marge]);
+            })->orWhereJsonContains('display_locations', $jeton);
+        });
     }
 
     protected function loadEntity($type, $slug)
