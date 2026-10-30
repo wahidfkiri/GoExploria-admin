@@ -233,7 +233,12 @@ class TravelDestinationController extends Controller
             ? 'travel-destination::landing.classic'
             : 'travel-destination::landing.index';
 
+        // Widget météo (onglet « Météo » de l'espace destination dans l'admin) :
+        // lu dans destination_meteo, null s'il est désactivé ou périmé.
+        $meteo = \Vendor\TravelDestination\Support\MeteoDestination::pour($normalizedType, (int) $entity->id);
+
         return view($view, compact(
+            'meteo',
             'entity',
             'normalizedType',
             'slug',

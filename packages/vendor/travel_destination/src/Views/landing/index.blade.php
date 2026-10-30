@@ -193,6 +193,10 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
   <link rel="stylesheet" href="{{ asset('vendor/travel-destination/css/destination-atlas.css') }}?v={{ @filemtime($atlasCss) ?: '1' }}">
+  @if(! empty($meteo))
+    {{-- Widget météo (activé dans l'onglet Météo de l'espace destination). --}}
+    <link rel="stylesheet" href="{{ asset('vendor/travel-destination/css/meteo-destination.css') }}?v={{ @filemtime(public_path('vendor/travel-destination/css/meteo-destination.css')) ?: '1' }}">
+  @endif
 
   @if($lat !== null && $lng !== null)
     <script type="application/ld+json">
@@ -358,6 +362,11 @@
 </section>
 @endif
 
+{{-- MÉTÉO — position « sous la bannière » (voir l'onglet Météo de l'admin). --}}
+@if(! empty($meteo) && $meteo['position'] === 'banniere')
+  @include('travel-destination::landing.partials.meteo-destination')
+@endif
+
 {{-- ==========================================================================
      CARTE — TOUJOURS EN PREMIÈRE POSITION
      ========================================================================== --}}
@@ -365,6 +374,10 @@
 
 {{-- Carrousel d'annonces (cards) sous la carte --}}
 @include('components.ads-cards', ['adContext' => $normalizedType])
+
+@if(! empty($meteo) && $meteo['position'] === 'apres_carte')
+  @include('travel-destination::landing.partials.meteo-destination')
+@endif
 
 {{-- ==========================================================================
      PAGES COMPOSÉES DANS L'ÉDITEUR VISUEL (admin → destination → Éditeur)
@@ -790,6 +803,10 @@
 {{-- ==========================================================================
      CONTACT / APPEL À L'ACTION FINAL
      ========================================================================== --}}
+@if(! empty($meteo) && $meteo['position'] === 'fin')
+  @include('travel-destination::landing.partials.meteo-destination')
+@endif
+
 <section class="final-cta destination-final-cta" id="contact">
   <div class="hero-media">
     <img src="{{ $heroBg }}" alt="{{ $entity->name }}" loading="lazy">

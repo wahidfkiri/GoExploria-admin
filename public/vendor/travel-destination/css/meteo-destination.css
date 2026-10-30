@@ -1,0 +1,70 @@
+/* Widget météo des pages de destination (Open-Meteo).
+ *
+ * Fichier IDENTIQUE dans les deux projets :
+ *   admin : public/vendor/destination/meteo-destination.css   (aperçu de l'onglet Météo)
+ *   front : public/vendor/travel-destination/css/meteo-destination.css (page du site)
+ * Modifier l'un, recopier l'autre. Tout est porté par .gx-meteo : aucune
+ * règle ne déborde sur la page. */
+.gx-meteo {
+    --gxm-encre: #12212e;
+    --gxm-texte: #3d4b57;
+    --gxm-doux: #6b7a86;
+    --gxm-fond: #f6f1e7;
+    --gxm-carte: #fffdf8;
+    --gxm-trait: rgba(18, 33, 46, .10);
+    --gxm-riviere: #1f5f8b;
+    --gxm-ocre: #c9822b;
+    padding: clamp(36px, 5vw, 64px) 20px;
+    background: var(--gxm-fond);
+    color: var(--gxm-texte);
+    font-family: "Work Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.gx-meteo *, .gx-meteo *::before, .gx-meteo *::after { box-sizing: border-box; }
+.gx-meteo__inner { max-width: 1180px; margin: 0 auto; }
+
+.gx-meteo__tete { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+.gx-meteo__eyebrow {
+    display: inline-flex; align-items: center; gap: 8px; font-size: .72rem; font-weight: 700;
+    letter-spacing: .18em; text-transform: uppercase; color: var(--gxm-ocre); margin-bottom: 6px;
+}
+.gx-meteo__titre {
+    margin: 0; font-family: "Fraunces", Georgia, serif; font-weight: 600; color: var(--gxm-encre);
+    font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1.1;
+}
+.gx-meteo__maj { margin: 0; font-size: .82rem; color: var(--gxm-doux); }
+
+.gx-meteo__grille { display: grid; grid-template-columns: minmax(260px, 340px) 1fr; gap: 18px; align-items: stretch; }
+@media (max-width: 860px) { .gx-meteo__grille { grid-template-columns: 1fr; } }
+
+/* Conditions actuelles */
+.gx-meteo__actuel {
+    background: linear-gradient(160deg, var(--gxm-riviere), #143f5e); color: #fff;
+    border-radius: 20px; padding: 22px 22px 18px; display: flex; flex-direction: column; gap: 14px;
+    box-shadow: 0 18px 40px rgba(20, 63, 94, .22);
+}
+.gx-meteo__actuel-haut { display: flex; align-items: center; gap: 16px; }
+.gx-meteo__actuel-icone { font-size: 3.2rem; line-height: 1; color: #ffd27a; width: 64px; text-align: center; }
+.gx-meteo__temp { font-family: "Fraunces", Georgia, serif; font-size: 3.4rem; font-weight: 600; line-height: 1; }
+.gx-meteo__libelle { font-size: 1rem; font-weight: 600; margin-top: 4px; }
+.gx-meteo__ressenti { font-size: .85rem; opacity: .8; }
+.gx-meteo__details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; margin: 0; padding: 12px 0 0; border-top: 1px solid rgba(255,255,255,.18); list-style: none; }
+.gx-meteo__details li { display: flex; align-items: center; gap: 8px; font-size: .85rem; }
+.gx-meteo__details i { width: 16px; text-align: center; opacity: .85; }
+
+/* Prévisions */
+.gx-meteo__jours { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.gx-meteo__jour {
+    background: var(--gxm-carte); border: 1px solid var(--gxm-trait); border-radius: 16px; padding: 16px 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
+}
+.gx-meteo__jour.is-aujourdhui { border-color: rgba(201, 130, 43, .55); box-shadow: 0 0 0 3px rgba(201, 130, 43, .12); }
+.gx-meteo__jour-nom { font-weight: 700; color: var(--gxm-encre); font-size: .9rem; text-transform: capitalize; }
+.gx-meteo__jour-date { font-size: .75rem; color: var(--gxm-doux); margin-top: -4px; }
+.gx-meteo__jour-icone { font-size: 1.8rem; color: var(--gxm-riviere); margin: 4px 0; }
+.gx-meteo__jour-libelle { font-size: .75rem; color: var(--gxm-doux); min-height: 2.2em; line-height: 1.15; }
+.gx-meteo__jour-temp { font-weight: 700; color: var(--gxm-encre); }
+.gx-meteo__jour-temp span { font-weight: 500; color: var(--gxm-doux); margin-left: 4px; }
+.gx-meteo__jour-pluie { font-size: .78rem; color: var(--gxm-riviere); }
+
+.gx-meteo__source { margin: 16px 0 0; font-size: .75rem; color: var(--gxm-doux); }
+.gx-meteo__source a { color: inherit; text-decoration: underline; }
