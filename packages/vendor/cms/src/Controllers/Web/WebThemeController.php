@@ -312,6 +312,8 @@ class WebThemeController extends Controller
         // Chiffres de la boutique (`data-gx-stat`) : produits, rayons, commandes, clients.
         $content = \Vendor\Cms\Support\TemplateStats::hydrate($content, $etablissementId);
         $content = \Vendor\Cms\Support\TemplateActivities::hydrate($content, $etablissementId);
+        // Forfaits de l'onglet Immobilier (`data-gx-forfaits`).
+        $content = \Vendor\Cms\Support\TemplateForfaits::hydrate($content, $etablissementId);
         // Lieux de la carte GoExploria autour de l'établissement (`data-gx-nearby`).
         $content = \Vendor\Cms\Support\TemplateNearby::hydrate($content, $etablissementId);
 
@@ -1382,6 +1384,11 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $content = \Vendor\Cms\Support\TemplateStats::hydrate($content, $etablissementId);
 
         $content = \Vendor\Cms\Support\TemplateActivities::hydrate($content, $etablissementId);
+
+        // Forfaits de l'onglet Immobilier (`data-gx-forfaits`). Grille SERVEUR :
+        // elle marche dans tout gabarit, contrairement à `data-im-grid` que
+        // seul le script du gabarit sait remplir.
+        $content = \Vendor\Cms\Support\TemplateForfaits::hydrate($content, $etablissementId);
 
         // Lieux de la carte GoExploria autour de l'établissement (`data-gx-nearby`).
         return \Vendor\Cms\Support\TemplateNearby::hydrate($content, $etablissementId);

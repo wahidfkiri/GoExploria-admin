@@ -519,6 +519,46 @@
 
     // Démarrage + pouls régulier léger pour les contenus qui grandissent
     // sans déclencher d'observer (widgets tiers, polices web…).
+    /* ── LA MOLETTE — le défilement appartient au parent ──────────────────
+       ⚠ L'iframe est haute comme son contenu et porte `scrolling="no"` : son
+       document ne défile pas. Une molette qui s'y arrête ne remonte PAS
+       jusqu'à la page parente — mesuré en direct sur /company/9659 à 1100 ×
+       760 : `window.scrollY` du parent reste à 0, où que soit le curseur.
+       Le symptôme lu par le client est « je ne peux pas descendre, ça reste
+       sur le héros », parce que c'est là qu'on essaie en premier ; mais la
+       page entière était concernée.
+
+       On transmet donc le delta au parent — sauf si un conteneur interne peut
+       réellement l'absorber (une liste qui défile, une fiche ouverte) : dans
+       ce cas on ne touche à rien, c'est à lui de défiler.                   */
+    function peutAbsorber(depart, deltaY) {
+        for (var n = depart; n && n !== document.body && n !== document.documentElement; n = n.parentElement) {
+            if (n.nodeType !== 1) { continue; }
+            var style;
+            try { style = window.getComputedStyle(n); } catch (err) { continue; }
+            if (!/(auto|scroll|overlay)/.test(style.overflowY)) { continue; }
+            var marge = n.scrollHeight - n.clientHeight;
+            if (marge <= 1) { continue; }                 // scrollable en théorie, pas en pratique
+            if (deltaY > 0 && n.scrollTop < marge - 1) { return true; }
+            if (deltaY < 0 && n.scrollTop > 1) { return true; }
+        }
+        return false;
+    }
+
+    document.addEventListener('wheel', function (e) {
+        if (e.defaultPrevented || e.ctrlKey) { return; }   // ctrl+molette = zoom
+        var dy = e.deltaY;
+        if (!dy) { return; }
+        // deltaMode 1 = lignes, 2 = pages : on ramène en pixels.
+        if (e.deltaMode === 1) { dy *= 16; }
+        else if (e.deltaMode === 2) { dy *= (window.innerHeight || 600); }
+        if (peutAbsorber(e.target, dy)) { return; }
+        e.preventDefault();
+        try {
+            window.parent.postMessage({ channel: CHANNEL, type: 'wheel', deltaY: dy }, parentOrigin);
+        } catch (err) { /* hors shell : rien à faire de plus */ }
+    }, { passive: false });
+
     function boot() {
         watchImages();
         postHeight(true);

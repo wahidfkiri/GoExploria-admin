@@ -277,6 +277,12 @@
             if (data.type === 'scroll-to') {
                 allerAOffsetDansCadre(data.offset, data.smooth !== false);
             }
+            // La molette passée par l'enfant : son document ne défile pas, et
+            // l'événement ne remonte pas tout seul jusqu'ici.
+            if (data.type === 'wheel') {
+                var dy = Number(data.deltaY);
+                if (isFinite(dy) && dy) { window.scrollBy(0, dy); }
+            }
             if (data.type === 'request-viewport') envoyerBandeVisible();
             // Une modale s'ouvre dans l'iframe : elle doit suivre le
             // défilement de CETTE page, seule à en avoir un.
