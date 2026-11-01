@@ -226,6 +226,21 @@ class TemplateForfaits extends TemplateGrid
             return $min . ' nuit' . ($min > 1 ? 's' : '');
         }
 
+        // ⚠ Un forfait à la journée n'a AUCUNE nuitée : le module ne sait pas
+        // l'exprimer, et la ligne « Durée » disparaîtrait alors que c'est
+        // l'information que le visiteur cherche en premier. On la lit dans le
+        // titre, où elle est de toute façon écrite — « 2 h de motoneige »,
+        // « 8 heures », « 2 jours ».
+        $titre = (string) $bien->title;
+
+        if (preg_match('/(\d+)\s*(?:h\b|heures?\b)/iu', $titre, $m)) {
+            return $m[1] . ' heure' . ((int) $m[1] > 1 ? 's' : '');
+        }
+
+        if (preg_match('/(\d+)\s*jours?\b/iu', $titre, $m)) {
+            return $m[1] . ' jour' . ((int) $m[1] > 1 ? 's' : '');
+        }
+
         return '';
     }
 
