@@ -1245,7 +1245,7 @@ class PublicPageController extends Controller
             ));
         }
 
-        return [
+        return array_merge([
             'title' => $title,
             'description' => $description,
             'keywords' => $keywords,
@@ -1253,7 +1253,33 @@ class PublicPageController extends Controller
             'image' => $image,
             'site_name' => $siteName,
             'is_home' => (bool) ($page->is_home ?? false) || (($page->slug ?? null) === 'home'),
-            'robots' => $this->previewMode ? 'noindex, nofollow' : 'index, follow',
+        ], $this->seoOptionsPage($meta, $title, $description, $image, $this->previewMode));
+    }
+
+    /**
+     * Options du bloc SEO de l'admin (« Modifier la page ») : image et textes de
+     * partage, indexation, type schema.org. Sans réglage, mêmes valeurs qu'avant
+     * (logo, titre, description, « index, follow »).
+     */
+    protected function seoOptionsPage(array $meta, string $title, string $description, string $image, bool $isPreview): array
+    {
+        $ogImage = trim((string) ($meta['og_image'] ?? ''));
+        if ($ogImage !== '' && ! preg_match('#^https?://#i', $ogImage)) {
+            $ogImage = url($ogImage);
+        }
+
+        $index = ($meta['robots_index'] ?? 'index') === 'noindex' ? 'noindex' : 'index';
+        $follow = ($meta['robots_follow'] ?? 'follow') === 'nofollow' ? 'nofollow' : 'follow';
+
+        $types = ['WebPage', 'AboutPage', 'ContactPage', 'CollectionPage', 'FAQPage', 'ItemPage'];
+        $schema = in_array($meta['schema_type'] ?? '', $types, true) ? $meta['schema_type'] : 'WebPage';
+
+        return [
+            'image' => $ogImage !== '' ? $ogImage : $image,
+            'og_title' => trim((string) ($meta['og_title'] ?? '')) ?: $title,
+            'og_description' => trim((string) ($meta['og_description'] ?? '')) ?: $description,
+            'robots' => $isPreview ? 'noindex, nofollow' : $index . ', ' . $follow,
+            'schema_type' => $schema,
         ];
     }
 
@@ -1270,6 +1296,8 @@ class PublicPageController extends Controller
         $image = e((string) ($seoContext['image'] ?? ''));
         $siteName = e((string) ($seoContext['site_name'] ?? 'GoExploria'));
         $robots = e((string) ($seoContext['robots'] ?? 'index, follow'));
+        $ogTitle = e((string) ($seoContext['og_title'] ?? ($seoContext['title'] ?? 'GoExploria')));
+        $ogDescription = e((string) ($seoContext['og_description'] ?? ($seoContext['description'] ?? '')));
 
         $html = preg_replace('/\s*<!--\s*CMS SEO START\s*-->.*?<!--\s*CMS SEO END\s*-->\s*/is', "\n", $html);
         $html = preg_replace('/<link[^>]*rel=["\']canonical["\'][^>]*>/i', '', $html);
@@ -1285,27 +1313,51 @@ class PublicPageController extends Controller
         $seoBlock[] = '<meta name="robots" content="' . $robots . '">';
         $seoBlock[] = '<meta property="og:type" content="website">';
         $seoBlock[] = '<meta property="og:site_name" content="' . $siteName . '">';
-        $seoBlock[] = '<meta property="og:title" content="' . $title . '">';
-        $seoBlock[] = '<meta property="og:description" content="' . $description . '">';
+        $seoBlock[] = '<meta property="og:title" content="' . $ogTitle . '">';
+        $seoBlock[] = '<meta property="og:description" content="' . $ogDescription . '">';
         $seoBlock[] = '<meta property="og:url" content="' . $canonical . '">';
         if ($image !== '') {
             $seoBlock[] = '<meta property="og:image" content="' . $image . '">';
         }
         $seoBlock[] = '<meta name="twitter:card" content="' . ($image !== '' ? 'summary_large_image' : 'summary') . '">';
-        $seoBlock[] = '<meta name="twitter:title" content="' . $title . '">';
-        $seoBlock[] = '<meta name="twitter:description" content="' . $description . '">';
+        $seoBlock[] = '<meta name="twitter:title" content="' . $ogTitle . '">';
+        $seoBlock[] = '<meta name="twitter:description" content="' . $ogDescription . '">';
         if ($image !== '') {
             $seoBlock[] = '<meta name="twitter:image" content="' . $image . '">';
         }
+        $seoBlock[] = $this->seoJsonLd($seoContext);
         $seoBlock[] = '<!-- CMS SEO END -->';
 
         $seoHtml = implode("\n", $seoBlock) . "\n";
 
+        // Rappel : remplacement par fonction, la chaîne pouvant contenir « $1 »
+        // ou des antislashs (JSON-LD, titres) que preg_replace interpréterait.
         if (preg_match('/<\/head>/i', $html)) {
-            return preg_replace('/<\/head>/i', $seoHtml . '</head>', $html, 1);
+            return preg_replace_callback('/<\/head>/i', fn () => $seoHtml . '</head>', $html, 1);
         }
 
         return $html;
+    }
+
+    /** Données structurées schema.org de la page (type choisi dans l'admin). */
+    protected function seoJsonLd(array $seoContext): string
+    {
+        $donnees = array_filter([
+            '@context' => 'https://schema.org',
+            '@type' => $seoContext['schema_type'] ?? 'WebPage',
+            'name' => (string) ($seoContext['title'] ?? ''),
+            'description' => (string) ($seoContext['description'] ?? ''),
+            'url' => (string) ($seoContext['canonical'] ?? url()->current()),
+            'isPartOf' => ['@type' => 'WebSite', 'name' => (string) ($seoContext['site_name'] ?? '')],
+            'primaryImageOfPage' => ($seoContext['image'] ?? '') !== ''
+                ? ['@type' => 'ImageObject', 'url' => (string) $seoContext['image']]
+                : null,
+        ], fn ($v) => $v !== null && $v !== '');
+
+        // JSON_HEX_TAG : un « </script> » dans un titre ne peut pas fermer la balise.
+        return '<script type="application/ld+json">'
+            . json_encode($donnees, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG)
+            . '</script>';
     }
 
     /**
