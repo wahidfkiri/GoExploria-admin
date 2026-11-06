@@ -1,0 +1,1302 @@
+{
+    "source": "Natural Earth 10m Admin-0 label points, version 5.1.0",
+    "source_url": "https://www.naturalearthdata.com/downloads/10m-cultural-vectors/",
+    "license": "Public domain",
+    "points": {
+        "ABW": {
+            "name": "Aruba",
+            "latitude": 12.516936,
+            "longitude": -69.974191
+        },
+        "AFG": {
+            "name": "Afghanistan",
+            "latitude": 33.836267,
+            "longitude": 66.008448
+        },
+        "AGO": {
+            "name": "Angola",
+            "latitude": -16.645329,
+            "longitude": 11.711588
+        },
+        "AIA": {
+            "name": "Anguilla",
+            "latitude": 18.598049,
+            "longitude": -63.426788
+        },
+        "ALB": {
+            "name": "Albania",
+            "latitude": 40.494149,
+            "longitude": 19.277513
+        },
+        "ALD": {
+            "name": "Aland",
+            "latitude": 60.198542,
+            "longitude": 19.335877
+        },
+        "AND": {
+            "name": "Andorra",
+            "latitude": 42.541327,
+            "longitude": 1.560756
+        },
+        "ARE": {
+            "name": "United Arab Emirates",
+            "latitude": 25.09187,
+            "longitude": 55.146854
+        },
+        "ARG": {
+            "name": "Argentina",
+            "latitude": -54.75367,
+            "longitude": -64.28539
+        },
+        "ARM": {
+            "name": "Armenia",
+            "latitude": 40.288597,
+            "longitude": 44.931731
+        },
+        "ASM": {
+            "name": "American Samoa",
+            "latitude": -14.525279,
+            "longitude": -168.165116
+        },
+        "ATA": {
+            "name": "Antarctica",
+            "latitude": -70.280046,
+            "longitude": 5.655566
+        },
+        "ATC": {
+            "name": "Ashmore and Cartier Is.",
+            "latitude": -12.432578,
+            "longitude": 123.586363
+        },
+        "ATF": {
+            "name": "",
+            "latitude": -21.443566,
+            "longitude": 39.729493
+        },
+        "ATG": {
+            "name": "Antigua",
+            "latitude": 17.074793,
+            "longitude": -61.789603
+        },
+        "AUS": {
+            "name": "Australia",
+            "latitude": -14.581268,
+            "longitude": 125.119395
+        },
+        "AUT": {
+            "name": "Austria",
+            "latitude": 47.585657,
+            "longitude": 14.130673
+        },
+        "AZE": {
+            "name": "Azerbaijan",
+            "latitude": 41.054094,
+            "longitude": 44.995561
+        },
+        "BDI": {
+            "name": "Burundi",
+            "latitude": -3.357425,
+            "longitude": 29.875083
+        },
+        "BEL": {
+            "name": "Brussels",
+            "latitude": 50.836685,
+            "longitude": 4.370397
+        },
+        "BEN": {
+            "name": "Benin",
+            "latitude": 9.641299,
+            "longitude": 2.328741
+        },
+        "BFA": {
+            "name": "Burkina Faso",
+            "latitude": 12.26956,
+            "longitude": -1.755591
+        },
+        "BGD": {
+            "name": "Bangladesh",
+            "latitude": 21.768817,
+            "longitude": 89.094676
+        },
+        "BGR": {
+            "name": "Bulgaria",
+            "latitude": 42.768532,
+            "longitude": 25.217498
+        },
+        "BHR": {
+            "name": "Bahrain",
+            "latitude": 26.049132,
+            "longitude": 50.543901
+        },
+        "BHS": {
+            "name": "Bahamas",
+            "latitude": 26.043072,
+            "longitude": -79.064172
+        },
+        "BIH": {
+            "name": "Fed. of Bos. & Herz.",
+            "latitude": 44.080174,
+            "longitude": 17.50569
+        },
+        "BJN": {
+            "name": "Bajo Nuevo Bank (Petrel Is.)",
+            "latitude": 15.795009,
+            "longitude": -79.987865
+        },
+        "BLM": {
+            "name": "St. Barthelemy",
+            "latitude": 17.905587,
+            "longitude": -62.832629
+        },
+        "BLR": {
+            "name": "Belarus",
+            "latitude": 53.53188,
+            "longitude": 28.033566
+        },
+        "BLZ": {
+            "name": "Belize",
+            "latitude": 18.024792,
+            "longitude": -88.028609
+        },
+        "BMU": {
+            "name": "Bermuda",
+            "latitude": 32.314158,
+            "longitude": -64.84707
+        },
+        "BOL": {
+            "name": "Bolivia",
+            "latitude": -16.706877,
+            "longitude": -64.684754
+        },
+        "BRA": {
+            "name": "Brazil",
+            "latitude": -13.457554,
+            "longitude": -38.96377
+        },
+        "BRB": {
+            "name": "Barbados",
+            "latitude": 13.147695,
+            "longitude": -59.540578
+        },
+        "BRI": {
+            "name": "Brazilian Island",
+            "latitude": -30.187589,
+            "longitude": -57.62316
+        },
+        "BRN": {
+            "name": "Brunei",
+            "latitude": 4.595315,
+            "longitude": 115.166646
+        },
+        "BRT": {
+            "name": "Bir Tawil",
+            "latitude": 21.844659,
+            "longitude": 33.678384
+        },
+        "BTN": {
+            "name": "Bhutan",
+            "latitude": 27.410593,
+            "longitude": 90.403948
+        },
+        "BWA": {
+            "name": "Botswana",
+            "latitude": -22.185772,
+            "longitude": 23.798987
+        },
+        "CAF": {
+            "name": "Central African Rep.",
+            "latitude": 5.806003,
+            "longitude": 17.650775
+        },
+        "CAN": {
+            "name": "Canada",
+            "latitude": 59.0996,
+            "longitude": -80.557613
+        },
+        "CHE": {
+            "name": "Switzerland",
+            "latitude": 46.97259,
+            "longitude": 8.210718
+        },
+        "CHL": {
+            "name": "Chile",
+            "latitude": -38.314633,
+            "longitude": -73.967741
+        },
+        "CHN": {
+            "name": "China",
+            "latitude": 24.558051,
+            "longitude": 118.319097
+        },
+        "CIV": {
+            "name": "Ivory Coast",
+            "latitude": 5.124955,
+            "longitude": -3.207204
+        },
+        "CLP": {
+            "name": "Clipperton I.",
+            "latitude": 10.297396,
+            "longitude": -109.221271
+        },
+        "CMR": {
+            "name": "Cameroon",
+            "latitude": 5.693058,
+            "longitude": 12.736983
+        },
+        "CNM": {
+            "name": "Cyprus U.N. Buffer Zone",
+            "latitude": 35.171754,
+            "longitude": 33.203508
+        },
+        "COD": {
+            "name": "Congo (Kinshasa)",
+            "latitude": -5.896979,
+            "longitude": 12.840119
+        },
+        "COG": {
+            "name": "Congo (Brazzaville)",
+            "latitude": -3.467485,
+            "longitude": 13.005825
+        },
+        "COK": {
+            "name": "Cook Is.",
+            "latitude": -9.025886,
+            "longitude": -157.919405
+        },
+        "COL": {
+            "name": "Colombia",
+            "latitude": 13.577467,
+            "longitude": -80.090113
+        },
+        "COM": {
+            "name": "Comoros",
+            "latitude": -12.314722,
+            "longitude": 43.728375
+        },
+        "CPV": {
+            "name": "Cape Verde",
+            "latitude": 15.221337,
+            "longitude": -23.180382
+        },
+        "CRI": {
+            "name": "Costa Rica",
+            "latitude": 10.10336,
+            "longitude": -85.173695
+        },
+        "CSI": {
+            "name": "Coral Sea Is.",
+            "latitude": -16.133571,
+            "longitude": 149.993391
+        },
+        "CUB": {
+            "name": "Cuba",
+            "latitude": 21.682712,
+            "longitude": -81.417226
+        },
+        "CUW": {
+            "name": "Curaçao",
+            "latitude": 12.155969,
+            "longitude": -68.955739
+        },
+        "CYM": {
+            "name": "Cayman Is.",
+            "latitude": 19.681313,
+            "longitude": -80.077397
+        },
+        "CYN": {
+            "name": "N. Cyprus",
+            "latitude": 35.194508,
+            "longitude": 33.651566
+        },
+        "CYP": {
+            "name": "Cyprus",
+            "latitude": 34.980527,
+            "longitude": 33.785565
+        },
+        "CZE": {
+            "name": "Czech Rep.",
+            "latitude": 49.732448,
+            "longitude": 15.314103
+        },
+        "DEU": {
+            "name": "Germany",
+            "latitude": 54.060926,
+            "longitude": 8.675224
+        },
+        "DJI": {
+            "name": "Djibouti",
+            "latitude": 11.722046,
+            "longitude": 43.190424
+        },
+        "DMA": {
+            "name": "Dominica",
+            "latitude": 15.436439,
+            "longitude": -61.356922
+        },
+        "DNK": {
+            "name": "Bornholm",
+            "latitude": 55.13362,
+            "longitude": 14.903145
+        },
+        "DOM": {
+            "name": "Dominican Rep.",
+            "latitude": 18.150733,
+            "longitude": -68.683458
+        },
+        "DZA": {
+            "name": "Algeria",
+            "latitude": 28.158602,
+            "longitude": 2.617785
+        },
+        "ECU": {
+            "name": "Ecuador",
+            "latitude": 1.297002,
+            "longitude": -78.937834
+        },
+        "EGY": {
+            "name": "",
+            "latitude": 27.944489,
+            "longitude": 34.555125
+        },
+        "ERI": {
+            "name": "Eritrea",
+            "latitude": 12.834736,
+            "longitude": 42.94055
+        },
+        "ESB": {
+            "name": "Dhekelia",
+            "latitude": 35.01768,
+            "longitude": 33.792446
+        },
+        "ESP": {
+            "name": "Balearic Is.",
+            "latitude": 39.625945,
+            "longitude": 2.960725
+        },
+        "EST": {
+            "name": "Estonia",
+            "latitude": 58.149537,
+            "longitude": 22.50448
+        },
+        "ETH": {
+            "name": "Ethiopia",
+            "latitude": 9.380194,
+            "longitude": 36.737142
+        },
+        "FIN": {
+            "name": "Finland",
+            "latitude": 65.637151,
+            "longitude": 24.856096
+        },
+        "FJI": {
+            "name": "Fiji",
+            "latitude": -20.660115,
+            "longitude": -178.723011
+        },
+        "FLK": {
+            "name": "",
+            "latitude": -52.918066,
+            "longitude": -59.203007
+        },
+        "FRA": {
+            "name": "Corsica",
+            "latitude": 41.367147,
+            "longitude": 9.259411
+        },
+        "FRO": {
+            "name": "Faroe Is.",
+            "latitude": 62.222407,
+            "longitude": -6.48467
+        },
+        "FSM": {
+            "name": "Micronesia",
+            "latitude": 7.374641,
+            "longitude": 143.857814
+        },
+        "GAB": {
+            "name": "Gabon",
+            "latitude": -0.684187,
+            "longitude": 8.999069
+        },
+        "GBR": {
+            "name": "Scotland",
+            "latitude": 60.292904,
+            "longitude": -1.332238
+        },
+        "GEO": {
+            "name": "Georgia",
+            "latitude": 42.044723,
+            "longitude": 43.340144
+        },
+        "GGY": {
+            "name": "Herm",
+            "latitude": 49.474413,
+            "longitude": -2.450822
+        },
+        "GHA": {
+            "name": "Ghana",
+            "latitude": 7.953953,
+            "longitude": -1.216529
+        },
+        "GIB": {
+            "name": "Gibraltar",
+            "latitude": 36.129902,
+            "longitude": -5.347331
+        },
+        "GIN": {
+            "name": "Guinea",
+            "latitude": 11.031433,
+            "longitude": -11.371776
+        },
+        "GMB": {
+            "name": "Gambia",
+            "latitude": 13.288189,
+            "longitude": -16.076954
+        },
+        "GNB": {
+            "name": "Guinea Bissau",
+            "latitude": 11.832057,
+            "longitude": -16.072308
+        },
+        "GNQ": {
+            "name": "Annobon",
+            "latitude": -1.446412,
+            "longitude": 5.631319
+        },
+        "GRC": {
+            "name": "Greece",
+            "latitude": 36.155418,
+            "longitude": 29.496795
+        },
+        "GRD": {
+            "name": "Grenada",
+            "latitude": 12.514776,
+            "longitude": -61.391052
+        },
+        "GRL": {
+            "name": "Greenland",
+            "latitude": 60.674336,
+            "longitude": -46.092508
+        },
+        "GTM": {
+            "name": "Guatemala",
+            "latitude": 15.007765,
+            "longitude": -91.240086
+        },
+        "GUM": {
+            "name": "Guam",
+            "latitude": 13.354944,
+            "longitude": 144.706157
+        },
+        "GUY": {
+            "name": "Guyana",
+            "latitude": 6.939926,
+            "longitude": -58.406753
+        },
+        "HKG": {
+            "name": "Hong Kong",
+            "latitude": 22.377653,
+            "longitude": 113.87997
+        },
+        "HMD": {
+            "name": "Heard I. and McDonald Is.",
+            "latitude": -53.088804,
+            "longitude": 73.50519
+        },
+        "HND": {
+            "name": "Honduras",
+            "latitude": 15.958972,
+            "longitude": -86.493069
+        },
+        "HRV": {
+            "name": "Croatia",
+            "latitude": 44.510113,
+            "longitude": 14.297723
+        },
+        "HTI": {
+            "name": "Haiti",
+            "latitude": 18.076683,
+            "longitude": -73.642842
+        },
+        "HUN": {
+            "name": "Hungary",
+            "latitude": 47.163244,
+            "longitude": 19.396759
+        },
+        "IDN": {
+            "name": "Indonesia",
+            "latitude": 0.544172,
+            "longitude": 104.228629
+        },
+        "IMN": {
+            "name": "Isle of Man",
+            "latitude": 54.050964,
+            "longitude": -4.81594
+        },
+        "IND": {
+            "name": "India",
+            "latitude": 9.197787,
+            "longitude": 79.072406
+        },
+        "IOA": {
+            "name": "Cocos Is.",
+            "latitude": -12.191897,
+            "longitude": 96.84547
+        },
+        "IOT": {
+            "name": "Diego Garcia NSF",
+            "latitude": -7.261484,
+            "longitude": 72.467174
+        },
+        "IRL": {
+            "name": "Ireland",
+            "latitude": 53.304848,
+            "longitude": -9.859186
+        },
+        "IRN": {
+            "name": "Iran",
+            "latitude": 25.873943,
+            "longitude": 55.03409
+        },
+        "IRQ": {
+            "name": "Iraq",
+            "latitude": 33.039806,
+            "longitude": 43.744974
+        },
+        "ISL": {
+            "name": "Iceland",
+            "latitude": 65.129237,
+            "longitude": -22.560159
+        },
+        "ISR": {
+            "name": "Israel",
+            "latitude": 31.028641,
+            "longitude": 34.657993
+        },
+        "ITA": {
+            "name": "Isole Pelagie",
+            "latitude": 35.862017,
+            "longitude": 12.861599
+        },
+        "JAM": {
+            "name": "Jamaica",
+            "latitude": 18.154782,
+            "longitude": -77.319298
+        },
+        "JEY": {
+            "name": "Jersey",
+            "latitude": 49.230098,
+            "longitude": -2.125142
+        },
+        "JOR": {
+            "name": "Jordan",
+            "latitude": 30.636324,
+            "longitude": 37.120675
+        },
+        "JPN": {
+            "name": "Nanseishoto",
+            "latitude": 28.312097,
+            "longitude": 129.426012
+        },
+        "KAB": {
+            "name": "Baykonur",
+            "latitude": 45.978305,
+            "longitude": 63.384062
+        },
+        "KAS": {
+            "name": "Siachen Glacier",
+            "latitude": 35.391082,
+            "longitude": 77.179953
+        },
+        "KAZ": {
+            "name": "Kazakhstan",
+            "latitude": 46.405959,
+            "longitude": 52.988075
+        },
+        "KEN": {
+            "name": "Kenya",
+            "latitude": -2.102124,
+            "longitude": 41.058695
+        },
+        "KGZ": {
+            "name": "Kyrgyzstan",
+            "latitude": 41.947864,
+            "longitude": 77.499745
+        },
+        "KHM": {
+            "name": "Cambodia",
+            "latitude": 10.594903,
+            "longitude": 103.298595
+        },
+        "KIR": {
+            "name": "Kiribati",
+            "latitude": -9.949177,
+            "longitude": -150.207363
+        },
+        "KNA": {
+            "name": "St. Kitts and Nevis",
+            "latitude": 17.149639,
+            "longitude": -62.580689
+        },
+        "KOR": {
+            "name": "Baengnyeongdo",
+            "latitude": 37.949236,
+            "longitude": 124.646159
+        },
+        "KOS": {
+            "name": "Kosovo",
+            "latitude": 42.572883,
+            "longitude": 20.873743
+        },
+        "KWT": {
+            "name": "Kuwait",
+            "latitude": 30.002272,
+            "longitude": 48.055467
+        },
+        "LAO": {
+            "name": "Laos",
+            "latitude": 20.28535,
+            "longitude": 101.988896
+        },
+        "LBN": {
+            "name": "Lebanon",
+            "latitude": 33.920354,
+            "longitude": 35.879934
+        },
+        "LBR": {
+            "name": "Liberia",
+            "latitude": 6.452236,
+            "longitude": -9.319866
+        },
+        "LBY": {
+            "name": "Libya",
+            "latitude": 28.074587,
+            "longitude": 13.253973
+        },
+        "LCA": {
+            "name": "Saint Lucia",
+            "latitude": 13.902682,
+            "longitude": -60.970313
+        },
+        "LIE": {
+            "name": "Liechtenstein",
+            "latitude": 47.138206,
+            "longitude": 9.5409
+        },
+        "LKA": {
+            "name": "Sri Lanka",
+            "latitude": 9.291295,
+            "longitude": 79.982982
+        },
+        "LSO": {
+            "name": "Lesotho",
+            "latitude": -29.57973,
+            "longitude": 28.228623
+        },
+        "LTU": {
+            "name": "Lithuania",
+            "latitude": 55.360377,
+            "longitude": 21.029185
+        },
+        "LUX": {
+            "name": "Luxembourg",
+            "latitude": 49.766794,
+            "longitude": 6.07179
+        },
+        "LVA": {
+            "name": "Latvia",
+            "latitude": 56.633417,
+            "longitude": 26.405116
+        },
+        "MAC": {
+            "name": "Macau",
+            "latitude": 22.198066,
+            "longitude": 113.537857
+        },
+        "MAF": {
+            "name": "St. Martin",
+            "latitude": 18.07746,
+            "longitude": -63.055239
+        },
+        "MAR": {
+            "name": "Morocco",
+            "latitude": 31.883031,
+            "longitude": -6.324452
+        },
+        "MCO": {
+            "name": "Monaco",
+            "latitude": 43.746141,
+            "longitude": 7.398449
+        },
+        "MDA": {
+            "name": "Moldova",
+            "latitude": 47.195101,
+            "longitude": 28.461397
+        },
+        "MDG": {
+            "name": "Madagascar",
+            "latitude": -19.376899,
+            "longitude": 46.704127
+        },
+        "MDV": {
+            "name": "Maldives",
+            "latitude": 5.403305,
+            "longitude": 73.632495
+        },
+        "MEX": {
+            "name": "Mexico",
+            "latitude": 22.578678,
+            "longitude": -89.773014
+        },
+        "MHL": {
+            "name": "Marshall Is.",
+            "latitude": 14.639961,
+            "longitude": 169.013397
+        },
+        "MKD": {
+            "name": "Macedonia",
+            "latitude": 41.595004,
+            "longitude": 21.683831
+        },
+        "MLI": {
+            "name": "Mali",
+            "latitude": 18.363162,
+            "longitude": 0.110696
+        },
+        "MLT": {
+            "name": "Malta",
+            "latitude": 35.890604,
+            "longitude": 14.441358
+        },
+        "MMR": {
+            "name": "Myanmar",
+            "latitude": 15.729375,
+            "longitude": 95.044636
+        },
+        "MNE": {
+            "name": "Montenegro",
+            "latitude": 42.785816,
+            "longitude": 19.238499
+        },
+        "MNG": {
+            "name": "Mongolia",
+            "latitude": 46.750224,
+            "longitude": 95.778538
+        },
+        "MNP": {
+            "name": "N. Mariana Is.",
+            "latitude": 20.537877,
+            "longitude": 144.917252
+        },
+        "MOZ": {
+            "name": "Mozambique",
+            "latitude": -14.276251,
+            "longitude": 38.189486
+        },
+        "MRT": {
+            "name": "Mauritania",
+            "latitude": 19.92215,
+            "longitude": -16.527808
+        },
+        "MSR": {
+            "name": "Montserrat",
+            "latitude": 16.737531,
+            "longitude": -62.187404
+        },
+        "MUS": {
+            "name": "Mauritius",
+            "latitude": -16.424767,
+            "longitude": 59.614447
+        },
+        "MWI": {
+            "name": "Malawi",
+            "latitude": -12.062276,
+            "longitude": 34.707601
+        },
+        "MYS": {
+            "name": "Malaysia",
+            "latitude": 5.905167,
+            "longitude": 102.757894
+        },
+        "NAM": {
+            "name": "Namibia",
+            "latitude": -22.128721,
+            "longitude": 17.210548
+        },
+        "NCL": {
+            "name": "New Caledonia",
+            "latitude": -19.863766,
+            "longitude": 158.322251
+        },
+        "NER": {
+            "name": "Niger",
+            "latitude": 18.325117,
+            "longitude": 12.015977
+        },
+        "NFK": {
+            "name": "Norfolk Island",
+            "latitude": -29.034979,
+            "longitude": 167.955168
+        },
+        "NGA": {
+            "name": "Nigeria",
+            "latitude": 4.444377,
+            "longitude": 7.235955
+        },
+        "NIC": {
+            "name": "Nicaragua",
+            "latitude": 14.806711,
+            "longitude": -82.693552
+        },
+        "NIU": {
+            "name": "Niue",
+            "latitude": -19.048935,
+            "longitude": -169.869339
+        },
+        "NLD": {
+            "name": "Caribbean Netherlands",
+            "latitude": 17.630516,
+            "longitude": -63.238009
+        },
+        "NOR": {
+            "name": "Svalbard",
+            "latitude": 80.748784,
+            "longitude": 20.639171
+        },
+        "NPL": {
+            "name": "Nepal",
+            "latitude": 28.247922,
+            "longitude": 83.916253
+        },
+        "NRU": {
+            "name": "Nauru",
+            "latitude": -0.520768,
+            "longitude": 166.933134
+        },
+        "NUL": {
+            "name": "Null Island",
+            "latitude": 0,
+            "longitude": -0
+        },
+        "NZL": {
+            "name": "Tokelau",
+            "latitude": -9.161256,
+            "longitude": -171.844165
+        },
+        "OMN": {
+            "name": "Oman",
+            "latitude": 25.306246,
+            "longitude": 56.26853
+        },
+        "PAK": {
+            "name": "Pakistan",
+            "latitude": 24.031173,
+            "longitude": 67.430431
+        },
+        "PAN": {
+            "name": "Panama",
+            "latitude": 8.107805,
+            "longitude": -82.337654
+        },
+        "PCN": {
+            "name": "Pitcairn Is.",
+            "latitude": -24.665319,
+            "longitude": -124.781729
+        },
+        "PER": {
+            "name": "Peru",
+            "latitude": -13.587828,
+            "longitude": -71.851993
+        },
+        "PGA": {
+            "name": "Spratly Is.",
+            "latitude": 10.238593,
+            "longitude": 115.367035
+        },
+        "PHL": {
+            "name": "Philippines",
+            "latitude": 6.436208,
+            "longitude": 120.785252
+        },
+        "PLW": {
+            "name": "Palau",
+            "latitude": 5.302739,
+            "longitude": 132.220297
+        },
+        "PNG": {
+            "name": "Bougainville",
+            "latitude": -4.703778,
+            "longitude": 156.937463
+        },
+        "POL": {
+            "name": "Poland",
+            "latitude": 52.124771,
+            "longitude": 19.394323
+        },
+        "PRI": {
+            "name": "Puerto Rico",
+            "latitude": 18.314642,
+            "longitude": -65.267049
+        },
+        "PRK": {
+            "name": "North Korea",
+            "latitude": 39.950447,
+            "longitude": 124.354353
+        },
+        "PRT": {
+            "name": "Azores",
+            "latitude": 37.780252,
+            "longitude": -25.4959
+        },
+        "PRY": {
+            "name": "Paraguay",
+            "latitude": -23.227519,
+            "longitude": -58.398423
+        },
+        "PSX": {
+            "name": "West Bank",
+            "latitude": 31.945385,
+            "longitude": 35.244956
+        },
+        "PYF": {
+            "name": "Fr. Polynesia",
+            "latitude": -21.801712,
+            "longitude": -154.698512
+        },
+        "QAT": {
+            "name": "Qatar",
+            "latitude": 25.312972,
+            "longitude": 51.1871
+        },
+        "ROU": {
+            "name": "Romania",
+            "latitude": 45.853468,
+            "longitude": 24.972949
+        },
+        "RUS": {
+            "name": "Russia",
+            "latitude": 42.912231,
+            "longitude": 131.727477
+        },
+        "RWA": {
+            "name": "Rwanda",
+            "latitude": -1.992753,
+            "longitude": 29.919059
+        },
+        "SAH": {
+            "name": "",
+            "latitude": 23.812843,
+            "longitude": -12.892737
+        },
+        "SAU": {
+            "name": "Saudi Arabia",
+            "latitude": 27.111644,
+            "longitude": 35.763924
+        },
+        "SCR": {
+            "name": "Scarborough Reef",
+            "latitude": 15.152203,
+            "longitude": 117.753888
+        },
+        "SDN": {
+            "name": "Sudan",
+            "latitude": 20.802563,
+            "longitude": 37.264007
+        },
+        "SDS": {
+            "name": "S. Sudan",
+            "latitude": 7.305706,
+            "longitude": 30.251066
+        },
+        "SEN": {
+            "name": "Senegal",
+            "latitude": 14.367789,
+            "longitude": -14.471308
+        },
+        "SER": {
+            "name": "Serranilla Bank",
+            "latitude": 15.864458,
+            "longitude": -78.638123
+        },
+        "SGP": {
+            "name": "Singapore",
+            "latitude": 1.358924,
+            "longitude": 103.813465
+        },
+        "SGS": {
+            "name": "",
+            "latitude": -56.715115,
+            "longitude": -28.190756
+        },
+        "SHN": {
+            "name": "Tristan da Cunha",
+            "latitude": -40.346022,
+            "longitude": -9.967923
+        },
+        "SLB": {
+            "name": "Solomon Is.",
+            "latitude": -8.889675,
+            "longitude": 160.027189
+        },
+        "SLE": {
+            "name": "Sierra Leone",
+            "latitude": 7.552551,
+            "longitude": -12.673613
+        },
+        "SLV": {
+            "name": "El Salvador",
+            "latitude": 13.736776,
+            "longitude": -88.869507
+        },
+        "SMR": {
+            "name": "San Marino",
+            "latitude": 43.936454,
+            "longitude": 12.442237
+        },
+        "SOL": {
+            "name": "",
+            "latitude": 11.488346,
+            "longitude": 43.361726
+        },
+        "SOM": {
+            "name": "Somalia",
+            "latitude": 2.79,
+            "longitude": 43.578107
+        },
+        "SPI": {
+            "name": "",
+            "latitude": -49.503845,
+            "longitude": -73.319419
+        },
+        "SPM": {
+            "name": "St. Pierre and Miquelon",
+            "latitude": 46.779894,
+            "longitude": -56.1896
+        },
+        "SRB": {
+            "name": "Vojvodina",
+            "latitude": 45.398978,
+            "longitude": 20.064281
+        },
+        "STP": {
+            "name": "Sao Tome",
+            "latitude": 0.235563,
+            "longitude": 6.607631
+        },
+        "SUR": {
+            "name": "Suriname",
+            "latitude": 4.128548,
+            "longitude": -55.912233
+        },
+        "SVK": {
+            "name": "Slovakia",
+            "latitude": 48.704935,
+            "longitude": 19.480383
+        },
+        "SVN": {
+            "name": "Slovenia",
+            "latitude": 46.063558,
+            "longitude": 14.940281
+        },
+        "SWE": {
+            "name": "Sweden",
+            "latitude": 58.425005,
+            "longitude": 16.963268
+        },
+        "SWZ": {
+            "name": "Swaziland",
+            "latitude": -26.561914,
+            "longitude": 31.480024
+        },
+        "SXM": {
+            "name": "Sint Maarten",
+            "latitude": 18.040308,
+            "longitude": -63.06968
+        },
+        "SYC": {
+            "name": "Seychelles",
+            "latitude": -10.107196,
+            "longitude": 51.193183
+        },
+        "SYR": {
+            "name": "Syria",
+            "latitude": 35.025611,
+            "longitude": 38.50828
+        },
+        "TCA": {
+            "name": "Turks and Caicos Is.",
+            "latitude": 21.874661,
+            "longitude": -72.093692
+        },
+        "TCD": {
+            "name": "Chad",
+            "latitude": 15.333078,
+            "longitude": 18.646251
+        },
+        "TGO": {
+            "name": "Togo",
+            "latitude": 8.526785,
+            "longitude": 0.962272
+        },
+        "THA": {
+            "name": "Thailand",
+            "latitude": 12.697067,
+            "longitude": 100.787557
+        },
+        "TJK": {
+            "name": "Tajikistan",
+            "latitude": 38.317301,
+            "longitude": 69.298049
+        },
+        "TKM": {
+            "name": "Turkmenistan",
+            "latitude": 39.551749,
+            "longitude": 53.49969
+        },
+        "TLS": {
+            "name": "Pante Makasar",
+            "latitude": -9.327381,
+            "longitude": 124.266725
+        },
+        "TON": {
+            "name": "Tonga",
+            "latitude": -15.852486,
+            "longitude": -173.715128
+        },
+        "TTO": {
+            "name": "Trinidad",
+            "latitude": 10.688981,
+            "longitude": -61.691665
+        },
+        "TUN": {
+            "name": "Tunisia",
+            "latitude": 37.52608,
+            "longitude": 8.929564
+        },
+        "TUR": {
+            "name": "Turkey",
+            "latitude": 38.437199,
+            "longitude": 26.343137
+        },
+        "TUV": {
+            "name": "Tuvalu",
+            "latitude": -7.292827,
+            "longitude": 177.166561
+        },
+        "TWN": {
+            "name": "Taiwan",
+            "latitude": 23.271396,
+            "longitude": 119.501195
+        },
+        "TZA": {
+            "name": "Zanzibar",
+            "latitude": -5.166126,
+            "longitude": 39.819408
+        },
+        "UGA": {
+            "name": "Uganda",
+            "latitude": 1.275691,
+            "longitude": 32.36704
+        },
+        "UKR": {
+            "name": "Ukraine",
+            "latitude": 45.692603,
+            "longitude": 29.934703
+        },
+        "UMI": {
+            "name": "Wake Atoll",
+            "latitude": 19.287872,
+            "longitude": 166.644115
+        },
+        "URY": {
+            "name": "Uruguay",
+            "latitude": -32.800158,
+            "longitude": -56.01787
+        },
+        "USA": {
+            "name": "Hawaii",
+            "latitude": 23.868397,
+            "longitude": -166.249097
+        },
+        "USG": {
+            "name": "Guantanamo Bay USNB",
+            "latitude": 19.935192,
+            "longitude": -75.198644
+        },
+        "UZB": {
+            "name": "Uzbekistan",
+            "latitude": 39.941383,
+            "longitude": 71.734417
+        },
+        "VAT": {
+            "name": "Vatican",
+            "latitude": 41.903327,
+            "longitude": 12.453364
+        },
+        "VCT": {
+            "name": "St. Vin. and Gren.",
+            "latitude": 13.256496,
+            "longitude": -61.193975
+        },
+        "VEN": {
+            "name": "Venezuela",
+            "latitude": 11.41467,
+            "longitude": -63.045853
+        },
+        "VGB": {
+            "name": "British Virgin Is.",
+            "latitude": 18.479497,
+            "longitude": -64.533996
+        },
+        "VIR": {
+            "name": "U.S. Virgin Is.",
+            "latitude": 18.397379,
+            "longitude": -64.909404
+        },
+        "VNM": {
+            "name": "Vietnam",
+            "latitude": 9.805501,
+            "longitude": 104.638448
+        },
+        "VUT": {
+            "name": "Vanuatu",
+            "latitude": -13.240864,
+            "longitude": 166.611679
+        },
+        "WLF": {
+            "name": "Wallis and Futuna",
+            "latitude": -14.353964,
+            "longitude": -178.026305
+        },
+        "WSB": {
+            "name": "Akrotiri",
+            "latitude": 34.600432,
+            "longitude": 32.971934
+        },
+        "WSM": {
+            "name": "Samoa",
+            "latitude": -13.93422,
+            "longitude": -171.760142
+        },
+        "YEM": {
+            "name": "Suqutra",
+            "latitude": 12.163575,
+            "longitude": 53.067249
+        },
+        "ZAF": {
+            "name": "Prince Edward Is.",
+            "latitude": -46.626349,
+            "longitude": 37.921896
+        },
+        "ZMB": {
+            "name": "Zambia",
+            "latitude": -14.406967,
+            "longitude": 24.903459
+        },
+        "ZWE": {
+            "name": "Zimbabwe",
+            "latitude": -19.002537,
+            "longitude": 29.851885
+        }
+    }
+}

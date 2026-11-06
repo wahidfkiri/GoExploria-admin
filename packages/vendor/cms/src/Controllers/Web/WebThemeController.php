@@ -2918,9 +2918,9 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         }
 
         $meta = (array) (($page && is_array($page->meta ?? null)) ? $page->meta : []);
-        $title = trim((string) ($meta['seo_title'] ?? ($page->title ?? $siteName)));
+        $title = trim((string) ($meta['seo_title'] ?? ''));
         if ($title === '') {
-            $title = $siteName;
+            $title = $this->titreParDefaut($siteName, $page);
         }
 
         $description = trim((string) ($meta['seo_description'] ?? ''));
@@ -2973,6 +2973,23 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
                 ? ((bool) ($page->is_home ?? false) || strtolower((string) ($page->slug ?? '')) === 'home')
                 : true,
         ], $this->seoOptionsPage($meta, $title, $description, $image, $isPreview));
+    }
+
+    /**
+     * Titre sans « Titre SEO » saisi : nom de l'établissement en tête, le nom
+     * seul pour l'accueil (ou sans page).
+     * ⚠ Copie de PublicPageController::titreParDefaut : modifier les deux.
+     */
+    protected function titreParDefaut(string $siteName, $page): string
+    {
+        $titrePage = trim((string) ($page->title ?? ''));
+        $accueil = ! $page || (bool) ($page->is_home ?? false) || strtolower((string) ($page->slug ?? '')) === 'home';
+
+        if ($titrePage === '' || $accueil || mb_strtolower($titrePage) === mb_strtolower($siteName)) {
+            return $siteName;
+        }
+
+        return $siteName . ' | ' . $titrePage;
     }
 
     /**

@@ -1208,9 +1208,9 @@ class PublicPageController extends Controller
         }
 
         $meta = (array) (($page && is_array($page->meta ?? null)) ? $page->meta : []);
-        $title = trim((string) ($meta['seo_title'] ?? ($page->title ?? $siteName)));
+        $title = trim((string) ($meta['seo_title'] ?? ''));
         if ($title === '') {
-            $title = $siteName;
+            $title = $this->titreParDefaut($siteName, $page);
         }
 
         $description = trim((string) ($meta['seo_description'] ?? ''));
@@ -1254,6 +1254,24 @@ class PublicPageController extends Controller
             'site_name' => $siteName,
             'is_home' => (bool) ($page->is_home ?? false) || (($page->slug ?? null) === 'home'),
         ], $this->seoOptionsPage($meta, $title, $description, $image, $this->previewMode));
+    }
+
+    /**
+     * Titre sans « Titre SEO » saisi : nom de l'établissement en tête
+     * (« Al Dente Traiteur | Nos menus »), le nom seul pour l'accueil — dont le
+     * titre est souvent celui du template installé (« Mixte »).
+     * Même règle dans l'aperçu Google de l'admin (seo-avance.blade.php).
+     */
+    protected function titreParDefaut(string $siteName, $page): string
+    {
+        $titrePage = trim((string) ($page->title ?? ''));
+        $accueil = $page && ((bool) ($page->is_home ?? false) || strtolower((string) ($page->slug ?? '')) === 'home');
+
+        if ($titrePage === '' || $accueil || mb_strtolower($titrePage) === mb_strtolower($siteName)) {
+            return $siteName;
+        }
+
+        return $siteName . ' | ' . $titrePage;
     }
 
     /**
