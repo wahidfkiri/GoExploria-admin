@@ -1298,6 +1298,11 @@ class PublicPageController extends Controller
             'og_description' => trim((string) ($meta['og_description'] ?? '')) ?: $description,
             'robots' => $isPreview ? 'noindex, nofollow' : $index . ', ' . $follow,
             'schema_type' => $schema,
+            'og_type' => in_array($meta['og_type'] ?? '', ['website', 'article', 'product', 'profile'], true) ? $meta['og_type'] : 'website',
+            'og_image_alt' => trim((string) ($meta['og_image_alt'] ?? '')),
+            'twitter_card' => ($meta['twitter_card'] ?? '') === 'summary' ? 'summary' : null,
+            'twitter_site' => trim((string) ($meta['twitter_site'] ?? '')),
+            'author' => trim((string) ($meta['seo_author'] ?? '')),
         ];
     }
 
@@ -1316,6 +1321,10 @@ class PublicPageController extends Controller
         $robots = e((string) ($seoContext['robots'] ?? 'index, follow'));
         $ogTitle = e((string) ($seoContext['og_title'] ?? ($seoContext['title'] ?? 'GoExploria')));
         $ogDescription = e((string) ($seoContext['og_description'] ?? ($seoContext['description'] ?? '')));
+        $ogType = e((string) ($seoContext['og_type'] ?? 'website'));
+        $imageAlt = e((string) ($seoContext['og_image_alt'] ?? ''));
+        $twitterSite = e((string) ($seoContext['twitter_site'] ?? ''));
+        $auteur = e((string) ($seoContext['author'] ?? ''));
 
         $html = preg_replace('/\s*<!--\s*CMS SEO START\s*-->.*?<!--\s*CMS SEO END\s*-->\s*/is', "\n", $html);
         $html = preg_replace('/<link[^>]*rel=["\']canonical["\'][^>]*>/i', '', $html);
@@ -1329,15 +1338,24 @@ class PublicPageController extends Controller
             $seoBlock[] = '<meta name="keywords" content="' . $keywords . '">';
         }
         $seoBlock[] = '<meta name="robots" content="' . $robots . '">';
-        $seoBlock[] = '<meta property="og:type" content="website">';
+        if ($auteur !== '') {
+            $seoBlock[] = '<meta name="author" content="' . $auteur . '">';
+        }
+        $seoBlock[] = '<meta property="og:type" content="' . $ogType . '">';
         $seoBlock[] = '<meta property="og:site_name" content="' . $siteName . '">';
         $seoBlock[] = '<meta property="og:title" content="' . $ogTitle . '">';
         $seoBlock[] = '<meta property="og:description" content="' . $ogDescription . '">';
         $seoBlock[] = '<meta property="og:url" content="' . $canonical . '">';
         if ($image !== '') {
             $seoBlock[] = '<meta property="og:image" content="' . $image . '">';
+            if ($imageAlt !== '') {
+                $seoBlock[] = '<meta property="og:image:alt" content="' . $imageAlt . '">';
+            }
         }
-        $seoBlock[] = '<meta name="twitter:card" content="' . ($image !== '' ? 'summary_large_image' : 'summary') . '">';
+        $seoBlock[] = '<meta name="twitter:card" content="' . ($seoContext['twitter_card'] ?? ($image !== '' ? 'summary_large_image' : 'summary')) . '">';
+        if ($twitterSite !== '') {
+            $seoBlock[] = '<meta name="twitter:site" content="' . $twitterSite . '">';
+        }
         $seoBlock[] = '<meta name="twitter:title" content="' . $ogTitle . '">';
         $seoBlock[] = '<meta name="twitter:description" content="' . $ogDescription . '">';
         if ($image !== '') {

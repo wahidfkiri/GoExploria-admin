@@ -57,6 +57,150 @@ class TravelDestinationController extends Controller
         'quartier' => 'Quartier',
     ];
 
+    /**
+     * Niveaux de destination, du plus large au plus fin.
+     *
+     * Sert l'index `/destination` : modèle, libellé au singulier et au
+     * pluriel, et type d'URL (le type d'URL d'une ville est `city`, pas
+     * `ville` — la table, elle, s'appelle `villes`).
+     */
+    protected const NIVEAUX_INDEX = [
+        'continent'      => [\App\Models\Continent::class, 'Continent', 'Continents'],
+        'country'        => [\App\Models\Country::class, 'Pays', 'Pays'],
+        'province'       => [\App\Models\Province::class, 'Province', 'Provinces'],
+        'region'         => [\App\Models\Region::class, 'Région', 'Régions'],
+        'secteur'        => [\App\Models\Secteur::class, 'Secteur', 'Secteurs'],
+        'city'           => [\App\Models\Ville::class, 'Ville', 'Villes'],
+        'arrondissement' => [\App\Models\Arrondissement::class, 'Arrondissement', 'Arrondissements'],
+        'quartier'       => [\App\Models\Quartier::class, 'Quartier', 'Quartiers'],
+    ];
+
+    /**
+     * INDEX DES DESTINATIONS — `/destination`.
+     *
+     * L'adresse était déjà posée dans le fil d'Ariane et le pied de page de
+     * chaque destination, mais aucune route ne la servait : elle rendait 404.
+     *
+     * Deux affichages :
+     *   - sans `?niveau=`, un aperçu de CHAQUE niveau peuplé (huit premières
+     *     destinations et le compte total) ;
+     *   - avec `?niveau=province` (ou un autre), la liste complète de ce
+     *     niveau, paginée.
+     *
+     * Le champ `?q=` filtre par nom dans les deux cas. La pagination est faite
+     * en base et non en mémoire : un pays peut compter des milliers de villes.
+     */
+    public function index(Request $request)
+    {
+        $niveau = $request->query('niveau');
+        $niveau = isset(self::NIVEAUX_INDEX[$niveau]) ? $niveau : null;
+        $recherche = trim((string) $request->query('q', ''));
+
+        $comptes = [];
+        $apercus = [];
+        $liste = null;
+
+        foreach (self::NIVEAUX_INDEX as $type => [$modele, $libelle, $pluriel]) {
+            try {
+                $base = fn () => $this->requeteNiveauActif($modele, $recherche);
+
+                $comptes[$type] = [
+                    'type'    => $type,
+                    'libelle' => $libelle,
+                    'pluriel' => $pluriel,
+                    'total'   => $base()->count(),
+                ];
+
+                if ($comptes[$type]['total'] === 0) {
+                    continue;
+                }
+
+                if ($niveau === null) {
+                    $apercus[$type] = [
+                        'type'    => $type,
+                        'libelle' => $libelle,
+                        'pluriel' => $pluriel,
+                        'total'   => $comptes[$type]['total'],
+                        'items'   => $base()->orderBy('name')->limit(8)->get(),
+                    ];
+                } elseif ($niveau === $type) {
+                    $liste = $base()->orderBy('name')->paginate(24)->withQueryString();
+                }
+            } catch (\Throwable $e) {
+                // Table absente ou modèle inattendu : le niveau est simplement
+                // laissé de côté, la page reste servie.
+                unset($comptes[$type], $apercus[$type]);
+            }
+        }
+
+        // ── Carte : TOUS les points actifs, pas ceux d'une destination ──────
+        $mapCategories = $this->safeIndex(
+            fn () => MapCategory::where('is_active', true)->orderBy('sort_order')
+                ->get(['slug', 'name', 'icon_class', 'color', 'image']),
+            collect()
+        );
+
+        $mapPoints = $this->safeIndex(
+            fn () => MapPoint::with(['details', 'images', 'mainImage'])
+                ->active()->inDisplayPeriod()
+                ->whereNotNull('latitude')->whereNotNull('longitude')
+                ->get(),
+            collect()
+        );
+
+        /* Les partiels de carte sont écrits pour UNE destination. Ici il n'y
+           en a pas : une entité de façade sans coordonnées suffit — le moteur
+           ouvre alors la vue monde — et le type `all` fait servir tous les
+           points par `mapPoints()`. */
+        $entity = (object) ['id' => null, 'name' => 'toutes les destinations', 'latitude' => null, 'longitude' => null, 'image' => null];
+
+        return view('travel-destination::landing.destinations-index', [
+            'niveauActif'    => $niveau,
+            'recherche'      => $recherche,
+            'comptes'        => $comptes,
+            'apercus'        => $apercus,
+            'liste'          => $liste,
+            'niveaux'        => self::NIVEAUX_INDEX,
+
+            // Attendus par landing/partials/map-section et map-scripts.
+            'entity'                => $entity,
+            'normalizedType'        => 'all',
+            'slug'                  => 'all',
+            'childEntities'         => collect(),
+            'destinationActivities' => collect(),
+            'mapFilterChain'        => [],
+            'destinationMapBounds'  => null,
+            'mapCategories'         => $mapCategories,
+            'mapPoints'             => $mapPoints,
+        ]);
+    }
+
+    /** Les destinations actives d'un niveau, filtrées par nom le cas échéant. */
+    protected function requeteNiveauActif(string $modele, string $recherche)
+    {
+        try {
+            $requete = $modele::query()->active();
+        } catch (\Throwable $e) {
+            $requete = $modele::query()->where('is_active', true);
+        }
+
+        if ($recherche !== '') {
+            $requete->where('name', 'like', '%' . $recherche . '%');
+        }
+
+        return $requete;
+    }
+
+    /** Un index ne doit pas tomber parce qu'une table secondaire manque. */
+    protected function safeIndex(callable $faire, $repli)
+    {
+        try {
+            return $faire();
+        } catch (\Throwable $e) {
+            return $repli;
+        }
+    }
+
     public function show($type, $slug)
     {
         $normalizedType = $this->typeMap[$type] ?? 'continent';
@@ -523,8 +667,79 @@ class TravelDestinationController extends Controller
         return $parents;
     }
 
+    /** Charge utile d'un point de carte, telle que l'attend le moteur Leaflet. */
+    protected function formaterPointsCarte($points)
+    {
+        return $points->map(function ($p) {
+            $data = [
+                'id' => $p->id,
+                'title' => $p->title,
+                'description' => $p->description,
+                'latitude' => (float) $p->latitude,
+                'longitude' => (float) $p->longitude,
+                'category' => $p->category,
+                'type' => $p->type,
+                'address' => $p->adresse,
+                'city' => $p->ville,
+                'youtube_url' => $p->youtube_url,
+                'youtube_id' => $p->youtube_id,
+                'thumbnail' => $p->thumbnail,
+                'is_featured' => (bool) $p->is_featured,
+                'has_details_page' => (bool) $p->has_details_page,
+                'views' => $p->views,
+            ];
+            if ($p->details) {
+                $data['details'] = [
+                    'long_description' => $p->details->long_description,
+                    'phone' => $p->details->phone,
+                    'email' => $p->details->email,
+                    'website' => $p->details->website,
+                    'horaires' => $p->details->horaires,
+                    'services' => $p->details->services,
+                    'tarifs' => $p->details->tarifs,
+                    'rating' => (float) $p->details->rating,
+                    'reviews_count' => $p->details->reviews_count,
+                    'slug' => $p->details->slug,
+                ];
+            }
+            if ($p->images && $p->images->count() > 0) {
+                $data['images'] = $p->images->map(fn($img) => ['url' => $img->url, 'thumbnail' => $img->thumb_url, 'caption' => $img->caption, 'is_main' => (bool) $img->is_main]);
+            }
+            return $data;
+        });
+    }
+
+    /**
+     * TOUS les points actifs — carte de l'index `/destination`.
+     *
+     * Les autres appels partent d'une destination et réduisent la sélection à
+     * son emprise ; ici il n'y a pas de destination : la carte du monde les
+     * montre tous. Le filtre par catégorie de la barre reste client.
+     */
+    protected function mapPointsGlobaux()
+    {
+        $points = MapPoint::with(['details', 'images', 'mainImage'])
+            ->active()->inDisplayPeriod()
+            ->whereNotNull('latitude')->whereNotNull('longitude')
+            ->orderBy('is_featured', 'desc')->orderBy('views', 'desc')
+            ->limit(500)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data'    => $this->formaterPointsCarte($points),
+            'bounds'  => null,
+            'entity'  => ['id' => null, 'name' => 'Toutes les destinations', 'type' => 'all', 'latitude' => 0, 'longitude' => 0],
+        ]);
+    }
+
     public function mapPoints($type, $slug, Request $request)
     {
+        // L'index des destinations demande la carte du monde entière.
+        if ($type === 'all') {
+            return $this->mapPointsGlobaux();
+        }
+
         $normalizedType = $this->typeMap[$type] ?? 'continent';
         $entity = $this->loadEntity($normalizedType, $slug);
 
@@ -650,43 +865,7 @@ class TravelDestinationController extends Controller
 
         $points = $query->orderBy('is_featured', 'desc')->orderBy('views', 'desc')->limit(100)->get();
 
-        $formatted = $points->map(function ($p) {
-            $data = [
-                'id' => $p->id,
-                'title' => $p->title,
-                'description' => $p->description,
-                'latitude' => (float) $p->latitude,
-                'longitude' => (float) $p->longitude,
-                'category' => $p->category,
-                'type' => $p->type,
-                'address' => $p->adresse,
-                'city' => $p->ville,
-                'youtube_url' => $p->youtube_url,
-                'youtube_id' => $p->youtube_id,
-                'thumbnail' => $p->thumbnail,
-                'is_featured' => (bool) $p->is_featured,
-                'has_details_page' => (bool) $p->has_details_page,
-                'views' => $p->views,
-            ];
-            if ($p->details) {
-                $data['details'] = [
-                    'long_description' => $p->details->long_description,
-                    'phone' => $p->details->phone,
-                    'email' => $p->details->email,
-                    'website' => $p->details->website,
-                    'horaires' => $p->details->horaires,
-                    'services' => $p->details->services,
-                    'tarifs' => $p->details->tarifs,
-                    'rating' => (float) $p->details->rating,
-                    'reviews_count' => $p->details->reviews_count,
-                    'slug' => $p->details->slug,
-                ];
-            }
-            if ($p->images && $p->images->count() > 0) {
-                $data['images'] = $p->images->map(fn($img) => ['url' => $img->url, 'thumbnail' => $img->thumb_url, 'caption' => $img->caption, 'is_main' => (bool) $img->is_main]);
-            }
-            return $data;
-        });
+        $formatted = $this->formaterPointsCarte($points);
 
         return response()->json([
             'success' => true,
