@@ -1281,3 +1281,6 @@ a.poi-card .poi-lien { display: inline-flex; align-items: center; gap: 6px; font
 @media (max-width:992px){
   .main-nav .td-mega{display:none}
 }
+
+/* Taille maximale du titre du héros (composant « Titre de destination » de l'éditeur). */
+.hero-title[data-gx-titre-px]{font-size:min(var(--gx-titre-max,6.6rem),11vw)!important;}
