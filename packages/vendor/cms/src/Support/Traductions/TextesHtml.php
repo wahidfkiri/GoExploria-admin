@@ -55,10 +55,20 @@ final class TextesHtml
     public const ATTRIBUTS = ['alt', 'title', 'placeholder', 'aria-label', 'value'];
 
     /**
-     * Blocs remplis au rendu par le serveur (produits, articles, réglages…) :
-     * leurs textes viennent de leurs tables (étape 5), pas de la page.
+     * Éléments dont le contenu est rempli au rendu (réglages, chiffres,
+     * listes de destinations, galeries, sélecteur de langue). Les GRILLES
+     * (produits, rayons, articles, forfaits, activités, lieux) ne sont plus
+     * exclues en bloc : seuls leurs champs `data-gx-field` le sont, leurs
+     * textes fixes (« Ajouter au panier »…) se traduisent. Les données
+     * elles-mêmes viennent de leurs tables (étape 5).
      */
-    private const DYNAMIQUES = '/^data-gx-(bind|products|categories|stat|stats|activities|posts|forfaits|nearby|langues|dest|dest-chain|gallery|galleries)$/i';
+    private const DYNAMIQUES = '/^data-gx-(bind|stat|langues|dest|dest-chain|gallery|galleries)$/i';
+
+    /** Champs de grille qui ne posent que des attributs (lien, panier) : leur texte reste celui de la page. */
+    private const CHAMPS_ATTRIBUTS = ['link', 'add'];
+
+    /** Éléments exclus dont seuls les attributs se traduisent (placeholder d'un champ, titre d'un lecteur). */
+    private const ATTRIBUTS_SEULEMENT = ['textarea', 'iframe', 'video', 'audio'];
 
     /* ─────────────────────────────── Étiquetage ─────────────────────────────── */
 
@@ -114,6 +124,21 @@ final class TextesHtml
         $demandes = [];  // [debut, 't'|'a', texte normalisé, chemin, base de l'empreinte]
         $traiter = function (array $n, bool $dansBloc, string $chemin) use (&$traiter, &$editions, &$noeuds, &$demandes, &$sources, $reservees, $html) {
             if (self::estExclu($n)) {
+                // Champ de saisie, lecteur vidéo : son contenu n'est pas du
+                // texte à traduire, mais son texte d'exemple ou son titre l'est.
+                $valeurs = self::attributsSeulement($n) ? self::attributsTraduisibles($n) : [];
+                if ($valeurs) {
+                    $noeuds[$n['debut']] = ['n' => $n, 't' => null, 'a' => null, 'valeurs' => $valeurs, 'interieur' => null];
+                    $actuelle = $n['attrs']['data-gx-ta'] ?? null;
+                    if ($actuelle !== null && ($reservees['data-gx-ta'][$actuelle] ?? null) === $n['debut']) {
+                        $noeuds[$n['debut']]['a'] = $actuelle;
+                    } else {
+                        $demandes[] = [$n['debut'], 'a', self::normaliser(implode('|', $valeurs)), $chemin, implode('|', $valeurs) . '@', null];
+                    }
+
+                    return;
+                }
+
                 // Étiquette égarée dans un bloc exclu : retirée.
                 if (isset($n['attrs']['data-gx-t']) || isset($n['attrs']['data-gx-ta'])) {
                     $editions[] = self::editionOuvrante($html, $n, null, null);
@@ -517,6 +542,23 @@ final class TextesHtml
         if (preg_match('/(^|\s)notranslate(\s|$)/', (string) ($n['attrs']['class'] ?? ''))) {
             return true;
         }
+        return self::estRempliAuRendu($n);
+    }
+
+    /**
+     * Élément dont le CONTENU est rempli par le serveur ou un script au rendu :
+     * champ d'une carte de grille (`data-gx-field`, sauf `link` et `add` qui
+     * ne posent que des attributs), réglage de l'établissement
+     * (`data-gx-bind`), chiffre, listes de destinations… Les textes FIXES
+     * autour (titre de la section, « Ajouter au panier », « Plus de
+     * détails ») restent traduisibles : ils survivent au remplissage.
+     */
+    private static function estRempliAuRendu(array $n): bool
+    {
+        $champ = $n['attrs']['data-gx-field'] ?? null;
+        if ($champ !== null && ! in_array(strtolower(trim($champ)), self::CHAMPS_ATTRIBUTS, true)) {
+            return true;
+        }
         foreach ($n['attrs'] as $nom => $_) {
             if (preg_match(self::DYNAMIQUES, $nom)) {
                 return true;
@@ -524,6 +566,15 @@ final class TextesHtml
         }
 
         return false;
+    }
+
+    /** Élément exclu dont on traduit quand même les attributs (placeholder, title). */
+    private static function attributsSeulement(array $n): bool
+    {
+        return in_array($n['nom'], self::ATTRIBUTS_SEULEMENT, true)
+            && strtolower((string) ($n['attrs']['translate'] ?? '')) !== 'no'
+            && ! preg_match('/(^|\s)notranslate(\s|$)/', (string) ($n['attrs']['class'] ?? ''))
+            && ! self::estRempliAuRendu($n);
     }
 
     /** Élément en ligne dont tout le contenu est lui-même en ligne. */
