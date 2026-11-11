@@ -443,8 +443,25 @@
         if (url.pathname === window.location.pathname && url.search === window.location.search && url.hash) return;
         if (!estPageShell(url)) return;
         e.preventDefault();
-        try { window.top.location.href = url.href; } catch (err) { window.location.href = url.href; }
+        naviguerEnHaut(url.href);
     });
+
+    /* Ouvre une page du site dans la PAGE ENTIÈRE (l'adresse affichée
+       change), y compris depuis le sélecteur de langue. L'iframe est
+       « sandbox » : la navigation directe n'est permise qu'au clic
+       (allow-top-navigation-by-user-activation). À défaut, la page parente
+       navigue elle-même sur demande (message « navigate ») ; en dernier
+       recours, l'iframe charge la page. */
+    function naviguerEnHaut(href) {
+        try {
+            window.top.location.href = href;
+            return;
+        } catch (err) { /* bloqué par le bac à sable */ }
+        try {
+            window.parent.postMessage({ channel: CHANNEL, type: 'navigate', url: href }, parentOrigin);
+        } catch (err) { /* parent indisponible */ }
+        setTimeout(function () { window.location.href = href; }, 600);
+    }
 
     /* ── ANCRES DE LA PAGE — le défilement appartient au parent ───────────
        ⚠ L'iframe est haute comme son contenu : elle NE DÉFILE PAS

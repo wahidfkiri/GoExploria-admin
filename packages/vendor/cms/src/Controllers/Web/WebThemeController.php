@@ -176,8 +176,21 @@ class WebThemeController extends Controller
         );
         $gxAlternates = $this->alternatesLangues($request, $langues);
 
+        // Sélecteur de langue dans la page PARENTE : un élément fixe placé
+        // dans l'iframe (sans défilement propre) resterait collé au bas du
+        // document, hors de la vue du visiteur.
+        $gxSelecteurLangues = [];
+        if ($langues['selecteur'] && count($gxAlternates) > 2) {
+            foreach ($langues['visibles'] as $code) {
+                $gxSelecteurLangues[$code] = [
+                    'url' => $gxAlternates[$code],
+                    'nom' => LanguesSite::LANGUES[$code] ?? $code,
+                ];
+            }
+        }
+
         return view('cms::web.embed.platform-shell', compact(
-            'etablissement', 'embedSrc', 'shellTitle', 'gxLangue', 'gxAlternates'
+            'etablissement', 'embedSrc', 'shellTitle', 'gxLangue', 'gxAlternates', 'gxSelecteurLangues'
         ));
     }
 
@@ -233,8 +246,26 @@ class WebThemeController extends Controller
 
         $chemin = LanguesSite::sansLangue('/' . ltrim($request->path(), '/'));
         $chemin = (string) preg_replace('#/embed/?$#', '', $chemin);
-        if (! preg_match('#^/company/\d+#', $chemin)) {
+        if (! preg_match('#^/company/(\d+)#', $chemin, $m)) {
             return [];
+        }
+
+        // Adresse CANONIQUE, avec le slug de l'entreprise : celle que le
+        // visiteur voit (/company/2/bouchard → /company/2/en/bouchard). Le
+        // contenu de l'iframe (/embed) n'a pas de slug : on le reconstitue.
+        try {
+            $etablissement = ($this->etablissement && (int) $this->etablissement->id === (int) $m[1])
+                ? $this->etablissement
+                : Etablissement::find((int) $m[1]);
+            if ($etablissement) {
+                if (preg_match('#^/company/\d+/?$#', $chemin)) {
+                    $chemin = '/company/' . $etablissement->id . '/' . \Vendor\Cms\Support\SiteSlug::pourEtablissement($etablissement);
+                } elseif (preg_match('#^/company/\d+/page/([^/]+)/?$#', $chemin, $p)) {
+                    $chemin = \Vendor\Cms\Support\SiteSlug::cheminPage($etablissement, $p[1]);
+                }
+            }
+        } catch (\Throwable $e) {
+            // adresse gardée telle quelle
         }
 
         $liens = [];
@@ -365,8 +396,11 @@ class WebThemeController extends Controller
             //    volontairement les autres langues.
             if ($langue !== $langues['principale']) {
                 $motifLangues = LanguesSite::motif();
+                // Accueil (avec ou sans slug d'entreprise), /site, /embed,
+                // /page/… ; jamais les segments réservés (produits, contact…).
+                $internes = LanguesSite::ROUTES_INTERNES;
                 $html = preg_replace_callback(
-                    '#(href\s*=\s*["\'])((?:https?://[^/"\']+)?/company/' . $id . ')(?!/(?:' . $motifLangues . ')(?=[/"\'?\#]))((?:/(?:page/[^"\'?\#]*|site|embed))?/?)(?=["\'?\#])#i',
+                    '#(href\s*=\s*["\'])((?:https?://[^/"\']+)?/company/' . $id . ')(?!/(?:' . $motifLangues . ')(?=[/"\'?\#]))((?:/(?:page/[^"\'?\#]*|site|embed|(?!(?:' . $internes . ')(?=[/"\'?\#]))[A-Za-z0-9\-]+))?/?)(?=["\'?\#])#i',
                     static fn ($m) => $m[1] . $m[2] . '/' . $langue . $m[3],
                     $html
                 );
@@ -437,6 +471,14 @@ class WebThemeController extends Controller
             $html,
             1
         );
+
+        // Sans emplacement prévu : pastille flottante, SAUF dans l'iframe du
+        // shell GoExploria, qui affiche déjà le sélecteur dans la page parente
+        // (un élément fixe dans l'iframe resterait au bas du document).
+        $dansShell = $this->requeteDansIframe(request()) || preg_match('#/embed/?$#', request()->path());
+        if (! $place && $dansShell) {
+            return $this->insererAvantFinBody($html, $style);
+        }
 
         $bloc = $style . ($place ? '' : '<nav class="gx-langues gx-langues--flottant" aria-label="Langue du site">' . $liens . '</nav>');
 

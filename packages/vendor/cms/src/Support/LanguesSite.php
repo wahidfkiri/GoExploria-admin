@@ -45,6 +45,13 @@ final class LanguesSite
         'it' => 'IT',
     ];
 
+    /**
+     * Premiers segments réservés de /company/{id}/… : ce ne sont pas des
+     * slugs de site, et ils n'ont pas d'adresse par langue (boutique,
+     * contact, blog…). Même liste que ROUTES_INTERNES du pont enfant.
+     */
+    public const ROUTES_INTERNES = 'produits|achat|contact|search|chaine-videos|videos|themes|preview|clear-preview|sitemap\.xml|robots\.txt|embed|infolettre|immobilier|newsletter|api|blog|site|page';
+
     /** Motif de route d'un segment de langue. */
     public static function motif(): string
     {

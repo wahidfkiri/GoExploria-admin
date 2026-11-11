@@ -56,6 +56,12 @@ Route::middleware(['web'])->group(function () {
                 Route::get('/page/{slug}/{siteSlug}', [WebThemeController::class, 'showPage'])
                     ->where('siteSlug', '[A-Za-z0-9\-]+')
                     ->name('page.slug');
+                // Accueil à l'adresse SEO : /company/{id}/en/{slug-entreprise}.
+                // En DERNIER dans le groupe ; les segments réservés (produits,
+                // contact…) n'ont pas d'adresse par langue.
+                Route::get('/{slug}', [WebThemeController::class, 'home'])
+                    ->where('slug', '(?!(?:' . \Vendor\Cms\Support\LanguesSite::ROUTES_INTERNES . ')$)[A-Za-z0-9\-]+')
+                    ->name('home.slug');
             });
 
         // Page d'accueil - ACCEPTE LE PARAMETRE GET preview_theme
