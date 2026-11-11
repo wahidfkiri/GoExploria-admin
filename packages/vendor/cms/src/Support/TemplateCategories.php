@@ -26,6 +26,12 @@ use App\Models\ProductCategory;
  */
 class TemplateCategories extends TemplateGrid
 {
+    /** Sites multilingues : champs traduits (ContenusTraduisibles). */
+    protected function typeTraduction(): ?string
+    {
+        return 'rayon';
+    }
+
     protected function marqueur(): string
     {
         return 'data-gx-categories';

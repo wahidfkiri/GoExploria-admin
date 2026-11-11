@@ -51,6 +51,17 @@ abstract class TemplateGrid
      */
     abstract protected function elements(int $limite, array $options);
 
+    /**
+     * Type de contenu traduisible des éléments (produit, rayon, article,
+     * bien — ContenusTraduisibles), null si la grille n'en a pas. Sur une
+     * adresse dans une autre langue (/company/{id}/en/…), les champs traduits
+     * remplacent ceux de la langue principale, en mémoire seulement.
+     */
+    protected function typeTraduction(): ?string
+    {
+        return null;
+    }
+
     /** Remplit une carte clonée avec un élément. */
     abstract protected function remplirCarte(
         \DOMDocument $doc,
@@ -201,6 +212,12 @@ abstract class TemplateGrid
 
         if ($elements->isEmpty()) {
             return $interieur;              // rien à afficher : on garde la démo
+        }
+
+        // Sites multilingues (étape 5) : contenus du module dans la langue.
+        if (($type = $this->typeTraduction()) !== null
+            && class_exists(\Vendor\Cms\Support\Traductions\ContenusTraduisibles::class)) {
+            \Vendor\Cms\Support\Traductions\ContenusTraduisibles::appliquer($elements, $type, $this->etablissementId);
         }
 
         $modele = $cartes[0];

@@ -38,6 +38,25 @@ Route::middleware(['web'])->group(function () {
         ->middleware(\Vendor\Cms\Middleware\SiteEtablissementActif::class)
         ->group(function () {
 
+        // ── Sites multilingues (étape 1) : /company/{id}/{langue}/... ──
+        // Même rendu que les adresses sans préfixe (langue principale).
+        // Déclaré EN TÊTE : `/{slug}` (accueil SEO, plus bas) avalerait `/en`.
+        // LangueSite retire le paramètre `langue` : les actions gardent leur
+        // signature. Langue principale préfixée → 301 ; non publiée → 404.
+        Route::prefix('/{langue}')->name('langue.')
+            ->where(['langue' => \Vendor\Cms\Support\LanguesSite::motif()])
+            ->middleware(\Vendor\Cms\Middleware\LangueSite::class)
+            ->group(function () {
+                Route::get('/', [WebThemeController::class, 'home'])->name('home');
+                Route::get('/site', [WebThemeController::class, 'platformSite'])->name('site');
+                Route::get('/embed', [WebThemeController::class, 'embed'])->name('embed');
+                Route::get('/page/{slug}', [WebThemeController::class, 'showPage'])->name('page');
+                Route::get('/page/{slug}/embed', [WebThemeController::class, 'embedPage'])->name('page.embed');
+                Route::get('/page/{slug}/{siteSlug}', [WebThemeController::class, 'showPage'])
+                    ->where('siteSlug', '[A-Za-z0-9\-]+')
+                    ->name('page.slug');
+            });
+
         // Page d'accueil - ACCEPTE LE PARAMETRE GET preview_theme
         Route::get('/', [WebThemeController::class, 'home'])->name('home');
 

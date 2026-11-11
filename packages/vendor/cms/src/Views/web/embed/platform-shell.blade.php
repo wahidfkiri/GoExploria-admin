@@ -27,10 +27,14 @@
                  $shellTitle (titre de l'onglet, ex. page personnalisée)
      ═══════════════════════════════════════════════════════════════════════ --}}
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ $gxLangue ?? str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{-- Sites multilingues : versions de cette page dans les langues publiées. --}}
+    @foreach(($gxAlternates ?? []) as $gxCode => $gxUrl)
+        <link rel="alternate" hreflang="{{ $gxCode }}" href="{{ $gxUrl }}">
+    @endforeach
     <title>{{ $shellTitle ?? (function_exists('get_site_name') ? get_site_name($etablissement->id) : $etablissement->name) }} — GoExploria Business</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">

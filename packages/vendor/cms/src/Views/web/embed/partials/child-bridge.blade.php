@@ -424,7 +424,8 @@
     function estPageShell(url) {
         if (url.origin !== window.location.origin) return false;
         // page/{slug} éventuellement suivi du slug de l'entreprise (sauf /embed).
-        var m = url.pathname.match(/^\/company\/\d+(?:\/(page\/[^\/]+(?:\/(?!embed\/?$)[^\/]+)?|[^\/]+))?\/?$/);
+        // Segment de langue facultatif : /company/{id}/en/page/... (multilingue).
+        var m = url.pathname.match(/^\/company\/\d+(?:\/(?:fr|en|es|de|it)(?=\/|$))?(?:\/(page\/[^\/]+(?:\/(?!embed\/?$)[^\/]+)?|[^\/]+))?\/?$/);
         if (!m) return false;
         if (!m[1]) return true;                       // accueil
         if (m[1].indexOf('page/') === 0) return true; // page personnalisée

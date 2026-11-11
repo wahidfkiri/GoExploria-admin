@@ -47,6 +47,12 @@ use Vendor\Cms\Models\BlogPost;
  */
 class TemplatePosts extends TemplateGrid
 {
+    /** Sites multilingues : champs traduits (ContenusTraduisibles). */
+    protected function typeTraduction(): ?string
+    {
+        return 'article';
+    }
+
     protected function marqueur(): string
     {
         return 'data-gx-posts';

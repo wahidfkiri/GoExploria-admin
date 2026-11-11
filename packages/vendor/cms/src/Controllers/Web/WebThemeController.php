@@ -10,6 +10,7 @@ use Vendor\Cms\Models\Media;
 use Vendor\Cms\Models\BlogPost;
 use Vendor\Cms\Models\CmsSlideshow;
 use Vendor\Cms\Models\EtablissementTemplate;
+use Vendor\Cms\Support\LanguesSite;
 use App\Models\Etablissement;
 use App\Models\Activity;
 use App\Models\Plan;
@@ -164,7 +165,282 @@ class WebThemeController extends Controller
     {
         $etablissement = Etablissement::findOrFail($etablissementId);
 
-        return view('cms::web.embed.platform-shell', compact('etablissement', 'embedSrc', 'shellTitle'));
+        // Sites multilingues : l'iframe charge le site dans la langue de
+        // l'adresse (/company/{id}/en/... → /company/{id}/en/embed).
+        $langues = LanguesSite::pour($etablissement->id);
+        $gxLangue = $this->langueCourante($request, $langues);
+        $embedSrc = $this->urlEnLangue(
+            $embedSrc ?? route('cms.company.embed', ['etablissementId' => $etablissement->id]),
+            $gxLangue,
+            $langues
+        );
+        $gxAlternates = $this->alternatesLangues($request, $langues);
+
+        return view('cms::web.embed.platform-shell', compact(
+            'etablissement', 'embedSrc', 'shellTitle', 'gxLangue', 'gxAlternates'
+        ));
+    }
+
+    /* ─────────────────────────────────────────────────────────────────────
+       SITES MULTILINGUES — étape 1 (adresses par langue, hreflang, sélecteur)
+       Réglage : LanguesSite (cms_settings, groupe « langues »), présent en
+       double admin/front. Le segment /{langue} est validé par le middleware
+       LangueSite, qui pose l'attribut `gx_langue` ; sans lui, c'est la langue
+       principale. Les textes ne sont pas encore traduits (étape 2).
+       ───────────────────────────────────────────────────────────────────── */
+
+    /** Langue de la requête : segment d'adresse, sinon langue principale. */
+    protected function langueCourante(Request $request, array $langues): string
+    {
+        $langue = (string) $request->attributes->get('gx_langue', '');
+
+        return LanguesSite::estVisible($langues, $langue) ? $langue : $langues['principale'];
+    }
+
+    /** Ajoute (ou retire) le préfixe de langue au chemin d'une URL du site. */
+    protected function urlEnLangue(string $url, string $langue, array $langues): string
+    {
+        $parties = parse_url($url);
+        if ($parties === false || ! isset($parties['path'])) {
+            return $url;
+        }
+
+        $chemin = LanguesSite::prefixer($parties['path'], $langue, $langues);
+        if ($chemin === $parties['path']) {
+            return $url;
+        }
+
+        $debut = isset($parties['host'])
+            ? ($parties['scheme'] ?? 'https') . '://' . $parties['host'] . (isset($parties['port']) ? ':' . $parties['port'] : '')
+            : '';
+
+        return $debut . $chemin
+            . (isset($parties['query']) ? '?' . $parties['query'] : '')
+            . (isset($parties['fragment']) ? '#' . $parties['fragment'] : '');
+    }
+
+    /**
+     * Versions de la page courante dans chaque langue publiée (hreflang),
+     * plus x-default (langue principale). Adresse PUBLIQUE : un chemin
+     * d'iframe (/embed) est ramené à la page qu'il sert. Vide pour un site
+     * à une seule langue.
+     */
+    protected function alternatesLangues(Request $request, array $langues): array
+    {
+        if (! LanguesSite::estMultilingue($langues)) {
+            return [];
+        }
+
+        $chemin = LanguesSite::sansLangue('/' . ltrim($request->path(), '/'));
+        $chemin = (string) preg_replace('#/embed/?$#', '', $chemin);
+        if (! preg_match('#^/company/\d+#', $chemin)) {
+            return [];
+        }
+
+        $liens = [];
+        foreach ($langues['visibles'] as $code) {
+            $liens[$code] = url(LanguesSite::prefixer($chemin, $code, $langues));
+        }
+        $liens['x-default'] = $liens[$langues['principale']];
+
+        return $liens;
+    }
+
+    /**
+     * Étape 2 : remplace les textes étiquetés (data-gx-t / data-gx-ta) par
+     * leur traduction dans la langue de l'adresse, ainsi que le titre et la
+     * description de la page. Une seule requête ; un texte sans traduction
+     * garde la langue principale. Langue principale : rien n'est fait.
+     *
+     * @return array{0: mixed, 1: array}
+     */
+    protected function appliquerTraductions($html, array $seoContext): array
+    {
+        if (! is_string($html) || $html === '' || ! $this->etablissement) {
+            return [$html, $seoContext];
+        }
+
+        try {
+            $id = (int) $this->etablissement->id;
+            $langues = LanguesSite::pour($id);
+            $langue = $this->langueCourante(request(), $langues);
+
+            if ($langue === $langues['principale'] || ! \Vendor\Cms\Models\Traduction::disponible()) {
+                return [$html, $seoContext];
+            }
+
+            $cles = [];
+            foreach (\Vendor\Cms\Support\Traductions\TextesHtml::cles($html) as $cle) {
+                $cles[] = $cle;
+                foreach (\Vendor\Cms\Support\Traductions\TextesHtml::ATTRIBUTS as $attribut) {
+                    $cles[] = $cle . '@' . $attribut;
+                }
+            }
+            $pageId = (int) ($seoContext['page_id'] ?? 0);
+            if ($pageId) {
+                foreach (['title', 'seo_title', 'seo_description'] as $champ) {
+                    $cles[] = 'p' . $pageId . '@' . $champ;
+                }
+            }
+            if (! $cles) {
+                return [$html, $seoContext];
+            }
+
+            $traductions = [];
+            foreach (array_chunk($cles, 500) as $lot) {
+                $traductions += \Vendor\Cms\Models\Traduction::where('etablissement_id', $id)
+                    ->where('langue', $langue)
+                    ->whereIn('cle', $lot)
+                    ->pluck('texte', 'cle')
+                    ->all();
+            }
+            if (! $traductions) {
+                return [$html, $seoContext];
+            }
+
+            $html = \Vendor\Cms\Support\Traductions\TextesHtml::appliquer($html, $traductions);
+
+            // Titre et description de la page.
+            if ($pageId) {
+                $titreSeo = trim((string) ($traductions['p' . $pageId . '@seo_title'] ?? ''));
+                $titre = trim((string) ($traductions['p' . $pageId . '@title'] ?? ''));
+                $description = trim((string) ($traductions['p' . $pageId . '@seo_description'] ?? ''));
+                $siteName = (string) ($seoContext['site_name'] ?? '');
+
+                $nouveauTitre = $titreSeo !== '' ? $titreSeo
+                    : (($titre !== '' && empty($seoContext['is_home'])) ? trim($siteName . ' | ' . $titre, ' |') : '');
+
+                foreach (['title' => $nouveauTitre, 'description' => $description] as $champ => $valeur) {
+                    if ($valeur === '') {
+                        continue;
+                    }
+                    // Les données de partage suivent, sauf si elles avaient
+                    // été saisies à part.
+                    $og = 'og_' . $champ;
+                    if (! isset($seoContext[$og]) || $seoContext[$og] === ($seoContext[$champ] ?? null)) {
+                        $seoContext[$og] = $valeur;
+                    }
+                    $seoContext[$champ] = $valeur;
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Traductions du site : ' . $e->getMessage());
+        }
+
+        return [$html, $seoContext];
+    }
+
+    /**
+     * Applique la langue au HTML d'une page d'établissement : attribut `lang`,
+     * balises hreflang, liens internes préfixés, sélecteur de langue.
+     */
+    protected function appliquerLangue($html)
+    {
+        if (! is_string($html) || $html === '' || ! $this->etablissement) {
+            return $html;
+        }
+
+        try {
+            $request = request();
+            $langues = LanguesSite::pour($this->etablissement->id);
+            $langue = $this->langueCourante($request, $langues);
+            $id = (int) $this->etablissement->id;
+
+            // 1) <html lang="…">
+            if (preg_match('/<html\b[^>]*>/i', $html, $m)) {
+                $balise = preg_match('/\slang\s*=/i', $m[0])
+                    ? preg_replace('/\slang\s*=\s*(["\'])[^"\']*\1/i', ' lang="' . $langue . '"', $m[0])
+                    : substr($m[0], 0, -1) . ' lang="' . $langue . '">';
+                $html = substr_replace($html, $balise, strpos($html, $m[0]), strlen($m[0]));
+            }
+
+            if (! LanguesSite::estMultilingue($langues)) {
+                return $html;
+            }
+
+            // 2) Liens vers les pages du site : préfixés dans la langue
+            //    courante (accueil, /site, /embed, /page/…). Les autres routes
+            //    (boutique, contact…) n'existent pas par langue.
+            //    ⚠ AVANT hreflang et sélecteur, dont les liens visent
+            //    volontairement les autres langues.
+            if ($langue !== $langues['principale']) {
+                $motifLangues = LanguesSite::motif();
+                $html = preg_replace_callback(
+                    '#(href\s*=\s*["\'])((?:https?://[^/"\']+)?/company/' . $id . ')(?!/(?:' . $motifLangues . ')(?=[/"\'?\#]))((?:/(?:page/[^"\'?\#]*|site|embed))?/?)(?=["\'?\#])#i',
+                    static fn ($m) => $m[1] . $m[2] . '/' . $langue . $m[3],
+                    $html
+                );
+            }
+
+            // 3) hreflang
+            $alternates = $this->alternatesLangues($request, $langues);
+            if ($alternates && stripos($html, 'hreflang=') === false && ($pos = stripos($html, '</head>')) !== false) {
+                $bloc = '';
+                foreach ($alternates as $code => $url) {
+                    $bloc .= '<link rel="alternate" hreflang="' . e($code) . '" href="' . e($url) . '">' . "\n";
+                }
+                $html = substr($html, 0, $pos) . $bloc . substr($html, $pos);
+            }
+
+            // 4) Sélecteur de langue
+            if ($langues['selecteur']) {
+                $html = $this->injecterSelecteurLangues($html, $langues, $langue, $alternates);
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Langues du site : ' . $e->getMessage());
+        }
+
+        return $html;
+    }
+
+    /**
+     * Sélecteur de langue : remplit un élément `data-gx-langues` placé dans
+     * le gabarit, sinon s'affiche en bas à gauche. Les liens ouvrent la page
+     * ENTIÈRE (target _top) : le shell GoExploria reprend la langue.
+     */
+    protected function injecterSelecteurLangues(string $html, array $langues, string $langue, array $alternates): string
+    {
+        if (! $alternates) {
+            return $html;
+        }
+
+        $liens = '';
+        foreach ($langues['visibles'] as $code) {
+            $actif = $code === $langue;
+            $liens .= '<a href="' . e($alternates[$code]) . '" target="_top" hreflang="' . $code . '" lang="' . $code . '"'
+                . ' title="' . e(LanguesSite::LANGUES[$code]) . '"'
+                . ($actif ? ' aria-current="true" class="is-active"' : '') . '>'
+                . e(LanguesSite::DRAPEAUX[$code]) . '</a>';
+        }
+
+        $style = '<style id="gx-langues-style">'
+            . '.gx-langues{display:inline-flex;gap:2px;align-items:center;font:600 12px/1 system-ui,sans-serif;}'
+            . '.gx-langues a{padding:6px 8px;border-radius:6px;color:inherit;text-decoration:none;opacity:.75;}'
+            . '.gx-langues a:hover{opacity:1;}'
+            . '.gx-langues a.is-active{opacity:1;background:rgba(0,0,0,.08);}'
+            . '.gx-langues--flottant{position:fixed;left:16px;bottom:16px;z-index:9990;background:#fff;color:#1e293b;'
+            . 'padding:4px;border-radius:10px;box-shadow:0 4px 18px rgba(0,0,0,.18);}'
+            . '</style>';
+
+        // Emplacement prévu par le gabarit : son contenu est remplacé.
+        $place = false;
+        $html = preg_replace_callback(
+            '#(<([a-z][a-z0-9]*)\b[^>]*\bdata-gx-langues\b[^>]*>)(.*?)(</\2>)#is',
+            static function ($m) use ($liens, &$place) {
+                $place = true;
+                $ouvrante = preg_match('/\bclass\s*=\s*"/i', $m[1])
+                    ? preg_replace('/\bclass\s*=\s*"/i', 'class="gx-langues ', $m[1], 1)
+                    : substr($m[1], 0, -1) . ' class="gx-langues">';
+
+                return $ouvrante . $liens . $m[4];
+            },
+            $html,
+            1
+        );
+
+        $bloc = $style . ($place ? '' : '<nav class="gx-langues gx-langues--flottant" aria-label="Langue du site">' . $liens . '</nav>');
+
+        return $this->insererAvantFinBody($html, $bloc);
     }
 
     /**
@@ -234,7 +510,12 @@ class WebThemeController extends Controller
         // elle, en gardant la query string (preview_theme…).
         $slugEntreprise = \Vendor\Cms\Support\SiteSlug::pourEtablissement($etablissement);
         if ($siteSlug !== $slugEntreprise) {
-            $cible = \Vendor\Cms\Support\SiteSlug::cheminPage($etablissement, $slug);
+            $langues = LanguesSite::pour($etablissement->id);
+            $cible = LanguesSite::prefixer(
+                \Vendor\Cms\Support\SiteSlug::cheminPage($etablissement, $slug),
+                $this->langueCourante($request, $langues),
+                $langues
+            );
             $query = $request->getQueryString();
 
             return redirect()->to($cible . ($query ? '?' . $query : ''), 301);
@@ -2432,6 +2713,9 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
      */
     protected function buildResponse($html, array $seoContext = [])
     {
+        // Sites multilingues : textes traduits AVANT tout le reste (les blocs
+        // injectés ensuite ne portent pas d'étiquettes).
+        [$html, $seoContext] = $this->appliquerTraductions($html, $seoContext);
         $html = $this->injectSeoMeta($html, $seoContext);
         $html = $this->injectCartDrawer($html);
         $html = $this->injectProductModal($html);
@@ -2442,6 +2726,7 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
         $html = $this->injectLandingMap($html, $seoContext);
         $html = $this->injectSwiperAssets($html);
         $html = $this->injectEmbedBridge($html);
+        $html = $this->appliquerLangue($html);
 
         return response($html, 200, [
             'Content-Type' => 'text/html; charset=utf-8',
@@ -2972,6 +3257,8 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
             'is_home' => $page
                 ? ((bool) ($page->is_home ?? false) || strtolower((string) ($page->slug ?? '')) === 'home')
                 : true,
+            // Sites multilingues : clés « p{id}@title »… (appliquerTraductions).
+            'page_id' => $page ? (int) ($page->id ?? 0) : 0,
         ], $this->seoOptionsPage($meta, $title, $description, $image, $isPreview));
     }
 

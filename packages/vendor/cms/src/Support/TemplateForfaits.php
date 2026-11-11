@@ -67,6 +67,12 @@ class TemplateForfaits extends TemplateGrid
     /** Ce qui désigne un véhicule : jamais un forfait. */
     private const MOTS_VEHICULE = '/voiture|v[ée]hicule|automobile|\bvus\b|\bsuv\b|berline|camionnette|fourgonnette|minivan|\b4x4\b|caravane|\bvr\b/iu';
 
+    /** Sites multilingues : champs traduits (ContenusTraduisibles). */
+    protected function typeTraduction(): ?string
+    {
+        return 'bien';
+    }
+
     protected function marqueur(): string
     {
         return 'data-gx-forfaits';

@@ -63,6 +63,12 @@
                 ->limit(200)          // garde-fou : la grille est cliente
                 ->get();
 
+            // Sites multilingues (étape 5) : titres et descriptions dans la
+            // langue de l'adresse, en mémoire seulement.
+            if (class_exists(\Vendor\Cms\Support\Traductions\ContenusTraduisibles::class)) {
+                \Vendor\Cms\Support\Traductions\ContenusTraduisibles::appliquer($gxImmoBiens, 'bien', (int) $etablissement->id);
+            }
+
             if ($gxImmoBiens->isNotEmpty()) {
                 // Nombre d'annonces par négociateur, compté sur les biens déjà
                 // chargés : le template l'affiche sur sa fiche, et une requête

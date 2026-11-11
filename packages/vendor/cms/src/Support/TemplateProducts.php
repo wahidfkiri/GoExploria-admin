@@ -45,6 +45,12 @@ class TemplateProducts extends TemplateGrid
     /** Fiche produit vers laquelle pointent les cartes hydratées. */
     private const ROUTE_FICHE = 'cms.company.products.show';
 
+    /** Sites multilingues : champs traduits (ContenusTraduisibles). */
+    protected function typeTraduction(): ?string
+    {
+        return 'produit';
+    }
+
     protected function marqueur(): string
     {
         return 'data-gx-products';
