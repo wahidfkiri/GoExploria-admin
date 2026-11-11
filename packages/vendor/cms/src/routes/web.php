@@ -42,7 +42,8 @@ Route::middleware(['web'])->group(function () {
         // Même rendu que les adresses sans préfixe (langue principale).
         // Déclaré EN TÊTE : `/{slug}` (accueil SEO, plus bas) avalerait `/en`.
         // LangueSite retire le paramètre `langue` : les actions gardent leur
-        // signature. Langue principale préfixée → 301 ; non publiée → 404.
+        // signature. Langue principale préfixée → 301 ; non publiée → 302
+        // vers la langue principale.
         Route::prefix('/{langue}')->name('langue.')
             ->where(['langue' => \Vendor\Cms\Support\LanguesSite::motif()])
             ->middleware(\Vendor\Cms\Middleware\LangueSite::class)

@@ -13,7 +13,7 @@ use Vendor\Cms\Support\LanguesSite;
  *
  * - langue principale demandée avec préfixe → 301 vers l'adresse sans préfixe
  *   (une seule adresse par contenu) ;
- * - langue non publiée par l'établissement → 404 ;
+ * - langue non publiée par l'établissement → 302 vers la langue principale ;
  * - sinon : locale de l'application, attribut `gx_langue` de la requête, et
  *   le paramètre `langue` est RETIRÉ de la route, pour que les actions du
  *   contrôleur gardent leur signature (etablissementId, slug…).
@@ -26,15 +26,20 @@ class LangueSite
         $langue = (string) $route->parameter('langue');
         $config = LanguesSite::pour((int) $route->parameter('etablissementId'));
 
-        if ($langue === $config['principale']) {
-            $cible = LanguesSite::sansLangue('/' . ltrim($request->path(), '/'));
-            $query = $request->getQueryString();
+        $cible = LanguesSite::sansLangue('/' . ltrim($request->path(), '/'));
+        $query = $request->getQueryString();
 
+        if ($langue === $config['principale']) {
             return redirect()->to($cible . ($query ? '?' . $query : ''), 301);
         }
 
+        // Langue non publiée par l'établissement (non cochée « Publiée » dans
+        // Configuration → Langues du site) : la page dans la langue
+        // principale plutôt qu'une erreur 404. Temporaire (302) : la langue
+        // peut être publiée demain.
         if (! LanguesSite::estVisible($config, $langue)) {
-            abort(404);
+            return redirect()->to($cible . ($query ? '?' . $query : ''), 302)
+                ->header('X-Langue-Site', 'non-publiee');
         }
 
         App::setLocale($langue);
