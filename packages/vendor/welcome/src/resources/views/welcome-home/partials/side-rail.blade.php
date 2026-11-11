@@ -31,6 +31,29 @@
     ];
     $gxRailLocale = array_key_exists(app()->getLocale(), $gxRailLocales) ? app()->getLocale() : 'fr';
 
+    // Site d'un établissement (shell GoExploria, $gxLanguesHeader fourni par
+    // WebThemeController::platformSite) : mêmes règles que le sélecteur de
+    // l'en-tête. Seules les langues PUBLIÉES par l'établissement, chacune
+    // menant à l'adresse du site dans cette langue ; aucune autre langue
+    // publiée → pas de sélecteur. Pages de la plateforme : inchangé.
+    $gxRailLanguesSite = (isset($gxLanguesHeader) && is_array($gxLanguesHeader)) ? $gxLanguesHeader : null;
+    if ($gxRailLanguesSite !== null) {
+        $gxRailLocales = array_intersect_key($gxRailLocales, (array) ($gxRailLanguesSite['urls'] ?? []));
+        $gxRailLocale = (string) ($gxRailLanguesSite['courante'] ?? $gxRailLocale);
+        if (! array_key_exists($gxRailLocale, $gxRailLocales)) {
+            $gxRailLocale = (string) (array_key_first($gxRailLocales) ?? 'fr');
+        }
+    }
+    $gxRailAfficherLangues = $gxRailLanguesSite === null || count($gxRailLocales) > 1;
+    $gxRailLienLangue = function (string $code) use ($gxRailLanguesSite, &$gxRailRoute) {
+        if ($gxRailLanguesSite !== null) {
+            return (string) ($gxRailLanguesSite['urls'][$code] ?? '#');
+        }
+        $route = $gxRailRoute('locale.switch', ['locale' => $code]);
+
+        return $route ? $route . '?redirect=' . urlencode(request()->fullUrl()) : '#';
+    };
+
     $gxRailRoute = static fn (string $name, $params = []) => \Illuminate\Support\Facades\Route::has($name)
         ? route($name, $params)
         : null;
@@ -315,6 +338,7 @@
 
 <aside class="gxrail" id="gxRail" aria-label="Raccourcis GoExploria">
     <div class="gxrail__inner">
+        @if($gxRailAfficherLangues)
         <button type="button" class="gxrail__item gxrail__item--lang" data-gxrail-open="lang"
                 aria-haspopup="listbox" aria-expanded="false" aria-controls="gxRailLang"
                 title="Changer de langue">
@@ -326,6 +350,7 @@
                 <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </span>
         </button>
+        @endif
 
         <button type="button" class="gxrail__item" data-gxrail-open="search"
                 aria-haspopup="dialog" aria-expanded="false" aria-controls="gxRailSearch">
@@ -371,13 +396,14 @@
 </aside>
 
 {{-- ── Panneau : langue ─────────────────────────────────────────────── --}}
+@if($gxRailAfficherLangues)
 <div class="gxrail-pop" id="gxRailLang" data-gxmenu-panel="lang" role="dialog" aria-label="Choisir la langue" aria-hidden="true">
     <p class="gxrail-pop__title">Langue</p>
     <ul class="gxrail-pop__list">
         @foreach($gxRailLocales as $code => $data)
             <li>
                 <a class="gxrail-pop__lang {{ $code === $gxRailLocale ? 'is-active' : '' }}"
-                   href="{{ $gxRailRoute('locale.switch', ['locale' => $code]) ? $gxRailRoute('locale.switch', ['locale' => $code]) . '?redirect=' . urlencode(request()->fullUrl()) : '#' }}">
+                   href="{{ $gxRailLienLangue($code) }}" hreflang="{{ $code }}">
                     <span class="fi fi-{{ $data['flag'] }}" aria-hidden="true"></span>
                     <span>{{ $data['label'] }}</span>
                     <em>{{ $data['code'] }}</em>
@@ -386,6 +412,7 @@
         @endforeach
     </ul>
 </div>
+@endif
 
 {{-- ── Panneau : recherche ──────────────────────────────────────────── --}}
 <div class="gxrail-pop gxrail-pop--search" id="gxRailSearch" data-gxmenu-panel="search" role="dialog" aria-label="Rechercher une destination" aria-hidden="true">

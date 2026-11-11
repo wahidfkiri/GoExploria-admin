@@ -176,21 +176,19 @@ class WebThemeController extends Controller
         );
         $gxAlternates = $this->alternatesLangues($request, $langues);
 
-        // Sélecteur de langue dans la page PARENTE : un élément fixe placé
-        // dans l'iframe (sans défilement propre) resterait collé au bas du
-        // document, hors de la vue du visiteur.
-        $gxSelecteurLangues = [];
+        // Sélecteur de langue de l'en-tête GoExploria (composant Header) : il
+        // suit les langues PUBLIÉES par l'établissement et mène à l'adresse du
+        // site dans chacune. Une seule langue publiée (ou sélecteur décoché
+        // dans la Configuration) : pas de sélecteur du tout.
+        $gxLanguesHeader = ['urls' => [], 'courante' => $gxLangue];
         if ($langues['selecteur'] && count($gxAlternates) > 2) {
             foreach ($langues['visibles'] as $code) {
-                $gxSelecteurLangues[$code] = [
-                    'url' => $gxAlternates[$code],
-                    'nom' => LanguesSite::LANGUES[$code] ?? $code,
-                ];
+                $gxLanguesHeader['urls'][$code] = $gxAlternates[$code];
             }
         }
 
         return view('cms::web.embed.platform-shell', compact(
-            'etablissement', 'embedSrc', 'shellTitle', 'gxLangue', 'gxAlternates', 'gxSelecteurLangues'
+            'etablissement', 'embedSrc', 'shellTitle', 'gxLangue', 'gxAlternates', 'gxLanguesHeader'
         ));
     }
 

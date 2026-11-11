@@ -11,10 +11,23 @@
         'it' => ['flag' => 'it', 'code' => 'IT', 'label' => __('home-v2.language.it')],
     ];
     $currentLocale = app()->getLocale();
-    if (! array_key_exists($currentLocale, $supportedLocales)) {
-        $currentLocale = 'fr';
+
+    // Site d'un établissement (shell GoExploria, $gxLanguesHeader fourni par
+    // WebThemeController::platformSite) : le sélecteur suit les langues
+    // PUBLIÉES par l'établissement, chacune menant à l'adresse du site dans
+    // cette langue (/company/{id}/en/{slug}). Aucune autre langue publiée :
+    // pas de sélecteur. Pages de la plateforme : comportement habituel.
+    $gxLanguesEtablissement = (isset($gxLanguesHeader) && is_array($gxLanguesHeader)) ? $gxLanguesHeader : null;
+    if ($gxLanguesEtablissement !== null) {
+        $supportedLocales = array_intersect_key($supportedLocales, (array) ($gxLanguesEtablissement['urls'] ?? []));
+        $currentLocale = (string) ($gxLanguesEtablissement['courante'] ?? $currentLocale);
     }
-    $currentLanguage = $supportedLocales[$currentLocale];
+    $gxAfficherLangues = $gxLanguesEtablissement === null || count($supportedLocales) > 1;
+
+    if (! array_key_exists($currentLocale, $supportedLocales)) {
+        $currentLocale = array_key_exists('fr', $supportedLocales) ? 'fr' : (array_key_first($supportedLocales) ?? 'fr');
+    }
+    $currentLanguage = $supportedLocales[$currentLocale] ?? ['flag' => 'fr', 'code' => 'FR', 'label' => 'Français'];
     $headerVideoChannelUrl = \Illuminate\Support\Facades\Route::has('cms.videos.channel')
         ? route('cms.videos.channel')
         : url('/chaine-videos');
@@ -104,6 +117,7 @@
                     }
                 </style>
                 {{-- â€”â€” Language Switcher â€”â€” --}}
+                @if($gxAfficherLangues)
                 <div class="lang-switcher" id="langSwitcher">
                     <button class="lang-btn" id="langBtn" aria-label="{{ __('home-v2.language.select') }}" aria-expanded="false">
                         <span class="fi fi-{{ $currentLanguage['flag'] }} lang-flag" id="langCurrentFlag"></span>
@@ -114,13 +128,15 @@
                     </button>
                     <ul class="lang-dropdown" id="langDropdown" role="listbox">
                         @foreach ($supportedLocales as $localeCode => $localeData)
-                            <li class="lang-option {{ $localeCode === $currentLocale ? 'lang-active' : '' }}" role="option" data-lang="{{ $localeCode }}" data-flag="{{ $localeData['flag'] }}" data-code="{{ $localeData['code'] }}">
+                            <li class="lang-option {{ $localeCode === $currentLocale ? 'lang-active' : '' }}" role="option" data-lang="{{ $localeCode }}" data-flag="{{ $localeData['flag'] }}" data-code="{{ $localeData['code'] }}"
+                                @if($gxLanguesEtablissement !== null) data-url="{{ $gxLanguesEtablissement['urls'][$localeCode] ?? '' }}" @endif>
                                 <span class="fi fi-{{ $localeData['flag'] }} lang-flag"></span>
                                 <span class="lang-name">{{ $localeData['label'] }}</span>
                             </li>
                         @endforeach
                     </ul>
                 </div>
+                @endif
                 <a href="{{ route('favoris') }}" class="nav-icon" aria-label="{{ __('home-v2.common.favorites') }}">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -206,7 +222,14 @@
 
                 close();
 
-                const targetUrl = '{{ route('locale.switch', ['locale' => '__LOCALE__']) }}'.replace('__LOCALE__', opt.dataset.lang);
+                // Site d'un établissement : l'adresse du site dans la langue
+                // choisie (la barre d'adresse change).
+                if (opt.dataset.url) {
+                    window.location.href = opt.dataset.url;
+                    return;
+                }
+
+                const targetUrl ='{{ route('locale.switch', ['locale' => '__LOCALE__']) }}'.replace('__LOCALE__', opt.dataset.lang);
                 window.location.href = targetUrl + '?redirect=' + encodeURIComponent(window.location.href);
             });
         });

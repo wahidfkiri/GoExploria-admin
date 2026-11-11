@@ -188,28 +188,9 @@
         </iframe>
     </main>
 
-    {{-- Sélecteur de langue du site (sites multilingues) : dans CE document,
-         où `fixed` se cale sur l'écran. Liens ordinaires : choisir une langue
-         ouvre son adresse (/company/{id}/en/{slug}…), la barre d'adresse suit. --}}
-    @if(!empty($gxSelecteurLangues))
-        <nav class="gx-langues-shell" aria-label="Langue du site">
-            <span class="gx-langues-shell__icone" aria-hidden="true">🌐</span>
-            @foreach($gxSelecteurLangues as $gxCode => $gxInfo)
-                <a href="{{ $gxInfo['url'] }}" hreflang="{{ $gxCode }}" lang="{{ $gxCode }}" title="{{ $gxInfo['nom'] }}"
-                   @if($gxCode === ($gxLangue ?? null)) class="is-active" aria-current="true" @endif>{{ strtoupper($gxCode) }}</a>
-            @endforeach
-        </nav>
-        <style>
-            .gx-langues-shell { position: fixed; top: 104px; right: 16px; z-index: 99980; display: inline-flex; align-items: center; gap: 2px;
-                padding: 4px; background: #fff; border-radius: 999px; box-shadow: 0 6px 22px rgba(2, 6, 23, .18);
-                font: 600 12px/1 Montserrat, system-ui, sans-serif; }
-            .gx-langues-shell__icone { padding: 0 4px 0 6px; font-size: 13px; }
-            .gx-langues-shell a { padding: 7px 10px; border-radius: 999px; color: #334155; text-decoration: none; letter-spacing: .04em; }
-            .gx-langues-shell a:hover { background: #f1f5f9; color: #0f172a; }
-            .gx-langues-shell a.is-active { background: #0f172a; color: #fff; }
-            @media (max-width: 991px) { .gx-langues-shell { top: 88px; right: 12px; } }
-        </style>
-    @endif
+    {{-- Le sélecteur de langue du site est celui de l'en-tête GoExploria
+         (home-v2 Header, variable $gxLanguesHeader) : visible seulement si
+         l'établissement publie plusieurs langues. --}}
 
     {{-- Bouton « Menu du site » : voir le commentaire de .gx-embed-menu. --}}
     <button type="button" class="gx-embed-menu" id="gxEmbedMenu" aria-label="Ouvrir le menu du site">
