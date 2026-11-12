@@ -165,23 +165,38 @@
     var pop = document.getElementById('gx-ads-popup');
     if (!pop) return;
 
-    // 0 (defaut) = la fermeture ne vaut que pour la page affichee : le popup
-    // revient au rafraichissement. Une valeur > 0 le memorise ce nombre d'heures.
-    // `|| 12` ne convenait pas ici : il transformait 0 en 12 heures.
+    var zone = pop.getAttribute('data-zone') || 'popup';
+
+    /* ── Fermeture retenue pour la SESSION ────────────────────────────────
+       Fermer l'annonce la faisait revenir à chaque page : le visiteur devait
+       la refermer encore et encore. Elle reste donc fermée jusqu'à la fin de
+       la session de navigation, et se represente à la visite suivante —
+       `sessionStorage` est propre à l'onglet et s'efface à sa fermeture,
+       c'est exactement cette durée.
+
+       `data-dismiss-hours`, s'il est renseigné, garde son rôle : une
+       fermeture mémorisée AU-DELÀ de la session, pour le nombre d'heures
+       indiqué. Zéro (le défaut) ne vaut plus « revient à chaque page » mais
+       « revient à la prochaine session ». */
+    var SESSION_KEY = 'gx_ads_popup_session_' + zone;
+    var DISMISS_KEY = 'gx_ads_popup_dismissed_' + zone;
+
     var dismissHours = parseFloat(pop.getAttribute('data-dismiss-hours'));
     if (!isFinite(dismissHours) || dismissHours < 0) { dismissHours = 0; }
-    var DISMISS_KEY = 'gx_ads_popup_dismissed_' + (pop.getAttribute('data-zone') || 'popup');
+
+    // Fermée pendant cette session : on n'affiche rien.
+    try {
+        if (sessionStorage.getItem(SESSION_KEY)) { pop.remove(); return; }
+    } catch (e) {}
 
     if (dismissHours > 0) {
-        // Ne pas réafficher si fermé récemment.
         try {
             var until = parseInt(localStorage.getItem(DISMISS_KEY) || '0', 10);
             if (until && Date.now() < until) { pop.remove(); return; }
         } catch (e) {}
     } else {
-        // Efface une fermeture memorisee par la version precedente : sinon le
-        // visiteur qui avait ferme le popup en resterait prive jusqu'a 12 h
-        // apres la mise en ligne de ce correctif.
+        // Efface une fermeture memorisee par une version precedente, qui
+        // aurait prive le visiteur du popup pendant des heures.
         try { localStorage.removeItem(DISMISS_KEY); } catch (e) {}
     }
 
@@ -212,10 +227,11 @@
         });
     });
 
-    // Fermeture. Rien n'est memorise tant que dismissHours vaut 0 : la fermeture
-    // ne concerne que la page en cours, le popup revient au rafraichissement.
+    // Fermeture : retenue pour toute la session, et au-delà si des heures
+    // de mémorisation sont configurées.
     pop.querySelector('.gxad-close').addEventListener('click', function () {
         pop.classList.remove('is-open');
+        try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
         if (dismissHours > 0) {
             try { localStorage.setItem(DISMISS_KEY, String(Date.now() + dismissHours * 3600 * 1000)); } catch (e) {}
         }

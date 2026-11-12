@@ -135,6 +135,23 @@ public function regions(): HasMany
     return $this->hasMany(Region::class);
 }
 
+/* Rattachement souple : destinations situées dans la province, quel que
+   soit le niveau intermédiaire (colonnes d'ancêtres remplies par l'admin). */
+public function secteurs(): HasMany
+{
+    return $this->hasMany(Secteur::class);
+}
+
+public function arrondissements(): HasMany
+{
+    return $this->hasMany(Arrondissement::class);
+}
+
+public function quartiers(): HasMany
+{
+    return $this->hasMany(Quartier::class);
+}
+
 // Accessor pour le nombre de régions
 public function getRegionsCountAttribute(): int
 {

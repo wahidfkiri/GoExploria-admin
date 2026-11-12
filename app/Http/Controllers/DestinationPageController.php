@@ -229,37 +229,19 @@ class DestinationPageController extends Controller
             $country = $province ? $this->activeFind(Country::class, $province->country_id ?? null) : null;
         }
 
-        if ($type === 'ville') {
-            $ville = $model;
-            $secteur = $this->activeFind(Secteur::class, $model->secteur_id ?? null);
-            $region = $this->activeFind(Region::class, $model->region_id ?? ($secteur->region_id ?? null));
-            $province = $this->activeFind(Province::class, $model->province_id ?? ($region->province_id ?? null));
-            $country = $this->activeFind(Country::class, $model->country_id ?? ($province->country_id ?? null));
-        }
-
-        if ($type === 'secteur') {
-            $secteur = $model;
-            $region = $this->activeFind(Region::class, $model->region_id ?? null);
-            $province = $region ? $this->activeFind(Province::class, $region->province_id ?? null) : null;
-            $country = $province ? $this->activeFind(Country::class, $province->country_id ?? null) : null;
-        }
-
-        if ($type === 'arrondissement') {
-            $arrondissement = $model;
-            $ville = $this->activeFind(Ville::class, $model->ville_id ?? null);
-        }
-
-        if ($type === 'quartier') {
-            $arrondissement = $this->activeFind(Arrondissement::class, $model->arrondissement_id ?? null);
-            $ville = $this->activeFind(Ville::class, $model->ville_id ?? ($arrondissement->ville_id ?? null));
-        }
-
-        // Remonter la chaîne depuis la ville pour arrondissements et quartiers
-        if (in_array($type, ['arrondissement', 'quartier'], true) && $ville) {
-            $secteur = $this->activeFind(Secteur::class, $ville->secteur_id ?? null);
-            $region = $this->activeFind(Region::class, $ville->region_id ?? ($secteur->region_id ?? null));
-            $province = $this->activeFind(Province::class, $ville->province_id ?? ($region->province_id ?? null));
-            $country = $this->activeFind(Country::class, $ville->country_id ?? ($province->country_id ?? null));
+        // Secteurs, villes, arrondissements, quartiers : rattachement SOUPLE
+        // (un niveau intermédiaire peut manquer — secteur sans région, ville
+        // sans secteur, quartier sans arrondissement…). La chaîne est lue dans
+        // les colonnes d'ancêtres de la destination, complétée au besoin par
+        // celles de ses ancêtres, du plus précis au plus général.
+        if (in_array($type, ['secteur', 'ville', 'arrondissement', 'quartier'], true)) {
+            $chaine = $this->chaineSouple($type, $model);
+            $country = $chaine['country'] ?? null;
+            $province = $chaine['province'] ?? null;
+            $region = $chaine['region'] ?? null;
+            $secteur = $type === 'secteur' ? $model : ($chaine['secteur'] ?? null);
+            $ville = $type === 'ville' ? $model : ($chaine['ville'] ?? null);
+            $arrondissement = $type === 'arrondissement' ? $model : ($chaine['arrondissement'] ?? null);
         }
 
         if ($country) {
@@ -300,6 +282,51 @@ class DestinationPageController extends Controller
             'current_type' => $type,
             'current' => $model,
         ];
+    }
+
+    /** Niveaux sous le continent : type => [modèle, colonne de rattachement]. */
+    private const CHAINE_SOUPLE = [
+        'country'        => [Country::class, 'country_id'],
+        'province'       => [Province::class, 'province_id'],
+        'region'         => [Region::class, 'region_id'],
+        'secteur'        => [Secteur::class, 'secteur_id'],
+        'ville'          => [Ville::class, 'ville_id'],
+        'arrondissement' => [Arrondissement::class, 'arrondissement_id'],
+    ];
+
+    /**
+     * Ancêtres (actifs) d'une destination à rattachement souple :
+     * type => modèle. Les identifiants viennent des colonnes d'ancêtres de la
+     * destination ; un ancêtre absent est déduit d'un ancêtre plus précis
+     * (anciennes données sans colonnes complètes).
+     *
+     * @return array<string, Model>
+     */
+    private function chaineSouple(string $type, Model $model): array
+    {
+        $ids = [];
+        $remplir = function (Model $m) use (&$ids) {
+            foreach (self::CHAINE_SOUPLE as $niveau => [, $colonne]) {
+                if (! isset($ids[$niveau]) && ! empty($m->{$colonne})) {
+                    $ids[$niveau] = $m->{$colonne};
+                }
+            }
+        };
+        $remplir($model);
+
+        $modeles = [];
+        foreach (array_reverse(self::CHAINE_SOUPLE, true) as $niveau => [$classe]) {
+            if ($niveau === $type || ! isset($ids[$niveau])) {
+                continue;
+            }
+            $ancetre = $this->activeFind($classe, $ids[$niveau]);
+            if ($ancetre) {
+                $modeles[$niveau] = $ancetre;
+                $remplir($ancetre);
+            }
+        }
+
+        return $modeles;
     }
 
     private function activeFind(string $modelClass, $id): ?Model
@@ -491,13 +518,15 @@ class DestinationPageController extends Controller
                 'zoom' => $this->zoomFor($currentType),
             ],
             'filters' => [
-                'label' => $this->filterLabelFor($currentType),
-                'all_label' => $this->filterAllLabelFor($currentType),
+                // Enfants de plusieurs niveaux (rattachement souple) : libellés
+                // génériques plutôt que « Régions » pour une liste mêlée.
+                'label' => $children->pluck('gx_niveau')->unique()->count() > 1 ? 'Destinations (Zoom) :' : $this->filterLabelFor($currentType),
+                'all_label' => $children->pluck('gx_niveau')->unique()->count() > 1 ? 'Toutes les destinations' : $this->filterAllLabelFor($currentType),
                 'child_type' => $this->childTypeFor($currentType),
                 'items' => $children->map(fn ($item) => [
                     'code' => Str::slug($this->modelName($item)),
                     'name' => $this->modelName($item),
-                    'type' => $this->childTypeFor($currentType),
+                    'type' => $item->gx_niveau ?? $this->childTypeFor($currentType),
                     'lat' => $this->coordinate($item, 'latitude'),
                     'lng' => $this->coordinate($item, 'longitude'),
                 ])->values()->all(),
@@ -507,33 +536,46 @@ class DestinationPageController extends Controller
         ];
     }
 
+    /**
+     * Enfants DIRECTS d'une destination, tous niveaux inférieurs confondus.
+     *
+     * Rattachement souple : une province a ses régions, mais aussi ses
+     * secteurs sans région, ses villes sans région ni secteur… Enfant direct
+     * de P au niveau L : colonne de P = id et colonnes des niveaux entre P et L
+     * vides (colonnes absentes d'une table ignorées). Chaque enfant porte
+     * `gx_niveau` ; le niveau naturel vient en premier.
+     */
     private function childrenFor(string $type, Model $model): Collection
     {
-        return match ($type) {
-            'continent' => Country::active()->where('continent_id', $model->id)->orderBy('name')->get(),
-            'country' => Province::active()->where('country_id', $model->id)->orderBy('name')->get(),
-            'province' => Region::active()->where('province_id', $model->id)->orderBy('name')->get(),
-            'region' => $this->childrenForRegion($model),
-            'secteur' => Ville::active()->where('secteur_id', $model->id)->orderBy('name')->get(),
-            'ville' => Arrondissement::active()->where('ville_id', $model->id)->orderBy('name')->get(),
-            'arrondissement' => Quartier::active()->where('arrondissement_id', $model->id)->orderBy('name')->get(),
-            default => collect(),
-        };
-    }
-
-    /**
-     * Enfants d'une région : les secteurs (nouveau niveau intermédiaire)
-     * s'ils existent, sinon les villes directement (compat historique).
-     */
-    private function childrenForRegion(Model $region): Collection
-    {
-        $secteurs = Secteur::active()->where('region_id', $region->id)->orderBy('name')->get();
-
-        if ($secteurs->isNotEmpty()) {
-            return $secteurs;
+        $chaine = ['continent' => [null, 'continent_id']] + self::CHAINE_SOUPLE + ['quartier' => [Quartier::class, null]];
+        $niveaux = array_keys($chaine);
+        $rang = array_search($type, $niveaux, true);
+        $colonneParent = $chaine[$type][1] ?? null;
+        if ($rang === false || ! $colonneParent) {
+            return collect();
         }
 
-        return Ville::active()->where('region_id', $region->id)->orderBy('name')->get();
+        $enfants = collect();
+        foreach (array_slice($niveaux, $rang + 1) as $i => $niveau) {
+            $classe = $chaine[$niveau][0];
+            $table = (new $classe())->getTable();
+            if (! Schema::hasColumn($table, $colonneParent)) {
+                continue;
+            }
+            $requete = $classe::active()->where($colonneParent, $model->id);
+            foreach (array_slice($niveaux, $rang + 1, $i) as $intermediaire) {
+                $colonne = $chaine[$intermediaire][1];
+                if ($colonne && Schema::hasColumn($table, $colonne)) {
+                    $requete->whereNull($colonne);
+                }
+            }
+            $requete->orderBy('name')->get()->each(function ($enfant) use ($niveau, $enfants) {
+                $enfant->setAttribute('gx_niveau', $niveau);
+                $enfants->push($enfant);
+            });
+        }
+
+        return $enfants;
     }
 
     private function secteursForVille(Model $ville): Collection

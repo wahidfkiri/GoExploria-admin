@@ -75,6 +75,29 @@ class Quartier extends Model
         return $this->belongsTo(Ville::class);
     }
 
+    /* Rattachement souple : sans arrondissement, un quartier pend de la ville,
+       du secteur, de la région ou de la province ; toutes les colonnes
+       d'ancêtres sont remplies. */
+    public function secteur(): BelongsTo
+    {
+        return $this->belongsTo(Secteur::class);
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::class);
+    }
+
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class);
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

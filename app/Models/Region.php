@@ -133,6 +133,18 @@ public function secteurs(): HasMany
     return $this->hasMany(Secteur::class);
 }
 
+/* Rattachement souple : arrondissements et quartiers situés dans la région
+   (colonnes d'ancêtres remplies par l'admin). */
+public function arrondissements(): HasMany
+{
+    return $this->hasMany(Arrondissement::class);
+}
+
+public function quartiers(): HasMany
+{
+    return $this->hasMany(Quartier::class);
+}
+
 // Accessor pour le nombre de secteurs
 public function getSecteursCountAttribute(): int
 {

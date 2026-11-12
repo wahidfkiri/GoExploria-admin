@@ -69,6 +69,28 @@ class Arrondissement extends Model
         return $this->belongsTo(Ville::class);
     }
 
+    /* Rattachement souple : sans ville, un arrondissement pend du secteur, de
+       la région ou de la province ; toutes les colonnes d'ancêtres sont remplies. */
+    public function secteur(): BelongsTo
+    {
+        return $this->belongsTo(Secteur::class);
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::class);
+    }
+
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class);
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
     // Relation avec les quartiers
     public function quartiers(): HasMany
     {

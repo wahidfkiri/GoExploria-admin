@@ -513,27 +513,20 @@ class TravelDestinationController extends Controller
      */
     protected function filterChildren($type, $entity): array
     {
-        switch ($type) {
-            case 'continent':
-                return ['country', $entity->countries()->active()->get()];
-            case 'country':
-                return ['province', $entity->provinces()->active()->get()];
-            case 'province':
-                return ['region', $entity->regions()->active()->get()];
-            case 'region':
-                $secteurs = $entity->secteurs()->active()->get();
-                return $secteurs->count() > 0
-                    ? ['secteur', $secteurs]
-                    : ['city', $entity->villes()->active()->get()];
-            case 'secteur':
-                return ['city', $entity->villes()->active()->get()];
-            case 'city':
-                return ['arrondissement', $entity->arrondissements()->active()->get()];
-            case 'arrondissement':
-                return ['quartier', $entity->quartiers()->active()->get()];
-            default:
-                return [null, collect()];
+        // Rattachement souple : enfants DIRECTS, tous niveaux confondus (une
+        // province propose ses régions ET ses secteurs sans région, ses villes
+        // sans région…). Chaque option garde son propre niveau.
+        $enfants = $this->enfantsDirects((string) $type, $entity);
+        if ($enfants->isEmpty()) {
+            return [null, collect()];
         }
+
+        // Libellé du champ : le niveau le plus représenté (le niveau naturel
+        // en cas d'égalité, puisqu'il vient en premier).
+        $parNiveau = $enfants->groupBy(fn ($e) => $e->gx_niveau);
+        $niveau = $parNiveau->sortByDesc(fn ($groupe) => $groupe->count())->keys()->first();
+
+        return [$niveau, $enfants];
     }
 
     /**
@@ -546,21 +539,29 @@ class TravelDestinationController extends Controller
             return [];
         }
 
-        $zoom = [
+        $zooms = [
             'continent' => 3, 'country' => 5, 'province' => 7, 'region' => 9,
             'secteur' => 11, 'city' => 12, 'arrondissement' => 14, 'quartier' => 15,
-        ][$childType] ?? 10;
+        ];
 
         return $children
             ->filter(fn ($child) => filled($child->name ?? null))
-            ->map(fn ($child) => [
-                'name'      => $child->name,
-                'slug'      => (string) ($child->slug ?? $child->id),
-                'type'      => $childType,
-                'latitude'  => is_numeric($child->latitude ?? null) ? (float) $child->latitude : null,
-                'longitude' => is_numeric($child->longitude ?? null) ? (float) $child->longitude : null,
-                'zoom'      => $zoom,
-            ])
+            ->map(function ($child) use ($childType, $zooms) {
+                // Rattachement souple : chaque option garde SON niveau (un
+                // secteur proposé parmi des régions), précisé dans son nom.
+                $niveau = $child->gx_niveau ?? $childType;
+
+                return [
+                    'name'      => $niveau !== $childType
+                        ? $child->name . ' (' . ($this->typeLabels[$niveau] ?? $niveau) . ')'
+                        : $child->name,
+                    'slug'      => (string) ($child->slug ?? $child->id),
+                    'type'      => $niveau,
+                    'latitude'  => is_numeric($child->latitude ?? null) ? (float) $child->latitude : null,
+                    'longitude' => is_numeric($child->longitude ?? null) ? (float) $child->longitude : null,
+                    'zoom'      => $zooms[$niveau] ?? 10,
+                ];
+            })
             ->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)
             ->values()
             ->all();
@@ -629,10 +630,12 @@ class TravelDestinationController extends Controller
             'country'        => ['continent' => 'continent'],
             'province'       => ['country' => 'country'],
             'region'         => ['province' => 'province'],
-            'secteur'        => ['region' => 'region'],
+            // Rattachement souple : le parent est l'ancêtre le plus précis
+            // renseigné (un secteur sans région pend de la province, etc.).
+            'secteur'        => ['region' => 'region', 'province' => 'province', 'country' => 'country'],
             'city'           => ['secteur' => 'secteur', 'region' => 'region', 'province' => 'province', 'country' => 'country'],
-            'arrondissement' => ['ville' => 'city'],
-            'quartier'       => ['arrondissement' => 'arrondissement', 'ville' => 'city'],
+            'arrondissement' => ['ville' => 'city', 'secteur' => 'secteur', 'region' => 'region', 'province' => 'province', 'country' => 'country'],
+            'quartier'       => ['arrondissement' => 'arrondissement', 'ville' => 'city', 'secteur' => 'secteur', 'region' => 'region', 'province' => 'province', 'country' => 'country'],
         ];
 
         // Garde-fou : la chaîne compte 8 niveaux, une boucle de relations mal
@@ -953,10 +956,12 @@ class TravelDestinationController extends Controller
             'Country' => ['continent'],
             'Province' => ['country'],
             'Region' => ['province'],
-            'Secteur' => ['region'],
+            // Rattachement souple : premier ancêtre renseigné, du plus précis
+            // au plus général (secteur sans région → province…).
+            'Secteur' => ['region', 'province', 'country'],
             'Ville' => ['secteur', 'region', 'province', 'country'],
-            'Arrondissement' => ['ville'],
-            'Quartier' => ['arrondissement', 'ville'],
+            'Arrondissement' => ['ville', 'secteur', 'region', 'province', 'country'],
+            'Quartier' => ['arrondissement', 'ville', 'secteur', 'region', 'province', 'country'],
         ];
         $TYPE = [
             'Continent' => 'continent', 'Country' => 'country', 'Province' => 'province',
@@ -1197,162 +1202,64 @@ class TravelDestinationController extends Controller
         return $breadcrumb;
     }
 
+    /**
+     * Fil des ancêtres d'une destination (continent → … → parent), chaque
+     * maillon avec son lien.
+     *
+     * Rattachement SOUPLE : on remonte de parent en parent, le parent étant
+     * l'ancêtre le PLUS PRÉCIS renseigné (un secteur sans région pend de la
+     * province, un arrondissement sans ville du secteur, de la région ou de
+     * la province…). L'ancienne version suivait une chaîne fixe par niveau :
+     * un secteur sans région n'avait plus de fil du tout.
+     * Pays et provinces gardent un fil vide, comme auparavant.
+     */
     protected function getHierarchyChain($entity)
     {
         $chain = collect();
-        $type = class_basename($entity);
-
-        switch ($type) {
-            case 'Region':
-                $province = $entity->province;
-                if ($province) {
-                    $country = $province->country;
-                    if ($country) {
-                        if ($country->continent) {
-                            $chain->push([
-                                'label' => $country->continent->name,
-                                'url' => route('travel-destination.show', ['type' => 'continent', 'slug' => $country->continent->slug ?? $country->continent->id]),
-                            ]);
-                        }
-                        $chain->push([
-                            'label' => $country->name,
-                            'url' => route('travel-destination.show', ['type' => 'country', 'slug' => $this->entitySlug($country)]),
-                        ]);
-                    }
-                    $chain->push([
-                        'label' => $province->name,
-                        'url' => route('travel-destination.show', ['type' => 'province', 'slug' => $this->entitySlug($province)]),
-                    ]);
-                }
-                break;
-
-            case 'Ville':
-                $region = $entity->region;
-                if ($region) {
-                    $province = $region->province;
-                    if ($province) {
-                        $country = $province->country;
-                        if ($country) {
-                            if ($country->continent) {
-                                $chain->push([
-                                    'label' => $country->continent->name,
-                                    'url' => route('travel-destination.show', ['type' => 'continent', 'slug' => $country->continent->slug ?? $country->continent->id]),
-                                ]);
-                            }
-                            $chain->push([
-                                'label' => $country->name,
-                                'url' => route('travel-destination.show', ['type' => 'country', 'slug' => $this->entitySlug($country)]),
-                            ]);
-                        }
-                        $chain->push([
-                            'label' => $province->name,
-                            'url' => route('travel-destination.show', ['type' => 'province', 'slug' => $this->entitySlug($province)]),
-                        ]);
-                    }
-                    $chain->push([
-                        'label' => $region->name,
-                        'url' => route('travel-destination.show', ['type' => 'region', 'slug' => $this->entitySlug($region)]),
-                    ]);
-                } else {
-                    $province = $entity->province;
-                    if ($province) {
-                        $country = $province->country;
-                        if ($country) {
-                            if ($country->continent) {
-                                $chain->push([
-                                    'label' => $country->continent->name,
-                                    'url' => route('travel-destination.show', ['type' => 'continent', 'slug' => $country->continent->slug ?? $country->continent->id]),
-                                ]);
-                            }
-                            $chain->push([
-                                'label' => $country->name,
-                                'url' => route('travel-destination.show', ['type' => 'country', 'slug' => $this->entitySlug($country)]),
-                            ]);
-                        }
-                        $chain->push([
-                            'label' => $province->name,
-                            'url' => route('travel-destination.show', ['type' => 'province', 'slug' => $this->entitySlug($province)]),
-                        ]);
-                    } else {
-                        $country = $entity->country;
-                        if ($country) {
-                            if ($country->continent) {
-                                $chain->push([
-                                    'label' => $country->continent->name,
-                                    'url' => route('travel-destination.show', ['type' => 'continent', 'slug' => $country->continent->slug ?? $country->continent->id]),
-                                ]);
-                            }
-                            $chain->push([
-                                'label' => $country->name,
-                                'url' => route('travel-destination.show', ['type' => 'country', 'slug' => $this->entitySlug($country)]),
-                            ]);
-                        }
-                    }
-                }
-                break;
-
-            case 'Secteur':
-                $region = $entity->region;
-                if ($region) {
-                    $province = $region->province;
-                    if ($province) {
-                        $country = $province->country;
-                        if ($country) {
-                            if ($country->continent) {
-                                $chain->push([
-                                    'label' => $country->continent->name,
-                                    'url' => route('travel-destination.show', ['type' => 'continent', 'slug' => $country->continent->slug ?? $country->continent->id]),
-                                ]);
-                            }
-                            $chain->push([
-                                'label' => $country->name,
-                                'url' => route('travel-destination.show', ['type' => 'country', 'slug' => $this->entitySlug($country)]),
-                            ]);
-                        }
-                        $chain->push([
-                            'label' => $province->name,
-                            'url' => route('travel-destination.show', ['type' => 'province', 'slug' => $this->entitySlug($province)]),
-                        ]);
-                    }
-                    if ($region) {
-                        $chain->push([
-                            'label' => $region->name,
-                            'url' => route('travel-destination.show', ['type' => 'region', 'slug' => $this->entitySlug($region)]),
-                        ]);
-                    }
-                }
-                break;
-
-            case 'Arrondissement':
-                // Chaîne de la ville parente, puis la ville elle-même
-                $ville = $entity->ville;
-                if ($ville) {
-                    foreach ($this->getHierarchyChain($ville) as $item) {
-                        $chain->push($item);
-                    }
-                    $chain->push([
-                        'label' => $ville->name,
-                        'url' => route('travel-destination.show', ['type' => 'city', 'slug' => $this->entitySlug($ville)]),
-                    ]);
-                }
-                break;
-
-            case 'Quartier':
-                // Chaîne de l'arrondissement parent, puis l'arrondissement lui-même
-                $arrondissement = $entity->arrondissement;
-                if ($arrondissement) {
-                    foreach ($this->getHierarchyChain($arrondissement) as $item) {
-                        $chain->push($item);
-                    }
-                    $chain->push([
-                        'label' => $arrondissement->name,
-                        'url' => route('travel-destination.show', ['type' => 'arrondissement', 'slug' => $this->entitySlug($arrondissement)]),
-                    ]);
-                }
-                break;
+        if (in_array(class_basename($entity), ['Continent', 'Country', 'Province'], true)) {
+            return $chain;
         }
 
-        return $chain;
+        $parents = [
+            'Region'         => ['province'],
+            'Province'       => ['country'],
+            'Country'        => ['continent'],
+            'Secteur'        => ['region', 'province', 'country'],
+            'Ville'          => ['secteur', 'region', 'province', 'country'],
+            'Arrondissement' => ['ville', 'secteur', 'region', 'province', 'country'],
+            'Quartier'       => ['arrondissement', 'ville', 'secteur', 'region', 'province', 'country'],
+        ];
+        $types = [
+            'Continent' => 'continent', 'Country' => 'country', 'Province' => 'province',
+            'Region' => 'region', 'Secteur' => 'secteur', 'Ville' => 'city',
+            'Arrondissement' => 'arrondissement', 'Quartier' => 'quartier',
+        ];
+
+        $courant = $entity;
+        for ($garde = 0; $garde < 10 && $courant; $garde++) {
+            $parent = null;
+            foreach ($parents[class_basename($courant)] ?? [] as $relation) {
+                if (method_exists($courant, $relation) && $courant->{$relation}) {
+                    $parent = $courant->{$relation};
+                    break;
+                }
+            }
+            if (! $parent) {
+                break;
+            }
+
+            $classe = class_basename($parent);
+            $chain->prepend([
+                'label' => $parent->name,
+                'url'   => route('travel-destination.show', [
+                    'type' => $types[$classe] ?? strtolower($classe),
+                    'slug' => $classe === 'Continent' ? ($parent->slug ?? $parent->id) : $this->entitySlug($parent),
+                ]),
+            ]);
+            $courant = $parent;
+        }
+
+        return $chain->values();
     }
 
     protected function buildStats($type, $entity)
@@ -1480,6 +1387,10 @@ class TravelDestinationController extends Controller
             // pendre d'un secteur, d'une région, d'une province ou directement
             // d'un pays : plusieurs colonnes sont donc interrogées en OU.
             $conditions = array_filter($conditions, fn ($valeurs) => !empty($valeurs));
+            // Colonnes du rattachement souple : ignorées tant que la migration
+            // admin (2026_11_12_000001) n'est pas passée.
+            $table = (new $modelClass)->getTable();
+            $conditions = array_filter($conditions, fn ($v, $colonne) => \Illuminate\Support\Facades\Schema::hasColumn($table, $colonne), ARRAY_FILTER_USE_BOTH);
 
             if (!$conditions) {
                 return collect();
@@ -1511,7 +1422,9 @@ class TravelDestinationController extends Controller
         ])->pluck('id')->all());
 
         $ids['secteur'] = array_merge($ids['secteur'], $descendre(\App\Models\Secteur::class, [
-            'region_id' => $ids['region'],
+            'region_id'   => $ids['region'],
+            'province_id' => $ids['province'],
+            'country_id'  => $ids['country'],
         ])->pluck('id')->all());
 
         $ids['city'] = array_merge($ids['city'], $descendre(\App\Models\Ville::class, [
@@ -1522,12 +1435,20 @@ class TravelDestinationController extends Controller
         ])->pluck('id')->all());
 
         $ids['arrondissement'] = array_merge($ids['arrondissement'], $descendre(\App\Models\Arrondissement::class, [
-            'ville_id' => $ids['city'],
+            'ville_id'    => $ids['city'],
+            'secteur_id'  => $ids['secteur'],
+            'region_id'   => $ids['region'],
+            'province_id' => $ids['province'],
+            'country_id'  => $ids['country'],
         ])->pluck('id')->all());
 
         $descendre(\App\Models\Quartier::class, [
             'arrondissement_id' => $ids['arrondissement'],
             'ville_id'          => $ids['city'],
+            'secteur_id'        => $ids['secteur'],
+            'region_id'         => $ids['region'],
+            'province_id'       => $ids['province'],
+            'country_id'        => $ids['country'],
         ]);
 
         if (!$latitudes) {
@@ -1542,27 +1463,80 @@ class TravelDestinationController extends Controller
         ];
     }
 
+    /**
+     * Enfants d'une destination affichés sur sa page (repères de la carte,
+     * liste de recherche) : ses enfants DIRECTS, tous niveaux confondus
+     * (voir enfantsDirects).
+     */
     protected function getChildEntities($type, $entity)
     {
-        switch ($type) {
-            case 'continent':
-                return $entity->countries()->active()->get();
-            case 'country':
-                return $entity->provinces()->active()->get();
-            case 'province':
-                return $entity->regions()->active()->get();
-            case 'region':
-                return $entity->villes()->active()->get();
-            case 'city':
-                return $entity->arrondissements()->active()->get();
-            case 'secteur':
-                return $entity->villes()->active()->get();
-            case 'arrondissement':
-                return $entity->quartiers()->active()->get();
-            case 'quartier':
-                return collect();
-            default:
-                return collect();
+        return $this->enfantsDirects($type, $entity);
+    }
+
+    /** Niveaux de la chaîne : type => [modèle, colonne de rattachement]. */
+    private const CHAINE_NIVEAUX = [
+        'continent'      => [\App\Models\Continent::class, 'continent_id'],
+        'country'        => [\App\Models\Country::class, 'country_id'],
+        'province'       => [\App\Models\Province::class, 'province_id'],
+        'region'         => [\App\Models\Region::class, 'region_id'],
+        'secteur'        => [\App\Models\Secteur::class, 'secteur_id'],
+        'city'           => [\App\Models\Ville::class, 'ville_id'],
+        'arrondissement' => [\App\Models\Arrondissement::class, 'arrondissement_id'],
+        'quartier'       => [\App\Models\Quartier::class, null],
+    ];
+
+    /**
+     * Enfants DIRECTS d'une destination, tous niveaux inférieurs confondus.
+     *
+     * Rattachement SOUPLE (admin : RattachementDestination) : un niveau
+     * intermédiaire peut manquer. Les enfants d'une province sont donc ses
+     * régions, MAIS AUSSI ses secteurs sans région, ses villes sans région ni
+     * secteur, etc. Un enfant direct de P au niveau L : colonne de P = id, et
+     * toutes les colonnes des niveaux entre P et L vides. Les colonnes absentes
+     * d'une table sont ignorées.
+     *
+     * Chaque enfant porte `gx_niveau` (country, secteur, city…) ; le niveau
+     * naturel (juste en dessous) vient en premier.
+     */
+    protected function enfantsDirects(string $type, $entity): \Illuminate\Support\Collection
+    {
+        $niveaux = array_keys(self::CHAINE_NIVEAUX);
+        $rang = array_search($type, $niveaux, true);
+        $colonneParent = self::CHAINE_NIVEAUX[$type][1] ?? null;
+        if ($rang === false || ! $colonneParent) {
+            return collect();
         }
+
+        $enfants = collect();
+        foreach (array_slice($niveaux, $rang + 1) as $i => $niveau) {
+            [$modele] = self::CHAINE_NIVEAUX[$niveau];
+            $table = (new $modele)->getTable();
+            if (! \Illuminate\Support\Facades\Schema::hasColumn($table, $colonneParent)) {
+                continue;
+            }
+
+            try {
+                $requete = $modele::query()->where($colonneParent, $entity->id);
+                // Niveaux intermédiaires vides (sinon l'enfant appartient à
+                // l'un d'eux et y sera listé).
+                foreach (array_slice($niveaux, $rang + 1, $i) as $intermediaire) {
+                    $colonne = self::CHAINE_NIVEAUX[$intermediaire][1];
+                    if ($colonne && \Illuminate\Support\Facades\Schema::hasColumn($table, $colonne)) {
+                        $requete->whereNull($colonne);
+                    }
+                }
+                if (\Illuminate\Support\Facades\Schema::hasColumn($table, 'is_active')) {
+                    $requete->where('is_active', true);
+                }
+                $requete->orderBy('name')->limit(500)->get()->each(function ($enfant) use ($niveau, $enfants) {
+                    $enfant->setAttribute('gx_niveau', $niveau);
+                    $enfants->push($enfant);
+                });
+            } catch (\Throwable $e) {
+                // Niveau dont la table manque : ignoré.
+            }
+        }
+
+        return $enfants;
     }
 }

@@ -271,9 +271,21 @@
 
 <script>
 (function () {
+    /* Fermeture retenue pour la SESSION : la bannière couvre le bas de
+       l'écran, et la rouvrir à chaque page revenait à la faire refermer sans
+       cesse. `sessionStorage` est propre à l'onglet et s'efface à sa
+       fermeture : l'annonce se represente à la visite suivante. */
+    var SESSION_KEY = 'gx_ads_banner_session';
+
+    function dejaFermee() {
+        try { return !!sessionStorage.getItem(SESSION_KEY); } catch (e) { return false; }
+    }
+
     function init(banner) {
         if (banner.__gxbbReady) return;
         banner.__gxbbReady = true;
+
+        if (dejaFermee()) { banner.remove(); return; }
 
         var slides = Array.prototype.slice.call(banner.querySelectorAll('[data-gxbb-slide]'));
         var dots   = Array.prototype.slice.call(banner.querySelectorAll('[data-gxbb-dot]'));
@@ -318,15 +330,15 @@
         banner.addEventListener('mouseleave', function () { paused = false; schedule(); });
 
         // Fermeture : la barre est fixe et couvre le bas de l'écran ; le
-        // visiteur doit pouvoir s'en débarrasser. La fermeture ne vaut que
-        // pour la page affichée (même règle que le popup, dont la mémorisation
-        // est à zéro par défaut).
+        // visiteur doit pouvoir s'en débarrasser — et ne plus la revoir de la
+        // session, même en changeant de page (même règle que le popup).
         var fermer = banner.querySelector('[data-gxbb-close]');
         if (fermer) {
             fermer.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 clearTimeout(timer);
+                try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e2) {}
                 banner.classList.add('is-hidden');
             });
         }

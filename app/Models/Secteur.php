@@ -66,6 +66,31 @@ class Secteur extends Model
         return $this->belongsTo(Region::class);
     }
 
+    /* Rattachement souple (admin : RattachementDestination) : un secteur sans
+       région pend directement de la province ; toutes les colonnes d'ancêtres
+       sont remplies. */
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class);
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    /** Arrondissements situés dans ce secteur (directement ou via une ville). */
+    public function arrondissements(): HasMany
+    {
+        return $this->hasMany(Arrondissement::class);
+    }
+
+    /** Quartiers situés dans ce secteur (directement ou via une ville). */
+    public function quartiers(): HasMany
+    {
+        return $this->hasMany(Quartier::class);
+    }
+
     
 
     public function scopeActive($query)
