@@ -6,13 +6,13 @@
      pays, etc. (voir TravelDestinationController@buildBreadcrumbLevels).
      Le niveau affiché est marqué d'une coche et n'est pas cliquable.
 
-     Variables : $breadcrumb (Accueil / Destinations), $filArianeNiveaux.
+     Variables : $breadcrumb (Accueil), $filArianeNiveaux.
      Rendu à deux endroits : la bannière composée dans l'éditeur visuel (où il
      remplace l'emplacement data-gx-destination-breadcrumb) et la bannière du
      gabarit. D'où les styles et le script en @once.
      ========================================================================== --}}
 @php
-    $gxFilFixes = collect($breadcrumb ?? [])->take(2);   // Accueil, Destinations
+    $gxFilFixes = collect($breadcrumb ?? [])->take(1);   // Accueil (plus de maillon « Destinations »)
     $gxFilNiveaux = collect($filArianeNiveaux ?? []);
 @endphp
 

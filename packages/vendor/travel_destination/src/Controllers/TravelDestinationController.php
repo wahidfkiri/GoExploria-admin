@@ -1059,7 +1059,9 @@ class TravelDestinationController extends Controller
             'secteur' => 'Secteur', 'city' => 'Ville',
             'arrondissement' => 'Arrondissement', 'quartier' => 'Quartier',
         ];
-        /* SEUL le niveau immédiatement inférieur s'ouvre ; les autres restent
+        /* (Historique — remplacé par les enfants DIRECTS, voir plus bas : un
+           niveau s'ouvre s'il compte des destinations rattachées directement.)
+           SEUL le niveau immédiatement inférieur s'ouvrait ; les autres restaient
            verrouillés jusqu'à ce qu'on les atteigne.
 
            Le fil descend d'un cran à la fois : sur un pays on choisit une
@@ -1081,14 +1083,37 @@ class TravelDestinationController extends Controller
         $suivant = $ECHELLE[$typeCourant] ?? null;
         $premierInferieur = true;
 
+        /* Rattachement SOUPLE : sous la province, un niveau peut manquer (ville
+           rattachée à la région sans secteur…). Chaque niveau inférieur
+           s'ouvre donc sur les enfants DIRECTS de la destination à ce niveau :
+           sur une région, « Secteur » liste ses secteurs ET « Ville » ses
+           villes sans secteur. Ce n'est pas un saut d'échelon : une ville
+           d'un secteur n'y figure pas (elle s'ouvre depuis son secteur). */
+        $directs = null;   // null = non calculable : repli sur la relation du modèle
+        if ($typeCourant && $typeCourant !== 'continent') {
+            try {
+                $directs = $this->enfantsDirects($typeCourant, $entity)->groupBy('gx_niveau');
+            } catch (\Throwable $e) {
+                $directs = null;
+            }
+        }
+
         while ($suivant) {
             $options = [];
             $tronqueSuivant = false;
             $relation = $ENFANTS[$suivant] ?? null;
 
-            // Un niveau verrouillé n'affiche aucune liste : inutile
-            // d'interroger la base pour lui.
-            if ($premierInferieur && $relation && method_exists($entity, $relation)) {
+            if ($directs !== null) {
+                $enfants = $directs->get($suivant, collect());
+                $tronqueSuivant = $enfants->count() > $PLAFOND;
+                $options = $enfants->take($PLAFOND)->map(fn ($e) => [
+                    'label'  => $e->name,
+                    'url'    => $lien($suivant, $e),
+                    'actuel' => false,
+                ])->values()->all();
+            } elseif ($premierInferieur && $relation && method_exists($entity, $relation)) {
+                // Niveau immédiat sans enfant direct calculable (continent…) :
+                // relation du modèle, comme avant.
                 try {
                     $requete = $entity->{$relation}();
                     try {
@@ -1129,8 +1154,8 @@ class TravelDestinationController extends Controller
     protected function buildBreadcrumb($type, $entity)
     {
         $breadcrumb = collect([
+            // Pas de maillon « Destinations » : le fil part de l'accueil.
             ['label' => 'Accueil', 'url' => url('/')],
-            ['label' => 'Destinations', 'url' => url('/destination')],
         ]);
 
         switch ($type) {
