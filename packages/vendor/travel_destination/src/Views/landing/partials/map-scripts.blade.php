@@ -323,8 +323,20 @@ document.addEventListener('DOMContentLoaded', function () {
   function rebuildCategoryFilters(categories, data) {
     var filterEl = document.getElementById('mapFilters');
     if (!filterEl) return;
+    /* Les pastilles ne listent que les catégories réellement présentes parmi
+       les points affichés : dérouler tout le catalogue donnait des filtres
+       vides, qui ne renvoyaient aucun point une fois cliqués. Les clés de
+       `categories` viennent des points et peuvent être des alias ('nature',
+       'park'…) ; resolveCategorySlug les ramène aux slugs du catalogue, dont
+       l'ordre est conservé pour l'affichage. */
+    var categoriesPresentes = {};
+    Object.keys(categories || {}).forEach(function (categorieBrute) {
+      var slugPresent = resolveCategorySlug(categorieBrute);
+      if (slugPresent) categoriesPresentes[slugPresent] = true;
+    });
     filterEl.innerHTML = '<button class="map-filter-btn active" data-filter="all">Tous</button>';
     mapCategories && Object.keys(mapCategories).forEach(function (slug) {
+      if (!categoriesPresentes[slug]) return;
       var cat = mapCategories[slug];
       var btn = document.createElement('button');
       btn.className = 'map-filter-btn';
