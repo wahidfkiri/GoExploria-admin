@@ -577,6 +577,102 @@
         } catch (err) { /* hors shell : rien à faire de plus */ }
     }, { passive: false });
 
+    /* ══════════════════════════════════════════════════════════════════
+       MÉDIAS DIFFÉRÉS — pourquoi le site plantait sur téléphone
+
+       Le site est servi dans une iframe que le parent dimensionne à la
+       HAUTEUR TOTALE de son contenu : c'est le parent qui défile. Il en
+       découle une propriété que rien ne signale et qui coûte cher :
+
+           la « fenêtre » de ce document fait 375 × 39 806 px,
+           soit exactement la taille du document.
+
+       Pour le navigateur, RIEN n'est donc hors écran. Aucun chargement
+       différé ne se déclenche, aucun décodage n'est reporté : tout est
+       « visible ». Sur la fiche 15865, mesuré en vue mobile :
+
+           94 images décodées d'un coup ......... 137 Mo de pixels
+           12 lecteurs YouTube vivants .......... ~180 Mo
+           hauteur de page ...................... 39 806 px
+
+       Au-delà du budget mémoire d'un onglet de téléphone : le moteur de
+       rendu est tué, Chrome réessaie (d'où les deux rechargements), puis
+       affiche « Impossible d'ouvrir cette page ». Sur ordinateur, la même
+       page tient — d'où un défaut invisible au bureau.
+
+       CE QU'ON FAIT. Les iframes ne gardent leur `src` que tant qu'elles
+       sont proches de la bande réellement visible à l'écran, lue dans le
+       parent par `bandeVisibleDirecte()`. Celles qui s'en éloignent le
+       rendent, et le reprennent en approchant.
+
+       ⚠ MESURÉ AVANT D'ÊTRE ÉCRIT : retirer le `src` des 12 iframes ne
+       déplace RIEN — 12/12 boîtes identiques, hauteur de page inchangée
+       (39 806 px avant comme après). Une iframe sans `src` conserve sa
+       géométrie CSS. Le visiteur ne voit donc aucun saut.
+
+       ⚠ ON NE TOUCHE PAS AUX IMAGES, et c'est une mesure, pas une intuition :
+       le même essai sur les 94 images laisse 89 boîtes intactes mais en
+       déforme 5 — l'une passe de 375 × 333 à 375 × 490 —, et la page se
+       déplace de 32 px. Une feuille qui pose `object-fit: cover` sans fixer
+       la hauteur laisse la boîte dépendre de l'image. Cinq sauts sous les
+       doigts du visiteur ne valent pas les 137 Mo en jeu ici.
+
+       Le poids des images se traite à la source : sur cette fiche, 53 des
+       94 images sont servies bien plus grandes qu'elles ne s'affichent
+       (1536 × 1024 pour une vignette de 84 px). Les demander au double de
+       leur taille d'affichage rendrait ~61 Mo, sans une ligne de script.
+       ══════════════════════════════════════════════════════════════════ */
+    var MARGE_CHARGE = 1.5;   // on charge à 1,5 écran de distance
+    var MARGE_REND   = 4;     // on rend au-delà de 4 écrans
+
+    function mediasDifferes() {
+        var bande = bandeVisibleDirecte();
+        if (!bande) { return; }               // parent d'une autre origine
+
+        var doc = document.documentElement.scrollHeight;
+
+        // Page courte : la totalité tient en quelques écrans, le navigateur
+        // s'en sort seul. On ne complique la vie de personne pour rien.
+        if (doc < bande.height * 3) { return; }
+
+        var cadres = document.getElementsByTagName('iframe');
+
+        for (var i = 0; i < cadres.length; i++) {
+            var cadre = cadres[i];
+            var boite = cadre.getBoundingClientRect();
+            var haut = boite.top + (window.pageYOffset || 0);
+            var bas = haut + boite.height;
+
+            // Distance en écrans entre l'élément et la bande visible.
+            var ecart = Math.max(bande.offset - bas, haut - (bande.offset + bande.height));
+            var ecrans = ecart / Math.max(1, bande.height);
+
+            var src = cadre.getAttribute('src');
+
+            if (src) {
+                // Le gabarit a pu réécrire le `src` lui-même (liste de
+                // lecture, composant vidéo) : on garde toujours la dernière
+                // valeur vue, jamais une version périmée.
+                cadre.setAttribute('data-gx-differe', src);
+
+                if (ecrans > MARGE_REND) {
+                    cadre.removeAttribute('src');
+                }
+            } else if (ecrans <= MARGE_CHARGE) {
+                var garde = cadre.getAttribute('data-gx-differe');
+                if (garde) { cadre.setAttribute('src', garde); }
+            }
+        }
+    }
+
+    /* Un écouteur `scroll` posé sur `window.parent` depuis l'iframe ne se
+       déclenche pas de façon fiable d'un contexte à l'autre — c'est déjà le
+       constat du suivi des modales plus haut. On relit donc la bande à
+       intervalle : quelques lectures de géométrie, quatre fois par seconde. */
+    function surveillerMedias() {
+        try { mediasDifferes(); } catch (err) { /* jamais au prix de la page */ }
+    }
+
     function boot() {
         watchImages();
         postHeight(true);
@@ -585,6 +681,10 @@
             postHeight(false);
             if (++ticks >= 20) clearInterval(iv); // ~10 s puis on s'appuie sur RO
         }, 500);
+
+        // Au plus tôt : avant que les douze lecteurs n'aient fini de naître.
+        surveillerMedias();
+        setInterval(surveillerMedias, 250);
     }
 
     if (document.readyState === 'complete' || document.readyState === 'interactive') boot();
