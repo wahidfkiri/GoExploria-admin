@@ -1053,7 +1053,14 @@
         var map = null, markersLayer = null;
 
         function ouvrirPopupAuSurvol(marker) {
-            var ouvrir = function () { marker.openPopup(); };
+            /* Un seul survol déclenche jusqu'à trois ouvertures (« mouseover »
+               de Leaflet, « mouseenter » et « pointerenter » du DOM). Rouvrir
+               un popup déjà ouvert le fait reconstruire pour rien : on s'en
+               tient là. */
+            var ouvrir = function () {
+                if (marker.isPopupOpen && marker.isPopupOpen()) { return; }
+                marker.openPopup();
+            };
             marker.on('mouseover', ouvrir);
             function brancherElement() {
                 var element = marker.getElement();
@@ -1087,14 +1094,36 @@
                 var c = e.popup.getElement();
                 if (!c) return;
                 initSwipers(c);
-                c.querySelectorAll('.map-popup__detail-btn').forEach(function (btn) {
-                    btn.addEventListener('click', function () {
-                        var idx = parseInt(btn.getAttribute('data-index'));
-                        var pt = pointsData[idx];
-                        if (pt) showPlaceModal(pt);
-                    });
-                });
             });
+
+            /* ── « Voir détails » ────────────────────────────────────────
+               Un SEUL écouteur, posé sur le document en capture, plutôt qu'un
+               écouteur par bouton à l'ouverture de chaque fiche.
+
+               Pourquoi : Leaflet réécrit le contenu de la fiche à chaque
+               `openPopup()`, y compris sur une fiche déjà ouverte
+               (`_prepareOpen` → `update` → `_updateContent`). Le survol d'un
+               marqueur en déclenchait un second juste après l'ouverture : le
+               bouton attaché pendant « popupopen » se retrouvait détaché du
+               document, remplacé par une copie neuve sans écouteur. La fiche
+               paraissait normale, mais « Voir détails » ne répondait plus.
+
+               La délégation ne dépend plus du cycle de vie de la fiche : le
+               bouton affiché est forcément celui qui est cliqué. Même choix
+               que la carte des destinations (travel_destination). */
+            document.addEventListener('click', function (event) {
+                var btn = event.target && event.target.closest
+                    ? event.target.closest('.map-popup__detail-btn') : null;
+                if (!btn) { return; }
+
+                // Leaflet intercepte les clics dans la fiche : on écoute en
+                // capture pour passer avant cette interception.
+                event.preventDefault();
+                event.stopPropagation();
+
+                var pt = pointsData[parseInt(btn.getAttribute('data-index'), 10)];
+                if (pt) { showPlaceModal(pt); }
+            }, true);
         }
         var allPoints = points;
         var pointsData = [];
