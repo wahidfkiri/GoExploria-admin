@@ -712,6 +712,12 @@
             overflow: hidden;
         }
 
+        /* Panneau volontairement étroit (560 px au plus) : deux colonnes y
+           tomberaient sous 260 px par carte. Une seule colonne dès ce seuil. */
+        .go-home-hero .search-bar-v2-results-list {
+            grid-template-columns: minmax(0, 1fr) !important;
+        }
+
         .go-hero-thumbs-shell {
             bottom: 18px;
             grid-template-columns: 38px minmax(0, 1fr) 38px;

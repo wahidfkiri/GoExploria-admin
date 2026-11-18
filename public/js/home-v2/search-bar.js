@@ -190,19 +190,26 @@ class SearchBarV2 {
                 mediaHtml = '<div class="search-bar-v2-result-image search-bar-v2-result-image--icon"><i class="' + this.getIconClass(dest.type) + '"></i></div>';
             }
 
+            /* Le type n'apparait qu'une fois, dans la pastille placee sur la
+               ligne du nom. Il etait auparavant repete juste en dessous, en
+               dore : la meme information deux fois, et une ligne de hauteur
+               perdue sur chaque carte. */
+            var libelleType = this.typeLabel[dest.type] || dest.type;
+
             li.innerHTML =
                 mediaHtml +
                 '<div class="search-bar-v2-result-content">' +
-                    '<h5 class="search-bar-v2-result-name">' + this.highlightMatch(this.escapeHtml(dest.name), query) + '</h5>' +
+                    '<div class="search-bar-v2-result-head">' +
+                        '<h5 class="search-bar-v2-result-name">' + this.highlightMatch(this.escapeHtml(dest.name), query) + '</h5>' +
+                        '<span class="search-bar-v2-result-badge">' + this.escapeHtml(libelleType) + '</span>' +
+                    '</div>' +
                     ((dest.type === 'etablissement' && dest.siteName)
                         ? ('<div class="search-bar-v2-result-site">' + this.highlightMatch(this.escapeHtml(dest.siteName), query) + '</div>')
                         : '') +
                     (dest.description
                         ? ('<div class="search-bar-v2-result-description">' + this.escapeHtml(dest.description) + '</div>')
                         : '') +
-                    '<div class="search-bar-v2-result-type">' + (this.typeLabel[dest.type] || dest.type) + '</div>' +
-                '</div>' +
-                '<span class="search-bar-v2-result-badge">' + (this.typeLabel[dest.type] || dest.type) + '</span>';
+                '</div>';
 
             li.addEventListener('click', () => this.selectDestination(dest));
             li.addEventListener('mouseenter', () => this.highlightItem(index));

@@ -792,8 +792,8 @@
        Le panneau était ancré sur le champ de saisie (.search-bar-v2-search),
        donc décalé à droite en desktop et sorti de l'écran à gauche sur mobile.
        On l'ancre sur la barre entière, elle-même centrée dans la page.
-       Les colonnes en minmax(0, 1fr) : un nom long (nowrap) élargissait sa
-       colonne jusqu'à 1440 px et coupait les résultats.
+       Les colonnes en minmax(0, 1fr) : sans cette borne basse, un nom long
+       élargissait sa colonne jusqu'à 1440 px et coupait les résultats.
        ⚠ Bloc en FIN de feuille : il doit primer sur les règles ci-dessus. */
     .go-home-hero .search-bar-v2 { position: relative; }
     .go-home-hero .search-bar-v2-search { position: static !important; }
@@ -804,21 +804,29 @@
         transform: translateX(-50%) !important;
         width: min(980px, calc(100vw - 32px)) !important;
     }
-    .go-home-hero .search-bar-v2-results-list { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    /* Deux colonnes : à trois, chaque carte tombait sous 300 px et les noms
+       d'établissements étaient coupés en plein mot. */
+    .go-home-hero .search-bar-v2-results-list { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
     .go-home-hero .search-bar-v2-result-item,
-    .go-home-hero .search-bar-v2-result-content { min-width: 0; }
-    .go-home-hero .search-bar-v2-result-name,
+    .go-home-hero .search-bar-v2-result-content,
+    .go-home-hero .search-bar-v2-result-head { min-width: 0; }
+    /* Le nom n'est plus de la partie : il s'affiche sur deux lignes
+       (search-bar.css). Seules les lignes secondaires tiennent sur une
+       ligne, l'ellipse y est sans perte. */
+    .go-home-hero .search-bar-v2-result-site,
     .go-home-hero .search-bar-v2-result-description,
     .go-home-hero .search-bar-v2-result-type {
+        display: block;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
     @media (max-width: 1024px) {
         .go-home-hero .search-bar-v2-results { width: min(720px, calc(100vw - 24px)) !important; }
-        .go-home-hero .search-bar-v2-results-list { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
     }
-    @media (max-width: 640px) {
+    /* Une seule colonne au même seuil que la feuille de base (768 px) :
+       en dessous, deux cartes côte à côte repassaient sous 300 px. */
+    @media (max-width: 768px) {
         .go-home-hero .search-bar-v2-results { width: calc(100vw - 20px) !important; }
         .go-home-hero .search-bar-v2-results-list { grid-template-columns: minmax(0, 1fr) !important; }
     }
