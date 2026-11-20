@@ -406,7 +406,7 @@ public function activitielog(): HasMany
     /**
      * Mettre à jour la dernière connexion
      */
-    public function updateLastLogin(string $ip = null): void
+    public function updateLastLogin(?string $ip = null): void
     {
         $this->last_login_at = now();
         $this->last_login_ip = $ip ?? request()->ip();

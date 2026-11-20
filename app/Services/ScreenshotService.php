@@ -108,8 +108,8 @@ class ScreenshotService
                 // Sauvegarder l'image
                 imagejpeg($newImage, $imagePath, 80);
                 
-                imagedestroy($sourceImage);
-                imagedestroy($newImage);
+                unset($sourceImage);
+                unset($newImage);
                 
                 return true;
             }

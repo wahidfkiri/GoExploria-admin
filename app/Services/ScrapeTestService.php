@@ -16,7 +16,7 @@ class ScrapeTestService
     protected array $downloadedAssets = [];
     protected string $baseUrl;
     
-    public function scrapeAndSave(string $url, string $name = null): ?Template
+    public function scrapeAndSave(string $url, ?string $name = null): ?Template
     {
         $name = $name ?? $this->generateTemplateName($url);
         $this->baseUrl = $this->normalizeUrl($url);

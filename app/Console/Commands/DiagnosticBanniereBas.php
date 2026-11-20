@@ -257,7 +257,6 @@ class DiagnosticBanniereBas extends Command
         try {
             $kernel = app(\Illuminate\Contracts\Http\Kernel::class);
             $propriete = new \ReflectionProperty($kernel, 'middleware');
-            $propriete->setAccessible(true);
 
             return in_array(InjectAdsBottomBanner::class, (array) $propriete->getValue($kernel), true);
         } catch (\Throwable $e) {

@@ -10,7 +10,7 @@ use RoachPHP\Spider\Configuration\Overrides;
 
 class TemplateScraperService
 {
-    public function scrapeAndSave(string $url, string $name = null): ?Template
+    public function scrapeAndSave(string $url, ?string $name = null): ?Template
     {
         $name = $name ?? $this->generateTemplateName($url);
         

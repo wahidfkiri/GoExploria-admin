@@ -65,7 +65,7 @@ class LandingPageController extends Controller
     /**
      * Afficher la landing page d'une activité par son slug
      */
-    public function showBySlug($slug, Request $request = null)
+    public function showBySlug($slug, ?Request $request = null)
     {
         // Récupérer l'activité par son slug
         $activity = Activity::where('slug', $slug)
@@ -456,7 +456,6 @@ private function getHeroVideoEmbedUrl($url, $muted = true)
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_TIMEOUT, 5);
                 $response = curl_exec($ch);
-                curl_close($ch);
                 
                 if ($response) {
                     $data = json_decode($response, true);

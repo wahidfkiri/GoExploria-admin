@@ -80,7 +80,7 @@ class HomeV2Controller extends Controller
     /**
      * Page d'une catégorie avec ses activités
      */
-    public function showCategory($slug, \Illuminate\Http\Request $request = null)
+    public function showCategory($slug, ?\Illuminate\Http\Request $request = null)
     {
         $category = Category::where('slug', $slug)
             ->where('is_active', true)

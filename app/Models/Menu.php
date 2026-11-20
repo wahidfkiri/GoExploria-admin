@@ -193,7 +193,7 @@ class Menu extends Model
     }
     
     // Méthode pour créer une révision
-    public function createRevision(string $description = null): PageRevision
+    public function createRevision(?string $description = null): PageRevision
     {
         return $this->pageRevisions()->create([
             'content' => $this->page_content,
