@@ -99,6 +99,48 @@ abstract class TemplateGrid
     }
 
     /**
+     * Les MÊMES données que la grille poserait dans un gabarit, mais rendues
+     * telles quelles.
+     *
+     * Le gabarit interne ([[GabaritInterne]]) n'a pas de HTML de démonstration
+     * à hydrater : il n'existe aucune copie du template à réécrire, la page est
+     * construite depuis les données. Il lui faut donc la liste, pas le
+     * remplacement.
+     *
+     * ⚠ On passe par `elements()`, et non par une requête recopiée ici : les
+     * deux chemins doivent montrer exactement le même catalogue. Une requête
+     * jumelle aurait dérivé au premier filtre ajouté d'un côté seulement.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public static function donnees(?int $etablissementId, int $limite = 12, array $options = [])
+    {
+        if (! $etablissementId) {
+            return collect();
+        }
+
+        $limite = max(1, min(48, $limite));
+
+        try {
+            return (new static((int) $etablissementId))->elements($limite, $options + [
+                'limit' => $limite,
+                'category' => '',
+                'sort' => '',
+                'currency' => ProductPresenter::SYMBOLE,
+                'pick' => '',
+                'radius' => 30.0,
+            ]);
+        } catch (\Throwable $e) {
+            // Une section vide vaut mieux qu'une page en erreur.
+            Log::warning(static::class . ' : lecture abandonnée — ' . $e->getMessage(), [
+                'etablissement_id' => $etablissementId,
+            ]);
+
+            return collect();
+        }
+    }
+
+    /**
      * Parcourt la chaîne, repère chaque grille marquée et remplace son
      * contenu. Aucune autre partie du template n'est touchée.
      */

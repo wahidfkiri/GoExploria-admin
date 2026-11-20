@@ -44,7 +44,10 @@
     $gxEnveloppesImmo = ['immo-tpl', 'resid-tpl', 'voyago-tpl', 'sylva-tpl', 'boisrond-tpl',
                          'gx-default-tpl', 'mx-tpl', 'hz-tpl', 'lxv-tpl'];
 
-    $gxEstTemplateImmo = \Illuminate\Support\Str::contains(
+    // Le gabarit interne ([[GabaritInterne]]) n'a pas de `cmsPageSections` à
+    // fouiller : il n'existe aucune copie de template pour cet établissement.
+    // Il le dit donc lui-même, au lieu qu'on cherche une enveloppe absente.
+    $gxEstTemplateImmo = ($gxForcerImmo ?? false) || \Illuminate\Support\Str::contains(
         collect($cmsPageSections ?? [])->map(fn ($p) => (string) data_get($p, 'content'))->implode(''),
         $gxEnveloppesImmo
     );

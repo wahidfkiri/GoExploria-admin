@@ -10,6 +10,7 @@ use Vendor\Cms\Models\Media;
 use Vendor\Cms\Models\BlogPost;
 use Vendor\Cms\Models\CmsSlideshow;
 use Vendor\Cms\Models\EtablissementTemplate;
+use Vendor\Cms\Support\GabaritInterne;
 use Vendor\Cms\Support\LanguesSite;
 use App\Models\Etablissement;
 use App\Models\Activity;
@@ -82,7 +83,23 @@ class WebThemeController extends Controller
         // Récupérer l'établissement
         $etablissement = Etablissement::findOrFail($etablissementId);
         $this->etablissement = $etablissement;
-        
+
+        /* ── GABARIT INTERNE ──────────────────────────────────────────────
+           Les établissements repris d'annuaires n'ont NI thème NI copie de
+           gabarit : leur site est rendu à la volée depuis leurs données, par
+           un fichier de vue unique partagé par tous ([[GabaritInterne]]).
+           C'est ce qui évite de recopier un demi-mégaoctet de HTML par
+           établissement dans `etablissement_templates` et `cms_pages`.
+
+           Le test passe AVANT la résolution du thème, et avant la
+           prévisualisation : il n'y a rien à prévisualiser sur un site qui
+           n'a pas de contenu enregistré. Dès qu'un vrai gabarit est installé
+           — l'établissement devient client — `site_interne` repasse à 0 et
+           le site reprend le chemin normal, sans rien perdre. */
+        if (GabaritInterne::actif($etablissement)) {
+            return $this->renderGabaritInterne();
+        }
+
         // Vérifier le paramètre preview_theme dans l'URL (GET)
         $previewThemeSlug = $request->query('preview_theme');
         
@@ -598,6 +615,16 @@ class WebThemeController extends Controller
             ->first();
 
         if (!$page) {
+            /* Gabarit interne : l'établissement n'a AUCUNE page enregistrée —
+               c'est le principe même. Une adresse de page venue d'un vieux
+               lien ou d'un index de moteur ne doit pas finir en 404 : tout le
+               site tient sur une seule page, on y renvoie. */
+            if (GabaritInterne::actif($etablissement)) {
+                return redirect()->route('cms.company.home', [
+                    'etablissementId' => $etablissement->id,
+                ], 301);
+            }
+
             abort(404, 'Page non trouvée');
         }
 
@@ -1104,6 +1131,37 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
     {
         $html = $this->getFallbackHtml($errorMessage);
         return $this->buildResponse($html, $this->buildSeoContext(null, false));
+    }
+
+    /**
+     * GABARIT INTERNE — le site d'un établissement importé, sans aucune copie.
+     *
+     * Les données de présentation sont celles de la landing (médias, horaires,
+     * réseaux, diaporama, coordonnées) : elles existent déjà et sont lues de
+     * la même façon partout. [[GabaritInterne]] y ajoute les modules de
+     * l'espace entreprise — catalogue, rayons, biens, activités, articles,
+     * lieux voisins — par les MÊMES requêtes que les grilles de template.
+     *
+     * Le reste — métadonnées, panier, fiche produit, formulaire de demande
+     * d'un bien, pont du formulaire de contact, carte Maps Vidéos, pont
+     * d'embarquement — est greffé par buildResponse(), exactement comme pour
+     * un gabarit installé.
+     */
+    protected function renderGabaritInterne()
+    {
+        $donnees = array_merge(
+            $this->prepareNoThemeLandingData(null),
+            GabaritInterne::modules($this->etablissement),
+        );
+
+        // `activities` porte déjà les activités « de présentation » de la
+        // landing : le module garde son nom à lui pour ne pas l'écraser.
+        $donnees['activitesModule'] = $donnees['activites'];
+
+        return $this->buildResponse(
+            view('cms::web.interne.gabarit', $donnees)->render(),
+            $this->buildSeoContext(null, false)
+        );
     }
 
     /**

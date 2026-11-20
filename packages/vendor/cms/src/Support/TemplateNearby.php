@@ -6,6 +6,7 @@ use App\Models\Etablissement;
 use App\Models\MapPoint;
 use App\Models\Ville;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -223,6 +224,51 @@ class TemplateNearby extends TemplateGrid
     }
 
     /** Clé de groupe d'une catégorie libre. */
+    /**
+     * Les lieux voisins, prêts à afficher — pour le gabarit interne, qui n'a
+     * pas de cartes de démonstration à remplir.
+     *
+     * Même source et même tri que la grille `data-gx-nearby` ; seule la forme
+     * change : un tableau par lieu au lieu d'un nœud DOM réécrit.
+     *
+     * @return \Illuminate\Support\Collection<int,array>
+     */
+    public static function liste(?int $etablissementId, int $limite = 9, float $rayon = self::RAYON)
+    {
+        if (! $etablissementId) {
+            return collect();
+        }
+
+        try {
+            $instance = new static((int) $etablissementId);
+
+            return collect($instance->elements(max(1, $limite), [
+                'radius' => max(1.0, min(200.0, $rayon)),
+                'category' => '',
+            ]))->map(function (array $lieu) use ($instance) {
+                /** @var MapPoint $point */
+                $point = $lieu['point'];
+
+                return [
+                    'id' => (int) $point->id,
+                    'titre' => (string) $point->title,
+                    'categorie' => $lieu['categorie'],
+                    'groupe' => $lieu['groupe'],
+                    'ville' => trim((string) $point->ville),
+                    'distance' => self::distanceLisible($lieu['distance']),
+                    'image' => $instance->image($point) ?? self::visuelNeutre(),
+                    'lien' => $instance->lien($point),
+                ];
+            })->values();
+        } catch (\Throwable $e) {
+            Log::warning('TemplateNearby : lecture abandonnée — ' . $e->getMessage(), [
+                'etablissement_id' => $etablissementId,
+            ]);
+
+            return collect();
+        }
+    }
+
     public static function groupe(string $texte): string
     {
         foreach (self::GROUPES as $cle => $motif) {

@@ -38,6 +38,8 @@ class Etablissement extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
+        // Site rendu par le gabarit interne (aucune copie de template en base).
+        'site_interne' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
