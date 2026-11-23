@@ -1,0 +1,1864 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   TERROIR & DÉCOUVERTES — gabarit mixte
+   Tout est préfixé `.hz-tpl` (docs/TEMPLATES-CMS.md §3) : le gabarit cohabite
+   avec le CSS du site d'établissement. Aucun sélecteur global — pas de `*`,
+   `html`, `body`, `a`, `img`, `ul`. Les variables de thème vivent sur le
+   wrapper, qui remplace `:root`.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.hz-tpl {
+  /* Noms hérités de la feuille reprise, valeurs Horizon :
+     --hz-vert = couleur principale, --hz-ambre = accent chaud,
+     --hz-creme = fond de page, --hz-sable = fond des sections alternées. */
+  --hz-encre: #0b1324;
+  --hz-vert: #2459e0;
+  --hz-vert-clair: #3d74ff;
+  --hz-ambre: #f26b3a;
+  --hz-ambre-clair: #ff9a70;
+  --hz-creme: #f7f9fd;
+  --hz-sable: #edf2fb;
+  --hz-gris: #5a6780;
+  --hz-bord: #dfe6f2;
+  --hz-blanc: #ffffff;
+  --hz-nuit: #0f1a33;
+  --hz-nuit-2: #17244a;
+  --hz-ombre: 0 18px 44px rgba(11, 19, 36, .08);
+  --hz-ombre-forte: 0 28px 64px rgba(11, 19, 36, .16);
+  --hz-rayon: 18px;
+  --hz-serif: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --hz-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  font-family: var(--hz-sans);
+  color: var(--hz-encre);
+  background: var(--hz-creme);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hz-tpl h1, .hz-tpl h2, .hz-tpl h3, .hz-tpl h4 {
+  font-family: var(--hz-serif);
+  font-weight: 600;
+  line-height: 1.14;
+  margin: 0;
+  color: var(--hz-encre);
+}
+.hz-tpl p { margin: 0; }
+.hz-tpl img { display: block; max-width: 100%; }
+
+.hz-tpl .hz-wrap { max-width: 1280px; margin: 0 auto; padding: 0 clamp(18px, 4vw, 40px); }
+.hz-tpl .hz-sec { padding: clamp(56px, 8vw, 104px) 0; }
+.hz-tpl .hz-sec-sable { background: var(--hz-sable); }
+.hz-tpl .hz-sec-sombre { background: var(--hz-encre); color: #d6def0; }
+.hz-tpl .hz-sec-sombre h2, .hz-tpl .hz-sec-sombre h3 { color: var(--hz-blanc); }
+
+.hz-tpl .hz-kicker {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: .72rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--hz-ambre); margin: 0 0 14px;
+}
+.hz-tpl .hz-sec-sombre .hz-kicker { color: var(--hz-ambre-clair); }
+.hz-tpl .hz-h2 { font-size: clamp(1.75rem, 3.6vw, 2.85rem); }
+.hz-tpl .hz-h2 em { font-style: italic; color: var(--hz-vert); }
+.hz-tpl .hz-sec-sombre .hz-h2 em { color: var(--hz-ambre-clair); }
+.hz-tpl .hz-lead { color: var(--hz-gris); margin-top: 16px; font-size: 1.03rem; max-width: 62ch; }
+.hz-tpl .hz-sec-sombre .hz-lead { color: #a9b6d3; }
+
+.hz-tpl .hz-sec-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 28px; flex-wrap: wrap; margin-bottom: clamp(28px, 4vw, 46px);
+}
+
+/* ── Boutons — tout ce qui navigue est un <a> (§7.1) ────────────────────── */
+.hz-tpl .hz-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 13px 26px; border-radius: 999px;
+  font-weight: 700; font-size: .93rem; text-decoration: none;
+  border: 1px solid transparent; cursor: pointer;
+  transition: transform .25s ease, background .25s ease, color .25s ease;
+}
+.hz-tpl .hz-btn:hover { transform: translateY(-2px); }
+.hz-tpl .hz-btn-primaire { background: var(--hz-vert); color: var(--hz-blanc); }
+.hz-tpl .hz-btn-primaire:hover { background: var(--hz-vert-clair); color: var(--hz-blanc); }
+.hz-tpl .hz-btn-ambre { background: var(--hz-ambre); color: var(--hz-blanc); }
+.hz-tpl .hz-btn-ambre:hover { background: var(--hz-ambre-clair); color: var(--hz-encre); }
+.hz-tpl .hz-btn-ligne { border-color: currentColor; color: var(--hz-encre); background: transparent; }
+/* Sur fond sombre — sections foncées ET héros — le bouton contour doit passer
+   au blanc. Mesuré sans cette règle : rgb(20,32,28) sur la photo du héros,
+   c'est-à-dire un bouton invisible. La structure était pourtant correcte : seul
+   le rendu le montre (§3). */
+.hz-tpl .hz-sec-sombre .hz-btn-ligne,
+.hz-tpl .hz-hero .hz-btn-ligne { color: var(--hz-blanc); }
+.hz-tpl .hz-hero .hz-btn-ligne:hover { background: var(--hz-blanc); color: var(--hz-encre); }
+.hz-tpl .hz-lien-sec {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--hz-vert); font-weight: 700; font-size: .9rem; text-decoration: none;
+}
+.hz-tpl .hz-lien-sec:hover { gap: 13px; }
+
+/* ══ AMBIANCE (restaurant) ════════════════════════════════════════════════ */
+.hz-tpl .hz-ambiance { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 68px); align-items: center; }
+.hz-tpl .hz-ambiance-video {
+  position: relative; width: 100%; padding-top: 62%;
+  border-radius: var(--hz-rayon); overflow: hidden;
+  background: var(--hz-encre); box-shadow: var(--hz-ombre-forte);
+}
+.hz-tpl .hz-ambiance-video iframe,
+.hz-tpl .hz-ambiance-video video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.hz-tpl .hz-ambiance-points { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 14px; }
+.hz-tpl .hz-ambiance-points li { display: flex; gap: 13px; align-items: flex-start; color: var(--hz-gris); }
+.hz-tpl .hz-ambiance-points i { color: var(--hz-vert); margin-top: 4px; }
+.hz-tpl .hz-ambiance-points b { color: var(--hz-encre); display: block; }
+
+/* ── Galerie à ancrage : la position vit dans le scroll, jamais dans le DOM
+     (§5). Sans JavaScript elle reste utilisable au doigt.                    */
+.hz-tpl .hz-galerie { position: relative; margin-top: clamp(30px, 4vw, 48px); }
+/* ⚠ PAS de `scroll-behavior: smooth` ici. Mesuré sur ce conteneur : tout
+   défilement DOUX est avalé — la position ne bouge pas d'un pixel, ni par le
+   CSS, ni par `scrollBy({behavior:'smooth'})`, ni par `scrollTo`, et quel que
+   soit le mode d'ancrage (mandatory, proximity, none). Le défilement
+   instantané, lui, fonctionne. Les flèches seraient donc restées mortes sur le
+   site publié. Le script demande un défilement instantané pour la même raison. */
+.hz-tpl .hz-galerie-piste {
+  display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+.hz-tpl .hz-galerie-piste::-webkit-scrollbar { display: none; }
+/* ⚠ `margin: 0` : un <figure> porte les marges par défaut du navigateur
+   (1em 40px). Sans cette remise à zéro, chaque vue emporte 80 px de marge
+   horizontale, la piste s'allonge d'autant et les points d'ancrage se décalent
+   — le premier tombe à 40 px, et les flèches ne trouvent plus rien où
+   s'arrêter. Mesuré : piste de 1796 px pour 1478 px de contenu. */
+.hz-tpl .hz-galerie-vue {
+  flex: 0 0 clamp(240px, 34%, 420px); scroll-snap-align: start; margin: 0;
+  border-radius: var(--hz-rayon); overflow: hidden; box-shadow: var(--hz-ombre);
+  background: var(--hz-blanc);
+}
+.hz-tpl .hz-galerie-vue img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.hz-tpl .hz-galerie-vue figcaption { padding: 14px 18px; font-size: .88rem; color: var(--hz-gris); }
+.hz-tpl .hz-galerie-nav { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+.hz-tpl .hz-fleche {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--hz-blanc); border: 1px solid var(--hz-bord);
+  color: var(--hz-encre); text-decoration: none;
+}
+.hz-tpl .hz-fleche:hover { background: var(--hz-vert); color: var(--hz-blanc); border-color: var(--hz-vert); }
+
+/* ══ RAYONS & PRODUITS (module E-commerce) ════════════════════════════════ */
+.hz-tpl .hz-rayons { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px; }
+.hz-tpl .hz-rayon {
+  position: relative; border-radius: var(--hz-rayon); overflow: hidden;
+  background: var(--hz-blanc); border: 1px solid var(--hz-bord);
+  text-decoration: none; color: inherit; box-shadow: var(--hz-ombre);
+}
+.hz-tpl .hz-rayon img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.hz-tpl .hz-rayon-corps { padding: 15px 18px 18px; }
+.hz-tpl .hz-rayon-corps strong { display: block; font-size: 1rem; }
+.hz-tpl .hz-rayon-corps span { font-size: .82rem; color: var(--hz-gris); }
+
+.hz-tpl .hz-produits { display: grid; grid-template-columns: repeat(auto-fill, minmax(238px, 1fr)); gap: 22px; }
+.hz-tpl .hz-produit {
+  position: relative; display: flex; flex-direction: column;
+  background: var(--hz-blanc); border: 1px solid var(--hz-bord);
+  border-radius: var(--hz-rayon); overflow: hidden; box-shadow: var(--hz-ombre);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.hz-tpl .hz-produit:hover { transform: translateY(-4px); box-shadow: var(--hz-ombre-forte); }
+.hz-tpl .hz-produit-media { position: relative; display: block; }
+.hz-tpl .hz-produit-media img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+/* Les pastilles décoratives ne doivent pas voler le clic destiné à l'image,
+   sans quoi elle devient inatteignable donc non modifiable (§4). */
+.hz-tpl .hz-tag {
+  position: absolute; top: 12px; left: 12px; z-index: 2; pointer-events: none;
+  background: var(--hz-ambre); color: var(--hz-blanc);
+  border-radius: 999px; padding: 5px 13px; font-size: .68rem;
+  font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+}
+.hz-tpl .hz-produit-corps { padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
+.hz-tpl .hz-produit-cat { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--hz-vert); }
+.hz-tpl .hz-produit-nom { font-family: var(--hz-serif); font-size: 1.05rem; color: var(--hz-encre); text-decoration: none; }
+.hz-tpl .hz-produit-desc { font-size: .85rem; color: var(--hz-gris); }
+.hz-tpl .hz-produit-pied { margin-top: auto; padding-top: 12px; display: flex; align-items: baseline; gap: 8px; }
+.hz-tpl .hz-produit-prix { font-family: var(--hz-serif); font-size: 1.18rem; font-weight: 600; color: var(--hz-encre); }
+.hz-tpl .hz-produit-unite { font-size: .78rem; color: var(--hz-gris); }
+.hz-tpl .hz-produit-ajout {
+  margin: 0 18px 18px; padding: 11px 16px; border-radius: 999px; border: 0;
+  background: var(--hz-encre); color: var(--hz-blanc);
+  font-family: var(--hz-sans); font-weight: 700; font-size: .84rem; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+}
+.hz-tpl .hz-produit-ajout:hover { background: var(--hz-vert); }
+
+/* ══ HÉBERGEMENTS & FORFAITS (module Immobilier) ══════════════════════════ */
+.hz-tpl .hz-immo-outils { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; }
+.hz-tpl .hz-immo-champ {
+  flex: 1 1 220px; min-width: 0;
+  padding: 12px 18px; border-radius: 999px;
+  border: 1px solid var(--hz-bord); background: var(--hz-blanc);
+  font-family: var(--hz-sans); font-size: .92rem; color: var(--hz-encre);
+}
+.hz-tpl .hz-immo-compte { font-size: .85rem; color: var(--hz-gris); white-space: nowrap; }
+.hz-tpl .hz-immo-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 24px; }
+.hz-tpl .hz-immo-vide {
+  display: none; padding: 34px; text-align: center; color: var(--hz-gris);
+  border: 1px dashed var(--hz-bord); border-radius: var(--hz-rayon); background: var(--hz-blanc);
+}
+.hz-tpl .hz-immo-vide.hz-visible { display: block; }
+
+.hz-tpl .hz-bien {
+  position: relative; display: flex; flex-direction: column;
+  background: var(--hz-blanc); border: 1px solid var(--hz-bord);
+  border-radius: var(--hz-rayon); overflow: hidden; box-shadow: var(--hz-ombre);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.hz-tpl .hz-bien:hover { transform: translateY(-4px); box-shadow: var(--hz-ombre-forte); }
+.hz-tpl .hz-bien-media { display: block; position: relative; }
+.hz-tpl .hz-bien-media img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.hz-tpl .hz-bien-badge {
+  position: absolute; top: 12px; left: 12px; z-index: 2; pointer-events: none;
+  background: rgba(11,19,36,.86); color: var(--hz-blanc);
+  border-radius: 999px; padding: 5px 14px; font-size: .68rem;
+  font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+}
+.hz-tpl .hz-bien-corps { padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
+.hz-tpl .hz-bien-type { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--hz-ambre); }
+.hz-tpl .hz-bien-nom { font-family: var(--hz-serif); font-size: 1.1rem; color: var(--hz-encre); text-decoration: none; }
+.hz-tpl .hz-bien-lieu { font-size: .84rem; color: var(--hz-gris); }
+.hz-tpl .hz-bien-specs { display: flex; gap: 14px; flex-wrap: wrap; font-size: .8rem; color: var(--hz-gris); }
+.hz-tpl .hz-bien-pied { margin-top: auto; padding-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.hz-tpl .hz-bien-prix { font-family: var(--hz-serif); font-size: 1.1rem; font-weight: 600; }
+.hz-tpl .hz-bien-prix small { font-weight: 400; font-size: .74rem; color: var(--hz-gris); }
+
+/* ── Fiche détaillée : c'est ce repère (`data-im-detail`) qui déclenche côté
+     site le formulaire de demande, le calendrier de disponibilités et le média
+     principal, greffés dans `.hz-fiche-corps`. Il commande aussi l'ouverture de
+     l'onglet « Immobilier » de l'espace entreprise pour une template de
+     catégorie Tourisme (CmsModules::templateExposeImmobilier).               */
+/* ⚠ CENTRAGE DANS UNE IFRAME (§4)
+   Le site d'établissement est rendu dans une iframe haute comme son contenu :
+   sa « fenêtre » couvre tout le document, et un `position: fixed` s'y cale sur
+   la PAGE entière, pas sur l'écran. Le script recale donc le calque sur la
+   bande réellement visible — via le pont du site, ou par lui-même à défaut.
+
+   Le conteneur est en `flex` et le panneau se centre par `margin: auto`, JAMAIS
+   par `align-items: center` : avec `auto`, un panneau plus haut que la bande
+   visible reste atteignable par le haut, là où `center` le ferait déborder des
+   deux côtés et deviendrait impossible à remonter.
+
+   Les hauteurs sont en POURCENTAGE, jamais en `vh` : le script donne au calque
+   la hauteur de la bande visible, alors qu'un `vh` mesurerait l'iframe entière
+   — c'est-à-dire toute la page. */
+.hz-tpl .hz-fiche {
+  position: fixed; inset: 0; z-index: 4000; display: none;
+  background: rgba(12, 20, 17, .72); padding: 4%;
+  overflow-y: auto;
+  /* ⚠ `border-box` obligatoire : le script écrit ici une hauteur en pixels —
+     celle de la bande visible. En `content-box`, le remplissage s'y AJOUTE et
+     le calque dépasse sous la ligne de flottaison. Mesuré dans une iframe de
+     9 282 px sur une fenêtre de 800 px : calque de 900 px, panneau centré
+     50 px trop bas et débordant de 50 px. */
+  box-sizing: border-box;
+}
+.hz-tpl .hz-fiche.hz-fiche-ouverte { display: flex; }
+.hz-tpl .hz-fiche-panneau {
+  width: min(880px, 100%); max-height: 100%; margin: auto;
+  background: var(--hz-blanc); border-radius: var(--hz-rayon);
+  box-shadow: var(--hz-ombre-forte); overflow-y: auto;
+}
+.hz-tpl .hz-fiche-tete {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 18px;
+  padding: 26px 28px 18px; border-bottom: 1px solid var(--hz-bord);
+}
+.hz-tpl .hz-fiche-fermer {
+  width: 40px; height: 40px; border-radius: 50%; flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--hz-sable); color: var(--hz-encre);
+  text-decoration: none; font-size: 1.3rem; line-height: 1;
+}
+.hz-tpl .hz-fiche-corps { padding: 22px 28px 30px; display: grid; gap: 22px; }
+.hz-tpl .hz-fiche-galerie { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+.hz-tpl .hz-fiche-galerie img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
+.hz-tpl .hz-fiche-cote { display: grid; gap: 12px; }
+.hz-tpl .hz-fiche-prix { font-family: var(--hz-serif); font-size: 1.5rem; color: var(--hz-vert); }
+.hz-tpl .hz-fiche-specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
+.hz-tpl .hz-fiche-spec {
+  background: var(--hz-sable); border-radius: 14px; padding: 12px 14px; text-align: center;
+}
+.hz-tpl .hz-fiche-spec b { display: block; font-family: var(--hz-serif); font-size: 1.1rem; }
+.hz-tpl .hz-fiche-spec span { font-size: .74rem; letter-spacing: .07em; text-transform: uppercase; color: var(--hz-gris); }
+.hz-tpl .hz-fiche-bloc h4 { font-size: 1.02rem; margin-bottom: 8px; }
+.hz-tpl .hz-fiche-bloc p { color: var(--hz-gris); font-size: .92rem; }
+.hz-tpl .hz-equipements { display: flex; flex-wrap: wrap; gap: 9px; }
+.hz-tpl .hz-equipements span {
+  background: var(--hz-sable); border-radius: 999px; padding: 7px 15px;
+  font-size: .82rem; color: var(--hz-encre);
+}
+
+/* ══ ACTIVITÉS · ÉVÉNEMENTS · FESTIVALS (module Activités) ════════════════ */
+.hz-tpl .hz-cartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(258px, 1fr)); gap: 22px; }
+.hz-tpl .hz-carte {
+  display: flex; flex-direction: column; text-decoration: none; color: inherit;
+  background: var(--hz-blanc); border: 1px solid var(--hz-bord);
+  border-radius: var(--hz-rayon); overflow: hidden; box-shadow: var(--hz-ombre);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.hz-tpl .hz-carte:hover { transform: translateY(-4px); box-shadow: var(--hz-ombre-forte); }
+.hz-tpl .hz-carte-media { position: relative; }
+.hz-tpl .hz-carte-media img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.hz-tpl .hz-carte-cat {
+  position: absolute; top: 12px; left: 12px; z-index: 2; pointer-events: none;
+  background: rgba(255,255,255,.94); border-radius: 999px; padding: 5px 13px;
+  font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--hz-encre);
+}
+.hz-tpl .hz-carte-corps { padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.hz-tpl .hz-carte-corps h3 { font-size: 1.06rem; }
+.hz-tpl .hz-carte-desc { font-size: .86rem; color: var(--hz-gris); }
+.hz-tpl .hz-carte-lien { margin-top: auto; padding-top: 10px; color: var(--hz-vert); font-weight: 700; font-size: .88rem; }
+
+.hz-tpl .hz-sec-sombre .hz-carte { background: #17244a; border-color: #26365f; }
+.hz-tpl .hz-sec-sombre .hz-carte-corps h3 { color: var(--hz-blanc); }
+.hz-tpl .hz-sec-sombre .hz-carte-desc { color: #a9b6d3; }
+.hz-tpl .hz-sec-sombre .hz-carte-lien { color: var(--hz-ambre-clair); }
+
+/* ══ NOS SERVICES ════════════════════════════════════════════════════════ */
+.hz-tpl .hz-services {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(248px, 1fr)); gap: 20px;
+}
+.hz-tpl .hz-service {
+  background: var(--hz-blanc); border: 1px solid var(--hz-bord);
+  border-radius: var(--hz-rayon); box-shadow: var(--hz-ombre);
+  padding: 24px 22px 26px;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.hz-tpl .hz-service:hover { transform: translateY(-4px); box-shadow: var(--hz-ombre-forte); }
+.hz-tpl .hz-service-icone {
+  width: 50px; height: 50px; border-radius: 15px; margin-bottom: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--hz-sable); color: var(--hz-vert); font-size: 1.2rem;
+}
+.hz-tpl .hz-service h3 { font-size: 1.04rem; }
+.hz-tpl .hz-service p { color: var(--hz-gris); font-size: .88rem; margin-top: 8px; }
+
+/* ══ SECTIONS VENUES DU GABARIT PAR DÉFAUT ════════════════════════════════
+   À propos, prestations, billets, agenda, tarifs, équipe, galerie, vidéos,
+   avis, infos pratiques, FAQ : réécrites dans la charte Mixte — mêmes
+   jetons, mêmes titres, mêmes cartes — pour qu'un seul style tienne le site. */
+
+/* ── À propos ──────────────────────────────────────────────────────────── */
+.hz-tpl .hz-apropos { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 68px); align-items: center; }
+.hz-tpl .hz-apropos-media { position: relative; }
+.hz-tpl .hz-apropos-media img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--hz-rayon); box-shadow: var(--hz-ombre-forte); }
+/* Pastille décorative : elle ne doit pas voler le clic destiné à la photo (§4). */
+.hz-tpl .hz-apropos-chiffre {
+  position: absolute; right: -14px; bottom: 28px; z-index: 2; pointer-events: none;
+  background: var(--hz-vert); color: var(--hz-blanc); border-radius: 18px; padding: 16px 20px; box-shadow: var(--hz-ombre-forte);
+}
+.hz-tpl .hz-apropos-chiffre b { display: block; font-family: var(--hz-serif); font-size: 1.9rem; line-height: 1; }
+.hz-tpl .hz-apropos-chiffre span { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; opacity: .85; }
+
+/* ── Prestations : les cartes de services, recolorées sur fond sombre ────── */
+.hz-tpl .hz-sec-sombre .hz-service { background: #17244a; border-color: #26365f; box-shadow: none; }
+.hz-tpl .hz-sec-sombre .hz-service h3 { color: var(--hz-blanc); }
+.hz-tpl .hz-sec-sombre .hz-service p { color: #a9b6d3; }
+.hz-tpl .hz-sec-sombre .hz-service-icone { background: rgba(255,255,255,.08); color: var(--hz-ambre-clair); }
+
+/* ── Billets d'avion ───────────────────────────────────────────────────── */
+.hz-tpl .hz-billets-grille { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 5vw, 56px); align-items: start; }
+.hz-tpl .hz-billets-points { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 14px; }
+.hz-tpl .hz-billets-points li { display: flex; gap: 12px; align-items: flex-start; color: #a9b6d3; }
+.hz-tpl .hz-billets-points i { color: var(--hz-ambre-clair); margin-top: 4px; width: 18px; flex: 0 0 auto; }
+.hz-tpl .hz-billets-points b { color: var(--hz-blanc); display: block; }
+.hz-tpl .hz-billets-form {
+  background: var(--hz-blanc); color: var(--hz-encre); border-radius: var(--hz-rayon); box-shadow: var(--hz-ombre-forte);
+  padding: clamp(20px, 3vw, 30px); display: grid; gap: 16px; margin: 0;
+}
+.hz-tpl .hz-billets-trajet { position: relative; display: flex; flex-wrap: wrap; gap: 10px; border: 0; margin: 0; padding: 0; min-width: 0; }
+/* Légende lue par les lecteurs d'écran, masquée à l'œil. */
+.hz-tpl .hz-billets-trajet legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.hz-tpl .hz-billets-trajet label { position: relative; cursor: pointer; }
+.hz-tpl .hz-billets-trajet input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.hz-tpl .hz-billets-trajet span {
+  display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px;
+  border: 1px solid var(--hz-bord); font-weight: 700; font-size: .86rem; color: var(--hz-gris);
+}
+.hz-tpl .hz-billets-trajet input:checked + span { background: var(--hz-sable); border-color: var(--hz-vert); color: var(--hz-vert); }
+.hz-tpl .hz-billets-trajet input:focus-visible + span { outline: 2px solid var(--hz-vert); outline-offset: 2px; }
+.hz-tpl .hz-billets-lignes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.hz-tpl .hz-billets-lignes.hz-trois { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.hz-tpl .hz-champ { display: grid; gap: 6px; min-width: 0; }
+.hz-tpl .hz-champ label { font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--hz-gris); }
+.hz-tpl .hz-champ input, .hz-tpl .hz-champ select, .hz-tpl .hz-champ textarea {
+  width: 100%; min-width: 0; padding: 11px 14px; border-radius: 12px; border: 1px solid var(--hz-bord);
+  background: var(--hz-creme); color: var(--hz-encre); font-family: var(--hz-sans); font-size: .92rem;
+}
+.hz-tpl .hz-champ textarea { min-height: 88px; resize: vertical; }
+.hz-tpl .hz-champ input:focus, .hz-tpl .hz-champ select:focus, .hz-tpl .hz-champ textarea:focus {
+  outline: none; border-color: var(--hz-vert); box-shadow: 0 0 0 3px rgba(36, 89, 224, .15);
+}
+/* Aller simple : la date de retour disparaît, en CSS PUR (§5). Sur le site, le
+   script la désactive en plus, pour qu'une date saisie avant ne parte pas. */
+.hz-tpl .hz-billets-form:has(input[name="trip_type"][value="aller_simple"]:checked) .hz-champ-retour { display: none; }
+.hz-tpl .hz-billets-envoi { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.hz-tpl .hz-billets-note { font-size: .8rem; color: var(--hz-gris); }
+.hz-tpl .hz-vols { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; margin-top: clamp(32px, 4vw, 46px); }
+.hz-tpl .hz-vol { background: #17244a; border: 1px solid #26365f; border-radius: var(--hz-rayon); overflow: hidden; display: flex; flex-direction: column; }
+.hz-tpl .hz-vol img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.hz-tpl .hz-vol-corps { padding: 16px 18px 18px; display: grid; gap: 6px; flex: 1; }
+.hz-tpl .hz-vol-trajet { font-family: var(--hz-serif); font-size: 1.05rem; color: var(--hz-blanc); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hz-tpl .hz-vol-trajet i { color: var(--hz-ambre-clair); font-size: .78rem; }
+.hz-tpl .hz-vol-prix { font-size: .86rem; color: #a9b6d3; }
+.hz-tpl .hz-vol-prix b { color: var(--hz-blanc); font-size: 1.02rem; }
+.hz-tpl .hz-vol-lien { margin-top: auto; padding-top: 8px; color: var(--hz-ambre-clair); font-weight: 700; font-size: .86rem; text-decoration: none; }
+
+/* ── Zone de statut des formulaires branchés (billets, contact) ───────────
+   Classes posées par le pont du site (`est-succes` / `est-erreur`) ou par le
+   repli du gabarit quand le pont est absent. */
+.hz-tpl [data-gx-contact-statut] { display: none; padding: 12px 16px; border-radius: 12px; font-weight: 600; font-size: .9rem; }
+.hz-tpl [data-gx-contact-statut].est-succes { display: block; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.hz-tpl [data-gx-contact-statut].est-erreur { display: block; background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.hz-tpl .hz-form-ligne { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* ── Tarifs ────────────────────────────────────────────────────────────── */
+.hz-tpl .hz-tarifs { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 22px; align-items: start; }
+.hz-tpl .hz-tarif {
+  position: relative; background: var(--hz-blanc); border: 1px solid var(--hz-bord); border-radius: var(--hz-rayon);
+  box-shadow: var(--hz-ombre); padding: 30px 24px 26px; display: flex; flex-direction: column; gap: 14px;
+}
+.hz-tpl .hz-tarif-vedette { border-color: var(--hz-vert); box-shadow: var(--hz-ombre-forte); }
+.hz-tpl .hz-tarif-etiquette {
+  position: absolute; top: -12px; left: 24px; pointer-events: none;
+  background: var(--hz-ambre); color: var(--hz-blanc); border-radius: 999px; padding: 4px 12px;
+  font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+}
+.hz-tpl .hz-tarif-nom { font-size: 1.15rem; }
+.hz-tpl .hz-tarif-prix { font-family: var(--hz-serif); font-size: 2.2rem; font-weight: 600; line-height: 1; }
+.hz-tpl .hz-tarif-prix small { font-family: var(--hz-sans); font-size: .8rem; font-weight: 500; color: var(--hz-gris); }
+.hz-tpl .hz-tarif-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: .9rem; color: var(--hz-gris); }
+.hz-tpl .hz-tarif-liste li { display: flex; gap: 10px; align-items: flex-start; }
+.hz-tpl .hz-tarif-liste i { color: var(--hz-vert); margin-top: 4px; }
+.hz-tpl .hz-tarif .hz-btn { margin-top: auto; justify-content: center; }
+
+/* ── L'équipe ──────────────────────────────────────────────────────────── */
+.hz-tpl .hz-equipe { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 22px; }
+.hz-tpl .hz-membre { text-align: center; background: var(--hz-blanc); border: 1px solid var(--hz-bord); border-radius: var(--hz-rayon); box-shadow: var(--hz-ombre); padding: 26px 20px; }
+.hz-tpl .hz-membre img { width: 112px; height: 112px; border-radius: 50%; object-fit: cover; margin: 0 auto 16px; }
+.hz-tpl .hz-membre h3 { font-size: 1.08rem; }
+.hz-tpl .hz-membre-role { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--hz-ambre); margin-top: 6px; }
+.hz-tpl .hz-membre p { color: var(--hz-gris); font-size: .88rem; margin-top: 10px; }
+
+/* ── Galerie : mur de photos ───────────────────────────────────────────────
+   `.hz-mur` et non `.hz-galerie`, déjà prise par le ruban défilant de
+   l'ambiance. La grande vue est une classe du balisage, pas un état. */
+.hz-tpl .hz-mur { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 210px; gap: 14px; }
+.hz-tpl .hz-mur-vue { position: relative; margin: 0; border-radius: 16px; overflow: hidden; cursor: zoom-in; background: var(--hz-sable); }
+.hz-tpl .hz-mur-vue.hz-mur-large { grid-column: span 2; grid-row: span 2; }
+.hz-tpl .hz-mur-vue img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.hz-tpl .hz-mur-vue:hover img { transform: scale(1.04); }
+.hz-tpl .hz-mur-vue figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; pointer-events: none;
+  padding: 26px 14px 12px; background: linear-gradient(transparent, rgba(11,19,36,.78)); color: var(--hz-blanc); font-size: .84rem;
+}
+
+/* ── Visionneuse ───────────────────────────────────────────────────────────
+   Même règle que la fiche : hauteurs en POURCENTAGE, jamais en `vh` — dans
+   l'iframe du site, un `vh` mesurerait toute la page. Le script prévient le
+   pont du site, qui recale le calque sur la bande visible. */
+.hz-tpl .hz-visionneuse {
+  position: fixed; inset: 0; z-index: 4100; display: none; box-sizing: border-box;
+  background: rgba(12, 20, 17, .92); padding: 4%; align-items: center; justify-content: center; gap: 16px;
+}
+.hz-tpl .hz-visionneuse.hz-visionneuse-ouverte { display: flex; }
+.hz-tpl .hz-visionneuse img { max-width: min(1100px, 100%); max-height: 100%; object-fit: contain; border-radius: 12px; min-width: 0; }
+.hz-tpl .hz-visionneuse-nav { flex: 0 0 auto; }
+.hz-tpl .hz-visionneuse-fermer {
+  position: absolute; top: 18px; right: 22px; width: 44px; height: 44px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.14); color: var(--hz-blanc); text-decoration: none; font-size: 1.5rem; line-height: 1;
+}
+/* Jamais dans le canvas : elle couvrirait l'élément qu'on cherche à modifier. */
+html.hz-tpl-edition .hz-tpl .hz-visionneuse { display: none !important; }
+
+/* ── Vidéos ────────────────────────────────────────────────────────────── */
+.hz-tpl .hz-videos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
+.hz-tpl .hz-video-carte { background: #17244a; border: 1px solid #26365f; border-radius: var(--hz-rayon); overflow: hidden; }
+/* Même géométrie que le style en ligne du composant vidéo : rien à arbitrer. */
+.hz-tpl .hz-video-cadre { position: relative; padding-top: 56.25%; background: #0b1324; }
+.hz-tpl .hz-video-cadre iframe, .hz-tpl .hz-video-cadre video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.hz-tpl .hz-video-corps { padding: 16px 18px 20px; }
+.hz-tpl .hz-video-corps h3 { font-size: 1.04rem; color: var(--hz-blanc); }
+.hz-tpl .hz-video-corps p { color: #a9b6d3; font-size: .88rem; margin-top: 6px; }
+
+/* ── Avis ──────────────────────────────────────────────────────────────── */
+.hz-tpl .hz-avis { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
+.hz-tpl .hz-avis-carte { background: var(--hz-blanc); border: 1px solid var(--hz-bord); border-radius: var(--hz-rayon); box-shadow: var(--hz-ombre); padding: 26px 24px; display: flex; flex-direction: column; gap: 16px; }
+.hz-tpl .hz-avis-etoiles { color: var(--hz-ambre); letter-spacing: 2px; }
+.hz-tpl .hz-avis-texte { font-family: var(--hz-serif); font-style: italic; font-size: 1.05rem; line-height: 1.5; color: var(--hz-encre); }
+.hz-tpl .hz-avis-auteur { display: flex; align-items: center; gap: 12px; margin-top: auto; }
+.hz-tpl .hz-avis-auteur img { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; }
+.hz-tpl .hz-avis-auteur b { display: block; font-size: .92rem; }
+.hz-tpl .hz-avis-auteur span { font-size: .8rem; color: var(--hz-gris); }
+
+/* ── Infos pratiques ───────────────────────────────────────────────────── */
+.hz-tpl .hz-infos { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 60px); align-items: start; }
+.hz-tpl .hz-horaires { display: grid; gap: 10px; margin-top: 24px; }
+.hz-tpl .hz-horaire { display: flex; justify-content: space-between; gap: 16px; padding: 14px 18px; background: var(--hz-blanc); border: 1px solid var(--hz-bord); border-radius: 14px; }
+.hz-tpl .hz-horaire span { color: var(--hz-gris); }
+.hz-tpl .hz-horaire-ferme span { color: var(--hz-ambre); font-weight: 700; }
+.hz-tpl .hz-coords { display: grid; gap: 12px; margin-top: 24px; }
+.hz-tpl .hz-coord { display: flex; gap: 14px; align-items: flex-start; background: var(--hz-blanc); border: 1px solid var(--hz-bord); border-radius: 14px; padding: 14px 18px; }
+.hz-tpl .hz-coord i { width: 40px; height: 40px; flex: 0 0 auto; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; background: var(--hz-sable); color: var(--hz-vert); }
+.hz-tpl .hz-coord b { display: block; }
+.hz-tpl .hz-coord span { color: var(--hz-gris); font-size: .9rem; }
+
+/* ── Questions fréquentes : <details> natifs, aucun script (§5) ────────── */
+.hz-tpl .hz-sec-head-centre { justify-content: center; text-align: center; }
+.hz-tpl .hz-faq { display: grid; gap: 12px; max-width: 860px; margin: 0 auto; }
+.hz-tpl .hz-faq details { background: var(--hz-blanc); border: 1px solid var(--hz-bord); border-radius: 16px; padding: 0 22px; box-shadow: var(--hz-ombre); }
+.hz-tpl .hz-faq summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 18px 0; font-family: var(--hz-serif); font-size: 1.05rem; }
+.hz-tpl .hz-faq summary::-webkit-details-marker { display: none; }
+.hz-tpl .hz-faq summary::after { content: '\002B'; color: var(--hz-ambre); font-family: var(--hz-sans); font-weight: 700; flex: 0 0 auto; }
+.hz-tpl .hz-faq details[open] summary::after { content: '\2212'; }
+.hz-tpl .hz-faq details p { color: var(--hz-gris); padding: 0 0 20px; }
+
+/* ══ CARTE DE L'ÉTABLISSEMENT — repère « contenu dynamique » dans l'éditeur ══
+   Dans le canvas, la section d'attente ressemble à un bloc de texte ; rien
+   n'indique qu'elle sera REMPLACÉE par la carte de l'établissement. On la
+   dessine en carte, avec une étiquette. CSS seul : les pseudo-éléments ne
+   font pas partie du contenu enregistré (§5). Sur le site, cette section
+   n'existe plus au rendu. */
+html.hz-tpl-edition .hz-tpl [data-gx-map] {
+  position: relative; min-height: 340px; outline: 2px dashed rgba(36, 89, 224, .55); outline-offset: -10px;
+  background:
+    radial-gradient(circle at 28% 42%, rgba(200, 121, 43, .9) 0 7px, transparent 8px),
+    radial-gradient(circle at 63% 58%, rgba(200, 121, 43, .9) 0 7px, transparent 8px),
+    radial-gradient(circle at 78% 30%, rgba(36, 89, 224, .9) 0 7px, transparent 8px),
+    linear-gradient(rgba(36, 89, 224, .10) 1px, transparent 1px) 0 0 / 38px 38px,
+    linear-gradient(90deg, rgba(36, 89, 224, .10) 1px, transparent 1px) 0 0 / 38px 38px,
+    var(--hz-sable);
+}
+html.hz-tpl-edition .hz-tpl [data-gx-map]::before {
+  content: "Carte interactive — contenu dynamique : remplacée sur le site par la carte de l\2019 onglet « Géo Maps Vidéos »";
+  position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none;
+  max-width: calc(100% - 40px); padding: 8px 16px; border-radius: 999px; white-space: normal; text-align: center;
+  background: var(--hz-vert); color: var(--hz-blanc); font: 700 .78rem/1.35 var(--hz-sans); letter-spacing: .02em;
+  box-shadow: var(--hz-ombre);
+}
+html.hz-tpl-edition .hz-tpl [data-gx-map] .hz-carte-attente { background: rgba(255, 255, 255, .88); border-radius: var(--hz-rayon); margin-top: 64px; }
+
+/* ══ CARTE DE L'ÉTABLISSEMENT ═════════════════════════════════════════════ */
+.hz-tpl .hz-carte-attente { text-align: center; max-width: 640px; margin: 0 auto; padding: clamp(48px, 7vw, 84px) clamp(18px, 4vw, 40px); }
+.hz-tpl .hz-carte-attente p { color: var(--hz-gris); margin-top: 14px; }
+
+/* ══ CONTACT ══════════════════════════════════════════════════════════════ */
+.hz-tpl .hz-contact { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(30px, 5vw, 64px); align-items: start; }
+.hz-tpl .hz-contact-infos { display: grid; gap: 18px; margin-top: 28px; }
+.hz-tpl .hz-contact-item { display: flex; gap: 14px; align-items: flex-start; }
+.hz-tpl .hz-contact-item i {
+  width: 42px; height: 42px; flex: 0 0 auto; border-radius: 13px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.10); color: var(--hz-ambre-clair);
+}
+.hz-tpl .hz-contact-item b { display: block; color: var(--hz-blanc); }
+.hz-tpl .hz-contact-item span { color: #a9b6d3; font-size: .9rem; }
+.hz-tpl .hz-form { display: grid; gap: 14px; margin: 0; background: #17244a; border-radius: var(--hz-rayon); padding: clamp(22px, 3vw, 32px); }
+.hz-tpl .hz-form input, .hz-tpl .hz-form textarea {
+  width: 100%; padding: 13px 17px; border-radius: 13px;
+  border: 1px solid #33453e; background: #0b1324; color: #d6def0;
+  font-family: var(--hz-sans); font-size: .93rem;
+}
+.hz-tpl .hz-form textarea { min-height: 128px; resize: vertical; }
+
+/* ══ RÉVÉLATION — amélioration progressive (§5) ═══════════════════════════
+   Le masquage n'est actif que si le script a posé la classe sur <html>.
+   Sans lui — canvas d'éditeur, page rendue hors écran — tout reste visible.  */
+html.hz-tpl-anime .hz-tpl .hz-reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
+html.hz-tpl-anime .hz-tpl .hz-reveal.hz-vu { opacity: 1; transform: none; }
+
+/* ══ RESPONSIVE ═══════════════════════════════════════════════════════════ */
+@media (max-width: 991px) {
+  .hz-tpl .hz-ambiance,
+  .hz-tpl .hz-contact,
+  .hz-tpl .hz-apropos,
+  .hz-tpl .hz-infos,
+  .hz-tpl .hz-billets-grille { grid-template-columns: 1fr; }
+  .hz-tpl .hz-mur { grid-template-columns: repeat(2, 1fr); }
+  .hz-tpl .hz-vcar { --hz-vcar-vues: 3; }
+  .hz-tpl .hz-footer-grille { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .hz-tpl .hz-billets-lignes,
+  .hz-tpl .hz-billets-lignes.hz-trois,
+  .hz-tpl .hz-form-ligne { grid-template-columns: 1fr; }
+  .hz-tpl .hz-mur { grid-auto-rows: 160px; }
+  .hz-tpl .hz-vcar { --hz-vcar-vues: 2; }
+  .hz-tpl .hz-mur-vue.hz-mur-large { grid-column: span 2; grid-row: span 1; }
+  .hz-tpl .hz-apropos-chiffre { right: 12px; }
+  .hz-tpl .hz-itineraire-etape { padding-left: 48px; }
+  .hz-tpl .hz-itineraire-etape::before { width: 34px; height: 34px; font-size: .95rem; }
+  .hz-tpl .hz-itineraire-etape::after { left: 16px; top: 36px; }
+  .hz-tpl .hz-footer-grille { grid-template-columns: 1fr; }
+  .hz-tpl .hz-fiche-galerie { grid-template-columns: 1fr; }
+  .hz-tpl .hz-galerie-vue { flex-basis: 82%; }
+  .hz-tpl .hz-hero,
+  .hz-tpl .hz-hero-corps { min-height: 420px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HORIZON PRO — parties propres au gabarit
+   (en-tête à méga-menus, héros vidéo, univers, chiffres, restaurant, vidéos,
+   galerie, bandeau d'appel, pied de page). Même règle que le reste : tout est
+   préfixé `.hz-tpl` (§3), aucune pile en z-index négatif (§4), aucun `vh`
+   non plafonné.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Surcharges de la base reprise : typographie plus « produit » ───────── */
+.hz-tpl h1, .hz-tpl h2, .hz-tpl h3, .hz-tpl h4 { font-weight: 800; letter-spacing: -.02em; }
+.hz-tpl .hz-h2 em,
+.hz-tpl .hz-sec-sombre .hz-h2 em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--hz-vert-clair), var(--hz-ambre));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hz-tpl .hz-sec-sombre { background: var(--hz-nuit); }
+.hz-tpl .hz-btn { border-radius: 12px; }
+.hz-tpl .hz-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+
+/* Cadre 16:9 d'un lecteur `data-gx-video` hors héros. Même géométrie que le
+   style en ligne du composant vidéo : rien à arbitrer quand il le réécrit. */
+.hz-tpl .hz-cadre-video {
+  position: relative; padding-top: 56.25%; background: var(--hz-encre);
+  border-radius: var(--hz-rayon); overflow: hidden; box-shadow: var(--hz-ombre-forte);
+}
+.hz-tpl .hz-cadre-video iframe,
+.hz-tpl .hz-cadre-video video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
+/* ══ EN-TÊTE — méga-menus ══════════════════════════════════════════════════
+   Ordinateur : un panneau par entrée, ouvert au survol ET au focus clavier,
+   en CSS seul. Aucun nom générique (§7.2) : le détecteur de menu du site hôte
+   ne ramasse rien ici. */
+.hz-tpl .hz-nav {
+  position: sticky; top: 0; z-index: 70;
+  background: rgba(255, 255, 255, .94);
+  backdrop-filter: saturate(160%) blur(14px);
+  border-bottom: 1px solid var(--hz-bord);
+}
+.hz-tpl .hz-nav-in {
+  position: relative; max-width: 1320px; margin: 0 auto;
+  padding: 12px clamp(16px, 3vw, 32px);
+  display: flex; align-items: center; gap: 18px;
+}
+.hz-tpl .hz-logo {
+  display: inline-flex; align-items: center; gap: 10px; flex: 0 0 auto;
+  font-family: var(--hz-serif); font-weight: 800; font-size: 1.16rem;
+  color: var(--hz-encre); text-decoration: none; letter-spacing: -.02em;
+}
+.hz-tpl .hz-logo img { width: 40px; height: 40px; border-radius: 12px; object-fit: cover; }
+.hz-tpl .hz-logo b { color: var(--hz-vert); font-weight: 800; }
+
+.hz-tpl .hz-menu { display: flex; align-items: center; gap: 2px; margin-left: auto; }
+.hz-tpl .hz-mega-lien {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 13px; border-radius: 10px;
+  color: var(--hz-encre); text-decoration: none; font-weight: 600; font-size: .92rem;
+  transition: background .2s ease, color .2s ease;
+}
+.hz-tpl .hz-mega-lien i { font-size: .62rem; opacity: .7; transition: transform .2s ease; }
+.hz-tpl .hz-mega-item:hover > .hz-mega-lien,
+.hz-tpl .hz-mega-item:focus-within > .hz-mega-lien { background: var(--hz-sable); color: var(--hz-vert); }
+.hz-tpl .hz-mega-item:hover > .hz-mega-lien i,
+.hz-tpl .hz-mega-item:focus-within > .hz-mega-lien i { transform: rotate(180deg); }
+
+.hz-tpl .hz-mega {
+  position: absolute; top: 100%; left: clamp(16px, 3vw, 32px); right: clamp(16px, 3vw, 32px);
+  z-index: 80; display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 26px;
+  padding: 26px; background: var(--hz-blanc);
+  border: 1px solid var(--hz-bord); border-radius: 18px; box-shadow: var(--hz-ombre-forte);
+  opacity: 0; visibility: hidden; transform: translateY(10px);
+  transition: opacity .2s ease, transform .2s ease, visibility .2s ease;
+}
+/* Pont invisible entre le lien et le panneau : sans lui, la souris traverse
+   le vide sous la barre, quitte l'entrée, et le panneau se referme. */
+.hz-tpl .hz-mega::before { content: ''; position: absolute; left: 0; right: 0; top: -16px; height: 16px; }
+.hz-tpl .hz-mega-item:hover > .hz-mega,
+.hz-tpl .hz-mega-item:focus-within > .hz-mega { opacity: 1; visibility: visible; transform: none; }
+
+.hz-tpl .hz-mega-titre {
+  display: flex; align-items: center; gap: 8px; margin: 0 0 10px;
+  font-size: .68rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--hz-gris);
+}
+.hz-tpl .hz-mega-titre i { color: var(--hz-ambre); }
+.hz-tpl .hz-mega-col { display: grid; align-content: start; gap: 2px; }
+.hz-tpl .hz-mega-col a {
+  display: block; padding: 8px 10px; border-radius: 9px;
+  color: var(--hz-encre); text-decoration: none; font-weight: 600; font-size: .92rem;
+}
+.hz-tpl .hz-mega-col a:hover { background: var(--hz-sable); color: var(--hz-vert); }
+.hz-tpl .hz-mega-carte {
+  position: relative; display: block; min-height: 200px; border-radius: 14px; overflow: hidden;
+  text-decoration: none; isolation: isolate;
+}
+.hz-tpl .hz-mega-carte img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.hz-tpl .hz-mega-carte-corps {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+  display: grid; gap: 3px; padding: 18px 16px 16px;
+  background: linear-gradient(transparent, rgba(11, 19, 36, .88)); color: var(--hz-blanc);
+}
+.hz-tpl .hz-mega-carte-corps b { font-family: var(--hz-serif); font-size: 1.02rem; }
+.hz-tpl .hz-mega-carte-corps span { font-size: .84rem; color: rgba(255, 255, 255, .82); }
+
+.hz-tpl .hz-nav-actions { display: flex; align-items: center; gap: 10px; margin-left: 6px; }
+.hz-tpl .hz-nav-cta { padding: 11px 18px; font-size: .88rem; }
+/* Le bouton du tiroir : trois <span>, jamais l'icône « bars » (§7.2). */
+.hz-tpl .hz-ouvrir-menu {
+  display: none; width: 44px; height: 44px; border-radius: 12px;
+  border: 1px solid var(--hz-bord); background: var(--hz-blanc);
+  align-items: center; justify-content: center; flex-direction: column; gap: 5px; text-decoration: none;
+}
+.hz-tpl .hz-ouvrir-menu span { display: block; width: 19px; height: 2px; border-radius: 2px; background: var(--hz-encre); transition: transform .25s ease, opacity .2s ease; }
+
+/* ══ HÉROS — diaporama de vidéos plein cadre ══════════════════════════════
+   Une piste à ancrage horizontal ; chaque diapositive porte son lecteur en
+   fond. `min-height` en clamp : jamais de `100vh`, qui emballerait l'iframe
+   du site (la fenêtre y vaut la hauteur du document). */
+.hz-tpl .hz-hero { position: relative; overflow: hidden; background: var(--hz-nuit); }
+.hz-tpl .hz-hero-piste {
+  display: flex; overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory; scrollbar-width: none; counter-reset: hzdiapo;
+}
+.hz-tpl .hz-hero-piste::-webkit-scrollbar { display: none; }
+.hz-tpl .hz-hero-diapo {
+  position: relative; flex: 0 0 100%; min-width: 0;
+  min-height: clamp(520px, 78vh, 780px);
+  display: flex; align-items: center; overflow: hidden;
+  scroll-snap-align: start; counter-increment: hzdiapo;
+}
+/* Fond de la diapositive. Position épinglée en `!important` : une règle
+   placée plus bas dans la feuille — ou l'éditeur — ne doit plus pouvoir la
+   reprendre. C'est ce qui faisait disparaître la vidéo du héros : la règle
+   des « boutons de lien sur les médias » repassait cette boîte en
+   `position: relative`, les offsets ne l'étiraient plus, et le containment
+   la figeait à 0 de haut. */
+.hz-tpl .hz-hero-media {
+  position: absolute !important;
+  top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+  z-index: 0; overflow: hidden; background: #000;
+}
+/* Fond du site : aucun clic ne doit mettre en pause la vidéo d'ambiance. */
+.hz-tpl .hz-hero-media iframe,
+.hz-tpl .hz-hero-media video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; pointer-events: none; }
+/* Fichier vidéo : `object-fit` recadre sans bandes. ⚠ `!important` : le
+   composant vidéo réécrit le lecteur avec un style EN LIGNE. */
+.hz-tpl .hz-hero-media video { object-fit: cover !important; }
+
+/* Lecteur YouTube : `object-fit` n'a aucun effet sur une iframe, et le
+   lecteur met la vidéo 16:9 en boîte à lettres dans son cadre. On recadre
+   donc L'IFRAME : le rapport 16:9 avec deux minimums à 100 % donne la plus
+   petite boîte qui couvre la diapositive, centrée, le débordement coupé.
+   ⚠ Ni `cqw/cqh` ni `vh` : les unités de conteneur imposaient
+   `container-type: size`, dont le *containment* réduisait la boîte à 0 de
+   haut dès que son positionnement lui échappait — la vidéo disparaissait
+   alors entièrement au lieu d'être seulement mal cadrée. Et les unités de
+   fenêtre s'emballent dans l'iframe du site.
+   ⚠ `!important` sur chaque propriété : le composant `data-gx-video`
+   reconstruit l'iframe avec position/taille en ligne dès qu'on la règle dans
+   l'éditeur ; sans lui, la vidéo retombait dans le coin supérieur gauche. */
+.hz-tpl .hz-hero-media iframe {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  aspect-ratio: 16 / 9 !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.hz-tpl .hz-hero-voile {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(11, 19, 36, .82) 0%, rgba(11, 19, 36, .50) 42%, rgba(11, 19, 36, .08) 100%),
+    linear-gradient(0deg, rgba(11, 19, 36, .55) 0%, rgba(11, 19, 36, 0) 40%);
+}
+/* Le bloc de texte laisse passer le clic là où il est vide : dans l'éditeur,
+   un clic à côté du texte atteint le lecteur, qui se règle alors (§4). */
+.hz-tpl .hz-hero-corps {
+  position: relative; z-index: 2; width: 100%; max-width: 1320px; margin: 0 auto;
+  padding: 90px clamp(20px, 5vw, 64px) 120px; color: var(--hz-blanc); pointer-events: none;
+}
+.hz-tpl .hz-hero-corps > * { pointer-events: auto; }
+.hz-tpl .hz-hero .hz-kicker { color: var(--hz-ambre-clair); }
+.hz-tpl .hz-hero-titre {
+  font-family: var(--hz-serif); font-size: clamp(2.3rem, 5.6vw, 4.6rem); line-height: 1.04;
+  color: var(--hz-blanc); max-width: 15ch;
+}
+.hz-tpl .hz-hero-titre em { font-style: normal; color: var(--hz-ambre-clair); }
+.hz-tpl .hz-hero-texte { max-width: 52ch; margin-top: 18px; font-size: clamp(1rem, 1.5vw, 1.15rem); color: rgba(255, 255, 255, .86); }
+
+.hz-tpl .hz-hero-fleche {
+  position: absolute; top: 50%; z-index: 3; transform: translateY(-50%);
+  width: 50px; height: 50px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, .14); border: 1px solid rgba(255, 255, 255, .28);
+  backdrop-filter: blur(6px); color: var(--hz-blanc); text-decoration: none;
+  transition: background .2s ease;
+}
+.hz-tpl .hz-hero-fleche:hover { background: var(--hz-ambre); border-color: var(--hz-ambre); }
+.hz-tpl .hz-hero-prec { left: 18px; }
+.hz-tpl .hz-hero-suiv { right: 18px; }
+.hz-tpl .hz-hero-points { position: absolute; left: 0; right: 0; bottom: 28px; z-index: 3; display: flex; justify-content: center; gap: 10px; }
+.hz-tpl .hz-hero-point { display: block; width: 34px; height: 5px; border-radius: 99px; background: rgba(255, 255, 255, .38); transition: background .2s ease, width .2s ease; }
+.hz-tpl .hz-hero-point.hz-point-actif { width: 52px; background: var(--hz-blanc); }
+
+/* ══ NOS UNIVERS ═══════════════════════════════════════════════════════════ */
+.hz-tpl .hz-univers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.hz-tpl .hz-univers-carte {
+  position: relative; display: block; aspect-ratio: 4 / 5; border-radius: var(--hz-rayon);
+  overflow: hidden; text-decoration: none; box-shadow: var(--hz-ombre); isolation: isolate;
+}
+.hz-tpl .hz-univers-carte img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; transition: transform .6s ease; }
+.hz-tpl .hz-univers-carte:hover img { transform: scale(1.06); }
+/* Dégradé décoratif : il ne doit pas voler le clic destiné à la photo. */
+.hz-tpl .hz-univers-carte::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(11, 19, 36, 0) 38%, rgba(11, 19, 36, .88) 100%);
+}
+.hz-tpl .hz-univers-icone {
+  position: absolute; top: 14px; left: 14px; z-index: 2; pointer-events: none;
+  width: 44px; height: 44px; border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, .94); color: var(--hz-vert);
+}
+.hz-tpl .hz-univers-corps { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; display: grid; gap: 4px; padding: 18px; color: var(--hz-blanc); }
+.hz-tpl .hz-univers-corps b { font-family: var(--hz-serif); font-size: 1.14rem; }
+.hz-tpl .hz-univers-corps span { font-size: .86rem; color: rgba(255, 255, 255, .84); }
+
+/* ══ CHIFFRES CLÉS ════════════════════════════════════════════════════════ */
+.hz-tpl .hz-chiffres {
+  padding: clamp(34px, 5vw, 58px) 0; color: var(--hz-blanc);
+  background: linear-gradient(115deg, var(--hz-vert) 0%, #5b3df5 55%, var(--hz-ambre) 100%);
+}
+.hz-tpl .hz-chiffres-grille { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; text-align: center; }
+.hz-tpl .hz-chiffre b { display: block; font-family: var(--hz-serif); font-size: clamp(1.9rem, 3.6vw, 2.9rem); font-weight: 800; line-height: 1; }
+.hz-tpl .hz-chiffre span { display: block; margin-top: 8px; font-size: .9rem; color: rgba(255, 255, 255, .86); }
+
+/* ══ RESTAURANT ═══════════════════════════════════════════════════════════ */
+.hz-tpl .hz-resto { display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(28px, 5vw, 64px); align-items: center; }
+.hz-tpl .hz-menu-plats { display: grid; margin-top: 24px; }
+.hz-tpl .hz-plat { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--hz-bord); }
+.hz-tpl .hz-plat b { display: block; font-weight: 700; }
+.hz-tpl .hz-plat small { display: block; margin-top: 2px; font-size: .86rem; color: var(--hz-gris); }
+.hz-tpl .hz-plat em { font-style: normal; font-weight: 800; color: var(--hz-vert); white-space: nowrap; }
+.hz-tpl .hz-resto-media { display: grid; gap: 16px; }
+.hz-tpl .hz-resto-photo { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--hz-rayon); box-shadow: var(--hz-ombre); }
+
+/* ══ VIDÉOS — une à la une, trois dessous ══════════════════════════════════ */
+.hz-tpl .hz-videos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.hz-tpl .hz-video { display: flex; flex-direction: column; overflow: hidden; background: var(--hz-nuit-2); border: 1px solid #26365f; border-radius: var(--hz-rayon); }
+.hz-tpl .hz-video .hz-cadre-video { border-radius: 0; box-shadow: none; }
+.hz-tpl .hz-video-une { grid-column: 1 / -1; display: grid; grid-template-columns: 1.7fr 1fr; align-items: center; }
+.hz-tpl .hz-video-corps { padding: 16px 18px 20px; }
+.hz-tpl .hz-video-une .hz-video-corps { padding: clamp(20px, 3vw, 34px); }
+.hz-tpl .hz-video-corps h3 { font-size: 1.05rem; color: var(--hz-blanc); }
+.hz-tpl .hz-video-une .hz-video-corps h3 { font-size: clamp(1.3rem, 2.2vw, 1.8rem); }
+.hz-tpl .hz-video-corps p { margin-top: 6px; font-size: .9rem; color: #a9b6d3; }
+
+/* ══ GALERIE — mosaïque ═══════════════════════════════════════════════════ */
+.hz-tpl .hz-mosaique { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 210px; gap: 14px; }
+.hz-tpl .hz-mosaique-vue { position: relative; margin: 0; border-radius: 16px; overflow: hidden; background: var(--hz-sable); }
+.hz-tpl .hz-mosaique-large { grid-column: span 2; grid-row: span 2; }
+.hz-tpl .hz-mosaique-vue img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.hz-tpl .hz-mosaique-vue:hover img { transform: scale(1.04); }
+.hz-tpl .hz-mosaique-vue figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 26px 14px 12px;
+  background: linear-gradient(transparent, rgba(11, 19, 36, .82)); color: var(--hz-blanc); font-size: .85rem;
+}
+
+/* ══ BANDEAU D'APPEL ══════════════════════════════════════════════════════ */
+.hz-tpl .hz-appel { padding: clamp(36px, 6vw, 72px) 0; background: var(--hz-creme); }
+.hz-tpl .hz-appel-in {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+  padding: clamp(28px, 4vw, 50px); border-radius: 26px; box-shadow: var(--hz-ombre-forte);
+  background: radial-gradient(120% 140% at 100% 0%, rgba(242, 107, 58, .35), transparent 55%), linear-gradient(120deg, var(--hz-nuit), var(--hz-nuit-2));
+}
+.hz-tpl .hz-appel .hz-h2 { color: var(--hz-blanc); }
+.hz-tpl .hz-appel .hz-lead { color: #a9b6d3; }
+.hz-tpl .hz-appel .hz-actions { margin-top: 0; }
+.hz-tpl .hz-appel .hz-btn-ligne { color: var(--hz-blanc); }
+.hz-tpl .hz-appel .hz-btn-ligne:hover { background: var(--hz-blanc); color: var(--hz-encre); }
+
+/* ══ PIED DE PAGE ═════════════════════════════════════════════════════════ */
+.hz-tpl .hz-pied { padding: clamp(48px, 6vw, 76px) 0 26px; background: var(--hz-nuit); color: #a9b6d3; }
+.hz-tpl .hz-pied-grille { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 36px; }
+.hz-tpl .hz-pied h4 { margin-bottom: 16px; font-size: .98rem; color: var(--hz-blanc); }
+.hz-tpl .hz-logo-pied { color: var(--hz-blanc); }
+.hz-tpl .hz-logo-pied b { color: var(--hz-ambre-clair); }
+.hz-tpl .hz-pied-texte { max-width: 34ch; margin-top: 14px; font-size: .92rem; }
+.hz-tpl .hz-pied-liens { display: grid; gap: 9px; }
+.hz-tpl .hz-pied-liens a { color: #a9b6d3; text-decoration: none; font-size: .92rem; }
+.hz-tpl .hz-pied-liens a:hover { color: var(--hz-blanc); }
+.hz-tpl .hz-pied-social { display: flex; gap: 10px; margin-top: 18px; }
+.hz-tpl .hz-pied-social a {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, .08); color: var(--hz-blanc); text-decoration: none; transition: background .2s ease;
+}
+.hz-tpl .hz-pied-social a:hover { background: var(--hz-ambre); }
+.hz-tpl .hz-pied-bas {
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  margin-top: 38px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, .1); font-size: .84rem;
+}
+
+/* ══ RESPONSIVE — parties Horizon ═════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .hz-tpl .hz-univers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hz-tpl .hz-pied-grille { grid-template-columns: 1fr 1fr; }
+  .hz-tpl .hz-mega { grid-template-columns: 1fr 1fr; }
+  .hz-tpl .hz-mega-carte { display: none; }
+}
+/* Tiroir mobile : le MÊME balisage que les méga-menus, empilé. L'état ouvert
+   est une classe sur <html> — hors du contenu enregistré (§5). */
+@media (max-width: 991px) {
+  .hz-tpl .hz-ouvrir-menu { display: inline-flex; }
+  .hz-tpl .hz-nav-cta { display: none; }
+  .hz-tpl .hz-menu {
+    display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 80;
+    margin: 0; flex-direction: column; align-items: stretch; gap: 0;
+    max-height: 620px; overflow-y: auto;
+    padding: 6px clamp(16px, 3vw, 32px) 18px;
+    background: var(--hz-blanc); border-bottom: 1px solid var(--hz-bord); box-shadow: var(--hz-ombre-forte);
+  }
+  html.hz-menu-ouvert .hz-tpl .hz-menu { display: flex; }
+  .hz-tpl .hz-mega-lien { width: 100%; justify-content: space-between; padding: 13px 4px; border-radius: 0; border-bottom: 1px solid var(--hz-bord); }
+  .hz-tpl .hz-mega { position: static; display: block; padding: 4px 0 8px 12px; border: 0; border-radius: 0; box-shadow: none; opacity: 1; visibility: visible; transform: none; }
+  .hz-tpl .hz-mega::before { display: none; }
+  /* Sur mobile, seules les pages dédiées : les ancres doublaient la liste. */
+  .hz-tpl .hz-mega-col:first-child,
+  .hz-tpl .hz-mega-titre { display: none; }
+  html.hz-menu-ouvert .hz-tpl .hz-ouvrir-menu span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  html.hz-menu-ouvert .hz-tpl .hz-ouvrir-menu span:nth-child(2) { opacity: 0; }
+  html.hz-menu-ouvert .hz-tpl .hz-ouvrir-menu span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .hz-tpl .hz-resto,
+  .hz-tpl .hz-video-une { grid-template-columns: 1fr; }
+  .hz-tpl .hz-videos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hz-tpl .hz-chiffres-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hz-tpl .hz-mosaique { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .hz-tpl .hz-hero-diapo { min-height: 560px; }
+  .hz-tpl .hz-hero-corps { padding: 70px 20px 100px; }
+  .hz-tpl .hz-hero-fleche { width: 42px; height: 42px; top: auto; bottom: 16px; transform: none; }
+  .hz-tpl .hz-univers { gap: 12px; }
+  .hz-tpl .hz-univers-carte { aspect-ratio: 3 / 4; }
+  .hz-tpl .hz-univers-corps { padding: 14px; }
+  .hz-tpl .hz-univers-corps span { display: none; }
+  .hz-tpl .hz-videos { grid-template-columns: 1fr; }
+  .hz-tpl .hz-mosaique { grid-auto-rows: 150px; }
+  .hz-tpl .hz-mosaique-large { grid-row: span 1; }
+  .hz-tpl .hz-pied-grille { grid-template-columns: 1fr; }
+}
+
+/* ══ ÉDITEUR — tout ce qui se cache doit rester modifiable (§4) ════════════
+   `hz-tpl-edition` est posée sur <html> par le script quand --gx-editor vaut
+   1 : jamais enregistrée, jamais publiée. */
+
+/* Méga-menus DÉPLIÉS sous la barre : un panneau caché au survol serait hors
+   du test de clic, donc ses liens impossibles à modifier. */
+html.hz-tpl-edition .hz-tpl .hz-nav { position: relative; }
+html.hz-tpl-edition .hz-tpl .hz-nav-in { flex-wrap: wrap; }
+html.hz-tpl-edition .hz-tpl .hz-menu {
+  position: static; order: 3; width: 100%; margin: 10px 0 0; max-height: none; box-shadow: none;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto; gap: 14px; align-items: start;
+  padding: 0; border: 0;
+}
+html.hz-tpl-edition .hz-tpl .hz-menu::before {
+  content: 'Méga-menus — dépliés pour l\2019 édition'; grid-column: 1 / -1;
+  font: 800 .7rem/1 var(--hz-sans); letter-spacing: .1em; text-transform: uppercase; color: var(--hz-ambre);
+}
+html.hz-tpl-edition .hz-tpl .hz-mega {
+  position: static; display: grid; grid-template-columns: 1fr; gap: 12px;
+  margin-top: 8px; padding: 14px; box-shadow: none; opacity: 1; visibility: visible; transform: none;
+}
+html.hz-tpl-edition .hz-tpl .hz-mega-col:first-child,
+html.hz-tpl-edition .hz-tpl .hz-mega-titre,
+html.hz-tpl-edition .hz-tpl .hz-mega-carte { display: grid; }
+/* Carte du panneau : dans une colonne étroite, la légende superposée couvrait
+   le centre de l'image — plus sélectionnable au clic (mesuré). En édition, la
+   légende passe SOUS l'image. */
+html.hz-tpl-edition .hz-tpl .hz-mega-carte { min-height: 0; }
+html.hz-tpl-edition .hz-tpl .hz-mega-carte img { position: static; height: 130px; }
+html.hz-tpl-edition .hz-tpl .hz-mega-carte-corps { position: static; background: var(--hz-nuit); }
+
+/* Chaque diapositive du héros annonce son rang : les flèches les font
+   défiler une à une pour régler chaque vidéo. */
+html.hz-tpl-edition .hz-tpl .hz-hero-diapo::before {
+  content: 'Diapositive ' counter(hzdiapo) ' — cliquez à côté du texte pour régler la vidéo';
+  position: absolute; top: 14px; left: 14px; z-index: 4; pointer-events: none;
+  padding: 7px 12px; border-radius: 999px; background: var(--hz-ambre); color: var(--hz-blanc);
+  font: 700 .72rem/1 var(--hz-sans);
+}
+
+/* ══ À PROXIMITÉ — lieux de la carte GoExploria ═══════════════════════════ */
+.hz-tpl .hz-proche-filtres { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 26px; }
+.hz-tpl .hz-proche-filtre {
+  display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px;
+  border: 1px solid var(--hz-bord); background: var(--hz-blanc); color: var(--hz-encre);
+  text-decoration: none; font-weight: 600; font-size: .88rem;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.hz-tpl .hz-proche-filtre i { color: var(--hz-vert); font-size: .85rem; }
+.hz-tpl .hz-proche-filtre:hover { border-color: var(--hz-vert); color: var(--hz-vert); }
+.hz-tpl .hz-proche-compte { margin-left: auto; font-size: .85rem; font-weight: 600; color: var(--hz-gris); }
+.hz-tpl .hz-proches { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.hz-tpl .hz-proche-carte {
+  display: flex; flex-direction: column; overflow: hidden; text-decoration: none; color: var(--hz-encre);
+  background: var(--hz-blanc); border: 1px solid var(--hz-bord); border-radius: var(--hz-rayon); box-shadow: var(--hz-ombre);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.hz-tpl .hz-proche-carte:hover { transform: translateY(-4px); box-shadow: var(--hz-ombre-forte); }
+.hz-tpl .hz-proche-media { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: var(--hz-sable); }
+.hz-tpl .hz-proche-media img { width: 100%; height: 100%; object-fit: cover; }
+/* Pastille en coin : décorative, elle ne vole pas le clic de la photo (§4). */
+.hz-tpl .hz-proche-cat {
+  position: absolute; top: 12px; left: 12px; z-index: 1; pointer-events: none;
+  padding: 5px 12px; border-radius: 999px; background: rgba(255, 255, 255, .94);
+  color: var(--hz-vert); font-size: .72rem; font-weight: 800; letter-spacing: .04em;
+}
+.hz-tpl .hz-proche-corps { display: grid; gap: 8px; padding: 16px 18px 18px; }
+.hz-tpl .hz-proche-corps b { font-family: var(--hz-serif); font-size: 1.06rem; }
+.hz-tpl .hz-proche-meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: .85rem; color: var(--hz-gris); }
+.hz-tpl .hz-proche-lieu i { margin-right: 4px; color: var(--hz-ambre); }
+.hz-tpl .hz-proche-distance { flex: 0 0 auto; padding: 4px 10px; border-radius: 999px; background: var(--hz-sable); color: var(--hz-vert); font-size: .78rem; font-weight: 700; }
+.hz-tpl .hz-proche-vide {
+  display: none; margin-top: 10px; padding: 22px; text-align: center; color: var(--hz-gris);
+  background: var(--hz-blanc); border: 1px dashed var(--hz-bord); border-radius: var(--hz-rayon);
+}
+html.hz-proche-vide .hz-tpl .hz-proche-vide { display: block; }
+
+/* Filtre actif : l'état vit sur <html> (§5), jamais dans le contenu. Sans
+   attribut — éditeur compris —, toutes les cartes restent visibles. */
+html[data-hz-proche]:not([data-hz-proche="tous"]) .hz-tpl .hz-proche-carte { display: none; }
+html[data-hz-proche="resto"] .hz-tpl .hz-proche-carte[data-categorie="resto"],
+html[data-hz-proche="hebergement"] .hz-tpl .hz-proche-carte[data-categorie="hebergement"],
+html[data-hz-proche="evenement"] .hz-tpl .hz-proche-carte[data-categorie="evenement"],
+html[data-hz-proche="activite"] .hz-tpl .hz-proche-carte[data-categorie="activite"],
+html[data-hz-proche="culture"] .hz-tpl .hz-proche-carte[data-categorie="culture"],
+html[data-hz-proche="nature"] .hz-tpl .hz-proche-carte[data-categorie="nature"],
+html[data-hz-proche="shopping"] .hz-tpl .hz-proche-carte[data-categorie="shopping"] { display: flex; }
+html:not([data-hz-proche]) .hz-tpl .hz-proche-filtre[data-hz-filtre="tous"],
+html[data-hz-proche="tous"] .hz-tpl .hz-proche-filtre[data-hz-filtre="tous"],
+html[data-hz-proche="resto"] .hz-tpl .hz-proche-filtre[data-hz-filtre="resto"],
+html[data-hz-proche="hebergement"] .hz-tpl .hz-proche-filtre[data-hz-filtre="hebergement"],
+html[data-hz-proche="evenement"] .hz-tpl .hz-proche-filtre[data-hz-filtre="evenement"],
+html[data-hz-proche="activite"] .hz-tpl .hz-proche-filtre[data-hz-filtre="activite"],
+html[data-hz-proche="culture"] .hz-tpl .hz-proche-filtre[data-hz-filtre="culture"],
+html[data-hz-proche="nature"] .hz-tpl .hz-proche-filtre[data-hz-filtre="nature"],
+html[data-hz-proche="shopping"] .hz-tpl .hz-proche-filtre[data-hz-filtre="shopping"] { background: var(--hz-vert); border-color: var(--hz-vert); color: var(--hz-blanc); }
+html:not([data-hz-proche]) .hz-tpl .hz-proche-filtre[data-hz-filtre="tous"] i,
+html[data-hz-proche="tous"] .hz-tpl .hz-proche-filtre[data-hz-filtre="tous"] i,
+html[data-hz-proche="resto"] .hz-tpl .hz-proche-filtre[data-hz-filtre="resto"] i,
+html[data-hz-proche="hebergement"] .hz-tpl .hz-proche-filtre[data-hz-filtre="hebergement"] i,
+html[data-hz-proche="evenement"] .hz-tpl .hz-proche-filtre[data-hz-filtre="evenement"] i,
+html[data-hz-proche="activite"] .hz-tpl .hz-proche-filtre[data-hz-filtre="activite"] i,
+html[data-hz-proche="culture"] .hz-tpl .hz-proche-filtre[data-hz-filtre="culture"] i,
+html[data-hz-proche="nature"] .hz-tpl .hz-proche-filtre[data-hz-filtre="nature"] i,
+html[data-hz-proche="shopping"] .hz-tpl .hz-proche-filtre[data-hz-filtre="shopping"] i { color: var(--hz-blanc); }
+
+@media (max-width: 991px) {
+  .hz-tpl .hz-proches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Menu mobile : le logo à gauche, le bouton du tiroir TOUT À DROITE. Sous
+     992 px le menu est replié : c'était lui qui repoussait les actions. */
+  .hz-tpl .hz-nav-actions { margin-left: auto; }
+}
+@media (max-width: 640px) {
+  /* Filtres et lieux défilent à l'horizontale : la section reste compacte. */
+  .hz-tpl .hz-proche-filtres { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+  .hz-tpl .hz-proche-filtres::-webkit-scrollbar { display: none; }
+  .hz-tpl .hz-proche-filtre { flex: 0 0 auto; }
+  .hz-tpl .hz-proche-compte { display: none; }
+  .hz-tpl .hz-proches {
+    grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 82%;
+    overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; scrollbar-width: none;
+  }
+  .hz-tpl .hz-proches::-webkit-scrollbar { display: none; }
+  .hz-tpl .hz-proche-carte { scroll-snap-align: start; }
+}
+
+/* Coordonnées liées (data-gx-bind) : le nom remplace « Horizon Pro » d'un
+   seul texte, le courriel et le téléphone du contact sont des liens. */
+.hz-tpl .hz-logo-nom { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 16em; }
+.hz-tpl .hz-contact-item a { color: #a9b6d3; font-size: .9rem; text-decoration: none; word-break: break-word; }
+.hz-tpl .hz-contact-item a:hover { color: var(--hz-blanc); }
+
+
+/* ══ MUR VIDÉO « Nos moments en mouvement » ══════════════════════════════
+   Feuille du bloc goexploria/video-wall de l'éditeur (fragment
+   scripts/fragments/mur-video.html), qualifiée par .hz-tpl. Le bloc vit dans
+   la section Vidéos : pas de fond ni de marge latérale propres, la section
+   les fournit ; il reprend les polices du gabarit. */
+.hz-tpl .videowall-epure-block { margin-top: 64px; }
+.hz-tpl .videowall-epure-block .section-tag-epure { display: inline-block; letter-spacing: 3px; text-transform: uppercase; font-size: 12px; font-weight: 800; color: #7dd3fc; margin: 0 0 14px; }
+.hz-tpl .videowall-epure-block .section-title-epure { font-family: var(--hz-serif); font-size: clamp(28px, 4vw, 44px); line-height: 1.12; font-weight: 800; margin: 0 0 18px; color: #fff; letter-spacing: -.5px; }
+.hz-tpl .videowall-epure-block .section-title-epure em { font-style: italic; font-weight: 400; color: #7dd3fc; }
+.hz-tpl .videowall-epure-block .divider-epure { width: 72px; height: 3px; border-radius: 2px; background: #7dd3fc; }
+.hz-tpl .videowall-grid-epure-block { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 260px 260px; gap: 6px; margin-top: 3rem; }
+.hz-tpl .videowall-grid-epure-block figure { position: relative; margin: 0; overflow: hidden; background: #0f172a; border-radius: 0; }
+.hz-tpl .videowall-grid-epure-block img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hz-tpl .videowall-grid-epure-block [data-gx-video] { position: absolute; inset: 0; }
+/* !important : le composant vidéo de l'éditeur réécrit la géométrie en ligne. */
+.hz-tpl .videowall-grid-epure-block [data-gx-video] iframe,
+.hz-tpl .videowall-grid-epure-block [data-gx-video] video { position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; border: 0; object-fit: cover; }
+.hz-tpl .vw1-epure-block { grid-column: 1 / 6; grid-row: 1 / 2; }
+.hz-tpl .vw2-epure-block { grid-column: 6 / 9; grid-row: 1 / 2; }
+.hz-tpl .vw3-epure-block { grid-column: 9 / 13; grid-row: 1 / 3; }
+.hz-tpl .vw4-epure-block { grid-column: 1 / 4; grid-row: 2 / 3; }
+.hz-tpl .vw5-epure-block { grid-column: 4 / 6; grid-row: 2 / 3; }
+.hz-tpl .vw6-epure-block { grid-column: 6 / 9; grid-row: 2 / 3; }
+@media (max-width: 768px) {
+  .hz-tpl .videowall-epure-block { margin-top: 48px; }
+  .hz-tpl .videowall-grid-epure-block { grid-template-columns: 1fr 1fr; grid-template-rows: auto; grid-auto-flow: dense; }
+  .hz-tpl .videowall-grid-epure-block figure { height: 200px; }
+  .hz-tpl .vw1-epure-block, .hz-tpl .vw2-epure-block, .hz-tpl .vw3-epure-block,
+  .hz-tpl .vw4-epure-block, .hz-tpl .vw5-epure-block, .hz-tpl .vw6-epure-block { grid-column: span 1; grid-row: span 1; }
+  .hz-tpl .videowall-grid-epure-block .vw1-epure-block,
+  .hz-tpl .videowall-grid-epure-block .vw3-epure-block { grid-column: span 2; height: 240px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   SECTIONS REPRISES DE VOYAGO (point 7)
+   Réécrites avec le socle d'Horizon : aucune variable --vy-* importée.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Préparez votre séjour ─────────────────────────────────────────────── */
+.hz-tpl .hz-outils { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: clamp(18px, 2.4vw, 28px); }
+.hz-tpl .hz-outil { background: var(--hz-blanc); border: 1px solid var(--hz-bord); border-radius: var(--hz-rayon); padding: clamp(20px, 2.4vw, 28px); box-shadow: var(--hz-ombre); }
+.hz-tpl .hz-outil-icone { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 14px; background: var(--hz-sable); color: var(--hz-vert); font-size: 1.1rem; margin-bottom: 14px; }
+.hz-tpl .hz-outil h3 { margin: 0 0 8px; font-size: 1.08rem; font-weight: 700; color: var(--hz-encre); }
+.hz-tpl .hz-outil p { margin: 0; color: var(--hz-gris); font-size: .95rem; line-height: 1.7; }
+
+/* ── Moyens de paiement ────────────────────────────────────────────────── */
+.hz-tpl .hz-paie-cartes { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: clamp(26px, 3vw, 38px); }
+.hz-tpl .hz-paie-carte { display: inline-flex; align-items: center; gap: 9px; padding: 11px 17px; border-radius: 999px; background: var(--hz-blanc); border: 1px solid var(--hz-bord); color: var(--hz-encre); font-size: .9rem; font-weight: 600; }
+.hz-tpl .hz-paie-carte i { font-size: 1.3rem; color: var(--hz-vert); }
+.hz-tpl .hz-paie-garanties { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: clamp(18px, 2.4vw, 28px); }
+.hz-tpl .hz-paie-garantie { display: flex; gap: 14px; align-items: flex-start; }
+.hz-tpl .hz-paie-icone { flex: 0 0 42px; display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; background: var(--hz-vert); color: #fff; font-size: .95rem; }
+.hz-tpl .hz-paie-garantie b { display: block; margin-bottom: 5px; font-size: 1rem; color: var(--hz-encre); }
+.hz-tpl .hz-paie-garantie p { margin: 0; color: var(--hz-gris); font-size: .93rem; line-height: 1.65; }
+
+/* ── Application mobile ────────────────────────────────────────────────── */
+.hz-tpl .hz-appli { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: clamp(26px, 4vw, 52px); align-items: center; }
+.hz-tpl .hz-appli-points { list-style: none; padding: 0; margin: clamp(18px, 2.4vw, 26px) 0; display: grid; gap: 11px; }
+.hz-tpl .hz-appli-points li { display: flex; align-items: flex-start; gap: 10px; color: rgba(255, 255, 255, .84); font-size: .98rem; }
+.hz-tpl .hz-appli-points i { color: var(--hz-ambre-clair); margin-top: 4px; }
+.hz-tpl .hz-appli-actions { display: flex; flex-wrap: wrap; gap: 13px; }
+.hz-tpl .hz-appli-visuel img { width: 100%; border-radius: var(--hz-rayon); box-shadow: var(--hz-ombre-forte); display: block; aspect-ratio: 4 / 3; object-fit: cover; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   BOUTONS DE LIEN SUR LES MÉDIAS (point 5)
+   ══════════════════════════════════════════════════════════════════════ */
+.hz-tpl *:has(> .gx-media-btn){position:relative}
+/* ⚠ `.hz-hero-media` NE DOIT PAS figurer ici : il est déjà
+   `position: absolute` (donc déjà bloc de référence pour `.gx-media-btn`), et
+   cette règle, plus bas dans la feuille et de même spécificité, le repassait
+   en `relative` — la vidéo du héros disparaissait. */
+.hz-tpl .hz-mosaique-vue,
+.hz-tpl .hz-cadre-video,
+.hz-tpl .hz-apropos-media,
+.hz-tpl .hz-resto-media,
+.hz-tpl .hz-appli-visuel,
+.hz-tpl .resto-dest-icon-box,
+.hz-tpl .video-player-v2-playlist-thumbnail{position:relative}
+
+.hz-tpl .gx-media-btn{
+  position:absolute;right:12px;bottom:12px;z-index:4;
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 15px;border-radius:999px;
+  background:rgba(255,255,255,.94);color:var(--hz-encre);
+  font-family:var(--hz-sans);font-size:.8rem;font-weight:700;line-height:1;
+  text-decoration:none;white-space:nowrap;
+  box-shadow:0 8px 22px rgba(11,19,36,.26);
+  backdrop-filter:saturate(140%) blur(2px);
+  transition:background .2s,transform .2s,box-shadow .2s;
+}
+.hz-tpl .gx-media-btn i{font-size:.95rem;color:var(--hz-ambre)}
+.hz-tpl .gx-media-btn:hover{background:#fff;transform:translateY(-2px);box-shadow:0 12px 28px rgba(11,19,36,.32)}
+.hz-tpl .gx-media-btn:focus-visible{outline:2px solid var(--hz-vert);outline-offset:2px}
+/* Bas GAUCHE : voir la note du gabarit Voyago. */
+.hz-tpl .gx-media-btn-video{left:12px;right:auto;bottom:12px;transform:none}
+.hz-tpl .gx-media-btn-video:hover{transform:translateY(-2px)}
+@media (max-width:480px){
+  .hz-tpl .gx-media-btn{padding:9px;right:8px;bottom:8px}
+  .hz-tpl .gx-media-btn span{display:none}
+  .hz-tpl .gx-media-btn-video{left:8px;right:auto;bottom:8px}
+}
+
+/* ── Les espaces GoExploria (contenu repris des barres retirées) ───────── */
+.hz-tpl .hz-espaces { display: flex; flex-wrap: wrap; gap: 10px; }
+.hz-tpl .hz-espace {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 11px 17px; border-radius: 999px;
+  background: var(--hz-blanc); border: 1px solid var(--hz-bord);
+  color: var(--hz-encre); font-size: .88rem; font-weight: 600; text-decoration: none;
+  transition: border-color .2s, color .2s, transform .2s;
+}
+.hz-tpl .hz-espace i { color: var(--hz-vert); font-size: .95rem; }
+.hz-tpl .hz-espace:hover { border-color: var(--hz-vert); color: var(--hz-vert); transform: translateY(-2px); }
+
+/* ── L'équipe ──────────────────────────────────────────────────────────── */
+.hz-tpl .hz-equipe { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: clamp(18px, 2.4vw, 30px); }
+.hz-tpl .hz-membre { text-align: center; }
+.hz-tpl .hz-membre-media { position: relative; border-radius: var(--hz-rayon); overflow: hidden; margin-bottom: 14px; }
+.hz-tpl .hz-membre-media img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; }
+.hz-tpl .hz-membre h3 { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
+.hz-tpl .hz-membre p { margin: 0; color: var(--hz-gris); font-size: .92rem; }
+
+/* Enveloppe d'une carte-lien : voir la note du gabarit Voyago. */
+.hz-tpl .gx-media-cadre { position: relative; display: block; }
+.hz-tpl .gx-media-cadre > a:first-child { display: block; height: 100%; }
+.amv-hero-video-wrap {
+    display: flex;
+    gap: 0;
+    background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 100%);
+    min-height: 600px;
+  }
+  /* Colonne gauche - 25% avec les onglets en colonne */
+  .amv-hero-left {
+    width: 25%;
+    background: rgba(0,0,0,0.2);
+    padding: 60px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .amv-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(242,101,34,0.15);
+    color: #f26522;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    width: fit-content;
+  }
+  .amv-hero-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+  .amv-hero-title span {
+    color: #f26522;
+  }
+  .amv-hero-lead {
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 30px;
+    line-height: 1.6;
+    font-size: 0.85rem;
+  }
+  /* Onglets en colonne */
+  .amv-hero-vtabs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+    width: 100%;
+  }
+  .amv-hero-vtab {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 12px 20px;
+    border-radius: 12px;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s;
+    width: 100%;
+    cursor: pointer;
+  }
+  .amv-hero-vtab i {
+    width: 24px;
+    font-size: 1rem;
+  }
+  .amv-hero-vtab.active {
+    background: #f26522;
+    border-color: #f26522;
+    color: white;
+  }
+  .amv-hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .amv-hero-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #e84c10, #f26522);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-decoration: none;
+  }
+  .amv-hero-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(242,101,34,0.3);
+  }
+  .amv-hero-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 2px solid #f26522;
+    color: #f26522;
+    padding: 12px 24px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-decoration: none;
+  }
+  .amv-hero-btn-secondary:hover {
+    background: #f26522;
+    color: white;
+  }
+  /* Colonne droite - 75% avec les vidéos */
+  .amv-hero-right {
+    width: 75%;
+    position: relative;
+  }
+  .amv-hero-video-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+    overflow: hidden;
+  }
+  /* Lecteurs vidéo : c'est le <div> qui porte data-gx-video, l'iframe est
+     dedans. Le canvas de l'éditeur neutralise les iframes (pointer-events:none),
+     donc le clic atteint le div et le panneau de droite expose l'URL, la lecture
+     automatique, le muet, la boucle et les contrôles.
+     Les quatre lecteurs sont superposés ; les inactifs sont en
+     visibility:hidden, donc hors du test de clic. C'est pourquoi le script
+     arrête la rotation dès qu'un onglet est choisi : on sélectionne l'onglet
+     voulu, son lecteur passe au premier plan et y reste le temps d'être réglé. */
+  .amv-video-slot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+  .amv-video-slot.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+  }
+  .amv-video-slot iframe,
+  .amv-video-slot video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  /* Indicateurs de progression - 15 secondes */
+  .video-progress-container {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 20;
+    display: flex;
+    gap: 8px;
+    background: rgba(0,0,0,0.5);
+    padding: 12px 20px;
+    border-radius: 30px;
+    backdrop-filter: blur(8px);
+  }
+  .video-progress-dot {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .video-progress-dot.active {
+    background: rgba(255,255,255,0.5);
+  }
+  .video-progress-dot .progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: #f26522;
+    border-radius: 4px;
+  }
+  /* Nom propre au bloc : le template « Resto Graffiti » définit sa propre
+     animation, les deux peuvent cohabiter sur une même page. */
+  @keyframes amvHeroProgress {
+    from { width: 0%; }
+    to { width: 100%; }
+  }
+  @media (max-width: 900px) {
+    .amv-hero-video-wrap { flex-direction: column; }
+    .amv-hero-left { width: 100%; padding: 40px 24px; }
+    .amv-hero-right { width: 100%; }
+    .amv-hero-video-frame { min-height: 400px; }
+    .amv-hero-vtabs { flex-direction: row; flex-wrap: wrap; }
+    .amv-hero-vtab { width: auto; }
+  }
+  @media (max-width: 600px) {
+    .amv-hero-vtabs { flex-direction: column; }
+    .amv-hero-vtab { width: 100%; }
+    .video-progress-container { bottom: 10px; left: 10px; right: 10px; padding: 8px 12px; }
+  }
+.amv-page-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  padding: 80px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Titre centré en haut de chaque section, sur toute la largeur de la grille */
+.amv-page-section-heading {
+  grid-column: 1 / -1;
+  text-align: center;
+  width: 100%;
+  margin: 0 0 24px;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.amv-page-section.img-left { direction: ltr; }
+.amv-page-section.img-right { direction: rtl; }
+.amv-page-section.img-right .amv-page-section-text { direction: ltr; }
+/* Le direction:rtl de la section inverse aussi l'ordre des diapositives et
+   le sens du défilement du carrousel. On le remet à l'endroit sur la colonne
+   média : seule l'inversion des deux colonnes doit être pilotée par rtl. */
+.amv-page-section.img-right .amv-page-section-media { direction: ltr; }
+.amv-page-section-media { position: relative; }
+.amv-page-carousel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+.amv-page-carousel-track {
+  display: flex;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.amv-page-carousel-slide {
+  flex: 0 0 100%;
+}
+.amv-page-carousel-slide img {
+  width: 100%;
+  height: 480px;
+  object-fit: cover;
+  display: block;
+}
+.amv-page-carousel-nav {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 12px;
+  z-index: 10;
+}
+.amv-page-carousel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  border-radius: 50%;
+  color: white;
+  font-size: 1.2rem;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.amv-page-carousel-btn:hover {
+  background: #f26522;
+  transform: scale(1.05);
+}
+.amv-page-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+/* Les pastilles sont des <button> créés par le script : sans cette remise à
+   zéro elles héritent de la bordure et du fond par défaut du navigateur. */
+.amv-page-dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 50%;
+  background: #cbd5e0;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-block;
+}
+.amv-page-dot.active {
+  background: #f26522;
+  width: 28px;
+  border-radius: 5px;
+}
+/* La pastille de catégorie est en position:absolute par-dessus l'image :
+   purement décorative, elle captait pourtant le clic et rendait l'image
+   inatteignable — donc non modifiable — dans l'éditeur. Rien ne change sur
+   le site publié. */
+.amv-page-section-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 8px 18px;
+  border-radius: 30px;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+.amv-page-section-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.amv-page-section-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0a1628;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.amv-page-section-lead {
+  color: #6c757d;
+  margin-bottom: 32px;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+.amv-page-items-list {
+  list-style: none;
+  margin-bottom: 32px;
+}
+.amv-page-item {
+  padding: 14px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+.amv-page-item:last-child {
+  border-bottom: none;
+}
+.amv-page-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.amv-page-item-name {
+  font-weight: 700;
+  color: #0a1628;
+  font-size: 1rem;
+}
+.amv-page-item-price {
+  font-weight: 700;
+  color: #f26522;
+  font-size: 0.95rem;
+}
+.amv-page-item-desc {
+  font-size: 0.8rem;
+  color: #6c757d;
+  line-height: 1.5;
+}
+.amv-page-section-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border-radius: 40px;
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.amv-page-section-cta:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+@media (max-width: 900px) {
+  .amv-page-section {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 60px 24px;
+  }
+  .amv-page-section.img-right {
+    direction: ltr;
+  }
+  .amv-page-carousel-slide img {
+    height: 350px;
+  }
+  .amv-page-section-title {
+    font-size: 1.8rem;
+  }
+  .amv-page-section-heading {
+    font-size: 1.6rem;
+    margin-bottom: 16px;
+  }
+}
+.amv-hero-video-wrap {
+    display: flex;
+    gap: 0;
+    background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 100%);
+    min-height: 600px;
+  }
+  /* Colonne gauche - 25% avec les onglets en colonne */
+  .amv-hero-left {
+    width: 25%;
+    background: rgba(0,0,0,0.2);
+    padding: 60px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .amv-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(242,101,34,0.15);
+    color: #f26522;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    width: fit-content;
+  }
+  .amv-hero-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+  .amv-hero-title span {
+    color: #f26522;
+  }
+  .amv-hero-lead {
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 30px;
+    line-height: 1.6;
+    font-size: 0.85rem;
+  }
+  /* Onglets en colonne */
+  .amv-hero-vtabs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+    width: 100%;
+  }
+  .amv-hero-vtab {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 12px 20px;
+    border-radius: 12px;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s;
+    width: 100%;
+    cursor: pointer;
+  }
+  .amv-hero-vtab i {
+    width: 24px;
+    font-size: 1rem;
+  }
+  .amv-hero-vtab.active {
+    background: #f26522;
+    border-color: #f26522;
+    color: white;
+  }
+  .amv-hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .amv-hero-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #e84c10, #f26522);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-decoration: none;
+  }
+  .amv-hero-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(242,101,34,0.3);
+  }
+  .amv-hero-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 2px solid #f26522;
+    color: #f26522;
+    padding: 12px 24px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-decoration: none;
+  }
+  .amv-hero-btn-secondary:hover {
+    background: #f26522;
+    color: white;
+  }
+  /* Colonne droite - 75% avec les vidéos */
+  .amv-hero-right {
+    width: 75%;
+    position: relative;
+  }
+  .amv-hero-video-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+    overflow: hidden;
+  }
+  /* Lecteurs vidéo : c'est le <div> qui porte data-gx-video, l'iframe est
+     dedans. Le canvas de l'éditeur neutralise les iframes (pointer-events:none),
+     donc le clic atteint le div et le panneau de droite expose l'URL, la lecture
+     automatique, le muet, la boucle et les contrôles.
+     Les quatre lecteurs sont superposés ; les inactifs sont en
+     visibility:hidden, donc hors du test de clic. C'est pourquoi le script
+     arrête la rotation dès qu'un onglet est choisi : on sélectionne l'onglet
+     voulu, son lecteur passe au premier plan et y reste le temps d'être réglé. */
+  .amv-video-slot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+  .amv-video-slot.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+  }
+  .amv-video-slot iframe,
+  .amv-video-slot video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  /* Indicateurs de progression - 15 secondes */
+  .video-progress-container {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 20;
+    display: flex;
+    gap: 8px;
+    background: rgba(0,0,0,0.5);
+    padding: 12px 20px;
+    border-radius: 30px;
+    backdrop-filter: blur(8px);
+  }
+  .video-progress-dot {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .video-progress-dot.active {
+    background: rgba(255,255,255,0.5);
+  }
+  .video-progress-dot .progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: #f26522;
+    border-radius: 4px;
+  }
+  /* Nom propre au bloc : le template « Resto Graffiti » définit sa propre
+     animation, les deux peuvent cohabiter sur une même page. */
+  @keyframes amvHeroProgress {
+    from { width: 0%; }
+    to { width: 100%; }
+  }
+  @media (max-width: 900px) {
+    .amv-hero-video-wrap { flex-direction: column; }
+    .amv-hero-left { width: 100%; padding: 40px 24px; }
+    .amv-hero-right { width: 100%; }
+    .amv-hero-video-frame { min-height: 400px; }
+    .amv-hero-vtabs { flex-direction: row; flex-wrap: wrap; }
+    .amv-hero-vtab { width: auto; }
+  }
+  @media (max-width: 600px) {
+    .amv-hero-vtabs { flex-direction: column; }
+    .amv-hero-vtab { width: 100%; }
+    .video-progress-container { bottom: 10px; left: 10px; right: 10px; padding: 8px 12px; }
+  }

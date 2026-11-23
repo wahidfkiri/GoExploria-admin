@@ -1149,19 +1149,21 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
      */
     protected function renderGabaritInterne()
     {
-        $donnees = array_merge(
-            $this->prepareNoThemeLandingData(null),
-            GabaritInterne::modules($this->etablissement),
-        );
+        $source = GabaritInterne::source();
 
-        // `activities` porte déjà les activités « de présentation » de la
-        // landing : le module garde son nom à lui pour ne pas l'écraser.
-        $donnees['activitesModule'] = $donnees['activites'];
+        /* Fichier absent ou illisible — déploiement incomplet. On ne rend pas
+           une page blanche : la landing commerciale reste une page valable, et
+           le message part dans le journal ([[GabaritInterne::source]]). */
+        if (trim($source) === '') {
+            return $this->renderNoThemeLanding(null);
+        }
 
-        return $this->buildResponse(
-            view('cms::web.interne.gabarit', $donnees)->render(),
-            $this->buildSeoContext(null, false)
-        );
+        $html = view('cms::web.interne.gabarit', [
+            'etablissement' => $this->etablissement,
+            'contenu' => $this->hydraterContenuTemplate($source),
+        ])->render();
+
+        return $this->buildResponse($html, $this->buildSeoContext(null, false));
     }
 
     /**
@@ -1741,6 +1743,27 @@ protected function renderTheme($theme, $page = null, $preview = false, $demoCont
 
         if ($content === null || trim((string) $content) === '') {
             $content = data_get($template->config, 'page_content');
+        }
+
+        return $this->hydraterContenuTemplate(trim((string) $content));
+    }
+
+    /**
+     * Remplit un contenu de gabarit avec les données de l'établissement.
+     *
+     * ⚠ UN SEUL CHEMIN pour les deux usages : le gabarit INSTALLÉ (copie en
+     * base, ci-dessus) et le gabarit INTERNE (fichier unique lu sur le disque,
+     * [[GabaritInterne]]). Dupliquer cette suite aurait garanti qu'elle dérive
+     * — un hydrateur ajouté d'un côté, oublié de l'autre, et deux sites
+     * identiques n'afficheraient pas la même chose.
+     *
+     * L'ORDRE COMPTE : les conditions passent en dernier, après les grilles,
+     * pour qu'une section vidée de sa démonstration puisse disparaître.
+     */
+    protected function hydraterContenuTemplate(string $content): string
+    {
+        if ($content === '') {
+            return '';
         }
 
         // Les templates portent les coordonnées de leur maquette. Les éléments
