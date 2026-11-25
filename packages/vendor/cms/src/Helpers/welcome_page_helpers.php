@@ -1590,7 +1590,7 @@ if (!function_exists('has_map_points')) {
             return \App\Models\MapPoint::active()
                 ->inDisplayPeriod()
                 ->visibleOn($location, $destinationId)
-                ->where('etablissement_id', $etablissement->id)
+                ->pourEtablissement($etablissement->id)   // siens + liés par d'autres
                 ->exists();
         } catch (\Exception $e) {
             \Log::error('has_map_points error: ' . $e->getMessage());
@@ -1636,7 +1636,7 @@ if (!function_exists('get_map_points')) {
                 ->active()
                 ->inDisplayPeriod()
                 ->visibleOn($options['location'], $options['destination_id'])
-                ->where('etablissement_id', $etablissement->id)
+                ->pourEtablissement($etablissement->id)   // siens + liés par d'autres
                 ->orderBy('is_featured', 'desc')
                 ->orderBy('views', 'desc');
 
@@ -1754,7 +1754,7 @@ if (!function_exists('get_map_video_points')) {
                 ->active()
                 ->inDisplayPeriod()
                 ->visibleOn($options['location'], $options['destination_id'])
-                ->where('etablissement_id', $etablissement->id)
+                ->pourEtablissement($etablissement->id)   // siens + liés par d'autres
                 ->whereNotNull('latitude')
                 ->whereNotNull('longitude')
                 ->where(function ($query) use ($hasVideosTable) {
@@ -2056,7 +2056,7 @@ if (!function_exists('get_map_center')) {
             $result = \App\Models\MapPoint::active()
                 ->inDisplayPeriod()
                 ->visibleOn($location, $destinationId)
-                ->where('etablissement_id', $etablissement->id)
+                ->pourEtablissement($etablissement->id)   // siens + liés par d'autres
                 ->selectRaw('AVG(latitude) as avg_lat, AVG(longitude) as avg_lng')
                 ->first();
 

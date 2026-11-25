@@ -113,6 +113,34 @@ class MapPoint extends Model
     }
 
     /**
+     * Points affichés sur la carte d'un établissement : les SIENS, plus ceux
+     * qu'un autre établissement lui a liés (champ « Établissements liés » de
+     * l'admin, table map_point_etablissement). Sans la table (migration pas
+     * encore passée), seulement les siens.
+     */
+    public function scopePourEtablissement($query, $etablissementId)
+    {
+        $id = (int) $etablissementId;
+        static $liaisons = null;
+        try {
+            $liaisons ??= \Illuminate\Support\Facades\Schema::hasTable('map_point_etablissement');
+        } catch (\Throwable $e) {
+            $liaisons = false;
+        }
+
+        if (! $liaisons) {
+            return $query->where($this->qualifyColumn('etablissement_id'), $id);
+        }
+
+        return $query->where(function ($q) use ($id) {
+            $q->where($this->qualifyColumn('etablissement_id'), $id)
+              ->orWhereIn($this->qualifyColumn('id'), function ($sous) use ($id) {
+                  $sous->select('map_point_id')->from('map_point_etablissement')->where('etablissement_id', $id);
+              });
+        });
+    }
+
+    /**
      * Points visibles sur un emplacement donné (home, continent, … quartier).
      * NULL ou liste vide = visible partout (rétro-compatibilité).
      */
