@@ -385,22 +385,28 @@ class MapPointController extends Controller
             'views' => $point->views,
         ];
 
-        // Ajouter les images
-        if ($point->images && $point->images->count() > 0) {
-            $data['images'] = $point->images->map(function($image) {
-                return [
+        // Galerie de la fiche détaillée : l'image principale du point d'abord,
+        // puis les images de sa galerie (adresses servies par l'admin).
+        $galerie = collect();
+        if ($point->main_image_url) {
+            $galerie->push(['url' => $point->main_image_url, 'thumbnail' => $point->main_image_url, 'caption' => $point->title, 'is_main' => true]);
+        }
+        foreach (($point->images ?? collect()) as $image) {
+            if ($image->url && $image->url !== $point->main_image_url) {
+                $galerie->push([
                     'url' => $image->url,
                     'thumbnail' => $image->thumb_url,
                     'caption' => $image->caption,
-                    'is_main' => (bool) $image->is_main
-                ];
-            });
+                    'is_main' => (bool) $image->is_main,
+                ]);
+            }
+        }
+        if ($galerie->isNotEmpty()) {
+            $data['images'] = $galerie->values();
         }
 
         // Ajouter l'image principale
-        if ($point->mainImage) {
-            $data['main_image'] = $point->mainImage->url;
-        }
+        $data['main_image'] = $point->mainImage ? $point->mainImage->url : $point->main_image_url;
 
         // Ajouter les détails si disponibles
         if ($point->details) {

@@ -343,9 +343,8 @@ class TemplateNearby extends TemplateGrid
     {
         $chemin = trim((string) $point->main_image);
         if ($chemin !== '') {
-            return Str::startsWith($chemin, ['http://', 'https://', '//', 'data:'])
-                ? $chemin
-                : asset('storage/' . ltrim($chemin, '/'));
+            // Image téléversée depuis l'admin : servie par l'admin.
+            return \App\Support\MediaAdmin::url($chemin);
         }
 
         $youtube = trim((string) $point->youtube_id);

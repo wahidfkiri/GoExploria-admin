@@ -2007,7 +2007,7 @@ if (!function_exists('get_map_points_json')) {
             if ($point->youtube_id) {
                 $thumbnail = "https://img.youtube.com/vi/{$point->youtube_id}/hqdefault.jpg";
             } elseif ($point->main_image) {
-                $thumbnail = asset('storage/' . $point->main_image);
+                $thumbnail = \App\Support\MediaAdmin::url($point->main_image);   // servie par l'admin
             } elseif ($point->mainImage) {
                 $thumbnail = $point->mainImage->url;
             }

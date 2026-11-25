@@ -51,7 +51,13 @@ document.addEventListener('DOMContentLoaded', function () {
         return ['name' => $mc->name, 'icon_class' => $mc->icon_class, 'color' => $mc->color, 'image' => $mc->image];
       })->toArray(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var serverPoints = {!! json_encode($mapPoints->map(function($p) {
-        $img = $p->mainImage ? $p->mainImage->url : ($p->youtube_id ? 'https://img.youtube.com/vi/' . $p->youtube_id . '/hqdefault.jpg' : null);
+        $principale = $p->mainImage ? $p->mainImage->url : $p->main_image_url;
+        $img = $principale ?: ($p->youtube_id ? 'https://img.youtube.com/vi/' . $p->youtube_id . '/hqdefault.jpg' : null);
+        // Galerie de la fiche détaillée : image principale d'abord, puis la galerie.
+        $galerie = collect($principale ? [['url' => $principale, 'thumbnail' => $principale, 'caption' => $p->title, 'is_main' => true]] : [])
+          ->concat($p->images->filter(fn($i) => $i->url && $i->url !== $principale)
+            ->map(fn($i) => ['url' => $i->url, 'thumbnail' => $i->thumb_url, 'caption' => $i->caption, 'is_main' => (bool)$i->is_main]))
+          ->values()->toArray();
         return [
           'id' => $p->id,
           'title' => $p->title,
@@ -80,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'reviews_count' => $p->details->reviews_count,
             'slug' => $p->details->slug,
           ] : null,
-          'images' => $p->images->map(fn($img) => ['url' => $img->url, 'thumbnail' => $img->thumb_url, 'caption' => $img->caption, 'is_main' => (bool)$img->is_main])->toArray(),
+          'images' => $galerie,
         ];
       })->values(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!};
   var zoomByType = { continent: 3, country: 5, province: 7, region: 9, ville: 11, city: 11, secteur: 13 };

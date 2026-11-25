@@ -183,18 +183,17 @@ class MapPoint extends Model
         }
         
         if ($this->main_image) {
-            if (preg_match('/^https?:\/\//i', $this->main_image)) {
-                return $this->main_image;
-            }
-
-            if (str_starts_with($this->main_image, '/storage/') || str_starts_with($this->main_image, 'storage/')) {
-                return url('/' . ltrim($this->main_image, '/'));
-            }
-
-            return asset('storage/' . ltrim($this->main_image, '/'));
+            // Image téléversée depuis l'admin : servie par l'admin.
+            return \App\Support\MediaAdmin::url($this->main_image);
         }
-        
+
         return asset('images/default-placeholder.jpg');
+    }
+
+    /** Image principale (adresse complète, servie par l'admin), ou null. */
+    public function getMainImageUrlAttribute(): ?string
+    {
+        return \App\Support\MediaAdmin::url($this->main_image);
     }
 
     public function getPopupContentAttribute()

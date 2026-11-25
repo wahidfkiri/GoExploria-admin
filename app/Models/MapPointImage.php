@@ -30,16 +30,18 @@ class MapPointImage extends Model
         return $this->belongsTo(MapPoint::class);
     }
 
-    // Accesseurs
+    // Accesseurs — l'image vit chez l'admin (ou sur le CDN) : adresse
+    // complète telle quelle, ancien chemin relatif résolu contre l'admin.
+    // (asset('storage/…') donnait une image cassée dans les deux cas.)
     public function getUrlAttribute()
     {
-        return asset('storage/' . $this->image);
+        return \App\Support\MediaAdmin::url($this->image);
     }
 
     public function getThumbUrlAttribute()
     {
-        return $this->thumbnail 
-            ? asset('storage/' . $this->thumbnail)
+        return $this->thumbnail
+            ? \App\Support\MediaAdmin::url($this->thumbnail)
             : $this->url;
     }
 
