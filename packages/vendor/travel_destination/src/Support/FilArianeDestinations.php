@@ -12,6 +12,7 @@ use App\Models\Secteur;
 use App\Models\Ville;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Vendor\TravelDestination\Controllers\TravelDestinationController;
 
@@ -138,10 +139,14 @@ class FilArianeDestinations
     /**
      * Destination active portant ce slug.
      *
-     * Trois tentatives, de la moins coûteuse à la plus sûre. Le slug est vide
-     * en base pour plusieurs niveaux (voir `calculer()`), et le nom porte des
-     * accents que le slug a perdus (« Québec » → quebec) :
-     *   1. le slug tel quel ;
+     * Trois tentatives, de la moins coûteuse à la plus sûre. Le nom porte des
+     * accents que le slug a perdus (« Québec » → quebec), et la colonne `slug`
+     * est tantôt vide (voir `calculer()`), tantôt ABSENTE — la table
+     * `provinces` ne la porte pas en production :
+     *   1. le slug tel quel, si la colonne existe. Sans cette vérification,
+     *      interroger la colonne absente lève une QueryException que `defaut()`
+     *      attrape, et le fil retombe silencieusement sur `racine()` — c'est
+     *      précisément ce qui se passait en production ;
      *   2. le slug rendu en texte (tirets → espaces), comparé au nom — les
      *      collations par défaut de MySQL ignorent accents et casse, ce qui
      *      règle le cas courant en une requête ;
@@ -156,9 +161,11 @@ class FilArianeDestinations
      */
     private static function trouverActive(string $modele, string $slug)
     {
-        $entite = self::requeteActive($modele)->where('slug', $slug)->first();
-        if ($entite) {
-            return $entite;
+        if (Schema::hasColumn((new $modele)->getTable(), 'slug')) {
+            $entite = self::requeteActive($modele)->where('slug', $slug)->first();
+            if ($entite) {
+                return $entite;
+            }
         }
 
         $nom = trim(str_replace('-', ' ', $slug));
