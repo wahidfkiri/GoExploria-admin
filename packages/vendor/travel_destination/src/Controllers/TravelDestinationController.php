@@ -948,7 +948,13 @@ class TravelDestinationController extends Controller
      * Les listes sont plafonnées : une région peut compter des centaines de
      * villes, qu'on ne met pas dans la bannière.
      */
-    protected function buildBreadcrumbLevels($entity): array
+    /**
+     * Publique : le fil de l'accueil part d'une destination posée d'office
+     * (FilArianeDestinations::defaut) et doit sortir exactement la même chaîne
+     * que la page de cette destination — d'où l'appel depuis l'extérieur
+     * plutôt qu'une seconde version de ce calcul.
+     */
+    public function buildBreadcrumbLevels($entity): array
     {
         /* Plusieurs parents possibles : une ville dépend d'un secteur, sinon
            d'une région, sinon d'une province. On prend le premier renseigné. */

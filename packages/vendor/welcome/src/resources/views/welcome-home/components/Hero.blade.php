@@ -960,8 +960,11 @@
         </script>
         @endonce
         {{-- Fil d'Ariane des destinations, JUSTE AU-DESSUS de la barre de
-             recherche et calé à gauche. Aucune destination n'est choisie ici :
-             chaque niveau actif liste les siennes.
+             recherche et calé à gauche. L'accueil ne désigne pas de
+             destination : le fil en pose une d'office — Amérique du Nord →
+             Canada → Québec — pour que le visiteur arrive déjà situé plutôt
+             que devant huit niveaux verrouillés (voir
+             FilArianeDestinations::defaut).
 
              Le conteneur sert de repère d'alignement au script d'épinglage du
              composant, qui exige un parent distinct de la section. --}}
@@ -969,7 +972,7 @@
             <div class="gxfil-hote">
                 @include('travel-destination::landing.partials.destination-breadcrumb', [
                     'breadcrumb'       => collect([['label' => 'Accueil', 'url' => '/']]),
-                    'filArianeNiveaux' => \Vendor\TravelDestination\Support\FilArianeDestinations::racine(),
+                    'filArianeNiveaux' => \Vendor\TravelDestination\Support\FilArianeDestinations::defaut(),
                 ])
             </div>
             <style>
