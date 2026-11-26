@@ -105,30 +105,54 @@ class FilArianeDestinations
             return [];
         }
 
-        return Cache::remember(
-            'travel-destination.fil-defaut.v1.' . $type . '.' . $slug,
-            $minutes * 60,
-            function () use ($modele, $slug) {
-                $entite = self::trouverActive($modele, $slug);
-                if (! $entite) {
-                    return [];
-                }
+        $cle = 'travel-destination.fil-defaut.v1.' . $type . '.' . $slug;
+        $enCache = Cache::get($cle);
+        if (is_array($enCache) && $enCache !== []) {
+            return $enCache;
+        }
 
-                /* La chaîne est construite par le constructeur des pages de
-                   destination. Recopier ici sa logique — parents, frères,
-                   niveaux inférieurs — ferait deux versions à tenir à jour, et
-                   le fil de l'accueil finirait par diverger de celui des
-                   pages. */
-                return app(TravelDestinationController::class)
-                    ->buildBreadcrumbLevels($entite);
-            }
-        );
+        $entite = self::trouverActive($modele, $slug);
+        if (! $entite) {
+            return [];
+        }
+
+        /* La chaîne est construite par le constructeur des pages de
+           destination. Recopier ici sa logique — parents, frères, niveaux
+           inférieurs — ferait deux versions à tenir à jour, et le fil de
+           l'accueil finirait par diverger de celui des pages. */
+        $niveaux = app(TravelDestinationController::class)
+            ->buildBreadcrumbLevels($entite);
+
+        /* ⚠ On ne met en cache QUE le succès. `Cache::remember` enregistrait
+           aussi le tableau vide : un échec passager — base injoignable le
+           temps d'un déploiement, données pas encore en place — figeait le
+           repli pour toute la durée du cache, alors que l'appel suivant
+           aurait réussi. */
+        if ($niveaux !== []) {
+            Cache::put($cle, $niveaux, $minutes * 60);
+        }
+
+        return $niveaux;
     }
 
     /**
-     * Destination active portant ce slug. Le slug est vide en base pour
-     * plusieurs niveaux (voir `calculer()`) : à défaut, on compare au nom
-     * normalisé, sur un échantillon borné pour ne pas balayer une grande table.
+     * Destination active portant ce slug.
+     *
+     * Trois tentatives, de la moins coûteuse à la plus sûre. Le slug est vide
+     * en base pour plusieurs niveaux (voir `calculer()`), et le nom porte des
+     * accents que le slug a perdus (« Québec » → quebec) :
+     *   1. le slug tel quel ;
+     *   2. le slug rendu en texte (tirets → espaces), comparé au nom — les
+     *      collations par défaut de MySQL ignorent accents et casse, ce qui
+     *      règle le cas courant en une requête ;
+     *   3. à défaut, parcours par lots en comparant le nom normalisé. Accents
+     *      et collations ne jouent plus, et la mémoire reste bornée.
+     *
+     * ⚠ La version précédente s'arrêtait aux 500 premières lignes actives
+     * classées par nom. Au-delà de 500 destinations à un niveau — c'est le cas
+     * des provinces du monde entier — une destination en fin d'alphabet, comme
+     * Québec, tombait hors de la fenêtre et n'était jamais trouvée. Ce parcours
+     * n'a lieu qu'au remplissage du cache, pas à chaque affichage.
      */
     private static function trouverActive(string $modele, string $slug)
     {
@@ -137,8 +161,30 @@ class FilArianeDestinations
             return $entite;
         }
 
-        return self::requeteActive($modele)->orderBy('name')->limit(500)->get()
-            ->first(fn ($e) => Str::slug((string) ($e->name ?? '')) === $slug);
+        $nom = trim(str_replace('-', ' ', $slug));
+        if ($nom === '') {
+            return null;
+        }
+
+        $entite = self::requeteActive($modele)->where('name', 'like', $nom)->first();
+        if ($entite) {
+            return $entite;
+        }
+
+        $trouvee = null;
+        self::requeteActive($modele)->orderBy('id')->chunk(500, function ($lot) use ($slug, &$trouvee) {
+            foreach ($lot as $candidate) {
+                if (Str::slug((string) ($candidate->name ?? '')) === $slug) {
+                    $trouvee = $candidate;
+
+                    return false;   // trouvée : inutile de lire la suite
+                }
+            }
+
+            return true;
+        });
+
+        return $trouvee;
     }
 
     /**
